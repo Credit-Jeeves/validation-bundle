@@ -1304,6 +1304,9 @@ class ContractRepository extends EntityRepository
     public function findContractsForSecondChance()
     {
         $subQuery = 'SELECT o FROM DataBundle:Order o WHERE o.cj_applicant_id = t.id';
+        $subQueryActivePayment = '
+          SELECT p FROM RjDataBundle:Payment p WHERE p.status=\'active\' and p.contract = c.id
+        ';
 
         return $this->createQueryBuilder('c')
             ->innerJoin('c.tenant', 't')
@@ -1313,6 +1316,7 @@ class ContractRepository extends EntityRepository
             ->where('c.status in (:statuses)')
             ->andWhere("MONTH(DATE_ADD(c.createdAt, 1, 'month')) = MONTH(CURRENT_TIMESTAMP())")
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED])
             ->groupBy('t.id')// 1 contract for 1 user
             ->getQuery()
