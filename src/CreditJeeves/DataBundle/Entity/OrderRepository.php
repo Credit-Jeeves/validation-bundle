@@ -592,6 +592,10 @@ class OrderRepository extends EntityRepository
           AND o2.created_at >= :minus1month AND o2.created_at < :currentDate
         ';
 
+        $subQueryActivePayment = '
+          SELECT p FROM RjDataBundle:Payment p WHERE p.status=\'active\' and p.contract = c.id
+        ';
+
         return $this->createQueryBuilder('o')
             ->innerJoin('o.operations', 'op')
             ->innerJoin('op.contract', 'c')
@@ -602,6 +606,7 @@ class OrderRepository extends EntityRepository
             ->andWhere('o.created_at >= :minus2month AND o.created_at < :minus1month')
             ->andWhere('c.finishAt > :currentDate')
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
             ->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::PENDING])
             ->setParameter('paymentTypes', [OrderPaymentType::BANK, OrderPaymentType::CARD])
             ->setParameter('currentDate', $currentDate)
