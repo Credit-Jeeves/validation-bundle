@@ -1319,7 +1319,7 @@ class ContractRepository extends EntityRepository
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED])
             ->groupBy('t.id')// 1 contract for 1 user
-            ->getQuery()->getSQL();
-//            ->getResult();
+            ->getQuery()
+            ->getResult();
     }
 }
