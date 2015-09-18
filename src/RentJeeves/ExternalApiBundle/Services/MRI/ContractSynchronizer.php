@@ -327,7 +327,7 @@ class ContractSynchronizer
                 } catch (\Exception $e) {
                     $this->logger->alert(
                         sprintf(
-                            'MRIRentSync Exception: %s. When Update balance for MRI.',
+                            'MRIRentSync Exception: %s. When update rent for MRI.',
                             $e->getMessage()
                         )
                     );
