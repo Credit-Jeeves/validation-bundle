@@ -296,19 +296,27 @@
     width:210px;
 }
 
+#pay-anything-popup .col.long-label input[type=text] {
+    width:175px;
+}
+
 .pricing-popup.payments-popup .col input[type=text].all-width {
     width:300px;
+}
+
+#pay-anything-popup .col input[type=text].all-width {
+    width:293px;
 }
 
 .pricing-popup.payments-popup .col input[type=text].phone-width {
     width:30px;
 }
 
-.pricing-popup.payments-popup .col input[type=text].city-width {
+#pay-anything-popup .col input[type=text].city-width, .pricing-popup.payments-popup .col input[type=text].city-width {
     width:150px;
 }
 
-.pricing-popup.payments-popup .col input[type=text].zc-width {
+#pay-anything-popup .col input[type=text].zc-width, .pricing-popup.payments-popup .col input[type=text].zc-width {
     width:60px;
 }
 

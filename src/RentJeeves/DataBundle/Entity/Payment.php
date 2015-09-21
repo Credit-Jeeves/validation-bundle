@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
@@ -47,7 +48,9 @@ class Payment extends Base
     {
         $contract = $this->getContract();
         $status = $contract->getStatus();
-        if (in_array($status, array(ContractStatus::PENDING, ContractStatus::INVITE))) {
+        if (in_array($status, [ContractStatus::PENDING, ContractStatus::INVITE]) &&
+            $this->getDepositAccount()->getType() === DepositAccountType::RENT
+        ) {
             $contract = $this->getContract()->initiatePaidTo();
             $contract->setStatus(ContractStatus::APPROVED);
             $this->setContract($contract);

@@ -19,6 +19,7 @@ use JMS\Serializer\Annotation as Serializer;
 class Unit extends Base
 {
     const SINGLE_PROPERTY_UNIT_NAME = 'SINGLE_PROPERTY';
+    const SEARCH_UNIT_UNASSIGNED = 'UNASSIGNED';
     const SEARCH_PROPERTY_NEW_NAME = 'NEW';
 
     public function getName()

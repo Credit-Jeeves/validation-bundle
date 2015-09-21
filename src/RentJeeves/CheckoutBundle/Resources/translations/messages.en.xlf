@@ -427,7 +427,7 @@
             </trans-unit>
             <trans-unit id="checkout.fee.card.note.help">
                 <source>checkout.fee.card.note.help-%FEE%</source>
-                <target>You will see an additional fee for %FEE% of your rent amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+                <target>You will see an additional fee for %FEE% of your payment amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.bank.note">
                 <source>checkout.fee.bank.note-%FEE%</source>

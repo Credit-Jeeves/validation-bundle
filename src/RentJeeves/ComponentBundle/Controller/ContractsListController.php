@@ -107,6 +107,11 @@ class ContractsListController extends Controller
             if (!$hasIntegratedBalance && $contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
                 $hasIntegratedBalance = true;
             }
+            if (($contract->getStatus() !== ContractStatus::FINISHED) &&
+                end($contractsArr)['is_allowed_to_pay_anything']
+            ) {
+                $activeContracts[] = $contract;
+            }
             if (!$allowPayAnything && end($contractsArr)['is_allowed_to_pay_anything']) {
                 $allowPayAnything = true;
             }
