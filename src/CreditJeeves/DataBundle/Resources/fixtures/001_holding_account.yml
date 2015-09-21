@@ -29,3 +29,7 @@ fixtures:
         name:           Test Rent Holding 3
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+    rjHolding_5:
+        name:           For Group Without Holding
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'

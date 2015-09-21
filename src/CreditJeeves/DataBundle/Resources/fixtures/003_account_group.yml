@@ -4,7 +4,9 @@ fixtures:
     name:           Credit Jeeves' Stuff
     statementDescriptor: CJ
     code:           DZC6K2OAG3
+    holding: rjHolding_5
   cjAccountGroup_2:
+    holding: rjHolding_5
     affiliate:  cjAffiliate_1
     name:           LA Honda Dealer
     statementDescriptor: CJ
@@ -21,6 +23,7 @@ fixtures:
       We want to help you drive away with your dream car.
       Call us within the next 24 hours and we’ll give you $250 off!
   cjAccountGroup_3:
+    holding: rjHolding_5
     affiliate:  cjAffiliate_2
     name:           LA BMW Dealer
     statementDescriptor: CJ
@@ -37,6 +40,7 @@ fixtures:
     code:           DZC6K2QG93
     contract_date:  '-10 days'
   cjAccountGroup_5:
+    holding: rjHolding_5
     name:           AutoTrader
     statementDescriptor: CJ
     target_score:   700
@@ -48,6 +52,7 @@ fixtures:
     created_at:     '-15 days'
     updated_at:     '-10 days'
   cjAccountGroup_6:
+    holding: rjHolding_5
     name:           AutoNation
     statementDescriptor: CJ
     target_score:   '725'
@@ -59,6 +64,7 @@ fixtures:
     created_at:     '-15 days'
     updated_at:     '-10 days'
   cjAccountGroup_7:
+    holding: rjHolding_5
     name:           BMW
     statementDescriptor: CJ
     target_score:   '705'
@@ -69,6 +75,7 @@ fixtures:
     created_at:     '-15 days'
     updated_at:     '-10 days'
   cjAccountGroup_8:
+    holding: rjHolding_5
     name: HONDA
     statementDescriptor: CJ
     target_score: '715'
@@ -110,6 +117,7 @@ fixtures:
     created_at: '2012-11-29 14:27:48'
     updated_at: '2012-11-29 14:27:48'
   cjAccountGroup_10:
+    holding: rjHolding_5
     name: MERSEDES
     statementDescriptor: CJ
     target_score: '740'
@@ -151,6 +159,7 @@ fixtures:
     created_at: '2012-11-29 14:30:36'
     updated_at: '2012-11-29 14:30:36'
   cjAccountGroup_12:
+    holding: rjHolding_5
     name: FORD
     statementDescriptor: CJ
     target_score: '350'
@@ -171,6 +180,7 @@ fixtures:
     created_at: '2012-11-29 14:31:04'
     updated_at: '2012-11-29 14:31:04'
   cjAccountGroup_13:
+    holding: rjHolding_5
     name: SAAB
     statementDescriptor: CJ
     target_score: '600'
@@ -191,6 +201,7 @@ fixtures:
     created_at: '2012-11-29 14:31:22'
     updated_at: '2012-11-29 14:31:22'
   cjAccountGroup_14:
+    holding: rjHolding_5
     name: LOTUS
     statementDescriptor: CJ
     target_score: '700'
@@ -211,6 +222,7 @@ fixtures:
     created_at: '2012-11-29 14:31:34'
     updated_at: '2012-11-29 14:31:34'
   cjAccountGroup_15:
+    holding: rjHolding_5
     name: MINI
     statementDescriptor: CJ
     target_score: '710'
@@ -231,6 +243,7 @@ fixtures:
     created_at: '2012-11-29 14:31:44'
     updated_at: '2012-11-29 14:31:44'
   cjAccountGroup_16:
+    holding: rjHolding_5
     name: FERRARI
     statementDescriptor: CJ
     target_score: '725'
@@ -251,6 +264,7 @@ fixtures:
     created_at: '2012-11-29 14:34:39'
     updated_at: '2012-11-29 14:34:39'
   cjAccountGroup_17:
+    holding: rjHolding_5
     name: PONTIAC
     statementDescriptor: CJ
     target_score: '700'
@@ -271,6 +285,7 @@ fixtures:
     created_at: '2012-11-29 14:34:57'
     updated_at: '2012-11-29 14:34:57'
   cjAccountGroup_18:
+    holding: rjHolding_5
     name: MASERATI
     statementDescriptor: CJ
     target_score: '725'
@@ -291,6 +306,7 @@ fixtures:
     created_at: '2012-11-29 14:35:31'
     updated_at: '2012-11-29 14:35:31'
   cjAccountGroup_19:
+    holding: rjHolding_5
     name: DODGE
     statementDescriptor: CJ
     target_score: '725'
@@ -311,12 +327,14 @@ fixtures:
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   Group_1:
+    holding: rjHolding_5
     name:           Vehicle group
     statementDescriptor: CJ
     target_score:   750
     created_at:     '-60 days'
     updated_at:     '-8 days'
   Group_2:
+    holding: rjHolding_5
     name:           Estate group
     statementDescriptor: CJ
     target_score:   850
@@ -324,6 +342,7 @@ fixtures:
     created_at:     '-60 days'
     updated_at:     '-8 days'
   Group_3:
+    holding: rjHolding_5
     name:           Generic group
     statementDescriptor: CJ
     code:           GENERIC
