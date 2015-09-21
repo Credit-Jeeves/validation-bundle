@@ -106,7 +106,7 @@ class PublicControllerCase extends BaseTestCase
 
         $this->assertCount(1, $this->page->findAll('css', 'li.addressText'));
         $this->assertCount(1, $this->page->findAll('css', 'select.select-unit'));
-        $this->assertCount(2, $this->page->findAll('css', 'select.select-unit>option'));
+        $this->assertCount(3, $this->page->findAll('css', 'select.select-unit>option'));
 
         $this->assertEquals(
             $contract->getFirstName(),
