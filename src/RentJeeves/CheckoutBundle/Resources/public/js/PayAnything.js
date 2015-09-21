@@ -163,7 +163,7 @@ function PayAnything(parent, contract) {
 
     self.prepareDialog = function () {
         rootNode.dialog({
-            width: 580,
+            width: 610,
             modal: true,
             beforeClose: function( event, ui ) {
                 current = 0;
@@ -227,7 +227,9 @@ function PayAnything(parent, contract) {
         var propertyFullAddress = new Address(self, self.addresses);
 
         ko.mapping.fromJS(self.contract().property, {}, propertyFullAddress);
-        propertyFullAddress.unit(self.contract().unit.name);
+        if (self.contract().unit) {
+            propertyFullAddress.unit(self.contract().unit.name);
+        }
 
         return propertyFullAddress;
     });

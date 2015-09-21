@@ -11,6 +11,7 @@ use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -85,7 +86,7 @@ class ContractProcess
                 $contract->setGroup($propertyGroup);
                 $contract->setUnit($property->getExistingSingleUnit());
             } else {
-                if (!$unit = $property->searchUnit($unitName)) {
+                if (Unit::SEARCH_UNIT_UNASSIGNED === $unitName || !$unit = $property->searchUnit($unitName)) {
                     return $this->createContractForEachGroup($tenant, $property, $unitName);
                 }
 
@@ -171,7 +172,6 @@ class ContractProcess
 
         return $contract;
     }
-
 
     /**
      * @param Tenant $tenant

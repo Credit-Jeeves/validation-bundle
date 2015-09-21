@@ -53,8 +53,8 @@ class StartDateValidator extends ConstraintValidator
 
         if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d')) {
             $nowDateTimeWithCrontabTimeExecution = new \DateTime($oneTimeUntilValue);
-            $timeExecution = (int) $nowDateTimeWithCrontabTimeExecution->format('Hmi');
-            $timeValidation = (int) $dateValidation->format('Hmi');
+            $timeExecution = (int) $nowDateTimeWithCrontabTimeExecution->format('U');
+            $timeValidation = (int) $dateValidation->format('U');
 
             if ($timeExecution > $timeValidation) {
                 return false;

@@ -331,6 +331,10 @@
                 <source>this.is.my.rental</source>
                 <target>This is My Rental</target>
             </trans-unit>
+            <trans-unit id="unassigned.unit">
+                <source>unassigned.unit</source>
+                <target>Unassigned</target>
+            </trans-unit>
             <trans-unit id="add.new">
                 <source>add.new</source>
                 <target>Add New</target>
