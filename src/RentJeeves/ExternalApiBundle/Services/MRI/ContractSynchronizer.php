@@ -426,7 +426,11 @@ class ContractSynchronizer
             $chargeCode = $charge->getChargeCode();
             if (!in_array($chargeCode, $chargeCodes) && !empty($chargeCodes)) {
                 $this->logger->info(
-                    sprintf('Charge code(%s) not in list (%s)', $contract->getGroup()->getHolding()->getRecurringCodes)
+                    sprintf(
+                        'Charge code(%s) not in list (%s)',
+                        $chargeCode,
+                        $contract->getGroup()->getHolding()->getRecurringCodes()
+                    )
                 );
                 continue;
             }
