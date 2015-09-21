@@ -54,7 +54,7 @@ class Mailer extends BaseMailer implements MailerInterface
             }
         }
 
-        $params = $this->prepareParameters($params, $recipientUser);
+        $params = $this->prepareParameters($params, $emailTo, $recipientUser);
 
         try {
             $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);
@@ -82,11 +82,12 @@ class Mailer extends BaseMailer implements MailerInterface
 
     /**
      * @param array $params
+     * @param string $emailTo
      * @param User $user
      *
      * @return array
      */
-    protected function prepareParameters(array $params, User $user = null)
+    protected function prepareParameters(array $params, $emailTo, User $user = null)
     {
         // $params is second for higher priority (for test email)
         $params = array_merge($this->defaultValuesForEmail, $params);
@@ -101,6 +102,8 @@ class Mailer extends BaseMailer implements MailerInterface
                 }
             }
         }
+
+        $params['emailTo'] = $emailTo;
 
         return $params;
     }

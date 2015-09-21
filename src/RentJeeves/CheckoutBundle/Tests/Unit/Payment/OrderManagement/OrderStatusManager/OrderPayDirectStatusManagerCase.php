@@ -111,11 +111,11 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $emMock
             ->expects($this->once())
             ->method('persist')
-            ->with($job);
+            ->with($this->equalTo($job));
         $emMock
             ->expects($this->once())
             ->method('flush')
-            ->with($job);
+            ->with($this->equalTo($job));
 
         $statusManager = new OrderPayDirectStatusManager(
             $emMock,
