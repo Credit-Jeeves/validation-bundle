@@ -72,20 +72,6 @@ class ContractSynchronizer
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
         $this->exceptionCatcher = $exceptionCatcher;
-
-        // setup running EM cleanup periodically
-        $this->periodicExecutor =
-            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
-    }
-
-    /**
-     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
-     * to avoid having doctrine slow WAY down.
-     */
-    public function cleanupDoctrineCallback()
-    {
-        $this->logger->debug('Clearing Entity Manager');
-        $this->em->clear();
     }
 
     /**
@@ -100,6 +86,10 @@ class ContractSynchronizer
 
                 return;
             }
+
+            // setup running EM cleanup periodically
+            $this->periodicExecutor =
+                new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
 
             foreach ($holdings as $holding) {
                 $this->residentDataManager->setSettings($holding->getExternalSettings());
@@ -121,6 +111,16 @@ class ContractSynchronizer
 
             $this->logMessage($e->getMessage());
         }
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -506,10 +506,6 @@ class ContractSynchronizer
         }
 
         $this->updateRentForContractIds($sumRecurringCharges, $contractIds);
-
-        $this->em->flush();                   // save after every update
-        $this->periodicExecutor->increment(); // periodically clear $em
-
         $this->logMessage(
             sprintf(
                 'AMSI sync Recurring Charge: Rent for contracts (%s) updated',
