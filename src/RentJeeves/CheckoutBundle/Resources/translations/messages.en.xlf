@@ -609,7 +609,7 @@
             </trans-unit>
             <trans-unit id="checkout.pay_anything.fullPayTo">
                 <source>checkout.pay_anything.fullPayTo</source>
-                <target>Creation %PAY_FOR% payment for %FULL_PAY_TO%.</target>
+                <target>Creating %PAY_FOR% payment for %FULL_PAY_TO%.</target>
             </trans-unit>
             <trans-unit id="checkout.one_time.info_message">
                 <source>checkout.one_time.info_message</source>
