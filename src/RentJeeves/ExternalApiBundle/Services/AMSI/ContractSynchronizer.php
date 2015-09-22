@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -19,7 +20,16 @@ use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
-    const COUNT_RESODENTS_FOR_FLUSH = 20;
+
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
 
     /**
      * @var EntityManager
@@ -77,6 +87,10 @@ class ContractSynchronizer
                 return;
             }
 
+            // setup running EM cleanup periodically
+            $this->periodicExecutor =
+                new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
+
             foreach ($holdings as $holding) {
                 $this->residentDataManager->setSettings($holding->getExternalSettings());
                 $this->logMessage(
@@ -97,6 +111,16 @@ class ContractSynchronizer
 
             $this->logMessage($e->getMessage());
         }
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -280,14 +304,24 @@ class ContractSynchronizer
     ) {
         /** @var Lease $lease */
         foreach ($residentTransactions as $lease) {
-            $counter = 0;
             foreach ($lease->getOccupants() as $occupant) {
                 if (false != $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                    $this->doUpdate($lease, $occupant, $contract);
-                    $counter++;
-                    if ($counter === self::COUNT_RESODENTS_FOR_FLUSH) {
-                        $this->em->flush();
-                        $counter = 0;
+                    try {
+                        $this->doUpdate($lease, $occupant, $contract);
+                        $this->em->flush();                   // save every contract
+                        $this->periodicExecutor->increment(); // periodically clear $em
+                    } catch (\Exception $e) {
+                        $this->exceptionCatcher->handleException($e);
+                        $this->logger->alert(
+                            sprintf(
+                                'AMSI ResidentBalanceSynchronizer: Contract %s : Message: %s, File: %s, Line:%s',
+                                $contract->getId(),
+                                $e->getMessage(),
+                                $e->getFile(),
+                                $e->getLine()
+                            )
+                        );
+                        $this->logMessage($e->getMessage());
                     }
                 }
             }
