@@ -22,6 +22,9 @@ class Version20150922134119 extends AbstractMigration
             locale = "en",
             property = "body",
             value = "
+                {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
+                {% block h1 %}Pay Rent Smarter{% endblock %}
+                {% block email %}
                 <H1>Pay Rent Smarter</H1>
                 <H2>Set up your first payment in minutes</H2>
                 {{ FNAME }} - we noticed you still haven\'t set up an online rent payment with {{ LANDLORDGR }}.
@@ -45,7 +48,8 @@ class Version20150922134119 extends AbstractMigration
                 <a href=\"https://my.renttrack.com/tenant/invite/{{ INVITECODE }}\">Pay Rent Online Today</a>
                 {% else %}
                 <a href=\"https://my.renttrack.com/\">Pay Rent Online Today</a>
-                {% endif %}"'
+                {% endif %}
+                {% endblock %}"'
         );
 
         $this->addSql(
