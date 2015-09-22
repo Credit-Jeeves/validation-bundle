@@ -8,6 +8,7 @@ use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -26,6 +27,16 @@ use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
+
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
 
     /**
      * @var EntityManager
@@ -65,6 +76,20 @@ class ContractSynchronizer
         $this->clientFactory = $clientFactory;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->logger = $logger;
+
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     public function syncBalance()
@@ -164,7 +189,6 @@ class ContractSynchronizer
 
         if ($residentTransactions instanceof ResidentLeaseChargesLoginResponse &&
             count($residentTransactions->getProperty()->getCustomers()) > 0) {
-
             foreach ($residentTransactions->getProperty()->getCustomers() as $customer) {
                 $this->updateContractsRentForResidentTransaction($propertyMapping, $customer);
             }
@@ -234,6 +258,9 @@ class ContractSynchronizer
         }
 
         $contract->setRent($amount);
+
+        $this->em->flush();                   // save after every update
+        $this->periodicExecutor->increment(); // periodically clear $em
     }
 
     /**
@@ -424,6 +451,9 @@ class ContractSynchronizer
                     $balance
                 )
             );
+
+            $this->em->flush();                   // save after every update
+            $this->periodicExecutor->increment(); // periodically clear $em
         }
     }
 

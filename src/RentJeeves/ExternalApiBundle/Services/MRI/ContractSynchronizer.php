@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -16,6 +17,16 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
+
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
 
     /**
      * @var EntityManager
@@ -42,6 +53,20 @@ class ContractSynchronizer
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
+
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -285,6 +310,9 @@ class ContractSynchronizer
                 $contract->getId()
             )
         );
+
+        $this->em->flush();                   // save after every update
+        $this->periodicExecutor->increment(); // periodically clear $em
     }
 
     public function syncRecurringCharge()
@@ -460,6 +488,9 @@ class ContractSynchronizer
                 $contract->getId()
             )
         );
+
+        $this->em->flush();                   // save after every update
+        $this->periodicExecutor->increment(); // periodically clear $em
     }
 
     /**
