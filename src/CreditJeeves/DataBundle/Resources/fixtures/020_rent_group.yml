@@ -76,6 +76,7 @@ fixtures:
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentTrackCorp:
+    holding: rjHolding_5
     name:           RentTrackCorp
     statementDescriptor: RentTrackCorp
     code:           RentTrackCorp
