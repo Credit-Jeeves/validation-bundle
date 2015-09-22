@@ -37,7 +37,7 @@ class ResManContractSynchronizerCase extends Base
 
         $this->getEntityManager()->clear($contract);
 
-        $this->assertEquals(0, $contract->getIntegratedBalance(), 'Balance should be updated');
+        $this->assertEquals(-170.34, $contract->getIntegratedBalance(), 'Balance should be updated');
     }
 
     /**
@@ -84,7 +84,7 @@ class ResManContractSynchronizerCase extends Base
         $this->getEntityManager()->clear($contractWaiting);
 
         $this->assertNotNull($contractWaiting);
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be updated');
+        $this->assertEquals(-170.34, $contractWaiting->getIntegratedBalance(), 'Balance should be updated');
     }
 
     /**
