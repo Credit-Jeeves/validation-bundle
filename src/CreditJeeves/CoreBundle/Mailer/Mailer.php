@@ -103,7 +103,7 @@ class Mailer extends BaseMailer implements MailerInterface
             }
         }
 
-        $params['emailTo'] = $emailTo;
+        $params['emailTo'] = urlencode($emailTo);
 
         return $params;
     }
