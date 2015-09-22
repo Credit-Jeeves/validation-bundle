@@ -208,10 +208,15 @@ $(document).ready(function(){
     PaymentsViewModel.ajaxAction();
     $('#searchPayments').linkselect("destroy");
     $('#searchPayments').linkselect({
-    change: function(li, value, text){
-        PaymentsViewModel.current(1);
-        PaymentsViewModel.searchText('');
-        PaymentsViewModel.searchCollum(value);
-    }
+        change: function(li, value, text){
+            if (value === 'batch_deposit_report') {
+                $('#payments-block').showOverlay();
+                window.location = Routing.generate('accounting_deposit');
+            } else {
+                PaymentsViewModel.current(1);
+                PaymentsViewModel.searchText('');
+                PaymentsViewModel.searchCollum(value);
+            }
+        }
     });
 });

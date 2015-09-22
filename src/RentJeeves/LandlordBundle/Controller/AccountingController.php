@@ -732,7 +732,8 @@ class AccountingController extends Controller
     /**
      * @Route(
      *     "/deposit",
-     *     name="accounting_deposit"
+     *     name="accounting_deposit",
+     *     options={"expose"=true}
      * )
      */
     public function batchDepositsAction()

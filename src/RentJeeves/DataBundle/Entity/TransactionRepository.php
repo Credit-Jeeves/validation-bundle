@@ -204,6 +204,7 @@ class TransactionRepository extends EntityRepository
         $query->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch');
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('p.contract', 't');
         $query->where('t.group = :group');
         $query->andWhere('h.depositDate IS NOT NULL');
