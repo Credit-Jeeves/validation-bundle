@@ -2343,6 +2343,10 @@
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
             </trans-unit>
+            <trans-unit id="payments.filter.batch_deposit_report.go">
+                <source>payments.filter.batch_deposit_report.go</source>
+                <target>Go to Batch Deposit Report</target>
+            </trans-unit>
             <trans-unit id="is.integrated">
                 <source>is.integrated</source>
                 <target>Is Integrated?</target>
