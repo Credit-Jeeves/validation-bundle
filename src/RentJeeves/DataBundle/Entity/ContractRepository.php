@@ -1307,6 +1307,8 @@ class ContractRepository extends EntityRepository
         $subQueryActivePayment = '
           SELECT p FROM RjDataBundle:Payment p WHERE p.status=\'active\' and p.contract = c.id
         ';
+        // Exclude ResMan residents for now since they should log in through myResman portal
+        $subQueryNoResman = 'SELECT rs from RjDataBundle:ResManSettings rs WHERE rs.holding = c.holding';
 
         return $this->createQueryBuilder('c')
             ->innerJoin('c.tenant', 't')
@@ -1317,6 +1319,7 @@ class ContractRepository extends EntityRepository
             ->andWhere("MONTH(DATE_ADD(c.createdAt, 1, 'month')) = MONTH(CURRENT_TIMESTAMP())")
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryNoResman))
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED])
             ->groupBy('t.id')// 1 contract for 1 user
             ->getQuery()
