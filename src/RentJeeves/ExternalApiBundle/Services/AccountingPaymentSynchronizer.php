@@ -89,13 +89,26 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Contract $contract
+     * @param Order $order
      *
      * @return bool
      */
-    public function isAllowedToSend(Contract $contract)
+    public function isAllowedToSend(Order $order)
     {
-        $this->logger->debug('Checking if external payment post is allowed...');
+        $this->logger->debug('Checking if external payment post is allowed and order can be send...');
+
+        if ($order->getCustomOperation()) {
+            $this->logger->debug('Order with custom operation NOT allowed for external payment post. done.');
+
+            return false;
+        }
+
+        if (!$contract = $order->getContract()) {
+            $this->logger->debug('Order does not have contract, we don\'t send it to external API');
+
+            return false;
+        }
+
         $holding = $contract->getHolding();
         $integrationType = $holding->getApiIntegrationType();
         $isIntegrated = (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE);
@@ -150,8 +163,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
-            $contract = $order->getContract();
-            if (!$this->isAllowedToSend($contract)) {
+            if (!$this->isAllowedToSend($order)) {
                 // This should not be an alert since we're just checking if we should send.
                 $this->logger->debug(
                     sprintf(
@@ -163,6 +175,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
+            $contract = $order->getContract();
             $holding = $contract->getHolding();
             if (!($transaction = $order->getCompleteTransaction() and
                 $holding->getExternalSettings() and
@@ -248,20 +261,22 @@ class AccountingPaymentSynchronizer
     {
         if ($apiClient->supportsProperties()) {
             $holding = $order->getContract()->getHolding();
-            $externalPropertyMapping = $order
-                ->getUnit()
-                ->getProperty()
-                ->getPropertyMappingByHolding($holding);
+            if ($property = $order->getProperty()) {
+                $externalPropertyMapping = $property->getPropertyMappingByHolding($holding);
+            }
 
-            if ($externalPropertyMapping && $externalPropertyId = $externalPropertyMapping->getExternalPropertyId()) {
+            if (!empty($externalPropertyMapping) &&
+                $externalPropertyId = $externalPropertyMapping->getExternalPropertyId()
+            ) {
                 return true;
             }
         } else {
             // if apiClient doesn't support properties, we should check unit mapping
-            $externalUnitMapping = $order
-                ->getUnit()
-                ->getUnitMapping();
-            if ($externalUnitMapping && $externalUnitId = $externalUnitMapping->getExternalUnitId()) {
+            if ($unit = $order->getUnit()) {
+                $externalUnitMapping = $unit->getUnitMapping();
+            }
+
+            if (!empty($externalUnitMapping) && $externalUnitId = $externalUnitMapping->getExternalUnitId()) {
                 return true;
             }
         }
