@@ -9,16 +9,17 @@
         <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
             <div class="title-box clearfix">
                 <h2 data-bind="text: '{{'accounting.menu.batched_deposits'|trans}} (' + $root.total() + ')'"></h2>
-                <div class="fiter-box">
-
-                    <div id="depositTypeSelect" class="finder-box">
-                        <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
-                            <option value='' data-bind="click: loadData()">- {{'select.status.all'|trans}} -</option>
-                            <option value='bank' data-bind="click: loadData('bank')">{{'filter.group_by.deposit.echeck'|trans}}</option>
-                            <option value='card' data-bind="click: loadData('card')">{{'filter.group_by.deposit.credit-card'|trans}}</option>
-                        </select>
+                {% if showFilter %}
+                    <div class="fiter-box">
+                        <div id="depositTypeSelect" class="finder-box">
+                            <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
+                                <option value='' data-bind="click: loadData()">- {{'select.status.all'|trans}} -</option>
+                                <option value='bank' data-bind="click: loadData('bank')">{{'filter.group_by.deposit.echeck'|trans}}</option>
+                                <option value='card' data-bind="click: loadData('card')">{{'filter.group_by.deposit.credit-card'|trans}}</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
             <div class="content-box">
                 <div class="properties-table-block table-wrap">

@@ -557,7 +557,7 @@ class Order extends Base
         $result = array();
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
-        $result['amount'] = $this->getSum();
+        $result['amount'] = number_format($this->getSum(), 2, '.', '');
         $result['tenant'] = $contract ? $contract->getTenant()->getFullName() : '';
         $result['address'] = $contract ? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
