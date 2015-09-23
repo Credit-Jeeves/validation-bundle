@@ -499,14 +499,12 @@ class PublicController extends Controller
             throw new \LogicException('Parameter \'md_email\' not found.');
         }
         $user = $this->getEntityManager()->getRepository('DataBundle:User')->findOneBy(['email' => $email]);
-        if (null === $user) {
-            throw new \LogicException(sprintf('User with email \'%s\' not found.', $email));
+        if (null !== $user) {
+            $user->setEmailNotification(false);
+            $user->setOfferNotification(false);
+            $this->getEntityManager()->flush($user);
         }
 
-        $user->setEmailNotification(false);
-        $user->setOfferNotification(false);
-        $this->getEntityManager()->flush($user);
-
-        return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['user' => $user]);
+        return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['email' => $email]);
     }
 }

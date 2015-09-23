@@ -142,6 +142,15 @@ class PublicControllerCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldShowSuccessfulPageIfEmailIsUnknown()
+    {
+        $this->session->visit($this->getUrl() . 'unsub?md_email=12345');
+        $this->assertEquals(200, $this->session->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
     public function shouldFilterPropertiesByHoldingIfHoldingIsSpecified()
     {
         $this->load(true);
