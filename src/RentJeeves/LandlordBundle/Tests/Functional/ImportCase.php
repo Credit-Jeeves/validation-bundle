@@ -1373,7 +1373,7 @@ class ImportCase extends ImportBaseAbstract
     {
         return [
             [
-                $firstCount = 4,
+                $firstCount = 5,
                 $secondCount = 7,
                 $thirdCount = 7,
                 $fourthCount = 7,
@@ -1387,7 +1387,7 @@ class ImportCase extends ImportBaseAbstract
                 $residentMappingCount = 0
             ],
             [
-                $firstCount = 8,
+                $firstCount = 9,
                 $secondCount = 9,
                 $thirdCount = 9,
                 $fourthCount = 8,
