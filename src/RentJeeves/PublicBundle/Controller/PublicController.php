@@ -357,7 +357,7 @@ class PublicController extends Controller
             $this->createNotFoundException('Holding not found');
         }
 
-        $form = $this->createForm($tenantType = new TenantType($em));
+        $form = $this->createForm($tenantType = new TenantType($em), new Tenant());
         $form->handleRequest($request);
         if ($form->isValid()) {
             $tenant = $this->processNewTenantForm($form, $tenantType);
@@ -394,7 +394,7 @@ class PublicController extends Controller
             $this->createNotFoundException('Group not found');
         }
 
-        $form = $this->createForm($tenantType = new TenantType($em));
+        $form = $this->createForm($tenantType = new TenantType($em), new Tenant());
         $form->handleRequest($request);
         if ($form->isValid()) {
             $tenant = $this->processNewTenantForm($form, $tenantType);
