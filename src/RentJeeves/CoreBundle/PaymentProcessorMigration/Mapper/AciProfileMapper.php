@@ -156,7 +156,8 @@ class AciProfileMapper
                 DepositAccountType::RENT,
                 PaymentProcessor::ACI
             );
-            if (null === $depositAccount || null !== $contract->getAciCollectPayContractBilling() ||
+            if (null === $depositAccount ||
+                $contract->hasAciCollectPayContractBillingForDepositAccountType(DepositAccountType::RENT) ||
                 ($this->holdings !== null && false === in_array($contract->getHolding(), $this->holdings))
             ) {
                 continue;

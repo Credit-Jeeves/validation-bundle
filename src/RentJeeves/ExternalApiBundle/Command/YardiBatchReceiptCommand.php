@@ -52,7 +52,6 @@ class YardiBatchReceiptCommand extends ContainerAwareCommand
 
         $this->getContainer()
             ->get('yardi.push_batch_receipts')
-            ->usingOutput($output)
             ->setDebug($debug)
             ->isCleanDBAlreadySentOut($clearDb)
             ->run($date);

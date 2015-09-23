@@ -8,6 +8,7 @@ use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
+use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -24,7 +25,8 @@ class MRIClient implements ClientInterface
 
     protected $mappingSerialize = [
         'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
-        'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment'
+        'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment',
+        'MRI_S-PMRM_ResidentialRentRoll' => 'RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll',
     ];
 
     /**
@@ -245,9 +247,48 @@ class MRIClient implements ClientInterface
         ];
 
         $this->debugMessage(sprintf('Call MRI method: %s', $method));
+
         $mriResponse = $this->sendRequest($method, $params);
 
         return $this->checkResponseResidentTransactions($mriResponse);
+    }
+
+    /**
+     * @param $externalPropertyId
+     * @param string|null $buildingId
+     * @param string|null $unitId
+     * @return ResidentialRentRoll
+     */
+    public function getResidentialRentRoll($externalPropertyId, $buildingId = null, $unitId = null)
+    {
+        $this->logger->debug(
+            sprintf('MRI api call getResidentialRentRoll for property ID: %s', $externalPropertyId)
+        );
+        $method = 'MRI_S-PMRM_ResidentialRentRoll';
+        $params = [
+            'PROPERTYID' => $externalPropertyId,
+            'BUILDINGID' => $buildingId,
+            'UNITID'     => $unitId
+        ];
+
+        $this->debugMessage(sprintf('Call MRI method: %s', $method));
+
+        return $this->sendRequest($method, $params);
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return ResidentialRentRoll
+     */
+    public function getResidentialRentRollByNextPageLink($nextPageLink)
+    {
+        $method = 'MRI_S-PMRM_ResidentialRentRoll';
+        $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
+        $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
+        $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
+        parse_str($urlQuery, $nextPageParams);
+
+        return $this->sendRequest($method, $nextPageParams);
     }
 
     /**

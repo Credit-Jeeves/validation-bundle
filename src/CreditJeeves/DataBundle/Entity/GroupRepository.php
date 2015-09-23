@@ -61,14 +61,30 @@ class GroupRepository extends EntityRepository
      */
     public function getGroupByAccountNumber($accountNumber, Holding $holding)
     {
-        return $this->createQueryBuilder('g')
-            ->join('g.accountNumberMapping', 'd')
+        $groups = $this->createQueryBuilder('g')
+            ->join('g.depositAccounts', 'd')
             ->where('d.accountNumber = :accountNumber')
             ->andWhere('d.holding = :holding')
             ->setParameter('accountNumber', $accountNumber)
             ->setParameter('holding', $holding)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->execute();
+
+        if (count($groups) > 1) {
+            throw new \Exception(
+                sprintf(
+                    'Something wrong with index for accountNumber. Please check data: accountNumber %s holdingId %s',
+                    $accountNumber,
+                    $holding->getId()
+                )
+            );
+        }
+
+        if (empty($groups)) {
+            return null;
+        }
+
+        return reset($groups);
     }
 
     /**

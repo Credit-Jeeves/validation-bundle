@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Form;
 
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -107,6 +108,16 @@ class YardiSettingsType extends Base
                 'error_bubbling'    => true,
                 'label'             => 'common.payment_type_cc.notes',
             )
+        );
+
+        $builder->add(
+            'postMonthNode',
+            'choice',
+            [
+                'error_bubbling'    => true,
+                'choices'           => YardiPostMonthOption::cachedTitles(),
+                'label'             => 'yardi.label.post_month_node',
+            ]
         );
     }
 

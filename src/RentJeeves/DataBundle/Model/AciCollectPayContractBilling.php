@@ -22,9 +22,9 @@ abstract class AciCollectPayContractBilling
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      *
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
-     *     inversedBy="aciCollectPayContractBilling"
+     *     inversedBy="aciCollectPayContractBillings"
      * )
      */
     protected $contract;

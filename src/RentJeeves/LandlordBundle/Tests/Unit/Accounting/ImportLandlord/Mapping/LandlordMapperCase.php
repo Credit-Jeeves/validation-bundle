@@ -25,7 +25,7 @@ class LandlordMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage [Mapping] : value with key 'landlordID' not found
+     * @expectedExceptionMessage [Mapping] : value with key 'landlordid' not found
      */
     public function shouldThrowExceptionIfGetNonexistentValue()
     {
@@ -51,7 +51,7 @@ class LandlordMapperCase extends AbstractMapperCase
 
         $landlord = $mapper->map(
             [
-                'landlordID' => 'testLandlordID',
+                'landlordid' => 'testLandlordID',
                 'first_name' => 'testFirstName',
                 'last_name' => 'testLastName',
                 'll_email' => 'testEmail@trololo.ua',
@@ -91,7 +91,7 @@ class LandlordMapperCase extends AbstractMapperCase
 
         $returnedLandlord = $mapper->map(
             [
-                'landlordID' => 'testLandlordID',
+                'landlordid' => 'testLandlordID',
             ],
             $group
         );

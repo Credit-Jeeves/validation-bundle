@@ -65,7 +65,7 @@ class MappingYardi extends MappingCsv
         $transactionData = $this->residentData->getResidentTransactions($holding, $externalPropertyId);
         $residentsTransaction = $transactionData->getProperty()->getCustomers();
 
-        $residents = $this->residentData->getCurrentResidents($holding, $property);
+        $residents = $this->residentData->getCurrentAndNoticesResidents($holding, $property);
         $roommates = [];
         /** @var $resident ResidentsResident */
         foreach ($residents as $key => $resident) {

@@ -22,9 +22,16 @@ class PaymentAccountType extends AbstractType
      */
     protected $user;
 
-    public function __construct(User $user)
+    /**
+     * @var string
+     */
+    protected $formNameSuffix = '';
+
+    public function __construct(User $user, $formNameSuffix = '')
     {
         $this->user = $user;
+
+        $this->formNameSuffix = $formNameSuffix ? '_' . $formNameSuffix : '';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -478,6 +485,6 @@ class PaymentAccountType extends AbstractType
 
     public function getName()
     {
-        return static::NAME;
+        return static::NAME . $this->formNameSuffix;
     }
 }

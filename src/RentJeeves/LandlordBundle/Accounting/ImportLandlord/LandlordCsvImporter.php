@@ -75,6 +75,7 @@ class LandlordCsvImporter implements LoggerAwareInterface
     ) {
         $this->em = $em;
         $this->csvReader = $csvFileReader;
+        $this->csvReader->setConvertHeaderToLowercase(true);
         $this->groupMapper = $groupMapper;
         $this->landlordMapper = $landlordMapper;
         $this->unitMapper = $unitMapper;
@@ -132,6 +133,7 @@ class LandlordCsvImporter implements LoggerAwareInterface
         } catch (MappingException $e) {
             $this->addErrorForRow($e->getMessage(), $row);
         } catch (DuplicatedUnitException $e) {
+            $this->addErrorForRow($e->getMessage(), $row);
             $this->logger->debug(sprintf('[Landlord CSV import]: %s', $e->getMessage()));
         }
     }

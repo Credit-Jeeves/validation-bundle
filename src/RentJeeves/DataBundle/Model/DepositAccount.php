@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
@@ -23,6 +24,20 @@ abstract class DepositAccount
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *      inversedBy="depositAccounts"
+     * )
+     * @ORM\JoinColumn(
+     *      name="holding_id",
+     *      referencedColumnName="id",
+     *      nullable=false
+     * )
+     * @var Holding
+     */
+    protected $holding;
 
     /**
      * @ORM\ManyToOne(
@@ -121,12 +136,54 @@ abstract class DepositAccount
      */
     protected $orders;
 
+    /**
+     * @ORM\Column(
+     *      name="account_number",
+     *      type="string",
+     *      nullable=true,
+     *      length=255
+     * )
+     */
+    protected $accountNumber;
+
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->passedAch = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * @param string $accountNumber
+     */
+    public function setAccountNumber($accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
+    }
+
+    /**
+     * @return Holding
+     */
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    /**
+     * @param Holding $holding
+     */
+    public function setHolding(Holding $holding)
+    {
+        $this->holding = $holding;
     }
 
     /**

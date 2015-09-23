@@ -53,7 +53,7 @@ class EdexResidents
      *
      * @var int
      */
-    protected $includeRecurringCharges = 1;
+    protected $includeRecurringCharges = 0;
 
     /**
      * @Serializer\SerializedName("includeallstatuses")

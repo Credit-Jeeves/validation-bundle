@@ -23,8 +23,8 @@ class AMSISyncBalanceCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getContainer()
-            ->get('amsi.resident_balance_sync')
+            ->get('amsi.contract_sync')
             ->usingOutput($output)
-            ->run();
+            ->syncBalance();
     }
 }

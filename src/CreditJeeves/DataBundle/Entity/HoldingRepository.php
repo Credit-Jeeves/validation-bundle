@@ -34,6 +34,24 @@ class HoldingRepository extends EntityRepository
     /**
      * @return Holding[]
      */
+    public function findHoldingsForUpdatingBalanceMRI()
+    {
+        return $this->getQueryForHoldingsWithMriSettings()->getQuery()->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForUpdatingRentMRI()
+    {
+        $query = $this->getQueryForHoldingsWithMriSettings();
+
+        return $query->andWhere('holding.useRecurringCharges = 1')->getQuery()->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
     public function findHoldingsForUpdatingBalanceAMSI()
     {
         $query = $this->createQueryBuilder('h');
@@ -45,6 +63,48 @@ class HoldingRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForAMSISyncRecurringCharges()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.amsiSettings', 's')
+            ->where('h.apiIntegrationType = :amsi')
+            ->andWhere('h.useRecurringCharges = 1')
+            ->setParameter('amsi', ApiIntegrationType::AMSI)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForSyncRecurringChargesYardi()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.yardiSettings', 'ys')
+            ->where('h.useRecurringCharges = 1')
+            ->andWhere('h.apiIntegrationType = :yardi')
+            ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Holding[]
+     */
+    public function findHoldingsForResmanSyncRecurringCharges()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.resManSettings', 's')
+            ->where('h.apiIntegrationType = :resman')
+            ->andWhere('h.useRecurringCharges = 1')
+            ->setParameter('resman', ApiIntegrationType::RESMAN)
+            ->getQuery()
+            ->execute();
     }
 
     /**

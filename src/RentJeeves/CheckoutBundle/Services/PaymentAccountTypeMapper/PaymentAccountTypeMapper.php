@@ -24,7 +24,9 @@ class PaymentAccountTypeMapper
      */
     public function map(Form $paymentAccountType)
     {
-        if (TenantPaymentAccount::NAME == $paymentAccountType->getName()) {
+        if ($paymentAccountType->getName() &&
+            strpos($paymentAccountType->getName(), TenantPaymentAccount::NAME) === 0
+        ) {
             $paymentAccountData = $this->mapTenantAccountTypeForm($paymentAccountType);
         } elseif (ApiPaymentAccount::NAME == $paymentAccountType->getName()) {
             $paymentAccountData = $this->mapApiAccountTypeForm($paymentAccountType);

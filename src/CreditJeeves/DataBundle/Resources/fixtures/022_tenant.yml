@@ -12,7 +12,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -33,7 +33,7 @@ fixtures:
         is_active: true #false
         invite_code: null #77777TEST
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -54,7 +54,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -75,7 +75,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: false
@@ -96,7 +96,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -118,7 +118,7 @@ fixtures:
         invite_code:     null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -139,7 +139,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: false
@@ -160,7 +160,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -181,7 +181,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -202,7 +202,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -223,7 +223,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -244,7 +244,7 @@ fixtures:
         invite_code: 77777TEST
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -265,7 +265,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -286,7 +286,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -307,7 +307,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -328,7 +328,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -349,7 +349,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -370,7 +370,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -391,7 +391,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -412,7 +412,7 @@ fixtures:
         invite_code: TESTFULL_RJ
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  %locale%
         has_data: true
@@ -433,7 +433,7 @@ fixtures:
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt: ep3ahd5epy0c4cckkw80kc8wcgw4004
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -452,7 +452,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -472,7 +472,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true

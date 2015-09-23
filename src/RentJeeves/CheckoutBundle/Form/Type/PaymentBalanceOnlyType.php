@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Constraint\DayRange;
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Constraint\StartDateValidator;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -84,7 +85,9 @@ class PaymentBalanceOnlyType extends PaymentType
                 'widget'          => 'single_text',
                 'format'          => 'MM/dd/yyyy',
                 'empty_data'      => '',
-                'attr'            => $this->attributes->startDateAttrs(),
+                'attr'            => $this->attributes->startDateAttrs(
+                    StartDateValidator::isPastCutoffTime(new \DateTime(), $this->oneTimeUntilValue)
+                ),
                 'invalid_message' => 'checkout.error.date.valid',
                 'constraints'     => [
                     new Date(

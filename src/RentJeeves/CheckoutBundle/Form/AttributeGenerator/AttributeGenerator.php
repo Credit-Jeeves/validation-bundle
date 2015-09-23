@@ -4,7 +4,10 @@ namespace RentJeeves\CheckoutBundle\Form\AttributeGenerator;
 
 abstract class AttributeGenerator implements AttributeGeneratorInterface
 {
-    public function amountAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function amountAttrs()
     {
         return  [
             'min' => 1,
@@ -12,91 +15,142 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface
         ];
     }
 
-    public function paidForAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paidForAttrs()
     {
         return [];
     }
 
-    public function amountOtherAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function amountOtherAttrs()
     {
         return [
             'step' => '0.01'
         ];
     }
 
-    public function totalAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function totalAttrs()
     {
         return [
             'view' => []
         ];
     }
 
-    public function typeAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function typeAttrs()
     {
         return [];
     }
 
-    public function frequencyAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function frequencyAttrs()
     {
         return [];
     }
 
-    public function dueDateAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function dueDateAttrs()
     {
         return [];
     }
 
-    public function startMonthAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function startMonthAttrs()
     {
         return [];
     }
 
-    public function startYearAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function startYearAttrs()
     {
         return [];
     }
 
-    public function startDateAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function startDateAttrs($isPastCutoffTime = false)
     {
         return [];
     }
 
-    public function endsAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endsAttrs()
     {
         return [];
     }
 
-    public function endMonthAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endMonthAttrs()
     {
         return [];
     }
 
-    public function endYearAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function endYearAttrs()
     {
         return [];
     }
 
-    public function paymentAccountIdAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paymentAccountIdAttrs()
     {
         return [];
     }
 
-    public function contractIdAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function contractIdAttrs()
     {
         return [];
     }
 
-    public function idAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function idAttrs()
     {
         return [];
     }
 
-    public function submitAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function submitAttrs()
     {
         return [];
     }
 
-    public function paymentAccountAttrs()
+    /**
+     * {@inheritdoc}
+     */
+    public static function paymentAccountAttrs()
     {
         return [];
     }

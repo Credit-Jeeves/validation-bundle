@@ -7,10 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 use RentJeeves\ExternalApiBundle\Services\Yardi\YardiXmlCleaner;
 use SoapVar;
-use RentJeeves\ExternalApiBundle\Model\ResidentTransactions;
+use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
 
 class PaymentClient extends AbstractClient
 {
@@ -128,7 +129,13 @@ class PaymentClient extends AbstractClient
         $orders = new ArrayCollection([$order]);
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('soapYardiRequest');
+        $yardiSettings = $order->getContract()->getHolding()->getYardiSettings();
+        if (YardiPostMonthOption::NONE === $yardiSettings->getPostMonthNode()) {
+            $serializationGroup = 'baseRequest';
+        } else {
+            $serializationGroup = 'withPostMonth';
+        }
+        $context->setGroups($serializationGroup);
         $residentTransactions = new ResidentTransactions(
             $this->getSettings(),
             $orders

@@ -968,6 +968,46 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldDisableTodayOnDatepickerAfterCutoffTime()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonName);
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => ''
+            ]
+        );
+
+        $this->assertNotNull($this->page->find('css', '#ui-datepicker-div'), 'Datepicker not found');
+
+        $this->assertNotNull(
+            $this->page->find(
+                'css',
+                '#ui-datepicker-div td.ui-datepicker-unselectable.ui-state-disabled.ui-datepicker-today'
+            ),
+            'Today should be disabled'
+        );
+    }
+
+    /**
+     * @test
+     */
     public function tryToCreate2ActivePayments()
     {
         $this->setDefaultSession('selenium2');
@@ -988,7 +1028,10 @@ class PayCase extends BaseTestCase
 
         $this->assertNotEmpty($contract, 'Check fixtures, should be present contract with id 9');
 
-        $this->assertEmpty($contract->getActivePayment(), 'Check fixtures, contract should not have active payments');
+        $this->assertEmpty(
+            $contract->getActiveRentPayment(),
+            'Check fixtures, contract should not have active payments'
+        );
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -1049,7 +1092,10 @@ class PayCase extends BaseTestCase
 
         $em->refresh($contract);
 
-        $this->assertNotEmpty($payment = $contract->getActivePayment(), 'Payment should be created for this contract');
+        $this->assertNotEmpty(
+            $payment = $contract->getActiveRentPayment(),
+            'Payment should be created for this contract'
+        );
 
         $this->assertEquals(2000, $payment->getAmount());
 

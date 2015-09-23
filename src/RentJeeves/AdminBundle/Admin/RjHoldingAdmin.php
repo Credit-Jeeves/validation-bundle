@@ -3,8 +3,6 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Entity\ResManSettings;
-use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -42,7 +40,7 @@ class RjHoldingAdmin extends Admin
                 null,
                 [
                     'required' => false,
-                    'label' => 'admin.label.payment_processor_locked',
+                    'label' => 'admin.holding.payment_processor_locked',
                 ]
             )
             ->add(
@@ -50,20 +48,36 @@ class RjHoldingAdmin extends Admin
                 null,
                 [
                     'required' => false,
-                    'label' => 'admin.label.payments_enabled',
+                    'label' => 'admin.holding.payments_enabled',
                 ]
             )
             ->with('Accounting Settings')
-            ->add(
-                'apiIntegrationType',
-                'choice',
-                [
-                    'choices'           => array_map(
-                        'ucwords',
-                        ApiIntegrationType::cachedTitles()
-                    )
-                ]
-            )
+                ->add(
+                    'apiIntegrationType',
+                    'choice',
+                    [
+                        'choices'           => array_map(
+                            'ucwords',
+                            ApiIntegrationType::cachedTitles()
+                        )
+                    ]
+                )
+                ->add(
+                    'useRecurringCharges',
+                    null,
+                    [
+                        'required' => false,
+                        'label' => 'admin.holding.use_recurring_charges',
+                    ]
+                )
+                ->add(
+                    'recurringCodes',
+                    null,
+                    [
+                        'required' => false,
+                        'label' => 'admin.holding.recurring_codes',
+                    ]
+                )
             ->with('Yardi Settings')
             ->add(
                 'yardiSettings',

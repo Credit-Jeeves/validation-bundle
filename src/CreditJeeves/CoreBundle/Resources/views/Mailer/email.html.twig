@@ -16,7 +16,7 @@
                 ">
             {% include "CoreBundle:Mailer:header.html.twig" only %}
             {% block body %}{% endblock %}
-            {% include "CoreBundle:Mailer:footer.html.twig" only %}
+            {% include "CoreBundle:Mailer:footer.html.twig" with {'emailTo': emailTo} only %}
         </div>
     </body>
 </html>

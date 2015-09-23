@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\ImportType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -369,7 +370,7 @@ class AccountingController extends Controller
 
         if ($total > 0) {
             $collection = $handler->getCurrentCollectionImportModel();
-        } else {
+        } elseif (!$storage->isOnlyException()) {
             $storage->clearSession();
         }
 
@@ -727,5 +728,24 @@ class AccountingController extends Controller
         $response->setStatusCode($statusCode);
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/deposit",
+     *     name="accounting_deposit",
+     *     options={"expose"=true}
+     * )
+     */
+    public function batchDepositsAction()
+    {
+        return $this->render(
+            'LandlordBundle:Accounting:deposit.html.twig',
+            [
+                'nGroups' => $this->getGroups()->count(),
+                'showFilter' =>
+                    $this->getCurrentGroup()->getGroupSettings()->getPaymentProcessor() == PaymentProcessor::HEARTLAND
+            ]
+        );
     }
 }

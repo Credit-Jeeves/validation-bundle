@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -63,7 +64,14 @@ class ExportCase extends BaseTestCase
             'jb' => '40.7308364',
             'kb' => '-73.991567'
         ]);
+        /** @var DepositAccount $depositAccount */
+        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+            [
+                'accountNumber' => '15235678'
+            ]
+        );
 
+        $this->assertNotEmpty($depositAccount);
         $this->assertNotNull($tenant);
         $this->assertNotNull($property);
         $this->assertNotNull($group);
@@ -73,6 +81,7 @@ class ExportCase extends BaseTestCase
         $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(999);
         $order->setUser($tenant);
+        $order->setDepositAccount($depositAccount);
         $oneWeekAgo = new DateTime();
         $oneWeekAgo->modify("-7 days");
         $order->setCreatedAt($oneWeekAgo);
@@ -120,7 +129,7 @@ class ExportCase extends BaseTestCase
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
 
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -235,7 +244,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $this->selectExportBy($exportBy);
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -282,7 +291,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -324,10 +333,10 @@ class ExportCase extends BaseTestCase
     public function exportByPromasCsv()
     {
         return [
-            ['deposits', 7, 'uncheck'],
-            ['payments', 9, 'uncheck'],
-            ['deposits', 7, 'check'],
-            ['payments', 9, 'check'],
+            ['deposits', 14, 'uncheck'],
+            ['payments', 16, 'uncheck'],
+            ['deposits', 14, 'check'],
+            ['payments', 16, 'check'],
         ];
     }
 
@@ -341,7 +350,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -356,19 +365,24 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
-        $this->assertNotNull($forAllGroubs = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
-        $forAllGroubs->$methodForAllGroups();
+        $this->assertNotNull($forAllGroups = $this->page->find('css', '#base_order_report_type_includeAllGroups'));
+        $forAllGroups->$methodForAllGroups();
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
         $csvArr = explode("\n", $csv);
 
-        $this->assertCount($countRows, $csvArr);
+        $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
 
-        $this->assertNotNull($csvArr = str_getcsv($csvArr[2]));
-        $this->assertEquals('AAABBB-7', $csvArr[1]);
-//        $this->assertEquals('1500.00', $csvArr[2]);
-        $this->assertEquals('t0013534', $csvArr[4]);
+        // check file with unit id
+        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[2]), 'Row #2 should exist');
+        $this->assertEquals('AAABBB-7', $csvArrRow[1], 'External unit id should be AAABBB-7');
+        $this->assertEquals('t0013534', $csvArrRow[4], 'Resident id should be t0013534');
+
+        // check file without unit id
+        $this->assertNotNull($csvArrRow2 = str_getcsv($csvArr[10]), 'Row #10 should exist');
+        $this->assertEmpty($csvArrRow2[1], 'Unit should be empty: there is no external unit id.');
+        $this->assertEquals('t0011981', $csvArrRow2[4], 'Resident id should be t0011981');
     }
 
     /**
@@ -379,7 +393,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -405,15 +419,27 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS));
-        $this->assertEquals(4, $archive->numFiles);
+        $this->assertEquals(8, $archive->numFiles, 'Archive should have 8 files');
+
+        // check file with unit id
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
         $this->assertEquals(1, count($rows));
         $columns = explode(",", $rows[0]);
-        $this->assertEquals('AAABBB-7', $columns[1]);
-        $this->assertEquals(1500, $columns[2]);
+        $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');
+        $this->assertEquals(1500, $columns[2], 'Amount should be 1500');
         $this->assertEquals($columns[3], '"Trans #123123 Batch #125478"');
-        $this->assertEquals("t0013534", $columns[4]);
+        $this->assertEquals('t0013534', $columns[4], 'Resident id should be t0013534');
+
+        // check file without unit id
+        $file = $archive->getFromIndex(4);
+        $rows = explode("\n", trim($file));
+        $this->assertEquals(2, count($rows), 'File should have 2 rows');
+        $columns = explode(",", $rows[0]);
+        $this->assertEmpty($columns[1], 'Unit should be empty');
+        $this->assertEquals(1250, $columns[2], 'Amount should be 1250');
+        $this->assertContains('Batch #555000', $columns[3]);
+        $this->assertEquals('t0011981', $columns[4], 'Resident id should be t0011981');
     }
 
     /**
@@ -424,7 +450,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -485,7 +511,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $endD = new DateTime();
 
@@ -536,7 +562,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -588,7 +614,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -644,7 +670,7 @@ class ExportCase extends BaseTestCase
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -690,7 +716,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -739,7 +765,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -791,7 +817,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -836,7 +862,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -878,7 +904,7 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('export');
+        $this->page->clickLink('accounting.menu.export');
         $this->selectExportBy('deposits');
         $beginD = new DateTime();
         $beginD->modify('-1 year');

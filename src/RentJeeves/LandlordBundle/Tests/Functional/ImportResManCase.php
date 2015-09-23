@@ -3,6 +3,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 
 class ImportResManCase extends ImportBaseAbstract
 {
@@ -40,7 +41,7 @@ class ImportResManCase extends ImportBaseAbstract
             80000,
             "$('table').is(':visible')"
         );
-        //First page -- seems doesn't have errors {@yuriy}
+        //First page
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
@@ -48,22 +49,14 @@ class ImportResManCase extends ImportBaseAbstract
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
-        //Third page
-        $this->assertNotNull(
-            $firstName = $this->page->find('css', '.errorField.import_new_user_with_contract_tenant_first_name')
-        );
-        $firstName->setValue('CorrrectName');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-        $submitImportFile->click();
-        $this->waitReviewAndPost();
 
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertGreaterThan(25, count($contracts));
+        $this->assertGreaterThan(30, count($contracts));
         $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertGreaterThan(10, count($contractsWaiting));
+        $this->assertGreaterThan(5, count($contractsWaiting));
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
-            ['externalLeaseId' => 'a0668dcf-045d-4183-926c-b7d50a571506']
+            ['externalLeaseId' => ResManClientCase::EXTERNAL_LEASE_ID]
         );
         $this->assertNotEmpty($contract);
     }

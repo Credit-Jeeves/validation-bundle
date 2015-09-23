@@ -213,7 +213,7 @@ class AciSftpFilesDownloader implements SftpFilesDownloaderInterface
             }
             $filesystem->rename($remoteFile, $archiveFilename);
         } catch (\Exception $e) {
-            $this->logger->debug(
+            $this->logger->alert(
                 sprintf(
                     'ACI: Archive remote file - FAILED: %s',
                     $e->getMessage()

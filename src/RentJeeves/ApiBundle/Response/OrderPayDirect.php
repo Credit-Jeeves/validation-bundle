@@ -13,5 +13,15 @@ use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMet
  */
 class OrderPayDirect extends Order
 {
+    /**
+     * @return string
+     */
+    public function getDepositedAt()
+    {
+        if ($transaction = $this->entity->getDepositOutboundTransaction() and $date = $transaction->getDepositDate()) {
+            return $date->format('Y-m-d');
+        }
 
+        return '';
+    }
 }

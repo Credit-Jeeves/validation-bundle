@@ -58,21 +58,24 @@ class TransactionListener
      */
     public function manageAccountingSynchronization(Transaction $transaction)
     {
+        // do nothing if transaction is not complete
+        if ($transaction->getStatus() !== TransactionStatus::COMPLETE) {
+            return;
+        }
+
         if (!$transaction->getIsSuccessful() ||
             !$transaction->getBatchId() ||
-            !$transaction->getTransactionId() ||
-            $transaction->getStatus() !== TransactionStatus::COMPLETE
+            !$transaction->getTransactionId()
         ) {
             $message = "Don't send transaction(%s) to api, because some parameter is missing(return false):\n";
-            $message .= "IsSuccessful(%s), BatchId(%s),  TransactionId(%s), TransactionStatus(%s)";
+            $message .= "IsSuccessful(%s), BatchId(%s),  TransactionId(%s)";
             $this->container->get('logger')->debug(
                 sprintf(
                     $message,
                     $transaction->getId(),
                     $transaction->getIsSuccessful(),
                     $transaction->getBatchId(),
-                    $transaction->getTransactionId(),
-                    $transaction->getStatus()
+                    $transaction->getTransactionId()
                 )
             );
 
@@ -90,7 +93,7 @@ class TransactionListener
             return;
         }
 
-        if (!$contract = $order->getContract()) {
+        if (!$order->getContract()) {
             $this->container->get('logger')->debug(
                 sprintf(
                     "Transaction %s does not have contract, we don't send it to external API",
@@ -105,7 +108,7 @@ class TransactionListener
         $accountingPaymentSync = $this->container->get('accounting.payment_sync');
         $accountingPaymentSync->setDebug(true);
 
-        if ($accountingPaymentSync->isAllowedToSend($contract)) {
+        if ($accountingPaymentSync->isAllowedToSend($order)) {
             $accountingPaymentSync->createJob($transaction->getOrder());
         }
     }

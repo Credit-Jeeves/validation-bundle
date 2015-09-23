@@ -4,10 +4,15 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 
 class ContractWaitingRepository extends EntityRepository
 {
     /**
+     * @deprecated
+     *
+     * @see ContractWaitingRepository::findOneByPropertyMappingExternalUnitIdResident()
+     *
      * @param Holding $holding
      * @param PropertyMapping $propertyMapping
      * @param string $externalUnitId
@@ -45,6 +50,44 @@ class ContractWaitingRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param string $externalUnitId
+     * @param string $residentId
+     *
+     * @return ContractWaiting
+     */
+    public function findOneByPropertyMappingExternalUnitIdAndResidentId(
+        PropertyMapping $propertyMapping,
+        $externalUnitId,
+        $residentId
+    ) {
+        return $this->createQueryBuilder('contract')
+            ->innerJoin('contract.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('contract.property', 'p')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'g.holding = pm.holding')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.residentId = :residentId')
+            ->andWhere('pm.externalPropertyId = :propertyId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->setParameter('propertyId', $propertyMapping->getExternalPropertyId())
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $unitName
+     * @param string $residentId
+     * @return ContractWaiting|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findByHoldingPropertyUnitResident(Holding $holding, Property $property, $unitName, $residentId)
     {
         $query = $this->createQueryBuilder('contract');
@@ -66,6 +109,31 @@ class ContractWaitingRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $residentId
+     * @return ContractWaiting[]
+     */
+    public function findByHoldingPropertyResident(Holding $holding, Property $property, $residentId)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->select('contract')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.residentId = :residentId')
+            ->andWhere('contract.property = :propertyId')
+            ->andWhere('g.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('residentId', $residentId);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 
     public function clearResidentContracts($residentId, $groupId)
@@ -99,5 +167,36 @@ class ContractWaitingRepository extends EntityRepository
             ->orderBy('cw.id', $sort)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $unitName
+     * @param string $externalLeaseId
+     * @return ContractWaiting[]|null
+     */
+    public function findByHoldingPropertyUnitExternalLeaseId(
+        Holding $holding,
+        Property $property,
+        $unitName,
+        $externalLeaseId
+    ) {
+        $query = $this->createQueryBuilder('contract')
+            ->select('contract')
+            ->innerJoin('contract.unit', 'u')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.externalLeaseId = :externalLeaseId')
+            ->andWhere('contract.property = :propertyId')
+            ->andWhere('g.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('u.name = :unitName')
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('unitName', $unitName)
+            ->setParameter('externalLeaseId', $externalLeaseId);
+
+        return $query->getQuery()->execute();
     }
 }

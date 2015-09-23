@@ -115,7 +115,7 @@ class ContractListener
             return;
         }
 
-        if (!($payment = $contract->getActivePayment())) {
+        if (!($payment = $contract->getActiveRentPayment())) {
             return;
         }
 
@@ -157,7 +157,7 @@ class ContractListener
             return;
         }
 
-        $payment = $contract->getActivePayment();
+        $payment = $contract->getActiveRentPayment();
         if (empty($payment)) {
             return;
         }

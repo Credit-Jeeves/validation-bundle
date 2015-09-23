@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
@@ -15,6 +16,16 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class ReportSynchronizer
 {
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
+
     /**
      * @var  OrderStatusManagerInterface
      */
@@ -49,16 +60,27 @@ class ReportSynchronizer
      * Synchronizes payment processor report's data.
      *
      * @param  PaymentProcessorReport $report
+     * @param  string $reportName - the name of the report to be used in log statements
+     * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
-    public function synchronize(PaymentProcessorReport $report)
+    public function synchronize(PaymentProcessorReport $report, $reportName = "", $alertIfEmpty = true)
     {
         if (!$report->getTransactions()) {
-            $this->logger->alert('Report synchronizer: No transactions in payment processor report');
+            $message = sprintf('%s Report synchronizer: No transactions in payment processor report', $reportName);
+            if ($alertIfEmpty) {
+                $this->logger->alert($message);
+            } else {
+                $this->logger->info($message);
+            }
 
             return 0;
         }
+
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
 
         /** @var PaymentProcessorReportTransaction $reportTransaction */
         foreach ($report->getTransactions() as $reportTransaction) {
@@ -81,9 +103,20 @@ class ReportSynchronizer
                 default:
                     throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
             }
+            $this->periodicExecutor->increment();
         }
 
         return count($report->getTransactions());
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -149,10 +182,24 @@ class ReportSynchronizer
         }
 
         if ($reportTransaction->getAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
-            $this->orderStatusManager->setComplete($transaction->getOrder());
             if (!$transaction->getDepositDate()) {
                 $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
                 $transaction->setDepositDate($depositDate);
+            }
+            /*
+             * Transactions in report may have such sort order that first go reversed transaction, then - deposited.
+             * Moreover, deposit report with all transactions for the month may be processed at the end of month --
+             * then again we should not set order to COMPLETE.
+             *
+             * So if order already has reversed transaction, we should not set it to COMPLETE.
+             */
+            if (!$transaction->getOrder()->getReversedTransaction()) {
+                $this->orderStatusManager->setComplete($transaction->getOrder());
+            } else {
+                $this->logger->debug(sprintf(
+                    'Deposit Transaction ID %s can not set order to COMPLETE due to existing reversed transaction',
+                    $transaction->getTransactionId()
+                ));
             }
         }
         $this->em->flush();
@@ -398,7 +445,7 @@ class ReportSynchronizer
         }
         $order = $transaction->getOrder();
 
-        if ($order->getStatus() !== OrderStatus::SENDING) {
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
             $this->logger->alert(sprintf(
                 'Status for Order #%d must be \'%s\', \'%s\' given',
                 $order->getId(),
@@ -450,7 +497,12 @@ class ReportSynchronizer
         }
 
         $order = $transaction->getOrder();
-        if ($order->getStatus() !== OrderStatus::SENDING) {
+
+        /* PayDirect order can go to reversal state in 2 cases:
+         * 1. When order was set to complete (sending) by inbound leg and then outbound leg reverse comes
+         * 2. When order was set to returned by inbound leg and then outbound leg reverse comes
+         */
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
             $this->logger->alert(sprintf(
                 'Unexpected order #%s status (%s) when transaction #%s processing',
                 $order->getId(),

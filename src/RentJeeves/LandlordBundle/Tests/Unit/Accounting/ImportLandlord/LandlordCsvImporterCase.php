@@ -37,7 +37,7 @@ class LandlordCsvImporterCase extends BaseTestCase
         $allGroups = $this->getEntityManager()->getRepository('DataBundle:Group')->findAll();
         $this->assertCount(32, $allGroups);
         $allHoldings = $this->getEntityManager()->getRepository('DataBundle:Holding')->findAll();
-        $this->assertCount(8, $allHoldings);
+        $this->assertCount(9, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(20, $allProperties);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
@@ -59,7 +59,7 @@ class LandlordCsvImporterCase extends BaseTestCase
         $allGroups = $this->getEntityManager()->getRepository('DataBundle:Group')->findAll();
         $this->assertCount(34, $allGroups);
         $allHoldings = $this->getEntityManager()->getRepository('DataBundle:Holding')->findAll();
-        $this->assertCount(10, $allHoldings);
+        $this->assertCount(11, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(22, $allProperties);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();

@@ -31,10 +31,10 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
     {
         $supportedType = ApiIntegrationType::AMSI;
         $isIntegrated = true;
-        $contractMock = $this->getContractMock($supportedType, $isIntegrated);
+        $orderMock = $this->getOrderMock($supportedType, $isIntegrated);
 
         $this->assertTrue(
-            $this->synchronizer->isAllowedToSend($contractMock),
+            $this->synchronizer->isAllowedToSend($orderMock),
             "should send if supported type and integrated"
         );
     }
@@ -46,10 +46,10 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
     {
         $supportedType = ApiIntegrationType::AMSI;
         $isIntegrated = false;
-        $contractMock = $this->getContractMock($supportedType, $isIntegrated);
+        $orderMock = $this->getOrderMock($supportedType, $isIntegrated);
 
         $this->assertFalse(
-            $this->synchronizer->isAllowedToSend($contractMock),
+            $this->synchronizer->isAllowedToSend($orderMock),
             "should NOT send if supported type and NOT integrated"
         );
     }
@@ -61,10 +61,10 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
     {
         $supportedType = ApiIntegrationType::NONE;
         $isIntegrated = true;
-        $contractMock = $this->getContractMock($supportedType, $isIntegrated);
+        $orderMock = $this->getOrderMock($supportedType, $isIntegrated);
 
         $this->assertFalse(
-            $this->synchronizer->isAllowedToSend($contractMock),
+            $this->synchronizer->isAllowedToSend($orderMock),
             "should NOT send if NOT supported type"
         );
     }
@@ -77,12 +77,63 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $supportedType = ApiIntegrationType::YARDI_VOYAGER;
         $isIntegrated = true;
         $isAllowedRealTime = false;
-        $contractMock = $this->getContractMock($supportedType, $isIntegrated, $isAllowedRealTime);
+        $orderMock = $this->getOrderMock($supportedType, $isIntegrated, $isAllowedRealTime);
 
         $this->assertFalse(
-            $this->synchronizer->isAllowedToSend($contractMock),
+            $this->synchronizer->isAllowedToSend($orderMock),
             "should NOT send if holding is not allowed to send realtime"
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotAllowToSendIfNotRentOrder()
+    {
+        $supportedType = ApiIntegrationType::AMSI;
+        $isIntegrated = true;
+        $isAllowedRealTime = true;
+        $hasCustomOperation = true;
+
+        $orderMock = $this->getOrderMock($supportedType, $isIntegrated, $isAllowedRealTime, $hasCustomOperation);
+
+        $this->assertFalse(
+            $this->synchronizer->isAllowedToSend($orderMock),
+            "should NOT send if order has custom operation (means order is not for rent)"
+        );
+    }
+
+    /**
+     * @param string $integrationType
+     * @param bool $isIntegrated
+     * @param bool $isAllowedRealTime
+     * @param bool $hasCustomOperation
+     * @return \CreditJeeves\DataBundle\Entity\Order
+     */
+    protected function getOrderMock(
+        $integrationType,
+        $isIntegrated,
+        $isAllowedRealTime = true,
+        $hasCustomOperation = false
+    ) {
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\CreditJeeves\DataBundle\Entity\Order $mock */
+        $mock = $this->getMock('\CreditJeeves\DataBundle\Entity\Order', [], [], '', false);
+
+        $mock->method('getCustomOperation')
+            ->will(
+                $this->returnValue(
+                    $hasCustomOperation
+                )
+            );
+
+        $mock->method('getContract')
+            ->will(
+                $this->returnValue(
+                    $this->getContractMock($integrationType, $isIntegrated, $isAllowedRealTime)
+                )
+            );
+
+        return $mock;
     }
 
     /**

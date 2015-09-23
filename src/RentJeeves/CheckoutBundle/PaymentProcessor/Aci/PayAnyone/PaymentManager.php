@@ -125,7 +125,7 @@ class PaymentManager
                 $transaction->setMessage(null);
                 $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
             } else {
-                $this->logger->alert(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
+                $this->logger->emergency(sprintf('[ACI PayAnyone Error][Execute]:%s', $request->getMessages()));
 
                 $transaction->setMessage(AbstractManager::removeDebugInformation($request->getMessages()));
                 $transaction->setStatus(OutboundTransactionStatus::ERROR);
@@ -133,7 +133,7 @@ class PaymentManager
 
             $this->em->flush();
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI PayAnyone Critical Error][Execute]:%s', $e->getMessage()));
+            $this->logger->emergency(sprintf('[ACI PayAnyone Critical Error][Execute]:%s', $e->getMessage()));
             $transaction->setStatus(OutboundTransactionStatus::ERROR);
             $transaction->setMessage($e->getMessage());
             $this->em->flush();

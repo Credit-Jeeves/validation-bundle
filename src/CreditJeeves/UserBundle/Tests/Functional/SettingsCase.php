@@ -85,7 +85,7 @@ class SettingsCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'notification_score_changed_notification' => false,
+                'notification_emailNotification' => false,
                 'notification_offer_notification' => true,
             )
         );
@@ -97,7 +97,7 @@ class SettingsCase extends BaseTestCase
         $this->page->clickLink($this->accountLink);
         $this->page->clickLink('settings.email');
 
-        $this->assertNotNull($notifications = $form->find('css', '#notification_score_changed_notification'));
+        $this->assertNotNull($notifications = $form->find('css', '#notification_emailNotification'));
         $this->assertFalse($notifications->isChecked());
         $this->assertNotNull($offers = $form->find('css', '#notification_offer_notification'));
         $this->assertTrue($offers->isChecked());

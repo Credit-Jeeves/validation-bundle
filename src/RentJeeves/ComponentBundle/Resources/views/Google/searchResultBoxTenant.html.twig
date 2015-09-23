@@ -61,6 +61,7 @@
                     {% for unit in  prop.units %}
                       <option value="{{ unit.name }}">{{ unit.name }}</option>
                     {% endfor %}
+                    <option value="UNASSIGNED" class="unassignedUnit"><a href="#">{{ 'unassigned.unit'|trans }}</a></option>
                     {% if not prop.hasIntegratedGroup %}
                       <option value="new" class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
                     {% endif %}

@@ -75,7 +75,13 @@
                             <td class="font-helvetica">
                                 {{ paymentAccount.getName }}
                             </td>
-                            <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
+                            <td class="font-helvetica">
+                                {% if paymentAccount.getType == 'card' %}
+                                    {{ 'payment_account_card' | trans }}
+                                {% elseif paymentAccount.getType == 'bank' %}
+                                    {{ paymentAccount.getBankAccountType | capitalize }}
+                                {% endif %}
+                            </td>
                             <td class="font-helvetica">
                                 {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
                             </td>

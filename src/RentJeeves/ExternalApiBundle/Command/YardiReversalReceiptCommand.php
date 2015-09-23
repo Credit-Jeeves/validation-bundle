@@ -23,7 +23,6 @@ class YardiReversalReceiptCommand extends ContainerAwareCommand
         $depositDate = new DateTime();
         $this->getContainer()
             ->get('yardi.push_reversal_receipts')
-            ->usingOutput($output)
             ->run($depositDate);
     }
 }

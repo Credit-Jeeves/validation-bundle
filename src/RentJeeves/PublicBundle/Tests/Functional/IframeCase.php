@@ -524,44 +524,4 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $this->checkResendInvite();
     }
-
-    /**
-     * @test
-     */
-    public function checkHoldingSelectForNew()
-    {
-        $this->load(true);
-        $this->setDefaultSession('goutte');
-        $doctrine = $this->getContainer()->get('doctrine');
-        $em = $doctrine->getManager();
-
-        /** @var Holding $holdingFirst */
-        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Rent Holding']);
-
-        /** @var Holding $holdingSecond */
-        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(['name' => 'Estate Holding']);
-
-        $this->assertNotNull($holdingFirst);
-        $this->assertNotNull($holdingSecond);
-
-        $link1 = sprintf(
-            '%suser/new/%d/holding',
-            $this->getUrl(),
-            $holdingFirst->getId()
-        );
-
-        $link2 = sprintf(
-            '%suser/new/%d/holding',
-            $this->getUrl(),
-            $holdingSecond->getId()
-        );
-
-        $this->session->visit($link1);
-        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(5, count($thisIsMyRental), 'Wrong count of rental property for holding');
-
-        $this->session->visit($link2);
-        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for holding');
-    }
 }

@@ -23,8 +23,8 @@ class ResManSyncBalanceCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getContainer()
-            ->get('resman.resident_balance_sync')
+            ->get('resman.contract_sync')
             ->usingOutput($output)
-            ->run();
+            ->syncBalance();
     }
 }

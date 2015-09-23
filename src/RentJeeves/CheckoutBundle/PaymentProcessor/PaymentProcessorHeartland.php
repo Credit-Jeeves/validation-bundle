@@ -13,8 +13,8 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -63,13 +63,16 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentToken(AccountData $paymentAccountData, Contract $contract)
-    {
+    public function createPaymentToken(
+        AccountData $paymentAccountData,
+        Contract $contract,
+        $depositAccountType = DepositAccountType::RENT
+    ) {
         $group = $contract->getGroup();
 
         $user = $contract->getTenant();
 
-        return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group);
+        return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group, $depositAccountType);
     }
 
     /**

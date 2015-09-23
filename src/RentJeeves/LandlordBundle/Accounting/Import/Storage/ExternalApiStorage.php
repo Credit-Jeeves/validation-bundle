@@ -179,9 +179,6 @@ class ExternalApiStorage extends StorageCsv
 
     public function clearDataBeforeReview()
     {
-        if ($this->getImportLoaded()) {
-            $this->removeFile();
-        }
         $this->session->remove(self::IMPORT_OFFSET_START);
         $this->session->remove(self::IMPORT_FILE_PATH);
         $this->getImportLoaded(false);

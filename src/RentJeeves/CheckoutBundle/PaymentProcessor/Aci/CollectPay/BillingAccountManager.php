@@ -7,15 +7,17 @@ use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 class BillingAccountManager extends AbstractManager
 {
     /**
      * @param  int $profileId
      * @param  Contract $contract
-     * @throws \Exception|PaymentProcessorRuntimeException
+     * @param  string $depositAccountType
+     * @throws \Exception
      */
-    public function addBillingAccount($profileId, Contract $contract)
+    public function addBillingAccount($profileId, Contract $contract, $depositAccountType = DepositAccountType::RENT)
     {
         $this->logger->debug(
             sprintf(
@@ -29,7 +31,7 @@ class BillingAccountManager extends AbstractManager
 
         $profile->setProfileId($profileId);
 
-        $billingAccount = $this->prepareBillingAccount($contract);
+        $billingAccount = $this->prepareBillingAccount($contract, $depositAccountType);
 
         $profile->setBillingAccount($billingAccount);
 
@@ -57,10 +59,9 @@ class BillingAccountManager extends AbstractManager
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
-        $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
-        $contractBilling->setDivisionId($depositAccount ? $depositAccount->getMerchantName() : '');
+        $contractBilling->setDivisionId($billingAccount->getBusinessId());
 
-        $contract->setAciCollectPayContractBilling($contractBilling);
+        $contract->addAciCollectPayContractBilling($contractBilling);
 
         $this->em->persist($contractBilling);
 

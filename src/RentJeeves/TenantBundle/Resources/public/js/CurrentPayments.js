@@ -34,4 +34,16 @@ function CurrentPayments(contracts, verification, paidForArr) {
             self.pay.contract(self.getContractById(contractId));
         }
     };
+
+    self.openPayAnythingPopup = function(contractId) {
+        if (!self.pay_anything) {
+            self.pay_anything = new PayAnything(self, self.getContractById(contractId));
+        } else {
+            self.pay_anything.contract(self.getContractById(contractId));
+        }
+    };
+
+    self.openPayAnythingCancelPopup = function(paymentId) {
+        new Cancel(paymentId);
+    };
 }
