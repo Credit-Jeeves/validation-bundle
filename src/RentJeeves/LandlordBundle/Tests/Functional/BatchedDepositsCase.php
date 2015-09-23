@@ -14,12 +14,6 @@ class BatchedDepositsCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
 
-        /**** TODO: Remove this when RT-1621 is merged. There depositAccounts are added to fixtures ****/
-        $em = $this->getEntityManager();
-        $query = $em->createQuery('UPDATE DataBundle:Order o SET o.depositAccount = 1');
-        $query->execute();
-        /**** TODO: Remove this when RT-1621 is merged. There depositAccounts are added to fixtures ****/
-
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('accounting.menu.batched_deposits');
@@ -29,15 +23,15 @@ class BatchedDepositsCase extends BaseTestCase
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'), 'Title not found');
         $this->assertEquals(
-            'accounting.menu.batched_deposits (9)',
+            'accounting.menu.batched_deposits (5)',
             $title->getHtml(),
-            'Batched Deposits should have 9 items'
+            'Batched Deposits should have 5 items'
         );
         $this->assertNotNull(
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
         );
-        $this->assertCount(25, $rows, 'Table should contain 25 rows');
+        $this->assertCount(14, $rows, 'Table should contain 14 rows');
 
         $this->assertNotNull(
             $filter = $this->page->find('css', '#depositTypeStatus_link'),
@@ -75,14 +69,14 @@ class BatchedDepositsCase extends BaseTestCase
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'), 'Title not found');
         $this->assertEquals(
-            'accounting.menu.batched_deposits (9)',
+            'accounting.menu.batched_deposits (5)',
             $title->getHtml(),
-            'Batched Deposits should have 9 card items'
+            'Batched Deposits should have 5 card items'
         );
         $this->assertNotNull(
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
         );
-        $this->assertCount(25, $rows, 'Table should contain 25 rows for \'card\' filter');
+        $this->assertCount(14, $rows, 'Table should contain 25 rows for \'card\' filter');
     }
 }
