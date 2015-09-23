@@ -235,7 +235,6 @@ class ContractSynchronizer
         Holding $holding,
         Property $property
     ) {
-        $var = [];
         /** @var RtCustomer $customerBase */
         foreach ($residentTransactions as $customerBase) {
             if ($customerBase->getCustomers()->getCustomer()->count() === 0) {
