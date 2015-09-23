@@ -22,12 +22,13 @@ class ResManSyncRentCommandCase extends BaseTestCase
         $contract->setRent(123321);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
         $contract->getHolding()->setUseRecurringCharges(true);
+        $contract->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
         $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
         $tenant = $contract->getTenant();
         $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId('4366dd6b-0b89-47e2-9624-b91df64b71a4');
+        $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
         $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());

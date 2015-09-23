@@ -29,7 +29,7 @@ class ResManClientCase extends Base
 
     const EXTERNAL_UNIT_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d|1|1102';
 
-    const RESMAN_UNIT_ID = '1102';
+    const RESMAN_UNIT_ID = '1108';
 
     /**
      * @test
