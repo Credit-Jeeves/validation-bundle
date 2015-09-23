@@ -37,7 +37,7 @@ trait AccountAssociate
         }
 
         $em = $this->getDoctrine()->getManager();
-        if (null === $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType)) {
+        if (null === $depositAccount = $group->getDepositAccount($depositAccountType, PaymentProcessor::HEARTLAND)) {
             throw new \RuntimeException('Cannot register to a group without deposit account.');
         }
         if (null == $registerToMerchantName = $depositAccount->getMerchantName()) {

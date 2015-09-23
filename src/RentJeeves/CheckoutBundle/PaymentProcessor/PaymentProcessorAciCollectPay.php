@@ -17,6 +17,7 @@ use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -82,16 +83,19 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentToken(AccountData $data, Contract $contract)
-    {
+    public function createPaymentToken(
+        AccountData $data,
+        Contract $contract,
+        $depositAccountType = DepositAccountType::RENT
+    ) {
         if (!$data->getEntity() instanceof UserAwareInterface) {
             throw new PaymentProcessorInvalidArgumentException('Use createBillingToken for create Billing Account.');
         }
 
         if (!($profileId = $contract->getTenant()->getAciCollectPayProfileId())) {
-            $profileId = $this->enrollmentManager->createUserProfile($contract);
-        } elseif (!$contract->getAciCollectPayContractBilling()) {
-            $this->billingAccountManager->addBillingAccount($profileId, $contract);
+            $profileId = $this->enrollmentManager->createUserProfile($contract, $depositAccountType);
+        } elseif (!$contract->hasAciCollectPayContractBillingForDepositAccountType($depositAccountType)) {
+            $this->billingAccountManager->addBillingAccount($profileId, $contract, $depositAccountType);
         }
 
         if ($fundingAccountId = $data->getEntity()->getToken()) {
@@ -145,7 +149,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         }
 
         if (PaymentGroundType::CHARGE === $paymentType || PaymentGroundType::RENT === $paymentType) {
-            if ($order->hasContract() && !$order->getContract()->getAciCollectPayContractBilling()) {
+            if ($order->hasContract() && $order->getContract()->getAciCollectPayContractBillings()->isEmpty()) {
                 $this->billingAccountManager->addBillingAccount(
                     $order->getContract()->getTenant()->getAciCollectPayProfileId(),
                     $order->getContract()

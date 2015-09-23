@@ -379,9 +379,9 @@ abstract class Contract
     protected $externalLeaseId;
 
     /**
-     * @var AciCollectPayContractBilling
+     * @var ArrayCollection|\RentJeeves\DataBundle\Entity\AciCollectPayContractBilling[]
      *
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
      *      mappedBy="contract",
      *      cascade={"all"},
@@ -389,13 +389,14 @@ abstract class Contract
      *      fetch="EAGER"
      * )
      */
-    protected $aciCollectPayContractBilling;
+    protected $aciCollectPayContractBillings;
 
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
+        $this->aciCollectPayContractBillings = new ArrayCollection();
     }
 
     /**
@@ -956,18 +957,34 @@ abstract class Contract
     }
 
     /**
-     * @param AciCollectPayContractBilling $aciCollectPayContractBilling
+     * Add Aci CollectPay Billing Account
+     *
+     * @param  \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
      */
-    public function setAciCollectPayContractBilling(AciCollectPayContractBilling $aciCollectPayContractBilling)
-    {
-        $this->aciCollectPayContractBilling = $aciCollectPayContractBilling;
+    public function addAciCollectPayContractBilling(
+        \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
+    ) {
+        $this->aciCollectPayContractBillings[] = $aciCollectPayContractBilling;
     }
 
     /**
-     * @return AciCollectPayContractBilling
+     * Remove Aci CollectPay Billing Account
+     *
+     * @param \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
      */
-    public function getAciCollectPayContractBilling()
+    public function removeAciCollectPayContractBilling(
+        \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
+    ) {
+        $this->aciCollectPayContractBillings->removeElement($aciCollectPayContractBilling);
+    }
+
+    /**
+     * Get Aci CollectPay Billing Accounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAciCollectPayContractBillings()
     {
-        return $this->aciCollectPayContractBilling;
+        return $this->aciCollectPayContractBillings;
     }
 }
