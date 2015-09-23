@@ -168,4 +168,35 @@ class ContractWaitingRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $unitName
+     * @param string $externalLeaseId
+     * @return ContractWaiting[]|null
+     */
+    public function findByHoldingPropertyUnitExternalLeaseId(
+        Holding $holding,
+        Property $property,
+        $unitName,
+        $externalLeaseId
+    ) {
+        $query = $this->createQueryBuilder('contract')
+            ->select('contract')
+            ->innerJoin('contract.unit', 'u')
+            ->innerJoin('contract.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('contract.externalLeaseId = :externalLeaseId')
+            ->andWhere('contract.property = :propertyId')
+            ->andWhere('g.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('u.name = :unitName')
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('unitName', $unitName)
+            ->setParameter('externalLeaseId', $externalLeaseId);
+
+        return $query->getQuery()->execute();
+    }
 }

@@ -19,9 +19,10 @@ class ResManContractSynchronizerCase extends Base
         $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
 
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->setIntegratedBalance(-2000.00);
+        $contract->setIntegratedBalance(0);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
-
+        $contract->getGroup()->getGroupSettings()->setIsIntegrated(true);
+        $contract->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);
         $settings = $contract->getHolding()->getResManSettings();
         $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
@@ -37,7 +38,7 @@ class ResManContractSynchronizerCase extends Base
 
         $this->getEntityManager()->clear($contract);
 
-        $this->assertEquals(-170.34, $contract->getIntegratedBalance(), 'Balance should be updated');
+        $this->assertNotEquals(0, $contract->getIntegratedBalance(), 'Balance should be updated');
     }
 
     /**
@@ -49,7 +50,6 @@ class ResManContractSynchronizerCase extends Base
 
         $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->setIntegratedBalance(-2000.00);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
         $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
 
@@ -70,11 +70,12 @@ class ResManContractSynchronizerCase extends Base
         $contractWaiting->setUnit($contract->getUnit());
         $contractWaiting->setRent($contract->getRent());
         $contractWaiting->setResidentId(ResManClientCase::RESIDENT_ID);
+        $contractWaiting->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);
         $contractWaiting->setStartAt($today);
         $contractWaiting->setFinishAt($today);
         $contractWaiting->setFirstName('Papa');
         $contractWaiting->setLastName('Karlo');
-        $contractWaiting->setIntegratedBalance(-500);
+        $contractWaiting->setIntegratedBalance(0);
 
         $this->getEntityManager()->persist($contractWaiting);
         $this->getEntityManager()->flush();
@@ -84,7 +85,8 @@ class ResManContractSynchronizerCase extends Base
         $this->getEntityManager()->clear($contractWaiting);
 
         $this->assertNotNull($contractWaiting);
-        $this->assertEquals(-170.34, $contractWaiting->getIntegratedBalance(), 'Balance should be updated');
+
+        $this->assertNotEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be updated');
     }
 
     /**
@@ -101,12 +103,13 @@ class ResManContractSynchronizerCase extends Base
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
-
+        $contract->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);
+        $contract->getGroup()->getGroupSettings()->setIsIntegrated(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
 
         $residentMapping = $contract->getTenant()->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId('4366dd6b-0b89-47e2-9624-b91df64b71a4');
+        $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
 
         $this->getEntityManager()->flush();
 

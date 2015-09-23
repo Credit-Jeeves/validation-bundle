@@ -1322,4 +1322,42 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $externalLeaseId
+     * @param string $unitName
+     * @return Contract[]
+     */
+    public function findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
+        Holding $holding,
+        Property $property,
+        $externalLeaseId,
+        $unitName
+    ) {
+        $query = $this->createQueryBuilder('c')
+            ->select('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('c.externalLeaseId = :leaseId')
+            ->andWhere('c.status in (:statuses)')
+            ->andWhere('c.property = :propertyId')
+            ->andWhere('c.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('u.name = :unitName')
+            ->setParameter('leaseId', $externalLeaseId)
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId());
+
+        if ($property->isSingle()) {
+            $query->setParameter('unitName', UNIT::SINGLE_PROPERTY_UNIT_NAME);
+        } else {
+            $query->setParameter('unitName', $unitName);
+        }
+
+        return $query->getQuery()->execute();
+    }
 }
