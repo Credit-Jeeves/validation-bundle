@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Tests\Command;
 
 use RentJeeves\CoreBundle\Command\SendSecondChanceEmailCommand;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -15,6 +16,11 @@ class SendSecondChanceEmailCommandCase extends BaseTestCase
      */
     public function shouldSendEmailForContractWithNeededParams()
     {
+
+        $this->markTestSkipped(
+            'Delete resman settings from holding. see https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/pull/1654'
+        );
+
         $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
@@ -26,6 +32,7 @@ class SendSecondChanceEmailCommandCase extends BaseTestCase
         $newTenant->setFirstName('test');
         $this->getEntityManager()->persist($newTenant);
 
+        /** @var Contract $contract */
         $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 1);
 
         $contract->setCreatedAt(new \DateTime('-1 month'));
