@@ -63,7 +63,7 @@ trait PaymentProcess
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
-        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract);
+        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract, $depositAccountType);
 
         $paymentAccountEntity->setToken($token);
 

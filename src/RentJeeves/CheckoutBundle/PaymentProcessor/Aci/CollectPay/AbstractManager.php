@@ -7,8 +7,10 @@ use Payum\AciCollectPay\Model\SubModel\Address;
 use Payum\AciCollectPay\Model\SubModel\BillingAccount;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum\Core\Payment as PaymentProcessor;
+use RentJeeves\DataBundle\Enum\PaymentProcessor as PaymentProcessorEnum;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 abstract class AbstractManager
 {
@@ -82,17 +84,18 @@ abstract class AbstractManager
     }
 
     /**
-     * @param  Contract       $contract
+     * @param  Contract $contract
+     * @param  string $depositAccountType
      * @return BillingAccount
      */
-    protected function prepareBillingAccount(Contract $contract)
+    protected function prepareBillingAccount(Contract $contract, $depositAccountType = DepositAccountType::RENT)
     {
         $billingAccount = new BillingAccount();
 
         $group = $contract->getGroup();
 
         $billingAccount->setAccountNumber($contract->getId());
-        $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+        $depositAccount = $group->getDepositAccount($depositAccountType, PaymentProcessorEnum::ACI);
         $billingAccount->setBusinessId($depositAccount ? $depositAccount->getMerchantName() : '');
         $billingAccount->setHoldername($contract->getTenant()->getFullName());
         $billingAccount->setNickname($group->getName() . $contract->getId());

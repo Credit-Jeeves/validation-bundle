@@ -236,7 +236,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     {
         $contract = $order->getContract();
 
-        if (!$contract) {
+        if (!$contract || $order->getRentOperations()->isEmpty()) {
             return;
         }
 
@@ -378,7 +378,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         /**
          * Start_at can be updated only if order contains RENT operations
          */
-        if (!$rentOperations->count()) {
+        if ($rentOperations->isEmpty()) {
             return false;
         }
 
@@ -397,6 +397,10 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
         $contract = $order->getContract();
 
         $rentOperations = $order->getRentOperations();
+
+        if (!$contract || $rentOperations->isEmpty()) {
+            return;
+        }
 
         /** @var Operation $earliestOperation */
         $earliestOperation = $rentOperations->first();

@@ -10,6 +10,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use JMS\Serializer\GenericSerializationVisitor;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -84,6 +85,20 @@ class Order extends Base
         }
 
         return $property->getFullAddress();
+    }
+
+    /**
+     * @return null | Property
+     */
+    public function getProperty()
+    {
+        if (!$unit = $this->getUnit()) {
+            return null;
+        }
+
+        $property = $unit->getProperty();
+
+        return $property;
     }
 
     /**

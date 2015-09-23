@@ -12,15 +12,18 @@ use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class EnrollmentManager extends AbstractManager
 {
     /**
-     * @param  Contract                         $contract
+     * @param  Contract $contract
+     * @param  string $depositAccountType
      * @return int
-     * @throws PaymentProcessorRuntimeException
+     * @throws \Exception
      */
-    public function createUserProfile(Contract $contract)
+    public function createUserProfile(Contract $contract, $depositAccountType = DepositAccountType::RENT)
     {
         $user = $contract->getTenant();
 
@@ -61,10 +64,10 @@ class EnrollmentManager extends AbstractManager
 
         $contractBilling = new AciCollectPayContractBilling();
         $contractBilling->setContract($contract);
-        $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+        $depositAccount = $contract->getGroup()->getDepositAccount($depositAccountType, PaymentProcessor::ACI);
         $contractBilling->setDivisionId($depositAccount ? $depositAccount->getMerchantName() : '');
 
-        $contract->setAciCollectPayContractBilling($contractBilling);
+        $contract->addAciCollectPayContractBilling($contractBilling);
 
         $this->em->persist($contractBilling);
 
