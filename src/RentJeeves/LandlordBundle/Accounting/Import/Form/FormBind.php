@@ -2,9 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
@@ -149,30 +146,6 @@ trait FormBind
 
         $this->currentImportModel->setContract($contract);
         $this->currentImportModel->setTenant($form->get('tenant')->getData());
-    }
-
-    /**
-     * @param Operation $operation
-     */
-    public function processingOperationAndOrder(Operation $operation)
-    {
-        $tenant = $this->currentImportModel->getTenant();
-        $contract = $this->currentImportModel->getContract();
-
-        $order = new OrderSubmerchant();
-        $order->setPaymentType(OrderPaymentType::CASH);
-        $order->setUser($tenant);
-        $order->setSum($operation->getAmount());
-
-        $operation->setContract($contract);
-        $operation->setOrder($order);
-        $order->addOperation($operation);
-
-        $this->orderStatusManager->setNew($order);
-
-        $this->orderStatusManager->setComplete($order);
-
-        $this->currentImportModel->setOrder($order);
     }
 
     /**

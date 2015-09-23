@@ -2,12 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use CreditJeeves\DataBundle\Entity\Operation;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +12,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\ContractManager;
 
 /**
  * This form for Contract
@@ -31,8 +25,6 @@ class ImportContractType extends AbstractType
 
     protected $isUseToken;
 
-    protected $isUseOperation;
-
     protected $import;
 
     protected $em;
@@ -44,10 +36,12 @@ class ImportContractType extends AbstractType
     protected $sendInvite;
 
     /**
-     * @param Tenant $tenant
      * @param EntityManager $em
+     * @param Translator $translator
+     * @param Import $import
      * @param bool $token
-     * @param bool $operation
+     * @param bool $isMultipleProperty
+     * @param bool $sendInvite
      */
     public function __construct(
         EntityManager $em,
@@ -77,7 +71,6 @@ class ImportContractType extends AbstractType
                 'format' => 'MM/dd/yyyy',
             )
         );
-
 
         $builder->add(
             'finishAt',
@@ -188,42 +181,8 @@ class ImportContractType extends AbstractType
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) use ($self) {
                 $self->setUncollectedBalance($event);
-                $self->createOperation($event);
-                $self->movePaidTo($event);
             }
         );
-    }
-
-    public function createOperation(FormEvent $event)
-    {
-        $handler = $this->import->getHandler();
-        $isNeedCreateCashOperation = $handler->isNeedCreateCashOperation();
-        $dueDate = $handler->getDueDateOfContract();
-        // if (!$isNeedCreateCashOperation) {
-        if (true) { // We no longer want to automatically create cash operations.
-            return; // TO DO Future story to create based on API ledgers, not import balances.
-        }
-
-        $operation = $handler->getOperationByDueDate($dueDate);
-        $csrfToken = $this->import->getCsrfToken();
-
-        if ($operation &&
-            is_null($operation->getContract()) &&
-            empty($csrfToken)
-        ) {
-            $handler->processingOperationAndOrder($operation);
-        }
-    }
-
-    public function movePaidTo(FormEvent $event)
-    {
-        /**
-         * @var $contract Contract
-         */
-        $contract = $event->getData();
-        $handler = $this->import->getHandler();
-        $dueDate = $handler->getDueDateOfContract();
-        $handler->movePaidToOfContract($dueDate);
     }
 
     public function setUncollectedBalance(FormEvent $event)
