@@ -98,7 +98,9 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 }
             }
             if ($needSend) {
-                $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend);
+                if (!$mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend)) {
+                    $output->writeln('Sending email is failed. Check template.');
+                }
                 $output->write('.');
             }
         }
@@ -116,14 +118,16 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 // only send if no groupid option specified, or if groupid option matches current group
                 if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
                     if (count($batchData) > 0 || count($reversalData) > 0) {
-                        $mailer->sendBatchDepositReportLandlord(
+                        if (!$mailer->sendBatchDepositReportLandlord(
                             $landlord,
                             $group,
                             $date,
                             $this->prepareBatchReportData($batchData),
                             $reversalData,
                             $resend
-                        );
+                        )) {
+                            $output->writeln('Sending email is failed. Check template.');
+                        }
                         $output->write('.');
                     }
                 }

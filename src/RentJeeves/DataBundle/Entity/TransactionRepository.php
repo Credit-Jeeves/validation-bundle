@@ -43,7 +43,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
-        $query->innerJoin('t.unit', 'unit');
+        $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
@@ -177,7 +177,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
-        $query->innerJoin('t.unit', 'unit');
+        $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
