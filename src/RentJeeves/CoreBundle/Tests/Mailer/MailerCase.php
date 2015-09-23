@@ -53,7 +53,7 @@ class MailerCase extends BaseTestCase
         $this->assertEquals('testSlug', $header->get('X-MC-Template')->getFieldBody());
         $this->assertTrue($header->has('X-MC-MergeVars'));
 
-        $expectedParams = array_merge($this->defaultValuesForEmail, ['emailTo' => $email]);
+        $expectedParams = array_merge($this->defaultValuesForEmail, ['emailTo' => urlencode($email)]);
         $this->assertEquals(
             json_encode($expectedParams, true),
             $header->get('X-MC-MergeVars')->getFieldBody()

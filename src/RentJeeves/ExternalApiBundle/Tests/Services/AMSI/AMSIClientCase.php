@@ -130,7 +130,7 @@ class AMSIClientCase extends Base
         $this->assertNotEmpty($openItem->getOccuLastName());
 
         $recurringCharges = $lease->getRecurringCharges();
-        $this->assertCount(1, $recurringCharges);
+        $this->assertCount(2, $recurringCharges);
         /** @var RecurringCharge $recurringCharge */
         $recurringCharge = $recurringCharges[0];
         $this->assertInstanceOf(
