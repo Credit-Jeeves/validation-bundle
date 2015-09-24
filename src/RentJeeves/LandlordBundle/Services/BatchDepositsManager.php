@@ -13,6 +13,15 @@ class BatchDepositsManager
     protected $em;
 
     /**
+     * @var array
+     */
+    protected $enumForDepositTypeArrayToReplaceForReadable = [
+        'security_deposit' => 'Security Deposit',
+        'application_fee' => 'Application Fee',
+        'rent' => 'Rent'
+    ];
+
+    /**
      * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em)
@@ -44,7 +53,10 @@ class BatchDepositsManager
         foreach ($deposits as $key => $deposit) {
             $depositDate = new \DateTime($deposit['depositDate']);
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-
+            $depositType = $deposits[$key]['depositType'];
+            if (isset($this->enumForDepositTypeArrayToReplaceForReadable[$depositType])) {
+                $deposits[$key]['depositType'] = $this->enumForDepositTypeArrayToReplaceForReadable[$depositType];
+            }
             $orders = $this->getOrderRepository()->getDepositedOrders(
                 $group,
                 $filter,
