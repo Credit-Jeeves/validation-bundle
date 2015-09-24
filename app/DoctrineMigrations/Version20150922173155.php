@@ -25,6 +25,7 @@ class Version20150922173155 extends AbstractMigration
             property = "body",
             value = "
                 {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
+                {% block h1 %}Rent Check Sent!{% endblock %}
                 {% block email %}
                     Hi {{ firstName }},
 
@@ -45,7 +46,6 @@ class Version20150922173155 extends AbstractMigration
 
         /***************** Sending ***************/
 
-
         /***************** Refunding ***************/
 
         $this->addSql(
@@ -62,6 +62,7 @@ class Version20150922173155 extends AbstractMigration
             property = "body",
             value = "
                 {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
+                {% block h1 %}Rent Check Stopped!{% endblock %}
                 {% block email %}
                     Hi {{ firstName }},
 
@@ -83,7 +84,6 @@ class Version20150922173155 extends AbstractMigration
 
         /***************** Refunding ***************/
 
-
         /***************** Reissued ***************/
 
         $this->addSql(
@@ -100,6 +100,7 @@ class Version20150922173155 extends AbstractMigration
             property = "body",
             value = "
                 {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
+                {% block h1 %}Rent Check Reissued!{% endblock %}
                 {% block email %}
                     Hi {{ firstName }},
 
