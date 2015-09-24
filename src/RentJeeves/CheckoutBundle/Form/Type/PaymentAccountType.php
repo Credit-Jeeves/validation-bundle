@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\CardScheme;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -21,9 +22,16 @@ class PaymentAccountType extends AbstractType
      */
     protected $user;
 
-    public function __construct(User $user)
+    /**
+     * @var string
+     */
+    protected $formNameSuffix = '';
+
+    public function __construct(User $user, $formNameSuffix = '')
     {
         $this->user = $user;
+
+        $this->formNameSuffix = $formNameSuffix ? '_' . $formNameSuffix : '';
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -237,6 +245,16 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.card_number.empty',
                         ]
                     ),
+                    new CardScheme(
+                        [
+                            'groups' => ['card'],
+                            'schemes' => [
+                                'VISA',
+                                'MASTERCARD',
+                                'DISCOVER'
+                            ]
+                        ]
+                    )
                 ]
             ]
         );
@@ -262,6 +280,13 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.csc.empty',
                         ]
                     ),
+                    new Regex(
+                        [
+                            'pattern' => '/^[0-9]{3}$/',
+                            'groups' => ['card'],
+                            'message' => 'checkout.error.csc.type',
+                        ]
+                    )
                 ]
             ]
         );
@@ -460,6 +485,6 @@ class PaymentAccountType extends AbstractType
 
     public function getName()
     {
-        return static::NAME;
+        return static::NAME . $this->formNameSuffix;
     }
 }

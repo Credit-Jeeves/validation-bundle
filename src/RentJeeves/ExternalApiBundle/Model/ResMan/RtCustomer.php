@@ -148,30 +148,31 @@ class RtCustomer
      */
     public function getRentTrackBalance()
     {
-        $transactions = $this->getRtServiceTransactions();
         $balance = 0;
 
-        /**
-         * @var $transaction Transactions
-         */
-        foreach ($transactions as $transaction) {
+        if ($rtTransactions = $this->getRtServiceTransactions()) {
+            /**
+             * @var $transaction Transactions
+             */
+            foreach ($rtTransactions->getTransactions() as $transaction) {
 
-            $charge = $transaction->getCharge();
-            $payment = $transaction->getPayment();
-            $credit = $transaction->getConcession();
+                $charge = $transaction->getCharge();
+                $payment = $transaction->getPayment();
+                $credit = $transaction->getConcession();
 
-            if (!empty($charge)) {
-                $balance += $charge->getDetail()->getAmount();
-                continue;
-            }
+                if (!empty($charge)) {
+                    $balance += $charge->getDetail()->getAmount();
+                    continue;
+                }
 
-            if (!empty($payment)) {
-                $balance -= $payment->getDetail()->getAmount();
-                continue;
-            }
+                if (!empty($payment)) {
+                    $balance -= $payment->getDetail()->getAmount();
+                    continue;
+                }
 
-            if (!empty($credit)) {
-                $balance -= $credit->getDetail()->getAmount();
+                if (!empty($credit)) {
+                    $balance -= $credit->getDetail()->getAmount();
+                }
             }
         }
 

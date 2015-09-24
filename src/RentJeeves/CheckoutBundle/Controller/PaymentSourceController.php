@@ -2,15 +2,22 @@
 
 namespace RentJeeves\CheckoutBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
+use CreditJeeves\DataBundle\Entity\Group;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,12 +26,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PaymentSourceController extends Controller
 {
+    use FormErrors;
+    use Traits\PaymentProcess;
+    use Traits\AccountAssociate;
+
     /**
      * @Template()
+     * @param string|null $formNameSuffix
+     * @return array
      */
-    public function sourceAction()
+    public function sourceAction($formNameSuffix = null)
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
+        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser(), $formNameSuffix));
 
         return ['paymentAccountType' => $paymentAccountType->createView()];
     }
@@ -42,12 +55,9 @@ class PaymentSourceController extends Controller
      */
     public function getPaymentAccountsListAction($contractId = null)
     {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
         if ($contractId) {
             /** @var Contract $contract */
-            $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+            $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId);
         }
 
         $this->get('soft.deleteable.control')->enable();
@@ -90,5 +100,132 @@ class PaymentSourceController extends Controller
         );
 
         return new Response($addressesJson);
+    }
+
+    /**
+     * @Route(
+     *      "/source/{formNameSuffix}",
+     *      name="checkout_pay_source",
+     *      options={"expose"=true},
+     *      defaults={"formNameSuffix"=null}
+     * )
+     * @Method({"POST"})
+     * @param Request $request
+     * @param string|null $formNameSuffix
+     * @return JsonResponse
+     */
+    public function createSourceAction(Request $request, $formNameSuffix = null)
+    {
+        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser(), $formNameSuffix));
+        $paymentAccountType->handleRequest($request);
+        if (!$paymentAccountType->isValid()) {
+            return $this->renderErrors($paymentAccountType);
+        }
+
+        try {
+            $contractId = $paymentAccountType->get('contractId')->getData();
+            $depositAccountType = $request->get('deposit_account_type', DepositAccountType::RENT);
+            if ($contractId) {
+                /** @var Contract $contract */
+                $contract = $this->getDoctrine()
+                    ->getRepository('RjDataBundle:Contract')
+                    ->find($contractId);
+            }
+            if (empty($contract)) {
+                throw new \Exception('Contract is undefined.');
+            }
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract, $depositAccountType);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                $paymentAccountType->getName() => [
+                    '_globals' => explode('|', $e->getMessage())
+                ]
+            ]);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'paymentAccount' => $this->get('jms_serializer')->serialize(
+                $paymentAccountEntity,
+                'array',
+                SerializationContext::create()->setGroups(['basic'])
+            ),
+            'newAddress' => $this->hasNewAddress($paymentAccountType) ?
+                $this->get('jms_serializer')->serialize(
+                    $paymentAccountEntity->getAddress(),
+                    'array'
+                ) : null
+        ]);
+    }
+
+    /**
+     * @Route(
+     *      "/source_existing/{formNameSuffix}",
+     *      name="checkout_pay_existing_source",
+     *      options={"expose"=true},
+     *      defaults={"formNameSuffix"=null}
+     * )
+     * @Method({"POST"})
+     * @param Request $request
+     * @param string|null $formNameSuffix
+     * @return JsonResponse
+     */
+    public function sourceExistingAction(Request $request, $formNameSuffix = null)
+    {
+        $formType = new PaymentAccountType($this->getUser(), $formNameSuffix);
+        $formData = $request->get($formType->getName());
+
+        $paymentAccountId = $formData['id'];
+        $contractId = $request->get('contract_id');
+        $groupId = $request->get('group_id');
+        $depositAccountType = $request->get('deposit_account_type', DepositAccountType::RENT);
+
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $this->getDoctrine()->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
+        if ($contractId &&
+            $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId)
+        ) {
+            $group = $contract->getGroup();
+        } elseif ($groupId) {
+            $group = $this->getDoctrine()->getRepository('DataBundle:Group')->find($groupId);
+        }
+
+        // ensure group id is associated with payment account
+        try {
+            /** @var Group $group */
+            if (empty($group) || empty($paymentAccount)) {
+                throw new \Exception('Group or Payment Account is undefined');
+            }
+            $this->ensureAccountAssociation($paymentAccount, $group, $depositAccountType);
+            /** @var Contract $contract */
+            if (!empty($contract)) {
+                /** @TODO need better place for this code */
+                if ($paymentAccount->getPaymentProcessor() === PaymentProcessor::ACI) {
+                    if (!$depositAccount = $group->getDepositAccount($depositAccountType, PaymentProcessor::ACI)) {
+                        throw new \RuntimeException('Cannot create aci billing without deposit account.');
+                    }
+                    if (!$divisionId = $depositAccount->getMerchantName()) {
+                        throw new \RuntimeException('Cannot create aci billing without merchant name(division id).');
+                    }
+                    /** @var BillingAccountManager $billingAccountManager */
+                    $billingAccountManager = $this->get('payment_processor.aci.collect_pay.billing_account_manager');
+                    if (!$contract->getAciCollectPayContractBilling($divisionId)) {
+                        $billingAccountManager->addBillingAccount(
+                            $contract->getTenant()->getAciCollectPayProfileId(),
+                            $contract,
+                            $depositAccountType
+                        );
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                $formType->getName() => [
+                    '_globals' => explode('|', $e->getMessage())
+                ]
+            ]);
+        }
+
+        return new JsonResponse(['success' => true]);
     }
 }

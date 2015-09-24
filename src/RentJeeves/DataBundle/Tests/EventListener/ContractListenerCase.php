@@ -143,11 +143,11 @@ class ContractListenerCase extends Base
          */
         $contract = $tenant->getContracts()[1];
         $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
-        $activePayment = $contract->getActivePayment();
+        $activePayment = $contract->getActiveRentPayment();
         $this->assertNotNull($activePayment);
         $em->flush($contract);
         $em->refresh($contract);
-        $activePayment = $contract->getActivePayment();
+        $activePayment = $contract->getActiveRentPayment();
         $this->assertNull($activePayment);
     }
 }

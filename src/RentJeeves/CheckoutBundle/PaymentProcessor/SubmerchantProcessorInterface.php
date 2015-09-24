@@ -7,6 +7,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface SubmerchantProcessorInterface
@@ -16,10 +17,16 @@ interface SubmerchantProcessorInterface
      * Returns payment account token.
      *
      * @param  AccountData $data
-     * @param  Contract           $contract
+     * @param  Contract $contract
+     * @param  string $depositAccountType one of from DepositAccountType
+     * @see    DepositAccountType
      * @return string
      */
-    public function createPaymentToken(AccountData $data, Contract $contract);
+    public function createPaymentToken(
+        AccountData $data,
+        Contract $contract,
+        $depositAccountType = DepositAccountType::RENT
+    );
 
     /**
      *

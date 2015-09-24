@@ -2,11 +2,14 @@
 
 namespace RentJeeves\CheckoutBundle\Payment;
 
-use DateTime;
-
 class BusinessDaysCalculator
 {
-    public static function getNextBusinessDate(DateTime $currentDate)
+    /**
+     * @param \DateTime $currentDate
+     *
+     * @return \DateTime
+     */
+    public static function getNextBusinessDate(\DateTime $currentDate)
     {
         switch ($currentDate->format('N')) {
             case '6': $nextBusinessDate = $currentDate->modify('+2 days');
@@ -20,12 +23,12 @@ class BusinessDaysCalculator
     }
 
     /**
-     * @param DateTime $startDate
+     * @param \DateTime $startDate
      * @param integer  $targetShift
      *
-     * @return DateTime
+     * @return \DateTime
      */
-    public static function getBusinessDate(DateTime $startDate, $targetShift)
+    public static function getBusinessDate(\DateTime $startDate, $targetShift)
     {
         $businessDate = $startDate;
         $shiftedDays = 0;

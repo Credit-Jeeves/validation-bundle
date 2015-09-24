@@ -29,7 +29,7 @@ class EmailLandlordCommandCase extends BaseTestCase
 
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        
+
         $command = $application->find('Email:landlord');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -140,7 +140,7 @@ class EmailLandlordCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function execureReport()
+    public function executeReport()
     {
         $this->load();
         $this->startTransaction();
@@ -158,7 +158,7 @@ class EmailLandlordCommandCase extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(4, $count);
+        $this->assertCount(3, $count); // 1 user has `emailNotification=false`
         $this->assertRegExp('/daily report/', $commandTester->getDisplay());
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -63,13 +64,34 @@ EOT;
         return $stmt->fetchAll();
     }
 
-    public function getPropetiesAll($group)
+    /**
+     * @param Group $group
+     * @return Property[]
+     */
+    public function getAllPropertiesInGroup(Group $group)
     {
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.property_groups', 'g');
-        $query->where('g.id = :group_id');
-        $query->setParameter('group_id', $group->getId());
-        $query = $query->getQuery();
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group_id')
+            ->setParameter('group_id', $group->getId())
+            ->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param Group $group
+     * @return Property[]
+     */
+    public function getAllPropertiesInGroupOrderedByAddress(Group $group)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group_id')
+            ->setParameter('group_id', $group->getId())
+            ->orderBy('sortField')
+            ->getQuery();
 
         return $query->execute();
     }
@@ -236,6 +258,26 @@ EOT;
         }
 
         return $result;
+    }
+
+    /**
+     * @param Holding $holding
+     * @return Property[]
+     */
+    public function findByHoldingOrderedByAddress(Holding $holding)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+            ->innerJoin('p.property_groups', 'p_group')
+            ->leftJoin('p.units', 'unit')
+            ->where('p_group.holding_id = :holdingId')
+            ->andWhere('unit.holding = :holdingId')
+            ->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL')
+            ->setParameter('holdingId', $holding->getId())
+            ->orderBy('sortField')
+            ->getQuery();
+
+        return $query->execute();
     }
 
     public function findByHolding(Holding $holding = null)

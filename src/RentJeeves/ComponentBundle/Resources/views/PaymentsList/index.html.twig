@@ -1,13 +1,10 @@
 <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
     <div class="title-box clearfix">
-        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')', visible: payments().length > 0"></h2>
-        <h2 data-bind="text: '{{'payments.batch_deposits'|trans}} (' + $root.total() + ')', visible: deposits().length > 0"></h2>
+        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')'"></h2>
         <div class="fiter-box">
             {% if group.groupSettings.isIntegrated %}
-                <div class="externalPaymentsBlock" data-bind="visible: searchCollum() != 'deposit'">
-                    <input type="checkbox"
-                           data-bind="checked: showCashPayments"
-                    />
+                <div class="externalPaymentsBlock">
+                    <input type="checkbox" data-bind="checked: showCashPayments" />
                     <span>{{ 'landlord.payments_list.show_external_payments'|trans }}</span>
                 </div>
             {% endif %}
@@ -16,9 +13,9 @@
                 <option value="property">{{ 'payments.filter.property'|trans }}</option>
                 <option value="tenant">{{ 'payments.filter.tenant'|trans }}</option>
                 <option value="amount">{{ 'payments.filter.amount'|trans }}</option>
-                <option value="deposit">{{ 'payments.filter.group_by.deposit'|trans }}</option>
+                <option value="batch_deposit_report">{{ 'payments.filter.batch_deposit_report.go'|trans }}</option>
             </select>
-            <div id="searchInput" data-bind="visible: searchCollum() != 'status' && searchCollum() != 'deposit'" class="finder-box">
+            <div id="searchInput" data-bind="visible: searchCollum() != 'status'" class="finder-box">
                 <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
                 <a href="#" data-bind="click: clearSearch" id="delete" class="pie-el">x</a>
                 <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
@@ -34,14 +31,6 @@
                     <option value='refunded'>{{'refunded'|trans}}</option>
                 </select>
                 <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
-            </div>
-            <div id="depositTypeSelect" class="finder-box" data-bind="visible: searchCollum() == 'deposit'">
-                <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
-                    <option value=''>- {{'select.status.all'|trans}} -</option>
-                    <option value='heartland_bank'>{{'filter.group_by.deposit.echeck'|trans}}</option>
-                    <option value='heartland_card'>{{'filter.group_by.deposit.credit-card'|trans}}</option>
-                </select>
-                <button type="submit" id="search-submit-deposit-status" data-bind="click: filterDeposits" class="pie-el">{{ 'search' }}</button>
             </div>
         </div>
     </div>
@@ -84,7 +73,7 @@
                   </th>
                 </tr>
               </thead>
-              <!-- ko if: payments().length -->
+
               <tbody id="payments-block-tbody" data-bind="foreach: payments" class="zebra-grid">
                 <tr>
                     <td data-bind="attr: {'class': 'actions-status '+style}">
@@ -103,51 +92,6 @@
                     <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
                 </tr>
               </tbody>
-              <!-- /ko -->
-
-              <!-- ko if: deposits().length -->
-              <tbody id="payments-block-tbody" data-bind="foreach: deposits">
-                <!-- ko if: isDeposit -->
-                <tr data-bind="css: $root.toggledZebraCss(batch, $index(), true)">
-                    <td>{{ 'payments.deposit'|trans }}</td>
-                    <td data-bind="text: depositDate"></td>
-                    <td colspan="2">
-                        <span data-bind="text: $root.depositTitle($data)"></span>
-                        <a data-bind="click: $root.togglePayments">
-                            <span data-bind="attr: {id: 'title-show-' + batch}">{{ 'payments.show'|trans }}</span>
-                            <span data-bind="attr: {id: 'title-hide-' + batch}" style="display: none;">{{ 'payments.hide'|trans }}</span>
-                        </a>
-                    </td>
-                    <td colspan="2"><span data-bind="text: order_amount" class="deposit-amount"></span></td>
-                </tr>
-                <!-- /ko -->
-
-                <!-- ko foreach: orders -->
-                <tr data-bind="css: $root.toggledZebraCss($parent.batch, $parentContext.$index(), false), visible: !$parent.isDeposit">
-                    <td data-bind="attr: {'class': 'actions-status '+style}">
-                        <span data-bind="text: $root.getOrderStatusText($parent.isDeposit, $data), attr: {'title' : errorMessage}"></span>
-                        <span
-                                class="status-text-helper"
-                                data-bind="visible: !$root.isSuccessfulStatus($data.status)"
-                                style="cursor: pointer">
-                            <img src="{{ asset('bundles/core/images/help-icon.gif') }}">
-                        </span>
-                    </td>
-                    <!-- ko if: $parent.isDeposit -->
-                    <td data-bind="text: finish"></td>
-                    <!-- /ko -->
-                    <!-- ko if: !$parent.isDeposit -->
-                    <td data-bind="text: $parent.depositDate"></td>
-                    <!-- /ko -->
-                    <td data-bind="text: address"></td>
-                    <td data-bind="text: tenant"></td>
-                    <td data-bind="text: $root.getOrderAmount($parent.isDeposit, $data)"></td>
-                    <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
-                </tr>
-                <!-- /ko -->
-
-              </tbody>
-                <!-- /ko -->
 
             </table>
             <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" id="processPayment" class="processPayment" data-bind="visible: processPayment">
@@ -157,41 +101,7 @@
       </div>
       <div class="clearboth"></div>
       <br />
-      <div class="legeng-box">
-        <ul class="legeng">
-          <li class="tr">
-            <div class="th cell">
-              {{ 'legend'|trans }}
-            </div>
-            <div class="th cell"></div>
-          </li>
-          <li class="tr">
-            <div class="cell">
-              <ul class="vert">
-                <li>
-                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
-                </li>
-                <li>
-                  <span class="clarification pending"><i> </i>{{ 'pending'|trans }}</span>
-                </li>
-              </ul>
-            </div>
-            <div class="cell">
-              <ul class="hor">
-                <li>
-                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
-                  <span class="clarification e-check"><i> </i>{{ 'E-Check'|trans }}</span>
-                  <span class="clarification credit-card"><i> </i>{{ 'credit.card'|trans }}</span>
-                  {# note: we don't display recurring icon yet, so don't confuse people
-                  <span class="clarification recurring"><i> </i>{{ 'recurring'|trans }}</span>
-                  #}
-                  <span class="clarification cash"><i> </i>{{ 'order.type.cash'|trans }}</span>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </div>
+      {% include 'RjCoreBundle::paymentsLegend.html.twig' %}
       <!-- ko if: pages().length -->
       <nav class="pagination-box">
           <ul>

@@ -1575,8 +1575,18 @@ label.error b {
   width:170px;
 }
 
+#pay-anything-popup .tooltip-box.type2{
+  left:355px;
+}
+
 .payments-popup .tooltip-box.type3 {
   left:355px;
+  top:0;
+  width:200px;
+}
+
+.payments-popup .tooltip-box.type4 {
+  left:270px;
   top:0;
   width:200px;
 }
@@ -2390,6 +2400,10 @@ label.checkbox input[type="radio"]:checked + i {
 .payments-popup .half-box {
   width:270px;
   padding:0;
+}
+
+.payments-popup .half-box.pay-anything {
+  width:250px;
 }
 
 .payments-popup .half-box .form-row {
@@ -3742,6 +3756,13 @@ table.ui-datepicker-calendar tbody tr td a {
     clear: left;
 }
 
+.width-auto .fields-box {
+  width: auto;
+}
+
+#rentjeeves_checkoutbundle_paymentaccounttype_pay_anything_address_city_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_pay_anything_address_area_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_pay_anything_address_zip_box,
 #rentjeeves_checkoutbundle_paymentaccounttype_address_city_box,
 #rentjeeves_checkoutbundle_paymentaccounttype_address_area_box,
 #rentjeeves_checkoutbundle_paymentaccounttype_address_zip_box,
@@ -3750,6 +3771,7 @@ table.ui-datepicker-calendar tbody tr td a {
 #rentjeeves_checkoutbundle_userdetailstype_new_address_zip_box,
 #rentjeeves_checkoutbundle_paymenttype_frequency_row .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_startMonth_row .fields-box,
+#rentjeeves_checkoutbundle_paymentaccounttype_pay_anything_ExpirationMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_endMonth_box,
 #rentjeeves_checkoutbundle_paymenttype_endYear_box,

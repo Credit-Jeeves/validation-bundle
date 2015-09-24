@@ -16,11 +16,13 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\Invali
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RuntimeException;
 
 class PaymentAccountManager
@@ -150,14 +152,19 @@ class PaymentAccountManager
      * @param  PaymentAccountData $paymentAccountData
      * @param  User $user
      * @param  Group $group if group is null use the default merchant account
+     * @param  string $depositAccountType
      * @return string
      * @throws PaymentProcessorConfigurationException
      */
-    public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group = null)
-    {
+    public function getToken(
+        PaymentAccountData $paymentAccountData,
+        User $user,
+        Group $group = null,
+        $depositAccountType = DepositAccountType::RENT
+    ) {
         $merchantName = $this->defaultMerchantName;
         if ($group !== null) {
-            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $depositAccount = $group->getDepositAccount($depositAccountType, PaymentProcessor::HEARTLAND);
             $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
         }
         if (empty($merchantName)) {

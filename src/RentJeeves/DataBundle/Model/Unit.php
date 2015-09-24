@@ -31,7 +31,7 @@ abstract class Unit
      * )
      * @Assert\Regex(
      *     message="error.unit.regexp",
-     *     pattern = "/^[A-Za-z_0-9\-\.]{1,50}$/",
+     *     pattern = "/^[A-Za-z_0-9\-\.\/]{1,50}$/",
      *     groups = {
      *         "import",
      *         "registration_tos",

@@ -7,7 +7,6 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Inject;
 use RentJeeves\DataBundle\Entity\ImportMappingByProperty;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use \RentJeeves\CoreBundle\Session\Landlord as SessionLandlord;
@@ -173,7 +172,7 @@ class StorageMRI extends ExternalApiStorage
                 $moveOut,
                 $customer->getLeaseBalance(),
                 $monthToMonth,
-                $this->getPayAllowed($customer),
+                $customer->getPayAllowed(),
                 $customer->getLeaseId(),
                 $externalUnitId,
                 $customer->getCity(),
@@ -188,20 +187,5 @@ class StorageMRI extends ExternalApiStorage
         }
 
         return true;
-    }
-
-    /**
-     * @param  Value $customer
-     * @return int
-     */
-    protected function getPayAllowed(Value $customer)
-    {
-        $payNotAllowed = trim(strtolower($customer->getPayAllowed()));
-
-        if ($payNotAllowed === 'y') {
-            return PaymentAccepted::DO_NOT_ACCEPT;
-        }
-
-        return PaymentAccepted::ANY;
     }
 }

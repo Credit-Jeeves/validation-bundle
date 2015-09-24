@@ -6,7 +6,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Entity\DepositAccount as DepositAccountEntity;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\CoreBundle\DateTime;
 use JMS\Serializer\Annotation as Serializer;
@@ -110,7 +109,8 @@ class Payment
      * @Assert\Range(
      *      min=0,
      *      minMessage="checkout.error.amount.min",
-     *      invalidMessage="checkout.error.amount.valid"
+     *      invalidMessage="checkout.error.amount.valid",
+     *      groups={"Default", "pay_anything"}
      * )
      * @Serializer\Groups({"payRent"})
      *
@@ -131,7 +131,8 @@ class Payment
      * @Assert\Range(
      *      min=1,
      *      minMessage="checkout.error.total.min",
-     *      invalidMessage="checkout.error.total.valid"
+     *      invalidMessage="checkout.error.total.valid",
+     *      groups={"Default", "pay_anything"}
      * )
      * @Serializer\Groups({"payRent"})
      *

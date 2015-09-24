@@ -18,7 +18,9 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     {
         $this->assertOrder($order);
 
-        $this->updateStatus($order, OrderStatus::SENDING);
+        if ($this->updateStatus($order, OrderStatus::SENDING)) {
+            $this->mailer->sendOrderSendingNotification($order);
+        }
     }
 
     /**
@@ -31,10 +33,8 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
         /** @var OrderPayDirect $order */
         if ($this->isOutboundLegInitiated($order)) {
             $this->updateStatus($order, OrderStatus::COMPLETE);
-        } elseif ($this->updateStatus($order, OrderStatus::SENDING)) {
-            $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
-            $this->em->persist($job);
-            $this->em->flush($job);
+        } else {
+            $this->initiateOutboundLeg($order);
         }
     }
 
@@ -65,11 +65,16 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     {
         $this->assertOrder($order);
 
+        // if inbound leg is already returned, don't change order status
+        if (OrderStatus::RETURNED == $order->getStatus()) {
+             return;
+        }
+
         /** @var OrderPayDirect $order */
         if ($this->isOutboundLegReversed($order)) {
             parent::setRefunded($order);
-        } else {
-            $this->updateStatus($order, OrderStatus::REFUNDING);
+        } elseif ($this->updateStatus($order, OrderStatus::REFUNDING)) {
+            $this->mailer->sendOrderRefundingNotification($order);
         }
     }
 
@@ -87,9 +92,9 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
                 $order->getId(),
                 $order->getDepositOutboundTransaction()->getTransactionId()
             ));
-        } else {
-            parent::setReturned($order);
         }
+
+        parent::setReturned($order);
     }
 
     /**
@@ -99,7 +104,9 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     {
         $this->assertOrder($order);
 
-        $this->updateStatus($order, OrderStatus::REISSUED);
+        if ($this->updateStatus($order, OrderStatus::REISSUED)) {
+            $this->mailer->sendOrderReissuedNotification($order);
+        }
     }
 
     /**
@@ -129,5 +136,15 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
         if (! $order instanceof OrderPayDirect) {
             throw new \LogicException('Unsupported order type in OrderPayDirectStatusManager');
         }
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function initiateOutboundLeg(Order $order)
+    {
+        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
+        $this->em->persist($job);
+        $this->em->flush($job);
     }
 }

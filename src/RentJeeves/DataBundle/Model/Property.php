@@ -177,7 +177,8 @@ abstract class Property
     /**
      * @ORM\ManyToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     mappedBy="group_properties"
+     *     mappedBy="group_properties",
+     *     cascade={"persist"}
      * )
      */
     protected $property_groups;

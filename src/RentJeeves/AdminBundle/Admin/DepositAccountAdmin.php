@@ -64,6 +64,13 @@ class DepositAccountAdmin extends Admin
                 [
                     'choices' => $depositAccountStatuses
                 ]
+            )
+            ->add(
+                'accountNumber',
+                'text',
+                [
+                    'required' => false,
+                ]
             );
     }
 }

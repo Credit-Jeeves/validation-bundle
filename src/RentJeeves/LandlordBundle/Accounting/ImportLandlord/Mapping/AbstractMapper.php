@@ -81,4 +81,16 @@ abstract class AbstractMapper implements LoggerAwareInterface
      * @return object
      */
     abstract protected function mapObject();
+
+    /**
+     * Truncates the string to the specific characters
+     *
+     * @return string
+     */
+    protected function getEmail()
+    {
+        $email = trim($this->get('ll_email'), '"');
+
+        return preg_replace('/[,\s]+.+$/', '', $email);
+    }
 }

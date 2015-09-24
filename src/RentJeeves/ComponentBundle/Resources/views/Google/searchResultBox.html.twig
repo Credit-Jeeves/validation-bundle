@@ -67,6 +67,8 @@
                                                         <option value="{{ unit.name }}">{{ unit.name }}</option>
                                                     {% endfor %}
                                                 {% endif %}
+                                                <option value="UNASSIGNED" class="unassignedUnit"><a
+                                                            href="#">{{ 'unassigned.unit'|trans }}</a></option>
                                                 <option value="new" class="addNewUnit"><a
                                                             href="#">{{ 'add.new'|trans }}</a></option>
                                             </select>

@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
@@ -29,12 +30,16 @@ trait PaymentProcess
     /**
      * Creates a new payment account. Right now only Heartland is supported.
      *
-     * @param  Form     $paymentAccountType
+     * @param  Form $paymentAccountType
      * @param  Contract $contract
+     * @param  string $depositAccountType
      * @return mixed
      */
-    protected function savePaymentAccount(Form $paymentAccountType, Contract $contract)
-    {
+    protected function savePaymentAccount(
+        Form $paymentAccountType,
+        Contract $contract,
+        $depositAccountType = DepositAccountType::RENT
+    ) {
         $em = $this->getDoctrine()->getManager();
         $paymentAccountEntity = $paymentAccountType->getData();
 
@@ -48,7 +53,7 @@ trait PaymentProcess
             $paymentAccountMapped->set('landlord', $this->getUser());
         } else {
             // otherwise add the the associated depositAccount
-            $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
+            $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
             // make sure this deposit account is added only once!
             if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
@@ -58,7 +63,7 @@ trait PaymentProcess
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
-        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract);
+        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract, $depositAccountType);
 
         $paymentAccountEntity->setToken($token);
 

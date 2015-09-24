@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
@@ -16,6 +17,7 @@ use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 /**
  * @DI\Service("checkout.payment_job_executor")
@@ -137,7 +139,8 @@ class PaymentJobExecutor
         $contract = $payment->getContract();
 
         $filterClosure = function (Operation $operation) use ($date) {
-            if (($order = $operation->getOrder()) &&
+            if (($operation->getType() === OperationType::RENT) &&
+                ($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
                 $order->getPaymentType() != OrderPaymentType::CASH &&
                 OrderStatus::ERROR != $order->getStatus() &&
@@ -148,7 +151,9 @@ class PaymentJobExecutor
 
             return false;
         };
-        if ($contract->getOperations()->filter($filterClosure)->count()) {
+        if (DepositAccountType::RENT === $payment->getDepositAccount()->getType() &&
+            !$contract->getOperations()->filter($filterClosure)->isEmpty()
+        ) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
             $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());

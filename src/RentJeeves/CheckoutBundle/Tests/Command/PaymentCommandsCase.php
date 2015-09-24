@@ -123,7 +123,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
         $this->assertCount(1, $this->plugin->getPreSendMessages());
-        $this->assertEquals('Rent Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
+        $this->assertEquals('RentTrack Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
 
         $this->plugin->clean();
 
@@ -192,7 +192,7 @@ class PaymentCommandsCase extends BaseTestCase
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
         $this->assertNotNull($paymentAccount = $order->getPaymentAccount());
         $this->assertNotNull($depositAccount = $order->getDepositAccount());
         $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
@@ -254,7 +254,7 @@ class PaymentCommandsCase extends BaseTestCase
         /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
         $operations = $order->getOperations();
         $this->assertCount(1, $operations);
 
@@ -317,7 +317,7 @@ class PaymentCommandsCase extends BaseTestCase
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
     }
 
     /**
@@ -382,6 +382,7 @@ class PaymentCommandsCase extends BaseTestCase
         $depositAccount->setPaymentProcessor($contract->getGroup()->getGroupSettings()->getPaymentProcessor());
         $depositAccount->setType(DepositAccountType::RENT);
         $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($contract->getGroup()->getHolding());
 
         $contract->getGroup()->addDepositAccount($depositAccount);
 
@@ -515,13 +516,23 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertNotEmpty($orders[1]->getTransactions()->first()->getTransactionId());
         $this->assertNotEmpty($orders[2]->getTransactions()->first()->getMessages());
 
-        $group = $contract->getGroup(); // group is the same
         $date = new \DateTime();
-        $expectedBatchId = sprintf('%dB%s', $group->getId(), $date->format('Ymd'));
 
-        $this->assertEquals($expectedBatchId, $orders[0]->getTransactions()->first()->getBatchId());
-        $this->assertEquals($expectedBatchId, $orders[1]->getTransactions()->first()->getBatchId());
-        $this->assertEquals($expectedBatchId, $orders[2]->getTransactions()->first()->getBatchId());
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[0]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[0]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order1'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[1]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[1]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order2'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[2]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[2]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order3'
+        );
 
         $expectedDate = $date->format('Ymd');
         $this->assertEquals($expectedDate, $orders[0]->getTransactions()->first()->getBatchDate()->format('Ymd'));

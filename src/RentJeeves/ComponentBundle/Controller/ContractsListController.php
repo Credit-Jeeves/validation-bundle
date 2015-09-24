@@ -85,6 +85,7 @@ class ContractsListController extends Controller
         $isNewUser = false;
         $isInPaymentWindow = false;
         $hasIntegratedBalance = false;
+        $allowPayAnything = false;
         if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
             $isNewUser = true;
             /** @var Contract $contract */
@@ -106,6 +107,14 @@ class ContractsListController extends Controller
             if (!$hasIntegratedBalance && $contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
                 $hasIntegratedBalance = true;
             }
+            if (($contract->getStatus() !== ContractStatus::FINISHED) &&
+                end($contractsArr)['is_allowed_to_pay_anything']
+            ) {
+                $activeContracts[] = $contract;
+            }
+            if (!$allowPayAnything && end($contractsArr)['is_allowed_to_pay_anything']) {
+                $allowPayAnything = true;
+            }
         }
 
         $contractsJson = $this->get('jms_serializer')->serialize(
@@ -122,6 +131,7 @@ class ContractsListController extends Controller
             'isNewUser'     => $isNewUser,
             'hasIntegratedBalance' => $hasIntegratedBalance,
             'isInPaymentWindow' => $isInPaymentWindow,
+            'allowPayAnything' => $allowPayAnything,
         );
 
         if ($mobile) {

@@ -1,0 +1,121 @@
+{# for step pay #}
+<h3 class="italic" data-bind="visible: 'pay' == step()">
+    <span class="value" data-bind="text: 'checkout.pay_anything.fullPayTo', i18n: {'FULL_PAY_TO' : fullPayTo, 'PAY_FOR' : payForText}"></span>
+</h3>
+{# for step finish  #}
+<h3 class="italic" data-bind="visible: 'finish' == step()">
+    <span data-bind="text: 'checkout.pay_anything.thankyou_message', i18n: {'PAY_FOR' : payForText}"></span>
+</h3>
+
+<div class="clearfix halfs-box">
+    <div class="half-box left pay-anything">
+        <h4>{{ 'checkout.your_payment' | trans }}</h4>
+        <div class="form-row clearfix">
+            <label>{{ 'checkout.sent_on' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: payment.startDate"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: getAmount()">
+            <label>{{ 'checkout.amount' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getAmount"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix" data-bind="visible: getFee()">
+            <label>{{ 'checkout.fee' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getFeeAmountText()"></span>
+            </div>
+        </div>
+        <div class="form-row clearfix total-amount">
+            <label>{{ 'checkout.total' | trans }}</label>
+            <div class="fields-box">
+                <span class="value" data-bind="text: getTotalWithFee()"></span>
+            </div>
+        </div>
+    </div>
+    <div class="half-box right pay-anything">
+        <h4>{{ 'checkout.how_paying' | trans }}</h4>
+        <div class="form-row clearfix">
+            <label>{{ 'checkout.method' | trans }}</label>
+            <div class="fields-box">
+                        <span class="value"
+                              data-bind="text: 'checkout.' + currentPaymentAccount().type(), i18n: {}"
+                              id="checkout-payment-source"
+                                >
+
+                        </span>
+            </div>
+        </div>
+        <div data-bind="visible: !isNewPaymentAccount()">
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_nickname' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().name"></span>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: ('bank' == currentPaymentAccount().type() && isNewPaymentAccount())">
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.payor_name' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().PayorName"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.routing_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().RoutingNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().AccountNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.account_type' | trans }}</label>
+                <div class="fields-box">
+                            <span class="value" data-bind="visible: 'Checking' == currentPaymentAccount().ACHDepositType()">
+                                {{ 'checkout.account_type.checking' | trans }}
+                            </span>
+                            <span class="value" data-bind="visible: 'Savings' == currentPaymentAccount().ACHDepositType()">
+                                {{ 'checkout.account_type.savings' | trans }}
+                            </span>
+                            <span class="value" data-bind="visible: 'Unassigned' == currentPaymentAccount().ACHDepositType()">
+                                {{ 'checkout.account_type.business_checking' | trans }}
+                            </span>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: 'card' == currentPaymentAccount().type()">
+            <div class="form-row clearfix" data-bind="visible: isNewPaymentAccount()">
+                <label>{{ 'checkout.card.account_name' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().CardAccountName"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="visible: isNewPaymentAccount()">
+                <label>{{ 'checkout.card_number' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().getCardNumber"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.expiration' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: currentPaymentAccount().ExpirationMonth() + '/' + currentPaymentAccount().ExpirationYear()"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'checkout.billing_address' | trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: billingaddress.current()"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -38,7 +38,7 @@ class UserType extends AbstractType
             ->add('zip')
             ->add('phone_type')
             ->add('phone')
-            ->add('score_changed_notification')
+            ->add('emailNotification')
             ->add('offer_notification')
             ->add('date_of_birth')
             ->add('ssn')

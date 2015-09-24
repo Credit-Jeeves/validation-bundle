@@ -109,7 +109,7 @@ class Order extends ResponseResource
      */
     public function getMessage()
     {
-        if ($transaction = $this->entity->getHeartlandTransaction() or $transaction = $this->getTransaction()) {
+        if ($transaction = $this->entity->getTransaction() or $transaction = $this->getTransaction()) {
             return $transaction->getMessages() ?: '';
         }
 

@@ -279,7 +279,6 @@ function Pay(parent, contract) {
                 }
                 current = 0;
                 self.step(steps[current]);
-                jQuery("input.datepicker-field").datepicker("destroy");
             }
         });
 

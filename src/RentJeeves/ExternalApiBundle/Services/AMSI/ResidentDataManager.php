@@ -55,15 +55,26 @@ class ResidentDataManager
 
     /**
      * @param string $externalPropertyId
+     * @param boolean $includeRecurringCharges
+     *
      * @return Lease[]
+     *
      * @throws \LogicException
      */
-    public function getResidents($externalPropertyId)
+    public function getResidents($externalPropertyId, $includeRecurringCharges = false)
     {
         $this->logger->debug(sprintf('Get AMSI Residents by external property ID:%s', $externalPropertyId));
         $client = $this->getApiClient(SoapClientEnum::AMSI_LEASING);
-        $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
-        $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
+        $currentResidents = $client->getPropertyResidents(
+            $externalPropertyId,
+            Lease::STATUS_CURRENT,
+            $includeRecurringCharges
+        );
+        $residentsOnNotice = $client->getPropertyResidents(
+            $externalPropertyId,
+            Lease::STATUS_NOTICE,
+            $includeRecurringCharges
+        );
 
         $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
 
@@ -107,6 +118,15 @@ class ResidentDataManager
         return $leases;
     }
 
+    /**
+     * @param string $externalPropertyId
+     *
+     * @return Lease[]
+     */
+    public function getResidentsWithRecurringCharges($externalPropertyId)
+    {
+        return $this->getResidents($externalPropertyId, true);
+    }
     /**
      * @return AMSILeasingClient|AMSILedgerClient
      */

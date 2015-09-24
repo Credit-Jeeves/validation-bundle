@@ -4,9 +4,10 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use JMS\Serializer\Annotation as Serializer;
@@ -219,32 +220,17 @@ class Group extends BaseGroup
         return $this->getStatementDescriptor() ?: substr($this->getName(), 0, 14);
     }
 
-    public function getAccountNumber()
+    /**
+     * @return string|null
+     */
+    public function getRentAccountNumberPerCurrentPaymentProcessor()
     {
-        if ($accountNumberMapping = $this->getAccountNumberMapping()) {
-            return $accountNumberMapping->getAccountNumber();
+        $depositAccount = $this->getRentDepositAccountForCurrentPaymentProcessor();
+        if ($depositAccount && $depositAccount->getAccountNumber()) {
+            return $depositAccount->getAccountNumber();
         }
 
         return null;
-    }
-
-    public function setAccountNumber($accountNumber)
-    {
-        if (!$accountNumberMapping = $this->getAccountNumberMapping()) {
-            $accountNumberMapping = new GroupAccountNumberMapping();
-            $this->setAccountNumberMapping($accountNumberMapping);
-        }
-        $accountNumberMapping->setAccountNumber($accountNumber);
-    }
-
-    public function getAccountNumberMapping()
-    {
-        if (!$this->accountNumberMapping) {
-            $this->accountNumberMapping = new GroupAccountNumberMapping();
-            $this->accountNumberMapping->setGroup($this);
-        }
-
-        return $this->accountNumberMapping;
     }
 
     /**
@@ -285,6 +271,30 @@ class Group extends BaseGroup
     }
 
     /**
+     * @Assert\True(message = "admin.error.deposit_account_number", groups={"unique_mapping"})
+     * @return boolean
+     *
+     */
+    public function isValidDepositAccountUniqueIndexForAccountNumber()
+    {
+        $alreadyUsedDepositAccounts = [];
+        foreach ($this->getDepositAccounts() as $account) {
+            $accountNumber = $account->getAccountNumber();
+            if (empty($accountNumber)) {
+                continue;
+            }
+            $key = $account->getType() . $account->getPaymentProcessor() . $accountNumber . $this->getHolding()
+                    ->getId();
+            if (in_array($key, $alreadyUsedDepositAccounts)) {
+                return false;
+            }
+            $alreadyUsedDepositAccounts[] = $key;
+        }
+
+        return true;
+    }
+
+    /**
      * @Assert\True(message = "admin.error.deposit_account", groups={"unique_mapping"})
      * @return boolean
      */
@@ -292,10 +302,11 @@ class Group extends BaseGroup
     {
         $alreadyUsedDepositAccounts = [];
         foreach ($this->getDepositAccounts() as $account) {
-            $key = $account->getType().$account->getPaymentProcessor();
+            $key = $account->getType() . $this->getId() . $account->getPaymentProcessor();
             if (in_array($key, $alreadyUsedDepositAccounts)) {
                 return false;
             }
+
             $alreadyUsedDepositAccounts[] = $key;
         }
 
@@ -317,5 +328,25 @@ class Group extends BaseGroup
         $length = strlen($this->getStatementDescriptor());
 
         return $length <= $limit;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|DepositAccount[]
+     */
+    public function getNotRentDepositAccountsForCurrentPaymentProcessor()
+    {
+        return $this->getDepositAccounts()->filter(function (DepositAccount $account) {
+            return DepositAccountType::RENT !== $account->getType() &&
+                $account->getPaymentProcessor() === $this->getGroupSettings()->getPaymentProcessor();
+        });
+    }
+
+    /**
+     * @param string $type
+     * @return DepositAccount|null
+     */
+    public function getDepositAccountForCurrentPaymentProcessor($type)
+    {
+        return $this->getDepositAccount($type, $this->getGroupSettings()->getPaymentProcessor());
     }
 }

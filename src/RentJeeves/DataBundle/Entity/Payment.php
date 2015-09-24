@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
@@ -16,7 +17,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
- * @Assert\Callback(methods={"validate"})
+ * @Assert\Callback(methods={"validate"}, groups={"Default", "pay_anything"})
  */
 class Payment extends Base
 {
@@ -47,11 +48,14 @@ class Payment extends Base
     {
         $contract = $this->getContract();
         $status = $contract->getStatus();
-        if (in_array($status, array(ContractStatus::PENDING, ContractStatus::INVITE))) {
+        if (in_array($status, [ContractStatus::PENDING, ContractStatus::INVITE]) &&
+            $this->getDepositAccount()->getType() === DepositAccountType::RENT
+        ) {
             $contract = $this->getContract()->initiatePaidTo();
             $contract->setStatus(ContractStatus::APPROVED);
             $this->setContract($contract);
         }
+
         return $this;
     }
 
@@ -83,6 +87,7 @@ class Payment extends Base
             return null;
         }
         $date = new \DateTime('0000-00-00T00:00:00');
+
         return $date->setDate($this->getStartYear(), $this->getStartMonth(), $this->getDueDate());
     }
 
@@ -103,6 +108,7 @@ class Payment extends Base
         $job = new Job('payment:pay', array('--app=rj'));
         $job->setMaxRuntime(self::MAXIMUM_RUNTIME_SEC);
         $job->addRelatedEntity($this);
+
         return $job;
     }
 
@@ -127,6 +133,7 @@ class Payment extends Base
             $day = $this->getDueDate();
             $month = $this->getStartMonth();
             $year = $this->getStartYear();
+
             return $now->setDate($year, $month, $day);
         }
 
@@ -244,7 +251,7 @@ class Payment extends Base
         $group = $this->getContract() ? $this->getContract()->getGroup() : null;
         $payBalanceOnly = $group ? $group->getGroupSettings()->getPayBalanceOnly() : null;
 
-        if (!$this->getPaidFor() && !$payBalanceOnly) {
+        if (!$this->getPaidFor() && !$payBalanceOnly && $context->getGroup() === 'Default') {
             $context->addViolationAt(null, 'error.contract.paid_for');
         }
          // if month > 12 the method  $end->setDate with this param returned 500
@@ -260,6 +267,7 @@ class Payment extends Base
                 "payment.month.error.number",
                 ['%count%' => $lastDayInStartMonth->format('d')]
             );
+
             return;
         }
 
@@ -276,6 +284,7 @@ class Payment extends Base
                     "payment.month.error.number",
                     ['%count%' => $lastDayInEndMonth->format('d')]
                 );
+
                 return;
             }
         }

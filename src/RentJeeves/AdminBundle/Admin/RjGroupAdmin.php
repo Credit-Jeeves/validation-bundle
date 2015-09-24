@@ -12,8 +12,6 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class RjGroupAdmin extends Admin
 {
@@ -77,6 +75,7 @@ class RjGroupAdmin extends Admin
         /** @var DepositAccount $depositAccount */
         foreach ($depositAccounts as $depositAccount) {
             $depositAccount->setGroup($object);
+            $depositAccount->setHolding($object->getHolding());
         }
     }
 
@@ -89,6 +88,7 @@ class RjGroupAdmin extends Admin
         /** @var DepositAccount $depositAccount */
         foreach ($depositAccounts as $depositAccount) {
             $depositAccount->setGroup($object);
+            $depositAccount->setHolding($object->getHolding());
         }
     }
 
@@ -231,21 +231,6 @@ class RjGroupAdmin extends Admin
                     )
                 )
             ->end();
-
-        $self = $this;
-        $formMapper->getFormBuilder()->addEventListener(
-            FormEvents::SUBMIT,
-            function (FormEvent $event) use ($self) {
-                $form = $event->getForm();
-                /** @var Group $group */
-                $group = $form->getData();
-                $accountMapping = $group->getAccountNumberMapping();
-                if (!$accountMapping->getHolding()) {
-                    $holding = $group->getHolding();
-                    $accountMapping->setHolding($holding);
-                }
-            }
-        );
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

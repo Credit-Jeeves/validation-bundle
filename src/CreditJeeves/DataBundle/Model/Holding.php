@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AMSISettings;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -69,6 +70,16 @@ abstract class Holding
      * )
      */
     protected $users;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *     mappedBy="holding",
+     *     cascade={"remove", "persist"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $depositAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -181,6 +192,26 @@ abstract class Holding
     /**
      * @ORM\Column(
      *      type="boolean",
+     *      name="use_recurring_charges",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $useRecurringCharges = false;
+
+    /**
+     * @ORM\Column(name="recurring_codes", type="string", nullable=true, length=255)
+     *
+     * @var string
+     */
+    protected $recurringCodes;
+
+    /**
+     * @ORM\Column(
+     *      type="boolean",
      *      name="is_allowed_future_contract",
      *      options={
      *          "default":0
@@ -214,6 +245,18 @@ abstract class Holding
      * @var boolean
      */
     protected $paymentsEnabled = true;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->groups = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->units = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
+        $this->residentsMapping = new ArrayCollection();
+        $this->apiIntegrationType = ApiIntegrationType::NONE;
+        $this->depositAccounts = new ArrayCollection();
+    }
 
     /**
      * @return boolean
@@ -271,15 +314,20 @@ abstract class Holding
         $this->isAllowedFutureContract = $isAllowedFutureContract;
     }
 
-    public function __construct()
+    /**
+     * @return DepositAccount[]
+     */
+    public function getDepositAccounts()
     {
-        $this->createdAt = new \DateTime();
-        $this->groups = new ArrayCollection();
-        $this->users = new ArrayCollection();
-        $this->units = new ArrayCollection();
-        $this->contracts = new ArrayCollection();
-        $this->residentsMapping = new ArrayCollection();
-        $this->apiIntegrationType = ApiIntegrationType::NONE;
+        return $this->depositAccounts;
+    }
+
+    /**
+     * @param array $depositAccounts
+     */
+    public function setDepositAccounts(array $depositAccounts)
+    {
+        $this->depositAccounts = $depositAccounts;
     }
 
     /**
@@ -307,7 +355,7 @@ abstract class Holding
     }
 
     /**
-     * @param MRISetting $MRISettings
+     * @param MRISettings $MRISettings
      */
     public function setMriSettings(MRISettings $MRISettings = null)
     {
@@ -624,5 +672,54 @@ abstract class Holding
     public function setApiIntegrationType($apiIntegrationType)
     {
         $this->apiIntegrationType = $apiIntegrationType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecurringCodes()
+    {
+        return $this->recurringCodes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRecurringCodesArray()
+    {
+        if (empty($this->recurringCodes)) {
+            return [];
+        }
+
+        $recurringCodes = explode(',', $this->recurringCodes);
+        foreach ($recurringCodes as $key => $code) {
+            $recurringCodes[$key] = trim($code);
+        }
+
+        return $recurringCodes;
+    }
+
+    /**
+     * @param string $recurringCodes
+     */
+    public function setRecurringCodes($recurringCodes)
+    {
+        $this->recurringCodes = $recurringCodes;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseRecurringCharges()
+    {
+        return $this->useRecurringCharges;
+    }
+
+    /**
+     * @param boolean $useRecurringCharges
+     */
+    public function setUseRecurringCharges($useRecurringCharges)
+    {
+        $this->useRecurringCharges = $useRecurringCharges;
     }
 }
