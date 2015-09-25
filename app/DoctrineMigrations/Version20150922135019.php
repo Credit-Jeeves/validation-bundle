@@ -22,8 +22,9 @@ class Version20150922135019 extends AbstractMigration
             locale = "en",
             property = "body",
             value = "
-                {% extends \"RjComponentBundle:Mailer:base.html.twig\" %} {% block email %}
-                <H1>Missed a Payment?</H1>
+                {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
+                {% block h1 %}Missed a Payment?{% endblock %}
+                {% block email %}
                 <H2>We\'ve missed you!</H2>
                     Hi {{ FNAME }}!
                     We noticed you haven\'t made a rent payment in a while.
