@@ -756,7 +756,7 @@ CREATE TABLE `cj_settings` (
 
 LOCK TABLES `cj_settings` WRITE;
 /*!40000 ALTER TABLE `cj_settings` DISABLE KEYS */;
-INSERT INTO `cj_settings` VALUES (1,'4zmygmHBQHjir2d+8cJeb8jqLv8YrCEUgaxNeT6sVK+mWdK0JsxyQuNutFu2UrLDk7S9XrJCKhgrBB859LWR2w==','uvzrzV024jBbGB74YAx3DAXYlB0XyF1wXwgbRlCBtTM=','5DjdCLI+g3OLUBrWFiRNlc6czeVCfBnSS5VD4BhEODc=','uvzrzV024jBbGB74YAx3DAXYlB0XyF1wXwgbRlCBtTM=','Test Contract text','Some rules','2015-09-21 13:17:14');
+INSERT INTO `cj_settings` VALUES (1,'CIPy7wPejGPZGMyIZV4ZrB+mlX7/L62i+2mRljqdwjnIYE4pv0k8pPm8fH5BGH4dFMR3UTFgN0QoqdnDe4/cgA==','uvzrzV024jBbGB74YAx3DAXYlB0XyF1wXwgbRlCBtTM=','5DjdCLI+g3OLUBrWFiRNlc6czeVCfBnSS5VD4BhEODc=','uvzrzV024jBbGB74YAx3DAXYlB0XyF1wXwgbRlCBtTM=','Test Contract text','Some rules','2015-09-21 13:17:14');
 /*!40000 ALTER TABLE `cj_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
