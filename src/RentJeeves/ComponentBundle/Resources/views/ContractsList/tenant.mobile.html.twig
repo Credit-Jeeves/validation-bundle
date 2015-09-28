@@ -22,40 +22,43 @@
 
             <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;'>
 
-                <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">Contracts</div>
+                <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">
+                    Contracts
+                </div>
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-            <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" class="contractBox">
-                <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
-                <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                        <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" class="contractBox">
+                            <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
+                            <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
-                        <br>
-                            <span style="font-size: 14;">{{ contract.rent }}</span>
-                    <br>
-                {% if contract.status == 'pending' %}
-                   <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
-                {% elseif contract.payment_status == 'processing' %}
-                    <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
-                {% elseif contract.payment_type == 'recurring' %}
-                    Scheduled: {{ contract.payment_due_date }}
-                {% elseif contract.payment_type == 'one_time' %}
-                    Scheduled: {{  contract.payment_due_date }}
-                {% elseif contract.status == 'approved' %}
-                    {{ 'contract.status.approved.text' | trans }}
-                {% elseif contract.status == 'current' %}
-                    Setup your first payment!
-                {% elseif contract.status == 'finished' %}
-                    {{ 'contract.status.finished.text' | trans }}
-                {% else %}
-                    {{ contract.status | upper }}
-                {% endif %}
+                            <br>
+                            <span style="font-size: 14;">Rent: {{ contract.rent }}</span>
+                            <br>
+                            {% if contract.status == 'pending' %}
+                                <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
+                            {% elseif contract.payment_status == 'processing' %}
+                                <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
+                            {% elseif contract.payment_type == 'recurring' %}
+                                Scheduled: {{ contract.payment_due_date }}
+                            {% elseif contract.payment_type == 'one_time' %}
+                                Scheduled: {{  contract.payment_due_date }}
+                            {% elseif contract.status == 'approved' %}
+                                {{ 'contract.status.approved.text' | trans }}
+                            {% elseif contract.status == 'current' %}
+                                Setup your first payment!
+                            {% elseif contract.status == 'finished' %}
+                                {{ 'contract.status.finished.text' | trans }}
+                            {% else %}
+                                {{ contract.status | upper }}
+                            {% endif %}
 
-                    </div>
+                        </div>
                     </a>
                     {% endif %}
 
                 {% endfor %}
+
             </div>
         </div>
 
@@ -77,15 +80,17 @@
                 </div>
 
                 <div class="ui-content" role="main" style="margin-left: 34px; padding-right: 33px;">
-                {% if contract.status != 'deleted' %}
 
                     <div style="position: absolute;left: 20px;top: 61px;"><i class="fa fa-home fa-lg"></i></div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt; float: right;"><b>{{ contract.full_address }}</b></div>
 
                     <br><br>
+                    <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
+                        <br>
+                        Due on: <span id="contractDueNext{{ contract.id }}"></span> {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}
+                    </div>
 
-
-                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">AMOUNT</div>
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">RENT AMOUNT</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractTotal{{ contract.id }}"></div>
 
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>
@@ -96,7 +101,7 @@
 
                     <br>
 
-                    <div style="color: white; border-radius: 3px; background: #eb6024; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
+                    <div style="color: #996600; border-radius: 3px; background: #fcf8e3; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
                         {% if contract.status == 'pending' %}
                             {{ 'contract.status.pending.text' | trans }}
                         {% elseif contract.payment_status == 'processing' %}
@@ -118,22 +123,27 @@
                         {% endif %}
                     </div>
 
-
-
                     <br>
                     <br>
 
-                    <div style="font-family: PT Sans Caption; font-size: 10pt; font-weight: bold;">
-                        Due: <span id="contractDueNext{{ contract.id }}"></span>. {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}</div>
-
-                {% endif %}
-                    <br>
-                    {% if contract.status!='pending' and (contract.payment_type=='recurring' or contract.payment_type=='one_time') %}
-                    <a id="opendialog" href="#cancel" data-ajax="false" style="text-decoration: none;"><button id='cancel{{ contract.id }}' style="color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;">Cancel Payment</button></a>
+                    {% if contract.status != 'pending' %}
+                    <a onclick="setupPayForm({{ contract.id }})" data-ajax="false" style="text-decoration: none;">
+                        <button id='pay-button-{{ contract.id }}' style="color: white; background: rgb(235,96,36); text-shadow:none; border-radius: 7px;">
+                            {% if contract.payment_type != 'one_time' and contract.payment_type != 'recurring' %}
+                                Make Payment
+                            {% else %}
+                                Edit Payment
+                            {% endif %}
+                        </button>
+                    </a>
+                    {% endif %}
+                    <a href="#paymentHistory{{ contract.id }}" style="text-decoration: none;"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
+                    {% if contract.status != 'pending' and (contract.payment_type=='recurring' or contract.payment_type=='one_time') %}
+                        <a id="opendialog" href="#cancel" data-ajax="false" style="text-decoration: none;"><button id='cancel{{ contract.id }}' style="color: white; background: rgb(232,65,65);text-shadow:none; border-radius: 7px;">Cancel Payment</button></a>
                     {% endif %}
 
-                    <a href="#paymentHistory{{ contract.id }}" style="text-decoration: none;"><button{% if contract.status == 'pending' %} disabled{% endif %}>Payment History</button></a>
-                    </div>
+
+                </div>
             </div>
         {% endfor %}
 
