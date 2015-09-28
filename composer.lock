@@ -3673,7 +3673,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "b9bb22b3543d191aff08dfc59c826d69e49f656b"
+                "reference": "c55488edb578121d0e13462f10bf9360bb7f1a5f"
             },
             "require": {
                 "ext-curl": "*",
@@ -3719,7 +3719,7 @@
             ],
             "description": "ACI integration with Payum",
             "homepage": "https://github.com/Credit-Jeeves/ACIClient",
-            "time": "2015-06-24 12:52:26"
+            "time": "2015-09-28 09:42:27"
         },
         {
             "name": "payum/core",
