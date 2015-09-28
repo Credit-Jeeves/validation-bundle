@@ -37,9 +37,11 @@ services:
 
     payment.account.heartland:
         class: "%payment_account.heartland.class%"
-        calls:
-            - [setPayum, ["@payum2"]]
-            - [setDefaultMerchantName, ["%rt_merchant_name%"]]
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - %rt_group_code%
+
     payment_processor.report_synchronizer:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReportSynchronizer
         arguments:
@@ -217,6 +219,6 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @checkout.paid_for
-            - %rt_merchant_name%
+            - %rt_group_code%
             - %credittrack_payment_per_month%
 

@@ -25,7 +25,7 @@ parameters:
     email_from: no-reply@renttrack.com
     email_name: RentTrack
 
-    rt_merchant_name: 'RentTrackCorp'
+    rt_group_code: 'RentTrackCorp'
 
     property_management:
         name: 'RENTTRACK'
