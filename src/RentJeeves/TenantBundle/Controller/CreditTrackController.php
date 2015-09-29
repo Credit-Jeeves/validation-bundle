@@ -25,11 +25,9 @@ class CreditTrackController extends Controller
      */
     public function payAction()
     {
-        $rtMerchantName = $this->container->getParameter('rt_merchant_name');
-
         $em = $this->getDoctrine()->getManager();
         $group = $em->getRepository('DataBundle:Group')
-            ->findOneByCode($rtMerchantName);
+            ->findOneByCode($this->container->getParameter('rt_group_code'));
         /** @var Tenant $user */
         $user = $this->getUser();
         $paymentAccounts = $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) {

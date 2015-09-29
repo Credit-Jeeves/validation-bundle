@@ -38,19 +38,19 @@ class OrderCreationManager
     /**
      * @var string
      */
-    protected $rtMerchantName;
+    protected $rtGroupCode;
 
     /**
      * @param EntityManager $em
      * @param PaidFor $paidFor
-     * @param $rtMerchantName
+     * @param $rtGroupCode
      * @param $amount
      */
-    public function __construct(EntityManager $em, PaidFor $paidFor, $rtMerchantName, $amount)
+    public function __construct(EntityManager $em, PaidFor $paidFor, $rtGroupCode, $amount)
     {
         $this->em = $em;
         $this->paidFor = $paidFor;
-        $this->rtMerchantName = $rtMerchantName;
+        $this->rtGroupCode = $rtGroupCode;
         $this->creditTrackAmount = $amount;
     }
 
@@ -144,7 +144,7 @@ class OrderCreationManager
         $order->setPaymentAccount($paymentAccount);
 
         /** @var Group $rentTrackGroup */
-        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtMerchantName);
+        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtGroupCode);
 
         $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
 
@@ -202,7 +202,7 @@ class OrderCreationManager
         $order->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 
         /** @var Group $rentTrackGroup */
-        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtMerchantName);
+        $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtGroupCode);
 
         $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
 
