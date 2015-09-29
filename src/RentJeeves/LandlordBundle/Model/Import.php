@@ -510,7 +510,7 @@ class Import
      *
      * @return boolean
      */
-    public function isNeedUpdateRent()
+    public function isNeedUpdateRent($forceHasContractWaiting = false)
     {
         if (!$this->getContract() || !$holding = $this->getContract()->getHolding()) {
             return true;
@@ -520,7 +520,7 @@ class Import
             return true;
         }
 
-        if ($this->getHasContractWaiting()) {
+        if ($this->getHasContractWaiting() || $forceHasContractWaiting) {
             return false;
         }
 
