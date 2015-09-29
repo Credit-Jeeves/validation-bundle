@@ -94,8 +94,8 @@
     <td data-bind="text: (email)? email : tenant.email"></td>
     <td>
         <!-- ko if: !is_need_update_rent -->
-        <span class="rentNotEditable" data-bind="text: contract.rent">
-        </span>
+        <div class="rentNotEditable" data-bind="text: contract.rent">
+        </div>
         <!-- /ko -->
         <!-- ko if: is_need_update_rent -->
         {{
