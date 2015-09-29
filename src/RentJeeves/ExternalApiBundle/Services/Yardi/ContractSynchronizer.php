@@ -210,9 +210,8 @@ class ContractSynchronizer
             if (!$this->checkDateFallsBetweenDates(
                 $charge->getDetail()->getServiceFromDate(),
                 $charge->getDetail()->getServiceToDate()
-                )
-            ) {
-               continue;
+            )) {
+                continue;
             }
 
             $residentId = $charge->getDetail()->getCustomerID();
