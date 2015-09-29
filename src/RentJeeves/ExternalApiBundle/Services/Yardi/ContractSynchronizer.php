@@ -207,6 +207,14 @@ class ContractSynchronizer
                 continue;
             }
 
+            if (!$this->checkDateFallsBetweenDates(
+                $charge->getDetail()->getServiceFromDate(),
+                $charge->getDetail()->getServiceToDate()
+                )
+            ) {
+               continue;
+            }
+
             $residentId = $charge->getDetail()->getCustomerID();
             $unitName = $charge->getDetail()->getUnitID();
             $amount += $charge->getDetail()->getAmount();
@@ -427,6 +435,10 @@ class ContractSynchronizer
         }
     }
 
+    /**
+     * @param ResidentTransactionPropertyCustomer $resident
+     * @return int
+     */
     protected function calcResidentBalance(ResidentTransactionPropertyCustomer $resident)
     {
         $balance = 0;
@@ -442,5 +454,44 @@ class ContractSynchronizer
         }
 
         return $balance;
+    }
+
+    /**
+     * @TODO the same in MRI contract sync, merge this method when moving to abstract class the same code
+     *
+     * @param \DateTime|null $startDate
+     * @param \DateTime|null $endDate
+     * @return boolean
+     */
+    protected function checkDateFallsBetweenDates(\DateTime $startDate = null, \DateTime $endDate = null)
+    {
+        $today = new \DateTime();
+        $todayStr = (int) $today->format('Ymd');
+        //both parameter provider
+        if (($startDate instanceof \DateTime && $endDate instanceof \DateTime) &&
+            (int) $startDate->format('Ymd') <= $todayStr && (int) $endDate->format('Ymd') >= $todayStr
+        ) {
+            return true;
+        }
+
+        //only startDate parameter provider
+        if (($startDate instanceof \DateTime && !($endDate instanceof \DateTime)) &&
+            (int) $startDate->format('Ymd') <= $todayStr
+        ) {
+            return true;
+        }
+
+        //only endDate parameter provider
+        if ((!($startDate instanceof \DateTime) && $endDate instanceof \DateTime) &&
+            (int) $endDate->format('Ymd') >= $todayStr
+        ) {
+            return true;
+        }
+
+        if (empty($startDate) && empty($endDate)) {
+            return true;
+        }
+
+        return false;
     }
 }
