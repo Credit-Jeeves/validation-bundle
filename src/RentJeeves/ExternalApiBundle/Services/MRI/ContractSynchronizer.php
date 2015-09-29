@@ -463,6 +463,8 @@ class ContractSynchronizer
     }
 
     /**
+     * @TODO the same in Yardi contract sync, merge this method when moving to abstract class the same code
+     *
      * @param \DateTime|null $startDate
      * @param \DateTime|null $endDate
      * @return boolean
@@ -489,6 +491,10 @@ class ContractSynchronizer
         if ((!($startDate instanceof \DateTime) && $endDate instanceof \DateTime) &&
             (int) $endDate->format('Ymd') >= $todayStr
         ) {
+            return true;
+        }
+
+        if (empty($startDate) && empty($endDate)) {
             return true;
         }
 
