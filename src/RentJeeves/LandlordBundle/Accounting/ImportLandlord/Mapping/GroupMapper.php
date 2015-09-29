@@ -4,8 +4,12 @@ namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException;
@@ -21,11 +25,34 @@ class GroupMapper extends AbstractMapper
     protected $propertyProcess;
 
     /**
-     * @param PropertyProcess $propertyProcess
+     * @see parameter paydirect_fee_cc
+     * @var float
      */
-    public function __construct(PropertyProcess $propertyProcess)
+    protected $defaultFeeCC;
+
+    /**
+     * @see parameter paydirect_fee_cc
+     * @var float
+     */
+    protected $defaultFeeACH;
+
+    /**
+     * @see parameter aci.collect_pay.business_id
+     * @var string
+     */
+    protected $defaultDivisionId;
+
+    /**
+     * @param PropertyProcess $propertyProcess
+     * @param array $defaultParams
+     */
+    public function __construct(PropertyProcess $propertyProcess, array $defaultParams = [])
     {
         $this->propertyProcess = $propertyProcess;
+
+        $this->defaultFeeCC = isset($defaultParams['fee_cc']) ? $defaultParams['fee_cc'] : 0.0;
+        $this->defaultFeeACH = isset($defaultParams['fee_ach']) ? $defaultParams['fee_ach'] : 0.0;
+        $this->defaultDivisionId = isset($defaultParams['division_id']) ? $defaultParams['division_id'] : null;
     }
 
     /**
@@ -72,10 +99,12 @@ class GroupMapper extends AbstractMapper
         $newGroup->setState($this->get('ll_state'));
         $newGroup->setZip($this->get('ll_zipcode'));
         $newGroup->setHolding($this->createHolding());
+        $newGroup->setType(GroupType::RENT);
         $newGroup->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $newGroup->setExternalGroupId($this->get('login_id'));
 
         $this->createGroupSetting($newGroup);
+        $this->createDepositAccount($newGroup);
 
         return $newGroup;
     }
@@ -101,8 +130,31 @@ class GroupMapper extends AbstractMapper
         $newGroupSettings = $group->getGroupSettings();
         $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI);
         $newGroupSettings->setAutoApproveContracts(true);
+        $newGroupSettings->setPassedAch(true);
+        $newGroupSettings->setFeeCC($this->defaultFeeCC);
+        $newGroupSettings->setFeeACH($this->defaultFeeACH);
 
         return $newGroupSettings;
+    }
+
+    /**
+     * @param Group $group
+     *
+     * @return DepositAccount
+     */
+    protected function createDepositAccount(Group $group)
+    {
+        $newDepositAccount = new DepositAccount($group);
+        $newDepositAccount->setType(DepositAccountType::RENT);
+        $newDepositAccount->setMerchantName($this->defaultDivisionId);
+        if ($this->defaultDivisionId) {
+            $newDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
+        }
+        $newDepositAccount->setPaymentProcessor(PaymentProcessor::ACI);
+
+        $group->addDepositAccount($newDepositAccount);
+
+        return $newDepositAccount;
     }
 
     /**
