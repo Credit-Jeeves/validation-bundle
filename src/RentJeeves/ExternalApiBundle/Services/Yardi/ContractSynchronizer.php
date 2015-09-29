@@ -208,8 +208,8 @@ class ContractSynchronizer
             }
 
             if (!$this->checkDateFallsBetweenDates(
-                $charge->getDetail()->getServiceFromDate(),
-                $charge->getDetail()->getServiceToDate()
+                $charge->getDetail()->getServiceFromDateObject(),
+                $charge->getDetail()->getServiceToDateObject()
             )) {
                 continue;
             }

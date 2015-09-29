@@ -153,7 +153,7 @@ class ResidentTransactionChargeDetail
             return \DateTime::createFromFormat('Y-m-d', $this->serviceToDate);
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -181,6 +181,6 @@ class ResidentTransactionChargeDetail
             return \DateTime::createFromFormat('Y-m-d', $this->serviceFromDate);
         }
 
-        return false;
+        return null;
     }
 }
