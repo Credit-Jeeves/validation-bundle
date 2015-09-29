@@ -501,4 +501,33 @@ class Import
     {
         return $this->unitMapping;
     }
+
+    /**
+     * @Serializer\Type("boolean")
+     * @Serializer\SerializedName("is_need_update_rent")
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"RentJeevesImport"})
+     *
+     * @return boolean
+     */
+    public function isNeedUpdateRent()
+    {
+        if (!$this->getContract() || !$holding = $this->getContract()->getHolding()) {
+            return true;
+        }
+
+        if (!$holding->getUseRecurringCharges()) {
+            return true;
+        }
+
+        if ($this->getHasContractWaiting()) {
+            return false;
+        }
+
+        if ($this->getContract()->getId()) {
+            return false;
+        }
+
+        return true;
+    }
 }

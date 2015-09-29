@@ -17,7 +17,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use CreditJeeves\CoreBundle\Translation\Translator;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\ContractManager;
 
 /**
  * This form for Contract
@@ -78,7 +77,6 @@ class ImportContractType extends AbstractType
             )
         );
 
-
         $builder->add(
             'finishAt',
             'date',
@@ -94,11 +92,13 @@ class ImportContractType extends AbstractType
             array()
         );
 
-        $builder->add(
-            'rent',
-            'text',
-            array()
-        );
+        if ($this->import->isNeedUpdateRent()) {
+            $builder->add(
+                'rent',
+                'text',
+                []
+            );
+        }
 
         $builder->add(
             'skip',
@@ -201,6 +201,7 @@ class ImportContractType extends AbstractType
         $dueDate = $handler->getDueDateOfContract();
         // if (!$isNeedCreateCashOperation) {
         if (true) { // We no longer want to automatically create cash operations.
+
             return; // TO DO Future story to create based on API ledgers, not import balances.
         }
 
