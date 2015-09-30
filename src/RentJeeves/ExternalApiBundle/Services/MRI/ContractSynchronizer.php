@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -16,6 +17,16 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
+
+    /**
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
 
     /**
      * @var EntityManager
@@ -42,6 +53,22 @@ class ContractSynchronizer
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
+        $this->periodicExecutor = new PeriodicExecutor(
+            $this,
+            'cleanupDoctrineCallback',
+            self::EM_CLEANUP_PERIOD,
+            $logger
+        );
+    }
+
+    /**
+     * We need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -105,8 +132,6 @@ class ContractSynchronizer
                     );
                 }
             }
-            $this->em->flush();
-            $this->em->clear();
         }
     }
 
@@ -254,6 +279,8 @@ class ContractSynchronizer
 
             $this->doUpdateBalance($customer, $contract);
         }
+        $this->em->flush();
+        $this->periodicExecutor->increment();
     }
 
     /**
@@ -321,8 +348,7 @@ class ContractSynchronizer
                     );
                 }
             }
-            $this->em->flush();
-            $this->em->clear();
+
         }
 
     }
@@ -393,6 +419,7 @@ class ContractSynchronizer
                 $this->doUpdateRent($customer, $contract);
             }
         }
+
     }
 
     /**
@@ -441,6 +468,8 @@ class ContractSynchronizer
         }
 
         $contract->setRent($amount);
+        $this->em->flush();
+        $this->periodicExecutor->increment();
         $this->logger->info(
             sprintf(
                 'MRI: rent set %s.
