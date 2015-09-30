@@ -82,20 +82,20 @@ class ContractSynchronizer
      */
     protected function updateBalancesForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-        $propertySets = ceil(
-            $propertyRepository->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+        $propertyRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingSets = ceil(
+            $propertyRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
-        for ($offset = 1; $offset <= $propertySets; $offset++) {
-            $properties = $propertyRepository->findContractPropertiesByHolding(
+        for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
+            $propertyMappings = $propertyRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var Property $property*/
-            foreach ($properties as $property) {
+            /** @var PropertyMapping $propertyMapping*/
+            foreach ($propertyMappings as $propertyMapping) {
                 try {
-                    $this->updateBalancePerProperty($property, $holding);
+                    $this->updateBalancePerPropertyMapping($propertyMapping);
                 } catch (\Exception $e) {
                     $this->logger->alert(
                         sprintf(
@@ -111,23 +111,11 @@ class ContractSynchronizer
     }
 
     /**
-     * @param Property $property
-     * @param Holding $holding
+     * @param PropertyMapping $property
      * @throws \Exception
      */
-    protected function updateBalancePerProperty(Property $property, Holding $holding)
+    protected function updateBalancePerPropertyMapping(PropertyMapping $propertyMapping)
     {
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
-
-        if (empty($propertyMapping)) {
-            throw new \Exception(
-                sprintf(
-                    'PropertyID \'%s\', doesn\'t have external ID',
-                    $property->getId()
-                )
-            );
-        }
-
         $residentTransactions = $this->residentDataManager->getResidents(
             $propertyMapping->getExternalPropertyId()
         );
@@ -147,7 +135,7 @@ class ContractSynchronizer
                     'MRI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
                              holding %s',
                     $propertyMapping->getExternalPropertyId(),
-                    $holding->getName()
+                    $propertyMapping->getHolding()->getName()
                 )
             );
             $this->processResidentTransactionsForUpdateBalance($residentTransactions, $propertyMapping);
@@ -159,7 +147,7 @@ class ContractSynchronizer
             sprintf(
                 'ERROR: Could not load resident transactions MRI for property %s of holding %s',
                 $propertyMapping->getExternalPropertyId(),
-                $holding->getName()
+                $propertyMapping->getHolding()->getName()
             )
         );
     }
@@ -379,6 +367,7 @@ class ContractSynchronizer
             )
         );
     }
+
     /**
      * @param array $residentTransactions
      * @param PropertyMapping $propertyMapping
