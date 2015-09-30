@@ -9,31 +9,32 @@ use Payum\AciCollectPay\Request\ProfileRequest\CreateProfile;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class EnrollmentManager extends AbstractManager
 {
     /**
-     * @param  Contract $contract
-     * @param  string $depositAccountType
-     * @return int
+     * @param  Tenant $user
+     * @param  DepositAccount $depositAccount
+     * @return AciCollectPayUserProfile
      * @throws \Exception
      */
-    public function createUserProfile(Contract $contract, $depositAccountType = DepositAccountType::RENT)
+    public function createUserProfile(Tenant $user, DepositAccount $depositAccount)
     {
-        $user = $contract->getTenant();
-
         $this->logger->debug(
             sprintf('[ACI CollectPay Info]:Try to create new profile for user with id = "%d"', $user->getId())
         );
 
         $profile = $this->prepareUserProfile($user);
 
-        $billingAccount = $this->prepareBillingAccount($contract);
+        $billingAccount = $this->prepareBillingAccount($user, $depositAccount);
 
         $profile->setBillingAccount($billingAccount);
 
@@ -49,9 +50,9 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
                 $profile->getProfileId(),
-                $contract->getId()
+                $depositAccount->getId()
             )
         );
 
@@ -62,14 +63,12 @@ class EnrollmentManager extends AbstractManager
 
         $this->em->persist($userProfile);
 
-        $contractBilling = new AciCollectPayContractBilling();
-        $contractBilling->setContract($contract);
-        $depositAccount = $contract->getGroup()->getDepositAccount($depositAccountType, PaymentProcessor::ACI);
-        $contractBilling->setDivisionId($depositAccount ? $depositAccount->getMerchantName() : '');
+        $profileBilling = new AciCollectPayProfileBilling();
+        $profileBilling->setProfile($userProfile);
+        $profileBilling->setDivisionId($depositAccount->getMerchantName());
+        $userProfile->addAciCollectPayProfileBilling($profileBilling);
 
-        $contract->addAciCollectPayContractBilling($contractBilling);
-
-        $this->em->persist($contractBilling);
+        $this->em->persist($profileBilling);
 
         $this->em->flush();
 
@@ -83,19 +82,19 @@ class EnrollmentManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
                 $profile->getProfileId(),
-                $contract->getId()
+                $depositAccount->getId()
             )
         );
 
-        return $profile->getProfileId();
+        return $userProfile;
     }
 
     /**
      * @param Group $group
      * @param Landlord $landlord
-     * @return int
+     * @return AciCollectPayGroupProfile
      * @throws PaymentProcessorRuntimeException
      */
     public function createGroupProfile(Group $group, Landlord $landlord)
@@ -150,7 +149,7 @@ class EnrollmentManager extends AbstractManager
             )
         );
 
-        return $profile->getProfileId();
+        return $groupProfile;
     }
 
     /**

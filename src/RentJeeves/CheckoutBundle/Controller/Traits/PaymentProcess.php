@@ -6,8 +6,6 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
-use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount;
@@ -18,8 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
 
 /**
- * @author Ton Sharp <66Ton99@gmail.com>
- *
  * @method mixed get()
  * @method array renderErrors()
  * @method \Doctrine\Bundle\DoctrineBundle\Registry getDoctrine()
@@ -40,42 +36,17 @@ trait PaymentProcess
         Contract $contract,
         $depositAccountType = DepositAccountType::RENT
     ) {
-        $em = $this->getDoctrine()->getManager();
-        $paymentAccountEntity = $paymentAccountType->getData();
-
         $group = $contract->getGroup();
-        $user = $contract->getTenant();
+
+        /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
-
-        if ($paymentAccountEntity instanceof GroupAwareInterface) {
-            // if the account can have the group set directly, then set it
-            $paymentAccountEntity->setGroup($group);
-            $paymentAccountMapped->set('landlord', $this->getUser());
-        } else {
-            // otherwise add the the associated depositAccount
-            $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
-
-            // make sure this deposit account is added only once!
-            if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
-                $paymentAccountEntity->addDepositAccount($depositAccount);
-            }
-        }
+        $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
-        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract, $depositAccountType);
+        $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
 
-        $paymentAccountEntity->setToken($token);
-
-        if ($paymentAccountEntity instanceof UserAwareInterface) {
-            $paymentAccountEntity->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
-            $paymentAccountEntity->setUser($user);
-        }
-
-        $em->persist($paymentAccountEntity);
-        $em->flush();
-
-        return $paymentAccountEntity;
+        return $paymentAccountMapped->getEntity();
     }
 
     /**
@@ -101,7 +72,7 @@ trait PaymentProcess
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         // We can use any contract because we use only it just for get group in this case
-        $token = $paymentProcessor->createBillingToken($paymentAccountMapped, $user);
+        $token = $paymentProcessor->registerBillingAccount($paymentAccountMapped, $user);
         $billingAccount->setToken($token);
         $billingAccount->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
 

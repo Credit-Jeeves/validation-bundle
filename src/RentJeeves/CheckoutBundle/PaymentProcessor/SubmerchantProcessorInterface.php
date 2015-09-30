@@ -5,39 +5,34 @@ use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface SubmerchantProcessorInterface
 {
     /**
-     * Creates a new payment account for User
-     * Returns payment account token.
+     * Creates a new payment account or registers a new deposit account for already existing payment account.
      *
-     * @param  AccountData $data
-     * @param  Contract $contract
-     * @param  string $depositAccountType one of from DepositAccountType
-     * @see    DepositAccountType
-     * @return string
+     * @param  AccountData $accountData Mapped PaymentAccount.
+     * @param  DepositAccount $depositAccount DepositAccount to register PaymentAccount to.
      */
-    public function createPaymentToken(
-        AccountData $data,
-        Contract $contract,
-        $depositAccountType = DepositAccountType::RENT
+    public function registerPaymentAccount(
+        AccountData $accountData,
+        DepositAccount $depositAccount
     );
 
     /**
      *
-     * Create a new billing account token that we use to charge Landlords for our service.
-     * Returns billing account token.
+     * Create a new billing account that is used to charge Landlords for our service.
      *
-     * @param AccountData $data
-     * @param Landlord $user
-     * @return mixed
+     * @param AccountData $accountData Mapped BillingAccount.
+     * @param Landlord $landlord
      */
-    public function createBillingToken(AccountData $data, Landlord $user);
+    public function registerBillingAccount(
+        AccountData $accountData,
+        Landlord $landlord
+    );
 
     /**
      * Executes order of a given payment type (rent, report or charge).

@@ -11,9 +11,11 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -63,30 +65,33 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentToken(
-        AccountData $paymentAccountData,
-        Contract $contract,
-        $depositAccountType = DepositAccountType::RENT
+    public function registerPaymentAccount(
+        AccountData $accountData,
+        DepositAccount $depositAccount
     ) {
-        $group = $contract->getGroup();
-
-        $user = $contract->getTenant();
-
-        return $this->paymentAccountManager->getToken($paymentAccountData, $user, $group, $depositAccountType);
+        $paymentAccount = $accountData->getEntity();
+        if (!$paymentAccount->getToken()) {
+            $this->paymentAccountManager->registerPaymentToken(
+                $accountData,
+                $paymentAccount->getUser(),
+                $depositAccount
+            );
+        } else {
+            $this->paymentAccountManager->ensureAccountAssociation($paymentAccount, $depositAccount);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createBillingToken(AccountData $billingAccountData, Landlord $user)
-    {
-        if (!$billingAccountData->getEntity() || !$billingAccountData->getEntity() instanceof GroupAwareInterface) {
-            throw new PaymentProcessorInvalidArgumentException(
-                'createBillingToken should use entity implemented GroupAwareInterface'
-            );
+    public function registerBillingAccount(
+        AccountData $accountData,
+        Landlord $landlord
+    ) {
+        $billingAccount = $accountData->getEntity();
+        if (!$billingAccount->getToken()) {
+            $this->paymentAccountManager->registerBillingToken($accountData, $landlord);
         }
-
-        return $this->paymentAccountManager->getToken($billingAccountData, $user);
     }
 
     /**

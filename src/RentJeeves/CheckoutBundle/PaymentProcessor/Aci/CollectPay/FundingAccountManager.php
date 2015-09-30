@@ -11,13 +11,17 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalid
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
+use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class FundingAccountManager extends AbstractManager
 {
@@ -70,57 +74,42 @@ class FundingAccountManager extends AbstractManager
     }
 
     /**
-     * @param  int                              $profileId
-     * @param  FundingAccountData               $fundingAccountData
-     * @param  User                             $user
-     * @return int
-     * @throws PaymentProcessorRuntimeException|PaymentProcessorInvalidArgumentException
-     */
-    public function addFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user = null)
-    {
-        if (!$fundingAccountData->getEntity() instanceof PaymentAccountInterface) {
-            throw new PaymentProcessorInvalidArgumentException('Entity should implement PaymentAccountInterface');
-        }
-
-        if ($fundingAccountData->getEntity() instanceof UserAwareInterface) {
-            return $this->addPaymentFundingAccount($profileId, $fundingAccountData, $user);
-        } elseif ($fundingAccountData->getEntity() instanceof GroupAwareInterface) {
-            return $this->addBillingFundingAccount($profileId, $fundingAccountData);
-        } else {
-            throw new PaymentProcessorInvalidArgumentException('Unsupported Payment Account Type');
-        }
-    }
-
-    /**
      * @param int $profileId
      * @param FundingAccountData $fundingAccountData
      * @param User $user
      * @return int
      */
-    protected function addPaymentFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user)
+    public function addPaymentFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
-                $user->getId(),
-                $profileId
+                $profile->getUser()->getId(),
+                $profile->getProfileId()
             )
         );
 
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
+        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $profile->getUser());
 
-        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+        $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
 
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user with id = "%d"',
                 $fundingAccountId,
-                $profileId,
-                $user->getId()
+                $profile->getProfileId(),
+                $profile->getUser()->getId()
             )
         );
 
-        return $fundingAccountId;
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $fundingAccountData->getEntity();
+        $paymentAccount->setToken($fundingAccountId);
+        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+//        $paymentAccount->setUser($profile->getUser());
+
+        $this->em->persist($paymentAccount);
+        $this->em->flush($paymentAccount);
     }
 
     /**
@@ -128,30 +117,37 @@ class FundingAccountManager extends AbstractManager
      * @param FundingAccountData $fundingAccountData
      * @return int
      */
-    protected function addBillingFundingAccount($profileId, FundingAccountData $fundingAccountData)
+    public function addBillingFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
                 $fundingAccountData->getEntity()->getGroup()->getName(),
-                $profileId
+                $profile->getProfileId()
             )
         );
 
         $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
 
-        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+        $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
 
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
                 $fundingAccountId,
-                $profileId,
+                $profile->getProfileId(),
                 $fundingAccountData->getEntity()->getGroup()->getName()
             )
         );
 
-        return $fundingAccountId;
+        /** @var BillingAccount $paymentAccount */
+        $paymentAccount = $fundingAccountData->getEntity();
+        $paymentAccount->setToken($fundingAccountId);
+        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+//        $paymentAccount->setUser($profile->getUser());
+
+        $this->em->persist($paymentAccount);
+        $this->em->flush($paymentAccount);
     }
 
     /**

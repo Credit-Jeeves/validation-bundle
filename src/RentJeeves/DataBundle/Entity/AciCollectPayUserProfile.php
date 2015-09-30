@@ -11,4 +11,18 @@ use RentJeeves\DataBundle\Model\AciCollectPayUserProfile as Base;
  */
 class AciCollectPayUserProfile extends Base
 {
+    /**
+     * @param string $divisionId
+     * @return bool
+     */
+    public function hasBillingAccountForDivisionId($divisionId)
+    {
+        foreach ($this->getAciCollectPayProfileBillings() as $billingAccount) {
+            if ($billingAccount->getDivisionId() == $divisionId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

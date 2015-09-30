@@ -12,12 +12,9 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\PaymentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
-use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\PaymentAccount;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -83,53 +80,40 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function createPaymentToken(
-        AccountData $data,
-        Contract $contract,
-        $depositAccountType = DepositAccountType::RENT
+    public function registerPaymentAccount(
+        AccountData $accountData,
+        DepositAccount $depositAccount
     ) {
-        if (!$data->getEntity() instanceof UserAwareInterface) {
-            throw new PaymentProcessorInvalidArgumentException('Use createBillingToken for create Billing Account.');
+        /** @var Tenant $tenant */
+        $tenant = $accountData->getEntity()->getUser();
+        if (!($profile = $tenant->getAciCollectPayProfile())) {
+            $profile = $this->enrollmentManager->createUserProfile($tenant, $depositAccount);
+        } elseif (!$profile->hasBillingAccountForDivisionId($depositAccount->getMerchantName())) {
+            $this->billingAccountManager->addBillingAccount($profile, $depositAccount);
         }
 
-        if (!($profileId = $contract->getTenant()->getAciCollectPayProfileId())) {
-            $profileId = $this->enrollmentManager->createUserProfile($contract, $depositAccountType);
-        } elseif (!$contract->hasAciCollectPayContractBillingForDepositAccountType($depositAccountType)) {
-            $this->billingAccountManager->addBillingAccount($profileId, $contract, $depositAccountType);
+        if (!$accountData->getEntity()->getToken()) {
+            $this->fundingAccountManager->addPaymentFundingAccount($profile, $accountData);
         }
-
-        if ($fundingAccountId = $data->getEntity()->getToken()) {
-            return $this
-                ->fundingAccountManager
-                ->modifyFundingAccount($fundingAccountId, $profileId, $data, $contract->getTenant());
-        }
-
-        return $this->fundingAccountManager->addFundingAccount($profileId, $data, $contract->getTenant());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createBillingToken(AccountData $data, Landlord $landlord)
-    {
-        if (!$data->getEntity() instanceof GroupAwareInterface) {
-            throw new PaymentProcessorInvalidArgumentException('Use createPaymentToken for create Payment Account.');
-        }
-
+    public function registerBillingAccount(
+        AccountData $accountData,
+        Landlord $landlord
+    ) {
         /** @var Group $group */
-        $group = $data->getEntity()->getGroup();
+        $group = $accountData->getEntity()->getGroup();
 
-        if (!($profileId = $group->getAciCollectPayProfileId())) {
-            $profileId = $this->enrollmentManager->createGroupProfile($group, $landlord);
+        if (!($profile = $group->getAciCollectPayProfile())) {
+            $profile = $this->enrollmentManager->createGroupProfile($group, $landlord);
         }
 
-        if ($fundingAccountId = $data->getEntity()->getToken()) {
-            return $this
-                ->fundingAccountManager
-                ->modifyFundingAccount($fundingAccountId, $profileId, $data);
+        if (!$accountData->getEntity()->getToken()) {
+            $this->fundingAccountManager->addBillingFundingAccount($profile, $accountData);
         }
-
-        return $this->fundingAccountManager->addFundingAccount($profileId, $data);
     }
 
     /**
@@ -148,20 +132,17 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
             );
         }
 
-        if (PaymentGroundType::CHARGE === $paymentType || PaymentGroundType::RENT === $paymentType) {
-            if ($order->hasContract() && $order->getContract()->getAciCollectPayContractBillings()->isEmpty()) {
+        if (PaymentGroundType::RENT === $paymentType) {
+            $userProfile = $order->getUser()->getAciCollectPayProfile();
+            if (!$userProfile->hasBillingAccountForDivisionId($order->getDepositAccount()->getMerchantName())) {
                 $this->billingAccountManager->addBillingAccount(
-                    $order->getContract()->getTenant()->getAciCollectPayProfileId(),
-                    $order->getContract()
+                    $userProfile,
+                    $order->getDepositAccount()
                 );
             }
-
-            return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
-        } else {
-            throw new \Exception(
-                sprintf('executeOrder with paymentType = "%s" is not implement yet for aci_collect_pay.', $paymentType)
-            );
         }
+
+        return $this->paymentManager->executePayment($order, $accountEntity, $paymentType);
     }
 
     /**

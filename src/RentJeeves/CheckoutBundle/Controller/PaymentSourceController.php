@@ -5,13 +5,12 @@ namespace RentJeeves\CheckoutBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Group;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -28,7 +27,6 @@ class PaymentSourceController extends Controller
 {
     use FormErrors;
     use Traits\PaymentProcess;
-    use Traits\AccountAssociate;
 
     /**
      * @Template()
@@ -190,34 +188,22 @@ class PaymentSourceController extends Controller
             $group = $this->getDoctrine()->getRepository('DataBundle:Group')->find($groupId);
         }
 
-        // ensure group id is associated with payment account
         try {
             /** @var Group $group */
             if (empty($group) || empty($paymentAccount)) {
                 throw new \Exception('Group or Payment Account is undefined');
             }
-            $this->ensureAccountAssociation($paymentAccount, $group, $depositAccountType);
-            /** @var Contract $contract */
-            if (!empty($contract)) {
-                /** @TODO need better place for this code */
-                if ($paymentAccount->getPaymentProcessor() === PaymentProcessor::ACI) {
-                    if (!$depositAccount = $group->getDepositAccount($depositAccountType, PaymentProcessor::ACI)) {
-                        throw new \RuntimeException('Cannot create aci billing without deposit account.');
-                    }
-                    if (!$divisionId = $depositAccount->getMerchantName()) {
-                        throw new \RuntimeException('Cannot create aci billing without merchant name(division id).');
-                    }
-                    /** @var BillingAccountManager $billingAccountManager */
-                    $billingAccountManager = $this->get('payment_processor.aci.collect_pay.billing_account_manager');
-                    if (!$contract->getAciCollectPayContractBilling($divisionId)) {
-                        $billingAccountManager->addBillingAccount(
-                            $contract->getTenant()->getAciCollectPayProfileId(),
-                            $contract,
-                            $depositAccountType
-                        );
-                    }
-                }
-            }
+
+            $depositAccount = $group->getDepositAccount(
+                $depositAccountType,
+                $group->getGroupSettings()->getPaymentProcessor()
+            );
+
+            /** @var SubmerchantProcessorInterface $paymentProcessor */
+            $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+            $paymentAccountMapped = $this->get('payment_account.type.mapper')
+                ->map($this->createForm($formType, $paymentAccount));
+            $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
         } catch (\Exception $e) {
             return new JsonResponse([
                 $formType->getName() => [

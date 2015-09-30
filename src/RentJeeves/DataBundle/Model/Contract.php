@@ -378,25 +378,11 @@ abstract class Contract
      */
     protected $externalLeaseId;
 
-    /**
-     * @var ArrayCollection|\RentJeeves\DataBundle\Entity\AciCollectPayContractBilling[]
-     *
-     * @ORM\OneToMany(
-     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
-     *      mappedBy="contract",
-     *      cascade={"all"},
-     *      orphanRemoval=true,
-     *      fetch="EAGER"
-     * )
-     */
-    protected $aciCollectPayContractBillings;
-
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
-        $this->aciCollectPayContractBillings = new ArrayCollection();
     }
 
     /**
@@ -954,37 +940,5 @@ abstract class Contract
     public function getTransUnionStartAt()
     {
         return $this->transUnionStartAt;
-    }
-
-    /**
-     * Add Aci CollectPay Billing Account
-     *
-     * @param  \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
-     */
-    public function addAciCollectPayContractBilling(
-        \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
-    ) {
-        $this->aciCollectPayContractBillings[] = $aciCollectPayContractBilling;
-    }
-
-    /**
-     * Remove Aci CollectPay Billing Account
-     *
-     * @param \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
-     */
-    public function removeAciCollectPayContractBilling(
-        \RentJeeves\DataBundle\Entity\AciCollectPayContractBilling $aciCollectPayContractBilling
-    ) {
-        $this->aciCollectPayContractBillings->removeElement($aciCollectPayContractBilling);
-    }
-
-    /**
-     * Get Aci CollectPay Billing Accounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAciCollectPayContractBillings()
-    {
-        return $this->aciCollectPayContractBillings;
     }
 }

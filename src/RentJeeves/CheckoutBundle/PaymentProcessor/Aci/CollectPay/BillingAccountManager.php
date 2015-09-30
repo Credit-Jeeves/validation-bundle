@@ -5,33 +5,32 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
-use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
-use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 
 class BillingAccountManager extends AbstractManager
 {
     /**
-     * @param  int $profileId
-     * @param  Contract $contract
-     * @param  string $depositAccountType
+     * @param AciCollectPayUserProfile $profile
+     * @param DepositAccount $depositAccount
      * @throws \Exception
      */
-    public function addBillingAccount($profileId, Contract $contract, $depositAccountType = DepositAccountType::RENT)
+    public function addBillingAccount(AciCollectPayUserProfile $userProfile, DepositAccount $depositAccount)
     {
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for contract with id = "%d"',
-                $profileId,
-                $contract->getId()
+                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for deposit account id = "%d"',
+                $userProfile->getProfileId(),
+                $depositAccount->getId()
             )
         );
 
         $profile = new RequestModel\Profile();
 
-        $profile->setProfileId($profileId);
+        $profile->setProfileId($userProfile->getProfileId());
 
-        $billingAccount = $this->prepareBillingAccount($contract, $depositAccountType);
+        $billingAccount = $this->prepareBillingAccount($userProfile->getUser(), $depositAccount);
 
         $profile->setBillingAccount($billingAccount);
 
@@ -51,27 +50,26 @@ class BillingAccountManager extends AbstractManager
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for contract with id = "%d"',
+                '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
                 $request->getModel()->getProfileId(),
-                $contract->getId()
+                $depositAccount->getId()
             )
         );
 
-        $contractBilling = new AciCollectPayContractBilling();
-        $contractBilling->setContract($contract);
-        $contractBilling->setDivisionId($billingAccount->getBusinessId());
+        $profileBilling = new AciCollectPayProfileBilling();
+        $profileBilling->setProfile($userProfile);
+        $profileBilling->setDivisionId($billingAccount->getBusinessId());
 
-        $contract->addAciCollectPayContractBilling($contractBilling);
+        $userProfile->addAciCollectPayProfileBilling($profileBilling);
 
-        $this->em->persist($contractBilling);
-
+        $this->em->persist($profileBilling);
         $this->em->flush();
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for contract with id = "%d"',
+                '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
                 $request->getModel()->getProfileId(),
-                $contract->getId()
+                $depositAccount->getId()
             )
         );
     }
