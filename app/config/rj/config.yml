@@ -39,6 +39,9 @@ parameters:
     partners:
         price: 0
         product: 'registration'
+# parameters for landlord import
+    paydirect_fee_cc: 2.79
+    paydirect_fee_ach: 2.50
 
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side

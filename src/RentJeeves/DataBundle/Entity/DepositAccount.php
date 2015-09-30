@@ -28,6 +28,7 @@ class DepositAccount extends Base
     {
         if ($group) {
             $this->setGroup($group);
+            $this->setHolding($group->getHolding());
         }
 
         parent::__construct();

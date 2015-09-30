@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Tests\Unit\Accounting\ImportLandlord\Mapping;
 
+use CreditJeeves\DataBundle\Enum\GroupType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper;
@@ -90,28 +91,57 @@ class GroupMapperCase extends AbstractMapperCase
      */
     public function shouldCreateGroupAndRelatedEntityIfAddressIsValid($data, $groupName)
     {
-        $mapper = new GroupMapper($this->getPropertyProcess());
+        $mapper = new GroupMapper(
+            $this->getPropertyProcess(),
+            [
+                'fee_cc' => 1.2,
+                'fee_ach' => 2.7,
+                'division_id' => 111111111
+            ]
+        );
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
         $group = $mapper->map($data);
 
-        $this->assertInstanceOf('\CreditJeeves\DataBundle\Entity\Group', $group);
+        $this->assertInstanceOf('\CreditJeeves\DataBundle\Entity\Group', $group, 'Mapper should create Group Entity');
 
-        $this->assertEquals($groupName, $group->getName());
-        $this->assertEquals($groupName, $group->getMailingAddressName());
-        $this->assertEquals('50 Orange Street', $group->getStreetAddress1());
-        $this->assertEquals('testUnit', $group->getStreetAddress2());
-        $this->assertEquals('Brooklyn', $group->getCity());
-        $this->assertEquals('NY', $group->getState());
-        $this->assertEquals(OrderAlgorithmType::PAYDIRECT, $group->getOrderAlgorithm());
-        $this->assertEquals('testLoginId', $group->getExternalGroupId());
+        $this->assertEquals($groupName, $group->getName(), 'Group name should be ' . $groupName);
+        $this->assertEquals(
+            $groupName,
+            $group->getMailingAddressName(),
+            'Group mailing address name should be ' . $groupName
+        );
+        $this->assertEquals('50 Orange Street', $group->getStreetAddress1(), 'Invalid mapping for street address 1');
+        $this->assertEquals('testUnit', $group->getStreetAddress2(), 'Invalid mapping for street address 2');
+        $this->assertEquals('Brooklyn', $group->getCity(), 'Invalid mapping for city');
+        $this->assertEquals('NY', $group->getState(), 'Invalid mapping for state');
+        $this->assertEquals(
+            OrderAlgorithmType::PAYDIRECT,
+            $group->getOrderAlgorithm(),
+            'Order Algorithm should be set to ' . OrderAlgorithmType::PAYDIRECT
+        );
+        $this->assertEquals(GroupType::RENT, $group->getType(), 'Group type should be set ' . GroupType::RENT);
+        $this->assertEquals('testLoginId', $group->getExternalGroupId(), 'Invalid mapping for external group id');
 
-        $this->assertNotNull($holding = $group->getHolding());
-        $this->assertEquals('testEmail@trololo.ua', $holding->getName());
+        $this->assertNotNull($holding = $group->getHolding(), 'New holding should be created');
+        $this->assertEquals('testEmail@trololo.ua', $holding->getName(), 'Invalid mapping for holding name');
 
-        $this->assertNotNull($groupSetting = $group->getGroupSettings());
-        $this->assertEquals(PaymentProcessor::ACI, $groupSetting->getPaymentProcessor());
+        $this->assertNotNull($groupSetting = $group->getGroupSettings(), 'Group settings should be initialized');
+        $this->assertEquals(
+            PaymentProcessor::ACI,
+            $groupSetting->getPaymentProcessor(),
+            'Default payment processor should be ' . PaymentProcessor::ACI
+        );
+        $this->assertEquals(1.2, $groupSetting->getFeeCC(), 'Default fee for cc should be 1.2');
+        $this->assertEquals(2.7, $groupSetting->getFeeACH(), 'Default fee for ach should be 2.7');
+        $this->assertTrue($groupSetting->isPassedAch(), 'New groupSetting should isPassedAch');
+
+        $this->assertNotNull(
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor(),
+            'Should be created new deposit account'
+        );
+        $this->assertEquals(111111111, $depositAccount->getMerchantName(), 'Merchant name should be 111111111');
 
         $this->assertTrue(
             $groupSetting->isAutoApproveContracts(),
