@@ -106,11 +106,41 @@ class Contract extends ResponseResource
     public function getBalance()
     {
         if ($this->entity->getGroup()) {
-            return $this->entity->getGroup()->getGroupSettings()->getIsIntegrated() ?
+            return $this->entity->getGroupSettings()->getIsIntegrated() ?
                 number_format($this->entity->getIntegratedBalance(), 2, '.', '') : null;
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\SerializedName("fee_cc")
+     * @return float
+     */
+    public function getFeeCC()
+    {
+        if ($this->entity->getGroup()) {
+            return (float) $this->entity->getGroupSettings()->getFeeCC();
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\SerializedName("fee_ach")
+     * @return float
+     */
+    public function getFeeACH()
+    {
+        if ($this->entity->getGroup()) {
+            return (float) $this->entity->getGroupSettings()->getFeeACH();
+        }
+
+        return 0.0;
     }
 
     /**
