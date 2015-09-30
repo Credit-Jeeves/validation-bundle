@@ -670,7 +670,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "ee547118dbbef2ff280aafba41b0544c609652e7"
+                "reference": "8883140bb557aba6d8843bf0a1be7eecdf758e09"
             },
             "require": {
                 "doctrine/dbal": "~2.4",

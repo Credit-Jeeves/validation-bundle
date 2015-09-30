@@ -45,8 +45,7 @@ class BatchDepositsManager
         foreach ($deposits as $key => $deposit) {
             $depositDate = new \DateTime($deposit['depositDate']);
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-            $depositType = $deposits[$key]['depositType'];
-            $deposits[$key]['depositType'] = DepositAccountType::capitalizedCachedTitles()[$depositType];
+            $deposits[$key]['depositType'] = DepositAccountType::capitalizeTitle($deposits[$key]['depositType']);
             $orders = $this->getOrderRepository()->getDepositedOrders(
                 $group,
                 $filter,
