@@ -6,20 +6,12 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 class BatchDepositsManager
 {
     /** @var EntityManagerInterface */
     protected $em;
-
-    /**
-     * @var array
-     */
-    protected $enumForDepositTypeArrayToReplaceForReadable = [
-        'security_deposit' => 'Security Deposit',
-        'application_fee' => 'Application Fee',
-        'rent' => 'Rent'
-    ];
 
     /**
      * @param EntityManagerInterface $em
@@ -54,9 +46,7 @@ class BatchDepositsManager
             $depositDate = new \DateTime($deposit['depositDate']);
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
             $depositType = $deposits[$key]['depositType'];
-            if (isset($this->enumForDepositTypeArrayToReplaceForReadable[$depositType])) {
-                $deposits[$key]['depositType'] = $this->enumForDepositTypeArrayToReplaceForReadable[$depositType];
-            }
+            $deposits[$key]['depositType'] = DepositAccountType::capitalizedCachedTitles()[$depositType];
             $orders = $this->getOrderRepository()->getDepositedOrders(
                 $group,
                 $filter,
