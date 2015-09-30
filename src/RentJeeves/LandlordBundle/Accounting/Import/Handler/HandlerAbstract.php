@@ -28,7 +28,6 @@ use Symfony\Component\Validator\Validator;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
@@ -53,7 +52,6 @@ abstract class HandlerAbstract implements HandlerInterface
     use FormBind;
     use Unit;
     use OnlyReviewNewTenantsAndExceptionsTrait;
-    use Operation;
     use Group;
     use FormErrors;
 
