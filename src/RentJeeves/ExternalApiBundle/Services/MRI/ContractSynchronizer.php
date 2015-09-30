@@ -109,12 +109,12 @@ class ContractSynchronizer
      */
     protected function updateBalancesForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
         $propertyMappingSets = ceil(
-            $propertyRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
         for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
-            $propertyMappings = $propertyRepository->findUniqueByHolding(
+            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
@@ -136,7 +136,7 @@ class ContractSynchronizer
     }
 
     /**
-     * @param PropertyMapping $property
+     * @param PropertyMapping $propertyMapping
      * @throws \Exception
      */
     protected function updateBalancePerPropertyMapping(PropertyMapping $propertyMapping)
@@ -325,12 +325,12 @@ class ContractSynchronizer
      */
     protected function updateRentForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
         $propertyMappingSets = ceil(
-            $propertyRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
         for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
-            $propertyMappings = $propertyRepository->findUniqueByHolding(
+            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
