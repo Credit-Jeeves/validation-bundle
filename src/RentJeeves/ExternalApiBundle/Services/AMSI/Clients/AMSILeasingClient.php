@@ -7,6 +7,7 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\EdexResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\InternetTrafficResponse;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyResidents;
 use RentJeeves\ExternalApiBundle\Model\AMSI\PropertyUnits;
+use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 
 class AMSILeasingClient extends AMSIBaseClient
 {
@@ -73,13 +74,23 @@ class AMSILeasingClient extends AMSIBaseClient
         );
 
         if ($internetTrafficResponse instanceof InternetTrafficResponse) {
-            $this->logger->alert(
-                sprintf(
-                    'AMSI can\'t return residents for property ID (%s): %s',
-                    $propertyId,
-                    $internetTrafficResponse->getError()->getErrorDescription()
-                )
-            );
+            if ($leaseStatus == Lease::STATUS_CURRENT) {
+                $this->logger->alert(
+                    sprintf(
+                        'AMSI can\'t list CURRENT residents for property ID (%s): %s',
+                        $propertyId,
+                        $internetTrafficResponse->getError()->getErrorDescription()
+                    )
+                );
+            } else {
+                $this->logger->info(
+                    sprintf(
+                        'AMSI can\'t list non-CURRENT residents for property ID (%s): %s',
+                        $propertyId,
+                        $internetTrafficResponse->getError()->getErrorDescription()
+                    )
+                );
+            }
 
             return new PropertyResidents();
         }
