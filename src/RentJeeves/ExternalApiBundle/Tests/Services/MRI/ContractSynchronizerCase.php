@@ -21,6 +21,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Should have contract in fixtures');
         $this->assertEquals(0, $contract->getIntegratedBalance());
+        $contract->setPaymentAccepted(null);
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
@@ -39,6 +40,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $balanceSynchronizer->syncBalance();
         $updatedContract = $repo->find($contract->getId());
         $this->assertGreaterThan(8340, (int) $updatedContract->getIntegratedBalance(), 'Balance not updated');
+        $this->assertEquals(0, $updatedContract->getPaymentAccepted(), 'PaymentAccepted should be set');
     }
 
     /**
@@ -52,6 +54,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be 0');
+        $contractWaiting->setPaymentAccepted(null);
         $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
             $contractWaiting->getGroup()->getHolding()
@@ -72,6 +75,7 @@ class ContractSynchronizerCase extends BaseTestCase
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertGreaterThan(8340, (int) $updatedContractWaiting->getIntegratedBalance(), 'Balance not updated');
+        $this->assertEquals(0, $updatedContractWaiting->getPaymentAccepted(), 'PaymentAccepted should be set');
     }
 
     /**
