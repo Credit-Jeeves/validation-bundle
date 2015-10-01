@@ -8,6 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TypeDebitFees;
 
 /**
  * @ORM\MappedSuperclass
@@ -231,6 +232,44 @@ abstract class GroupSettings
      * )
      */
     protected $autoApproveContracts = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="allowed_debit_fee",
+     *      options={
+     *          "default" : 0
+     *      },
+     *     nullable=false
+     * )
+     */
+    protected $allowedDebitFee = false;
+
+    /**
+     * @ORM\Column(
+     *     type="TypeDebitFees",
+     *     options={
+     *         "default"="percentage"
+     *     },
+     *     name="type_debit_fees",
+     *     nullable=false
+     * )
+     * @var string
+     */
+    protected $typeDebitFees = TypeDebitFees::PERCENTAGE;
+
+    /**
+     * @ORM\Column(
+     *      name="debit_fee",
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     */
+    protected $debitFee;
 
     /**
      * @param float $feeACH

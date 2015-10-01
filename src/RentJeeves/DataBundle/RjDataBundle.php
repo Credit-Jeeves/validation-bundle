@@ -44,6 +44,7 @@ class RjDataBundle extends Bundle
             Type::addType('OutboundTransactionStatus', 'RentJeeves\DataBundle\Enum\OutboundTransactionStatus');
             Type::addType('DepositAccountType', 'RentJeeves\DataBundle\Enum\DepositAccountType');
             Type::addType('YardiPostMonthOption', 'RentJeeves\DataBundle\Enum\YardiPostMonthOption');
+            Type::addType('TypeDebitFees', 'RentJeeves\DataBundle\Enum\TypeDebitFees');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
