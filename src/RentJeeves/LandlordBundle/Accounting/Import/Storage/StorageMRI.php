@@ -129,8 +129,9 @@ class StorageMRI extends ExternalApiStorage
             return false;
         }
 
-        //API execution can be long
-        ini_set('max_execution_time', '120');
+        // API execution can be long, so restart the execution
+        // timeout counter from zero and give us another 2 min (120 sec)
+        set_time_limit(120);
 
         /** @var $customer Value  */
         foreach ($customers as $customer) {
