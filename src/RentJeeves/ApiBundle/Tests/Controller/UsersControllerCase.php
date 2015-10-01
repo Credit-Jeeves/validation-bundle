@@ -2,6 +2,8 @@
 namespace RentJeeves\ApiBundle\Tests\Controller;
 
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 
 class UsersControllerCase extends BaseApiTestCase
 {
@@ -29,6 +31,64 @@ class UsersControllerCase extends BaseApiTestCase
                 ],
                 'api.errors.user.password_required',
             ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant11@example.com',
+                    'password' => 'pass111aaaa',
+                    'holding_id' => '11111111', // holding is invalid
+                    'resident_id' => '1111111',
+                ],
+                'This value is not valid.',
+            ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant11@example.com',
+                    'password' => 'pass111aaaa',
+                    'holding_id' => '5',
+                ],
+                'api.errors.tenant.resident_id.empty',
+            ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant11@example.com',
+                    'password' => 'pass111aaaa',
+                    'resident_id' => 'rt1111',
+                ],
+                'api.errors.tenant.holding_id.empty',
+            ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant11@example.com',
+                    'password' => 'pass111aaaa',
+                ],
+                false,
+                409
+            ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant12@example.com',
+                    'password' => 'pass111aaaa',
+                    'holding_id' => 5,
+                    'resident_id' => 't0013534'
+                ],
+                false,
+                409
+            ],
         ];
     }
 
@@ -46,9 +106,11 @@ class UsersControllerCase extends BaseApiTestCase
 
         $this->assertResponse($response, $statusCode);
 
-        $answer = $this->parseContent($response->getContent());
-
-        $this->assertEquals($errorMessage, $answer[0]['message']);
+        if ($errorMessage) {
+            $answer = $this->parseContent($response->getContent());
+            $this->assertTrue(isset($answer[0]['message']), 'Should retrieve error message');
+            $this->assertEquals($errorMessage, $answer[0]['message'], 'Invalid error message');
+        }
     }
 
     /**
@@ -75,26 +137,66 @@ class UsersControllerCase extends BaseApiTestCase
                     'password' => '321321321321'
                 ],
             ],
+            [
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'tenant12@example.com',
+                    'password' => 'pass111aaaa',
+                    'holding_id' => 5,
+                    'resident_id' => 't0013535'
+                ],
+                true
+            ]
         ];
     }
 
     /**
      * @param array $requestParams
      * @param int   $statusCode
+     * @param bool  $checkResidentMapping
      *
      * @test
      * @dataProvider createTenantDataPositiveProvider
      */
-    public function createUser($requestParams, $statusCode = 201)
+    public function createUser($requestParams, $checkResidentMapping = false, $statusCode = 201)
     {
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+
+        $this->assertNull($repo->findOneBy(['email' => $requestParams['email']]), 'User should not exist before.');
+
         $response = $this->postRequest($requestParams);
 
         $this->assertResponse($response, $statusCode);
 
         $answer = $this->parseContent($response->getContent());
-        $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-        $this->assertNotNull($tenant = $repo->findOneBy(['email' => $requestParams['email']]));
+        /** @var Tenant $tenant */
+        $this->assertNotNull(
+            $tenant = $repo->findOneBy(['email' => $requestParams['email']]),
+            'Should be created new user with requested email'
+        );
         $this->assertEquals($tenant->getId(), $this->getIdEncoder()->decode($answer['id']));
+
+        if ($checkResidentMapping) {
+            $this->assertCount(
+                1,
+                $residentMappings = $tenant->getResidentsMapping(),
+                'Should be created new resident mapping for this user'
+            );
+            /** @var ResidentMapping $residentMapping */
+            $residentMapping = $residentMappings->first();
+
+            $this->assertNotNull($holding = $residentMapping->getHolding(), 'Should be set holding');
+
+            $this->assertEquals($holding->getId(), $requestParams['holding_id'], 'Holding is incorrect');
+
+            $this->assertEquals(
+                $residentMapping->getResidentId(),
+                $requestParams['resident_id'],
+                'ResidentId is incorrect'
+            );
+        }
     }
 }

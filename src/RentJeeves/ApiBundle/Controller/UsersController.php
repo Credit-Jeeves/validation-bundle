@@ -2,10 +2,13 @@
 
 namespace RentJeeves\ApiBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
+use FOS\RestBundle\View\View;
 use RentJeeves\ApiBundle\Forms\TenantType;
 use RentJeeves\ApiBundle\Response\Exception\ResponseResourceException;
 use RentJeeves\DataBundle\Entity\PartnerUser;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -54,8 +57,9 @@ class UsersController extends Controller
      *     section="Users",
      *     description="Create a new tenant user",
      *     statusCodes={
-     *         200="Returned when successful",
+     *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
+     *         409="User exists.",
      *         500="Internal Server Error"
      *     }
      * )
@@ -82,6 +86,19 @@ class UsersController extends Controller
      *     name="password",
      *     description="User password."
      * )
+     * @RequestParam(
+     *     name="holding_id",
+     *     strict=false,
+     *     nullable=true,
+     *     description="Holding id in RentTrack system."
+     * )
+     * @RequestParam(
+     *     name="resident_id",
+     *     strict=false,
+     *     nullable=true,
+     *     description="Accounting system resident id."
+     * )
+     *
      *
      * @throws BadRequestHttpException
      * @return \Symfony\Component\Form\Form
@@ -98,13 +115,38 @@ class UsersController extends Controller
 
         if ($form->isValid()) {
             try {
+                /** @var Tenant $tenant */
                 $tenant = $form->getData();
+                $em = $this->getDoctrine()->getManager();
+                /** @var Holding $holding */
+                $holding = $form->get('holding_id')->getData();
+                $residentId = $form->get('resident_id')->getData();
+
+                if ($em->getRepository('RjDataBundle:Tenant')->findOneByEmail($tenant->getEmail()) ||
+                    ($holding && $residentId && $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
+                        'holding' => $holding,
+                        'residentId' => $residentId
+                    ]))
+                ) {
+                    return View::create(null, 409);
+                }
+
                 /** @var PartnerUser $partnerUser */
                 $partnerUser = $this->getUser();
                 $partner = $partnerUser->getPartner();
                 $tenant->setPartner($partner);
 
-                $em = $this->getDoctrine()->getManager();
+                if ($holding && $residentId) {
+                    $residentMapping = new ResidentMapping();
+                    $residentMapping->setResidentId($residentId);
+                    $residentMapping->setHolding($holding);
+                    $residentMapping->setTenant($tenant);
+
+                    $tenant->addResidentsMapping($residentMapping);
+
+                    $em->persist($residentMapping);
+                }
+
                 $em->persist($tenant);
                 $em->flush();
 
