@@ -82,14 +82,14 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals(
             (float) $contractInDB->getGroupSettings()->getFeeCC(),
             $answerFromApi['fee_cc'],
-            'Fee cc should get from group settings'
+            'Fee CC should be taken from group settings'
         );
 
         $this->assertArrayHasKey('fee_ach', $answerFromApi, 'Api should retrieve fee_ach for contract');
         $this->assertEquals(
             (float) $contractInDB->getGroupSettings()->getFeeACH(),
             $answerFromApi['fee_ach'],
-            'Fee ach should get from group settings'
+            'Fee ACH should be taken from group settings'
         );
 
         $leaseStartResult = $contractInDB->getStartAt() ? $contractInDB->getStartAt()->format('Y-m-d') : '';

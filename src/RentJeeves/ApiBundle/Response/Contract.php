@@ -136,7 +136,7 @@ class Contract extends ResponseResource
      */
     public function getFeeACH()
     {
-        if ($this->entity->getGroup()) {
+        if ($this->entity->getGroup() && $this->entity->getGroupSettings()->isPassedAch()) {
             return (float) $this->entity->getGroupSettings()->getFeeACH();
         }
 
