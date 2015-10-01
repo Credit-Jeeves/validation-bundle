@@ -13,6 +13,18 @@ class ResidentTransactionChargeDetail
     protected $balanceDue;
 
     /**
+     * @Serializer\SerializedName("ServiceToDate")
+     * @Serializer\Type("string")
+     */
+    protected $serviceToDate;
+
+    /**
+     * @Serializer\SerializedName("ServiceFromDate")
+     * @Serializer\Type("string")
+     */
+    protected $serviceFromDate;
+
+    /**
      * @Serializer\SerializedName("Amount")
      * @Serializer\Type("double")
      */
@@ -116,4 +128,59 @@ class ResidentTransactionChargeDetail
         $this->unitID = $unitID;
     }
 
+    /**
+     * @return string
+     */
+    public function getServiceToDate()
+    {
+        return $this->serviceToDate;
+    }
+
+    /**
+     * @param string $serviceToDate
+     */
+    public function setServiceToDate($serviceToDate)
+    {
+        $this->serviceToDate = $serviceToDate;
+    }
+
+    /**
+     * @return bool|\DateTime
+     */
+    public function getServiceToDateObject()
+    {
+        if ($this->serviceToDate) {
+            return \DateTime::createFromFormat('Y-m-d', $this->serviceToDate);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceFromDate()
+    {
+        return $this->serviceFromDate;
+    }
+
+    /**
+     * @param string $serviceFromDate
+     */
+    public function setServiceFromDate($serviceFromDate)
+    {
+        $this->serviceFromDate = $serviceFromDate;
+    }
+
+    /**
+     * @return bool|\DateTime
+     */
+    public function getServiceFromDateObject()
+    {
+        if ($this->serviceFromDate) {
+            return \DateTime::createFromFormat('Y-m-d', $this->serviceFromDate);
+        }
+
+        return null;
+    }
 }

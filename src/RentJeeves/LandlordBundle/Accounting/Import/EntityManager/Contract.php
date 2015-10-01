@@ -236,7 +236,10 @@ trait Contract
         }
 
         $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
-        $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
+
+        if ($this->currentImportModel->isNeedUpdateRent()) {
+            $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
+        }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
             $this->currentImportModel->setMoveOut(
@@ -303,12 +306,16 @@ trait Contract
         );
 
         if ($contractWaitingInDb) {
-            //Do update some fields
-            $contractWaitingInDb->setRent($contractWaiting->getRent());
+            // update some fields
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
             $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+
+            if ($this->currentImportModel->isNeedUpdateRent(true)) {
+                // but conditionally update rent
+                $contractWaitingInDb->setRent($contractWaiting->getRent());
+            }
 
             return $contractWaitingInDb;
         }
