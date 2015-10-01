@@ -550,4 +550,52 @@ abstract class GroupSettings
     {
         $this->autoApproveContracts = $isAutoApproveContracts;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedDebitFee()
+    {
+        return $this->allowedDebitFee;
+    }
+
+    /**
+     * @param boolean $allowedDebitFee
+     */
+    public function setAllowedDebitFee($allowedDebitFee)
+    {
+        $this->allowedDebitFee = $allowedDebitFee;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeDebitFees()
+    {
+        return $this->typeDebitFees;
+    }
+
+    /**
+     * @param string $typeDebitFees
+     */
+    public function setTypeDebitFees($typeDebitFees)
+    {
+        $this->typeDebitFees = $typeDebitFees;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDebitFee()
+    {
+        return $this->debitFee;
+    }
+
+    /**
+     * @param float $debitFee
+     */
+    public function setDebitFee($debitFee)
+    {
+        $this->debitFee = $debitFee;
+    }
 }

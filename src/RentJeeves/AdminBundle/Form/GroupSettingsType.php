@@ -1,7 +1,9 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TypeDebitFees;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -20,6 +22,9 @@ class GroupSettingsType extends Base
 {
     protected $translator;
 
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
     /**
@@ -28,7 +33,7 @@ class GroupSettingsType extends Base
      *     "translator"     = @Inject("translator")
      * })
      */
-    public function __construct($em, $translator)
+    public function __construct(EntityManager $em, $translator)
     {
         $this->translator = $translator;
         $this->em = $em;
@@ -158,33 +163,48 @@ class GroupSettingsType extends Base
             ['label' => 'Is Auto-Approve Contracts', 'required' => false]
         );
 
-        $self = $this;
+        $builder->add(
+            'allowedDebitFee',
+            'checkbox',
+            ['label' => 'Is Allowed Debit Fee?', 'required' => false]
+        );
+
+        $builder->add(
+            'typeDebitFees',
+            'choice',
+            ['choices' => TypeDebitFees::cachedTitles(), 'required' => false]
+        );
+
+        $builder->add(
+            'debitFee',
+            'number',
+            ['required' => false]
+        );
 
         $builder->addEventListener(
             FormEvents::SUBMIT,
-            function (FormEvent $event) use ($self) {
+            function (FormEvent $event) {
                 $form = $event->getForm();
                 /**
                  * @var $groupSettings GroupSetting
                  */
                 $groupSettings = $event->getData();
-
                 if (!$groupSettings->getIsIntegrated() && $groupSettings->getPayBalanceOnly()) {
                     $form->get('payBalanceOnly')->addError(
                         new FormError(
-                            $self->translator->trans('pay.balance.only.error')
+                            $this->translator->trans('pay.balance.only.error')
                         )
                     );
                 }
 
-                $hasReccuringPayment = $self->em->getRepository('RjDataBundle:GroupSettings')->hasReccuringPayment(
+                $hasReccuringPayment = $this->em->getRepository('RjDataBundle:GroupSettings')->hasReccuringPayment(
                     $groupSettings->getId()
                 );
 
                 if ($hasReccuringPayment && $groupSettings->getPayBalanceOnly()) {
                     $form->get('payBalanceOnly')->addError(
                         new FormError(
-                            $self->translator->trans('pay.balance.only.reccuring_error')
+                            $this->translator->trans('pay.balance.only.reccuring_error')
                         )
                     );
                 }
@@ -197,7 +217,7 @@ class GroupSettingsType extends Base
         $resolver->setDefaults(
             array(
                 'cascade_validation'    => true,
-                'data_class'            => 'RentJeeves\DataBundle\Entity\GroupSettings'
+                'data_class'            => 'RentJeeves\DataBundle\Entity\GroupSettings',
             )
         );
     }

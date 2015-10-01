@@ -386,6 +386,7 @@ abstract class Group
      *     cascade={"persist", "remove", "merge"},
      *     fetch="EAGER"
      * )
+     * @Assert\Valid
      */
     protected $groupSettings;
 
