@@ -95,6 +95,8 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         if (!$accountData->getEntity()->getToken()) {
             $this->fundingAccountManager->addPaymentFundingAccount($profile, $accountData);
         }
+
+        return true;
     }
 
     /**
@@ -114,6 +116,8 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         if (!$accountData->getEntity()->getToken()) {
             $this->fundingAccountManager->addBillingFundingAccount($profile, $accountData);
         }
+
+        return true;
     }
 
     /**

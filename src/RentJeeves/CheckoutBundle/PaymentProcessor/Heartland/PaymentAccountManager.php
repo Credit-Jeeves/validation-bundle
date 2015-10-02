@@ -85,6 +85,7 @@ class PaymentAccountManager
         $paymentAccount = $paymentAccountData->getEntity();
         $paymentAccount->setToken($token);
         $paymentAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $paymentAccount->setUser($user);
         $paymentAccount->addDepositAccount($depositAccount);
 
         $this->em->persist($paymentAccount);

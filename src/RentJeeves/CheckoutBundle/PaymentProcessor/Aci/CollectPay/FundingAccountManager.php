@@ -9,16 +9,13 @@ use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
 use Payum\AciCollectPay\Request\ProfileRequest\ModifyFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -74,10 +71,8 @@ class FundingAccountManager extends AbstractManager
     }
 
     /**
-     * @param int $profileId
+     * @param AciCollectPayUserProfile $profile
      * @param FundingAccountData $fundingAccountData
-     * @param User $user
-     * @return int
      */
     public function addPaymentFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
@@ -106,16 +101,14 @@ class FundingAccountManager extends AbstractManager
         $paymentAccount = $fundingAccountData->getEntity();
         $paymentAccount->setToken($fundingAccountId);
         $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
-//        $paymentAccount->setUser($profile->getUser());
 
         $this->em->persist($paymentAccount);
         $this->em->flush($paymentAccount);
     }
 
     /**
-     * @param int $profileId
+     * @param AciCollectPayUserProfile $profile
      * @param FundingAccountData $fundingAccountData
-     * @return int
      */
     public function addBillingFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
@@ -144,7 +137,6 @@ class FundingAccountManager extends AbstractManager
         $paymentAccount = $fundingAccountData->getEntity();
         $paymentAccount->setToken($fundingAccountId);
         $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
-//        $paymentAccount->setUser($profile->getUser());
 
         $this->em->persist($paymentAccount);
         $this->em->flush($paymentAccount);

@@ -12,10 +12,18 @@ use RentJeeves\DataBundle\Enum\PaymentGroundType;
 interface SubmerchantProcessorInterface
 {
     /**
-     * Creates a new payment account or registers a new deposit account for already existing payment account.
+     * Register a paymentAccount with the target deposit account for the PaymentProcessor so we can make a payment.
      *
-     * @param  AccountData $accountData Mapped PaymentAccount.
-     * @param  DepositAccount $depositAccount DepositAccount to register PaymentAccount to.
+     * Call this method whenever scheduling a new payment and right before executing a payment to ensure the payment
+     * processor has the proper configuration to facilitate the transfer.
+     *
+     * This method should be idempotent -- so if the PaymentAccount is already created and registered,
+     * then no change should take place.
+     *
+     * @param AccountData $accountData Mapped PaymentAccount
+     * @param DepositAccount $depositAccount DepositAccount to register PaymentAccount to
+     *
+     * @return bool if true, then success, else a failure occurred.
      */
     public function registerPaymentAccount(
         AccountData $accountData,
@@ -23,11 +31,14 @@ interface SubmerchantProcessorInterface
     );
 
     /**
+     * Register billingAccount with the target deposit account for the PaymentProcessor so we can make a payment.
      *
-     * Create a new billing account that is used to charge Landlords for our service.
+     * Use this the same way as we use the registerPaymentAccount() method -- but for BillingAccount entities
      *
-     * @param AccountData $accountData Mapped BillingAccount.
+     * @param AccountData $accountData Mapped BillingAccount
      * @param Landlord $landlord
+     *
+     * @return bool if true, then success, else a failure occurred.
      */
     public function registerBillingAccount(
         AccountData $accountData,

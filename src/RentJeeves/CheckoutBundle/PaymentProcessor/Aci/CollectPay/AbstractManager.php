@@ -2,18 +2,16 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\SubModel\Address;
 use Payum\AciCollectPay\Model\SubModel\BillingAccount;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use Payum\Core\Payment as PaymentProcessor;
-use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\PaymentProcessor as PaymentProcessorEnum;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 abstract class AbstractManager
 {
@@ -94,25 +92,52 @@ abstract class AbstractManager
     protected function prepareBillingAccount(Tenant $user, DepositAccount $depositAccount)
     {
         $billingAccount = new BillingAccount();
-
-        $group = $depositAccount->getGroup();
-
-        $billingAccount->setAccountNumber($depositAccount->getMerchantName()); // ????
+        $billingAccount->setAccountNumber($this->getUserBillingAccountNumber($user, $depositAccount));
         $billingAccount->setBusinessId($depositAccount->getMerchantName());
         $billingAccount->setHoldername($user->getFullName());
-        $billingAccount->setNickname($group->getName() . $depositAccount->getMerchantName()); // ????
+        $billingAccount->setNickname($this->getBillingAccountNickname($depositAccount));
 
-        $billingAccountAddress = new Address();
-
-        $billingAccountAddress->setAddress1((string) $group->getStreetAddress1());
-        $billingAccountAddress->setAddress2((string) $group->getStreetAddress2());
-        $billingAccountAddress->setCity((string) $group->getCity());
-        $billingAccountAddress->setPostalCode((string) $group->getZip());
-        $billingAccountAddress->setState((string) $group->getState());
-        $billingAccountAddress->setCountryCode($group->getCountry());
-
+        $billingAccountAddress = $this->getBillingAccountAddress($depositAccount);
         $billingAccount->setAddress($billingAccountAddress);
 
         return $billingAccount;
+    }
+
+    /**
+     * @param User $user
+     * @param DepositAccount $depositAccount
+     * @return string
+     */
+    protected function getUserBillingAccountNumber(User $user, DepositAccount $depositAccount)
+    {
+        return sprintf('%s-%s', $user->getId(), $depositAccount->getMerchantName());
+    }
+
+    /**
+     * @param DepositAccount $depositAccount
+     * @return string
+     */
+    protected function getBillingAccountNickname(DepositAccount $depositAccount)
+    {
+        return sprintf('%s-%s', $depositAccount->getGroup()->getName(), $depositAccount->getMerchantName());
+    }
+
+    /**
+     * @param DepositAccount $depositAccount
+     * @return Address
+     */
+    protected function getBillingAccountAddress(DepositAccount $depositAccount)
+    {
+        $billingAccountAddress = new Address();
+        $group = $depositAccount->getGroup();
+
+        $billingAccountAddress->setAddress1($group->getStreetAddress1());
+        $billingAccountAddress->setAddress2($group->getStreetAddress2());
+        $billingAccountAddress->setCity($group->getCity());
+        $billingAccountAddress->setPostalCode($group->getZip());
+        $billingAccountAddress->setState($group->getState());
+        $billingAccountAddress->setCountryCode($group->getCountry());
+
+        return $billingAccountAddress;
     }
 }

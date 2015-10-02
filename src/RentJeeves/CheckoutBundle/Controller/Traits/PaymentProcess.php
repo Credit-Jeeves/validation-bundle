@@ -59,9 +59,6 @@ trait PaymentProcess
      */
     protected function createBillingAccount(Form $billingAccountType, Landlord $user, Group $group)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        // get BillingAccount entity from form data
         /** @var BillingAccount $billingAccount */
         $billingAccount = $billingAccountType->getData();
         $billingAccount->setGroup($group);
@@ -72,12 +69,7 @@ trait PaymentProcess
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         // We can use any contract because we use only it just for get group in this case
-        $token = $paymentProcessor->registerBillingAccount($paymentAccountMapped, $user);
-        $billingAccount->setToken($token);
-        $billingAccount->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
-
-        $em->persist($billingAccount);
-        $em->flush();
+        $paymentProcessor->registerBillingAccount($paymentAccountMapped, $user);
 
         return $billingAccount;
     }

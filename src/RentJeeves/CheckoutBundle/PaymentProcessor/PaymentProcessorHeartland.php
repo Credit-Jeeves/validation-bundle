@@ -79,6 +79,8 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         } else {
             $this->paymentAccountManager->ensureAccountAssociation($paymentAccount, $depositAccount);
         }
+
+        return true;
     }
 
     /**
@@ -92,6 +94,8 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         if (!$billingAccount->getToken()) {
             $this->paymentAccountManager->registerBillingToken($accountData, $landlord);
         }
+
+        return true;
     }
 
     /**
