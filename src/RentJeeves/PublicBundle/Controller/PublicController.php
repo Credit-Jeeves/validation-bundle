@@ -19,7 +19,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Process\Exception\LogicException;
 
 class PublicController extends Controller
@@ -308,13 +307,7 @@ class PublicController extends Controller
                 return $this->redirectToRoute('iframe_invite', ['propertyId' => $id]);
             }
 
-            $propertyList = $this->get('google')->searchPropertyInRadius($property);
-
-            if (isset($propertyList[$property->getId()])) {
-                unset($propertyList[$property->getId()]);
-            }
-
-            $propertyList = array_merge([$property], $propertyList);
+            $propertyList = [$property];
         }
 
         if (true === isset($holdingPropertyList)) {

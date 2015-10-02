@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -16,6 +17,16 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 class ContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
+
+    /**
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
 
     /**
      * @var EntityManager
@@ -42,6 +53,22 @@ class ContractSynchronizer
         $this->em = $em;
         $this->logger = $logger;
         $this->residentDataManager = $residentDataManager;
+        $this->periodicExecutor = new PeriodicExecutor(
+            $this,
+            'cleanupDoctrineCallback',
+            self::EM_CLEANUP_PERIOD,
+            $logger
+        );
+    }
+
+    /**
+     * We need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -82,20 +109,20 @@ class ContractSynchronizer
      */
     protected function updateBalancesForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-        $propertySets = ceil(
-            $propertyRepository->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingSets = ceil(
+            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
-        for ($offset = 1; $offset <= $propertySets; $offset++) {
-            $properties = $propertyRepository->findContractPropertiesByHolding(
+        for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
+            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
             );
-            /** @var Property $property*/
-            foreach ($properties as $property) {
+            /** @var PropertyMapping $propertyMapping*/
+            foreach ($propertyMappings as $propertyMapping) {
                 try {
-                    $this->updateBalancePerProperty($property, $holding);
+                    $this->updateBalancePerPropertyMapping($propertyMapping);
                 } catch (\Exception $e) {
                     $this->logger->alert(
                         sprintf(
@@ -105,29 +132,15 @@ class ContractSynchronizer
                     );
                 }
             }
-            $this->em->flush();
-            $this->em->clear();
         }
     }
 
     /**
-     * @param Property $property
-     * @param Holding $holding
+     * @param PropertyMapping $propertyMapping
      * @throws \Exception
      */
-    protected function updateBalancePerProperty(Property $property, Holding $holding)
+    protected function updateBalancePerPropertyMapping(PropertyMapping $propertyMapping)
     {
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
-
-        if (empty($propertyMapping)) {
-            throw new \Exception(
-                sprintf(
-                    'PropertyID \'%s\', doesn\'t have external ID',
-                    $property->getId()
-                )
-            );
-        }
-
         $residentTransactions = $this->residentDataManager->getResidents(
             $propertyMapping->getExternalPropertyId()
         );
@@ -147,7 +160,7 @@ class ContractSynchronizer
                     'MRI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
                              holding %s',
                     $propertyMapping->getExternalPropertyId(),
-                    $holding->getName()
+                    $propertyMapping->getHolding()->getName()
                 )
             );
             $this->processResidentTransactionsForUpdateBalance($residentTransactions, $propertyMapping);
@@ -159,7 +172,7 @@ class ContractSynchronizer
             sprintf(
                 'ERROR: Could not load resident transactions MRI for property %s of holding %s',
                 $propertyMapping->getExternalPropertyId(),
-                $holding->getName()
+                $propertyMapping->getHolding()->getName()
             )
         );
     }
@@ -266,6 +279,8 @@ class ContractSynchronizer
 
             $this->doUpdateBalance($customer, $contract);
         }
+        $this->em->flush();
+        $this->periodicExecutor->increment();
     }
 
     /**
@@ -310,12 +325,12 @@ class ContractSynchronizer
      */
     protected function updateRentForHolding(Holding $holding)
     {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
+        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
         $propertyMappingSets = ceil(
-            $propertyRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
         );
         for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
-            $propertyMappings = $propertyRepository->findUniqueByHolding(
+            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
                 $holding,
                 $offset,
                 self::COUNT_PROPERTIES_PER_SET
@@ -333,8 +348,7 @@ class ContractSynchronizer
                     );
                 }
             }
-            $this->em->flush();
-            $this->em->clear();
+
         }
 
     }
@@ -379,6 +393,7 @@ class ContractSynchronizer
             )
         );
     }
+
     /**
      * @param array $residentTransactions
      * @param PropertyMapping $propertyMapping
@@ -404,6 +419,7 @@ class ContractSynchronizer
                 $this->doUpdateRent($customer, $contract);
             }
         }
+
     }
 
     /**
@@ -452,6 +468,8 @@ class ContractSynchronizer
         }
 
         $contract->setRent($amount);
+        $this->em->flush();
+        $this->periodicExecutor->increment();
         $this->logger->info(
             sprintf(
                 'MRI: rent set %s.

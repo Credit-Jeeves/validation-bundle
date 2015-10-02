@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 class BatchDepositsManager
 {
@@ -44,7 +45,7 @@ class BatchDepositsManager
         foreach ($deposits as $key => $deposit) {
             $depositDate = new \DateTime($deposit['depositDate']);
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-
+            $deposits[$key]['depositType'] = DepositAccountType::capitalizeTitle($deposits[$key]['depositType']);
             $orders = $this->getOrderRepository()->getDepositedOrders(
                 $group,
                 $filter,

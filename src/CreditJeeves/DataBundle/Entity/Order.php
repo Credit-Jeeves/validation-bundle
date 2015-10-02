@@ -569,7 +569,7 @@ class Order extends Base
      */
     public function getItem(GenericSerializationVisitor $visitor = null)
     {
-        $result = array();
+        $result = [];
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = number_format($this->getSum(), 2, '.', '');
