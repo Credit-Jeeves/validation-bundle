@@ -87,11 +87,13 @@ class ImportContractType extends AbstractType
             array()
         );
 
-        $builder->add(
-            'rent',
-            'text',
-            array()
-        );
+        if ($this->import->isNeedUpdateRent()) {
+            $builder->add(
+                'rent',
+                'text',
+                []
+            );
+        }
 
         $builder->add(
             'skip',
