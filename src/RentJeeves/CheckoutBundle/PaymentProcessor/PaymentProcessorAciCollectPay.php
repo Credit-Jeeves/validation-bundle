@@ -86,15 +86,9 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     ) {
         /** @var Tenant $tenant */
         $tenant = $accountData->getEntity()->getUser();
-        if (!($profile = $tenant->getAciCollectPayProfile())) {
-            $profile = $this->enrollmentManager->createUserProfile($tenant, $depositAccount);
-        } elseif (!$profile->hasBillingAccountForDivisionId($depositAccount->getMerchantName())) {
-            $this->billingAccountManager->addBillingAccount($profile, $depositAccount);
-        }
-
-        if (!$accountData->getEntity()->getToken()) {
-            $this->fundingAccountManager->addPaymentFundingAccount($profile, $accountData);
-        }
+        $profile = $this->enrollmentManager->createUserProfile($tenant, $depositAccount);
+        $this->billingAccountManager->addBillingAccount($profile, $depositAccount);
+        $this->fundingAccountManager->addPaymentFundingAccount($profile, $accountData);
 
         return true;
     }
@@ -108,14 +102,8 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     ) {
         /** @var Group $group */
         $group = $accountData->getEntity()->getGroup();
-
-        if (!($profile = $group->getAciCollectPayProfile())) {
-            $profile = $this->enrollmentManager->createGroupProfile($group, $landlord);
-        }
-
-        if (!$accountData->getEntity()->getToken()) {
-            $this->fundingAccountManager->addBillingFundingAccount($profile, $accountData);
-        }
+        $profile = $this->enrollmentManager->createGroupProfile($group, $landlord);
+        $this->fundingAccountManager->addBillingFundingAccount($profile, $accountData);
 
         return true;
     }

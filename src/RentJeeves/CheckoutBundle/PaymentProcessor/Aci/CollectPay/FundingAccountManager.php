@@ -76,34 +76,44 @@ class FundingAccountManager extends AbstractManager
      */
     public function addPaymentFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
-                $profile->getUser()->getId(),
-                $profile->getProfileId()
-            )
-        );
+        if (!$fundingAccountData->getEntity()->getToken()) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
+                    $profile->getUser()->getId(),
+                    $profile->getProfileId()
+                )
+            );
 
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $profile->getUser());
+            $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $profile->getUser());
 
-        $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
+            $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user with id = "%d"',
-                $fundingAccountId,
-                $profile->getProfileId(),
-                $profile->getUser()->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user id = "%d"',
+                    $fundingAccountId,
+                    $profile->getProfileId(),
+                    $profile->getUser()->getId()
+                )
+            );
 
-        /** @var PaymentAccount $paymentAccount */
-        $paymentAccount = $fundingAccountData->getEntity();
-        $paymentAccount->setToken($fundingAccountId);
-        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+            /** @var PaymentAccount $paymentAccount */
+            $paymentAccount = $fundingAccountData->getEntity();
+            $paymentAccount->setToken($fundingAccountId);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $this->em->persist($paymentAccount);
-        $this->em->flush($paymentAccount);
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
+        } else {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Funding account for user id = "%d" and profile "%d" already exists',
+                    $profile->getUser()->getId(),
+                    $profile->getProfileId()
+                )
+            );
+        }
     }
 
     /**
@@ -112,34 +122,44 @@ class FundingAccountManager extends AbstractManager
      */
     public function addBillingFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
-                $fundingAccountData->getEntity()->getGroup()->getName(),
-                $profile->getProfileId()
-            )
-        );
+        if (!$fundingAccountData->getEntity()->getToken()) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
+                    $fundingAccountData->getEntity()->getGroup()->getName(),
+                    $profile->getProfileId()
+                )
+            );
 
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
+            $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
 
-        $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
+            $fundingAccountId = $this->executeRequest($profile->getProfileId(), $fundingAccount);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
-                $fundingAccountId,
-                $profile->getProfileId(),
-                $fundingAccountData->getEntity()->getGroup()->getName()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
+                    $fundingAccountId,
+                    $profile->getProfileId(),
+                    $fundingAccountData->getEntity()->getGroup()->getName()
+                )
+            );
 
-        /** @var BillingAccount $paymentAccount */
-        $paymentAccount = $fundingAccountData->getEntity();
-        $paymentAccount->setToken($fundingAccountId);
-        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+            /** @var BillingAccount $paymentAccount */
+            $paymentAccount = $fundingAccountData->getEntity();
+            $paymentAccount->setToken($fundingAccountId);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $this->em->persist($paymentAccount);
-        $this->em->flush($paymentAccount);
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
+        } else {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Group funding account for group "%s" and profile "%d" already exists',
+                    $fundingAccountData->getEntity()->getGroup()->getName(),
+                    $profile->getProfileId()
+                )
+            );
+        }
     }
 
     /**

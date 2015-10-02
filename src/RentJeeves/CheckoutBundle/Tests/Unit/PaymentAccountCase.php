@@ -78,10 +78,10 @@ class PaymentAccountCase extends BaseTestCase
         $paymentAccountType->submit($testData);
 
         $paymentAccountType = $this->getContainer()->get("payment_account.type.mapper")->map($paymentAccountType);
+        $paymentAccountType->getEntity()->setUser($user);
         try {
             $paymentAccountManager->registerPaymentToken(
                 $paymentAccountType,
-                $user,
                 $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND)
             );
         } catch (RuntimeException $e) {

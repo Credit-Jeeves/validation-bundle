@@ -14,7 +14,6 @@ class Version20151002141231 extends AbstractMigration
             select up.id, cb.division_id, now()
             from rj_contract c inner join rj_aci_collect_pay_contract_billing cb on (c.id = cb.contract_id)
             inner join rj_aci_collect_pay_user_profile up on (c.tenant_id = up.user_id)
-            where cb.division_id is not null
             group by up.id, cb.division_id
             order by up.id"
         );

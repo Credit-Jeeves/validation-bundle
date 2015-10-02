@@ -68,28 +68,31 @@ class PaymentAccountManager
      */
     public function registerPaymentToken(
         PaymentAccountData $paymentAccountData,
-        User $user,
         DepositAccount $depositAccount
     ) {
-        $merchantName = $depositAccount->getMerchantName();
-
-        if (empty($merchantName)) {
-            throw new PaymentProcessorConfigurationException(
-                'Heartland payment processor error: merchant name not found'
-            );
-        }
-        $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
-        $token = $this->getTokenResponse($tokenRequest, $merchantName);
-
-        /** @var PaymentAccount $paymentAccount */
         $paymentAccount = $paymentAccountData->getEntity();
-        $paymentAccount->setToken($token);
-        $paymentAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
-        $paymentAccount->setUser($user);
-        $paymentAccount->addDepositAccount($depositAccount);
+        if (!$paymentAccount->getToken()) {
+            $merchantName = $depositAccount->getMerchantName();
 
-        $this->em->persist($paymentAccount);
-        $this->em->flush($paymentAccount);
+            if (empty($merchantName)) {
+                throw new PaymentProcessorConfigurationException(
+                    'Heartland payment processor error: merchant name not found'
+                );
+            }
+            $tokenRequest = $this->getTokenRequest($paymentAccountData, $paymentAccount->getUser());
+            $token = $this->getTokenResponse($tokenRequest, $merchantName);
+
+            /** @var PaymentAccount $paymentAccount */
+            $paymentAccount = $paymentAccountData->getEntity();
+            $paymentAccount->setToken($token);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+            $paymentAccount->addDepositAccount($depositAccount);
+
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
+        } else {
+            $this->ensureAccountAssociation($paymentAccount, $depositAccount);
+        }
     }
 
     /**
@@ -102,16 +105,19 @@ class PaymentAccountManager
         PaymentAccountData $paymentAccountData,
         User $user
     ) {
-        $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
-        $token = $this->getTokenResponse($tokenRequest, $this->defaultMerchantName);
-
-        /** @var BillingAccount $billingAccount */
         $billingAccount = $paymentAccountData->getEntity();
-        $billingAccount->setToken($token);
-        $billingAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        if (!$billingAccount->getToken()) {
+            $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
+            $token = $this->getTokenResponse($tokenRequest, $this->defaultMerchantName);
 
-        $this->em->persist($billingAccount);
-        $this->em->flush($billingAccount);
+            /** @var BillingAccount $billingAccount */
+            $billingAccount = $paymentAccountData->getEntity();
+            $billingAccount->setToken($token);
+            $billingAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+
+            $this->em->persist($billingAccount);
+            $this->em->flush($billingAccount);
+        }
     }
 
     /**

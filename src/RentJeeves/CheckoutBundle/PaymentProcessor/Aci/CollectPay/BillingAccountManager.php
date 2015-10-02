@@ -18,59 +18,61 @@ class BillingAccountManager extends AbstractManager
      */
     public function addBillingAccount(AciCollectPayUserProfile $userProfile, DepositAccount $depositAccount)
     {
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to add billing account to profile "%d" for deposit account id = "%d"',
-                $userProfile->getProfileId(),
-                $depositAccount->getId()
-            )
-        );
+        if (!$userProfile->hasBillingAccountForDivisionId($depositAccount->getMerchantName())) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to add billing account to profile "%d" for deposit account id = "%d"',
+                    $userProfile->getProfileId(),
+                    $depositAccount->getId()
+                )
+            );
 
-        $profile = new RequestModel\Profile();
+            $profile = new RequestModel\Profile();
 
-        $profile->setProfileId($userProfile->getProfileId());
+            $profile->setProfileId($userProfile->getProfileId());
 
-        $billingAccount = $this->prepareBillingAccount($userProfile->getUser(), $depositAccount);
+            $billingAccount = $this->prepareBillingAccount($userProfile->getUser(), $depositAccount);
 
-        $profile->setBillingAccount($billingAccount);
+            $profile->setBillingAccount($billingAccount);
 
-        $request = new AddBilling($profile);
+            $request = new AddBilling($profile);
 
-        try {
-            $this->paymentProcessor->execute($request);
-        } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
-            throw $e;
+            try {
+                $this->paymentProcessor->execute($request);
+            } catch (\Exception $e) {
+                $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+                throw $e;
+            }
+
+            if (!$request->getIsSuccessful()) {
+                $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+                throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
+            }
+
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
+                    $request->getModel()->getProfileId(),
+                    $depositAccount->getId()
+                )
+            );
+
+            $profileBilling = new AciCollectPayProfileBilling();
+            $profileBilling->setProfile($userProfile);
+            $profileBilling->setDivisionId($billingAccount->getBusinessId());
+
+            $userProfile->addAciCollectPayProfileBilling($profileBilling);
+
+            $this->em->persist($profileBilling);
+            $this->em->flush();
+
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
+                    $request->getModel()->getProfileId(),
+                    $depositAccount->getId()
+                )
+            );
         }
-
-        if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
-            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
-        }
-
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
-                $request->getModel()->getProfileId(),
-                $depositAccount->getId()
-            )
-        );
-
-        $profileBilling = new AciCollectPayProfileBilling();
-        $profileBilling->setProfile($userProfile);
-        $profileBilling->setDivisionId($billingAccount->getBusinessId());
-
-        $userProfile->addAciCollectPayProfileBilling($profileBilling);
-
-        $this->em->persist($profileBilling);
-        $this->em->flush();
-
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
-                $request->getModel()->getProfileId(),
-                $depositAccount->getId()
-            )
-        );
     }
 }

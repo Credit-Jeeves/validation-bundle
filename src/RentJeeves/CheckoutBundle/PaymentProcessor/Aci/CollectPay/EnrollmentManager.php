@@ -28,65 +28,71 @@ class EnrollmentManager extends AbstractManager
      */
     public function createUserProfile(Tenant $user, DepositAccount $depositAccount)
     {
-        $this->logger->debug(
-            sprintf('[ACI CollectPay Info]:Try to create new profile for user with id = "%d"', $user->getId())
-        );
+        if (!($userProfile = $user->getAciCollectPayProfile())) {
+            $this->logger->debug(
+                sprintf('[ACI CollectPay Info]:Try to create new profile for user with id = "%d"', $user->getId())
+            );
 
-        $profile = $this->prepareUserProfile($user);
+            $aciProfile = $this->prepareUserProfile($user);
 
-        $billingAccount = $this->prepareBillingAccount($user, $depositAccount);
+            $billingAccount = $this->prepareBillingAccount($user, $depositAccount);
 
-        $profile->setBillingAccount($billingAccount);
+            $aciProfile->setBillingAccount($billingAccount);
 
-        $profile = $this->executeRequest($profile);
+            $aciProfile = $this->executeRequest($aciProfile);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Created new profile "%d" for user with id = "%d"',
-                $profile->getProfileId(),
-                $user->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Created new profile "%d" for user with id = "%d"',
+                    $aciProfile->getProfileId(),
+                    $user->getId()
+                )
+            );
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
-                $profile->getProfileId(),
-                $depositAccount->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added billing account to profile "%d" for deposit account id = "%d"',
+                    $aciProfile->getProfileId(),
+                    $depositAccount->getId()
+                )
+            );
 
-        $userProfile = new AciCollectPayUserProfile();
-        $userProfile->setProfileId($profile->getProfileId());
-        $userProfile->setUser($user);
-        $user->setAciCollectPayProfile($userProfile);
+            $userProfile = new AciCollectPayUserProfile();
+            $userProfile->setProfileId($aciProfile->getProfileId());
+            $userProfile->setUser($user);
+            $user->setAciCollectPayProfile($userProfile);
 
-        $this->em->persist($userProfile);
+            $this->em->persist($userProfile);
 
-        $profileBilling = new AciCollectPayProfileBilling();
-        $profileBilling->setProfile($userProfile);
-        $profileBilling->setDivisionId($depositAccount->getMerchantName());
-        $userProfile->addAciCollectPayProfileBilling($profileBilling);
+            $profileBilling = new AciCollectPayProfileBilling();
+            $profileBilling->setProfile($userProfile);
+            $profileBilling->setDivisionId($depositAccount->getMerchantName());
+            $userProfile->addAciCollectPayProfileBilling($profileBilling);
 
-        $this->em->persist($profileBilling);
+            $this->em->persist($profileBilling);
 
-        $this->em->flush();
+            $this->em->flush();
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved profile "%d" for user with id = "%d"',
-                $profile->getProfileId(),
-                $user->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Saved profile "%d" for user with id = "%d"',
+                    $aciProfile->getProfileId(),
+                    $user->getId()
+                )
+            );
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
-                $profile->getProfileId(),
-                $depositAccount->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Saved billing account for profile "%d" for deposit account id = "%d"',
+                    $aciProfile->getProfileId(),
+                    $depositAccount->getId()
+                )
+            );
+        } else {
+            $this->logger->debug(
+                sprintf('[ACI CollectPay Info]:User profile for user id = "%d" already exists', $user->getId())
+            );
+        }
 
         return $userProfile;
     }
@@ -99,55 +105,65 @@ class EnrollmentManager extends AbstractManager
      */
     public function createGroupProfile(Group $group, Landlord $landlord)
     {
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to create new profile for group "%s" using landlord with id = "%d"',
-                $group->getName(),
-                $landlord->getId()
-            )
-        );
+        if (!($groupProfile = $group->getAciCollectPayProfile())) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to create new profile for group "%s" using landlord with id = "%d"',
+                    $group->getName(),
+                    $landlord->getId()
+                )
+            );
 
-        $profile = $this->prepareGroupProfile($landlord, $group);
+            $profile = $this->prepareGroupProfile($landlord, $group);
 
-        $billingAccount = $this->prepareGroupBillingAccount($group);
+            $billingAccount = $this->prepareGroupBillingAccount($group);
 
-        $profile->setBillingAccount($billingAccount);
+            $profile->setBillingAccount($billingAccount);
 
-        $profile = $this->executeRequest($profile);
+            $profile = $this->executeRequest($profile);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Created new profile "%d" for group "%s" using landlord with id = "%d"',
-                $profile->getProfileId(),
-                $group->getName(),
-                $landlord->getId()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Created new profile "%d" for group "%s" using landlord with id = "%d"',
+                    $profile->getProfileId(),
+                    $group->getName(),
+                    $landlord->getId()
+                )
+            );
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added billing account to profile "%d" for group "%s"',
-                $profile->getProfileId(),
-                $group->getName()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added billing account to profile "%d" for group "%s"',
+                    $profile->getProfileId(),
+                    $group->getName()
+                )
+            );
 
-        $groupProfile = new AciCollectPayGroupProfile();
-        $groupProfile->setProfileId($profile->getProfileId());
-        $groupProfile->setGroup($group);
-        $group->setAciCollectPayProfile($groupProfile);
+            $groupProfile = new AciCollectPayGroupProfile();
+            $groupProfile->setProfileId($profile->getProfileId());
+            $groupProfile->setGroup($group);
+            $group->setAciCollectPayProfile($groupProfile);
 
-        $this->em->persist($groupProfile);
+            $this->em->persist($groupProfile);
 
-        $this->em->flush();
+            $this->em->flush();
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Saved profile "%d" for group "%s"',
-                $profile->getProfileId(),
-                $group->getName()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Saved profile "%d" for group "%s"',
+                    $profile->getProfileId(),
+                    $group->getName()
+                )
+            );
+        } else {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Group profile for group "%s" and landlord id = "%d" already exists',
+                    $group->getName(),
+                    $landlord->getId()
+                )
+            );
+        }
 
         return $groupProfile;
     }
