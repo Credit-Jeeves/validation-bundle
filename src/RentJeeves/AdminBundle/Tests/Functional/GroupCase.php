@@ -205,11 +205,11 @@ class GroupCase extends BaseTestCase
     {
         $this->load(true);
         /** @var Group $group */
-        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Generic group');
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotEmpty($group);
         $this->assertFalse(
             $group->getGroupSettings()->isAllowedDebitFee(),
-            'Default value for allowed debit fee should not allow'
+            'Default value for allowed debit fee should be false'
         );
         $this->assertEmpty(
             $group->getGroupSettings()->getDebitFee(),
@@ -223,9 +223,8 @@ class GroupCase extends BaseTestCase
         );
 
         $tableBlock->clickLink('link_list');
-
-        $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
-        $edit[0]->click(); //click edit for Generic group
+        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("Test Rent Group")'));
+        $editLink->click();
         $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
         $menu[4]->click(); //Click settings tab
 
@@ -271,7 +270,7 @@ class GroupCase extends BaseTestCase
         );
         $submit->click();
         $this->assertNotEmpty(
-            $error = $this->page->find('css', '.alert-success'),
+            $this->page->find('css', '.alert-success'),
             'We should get success'
         );
         $this->getEntityManager()->refresh($group);

@@ -3,7 +3,7 @@ namespace RentJeeves\AdminBundle\Form;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\DataBundle\Enum\TypeDebitFees;
+use RentJeeves\DataBundle\Enum\TypeDebitFee;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -170,9 +170,9 @@ class GroupSettingsType extends Base
         );
 
         $builder->add(
-            'typeDebitFees',
+            'typeDebitFee',
             'choice',
-            ['choices' => TypeDebitFees::cachedTitles(), 'required' => false]
+            ['choices' => TypeDebitFee::cachedTitles(), 'required' => false]
         );
 
         $builder->add(
