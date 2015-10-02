@@ -414,14 +414,12 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccount2 = clone $paymentAccount1;
 
-        $paymentAccount1->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         $this->setOldProfileId(
             md5($contract->getTenant()->getId()),
             $contract->getTenant()->getAciCollectPayProfileId()
         );
-
-        $em->persist($paymentAccount1);
 
         $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
         $paymentAccount2->setName('Test ACI Card');
@@ -429,11 +427,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccountData->setEntity($paymentAccount2);
 
-        $paymentAccount2->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
-
-        $em->persist($paymentAccount2);
-
-        $em->flush();
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         return [$paymentAccount1, $paymentAccount2];
     }

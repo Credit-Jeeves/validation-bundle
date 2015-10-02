@@ -35,6 +35,7 @@ class TransferPaymentAccountsCommandCase extends BaseTestCase
      */
     public function registerToNewDepositAccountCase()
     {
+        $this->markTestSkipped('Reenable this test as a part of RT-1720');
         $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
