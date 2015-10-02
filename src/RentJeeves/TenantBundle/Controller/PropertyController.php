@@ -12,9 +12,6 @@ use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ContractStatus;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Holding;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -59,14 +56,8 @@ class PropertyController extends Controller
         if (!$property) {
             throw $this->createNotFoundException('The property does not exist');
         }
-        
-        $propertyList = $google->searchPropertyInRadius($property);
-        
-        if (isset($propertyList[$property->getId()])) {
-            unset($propertyList[$property->getId()]);
-        }
 
-        $propertyList = array_merge(array($property), $propertyList);
+        $propertyList = [$property];
 
         foreach ($propertyList as $key => $propertyValue) {
             if ($propertyValue->hasLandlord()) {
