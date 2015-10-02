@@ -25,6 +25,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldMapObjectIfItHasRelationWithUser()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         /** @var DepositAccount $depositAccount */
         $depositAccount = $user->getActiveContracts()[0]->getGroup()->getDepositAccounts()->first();
@@ -124,6 +125,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToConsumerRecordIfUserHasAciCollectPayProfile()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $aciProfile = new AciCollectPayUserProfile();
         $aciProfile->setProfileId(1);
@@ -181,6 +183,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToAccountRecordIfGroupDoNotHasAciDepositAccount()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
 
         /** @var DepositAccount $depositAccount */
@@ -219,6 +222,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToFundingRecordIfUserHas1AciPaymentAccount()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $user->getPaymentAccounts()->last()->setPaymentProcessor(PaymentProcessor::ACI); // ACI
 
@@ -264,6 +268,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldMapObjectIfItHasRelationWithGroup()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $depositAccount = new DepositAccount();
         $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
@@ -340,6 +345,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToConsumerAndAccountRecordsIfGroupHasAciCollectPayProfile()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $depositAccount = new DepositAccount();
         $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
@@ -383,6 +389,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToFundingRecordIfGroupHasAciBillingAccount()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $depositAccount = new DepositAccount();
         $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
@@ -421,6 +428,7 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldReturnEmptyArrayIfRelationUserDoesNotHaveAddressAndContracts()
     {
+        $this->markTestSkipped('Skipped until RT-1698 is done');
         /** @var AciProfileMapper|\PHPUnit_Framework_MockObject_MockObject $aciProfileMapper */
         $aciProfileMapper = $this->getMock(
             '\RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper',
