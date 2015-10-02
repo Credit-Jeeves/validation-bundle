@@ -50,12 +50,12 @@ class LoggableListenerCase extends BaseTestCase
 
         $contractsHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
         $this->assertNotNull($contractsHistory, 'We should have objects in DB');
-        $this->assertCount(2, $contractsHistory, 'We should have 2 object in DB');
+        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
         $contractHistory = end($contractsHistory);
         $this->assertEquals(
             PaymentAccepted::CASH_EQUIVALENT,
             $contractHistory->getPaymentAccepted(),
-            'PaymentAccepted should be log correctly'
+            'PaymentAccepted should be saved in history correctly'
         );
     }
 }
