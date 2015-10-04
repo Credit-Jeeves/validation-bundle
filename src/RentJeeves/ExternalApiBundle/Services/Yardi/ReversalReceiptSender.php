@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order as Transaction;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -83,28 +84,44 @@ class ReversalReceiptSender
         try {
             $offsetHoldings = 0;
             while ($holdings = $this->getHoldings($offsetHoldings, self::LIMIT_HOLDINGS)) {
-
+                /** @var Holding $holding */
                 foreach ($holdings as $holding) {
-                    $this->logger->info('Holding: ' . $holding->getName());
-                    $offset = 0;
+                    try {
+                        $this->logger->info('Holding: ' . $holding->getName());
+                        $offset = 0;
 
-                    while ($reversedTransactions = $this->getReversedTransactions(
-                        $holding,
-                        $depositDate,
-                        $offset,
-                        self::LIMIT_TRANSACTIONS
-                    )) {
-                        $this->pushReceipts($holding->getYardiSettings(), $reversedTransactions);
+                        while ($reversedTransactions = $this->getReversedTransactions(
+                            $holding,
+                            $depositDate,
+                            $offset,
+                            self::LIMIT_TRANSACTIONS
+                        )) {
+                            $this->pushReceipts($holding->getYardiSettings(), $reversedTransactions);
 
-                        $offset += self::LIMIT_TRANSACTIONS;
-                        $this->em->clear();
+                            $offset += self::LIMIT_TRANSACTIONS;
+                            $this->em->clear();
+                        }
+                    } catch (Exception $e) {
+                        $this->exceptionCatcher->handleException($e);
+                        $this->logger->alert(
+                            sprintf(
+                                "Reversals for holding(ID:%s) failed to post to Yardi. Exception: %s",
+                                $holding->getId(),
+                                $e->getMessage()
+                            )
+                        );
                     }
                 }
                 $offsetHoldings += self::LIMIT_HOLDINGS;
             }
         } catch (Exception $e) {
             $this->exceptionCatcher->handleException($e);
-            $this->logger->alert($e->getMessage());
+            $this->logger->alert(
+                sprintf(
+                    "Posting reversals to Yardi failed to complete for all holdings. Exception: %s",
+                    $e->getMessage()
+                )
+            );
         }
     }
 
@@ -142,23 +159,40 @@ class ReversalReceiptSender
 
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $this->logger->info('Original trans# ' . $transaction->getCompleteTransaction()->getTransactionId());
-            $transactionXml = $this->getTransactionXml($settings, $transaction);
-            if ($transactionXml === false) {
-                $this->logger->alert(sprintf(
-                    'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.\n
-                    You can re-run initial import for setup externalLeaseId for active contract.',
-                    $transaction->getId(),
-                    $transaction->getContract()->getId()
-                ));
-                continue;
-            }
-            /** @var Messages $result */
-            $result = $residentClient->importResidentTransactionsLogin($transactionXml);
-            if ($result instanceof Messages) {
-                $this->logger->info($result->getMessage());
-            } else {
-                $this->logger->alert(sprintf('Failed to reverse payment: %s', $residentClient->getErrorMessage()));
+            try {
+                $this->logger->info('Original trans# ' . $transaction->getCompleteTransaction()->getTransactionId());
+                $transactionXml = $this->getTransactionXml($settings, $transaction);
+                if ($transactionXml === false) {
+                    $this->logger->alert(sprintf(
+                        'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.\n
+                        You can re-run initial import for setup externalLeaseId for active contract.',
+                        $transaction->getId(),
+                        $transaction->getContract()->getId()
+                    ));
+                    continue;
+                }
+                /** @var Messages $result */
+                $result = $residentClient->importResidentTransactionsLogin($transactionXml);
+                if ($result instanceof Messages) {
+                    $this->logger->info($result->getMessage());
+                } else {
+                    $this->logger->alert(
+                        sprintf(
+                            "Reversal Order(ID:%s) failed to post to Yardi: Error: %s",
+                            $transaction->getId(),
+                            $residentClient->getErrorMessage()
+                        )
+                    );
+                }
+            } catch (Exception $e) {
+                $this->exceptionCatcher->handleException($e);
+                $this->logger->alert(
+                    sprintf(
+                        "Reversal Order(ID:%s) failed to post to Yardi. Exception: %s",
+                        $transaction->getId(),
+                        $e->getMessage()
+                    )
+                );
             }
         }
     }
