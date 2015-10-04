@@ -173,7 +173,7 @@ class StorageMRI extends ExternalApiStorage
                 $moveOut,
                 $customer->getLeaseBalance(),
                 $monthToMonth,
-                $customer->getPayAllowed(),
+                $customer->getPaymentAccepted(),
                 $customer->getLeaseId(),
                 $externalUnitId,
                 $customer->getCity(),
