@@ -1375,10 +1375,6 @@ class ImportCase extends ImportBaseAbstract
             [
                 $firstCount = 5,
                 $secondCount = 7,
-                $thirdCount = 7,
-                $fourthCount = 7,
-                $fiveCount = 8,
-                $sixthCount = 1,
                 $status = 'import.status.waiting',
                 $isNeedLoadFixtures = true,
                 $countCountractsCashEquivalent = 0,
@@ -1389,15 +1385,11 @@ class ImportCase extends ImportBaseAbstract
             [
                 $firstCount = 9,
                 $secondCount = 9,
-                $thirdCount = 9,
-                $fourthCount = 8,
-                $fiveCount = 9,
-                $sixthCount = 1,
                 $status = 'import.status.match',
                 $isNeedLoadFixtures = false,
-                $countCountractsCashEquivalent = 1,
+                $countCountractsCashEquivalent = 2,
                 $countCountractsDontAcceptEquivalent = 1,
-                $countCountractsExternalLeaseId = 3,
+                $countCountractsExternalLeaseId = 2,
                 $residentMappingCount = 1
             ]
         ];
@@ -1406,10 +1398,6 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @param integer $firstCount
      * @param integer $secondCount
-     * @param integer $thirdCount
-     * @param integer $fourthCount
-     * @param integer $fiveCount
-     * @param integer $sixthCount
      * @param string $status
      * @param boolean $isNeedLoadFixtures
      * @param integer $countCountractsCashEquivalent,
@@ -1423,10 +1411,6 @@ class ImportCase extends ImportBaseAbstract
     public function yardiMultiPropertyImport(
         $firstCount,
         $secondCount,
-        $thirdCount,
-        $fourthCount,
-        $fiveCount,
-        $sixthCount,
         $status,
         $isNeedLoadFixtures,
         $countCountractsCashEquivalent,
@@ -1491,26 +1475,18 @@ class ImportCase extends ImportBaseAbstract
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount($thirdCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount($fourthCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount($fiveCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount($sixthCount, $trs[$status], sprintf('%s contract is wrong number', $status));
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
