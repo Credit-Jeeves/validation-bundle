@@ -2,12 +2,14 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
+use Doctrine\ORM\EntityManager;
 use CreditJeeves\DataBundle\Entity\Group;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\ACHAccountType;
 use Payum2\Heartland\Soap\Base\ACHDepositType;
 use Payum2\Heartland\Soap\Base\GetTokenRequest;
 use Payum2\Heartland\Soap\Base\GetTokenResponse;
+use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as Payum2AwareRegistry;
 use Payum2\Payment;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
@@ -27,28 +29,29 @@ use RuntimeException;
 
 class PaymentAccountManager
 {
+    /**
+     * @var Payment
+     */
+    protected $payment;
+
+    /**
+     * @var string
+     */
     protected $defaultMerchantName;
 
-    protected $payum;
-
-    public function setDefaultMerchantName($defaultMerchantName)
+    /**
+     * PaymentAccountManager constructor.
+     * @param EntityManager $em
+     * @param Payum2AwareRegistry $payum2
+     * @param string $rtGroupCode
+     */
+    public function __construct(EntityManager $em, Payum2AwareRegistry $payum2, $rtGroupCode)
     {
-        $this->defaultMerchantName = $defaultMerchantName;
-    }
-
-    public function getDefaultMerchantName()
-    {
-        return $this->defaultMerchantName;
-    }
-
-    public function setPayum($payum)
-    {
-        $this->payum = $payum;
-    }
-
-    public function getPayum()
-    {
-        return $this->payum;
+        $this->payment = $payum2->getPayment('heartland');
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByCode($rtGroupCode);
+        $depositAccount = $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND);
+        $this->defaultMerchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
     }
 
     /**
@@ -128,13 +131,10 @@ class PaymentAccountManager
         $paymentDetails->setMerchantName($merchantName);
         $paymentDetails->setRequest($tokenRequest);
         $captureRequest = new CaptureRequest($paymentDetails);
-
-        /** @var Payment $payment */
-        $payment = $this->getPayum()->getPayment('heartland');
-        $payment->execute($captureRequest);
+        $this->payment->execute($captureRequest);
 
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-        $payment->execute($statusRequest);
+        $this->payment->execute($statusRequest);
 
         /** @var GetTokenResponse $response */
         $response = $statusRequest->getModel()->getResponse();

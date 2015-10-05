@@ -20,7 +20,7 @@ class PaymentAccountCase extends BaseTestCase
      *
      * @return Form
      */
-    protected function createForm($type, $data = null, array $options = array())
+    protected function createForm($type, $data = null, array $options = [])
     {
         return $this->getContainer()->get('form.factory')->create($type, $data, $options);
     }
@@ -30,29 +30,25 @@ class PaymentAccountCase extends BaseTestCase
      */
     public function createToken()
     {
-        $payum = $this->getContainer()->get('payum2');
-        $paymentAccount = new PaymentAccountManager();
-        $paymentAccount->setPayum($payum);
+        $em = $this->getEntityManager();
+        $paymentAccount = new PaymentAccountManager(
+            $em,
+            $this->getContainer()->get('payum2'),
+            $this->getContainer()->getParameter('rt_group_code')
+        );
 
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $user = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array('email' => 'tenant11@example.com')
-        );
-        $group = $em->getRepository('DataBundle:Group')->findOneBy(
-            array(
-                'name'  => 'Test Rent Group',
-            )
-        );
+        $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $paymentAccountType = $this->createForm(new PaymentAccountType($user));
         $view = $paymentAccountType->createView();
-        $testData =  array(
+        $testData =  [
             'name'                              => 'Test payment',
             'PayorName'                         => 'Timothy APPLEGATE',
             'RoutingNumber'                     => '062202574',
-            'AccountNumber'                     => array(
+            'AccountNumber'                     => [
                 'AccountNumberAgain' => '123245678',
                 'AccountNumber'      => '123245678'
-            ),
+            ],
             'ACHDepositType_0'                  => true,
             '_token'                            => $view->children['_token']->vars['value'],
 
@@ -65,16 +61,16 @@ class PaymentAccountCase extends BaseTestCase
             'ExpirationYear'                    => '',
             'is_new_address'                    => false,
             'is_new_address_link'               => '',
-            'address'                           => array(
+            'address'                           => [
                 'street' => '',
                 'city'   => '',
                 'area'   => '',
                 'zip'    => '',
-            ),
+            ],
             'save'                              => 1,
             'id'                                => '',
             'groupId'                           => $group->getId(),
-        );
+        ];
 
         $paymentAccountType->submit($testData);
 

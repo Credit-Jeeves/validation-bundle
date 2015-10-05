@@ -20,7 +20,7 @@ class PayCreditTrackCase extends BaseTestCase
         $group = $this->getContainer()
             ->get('doctrine')
             ->getRepository('DataBundle:Group')
-            ->findOneByCode($this->getContainer()->getParameter('rt_merchant_name'));
+            ->findOneByCode($this->getContainer()->getParameter('rt_group_code'));
 
         /** @var OrderSubmerchant $order */
         $order = $this->getContainer()

@@ -80,10 +80,10 @@ class StorageAMSI extends ExternalApiStorage
             }
 
             $paymentAccepted = $lease->getBlockPaymentAccess();
-            if (strtolower($paymentAccepted) === 'n') {
-                $paymentAccepted = PaymentAccepted::ANY;
-            } else {
+            if (strtolower($paymentAccepted) === 'y') {
                 $paymentAccepted = PaymentAccepted::DO_NOT_ACCEPT;
+            } else {
+                $paymentAccepted = PaymentAccepted::ANY;
             }
 
             $moveOutDate = $lease->getActualMoveOutDateObject();

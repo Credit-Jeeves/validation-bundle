@@ -103,7 +103,7 @@ class BatchDepositsManagerCase extends BaseTestCase
         $this->assertEquals('111555', $deposits[0]['batchNumber'], 'Unexpected batchNumber');
         $this->assertArrayHasKey('depositDate', $deposits[0], 'DepositDate not found in deposit');
         $this->assertArrayHasKey('depositType', $deposits[0], 'DepositType not found in deposit');
-        $this->assertEquals('rent', $deposits[0]['depositType'], 'Unexpected depositType');
+        $this->assertEquals('Rent', $deposits[0]['depositType'], 'Unexpected depositType');
         $this->assertArrayHasKey('orderAmount', $deposits[0], 'OrderAmount not found in deposit');
         $this->assertEquals(3000, $deposits[0]['orderAmount'], 'Unexpected orderAmount');
         $this->assertArrayHasKey('orders', $deposits[0], 'Orders not found in deposit');
