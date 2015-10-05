@@ -8,6 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TypeDebitFee;
 
 /**
  * @ORM\MappedSuperclass
@@ -231,6 +232,44 @@ abstract class GroupSettings
      * )
      */
     protected $autoApproveContracts = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="allowed_debit_fee",
+     *      options={
+     *          "default" : 0
+     *      },
+     *     nullable=false
+     * )
+     */
+    protected $allowedDebitFee = false;
+
+    /**
+     * @ORM\Column(
+     *     type="TypeDebitFee",
+     *     options={
+     *         "default"="percentage"
+     *     },
+     *     name="type_debit_fee",
+     *     nullable=false
+     * )
+     * @var string
+     */
+    protected $typeDebitFee = TypeDebitFee::PERCENTAGE;
+
+    /**
+     * @ORM\Column(
+     *      name="debit_fee",
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     */
+    protected $debitFee;
 
     /**
      * @param float $feeACH
@@ -510,5 +549,53 @@ abstract class GroupSettings
     public function setAutoApproveContracts($isAutoApproveContracts)
     {
         $this->autoApproveContracts = $isAutoApproveContracts;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedDebitFee()
+    {
+        return $this->allowedDebitFee;
+    }
+
+    /**
+     * @param boolean $allowedDebitFee
+     */
+    public function setAllowedDebitFee($allowedDebitFee)
+    {
+        $this->allowedDebitFee = $allowedDebitFee;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeDebitFee()
+    {
+        return $this->typeDebitFee;
+    }
+
+    /**
+     * @param string $typeDebitFee
+     */
+    public function setTypeDebitFee($typeDebitFee)
+    {
+        $this->typeDebitFee = $typeDebitFee;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDebitFee()
+    {
+        return $this->debitFee;
+    }
+
+    /**
+     * @param float $debitFee
+     */
+    public function setDebitFee($debitFee)
+    {
+        $this->debitFee = $debitFee;
     }
 }
