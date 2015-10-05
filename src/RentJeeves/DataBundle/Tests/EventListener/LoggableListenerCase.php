@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase;
 use DateTime;
 
@@ -32,6 +33,7 @@ class LoggableListenerCase extends BaseTestCase
         $contract->setDueDate($group->getGroupSettings()->getDueDate());
         $contract->setProperty($group->getGroupProperties()->last());
         $contract->setUnit($contract->getProperty()->getUnits()->first());
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
 
         $em->persist($contract);
         $em->flush($contract);
@@ -42,11 +44,18 @@ class LoggableListenerCase extends BaseTestCase
 
         //Update
         $contract->setRent(1100);
+        $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
         $em->persist($contract);
         $em->flush($contract);
 
-        $contractHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
-        $this->assertNotNull($contractHistory);
-        $this->assertCount(2, $contractHistory);
+        $contractsHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
+        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
+        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
+        $contractHistory = end($contractsHistory);
+        $this->assertEquals(
+            PaymentAccepted::CASH_EQUIVALENT,
+            $contractHistory->getPaymentAccepted(),
+            'PaymentAccepted should be saved in history correctly'
+        );
     }
 }
