@@ -269,6 +269,7 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
      */
     public function editPaymentAccount($requestParams, $statusCode = 204)
     {
+        $this->markTestSkipped('Reenable when "RT-1697: Delete payment source" is done');
         $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);

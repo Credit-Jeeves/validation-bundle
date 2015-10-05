@@ -26,6 +26,7 @@ class SourcesCase extends BaseTestCase
      */
     public function edit($paymentProcessor)
     {
+        $this->markTestSkipped('Reenable when RT-1697 is done');
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')
@@ -112,6 +113,7 @@ class SourcesCase extends BaseTestCase
      */
     public function editTheSame()
     {
+        $this->markTestSkipped('Reenable when RT-1697 is done');
         $this->setDefaultSession('selenium2');
         $this->load(false);
         $this->login('tenant11@example.com', 'pass');

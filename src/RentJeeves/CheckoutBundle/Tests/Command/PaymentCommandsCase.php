@@ -437,6 +437,7 @@ class PaymentCommandsCase extends BaseTestCase
      */
     public function collectAndPayAciCollectPay()
     {
+        $this->load(true);
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
@@ -476,9 +477,9 @@ class PaymentCommandsCase extends BaseTestCase
         $plugin->clean();
 
         $this->executeCommand(3); // created 3 jobs for 3 payments
-
+        $messages = $plugin->getPreSendMessages();
         // "Your Rent is Processing" Email
-        $this->assertCount(4, $plugin->getPreSendMessages()); // 3 for Order; 1 - Monolog Message
+        $this->assertCount(4, $messages); // 3 for Order; 1 - Monolog Message
 
         // Should get 2 Orders with Pending and Error statuses
         /** @var OrderSubmerchant[] $orders */

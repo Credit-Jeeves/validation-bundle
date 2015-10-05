@@ -120,7 +120,9 @@ class PaymentManager extends AbstractManager
         } elseif ($paymentAccount instanceof UserAwareInterface && $paymentType === PaymentGroundType::RENT) {
             $payment->setProfileId($paymentAccount->getUser()->getAciCollectPayProfileId());
             $payment->setDivisionBusinessId($order->getDepositAccount()->getMerchantName());
-            $payment->setBillingAccountNumber($order->getContract()->getId());
+            $payment->setBillingAccountNumber(
+                $this->getUserBillingAccountNumber($order->getUser(), $order->getDepositAccount())
+            );
         } else {
             throw new PaymentProcessorInvalidArgumentException(
                 'Undefined type of payment account or incorrect payment type'

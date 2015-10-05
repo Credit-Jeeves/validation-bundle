@@ -42,18 +42,14 @@ class DepositAccountRepository extends EntityRepository
      *
      * @return Array
      */
-    public function getAssociatedForPaymentAccountAndGroup(
-        PaymentAccount $paymentAccount,
-        Group $group
-    ) {
+    public function getAssociatedForPaymentAccount(PaymentAccount $paymentAccount)
+    {
         return $this->createQueryBuilder('d')
             ->select('d')
             ->join('d.paymentAccounts', 'p')
             ->where('p.id = :payment_account_id')
-            ->andWhere('d.group = :group')
             ->andWhere('d.paymentProcessor = p.paymentProcessor')
             ->setParameter('payment_account_id', $paymentAccount->getId())
-            ->setParameter('group', $group)
             ->getQuery()
             ->execute();
     }

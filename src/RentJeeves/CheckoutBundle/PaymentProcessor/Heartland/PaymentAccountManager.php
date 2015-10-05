@@ -145,7 +145,7 @@ class PaymentAccountManager
         }
 
         $existingDepositAccounts = $this->em->getRepository('RjDataBundle:DepositAccount')
-            ->getAssociatedForPaymentAccountAndGroup($paymentAccount, $depositAccount->getGroup());
+            ->getAssociatedForPaymentAccount($paymentAccount);
 
         if (empty($existingDepositAccounts)) {
             throw new RuntimeException(
@@ -281,13 +281,10 @@ class PaymentAccountManager
         $paymentDetails->setRequest($request);
         $captureRequest = new CaptureRequest($paymentDetails);
 
-        /** @var Payment $payment */
-        $payment = $this->payum->getPayment('heartland');
-
-        $payment->execute($captureRequest);
+        $this->payment->execute($captureRequest);
 
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-        $payment->execute($statusRequest);
+        $this->payment->execute($statusRequest);
 
         /** @var GetTokenResponse $response */
         $response = $statusRequest->getModel()->getResponse();

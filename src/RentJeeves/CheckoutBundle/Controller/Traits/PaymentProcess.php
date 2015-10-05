@@ -37,9 +37,10 @@ trait PaymentProcess
         $depositAccountType = DepositAccountType::RENT
     ) {
         $group = $contract->getGroup();
-
+        $user = $contract->getTenant();
         /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+        $paymentAccountMapped->getEntity()->setUser($user);
         $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */

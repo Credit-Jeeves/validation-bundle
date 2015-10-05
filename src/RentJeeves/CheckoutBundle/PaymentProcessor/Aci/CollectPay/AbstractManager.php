@@ -110,7 +110,7 @@ abstract class AbstractManager
      */
     protected function getUserBillingAccountNumber(User $user, DepositAccount $depositAccount)
     {
-        return sprintf('%s-%s', $user->getId(), $depositAccount->getMerchantName());
+        return sprintf('%s%s', $user->getId(), $depositAccount->getMerchantName());
     }
 
     /**

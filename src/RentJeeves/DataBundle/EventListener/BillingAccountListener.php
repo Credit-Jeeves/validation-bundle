@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
+use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -57,9 +58,7 @@ class BillingAccountListener
             return;
         }
 
-        foreach ($billingAccounts as $account) {
-            $account->setIsActive(false);
-        }
+        $this->deactivateBillingAccounts($eventArgs->getEntityManager(), $entity);
     }
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -73,8 +72,16 @@ class BillingAccountListener
             return;
         }
 
-        $em = $eventArgs->getEntityManager();
+        $this->deactivateBillingAccounts($eventArgs->getEntityManager(), $entity);
+    }
+
+    /**
+     * @param EntityManager $em
+     * @param BillingAccount $billingAccount
+     */
+    protected function deactivateBillingAccounts(EntityManager $em, BillingAccount $billingAccount)
+    {
         $em->getRepository('RjDataBundle:BillingAccount')
-            ->deactivateAccounts($entity->getGroup(), $entity->getPaymentProcessor());
+            ->deactivateAccounts($billingAccount->getGroup(), $billingAccount->getPaymentProcessor());
     }
 }
