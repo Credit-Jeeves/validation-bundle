@@ -1389,7 +1389,7 @@ class ImportCase extends ImportBaseAbstract
                 $isNeedLoadFixtures = false,
                 $countCountractsCashEquivalent = 2,
                 $countCountractsDontAcceptEquivalent = 1,
-                $countCountractsExternalLeaseId = 2,
+                $countCountractsExternalLeaseId = 3,
                 $residentMappingCount = 1
             ]
         ];

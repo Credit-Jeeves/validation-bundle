@@ -38,6 +38,13 @@ abstract class AciCollectPayProfileBilling
     protected $divisionId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="billing_account_number", type="string", length=20, nullable=false)
+     */
+    protected $billingAccountNumber;
+
+    /**
      * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
@@ -102,5 +109,21 @@ abstract class AciCollectPayProfileBilling
     public function setProfile(AciCollectPayUserProfileEntity $profile)
     {
         $this->profile = $profile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingAccountNumber()
+    {
+        return $this->billingAccountNumber;
+    }
+
+    /**
+     * @param string $billingAccountNumber
+     */
+    public function setBillingAccountNumber($billingAccountNumber)
+    {
+        $this->billingAccountNumber = $billingAccountNumber;
     }
 }

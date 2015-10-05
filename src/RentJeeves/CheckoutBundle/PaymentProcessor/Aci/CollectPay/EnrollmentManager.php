@@ -67,6 +67,7 @@ class EnrollmentManager extends AbstractManager
             $profileBilling = new AciCollectPayProfileBilling();
             $profileBilling->setProfile($userProfile);
             $profileBilling->setDivisionId($depositAccount->getMerchantName());
+            $profileBilling->setBillingAccountNumber($billingAccount->getAccountNumber());
             $userProfile->addAciCollectPayProfileBilling($profileBilling);
 
             $this->em->persist($profileBilling);
@@ -142,6 +143,7 @@ class EnrollmentManager extends AbstractManager
             $groupProfile = new AciCollectPayGroupProfile();
             $groupProfile->setProfileId($profile->getProfileId());
             $groupProfile->setGroup($group);
+            $groupProfile->setBillingAccountNumber($billingAccount->getAccountNumber());
             $group->setAciCollectPayProfile($groupProfile);
 
             $this->em->persist($groupProfile);
@@ -247,7 +249,7 @@ class EnrollmentManager extends AbstractManager
     {
         $billingAccount = new RequestModel\SubModel\BillingAccount();
 
-        $billingAccount->setAccountNumber($group->getId());
+        $billingAccount->setAccountNumber($this->getGroupBillingAccountNumber($group, $this->defaultBusinessId));
         $billingAccount->setBusinessId($this->defaultBusinessId);
         $billingAccount->setHoldername($group->getName());
         $billingAccount->setNickname($group->getName());

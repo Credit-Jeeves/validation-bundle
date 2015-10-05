@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\SubModel\Address;
@@ -92,7 +93,9 @@ abstract class AbstractManager
     protected function prepareBillingAccount(Tenant $user, DepositAccount $depositAccount)
     {
         $billingAccount = new BillingAccount();
-        $billingAccount->setAccountNumber($this->getUserBillingAccountNumber($user, $depositAccount));
+        $billingAccount->setAccountNumber(
+            $this->getUserBillingAccountNumber($user, $depositAccount->getMerchantName())
+        );
         $billingAccount->setBusinessId($depositAccount->getMerchantName());
         $billingAccount->setHoldername($user->getFullName());
         $billingAccount->setNickname($this->getBillingAccountNickname($depositAccount));
@@ -105,12 +108,22 @@ abstract class AbstractManager
 
     /**
      * @param User $user
-     * @param DepositAccount $depositAccount
+     * @param string $divisionId
      * @return string
      */
-    protected function getUserBillingAccountNumber(User $user, DepositAccount $depositAccount)
+    protected function getUserBillingAccountNumber(User $user, $divisionId)
     {
-        return sprintf('%s%s', $user->getId(), $depositAccount->getMerchantName());
+        return sprintf('%s%s', $divisionId, $user->getId());
+    }
+
+    /**
+     * @param Group $group
+     * @param string $divisionId
+     * @return string
+     */
+    protected function getGroupBillingAccountNumber(Group $group, $divisionId)
+    {
+        return sprintf('%s%s', $divisionId, $group->getId());
     }
 
     /**

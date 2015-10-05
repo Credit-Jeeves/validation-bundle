@@ -17,12 +17,25 @@ class AciCollectPayUserProfile extends Base
      */
     public function hasBillingAccountForDivisionId($divisionId)
     {
-        foreach ($this->getAciCollectPayProfileBillings() as $billingAccount) {
-            if ($billingAccount->getDivisionId() == $divisionId) {
-                return true;
-            }
+        if (null !== $this->getBillingAccountForDivisionId($divisionId)) {
+            return true;
         }
 
         return false;
+    }
+
+    /**
+     * @param $divisionId
+     * @return AciCollectPayProfileBilling|null
+     */
+    public function getBillingAccountForDivisionId($divisionId)
+    {
+        foreach ($this->getAciCollectPayProfileBillings() as $billingAccount) {
+            if ($billingAccount->getDivisionId() === $divisionId) {
+                return $billingAccount;
+            }
+        }
+
+        return null;
     }
 }

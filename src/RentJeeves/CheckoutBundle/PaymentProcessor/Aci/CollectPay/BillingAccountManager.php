@@ -60,6 +60,9 @@ class BillingAccountManager extends AbstractManager
             $profileBilling = new AciCollectPayProfileBilling();
             $profileBilling->setProfile($userProfile);
             $profileBilling->setDivisionId($billingAccount->getBusinessId());
+            $profileBilling->setBillingAccountNumber(
+                $this->getUserBillingAccountNumber($userProfile->getUser(), $depositAccount)
+            );
 
             $userProfile->addAciCollectPayProfileBilling($profileBilling);
 
@@ -73,6 +76,12 @@ class BillingAccountManager extends AbstractManager
                     $depositAccount->getId()
                 )
             );
+        } else {
+            $this->logger->debug(sprintf(
+                '[ACI CollectPay Info]:Billing account for profile "%d" and deposit account id = "%d" already exists',
+                $userProfile->getProfileId(),
+                $depositAccount->getId()
+            ));
         }
     }
 }
