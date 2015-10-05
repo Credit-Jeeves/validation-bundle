@@ -11,8 +11,14 @@ parameters:
     resman.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
     amsi.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
     mri.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'
+    binlist.source.class: 'RentJeeves\ExternalApiBundle\Services\Binlist\BinlistSource'
 
 services:
+    binlist.source:
+        class: "%binlist.source.class%"
+        arguments:
+            - "@logger"
+            - "@reader.csv"
     mri.contract_sync:
         class: "%mri.contract_sync.class%"
         arguments:
