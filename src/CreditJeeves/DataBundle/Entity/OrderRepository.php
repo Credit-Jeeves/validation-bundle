@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
@@ -605,10 +606,12 @@ class OrderRepository extends EntityRepository
             ->andWhere('o.fee IS NOT NULL')
             ->andWhere('o.created_at >= :minus2month AND o.created_at < :minus1month')
             ->andWhere('c.finishAt > :currentDate')
+            ->andWhere('c.status in (:contractStatuses)')
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
             ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
             ->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::PENDING])
             ->setParameter('paymentTypes', [OrderPaymentType::BANK, OrderPaymentType::CARD])
+            ->setParameter('contractStatuses', [ContractStatus::APPROVED, ContractStatus::CURRENT])
             ->setParameter('currentDate', $currentDate)
             ->setParameter('minus2month', $minus2month)
             ->setParameter('minus1month', $minus1month)
