@@ -62,4 +62,28 @@ class PaymentProcessorFactory
                 );
         }
     }
+
+    /**
+     * Returns a payment processor for a given payment account.
+     *
+     * @param PaymentAccountInterface $paymentAccount
+     * @return PaymentProcessor
+     * @throws PaymentProcessorInvalidArgumentException
+     */
+    public function getPaymentProcessorByPaymentAccount(PaymentAccountInterface $paymentAccount)
+    {
+        switch ($paymentAccount->getPaymentProcessor()) {
+            case PaymentProcessorEnum::ACI:
+                return $this->aciCollectPay;
+            case PaymentProcessorEnum::HEARTLAND:
+                return $this->heartland;
+            default:
+                throw new PaymentProcessorInvalidArgumentException(
+                    sprintf(
+                        'Unknown processor type for payment account "%s"',
+                        $paymentAccount->getName()
+                    )
+                );
+        }
+    }
 }

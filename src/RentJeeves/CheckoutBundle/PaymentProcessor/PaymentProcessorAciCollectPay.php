@@ -14,6 +14,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalid
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -89,6 +90,27 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         $profile = $this->enrollmentManager->createUserProfile($tenant, $depositAccount);
         $this->billingAccountManager->addBillingAccount($profile, $depositAccount);
         $this->fundingAccountManager->addPaymentFundingAccount($profile, $accountData);
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function modifyPaymentAccount(
+        AccountData $accountData
+    ) {
+        $this->fundingAccountManager->modifyPaymentFundingAccount($accountData);
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unregisterPaymentAccount(PaymentAccount $paymentAccount)
+    {
+        $this->fundingAccountManager->removePaymentFundingAccount($paymentAccount);
 
         return true;
     }

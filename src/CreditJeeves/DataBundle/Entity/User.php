@@ -461,5 +461,7 @@ abstract class User extends BaseUser
         if ($this->getAciCollectPayProfile()) {
             return $this->getAciCollectPayProfile()->getProfileId();
         }
+
+        return null;
     }
 }

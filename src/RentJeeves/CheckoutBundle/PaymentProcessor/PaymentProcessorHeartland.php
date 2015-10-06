@@ -13,6 +13,7 @@ use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount a
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -66,6 +67,27 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         DepositAccount $depositAccount
     ) {
         $this->paymentAccountManager->registerPaymentToken($accountData, $depositAccount);
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function modifyPaymentAccount(
+        AccountData $accountData
+    ) {
+        $this->paymentAccountManager->modifyPaymentAccount($accountData);
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unregisterPaymentAccount(PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccountManager->removePaymentAccount($paymentAccount);
 
         return true;
     }

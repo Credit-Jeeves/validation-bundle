@@ -247,7 +247,11 @@ class PaymentAccountsController extends Controller
             /** @var Contract $contract */
             $contract = $form->get('contract_url')->getData();
             try {
-                $this->savePaymentAccount($form, $contract);
+                if ($this->isNewPaymentAccount($entity)) {
+                    $this->savePaymentAccount($form, $contract);
+                } else {
+                    $this->updatePaymentAccount($form);
+                }
 
                 return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
             } catch (RuntimeException $e) {
@@ -256,5 +260,14 @@ class PaymentAccountsController extends Controller
         }
 
         return $form;
+    }
+
+    /**
+     * @param PaymentAccountEntity $paymentAccount
+     * @return bool
+     */
+    protected function isNewPaymentAccount(PaymentAccountEntity $paymentAccount)
+    {
+        return $paymentAccount->getId() === null;
     }
 }

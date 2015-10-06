@@ -15,6 +15,7 @@ use Payum2\Payment;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\BillingAccount;
@@ -62,7 +63,6 @@ class PaymentAccountManager
      * Registers a payment token for given payment account, user and deposit account.
      *
      * @param  PaymentAccountData $paymentAccountData
-     * @param  User $user
      * @param  DepositAccount $depositAccount
      * @throws PaymentProcessorConfigurationException
      */
@@ -118,6 +118,39 @@ class PaymentAccountManager
             $this->em->persist($billingAccount);
             $this->em->flush($billingAccount);
         }
+    }
+
+    /**
+     * @param PaymentAccountData $paymentAccountData
+     * @throws PaymentProcessorLogicException
+     */
+    public function modifyPaymentAccount(PaymentAccountData $paymentAccountData)
+    {
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $paymentAccountData->getEntity();
+
+        $paymentAccount->setToken(null);
+
+        if ($paymentAccount->getDepositAccounts()->isEmpty()) {
+            throw new PaymentProcessorLogicException(
+                'Payment account for heartland should have at least one deposit account.'
+            );
+        }
+
+        foreach ($paymentAccount->getDepositAccounts() as $depositAccount) {
+            $paymentAccount->removeDepositAccount($depositAccount);
+            $this->registerPaymentToken($paymentAccountData, $depositAccount);
+        }
+    }
+
+    /**
+     * @param PaymentAccountEntity $paymentAccount
+     */
+    public function removePaymentAccount(PaymentAccountEntity $paymentAccount)
+    {
+        $this->em->remove($paymentAccount);
+
+        $this->em->flush($paymentAccount);
     }
 
     /**
@@ -293,4 +326,5 @@ class PaymentAccountManager
             throw new RuntimeException($paymentDetails->getMessages());
         }
     }
+
 }
