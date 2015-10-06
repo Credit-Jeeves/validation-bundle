@@ -163,10 +163,7 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
             ]
         );
 
-        $this->assertEquals(1, $this->getCommandTester()->getStatusCode());
-
         $this->getEntityManager()->refresh($order);
-
         $this->assertEquals(OrderStatus::ERROR, $order->getStatus());
     }
 
@@ -185,10 +182,7 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
             ]
         );
 
-        $this->assertEquals(0, $this->getCommandTester()->getStatusCode());
-
         $this->getEntityManager()->refresh($order);
-
         $this->assertEquals(OrderStatus::SENDING, $order->getStatus());
     }
 }

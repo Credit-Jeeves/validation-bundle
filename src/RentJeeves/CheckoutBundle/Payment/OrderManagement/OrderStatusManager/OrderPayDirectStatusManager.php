@@ -67,7 +67,7 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
 
         // if inbound leg is already returned, don't change order status
         if (OrderStatus::RETURNED == $order->getStatus()) {
-             return;
+            return;
         }
 
         /** @var OrderPayDirect $order */
@@ -116,7 +116,7 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
     protected function isOutboundLegInitiated(OrderPayDirect $order)
     {
         return ($order->getDepositOutboundTransaction() instanceof OutboundTransaction) &&
-            (OutboundTransactionStatus::SUCCESS === $order->getDepositOutboundTransaction()->getStatus());
+        (OutboundTransactionStatus::SUCCESS === $order->getDepositOutboundTransaction()->getStatus());
     }
 
     /**
@@ -133,18 +133,21 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
      */
     protected function assertOrder(Order $order)
     {
-        if (! $order instanceof OrderPayDirect) {
+        if (!$order instanceof OrderPayDirect) {
             throw new \LogicException('Unsupported order type in OrderPayDirectStatusManager');
         }
     }
 
     /**
+     * @TODO: change it in RT-1671
+     * @link https://credit.atlassian.net/browse/RT-1671
+     *
      * @param Order $order
      */
     protected function initiateOutboundLeg(Order $order)
     {
-        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
-        $this->em->persist($job);
-        $this->em->flush($job);
+//        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
+//        $this->em->persist($job);
+//        $this->em->flush($job);
     }
 }

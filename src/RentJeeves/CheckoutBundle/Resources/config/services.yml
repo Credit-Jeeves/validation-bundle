@@ -4,6 +4,7 @@ parameters:
     payment_processor.aci.pay_anyone.report_loader.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReportLoader
     payment.charge_heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland
     payment.pay_heartland: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland
+    payment_processor.aci.pay_anyone.check_sender.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender
 
 services:
     payment.terminal:
@@ -48,6 +49,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @logger
             - @payment_processor.order_status_manager
+            - @payment_processor.aci.pay_anyone.check_sender
 
     payment_processor.aci.pgp_decoder:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder
@@ -194,6 +196,13 @@ services:
         public: false
         arguments:
             - %aci.pay_anyone.report_path%
+            - @logger
+
+    payment_processor.aci.pay_anyone.check_sender:
+        class: %payment_processor.aci.pay_anyone.check_sender.class%
+        arguments:
+            - @payment_processor.aci_pay_anyone
+            - @payment_processor.order_status_manager
             - @logger
 
     payment_processor.order_status_manager:
