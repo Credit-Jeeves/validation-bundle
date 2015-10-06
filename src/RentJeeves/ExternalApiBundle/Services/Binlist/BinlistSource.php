@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Binlist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
-use RentJeeves\DataBundle\Entity\DebitCardBinlist;
+use JMS\Serializer\Serializer;
 
 class BinlistSource
 {
@@ -22,13 +22,20 @@ class BinlistSource
     protected $csvReader;
 
     /**
+     * @var Serializer
+     */
+    protected $serializer;
+
+    /**
      * @param LoggerInterface $logger
      * @param CsvFileReader $csvReader
+     * @param Serializer $serializer
      */
-    public function __construct(LoggerInterface $logger, CsvFileReader $csvReader)
+    public function __construct(LoggerInterface $logger, CsvFileReader $csvReader, Serializer $serializer)
     {
         $this->csvReader = $csvReader;
         $this->logger = $logger;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -55,25 +62,13 @@ class BinlistSource
     {
         $this->logger->debug('Start map csv string to collection of objects');
         $result = $this->csvReader->read($pathToCsv);
-        $collection = new ArrayCollection();
-        foreach ($result as $values) {
-            $debitCardBinlist = new DebitCardBinlist();
-            $debitCardBinlist->setIin($values['iin']);
-            $debitCardBinlist->setCardBrand($values['card_brand']);
-            $debitCardBinlist->setCardSubBrand($values['card_sub_brand']);
-            $debitCardBinlist->setCardType($values['card_type']);
-            $debitCardBinlist->setCardCategory($values['card_category']);
-            $debitCardBinlist->setCountryCode($values['country_code']);
-            $debitCardBinlist->setBankName($values['bank_name']);
-            $debitCardBinlist->setBankUrl($values['bank_url']);
-            $debitCardBinlist->setBankPhone($values['bank_phone']);
-            $debitCardBinlist->setBankCity($values['bank_city']);
+        $result = $this->serializer->deserialize(
+            json_encode($result),
+            'ArrayCollection<RentJeeves\DataBundle\Entity\DebitCardBinlist>',
+            'json'
+        );
 
-            $collection->add($debitCardBinlist);
-        }
-        $this->logger->debug(sprintf('Return collection of element in %s', $collection->count()));
-
-        return $collection;
+        return $result;
     }
 
     /**

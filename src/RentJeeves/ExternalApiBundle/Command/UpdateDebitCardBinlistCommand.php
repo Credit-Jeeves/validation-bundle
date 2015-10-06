@@ -50,7 +50,7 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
         /** @var BinlistSource $binlistSource */
         $binlistSource = $this->getContainer()->get('binlist.source');
         $arrayCollection = $binlistSource->getBinListCollection();
-        $logger->info(sprintf('Start inserting data, should insert %s rows to DB.', $arrayCollection->count()));
+        $logger->info(sprintf('Start inserting data, should insert %s rows to DB.', count($arrayCollection)));
         foreach ($arrayCollection as $debitCardBinlist) {
             $em->persist($debitCardBinlist);
         }

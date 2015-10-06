@@ -3,6 +3,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,12 +18,14 @@ class DebitCardBinlist
     protected $id;
 
     /**
+     *
      * @ORM\Column(
      *      name="iin",
      *      type="integer",
      *      nullable=false,
      *      unique=true
      * )
+     * @Serializer\Type("integer")
      *
      * @var integer
      */
@@ -34,6 +37,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -45,6 +49,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -56,6 +61,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -67,6 +73,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -78,6 +85,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -89,6 +97,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -100,6 +109,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -111,6 +121,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */
@@ -122,6 +133,7 @@ class DebitCardBinlist
      *      type="string",
      *      nullable=true
      * )
+     * @Serializer\Type("string")
      *
      * @var string
      */

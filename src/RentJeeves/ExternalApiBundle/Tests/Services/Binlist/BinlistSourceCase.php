@@ -18,9 +18,9 @@ class BinlistSourceCase extends BaseTestCase
         $binlistSource = $this->getContainer()->get('binlist.source');
         /** @var ArrayCollection $collection */
         $collection = $binlistSource->getBinListCollection();
-        $this->assertInstanceOf('Doctrine\Common\Collections\ArrayCollection', $collection);
+        $this->assertNotEmpty($collection, 'Didn\'t get collection');
         /** @var DebitCardBinlist $debitCardBinlist */
-        $debitCardBinlist = $collection->first();
+        $debitCardBinlist = reset($collection);
         $this->assertInstanceOf('RentJeeves\DataBundle\Entity\DebitCardBinlist', $debitCardBinlist);
         $this->assertEquals('341142', $debitCardBinlist->getIin());
         $this->assertEquals('AMEX', $debitCardBinlist->getCardBrand());

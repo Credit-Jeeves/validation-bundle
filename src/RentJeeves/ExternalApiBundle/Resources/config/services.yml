@@ -19,6 +19,7 @@ services:
         arguments:
             - "@logger"
             - "@reader.csv"
+            - "@jms_serializer"
     mri.contract_sync:
         class: "%mri.contract_sync.class%"
         arguments:
