@@ -52,7 +52,7 @@ class AMSISyncRentCommandCase extends BaseTestCase
         ]);
 
         $this->assertContains(
-            'AMSI sync Recurring Charge: Rent for contracts (20) updated',
+            'AMSI sync Recurring Charge: Rent for RentJeeves\DataBundle\Entity\Contract#20 updated (1480$)',
             $commandTester->getDisplay(),
             'Rent for Contract#20 not updated'
         );

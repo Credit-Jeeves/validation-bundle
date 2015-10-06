@@ -383,6 +383,10 @@ class ContractSynchronizer
             $this->logMessage('AMSI sync Recurring Charge: No data to update.');
         }
 
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
+
         foreach ($holdings as $holding) {
             $this->updateContractsRentForHolding($holding);
         }
@@ -476,15 +480,15 @@ class ContractSynchronizer
     {
         $this->logMessage('AMSI sync Recurring Charge: Searching for contracts.');
 
-        $contractIds = [];
+        $contractsAndContractWaitings = [];
         foreach ($lease->getOccupants() as $occupant) {
             if (null !== $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                $contractIds[] = $contract->getId();
+                $contractsAndContractWaitings[] = $contract;
             }
         }
 
-        if (count($contractIds) === 0) {
-            $this->logMessage('AMSI sync Recurring Charge: Contracts not found.');
+        if (count($contractsAndContractWaitings) === 0) {
+            $this->logMessage('AMSI sync Recurring Charge: Contracts or ContractWaitings not found.');
 
             return;
         }
@@ -495,8 +499,11 @@ class ContractSynchronizer
         if ($sumRecurringCharges <= 0) {
             $this->logMessage(
                 sprintf(
-                    'AMSI sync Recurring Charge: ERROR: sum of RecurringCharges for contracts(%s) = %d',
-                    implode(', ', $contractIds),
+                    'AMSI sync Recurring Charge: ERROR:
+                     sum of RecurringCharges for Holding#%d, PropertyMapping#%d, lease#%s = %d',
+                    $propertyMapping->getHolding()->getId(),
+                    $propertyMapping->getExternalPropertyId(),
+                    $lease->getExternalUnitId(),
                     $sumRecurringCharges
                 ),
                 500
@@ -504,31 +511,22 @@ class ContractSynchronizer
 
             return;
         }
+        /** @var ContractWaiting|Contract $contract */
+        foreach ($contractsAndContractWaitings as $contract) {
+            $contract->setRent($sumRecurringCharges);
 
-        $this->updateRentForContractIds($sumRecurringCharges, $contractIds);
-        $this->logMessage(
-            sprintf(
-                'AMSI sync Recurring Charge: Rent for contracts (%s) updated',
-                implode(', ', $contractIds)
-            )
-        );
-    }
+            $this->em->flush();
+            $this->periodicExecutor->increment();
 
-    /**
-     * @param $rent
-     * @param array $contractIds
-     *
-     * @return int
-     */
-    protected function updateRentForContractIds($rent, array $contractIds)
-    {
-        return $this->em->createQueryBuilder()
-            ->update('RjDataBundle:Contract', 'c')
-            ->set('c.rent', $rent)
-            ->where('c.id IN (:ids)')
-            ->setParameter('ids', $contractIds)
-            ->getQuery()
-            ->execute();
+            $this->logMessage(
+                sprintf(
+                    'AMSI sync Recurring Charge: Rent for %s#%d updated (%s$)',
+                    get_class($contract),
+                    $contract->getId(),
+                    $sumRecurringCharges
+                )
+            );
+        }
     }
 
     /**
