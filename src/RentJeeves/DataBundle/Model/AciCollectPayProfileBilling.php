@@ -2,14 +2,14 @@
 
 namespace RentJeeves\DataBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile as AciCollectPayUserProfileEntity;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AciCollectPayGroupProfile
+abstract class AciCollectPayProfileBilling
 {
     /**
      * @var integer
@@ -21,25 +21,21 @@ abstract class AciCollectPayGroupProfile
     protected $id;
 
     /**
-     * @var Group
+     * @var AciCollectPayUserProfileEntity
      *
-     * @ORM\OneToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="aciCollectPayProfile"
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayUserProfile",
+     *     inversedBy="aciCollectPayProfileBillings"
      * )
      */
-    protected $group;
+    protected $profile;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(
-     *     name="profile_id",
-     *     type="integer",
-     *     nullable=false
-     * )
+     * @ORM\Column(name="division_id", type="string", nullable=true)
      */
-    protected $profileId;
+    protected $divisionId;
 
     /**
      * @var string
@@ -60,46 +56,6 @@ abstract class AciCollectPayGroupProfile
     protected $createdAt;
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return Group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * @param Group $group
-     */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-    }
-
-    /**
-     * @return int
-     */
-    public function getProfileId()
-    {
-        return $this->profileId;
-    }
-
-    /**
-     * @param int $profileId
-     */
-    public function setProfileId($profileId)
-    {
-        $this->profileId = $profileId;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -110,9 +66,49 @@ abstract class AciCollectPayGroupProfile
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDivisionId()
+    {
+        return $this->divisionId;
+    }
+
+    /**
+     * @param string $divisionId
+     */
+    public function setDivisionId($divisionId)
+    {
+        $this->divisionId = $divisionId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return AciCollectPayUserProfileEntity
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param AciCollectPayUserProfileEntity $profile
+     */
+    public function setProfile(AciCollectPayUserProfileEntity $profile)
+    {
+        $this->profile = $profile;
     }
 
     /**

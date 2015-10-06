@@ -2,6 +2,9 @@
 
 namespace RentJeeves\CheckoutBundle\Tests\Unit;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use \RuntimeException;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
@@ -31,12 +34,12 @@ class PaymentAccountCase extends BaseTestCase
     public function createToken()
     {
         $em = $this->getEntityManager();
-        $paymentAccount = new PaymentAccountManager(
+        $paymentAccountManager = new PaymentAccountManager(
             $em,
             $this->getContainer()->get('payum2'),
             $this->getContainer()->getParameter('rt_group_code')
         );
-
+       
         $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $paymentAccountType = $this->createForm(new PaymentAccountType($user));
@@ -75,11 +78,11 @@ class PaymentAccountCase extends BaseTestCase
         $paymentAccountType->submit($testData);
 
         $paymentAccountType = $this->getContainer()->get("payment_account.type.mapper")->map($paymentAccountType);
+        $paymentAccountType->getEntity()->setUser($user);
         try {
-            $token = $paymentAccount->getToken(
+            $paymentAccountManager->registerPaymentToken(
                 $paymentAccountType,
-                $user,
-                $group
+                $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND)
             );
         } catch (RuntimeException $e) {
             //if we go into this place, test must be failed and we must show
@@ -87,6 +90,6 @@ class PaymentAccountCase extends BaseTestCase
             $this->assertTrue(false, $e->getMessage()."_".$e->getCode());
         }
 
-        $this->assertNotEmpty($token);
+        $this->assertNotEmpty($paymentAccountType->getEntity()->getToken());
     }
 }

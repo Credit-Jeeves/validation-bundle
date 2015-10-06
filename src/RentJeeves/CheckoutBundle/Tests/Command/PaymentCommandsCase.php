@@ -414,14 +414,12 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccount2 = clone $paymentAccount1;
 
-        $paymentAccount1->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         $this->setOldProfileId(
             md5($contract->getTenant()->getId()),
             $contract->getTenant()->getAciCollectPayProfileId()
         );
-
-        $em->persist($paymentAccount1);
 
         $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
         $paymentAccount2->setName('Test ACI Card');
@@ -429,11 +427,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $paymentAccountData->setEntity($paymentAccount2);
 
-        $paymentAccount2->setToken($paymentProcessor->createPaymentToken($paymentAccountData, $contract));
-
-        $em->persist($paymentAccount2);
-
-        $em->flush();
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         return [$paymentAccount1, $paymentAccount2];
     }
@@ -443,6 +437,7 @@ class PaymentCommandsCase extends BaseTestCase
      */
     public function collectAndPayAciCollectPay()
     {
+        $this->load(true);
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
@@ -482,9 +477,9 @@ class PaymentCommandsCase extends BaseTestCase
         $plugin->clean();
 
         $this->executeCommand(3); // created 3 jobs for 3 payments
-
+        $messages = $plugin->getPreSendMessages();
         // "Your Rent is Processing" Email
-        $this->assertCount(4, $plugin->getPreSendMessages()); // 3 for Order; 1 - Monolog Message
+        $this->assertCount(4, $messages); // 3 for Order; 1 - Monolog Message
 
         // Should get 2 Orders with Pending and Error statuses
         /** @var OrderSubmerchant[] $orders */

@@ -5,39 +5,45 @@ use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface SubmerchantProcessorInterface
 {
     /**
-     * Creates a new payment account for User
-     * Returns payment account token.
+     * Register a paymentAccount with the target deposit account for the PaymentProcessor so we can make a payment.
      *
-     * @param  AccountData $data
-     * @param  Contract $contract
-     * @param  string $depositAccountType one of from DepositAccountType
-     * @see    DepositAccountType
-     * @return string
+     * Call this method whenever scheduling a new payment and right before executing a payment to ensure the payment
+     * processor has the proper configuration to facilitate the transfer.
+     *
+     * This method should be idempotent -- so if the PaymentAccount is already created and registered,
+     * then no change should take place.
+     *
+     * @param AccountData $accountData Mapped PaymentAccount
+     * @param DepositAccount $depositAccount DepositAccount to register PaymentAccount to
+     *
+     * @return bool if true, then success, else a failure occurred.
      */
-    public function createPaymentToken(
-        AccountData $data,
-        Contract $contract,
-        $depositAccountType = DepositAccountType::RENT
+    public function registerPaymentAccount(
+        AccountData $accountData,
+        DepositAccount $depositAccount
     );
 
     /**
+     * Register billingAccount with the target deposit account for the PaymentProcessor so we can make a payment.
      *
-     * Create a new billing account token that we use to charge Landlords for our service.
-     * Returns billing account token.
+     * Use this the same way as we use the registerPaymentAccount() method -- but for BillingAccount entities
      *
-     * @param AccountData $data
-     * @param Landlord $user
-     * @return mixed
+     * @param AccountData $accountData Mapped BillingAccount
+     * @param Landlord $landlord
+     *
+     * @return bool if true, then success, else a failure occurred.
      */
-    public function createBillingToken(AccountData $data, Landlord $user);
+    public function registerBillingAccount(
+        AccountData $accountData,
+        Landlord $landlord
+    );
 
     /**
      * Executes order of a given payment type (rent, report or charge).

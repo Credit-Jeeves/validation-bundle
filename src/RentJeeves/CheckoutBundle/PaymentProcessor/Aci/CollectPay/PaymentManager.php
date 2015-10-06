@@ -114,13 +114,18 @@ class PaymentManager extends AbstractManager
         $paymentType
     ) {
         if ($paymentAccount instanceof GroupAwareInterface && $paymentType === PaymentGroundType::CHARGE) {
-            $payment->setProfileId($paymentAccount->getGroup()->getAciCollectPayProfileId());
+            $groupProfile = $paymentAccount->getGroup()->getAciCollectPayProfile();
+            $payment->setProfileId($groupProfile->getProfileId());
             $payment->setDivisionBusinessId($this->defaultBusinessId);
-            $payment->setBillingAccountNumber($paymentAccount->getGroup()->getId());
+            $payment->setBillingAccountNumber($groupProfile->getBillingAccountNumber());
         } elseif ($paymentAccount instanceof UserAwareInterface && $paymentType === PaymentGroundType::RENT) {
-            $payment->setProfileId($paymentAccount->getUser()->getAciCollectPayProfileId());
-            $payment->setDivisionBusinessId($order->getDepositAccount()->getMerchantName());
-            $payment->setBillingAccountNumber($order->getContract()->getId());
+            $userProfile = $paymentAccount->getUser()->getAciCollectPayProfile();
+            $divisionId = $order->getDepositAccount()->getMerchantName();
+            $payment->setProfileId($userProfile->getProfileId());
+            $payment->setDivisionBusinessId($divisionId);
+            $payment->setBillingAccountNumber(
+                $userProfile->getBillingAccountForDivisionId($divisionId)->getBillingAccountNumber()
+            );
         } else {
             throw new PaymentProcessorInvalidArgumentException(
                 'Undefined type of payment account or incorrect payment type'
