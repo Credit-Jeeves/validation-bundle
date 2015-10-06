@@ -13,7 +13,7 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldRemoveOldDataAndimportNew()
+    public function shouldRemoveOldDataAndImportNew()
     {
         $this->load(true);
         $em = $this->getEntityManager();
@@ -25,17 +25,18 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new UpdateDebitCardBinlistCommand());
 
-        $command = $application->find('api:binlist:update_data');
+        $command = $application->find('api:binlist:update-data');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
         ]);
 
         $result = $em->getRepository('RjDataBundle:DebitCardBinlist')->findBy(['iin' => 11112231]);
-        $this->assertEmpty($result, 'We should remove old data');
+        $this->assertEmpty($result, 'Old data not removed from DB.');
         $this->assertGreaterThan(
             6000, //Currently we have 6801, so lets check 6000
-            count($em->getRepository('RjDataBundle:DebitCardBinlist')->findAll())
+            count($em->getRepository('RjDataBundle:DebitCardBinlist')->findAll()),
+            'Should have are lot of new rows in DB for DebitCardBinlist entity'
         );
     }
 }

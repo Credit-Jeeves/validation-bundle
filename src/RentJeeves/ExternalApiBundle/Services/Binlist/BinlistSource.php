@@ -3,8 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Services\Binlist;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Guzzle\Http\Client as GuzzleClient;
-use Guzzle\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\DataBundle\Entity\DebitCardBinlist;
@@ -12,11 +10,6 @@ use RentJeeves\DataBundle\Entity\DebitCardBinlist;
 class BinlistSource
 {
     const SOURCE = 'https://raw.githubusercontent.com/binlist/binlist-data/master/iin-user-contributions.csv';
-
-    /**
-     * @var GuzzleClient
-     */
-    protected $client;
 
     /**
      * @var LoggerInterface
@@ -28,37 +21,37 @@ class BinlistSource
      */
     protected $csvReader;
 
+    /**
+     * @param LoggerInterface $logger
+     * @param CsvFileReader $csvReader
+     */
     public function __construct(LoggerInterface $logger, CsvFileReader $csvReader)
     {
-        $this->client = new GuzzleClient('', ['redirect.disable' => true]);
         $this->csvReader = $csvReader;
         $this->logger = $logger;
     }
 
     /**
-     * @return \Guzzle\Http\EntityBodyInterface|string
-     * @throws CurlException
+     * @return string
+     * @throws \Exception
      */
     protected function getFullBinlistCsv()
     {
-        $guzzleRequest = $this->client->createRequest(RequestInterface::GET, self::SOURCE);
-        $guzzleResponse = $guzzleRequest->send();
-        if (200 != $guzzleResponse->getStatusCode()) {
-            $message = sprintf('HTTP code not %d but %d', 200, $guzzleResponse->getStatusCode());
-            $this->logger->alert($message);
-            throw new CurlException($message);
+        try {
+            $content = file_get_contents(self::SOURCE);
+        } catch (\Exception $e) {
+            $this->logger->alert(sprintf('Could not get data(binlist): %s', $e->getMessage()));
+            throw $e;
         }
-        $this->logger->debug('Got success response from github with data');
-        $responseString = $guzzleResponse->getBody(true);
 
-        return $responseString;
+        return $content;
     }
 
     /**
      * @param string $pathToCsv
      * @return ArrayCollection
      */
-    protected function mapCsvToObject($pathToCsv)
+    protected function mapCsvToCollection($pathToCsv)
     {
         $this->logger->debug('Start map csv string to collection of objects');
         $result = $this->csvReader->read($pathToCsv);
@@ -78,7 +71,7 @@ class BinlistSource
 
             $collection->add($debitCardBinlist);
         }
-        $this->logger->debug(sprintf('Return collection %s', $collection->count()));
+        $this->logger->debug(sprintf('Return collection of element in %s', $collection->count()));
 
         return $collection;
     }
@@ -87,15 +80,15 @@ class BinlistSource
      * @param string $data
      * @return string
      */
-    protected function writeResonseToFile($data)
+    protected function writeResponseToFile($data)
     {
         $path = sprintf(
-            '%s%s%s%s',
+            '%s%s%s.csv',
             sys_get_temp_dir(),
             DIRECTORY_SEPARATOR,
-            uniqid(),
-            '.csv'
+            uniqid()
         );
+
         file_put_contents($path, $data);
         $this->logger->debug(sprintf('Path to csv: %s', $path));
 
@@ -107,8 +100,8 @@ class BinlistSource
      */
     public function getBinListCollection()
     {
-        $pathToCsv = $this->writeResonseToFile($this->getFullBinlistCsv());
+        $pathToCsv = $this->writeResponseToFile($this->getFullBinlistCsv());
 
-        return $this->mapCsvToObject($pathToCsv);
+        return $this->mapCsvToCollection($pathToCsv);
     }
 }

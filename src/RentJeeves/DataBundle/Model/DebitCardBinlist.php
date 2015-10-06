@@ -130,6 +130,14 @@ class DebitCardBinlist
     /**
      * @return int
      */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
     public function getIin()
     {
         return $this->iin;

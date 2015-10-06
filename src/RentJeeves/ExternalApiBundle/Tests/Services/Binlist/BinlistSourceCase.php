@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Services\MRI;
+namespace RentJeeves\ExternalApiBundle\Tests\Services\Binlist;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\ExternalApiBundle\Services\BinlistSource;
