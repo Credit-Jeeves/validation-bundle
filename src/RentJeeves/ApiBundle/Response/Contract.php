@@ -125,7 +125,7 @@ class Contract extends ResponseResource
             return (float) $this->entity->getGroupSettings()->getFeeCC();
         }
 
-        return 0.0;
+        throw new \LogicException('Contract should have a group.');
     }
 
     /**
@@ -136,11 +136,13 @@ class Contract extends ResponseResource
      */
     public function getFeeACH()
     {
-        if ($this->entity->getGroup() && $this->entity->getGroupSettings()->isPassedAch()) {
-            return (float) $this->entity->getGroupSettings()->getFeeACH();
+        if ($this->entity->getGroup()) {
+            return $this->entity->getGroupSettings()->isPassedAch() ?
+                (float) $this->entity->getGroupSettings()->getFeeACH() :
+                0.0;
         }
 
-        return 0.0;
+        throw new \LogicException('Contract should have a group.');
     }
 
     /**
