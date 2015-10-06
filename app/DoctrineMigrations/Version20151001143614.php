@@ -19,7 +19,7 @@ class Version20151001143614 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL,
                 profile_id INT DEFAULT NULL,
                 division_id VARCHAR(255) DEFAULT NULL,
-                billing_account_number VARCHAR(20) NOT NULL,
+                billing_account_number VARCHAR(40) NOT NULL,
                 created_at DATETIME NOT NULL,
                 INDEX IDX_A93E11B7CCFA12B8 (profile_id),
                 UNIQUE INDEX profile_billing_unique_constraint (profile_id, division_id),
@@ -34,7 +34,7 @@ class Version20151001143614 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_aci_collect_pay_group_profile
-                ADD billing_account_number VARCHAR(20) NOT NULL"
+                ADD billing_account_number VARCHAR(40) NOT NULL"
         );
 
         $this->addSql(

@@ -31,7 +31,7 @@ class AciCollectPayUserProfile extends Base
     public function getBillingAccountForDivisionId($divisionId)
     {
         foreach ($this->getAciCollectPayProfileBillings() as $billingAccount) {
-            if ($billingAccount->getDivisionId() === $divisionId) {
+            if ($billingAccount->getDivisionId() == $divisionId) {
                 return $billingAccount;
             }
         }

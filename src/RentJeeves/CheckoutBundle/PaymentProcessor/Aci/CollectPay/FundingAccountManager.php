@@ -10,6 +10,7 @@ use Payum\AciCollectPay\Request\ProfileRequest\ModifyFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
@@ -120,7 +121,7 @@ class FundingAccountManager extends AbstractManager
      * @param AciCollectPayUserProfile $profile
      * @param FundingAccountData $fundingAccountData
      */
-    public function addBillingFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
+    public function addBillingFundingAccount(AciCollectPayGroupProfile $profile, FundingAccountData $fundingAccountData)
     {
         if (!$fundingAccountData->getEntity()->getToken()) {
             $this->logger->debug(

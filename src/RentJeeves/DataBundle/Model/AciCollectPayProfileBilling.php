@@ -40,7 +40,7 @@ abstract class AciCollectPayProfileBilling
     /**
      * @var string
      *
-     * @ORM\Column(name="billing_account_number", type="string", length=20, nullable=false)
+     * @ORM\Column(name="billing_account_number", type="string", length=40, nullable=false)
      */
     protected $billingAccountNumber;
 
