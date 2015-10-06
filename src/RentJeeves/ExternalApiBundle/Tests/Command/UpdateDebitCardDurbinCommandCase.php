@@ -18,7 +18,8 @@ class UpdateDebitCardDurbinCommandCase extends BaseTestCase
         $em = $this->getEntityManager();
         $this->assertCount(
             0,
-            $em->getRepository('RjDataBundle:DebitCardDurbin')->findAll()
+            $em->getRepository('RjDataBundle:DebitCardDurbin')->findAll(),
+            'We should check out fixtures'
         );
 
         $application = new Application($this->getKernel());
@@ -31,7 +32,8 @@ class UpdateDebitCardDurbinCommandCase extends BaseTestCase
         ]);
         $this->assertCount(
             6,
-            $em->getRepository('RjDataBundle:DebitCardDurbin')->findAll()
+            $em->getRepository('RjDataBundle:DebitCardDurbin')->findAll(),
+            'We should import csv file'
         );
     }
 }
