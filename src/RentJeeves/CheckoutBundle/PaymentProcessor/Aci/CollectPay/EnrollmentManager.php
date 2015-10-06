@@ -7,15 +7,12 @@ use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\CreateProfile;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
-use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
-use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class EnrollmentManager extends AbstractManager
@@ -181,12 +178,24 @@ class EnrollmentManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Enrollment Exception]:%s:%s',
+                    $profile->getUser()->getEmail(),
+                    $e->getMessage()
+                )
+            );
             throw $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Enrollment Error]:%s:%s',
+                    $profile->getUser()->getEmail(),
+                    $request->getMessages()
+                )
+            );
             throw new PaymentProcessorRuntimeException($request->getMessages());
         }
 

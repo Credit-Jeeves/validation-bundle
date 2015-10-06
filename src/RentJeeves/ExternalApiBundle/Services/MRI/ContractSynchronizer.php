@@ -126,8 +126,9 @@ class ContractSynchronizer
                 } catch (\Exception $e) {
                     $this->logger->alert(
                         sprintf(
-                            'MRIBalanceSync Exception: %s. When Update balance for MRI.',
-                            $e->getMessage()
+                            'MRIBalanceSync Exception updating balance: %s. StackTrace: %s',
+                            $e->getMessage(),
+                            $e->getTraceAsString()
                         )
                     );
                 }
@@ -157,8 +158,7 @@ class ContractSynchronizer
         if ($residentTransactions) {
             $this->logger->info(
                 sprintf(
-                    'MRI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
-                             holding %s',
+                    'MRI ResidentBalanceSynchronizer: Processing resident transactions for property %s of holding %s',
                     $propertyMapping->getExternalPropertyId(),
                     $propertyMapping->getHolding()->getName()
                 )
@@ -168,13 +168,19 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logger->info(
-            sprintf(
-                'ERROR: Could not load resident transactions MRI for property %s of holding %s',
-                $propertyMapping->getExternalPropertyId(),
-                $propertyMapping->getHolding()->getName()
-            )
+        $noResidentsMessage = sprintf(
+            'ERROR: Could not load resident transactions MRI for property %s of holding %s',
+            $propertyMapping->getExternalPropertyId(),
+            $propertyMapping->getHolding()->getName()
         );
+
+        if ($propertyMapping->getProperty()->isSingle()) {
+            // single-unit properties are likely to be vacant -- just log
+            $this->logger->info($noResidentsMessage);
+        } else {
+            // multi-unit properties not are likely to be vacant -- send alert
+            $this->logger->alert($noResidentsMessage);
+        }
     }
 
     /**
@@ -229,15 +235,28 @@ class ContractSynchronizer
             return $contract;
         }
 
-        $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findOneByPropertyMappingExternalUnitIdAndResidentId(
-                $propertyMapping,
-                $externalUnitId,
-                $residentId
+        $contractWaiting = null;
+        try {
+            $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
+                ->findOneByPropertyMappingExternalUnitIdAndResidentId(
+                    $propertyMapping,
+                    $externalUnitId,
+                    $residentId
+                );
+        } catch (\Doctrine\ORM\NonUniqueResultException $e) {
+            $this->logger->alert(
+                sprintf(
+                    'MRIBalanceSync Exception: Duplicate mapping found cannot update balance: ' .
+                    'property %s, externalUnitId %s, resident %s',
+                    $propertyMapping->getExternalPropertyId(),
+                    $externalUnitId,
+                    $residentId
+                )
             );
+        }
 
         if ($contractWaiting) {
-            $this->logger->info(
+            $this->logger->debug(
                 sprintf(
                     'MRI ResidentBalanceSynchronizer: Found contract waiting ID: %s',
                     $contractWaiting->getId()
@@ -247,7 +266,7 @@ class ContractSynchronizer
             return $contractWaiting;
         }
 
-        $this->logger->info(
+        $this->logger->debug(
             sprintf(
                 'MRI - could not find contract with property %s, externalUnitId %s, resident %s',
                 $propertyMapping->getExternalPropertyId(),
@@ -270,17 +289,29 @@ class ContractSynchronizer
     ) {
         /** @var $customer Value  */
         foreach ($residentTransactions as $customer) {
-            $residentId = $customer->getResidentId();
-            $externalUnitId = $customer->getExternalUnitId();
-            $contract = $this->getContract($propertyMapping, $residentId, $externalUnitId);
-            if (!$contract) {
-                continue;
-            }
+            try {
+                $residentId = $customer->getResidentId();
+                $externalUnitId = $customer->getExternalUnitId();
+                $contract = $this->getContract($propertyMapping, $residentId, $externalUnitId);
+                if (!$contract) {
+                    continue;
+                }
 
-            $this->doUpdateBalance($customer, $contract);
+                $this->doUpdateBalance($customer, $contract);
+
+                $this->em->flush();
+                $this->periodicExecutor->increment();
+            } catch (\Exception $e) {
+                $this->logger->alert(
+                    sprintf(
+                        'MRIBalanceSync Exception updating balance for resident %s. Message: %s. StackTrace: %s',
+                        $customer->getResidentId(),
+                        $e->getMessage(),
+                        $e->getTraceAsString()
+                    )
+                );
+            }
         }
-        $this->em->flush();
-        $this->periodicExecutor->increment();
     }
 
     /**
@@ -374,8 +405,8 @@ class ContractSynchronizer
         if ($residentTransactions) {
             $this->logger->info(
                 sprintf(
-                    'MRI ResidentBalanceSynchronizer: Processing resident RentRoll transactions for property %s of
-                             holding %s',
+                    'MRI ResidentBalanceSynchronizer: Processing resident RentRoll transactions for property %s of ' .
+                    'holding %s',
                     $propertyMapping->getExternalPropertyId(),
                     $holding->getName()
                 )
@@ -385,13 +416,19 @@ class ContractSynchronizer
             return;
         }
 
-        $this->logger->info(
-            sprintf(
-                'ERROR: Could not load resident RentRoll transactions MRI for property %s of holding %s',
-                $propertyMapping->getExternalPropertyId(),
-                $holding->getName()
-            )
+        $noResidentsMessage = sprintf(
+            'ERROR: Could not load resident RentRoll transactions MRI for property %s of holding %s',
+            $propertyMapping->getExternalPropertyId(),
+            $holding->getName()
         );
+
+        if ($propertyMapping->getProperty()->isSingle()) {
+            // single-unit properties are likely to be vacant -- just log
+            $this->logger->info($noResidentsMessage);
+        } else {
+            // multi-unit properties not are likely to be vacant -- send alert
+            $this->logger->alert($noResidentsMessage);
+        }
     }
 
     /**
@@ -406,20 +443,30 @@ class ContractSynchronizer
         foreach ($residentTransactions as $customer) {
             /** @var Resident $resident */
             foreach ($customer->getResidents()->getResidentArray() as $resident) {
-                $contract = $this->getContract(
-                    $propertyMapping,
-                    $resident->getResidentId(),
-                    $customer->getExternalUnitId()
-                );
+                try {
+                    $contract = $this->getContract(
+                        $propertyMapping,
+                        $resident->getResidentId(),
+                        $customer->getExternalUnitId()
+                    );
 
-                if (!$contract) {
-                    continue;
+                    if (!$contract) {
+                        continue;
+                    }
+
+                    $this->doUpdateRent($customer, $contract);
+                } catch (\Exception $e) {
+                    $this->logger->alert(
+                        sprintf(
+                            'MRIBalanceSync Exception updating rent for resident %s. Message: %s. StackTrace: %s',
+                            $resident->getResidentId(),
+                            $e->getMessage(),
+                            $e->getTraceAsString()
+                        )
+                    );
                 }
-
-                $this->doUpdateRent($customer, $contract);
             }
         }
-
     }
 
     /**

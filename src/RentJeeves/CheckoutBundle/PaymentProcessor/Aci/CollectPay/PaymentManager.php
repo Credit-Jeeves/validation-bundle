@@ -69,7 +69,9 @@ class PaymentManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(
+                sprintf('[ACI CollectPay Payment Exception]:Order(%s):%s', $order->getId(), $e->getMessage())
+            );
             $transaction->setMessages($e->getMessage());
             $transaction->setIsSuccessful(false);
             $this->em->persist($transaction);
@@ -78,7 +80,9 @@ class PaymentManager extends AbstractManager
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(
+                sprintf('[ACI CollectPay Payment Error]:Order(%s):%s', $order->getId(), $request->getMessages())
+            );
         }
 
         $transaction->setMessages(self::removeDebugInformation($request->getMessages()));
