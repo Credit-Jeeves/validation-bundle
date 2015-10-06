@@ -50,12 +50,26 @@ class FundingAccountManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay FundingAccount Exception]:%s(%s):%s',
+                    ($user != null) ? "PaymentAccount" : "BillingAccount",
+                    $fundingAccountId,
+                    $e->getMessage()
+                )
+            );
             throw $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay FundingAccount Error]:%s(%s):%s',
+                    ($user != null) ? "PaymentAccount" : "BillingAccount",
+                    $fundingAccountId,
+                    $request->getMessages()
+                )
+            );
             throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
         }
 
@@ -195,7 +209,6 @@ class FundingAccountManager extends AbstractManager
             $account->setSecurityCode($fundingAccountData->get('csc_code'));
 
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccount->getType()) {
-
             $account = new RequestModel\SubModel\BankAccount();
 
             $account->setAccountNumber($fundingAccountData->get('account_number'));
@@ -271,12 +284,26 @@ class FundingAccountManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $e->getMessage()
+                )
+            );
             throw $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $request->getMessages()
+                )
+            );
             throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
         }
 
