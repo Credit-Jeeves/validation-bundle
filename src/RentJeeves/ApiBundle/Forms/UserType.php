@@ -3,7 +3,6 @@
 namespace RentJeeves\ApiBundle\Forms;
 
 use CreditJeeves\DataBundle\Enum\UserType as UserTypeEnum;
-use RentJeeves\ApiBundle\Validator\ApiTenantEmail;
 use RentJeeves\DataBundle\Validators\LandlordEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
@@ -37,7 +36,6 @@ class UserType extends AbstractType
         if ($options['method'] != 'PUT') {
             $builder->add('email', null, [
                 'constraints' =>  [
-                    new ApiTenantEmail(['groups' => 'api_tenant_type_new']),
                     new LandlordEmail(['groups' => 'landlord_type'])
                 ]
             ]);
