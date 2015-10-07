@@ -520,7 +520,7 @@ class ContractSynchronizer
 
             $this->logMessage(
                 sprintf(
-                    'AMSI sync Recurring Charge: Rent for %s#%d updated (%s$)',
+                    'AMSI sync Recurring Charge: Rent for %s#%d updated ($%s)',
                     get_class($contract),
                     $contract->getId(),
                     $sumRecurringCharges
