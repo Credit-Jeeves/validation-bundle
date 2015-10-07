@@ -106,6 +106,7 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldCreateJobForSendingCheckWhenSetOrderToCompleteAndOutboundLegIsNotInitiated()
     {
+        $this->markTestSkipped('UnSkipp in task RT-1671'); /** @link https://credit.atlassian.net/browse/RT-1671 */
         $emMock = $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
         $job = new Job('payment:pay-anyone:send-check', ['--app=rj', null]);
         $emMock
