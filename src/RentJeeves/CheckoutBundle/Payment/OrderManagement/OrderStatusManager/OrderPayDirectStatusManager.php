@@ -2,15 +2,36 @@
 
 namespace RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager;
 
+use CreditJeeves\CoreBundle\Mailer\Mailer;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 
 class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
 {
+    /**
+     * @var CheckSender
+     */
+    protected $aciPayAnyOneCheckSender;
+
+    /**
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     * @param Mailer $mailer
+     * @param CheckSender $checkSender
+     */
+    public function __construct(EntityManager $em, LoggerInterface $logger, Mailer $mailer, CheckSender $checkSender)
+    {
+        parent::__construct($em, $logger, $mailer);
+        $this->aciPayAnyOneCheckSender = $checkSender;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -146,6 +167,7 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
      */
     protected function initiateOutboundLeg(Order $order)
     {
+        $this->aciPayAnyOneCheckSender->send($order);
 //        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
 //        $this->em->persist($job);
 //        $this->em->flush($job);

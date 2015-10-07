@@ -49,7 +49,6 @@ services:
             - @doctrine.orm.default_entity_manager
             - @logger
             - @payment_processor.order_status_manager
-            - @payment_processor.aci.pay_anyone.check_sender
 
     payment_processor.aci.pgp_decoder:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder
@@ -220,7 +219,12 @@ services:
 
     payment_processor.order_status_manager.pay_direct:
         class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager
-        parent: payment_processor.order_status_manager.submerchant
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @project.mailer
+            - @payment_processor.aci.pay_anyone.check_sender
+
 
     payment_processor.order_creation_manager:
         class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager
@@ -230,4 +234,3 @@ services:
             - @checkout.paid_for
             - %rt_group_code%
             - %credittrack_payment_per_month%
-

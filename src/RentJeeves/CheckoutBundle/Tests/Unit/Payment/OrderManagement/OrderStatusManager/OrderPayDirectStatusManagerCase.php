@@ -26,7 +26,8 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $this->statusManager = new OrderPayDirectStatusManager(
             $systemsMocks->getEntityManagerMock(),
             $systemsMocks->getLoggerMock(),
-            $systemsMocks->getMailerMock()
+            $systemsMocks->getMailerMock(),
+            $this->getCheckSenderMock()
         );
     }
 
@@ -121,7 +122,8 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $statusManager = new OrderPayDirectStatusManager(
             $emMock,
             $this->getMock('\Monolog\Logger', [], [], '', false),
-            $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false)
+            $this->getMock('RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false),
+            $this->getCheckSenderMock()
         );
 
         $order = new OrderPayDirect();
@@ -262,7 +264,8 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
-            $mailerMock
+            $mailerMock,
+            $this->getCheckSenderMock()
         );
 
         $statusManager->setSending($order);
@@ -286,7 +289,8 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
-            $mailerMock
+            $mailerMock,
+            $this->getCheckSenderMock()
         );
 
         $statusManager->setRefunded($order);
@@ -310,10 +314,25 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
         $statusManager = new OrderPayDirectStatusManager(
             $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false),
             $this->getMock('\Monolog\Logger', [], [], '', false),
-            $mailerMock
+            $mailerMock,
+            $this->getCheckSenderMock()
         );
 
         $statusManager->setReissued($order);
         $this->assertEquals(OrderStatus::REISSUED, $order->getStatus());
+    }
+
+    /**
+    * @return \RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender
+    */
+    protected function getCheckSenderMock()
+    {
+        return $this->getMock(
+            'RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender',
+            [],
+            [],
+            '',
+            false
+        );
     }
 }

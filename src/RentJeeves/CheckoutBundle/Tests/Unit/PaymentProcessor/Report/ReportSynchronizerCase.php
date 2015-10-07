@@ -31,8 +31,7 @@ class ReportSynchronizerCase extends BaseTestCase
         return new ReportSynchronizer(
             $this->getEntityManager(),
             $this->getLoggerMock(),
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
     }
 
@@ -91,8 +90,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $loggerMock,
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
     }
@@ -125,8 +123,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $loggerMock,
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
     }
@@ -158,8 +155,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $loggerMock,
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
     }
@@ -188,8 +184,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $loggerMock,
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
     }
@@ -257,8 +252,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $loggerMock,
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
     }
@@ -294,8 +288,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $this->getLoggerMock(),
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
 
@@ -343,8 +336,7 @@ class ReportSynchronizerCase extends BaseTestCase
         $synchronizer = new ReportSynchronizer(
             $this->getEntityManager(),
             $this->getLoggerMock(),
-            $this->getOrderStatusManager(),
-            $this->getCheckSender()
+            $this->getOrderStatusManager()
         );
         $synchronizer->synchronize($report);
 
@@ -367,13 +359,5 @@ class ReportSynchronizerCase extends BaseTestCase
     protected function getLoggerMock()
     {
         return $this->getMock('\Monolog\Logger', [], [], '', false);
-    }
-
-    /**
-     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender
-     */
-    protected function getCheckSender()
-    {
-        return $this->getContainer()->get('payment_processor.aci.pay_anyone.check_sender');
     }
 }

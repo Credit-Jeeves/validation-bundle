@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
 use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
@@ -43,26 +42,18 @@ class ReportSynchronizer
     protected $logger;
 
     /**
-     * @var CheckSender
-     */
-    protected $aciPayAnyOneCheckSender;
-
-    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param OrderStatusManagerInterface $orderStatusManager
-     * @param CheckSender $checkSender
      */
     public function __construct(
         EntityManager $em,
         LoggerInterface $logger,
-        OrderStatusManagerInterface $orderStatusManager,
-        CheckSender $checkSender
+        OrderStatusManagerInterface $orderStatusManager
     ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->orderStatusManager = $orderStatusManager;
-        $this->aciPayAnyOneCheckSender = $checkSender;
     }
 
     /**
@@ -461,18 +452,6 @@ class ReportSynchronizer
                 OrderStatus::SENDING,
                 $order->getStatus()
             ));
-
-            return;
-        }
-
-        if (false === $this->aciPayAnyOneCheckSender->send($order)) {
-            $this->logger->alert(
-                sprintf(
-                    'OrderPayDirect`s#%d status can not be updated to \'%s.\'',
-                    $order->getId(),
-                    OrderStatus::COMPLETE
-                )
-            );
 
             return;
         }
