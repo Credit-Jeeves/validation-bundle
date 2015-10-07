@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Exception\CheckSenderException;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
@@ -167,7 +168,25 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
      */
     protected function initiateOutboundLeg(Order $order)
     {
-        $this->aciPayAnyOneCheckSender->send($order);
+        try {
+            $result = $this->aciPayAnyOneCheckSender->send($order);
+        } catch (CheckSenderException $e) {
+            $this->logger->emergency(
+                sprintf(
+                    'Cant initiateOutboundLeg for Order#%d. Details: %s',
+                    $order->getId(),
+                    $e->getMessage()
+                ));
+
+            return;
+        }
+
+        if (true === $result) {
+            $this->setSending($order);
+        } else {
+            $this->setError($order);
+        }
+
 //        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);
 //        $this->em->persist($job);
 //        $this->em->flush($job);

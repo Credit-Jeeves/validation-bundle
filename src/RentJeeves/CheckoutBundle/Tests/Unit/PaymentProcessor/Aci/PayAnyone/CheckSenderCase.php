@@ -3,7 +3,6 @@
 namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\PayAnyone;
 
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
-use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
@@ -22,7 +21,6 @@ class CheckSenderCase extends BaseTestCase
     {
         return new CheckSender(
             $this->getPayDirectProcessorMock(),
-            $this->getOrderStatusManagerMock(),
             $this->getLoggerMock()
         );
     }
@@ -30,7 +28,7 @@ class CheckSenderCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldUpdateOrderStatusAndReturnTrueIfOrderIsExecutedSuccessfully()
+    public function shouldReturnTrueIfOrderIsExecutedSuccessfully()
     {
         $order = new OrderPayDirect();
         $this->writeIdAttribute($order, 1);
@@ -41,18 +39,12 @@ class CheckSenderCase extends BaseTestCase
             ->with($this->equalTo($order))
             ->will($this->returnValue(true));
 
-        $orderStatusManagerMock = $this->getOrderStatusManagerMock();
-        $orderStatusManagerMock->expects($this->once())
-            ->method('setSending')
-            ->with($this->equalTo($order));
-
         $loggerMock = $this->getLoggerMock();
         $loggerMock->expects($this->once())
             ->method('debug');
 
         $sender = new CheckSender(
             $paymentProcessorMock,
-            $orderStatusManagerMock,
             $loggerMock
         );
 
@@ -61,8 +53,9 @@ class CheckSenderCase extends BaseTestCase
 
     /**
      * @test
+     * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Exception\CheckSenderException
      */
-    public function shouldLogEmergencyAndReturnFalseIfOrderIsExecutedWithException()
+    public function shouldThrowExceptionIfOrderIsExecutedWithException()
     {
         $order = new OrderPayDirect();
         $this->writeIdAttribute($order, 1);
@@ -79,7 +72,6 @@ class CheckSenderCase extends BaseTestCase
 
         $sender = new CheckSender(
             $paymentProcessorMock,
-            $this->getOrderStatusManagerMock(),
             $loggerMock
         );
 
@@ -89,7 +81,7 @@ class CheckSenderCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldUpdateOrderStatusToErrorAndReturnFalseIfOrderIsExecutedNotSuccessfully()
+    public function shouldReturnFalseIfOrderIsExecutedNotSuccessfully()
     {
         $order = new OrderPayDirect();
         $this->writeIdAttribute($order, 1);
@@ -106,18 +98,12 @@ class CheckSenderCase extends BaseTestCase
             ->with($this->equalTo($order))
             ->will($this->returnValue(false));
 
-        $orderStatusManagerMock = $this->getOrderStatusManagerMock();
-        $orderStatusManagerMock->expects($this->once())
-            ->method('setError')
-            ->with($this->equalTo($order));
-
         $loggerMock = $this->getLoggerMock();
         $loggerMock->expects($this->once())
             ->method('alert');
 
         $sender = new CheckSender(
             $paymentProcessorMock,
-            $orderStatusManagerMock,
             $loggerMock
         );
 
@@ -130,20 +116,6 @@ class CheckSenderCase extends BaseTestCase
     protected function getLoggerMock()
     {
         return $this->getMock('\Monolog\Logger', [], [], '', false);
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|OrderPayDirectStatusManager
-     */
-    protected function getOrderStatusManagerMock()
-    {
-        return $this->getMock(
-            '\RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager',
-            [],
-            [],
-            '',
-            false
-        );
     }
 
     /**

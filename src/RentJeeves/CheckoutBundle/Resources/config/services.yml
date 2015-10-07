@@ -201,7 +201,6 @@ services:
         class: %payment_processor.aci.pay_anyone.check_sender.class%
         arguments:
             - @payment_processor.aci_pay_anyone
-            - @payment_processor.order_status_manager
             - @logger
 
     payment_processor.order_status_manager:
