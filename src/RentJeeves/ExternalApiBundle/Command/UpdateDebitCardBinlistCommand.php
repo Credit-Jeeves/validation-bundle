@@ -49,12 +49,28 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
 
         /** @var BinlistSource $binlistSource */
         $binlistSource = $this->getContainer()->get('binlist.source');
+
         $arrayCollection = $binlistSource->getBinListCollection();
         $logger->info(sprintf('Start inserting data, should insert %s rows to DB.', count($arrayCollection)));
-        foreach ($arrayCollection as $debitCardBinlist) {
-            $em->persist($debitCardBinlist);
+        try {
+            foreach ($arrayCollection as $debitCardBinlist) {
+                $em->persist($debitCardBinlist);
+            }
+            // Save entity
+            $em->flush();
+            // Try and commit the transaction
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            $logger->alert(
+                sprintf(
+                    'Failed save new data for Binlist. Got exception %s',
+                    $e->getMessage()
+                )
+            );
+
+            return;
         }
-        $em->flush();
-        $logger->info('Successfully insert.');
+        $logger->info('Successfully saved new data.');
     }
 }
