@@ -75,7 +75,7 @@ class CheckSenderCase extends BaseTestCase
             $loggerMock
         );
 
-        $this->assertFalse($sender->send($order), 'Check for OrderPayDirect has been sent successfully');
+        $sender->send($order);
     }
 
     /**
