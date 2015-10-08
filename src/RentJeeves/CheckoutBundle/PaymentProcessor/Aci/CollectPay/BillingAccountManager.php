@@ -2,6 +2,8 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Model as RequestModel;
 use Payum\AciCollectPay\Request\ProfileRequest\AddBilling;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
@@ -95,5 +97,34 @@ class BillingAccountManager extends AbstractManager
                 $depositAccount->getId()
             ));
         }
+    }
+
+    /**
+     * @param User $user
+     * @param string $divisionId
+     * @return string
+     */
+    public static function createUserBillingAccountNumber(User $user, $divisionId)
+    {
+        return parent::getUserBillingAccountNumber($user, $divisionId);
+    }
+
+    /**
+     * @param Group $group
+     * @param string $divisionId
+     * @return string
+     */
+    public static function createGroupBillingAccountNumber(Group $group, $divisionId)
+    {
+        return parent::getGroupBillingAccountNumber($group, $divisionId);
+    }
+
+    /**
+     * @param DepositAccount $depositAccount
+     * @return string
+     */
+    public static function createBillingAccountNickname(DepositAccount $depositAccount)
+    {
+        return parent::getBillingAccountNickname($depositAccount);
     }
 }

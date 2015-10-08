@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CoreBundle\Tests\Unit\PaymentProcessorMigration;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\CsvImporter;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer;
@@ -19,7 +18,7 @@ class CsvImporterCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldImportEachModels()
+    public function shouldImportEachModel()
     {
         $pathToFile = '/1.csv';
         $holding = new Holding();
@@ -46,12 +45,6 @@ class CsvImporterCase extends BaseTestCase
             ->method('findBy')
             ->will($this->returnValue(new Contract()));
 
-        $returnContract = new Contract();
-        $returnContract->setGroup(new Group());
-        $contractRepositoryMock->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($returnContract));
-
         $em = $this->getEmMock();
         // Repositories
         $em->expects($this->at(0))
@@ -70,10 +63,6 @@ class CsvImporterCase extends BaseTestCase
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:Contract'))
             ->will($this->returnValue($contractRepositoryMock));
-        $em->expects($this->at(6))
-            ->method('getRepository')
-            ->with($this->equalTo('RjDataBundle:Contract'))
-            ->will($this->returnValue($contractRepositoryMock));
 
         $validator = $this->getValidatorMock();
         $validator->expects($this->exactly(2))
@@ -87,12 +76,14 @@ class CsvImporterCase extends BaseTestCase
             ->will($this->returnValue($returnArray));
 
         //work with objects - Each model persist
-        $em->expects($this->at(2))
+        $em->expects($this->exactly(2))
             ->method('persist')
-            ->with($this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayUserProfile'));
-        $em->expects($this->at(7))
-            ->method('persist')
-            ->with($this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayContractBilling'));
+            ->withConsecutive(
+                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayUserProfile')],
+                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling')],
+                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayUserProfile')],
+                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling')]
+            );
 
         $importer = new CsvImporter($em, $deserializer, $validator);
         $importer->import('/1.csv', $holding);

@@ -3,12 +3,15 @@
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Exception\CsvMapException;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\DepositAccountRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -32,11 +35,18 @@ class AciProfileMapper
     protected $businessId;
 
     /**
-     * @param string $businessId
+     * @var DepositAccountRepository
      */
-    public function __construct($businessId)
+    protected $depositAccountRepo;
+
+    /**
+     * @param string $businessId
+     * @param DepositAccountRepository $repository
+     */
+    public function __construct($businessId, DepositAccountRepository $repository)
     {
         $this->businessId = $businessId;
+        $this->depositAccountRepo = $repository;
     }
 
     /**
@@ -151,22 +161,30 @@ class AciProfileMapper
         $user = $this->profile->getUser();
         $address = $user->getDefaultAddress();
         $records = [];
-        foreach ($user->getActiveContracts() as $contract) {
-            $depositAccount = $contract->getGroup()->getDepositAccount(
-                DepositAccountType::RENT,
+        $depositAccounts = $this->depositAccountRepo->getHPSDepositAccountsUniqueByMerchantForTenantAndHoldings(
+            $user,
+            $this->holdings
+        );
+        /** @var DepositAccount $hpsDepositAccount */
+        foreach ($depositAccounts as $hpsDepositAccount) {
+            $aciDepositAccount = $hpsDepositAccount->getGroup()->getDepositAccount(
+                $hpsDepositAccount->getType(),
                 PaymentProcessor::ACI
             );
-            if (null === $depositAccount ||
-                $contract->hasAciCollectPayContractBillingForDepositAccountType(DepositAccountType::RENT) ||
-                ($this->holdings !== null && false === in_array($contract->getHolding(), $this->holdings))
+            // if there is no ACI deposit account
+            // or user already has profile with enrolled billing account for given merchant name
+            if (null === $aciDepositAccount || (null !== $profile = $user->getAciCollectPayProfile() and
+                $profile->hasBillingAccountForDivisionId($aciDepositAccount->getMerchantName()))
             ) {
                 continue;
             }
             $accountRecord = new AccountRecord();
             $accountRecord->setProfileId($this->profile->getId());
-            $accountRecord->setBillingAccountNumber($contract->getId());
-            $accountRecord->setDivisionId($depositAccount->getMerchantName());
-            $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName());
+            $accountRecord->setBillingAccountNumber(
+                BillingAccountManager::createUserBillingAccountNumber($user, $aciDepositAccount->getMerchantName())
+            );
+            $accountRecord->setDivisionId($aciDepositAccount->getMerchantName());
+            $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName()); // nickname?
             $accountRecord->setAddress1((string) $address);
             $accountRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
             $accountRecord->setState($address ? $address->getArea() : '');
@@ -264,7 +282,9 @@ class AciProfileMapper
 
         $accountRecord = new AccountRecord();
         $accountRecord->setProfileId($this->profile->getId());
-        $accountRecord->setBillingAccountNumber($group->getId());
+        $accountRecord->setBillingAccountNumber(
+            BillingAccountManager::createGroupBillingAccountNumber($group, $this->businessId)
+        );
         $accountRecord->setDivisionId($this->businessId);
         $accountRecord->setNameOnBillingAccount($group->getName());
         $accountRecord->setAddress1($group->getStreetAddress1());
