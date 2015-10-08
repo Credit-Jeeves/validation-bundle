@@ -2,17 +2,18 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
-use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
-use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
 
 class PayAnyoneSendCheckCommand extends ContainerAwareCommand
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -30,36 +31,13 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
         if (false == $order = $this->getOrderById($input->getArgument('order-id'))) {
             throw new \InvalidArgumentException(sprintf('Order with id#%s not found', $input->getArgument('order-id')));
         }
-        try {
-            if ($this->getAciPayAnyonePaymentProcessor()->executeOrder($order)) {
-                $output->writeln(sprintf('Check for order #%d has been sent successfully', $order->getId()));
 
-                $this->getOrderStatusManager()->setSending($order);
-
-                return 0;
-            }
-        } catch (\Exception $e) {
-            $output->writeln(sprintf(
-                '<error>Get exception "%s" with message: %s</error>',
-                get_class($e),
-                $e->getMessage()
-            ));
-        }
-
-        /** @var OutboundTransaction $outboundTransaction */
-        $outboundTransaction = $order->getDepositOutboundTransaction();
-        $this->getOrderStatusManager()->setError($order);
-        $output->writeln(sprintf(
-            'Check for order #%d has not been sent successfully. Reason: %s',
-            $order->getId(),
-            $outboundTransaction->getMessage()
-        ));
-
-        return 1;
+        $this->getAciPayAnyoneCheckSender()->send($order);
     }
 
     /**
      * @param int $orderId
+     *
      * @return OrderPayDirect
      */
     protected function getOrderById($orderId)
@@ -68,18 +46,10 @@ class PayAnyoneSendCheckCommand extends ContainerAwareCommand
     }
 
     /**
-     * @return PaymentProcessorAciPayAnyone
+     * @return CheckSender
      */
-    protected function getAciPayAnyonePaymentProcessor()
+    protected function getAciPayAnyoneCheckSender()
     {
-        return $this->getContainer()->get('payment_processor.aci_pay_anyone');
-    }
-
-    /**
-     * @return OrderStatusManagerInterface
-     */
-    protected function getOrderStatusManager()
-    {
-        return $this->getContainer()->get('payment_processor.order_status_manager');
+        return $this->getContainer()->get('payment_processor.aci.pay_anyone.check_sender');
     }
 }
