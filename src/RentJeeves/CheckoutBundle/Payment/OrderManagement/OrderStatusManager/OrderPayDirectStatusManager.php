@@ -176,7 +176,8 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
                     'Cant initiateOutboundLeg for Order#%d. Details: %s',
                     $order->getId(),
                     $e->getMessage()
-                ));
+                )
+            );
 
             return;
         }
