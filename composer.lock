@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c2801de95987d80aa053452bdcb450d9",
+    "hash": "2d91b6d346575b3575db40f2fa979ae9",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -17,7 +17,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/c19cc48fd2b09c48f48ac191ea399624b01db6e2",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/2af32a2ef970067491063bbc6e700dd998ea9d4e",
                 "reference": "2175730bacbee6d7d8bbe7ebfabe5835c206ea8a",
                 "shasum": ""
             },
@@ -630,7 +630,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-11-06 10:36:20"
+            "time": "2015-07-28 08:38:45"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -697,7 +697,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-09-09 18:08:45"
+            "time": "2015-09-30 10:53:33"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -709,7 +709,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2015-03-31 14:00:42"
+            "time": "2015-09-26 00:06:06"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -1578,57 +1578,6 @@
             "time": "2014-06-06 18:27:10"
         },
         {
-            "name": "egeloen/ordered-form",
-            "version": "1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/egeloen/ivory-ordered-form.git",
-                "reference": "9149d24f6dc30fdf4247427087aed355635fefd0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/egeloen/ivory-ordered-form/zipball/9149d24f6dc30fdf4247427087aed355635fefd0",
-                "reference": "9149d24f6dc30fdf4247427087aed355635fefd0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "symfony/form": "~2.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~3.7",
-                "satooshi/php-coveralls": "~0.6"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Ivory\\OrderedForm": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric GELOEN",
-                    "email": "geloen.eric@gmail.com"
-                }
-            ],
-            "description": "Provides a form ordering support with the Symfony2 form component.",
-            "keywords": [
-                "Symfony2",
-                "form",
-                "order"
-            ],
-            "time": "2014-06-17 13:09:57"
-        },
-        {
             "name": "fp/badaboom",
             "version": "dev-ton",
             "source": {
@@ -2261,72 +2210,56 @@
             "time": "2014-01-12 16:34:06"
         },
         {
-            "name": "guzzle/common",
+            "name": "guzzle/guzzle",
             "version": "v3.5.0",
-            "target-dir": "Guzzle/Common",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Guzzle3/common.git",
-                "reference": "v3.5.0"
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "e97207d07d0385eac269a976628b7a5f9eeb4e07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Guzzle3/common/zipball/881bcb800c14d019f92e48a2a724b14e661681d2",
-                "reference": "v3.5.0",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/e97207d07d0385eac269a976628b7a5f9eeb4e07",
+                "reference": "e97207d07d0385eac269a976628b7a5f9eeb4e07",
                 "shasum": ""
             },
             "require": {
+                "ext-curl": "*",
                 "php": ">=5.3.2",
                 "symfony/event-dispatcher": ">=2.1"
             },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Guzzle\\Common": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Common libraries used by Guzzle",
-            "homepage": "http://guzzlephp.org/",
-            "keywords": [
-                "collection",
-                "common",
-                "event",
-                "exception"
-            ],
-            "time": "2013-05-13 20:17:47"
-        },
-        {
-            "name": "guzzle/http",
-            "version": "v3.5.0",
-            "target-dir": "Guzzle/Http",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Guzzle3/http.git",
-                "reference": "v3.5.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Guzzle3/http/zipball/c5f70e134c85cea564a69168a0f0a3549df237e5",
-                "reference": "v3.5.0",
-                "shasum": ""
-            },
-            "require": {
+            "replace": {
+                "guzzle/batch": "self.version",
+                "guzzle/cache": "self.version",
                 "guzzle/common": "self.version",
+                "guzzle/http": "self.version",
+                "guzzle/inflection": "self.version",
+                "guzzle/iterator": "self.version",
+                "guzzle/log": "self.version",
                 "guzzle/parser": "self.version",
-                "guzzle/stream": "self.version",
-                "php": ">=5.3.2"
+                "guzzle/plugin": "self.version",
+                "guzzle/plugin-async": "self.version",
+                "guzzle/plugin-backoff": "self.version",
+                "guzzle/plugin-cache": "self.version",
+                "guzzle/plugin-cookie": "self.version",
+                "guzzle/plugin-curlauth": "self.version",
+                "guzzle/plugin-error-response": "self.version",
+                "guzzle/plugin-history": "self.version",
+                "guzzle/plugin-log": "self.version",
+                "guzzle/plugin-md5": "self.version",
+                "guzzle/plugin-mock": "self.version",
+                "guzzle/plugin-oauth": "self.version",
+                "guzzle/service": "self.version",
+                "guzzle/stream": "self.version"
             },
-            "suggest": {
-                "ext-curl": "*"
+            "require-dev": {
+                "doctrine/cache": "*",
+                "monolog/monolog": "1.*",
+                "phpunit/phpunit": "3.7.*",
+                "psr/log": "1.0.*",
+                "symfony/class-loader": "*",
+                "zendframework/zend-cache": "2.0.*",
+                "zendframework/zend-log": "2.0.*"
             },
             "type": "library",
             "extra": {
@@ -2336,7 +2269,8 @@
             },
             "autoload": {
                 "psr-0": {
-                    "Guzzle\\Http": ""
+                    "Guzzle\\Tests": "tests/",
+                    "Guzzle": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2348,113 +2282,22 @@
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Guzzle Community",
+                    "homepage": "https://github.com/guzzle/guzzle/contributors"
                 }
             ],
-            "description": "HTTP libraries used by Guzzle",
+            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
             "homepage": "http://guzzlephp.org/",
             "keywords": [
-                "Guzzle",
                 "client",
                 "curl",
+                "framework",
                 "http",
-                "http client"
-            ],
-            "time": "2013-05-13 20:17:47"
-        },
-        {
-            "name": "guzzle/parser",
-            "version": "v3.5.0",
-            "target-dir": "Guzzle/Parser",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Guzzle3/parser.git",
-                "reference": "v3.5.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Guzzle3/parser/zipball/de4f8e96b9f40bdbab0c2dc6cb447c983c506ae4",
-                "reference": "v3.5.0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Guzzle\\Parser": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Interchangeable parsers used by Guzzle",
-            "homepage": "http://guzzlephp.org/",
-            "keywords": [
-                "URI Template",
-                "cookie",
-                "http",
-                "message",
-                "url"
-            ],
-            "time": "2013-05-13 20:17:47"
-        },
-        {
-            "name": "guzzle/stream",
-            "version": "v3.5.0",
-            "target-dir": "Guzzle/Stream",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Guzzle3/stream.git",
-                "reference": "v3.5.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Guzzle3/stream/zipball/9023c1735af4bcb1a507b1462aef56dcbd18630d",
-                "reference": "v3.5.0",
-                "shasum": ""
-            },
-            "require": {
-                "guzzle/common": "self.version",
-                "php": ">=5.3.2"
-            },
-            "suggest": {
-                "guzzle/http": "To convert Guzzle request objects to PHP streams"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Guzzle\\Stream": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                }
-            ],
-            "description": "Guzzle stream wrapper component",
-            "homepage": "http://guzzlephp.org/",
-            "keywords": [
-                "Guzzle",
-                "component",
-                "stream"
+                "http client",
+                "rest",
+                "web service"
             ],
             "time": "2013-05-13 20:17:47"
         },
@@ -4258,6 +4101,53 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "renttrack/smarty-streets-bundle",
+            "version": "dev-master",
+            "target-dir": "RentTrack/SmartyStreetsBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/SmartyStreetsBundle.git",
+                "reference": "6a0191ac749f5a4d7d7801a877d993ee65359760"
+            },
+            "require": {
+                "doctrine/annotations": "*",
+                "doctrine/collections": "*",
+                "guzzle/guzzle": "v3.5.0",
+                "jms/serializer": "dev-master",
+                "jms/serializer-bundle": "dev-master",
+                "php": ">=5.4.2",
+                "symfony/finder": "2.*",
+                "symfony/framework-bundle": "2.*",
+                "symfony/monolog-bundle": "2.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\SmartyStreetsBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Onatskyy",
+                    "email": "onatskyy@renttrack.cpm"
+                }
+            ],
+            "description": "Symfony2 SmartyStreetsBundle.",
+            "homepage": "https://github.com/Credit-Jeeves/SmartyStreetsBundle",
+            "keywords": [
+                "address",
+                "lookup",
+                "smarty streets"
+            ],
+            "time": "2015-10-09 07:59:01"
         },
         {
             "name": "renttrack/transunion-bundle",
@@ -8332,6 +8222,7 @@
         "besimple/soap-server": 20,
         "besimple/wsdl2php": 20,
         "renttrack/transunion-bundle": 20,
+        "renttrack/smarty-streets-bundle": 20,
         "proberts/skip32": 20,
         "behat/mink": 20,
         "behat/mink-zombie-driver": 20,
