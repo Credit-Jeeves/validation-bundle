@@ -10,6 +10,8 @@ parameters:
     mailer_delivery_address: 'staging@renttrack.com'  # force all email to be delivered to test mailbox
     mailer_disable_delivery: false
 
+    mailer.survey_url: my.renttrack.com
+
     session.lifetime:  3600 #in seconds
     mink.browser_name: 'firefox'
     mink.base_url: 'http://%server_name%/_test.php'
@@ -17,6 +19,8 @@ parameters:
     server: dev
 
     google_maps_key: 'AIzaSyBsW5-jPDZ2C-l9d62DVgdvQMerbt0XvNo' # API account with staging@renttrack.com
+
+    aci.collect_pay.business_id: 563376
 
     payment_processor.hps.report_path: /tmp
     heartland:
@@ -29,10 +33,17 @@ parameters:
         businessId: 563375
         login: RentTrackEnrollConnect
         password: KI9DPqXaJ8
+    aci_pay_anyone:
+        sandbox: true
+        acquirerId: 564727
+        login: RentTrackConnectUser
+        password: KwJBDWruMsOL
+        dateClient: 20141006
+        name: RentTrack
 
     login.attempts: 1
     login.delay: 1
-    net_connect.precise_id.userpwd: 'renttrack_pid_demo:d8ccULH0IcEn' #required! # overwritten by DB
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:iIsvmRdCZXY3ms' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!
