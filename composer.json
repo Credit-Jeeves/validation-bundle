@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "5bddd0f1b3ca61c8ba6daafb4a786d68419f5091"
+                    "reference": "c903d18fdacee165615574dde0b0d9d7c5dfd5ea"
                 }
             }
         },
@@ -207,7 +207,6 @@
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "egeloen/ordered-form-bundle": "~1.0",
         "credit-jeeves/credit-jeeves": "dev-master",
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
