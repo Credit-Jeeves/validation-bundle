@@ -591,6 +591,10 @@ body{
     font-family: PT Sans Caption;
 }
 
+#payment-account-table td{
+    padding: 15px;
+}
+
 #main .ui-content{
     font-family: PT Sans Caption;
 }

@@ -30,13 +30,19 @@ class SourcesController extends Controller
      * @Route("/", name="tenant_payment_sources")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($mobile = false)
     {
         $paymentAccounts = $this->getUser()->getPaymentAccounts();
 
-        return array(
+        $pageVars = array(
             'paymentAccounts' => $paymentAccounts
         );
+
+        if ($mobile) {
+            return $this->render('TenantBundle:Sources:index.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 
     /**

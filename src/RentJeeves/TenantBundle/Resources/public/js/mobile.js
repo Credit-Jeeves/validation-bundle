@@ -116,9 +116,14 @@ $(document).ready(function(){
             }
             //get contractId
             $("#rentjeeves_checkoutbundle_paymentaccounttype_contractId").val(id)
+            saving = false;
             $.mobile.changePage('#addNewPayAccount')
         }
     });
+
+    $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").bind("change",function(event,ui){
+        $("#"+accountPrefix+"address").parent().hide()
+    })
 
 
     //fix KO payment card/account
@@ -160,11 +165,16 @@ $(document).ready(function(){
 
     $("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice").append('<input type="button" value="Add new address" onclick="showAddNewAddress()">')
 
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_save").hide() //we always save payment info, so button is not relevant
+
+
+
 })
 
 function showAddNewAddress(){
     $("#rentjeeves_checkoutbundle_paymentaccounttype_address").parent().css("display","block")
     //$("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice").parent().css("display","none")
+    $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").prop('checked',false).checkboxradio("refresh")
 }
 
 
@@ -181,6 +191,48 @@ function showHideBankCardFields(bankVisibility,cardVisibility){
         $("label[for="+id+"]").parent().css("display",cardVisibility)
     })
     $("#"+accountPrefix+"address").parent().css("display","none")
+}
+
+
+//edit/deleting payment sources
+
+var saving=false; //is true when saving an edit, false when saving a new one
+function editSource(name){
+    saving = true;
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_name").val(name);
+
+    //hit http://dev-nr.renttrack.com/sources/save with POST data
+    $.mobile.changePage('#addNewPayAccount');
+
+}
+
+function deleteSource(name){
+    //hit http://dev-nr.renttrack.com/sources/del/
+
+    //fetch our ID
+    $.each(payAccounts, function (i, localPaymentAccountId) {
+        if (localPaymentAccountId.name == name) {
+            id = localPaymentAccountId.id;
+        }
+    })
+    //use the ID to hit our source
+    $.ajax({
+        url: '/sources/del'+id,
+        type: 'post',
+        async: 'true',
+
+        success: function (result) {
+            a=result
+            if(debug){
+                console.log(result)
+            }
+            window.refresh()
+        },
+        error: function (request, error) {  //ajax error!
+
+        }
+    });
+
 }
 
 //cancel payment function for dialog
@@ -253,7 +305,7 @@ function setupPayForm(id) {
             })
 
 
-            //css fix for calednar widget positioning
+            //css fix for calendar widget positioning
 
             $(document).on("click","#"+prefix+"start_date",function(){
                 var viewportwidth = $(window).width();
@@ -347,6 +399,8 @@ function setupPayForm(id) {
 
 
             }else{
+
+                $("#"+prefix+"paymentAccount").val($("#"+prefix+"paymentAccount option:first").val())
 
                 $("#payRentBttn").html("PAY RENT")
 
@@ -613,39 +667,81 @@ function updateTotal(){
 
 function addNewPaymentSource(formObj){
 
-    $.ajax({
-        url: 'checkout/source',
-        data: $(formObj).serialize(),
-        type: 'post',
-        async: 'true',
+    if(!saving) {   //it's a new account
+        $.ajax({
+            url: 'checkout/source',
+            data: $(formObj).serialize(),
+            type: 'post',
+            async: 'true',
 
-        success: function (result) {
-            a=result
-            if(debug){
-                console.log(result)
-            }
-            if(result.success!=true){   //handle error message and take user back to pay/edit page
-                msg="";
-                $.each(result,function(i,k){
-                    $.each(k,function(h,j){
-                        msg+=j+"<br>"
+            success: function (result) {
+                a = result
+                if (debug) {
+                    console.log(result)
+                }
+                if (result.success != true) {   //handle error message and take user back to pay/edit page
+                    msg = "";
+                    $.each(result, function (i, k) {
+                        $.each(k, function (h, j) {
+                            msg += j + "<br>"
+                        })
                     })
-                })
+                    $("#sourceErrorMsg").html(msg)
+                    $("#sourceErrorMsg").show()
+                } else {                      //we are successful! display dialog, refresh page to update information
+                    $("#sourceErrorMsg").hide()
+                    $.mobile.changePage('#pay')
+                    $("#" + prefix + "paymentAccount").append("<option value='" + result.paymentAccount.id + "' selected>" + result.paymentAccount.name + "</option>")
+                    $("#" + prefix + "paymentAccount").selectmenu("refresh")
+                }
+            },
+            error: function (request, error) {  //ajax error!
+                msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
-            }else{                      //we are successful! display dialog, refresh page to update information
-                $("#sourceErrorMsg").hide()
-                $.mobile.changePage('#pay')
-                $("#"+prefix+"paymentAccount").append("<option value='"+result.paymentAccount.id+"' selected>"+result.paymentAccount.name+"</option>")
-                $("#"+prefix+"paymentAccount").selectmenu("refresh")
             }
-        },
-        error: function (request, error) {  //ajax error!
-            msg="An error occurred. ("+error+")"
-            $("#sourceErrorMsg").html(msg)
-            $("#sourceErrorMsg").show()
-        }
-    });
+        });
+
+    }else{ //overriding an existing one
+        //   http://dev-nr.renttrack.com/sources/save
+        $.ajax({
+            url: 'sources/save',
+            data: $(formObj).serialize(),
+            type: 'post',
+            async: 'true',
+
+            success: function (result) {
+                a = result
+                if (debug) {
+                    console.log(result)
+                }
+                if (result.success != true) {   //handle error message and take user back to pay/edit page
+                    msg = "";
+                    /*
+                    $.each(result, function (i, k) {
+                        $.each(k, function (h, j) {
+                            msg += j + "<br>"
+                        })
+                    })
+                    $("#sourceErrorMsg").html(msg)
+                    $("#sourceErrorMsg").show()
+                    */
+                } else {                      //we are successful! display dialog, refresh page to update information
+                    // $("#sourceErrorMsg").hide()
+                    $.mobile.changePage('#sources')
+                }
+            },
+            error: function (request, error) {  //ajax error!
+                /*
+                msg = "An error occurred. (" + error + ")"
+                $("#sourceErrorMsg").html(msg)
+                $("#sourceErrorMsg").show()
+                */
+            }
+        });
+
+
+    }
 }
 
 function submitForm(){
