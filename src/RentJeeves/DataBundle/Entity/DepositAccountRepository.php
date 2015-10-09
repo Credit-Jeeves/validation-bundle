@@ -59,7 +59,7 @@ class DepositAccountRepository extends EntityRepository
      * @param Tenant $tenant
      * @return DepositAccount[]
      */
-    public function getHPSDepositAccountsUniqueByMerchantForTenantAndHoldings(Tenant $tenant, array $holdingIds = [])
+    public function getHPSDepositAccountsUniqueByMerchantForTenantAndHoldings(Tenant $tenant, array $holdingIds = null)
     {
         $query = $this->createQueryBuilder('d')
             ->join('d.paymentAccounts', 'p')

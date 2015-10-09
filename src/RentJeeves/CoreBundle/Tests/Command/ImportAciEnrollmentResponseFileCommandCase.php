@@ -53,8 +53,8 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $allAciUserProfiles = $this->getAciCollectPayUserProfileRepository()->findAll();
         $this->assertCount(0, $allAciUserProfiles);
         //Account record
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(0, $allAciCollectPayContractBillings);
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(0, $allAciCollectPayProfileBillings);
         // Funding record
         $allPaymentAccounts = $this->getPaymentAccountRepository()->findAll();
         $allPaymentMigrations = $this->getPaymentAccountMigrationRepository()->findAll();
@@ -77,9 +77,9 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $this->assertCount(1, $allAciUserProfiles);
         $this->assertEquals(1, $allAciUserProfiles[0]->getProfileId());
 
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(1, $allAciCollectPayContractBillings);
-        $this->assertEquals('', $allAciCollectPayContractBillings[0]->getDivisionId());
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(1, $allAciCollectPayProfileBillings);
+        $this->assertEquals(123, $allAciCollectPayProfileBillings[0]->getDivisionId());
 
         $allPaymentAccountsBeforeExecute = $this->getPaymentAccountRepository()->findAll();
         $this->assertEquals(count($allPaymentAccounts) + 1, count($allPaymentAccountsBeforeExecute));
@@ -104,8 +104,8 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $allAciUserProfiles = $this->getAciCollectPayUserProfileRepository()->findAll();
         $this->assertCount(0, $allAciUserProfiles);
         //Account record
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(0, $allAciCollectPayContractBillings);
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(0, $allAciCollectPayProfileBillings);
         // Funding record
         $allPaymentAccounts = $this->getPaymentAccountRepository()->findAll();
         $allPaymentMigrations = $this->getPaymentAccountMigrationRepository()->findAll();
@@ -129,8 +129,8 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $allAciUserProfiles = $this->getAciCollectPayUserProfileRepository()->findAll();
         $this->assertCount(0, $allAciUserProfiles);
         //Account record
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(0, $allAciCollectPayContractBillings);
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(0, $allAciCollectPayProfileBillings);
         // Funding record
         $allPaymentAccountsBeforeExecute = $this->getPaymentAccountRepository()->findAll();
         $this->assertEquals(count($allPaymentAccounts), count($allPaymentAccountsBeforeExecute));
@@ -166,8 +166,8 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $allAciUserProfiles = $this->getAciCollectPayUserProfileRepository()->findAll();
         $this->assertCount(0, $allAciUserProfiles);
         //Account record
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(0, $allAciCollectPayContractBillings);
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(0, $allAciCollectPayProfileBillings);
         // Funding record
         $allPaymentAccounts = $this->getPaymentAccountRepository()->findAll();
         $allPaymentMigrations = $this->getPaymentAccountMigrationRepository()->findAll();
@@ -189,9 +189,9 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $this->assertCount(1, $allAciUserProfiles);
         $this->assertEquals(1, $allAciUserProfiles[0]->getProfileId());
 
-        $allAciCollectPayContractBillings = $this->getAciCollectPayContractBillingRepository()->findAll();
-        $this->assertCount(1, $allAciCollectPayContractBillings);
-        $this->assertEquals('', $allAciCollectPayContractBillings[0]->getDivisionId());
+        $allAciCollectPayProfileBillings = $this->getAciCollectPayProfileBillingRepository()->findAll();
+        $this->assertCount(1, $allAciCollectPayProfileBillings);
+        $this->assertEquals(123, $allAciCollectPayProfileBillings[0]->getDivisionId());
 
         $allPaymentAccountsBeforeExecute = $this->getPaymentAccountRepository()->findAll();
         $this->assertEquals(count($allPaymentAccounts) + 1, count($allPaymentAccountsBeforeExecute));
@@ -221,9 +221,9 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
-    protected function getAciCollectPayContractBillingRepository()
+    protected function getAciCollectPayProfileBillingRepository()
     {
-        return $this->getEntityManager()->getRepository('RjDataBundle:AciCollectPayContractBilling');
+        return $this->getEntityManager()->getRepository('RjDataBundle:AciCollectPayProfileBilling');
     }
 
     /**
