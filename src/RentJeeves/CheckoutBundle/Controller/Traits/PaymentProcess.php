@@ -136,6 +136,9 @@ trait PaymentProcess
         if ($contract->getStatus() === ContractStatus::INVITE) {
             $contract->setStatus(ContractStatus::APPROVED);
         }
+
+        $this->get('payment.amount_limit')->checkIfExceedsMax($paymentEntity);
+
         $em->persist($contract);
         $em->persist($paymentEntity);
         $em->flush();

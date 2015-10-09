@@ -222,3 +222,8 @@ services:
             - %rt_group_code%
             - %credittrack_payment_per_month%
 
+    payment.amount_limit:
+        class: RentJeeves\CheckoutBundle\Services\PaymentAmountLimit
+        arguments:
+            - %dod_limit_max_payment%
+            - @logger
