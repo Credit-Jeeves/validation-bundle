@@ -111,7 +111,7 @@ abstract class AbstractManager
      * @param string $divisionId
      * @return string
      */
-    protected function getUserBillingAccountNumber(User $user, $divisionId)
+    protected static function getUserBillingAccountNumber(User $user, $divisionId)
     {
         return sprintf('%s%s', $divisionId, $user->getId());
     }
@@ -121,7 +121,7 @@ abstract class AbstractManager
      * @param string $divisionId
      * @return string
      */
-    protected function getGroupBillingAccountNumber(Group $group, $divisionId)
+    protected static function getGroupBillingAccountNumber(Group $group, $divisionId)
     {
         return sprintf('%s%s', $divisionId, $group->getId());
     }
@@ -130,7 +130,7 @@ abstract class AbstractManager
      * @param DepositAccount $depositAccount
      * @return string
      */
-    protected function getBillingAccountNickname(DepositAccount $depositAccount)
+    protected static function getBillingAccountNickname(DepositAccount $depositAccount)
     {
         return sprintf('%s-%s', $depositAccount->getGroup()->getName(), $depositAccount->getMerchantName());
     }
