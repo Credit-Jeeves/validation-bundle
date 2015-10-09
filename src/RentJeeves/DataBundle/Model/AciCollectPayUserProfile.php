@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
+use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling as AciCollectPayProfileBillingEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -55,7 +55,7 @@ abstract class AciCollectPayUserProfile
     protected $createdAt;
 
     /**
-     * @var ArrayCollection|AciCollectPayProfileBilling[]
+     * @var ArrayCollection|AciCollectPayProfileBillingEntity[]
      *
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling",
@@ -135,17 +135,17 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @param AciCollectPayProfileBilling[] $aciCollectPayProfileBillings
+     * @param AciCollectPayProfileBillingEntity[] $aciCollectPayProfileBillings
      */
-    public function addAciCollectPayProfileBilling(AciCollectPayProfileBilling $aciCollectPayProfileBilling)
+    public function addAciCollectPayProfileBilling(AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling)
     {
         $this->aciCollectPayProfileBillings->add($aciCollectPayProfileBilling);
     }
 
     /**
-     * @param AciCollectPayProfileBilling $aciCollectPayProfileBilling
+     * @param AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling
      */
-    public function removeAciCollectPayProfileBilling(AciCollectPayProfileBilling $aciCollectPayProfileBilling)
+    public function removeAciCollectPayProfileBilling(AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling)
     {
         $this->aciCollectPayProfileBillings->removeElement($aciCollectPayProfileBilling);
     }

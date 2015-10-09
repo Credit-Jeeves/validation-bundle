@@ -137,6 +137,34 @@ abstract class Property
     protected $isSingle;
 
     /**
+     * @ORM\Column(
+     *     name="ss_lat",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $lat;
+
+    /**
+     * @ORM\Column(
+     *     name="ss_long",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $long;
+
+    /**
+     * @ORM\Column(
+     *
+     *     name="ss_index",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $index;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -750,5 +778,53 @@ abstract class Property
     public function getLongitude()
     {
         return $this->getKb();
+    }
+
+    /**
+     * @return string
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * @param string $lat
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLong()
+    {
+        return $this->long;
+    }
+
+    /**
+     * @param string $long
+     */
+    public function setLong($long)
+    {
+        $this->long = $long;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
+    /**
+     * @param string $index
+     */
+    public function setIndex($index)
+    {
+        $this->index = $index;
     }
 }
