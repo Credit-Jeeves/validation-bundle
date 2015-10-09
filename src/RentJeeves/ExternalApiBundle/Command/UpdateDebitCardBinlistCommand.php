@@ -53,6 +53,7 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
         $arrayCollection = $binlistSource->getBinListCollection();
         $logger->info(sprintf('Start inserting data, should insert %s rows to DB.', count($arrayCollection)));
         try {
+            $connection->beginTransaction();
             foreach ($arrayCollection as $debitCardBinlist) {
                 $em->persist($debitCardBinlist);
             }
@@ -71,6 +72,6 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
 
             return;
         }
-        $logger->info('Successfully saved new data.');
+        $logger->info('Successfully saved new BinList data.');
     }
 }
