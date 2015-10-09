@@ -80,8 +80,6 @@ class CsvImporterCase extends BaseTestCase
             ->method('persist')
             ->withConsecutive(
                 [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayUserProfile')],
-                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling')],
-                [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayUserProfile')],
                 [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling')]
             );
 

@@ -410,7 +410,7 @@ class AciProfileMapperCase extends BaseTestCase
         $aciProfileMapper = $this->getMock(
             '\RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper',
             ['getContractForUser'],
-            ['testBusinessId', $this->getEntityManager()->getRepository('RjDataBundle:DepositAccount')]
+            ['testBusinessId', $this->getContainer()->get('deposit_account.repository')]
         );
 
         $aciProfileMapper->expects($this->once())
