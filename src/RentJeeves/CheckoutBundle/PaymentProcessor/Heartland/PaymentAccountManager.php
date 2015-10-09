@@ -30,6 +30,7 @@ use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Model\PaymentAccountHpsMerchant;
 use RuntimeException;
 
 class PaymentAccountManager
@@ -63,17 +64,15 @@ class PaymentAccountManager
      * Registers a payment token for given payment account, user and deposit account.
      *
      * @param  PaymentAccountData $paymentAccountData
-     * @param  DepositAccount $depositAccount
+     * @param  string $merchantName
      * @throws PaymentProcessorConfigurationException
      */
     public function registerPaymentToken(
         PaymentAccountData $paymentAccountData,
-        DepositAccount $depositAccount
+        $merchantName
     ) {
         $paymentAccount = $paymentAccountData->getEntity();
         if (!$paymentAccount->getToken()) {
-            $merchantName = $depositAccount->getMerchantName();
-
             if (empty($merchantName)) {
                 throw new PaymentProcessorConfigurationException(
                     'Heartland payment processor error: merchant name not found'
@@ -86,12 +85,15 @@ class PaymentAccountManager
             $paymentAccount = $paymentAccountData->getEntity();
             $paymentAccount->setToken($token);
             $paymentAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
-            $paymentAccount->addDepositAccount($depositAccount);
+
+            if (false === $paymentAccount->hasAssociatedHpsMerchant($merchantName)) {
+                $this->addAssociationWithMerchant($paymentAccount, $merchantName);
+            }
 
             $this->em->persist($paymentAccount);
             $this->em->flush($paymentAccount);
         } else {
-            $this->ensureAccountAssociation($paymentAccount, $depositAccount);
+            $this->ensureAccountAssociation($paymentAccount, $merchantName);
         }
     }
 
@@ -131,15 +133,17 @@ class PaymentAccountManager
 
         $paymentAccount->setToken(null);
 
-        if ($paymentAccount->getDepositAccounts()->isEmpty()) {
+        if ($paymentAccount->getHpsMerchants()->isEmpty()) {
             throw new PaymentProcessorLogicException(
-                'Payment account for heartland should have at least one deposit account.'
+                'Payment account for heartland should have at least one associated merchant.'
             );
         }
 
-        foreach ($paymentAccount->getDepositAccounts() as $depositAccount) {
-            $paymentAccount->removeDepositAccount($depositAccount);
-            $this->registerPaymentToken($paymentAccountData, $depositAccount);
+        /** @var PaymentAccountHpsMerchant $merchant */
+        foreach ($paymentAccount->getHpsMerchants() as $merchant) {
+            $merchantName = $merchant->getMerchantName();
+            $paymentAccount->removeHpsMerchant($merchant);
+            $this->registerPaymentToken($paymentAccountData, $merchantName);
         }
     }
 
@@ -154,52 +158,43 @@ class PaymentAccountManager
     }
 
     /**
-     * TODO: change this in RT-1719: HPS: Move PaymentAccount-Deposit_account relation to PaymentAccount-MerchantName
      * Ensure there is an association between the given paymentAccount and
-     * deposit account. If there isn't, form the association by requesting
+     * merchant name. If there isn't, form the association by requesting
      * registerTokenToAdditionalMerchant from heartland, then creating a DB
-     * association between the paymentAccount and the depositAccount.
+     * association between the paymentAccount and the merchantName.
      *
      * @param  PaymentAccount $paymentAccount
-     * @param  DepositAccount $depositAccount
+     * @param  string $merchantName
      */
-    public function ensureAccountAssociation(PaymentAccount $paymentAccount, DepositAccount $depositAccount)
+    public function ensureAccountAssociation(PaymentAccount $paymentAccount, $merchantName)
     {
-        if (null == $registerToMerchantName = $depositAccount->getMerchantName()) {
+        if (null == $registerToMerchantName = $merchantName) {
             throw new \RuntimeException('Cannot register to a group without a merchant name.');
         }
 
-        $associatedDepositAccounts = $this->em->getRepository('RjDataBundle:DepositAccount')
-            ->completeByPaymentAccountAndDepositAccount($paymentAccount, $depositAccount);
-
-        if (!empty($associatedDepositAccounts)) {
-            // already associated
-            return;
+        if ($paymentAccount->hasAssociatedHpsMerchant($merchantName)) {
+            return true;
         }
 
-        $existingDepositAccounts = $this->em->getRepository('RjDataBundle:DepositAccount')
-            ->getAssociatedForPaymentAccount($paymentAccount);
-
-        if (empty($existingDepositAccounts)) {
+        if ($paymentAccount->getHpsMerchants()->isEmpty()) {
             throw new RuntimeException(
-                'Registering to another deposit account only works when ' .
+                'Registering to another merchant only works when ' .
                 'there is at least one existing association.'
             );
         }
 
-        // any previously registered group will work
-        /** @var DepositAccount[] $existingDepositAccounts */
-        $merchantName = $existingDepositAccounts[0]->getMerchantName();
+        // any previously registered merchant will work
+        $existingMerchantName = $paymentAccount->getHpsMerchants()->first()->getMerchantName();
         $token = $paymentAccount->getToken();
 
         $this->registerTokenToAdditionalMerchant(
-            $merchantName,
+            $existingMerchantName,
             $registerToMerchantName,
             $token
         );
 
         // create the association
-        $paymentAccount->addDepositAccount($depositAccount);
+        $this->addAssociationWithMerchant($paymentAccount, $merchantName);
         $this->em->persist($paymentAccount);
         $this->em->flush();
     }
@@ -325,5 +320,18 @@ class PaymentAccountManager
         if (!$statusRequest->isSuccess()) {
             throw new RuntimeException($paymentDetails->getMessages());
         }
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     * @param string $merchantName
+     */
+    protected function addAssociationWithMerchant(PaymentAccount $paymentAccount, $merchantName)
+    {
+        $associatedMerchant = new PaymentAccountHpsMerchant();
+        $associatedMerchant->setPaymentAccount($paymentAccount);
+        $associatedMerchant->setMerchantName($merchantName);
+        $paymentAccount->addHpsMerchant($associatedMerchant);
+        $this->em->persist($associatedMerchant);
     }
 }

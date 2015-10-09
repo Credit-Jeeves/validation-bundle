@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant as PaymentAccountHpsMerchantEntity;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -198,6 +199,16 @@ abstract class PaymentAccount
     protected $depositAccounts;
 
     /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist", "remove", "merge"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $hpsMerchants;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\UserSettings",
      *     mappedBy="creditTrackPaymentAccount",
@@ -236,6 +247,7 @@ abstract class PaymentAccount
         $this->orders = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
+        $this->hpsMerchants = new ArrayCollection();
     }
 
     /**
@@ -256,40 +268,6 @@ abstract class PaymentAccount
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Add deposit account
-     *
-     * @param  DepositAccount $depositAccount
-     * @return PaymentAccount
-     */
-    public function addDepositAccount(DepositAccount $depositAccount)
-    {
-        $this->depositAccounts->add($depositAccount);
-
-        return $this;
-    }
-
-    /**
-     * Remove deposit account
-     *
-     * @param DepositAccount $depositAccount
-     */
-    public function removeDepositAccount(DepositAccount $depositAccount)
-    {
-        $this->depositAccounts->removeElement($depositAccount);
-    }
-
-    /**
-     * Get deposit accounts
-     *
-     * @Serializer\Type("ArrayCollection<DepositAccount>")
-     * @return ArrayCollection
-     */
-    public function getDepositAccounts()
-    {
-        return $this->depositAccounts;
     }
 
     /**
@@ -579,5 +557,29 @@ abstract class PaymentAccount
     public function addOrder(Order $order)
     {
         $this->orders->add($order);
+    }
+
+    /**
+     * @return ArrayCollection|PaymentAccountHpsMerchantEntity
+     */
+    public function getHpsMerchants()
+    {
+        return $this->hpsMerchants;
+    }
+
+    /**
+     * @param PaymentAccountHpsMerchantEntity $hpsMerchant
+     */
+    public function addHpsMerchant(PaymentAccountHpsMerchantEntity $hpsMerchant)
+    {
+        $this->hpsMerchants[] = $hpsMerchant;
+    }
+
+    /**
+     * @param PaymentAccountHpsMerchantEntity $hpsMerchant
+     */
+    public function removeHpsMerchant(PaymentAccountHpsMerchantEntity $hpsMerchant)
+    {
+        $this->hpsMerchants->removeElement($hpsMerchant);
     }
 }

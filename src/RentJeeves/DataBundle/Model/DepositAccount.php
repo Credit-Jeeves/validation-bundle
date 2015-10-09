@@ -281,39 +281,6 @@ abstract class DepositAccount
     }
 
     /**
-     * Add payment account
-     *
-     * @param  \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     * @return DepositAccount
-     */
-    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->add($paymentAccount);
-
-        return $this;
-    }
-
-    /**
-     * Remove payment account
-     *
-     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     */
-    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->removeElement($paymentAccount);
-    }
-
-    /**
-     * Get payment accounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentAccounts()
-    {
-        return $this->paymentAccounts;
-    }
-
-    /**
      * @return string
      */
     public function getMid()

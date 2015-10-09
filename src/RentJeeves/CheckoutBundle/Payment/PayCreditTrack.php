@@ -113,9 +113,7 @@ class PayCreditTrack
      */
     protected function getPaymentProcessor(PaymentAccount $paymentAccount)
     {
-        $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
-
-        return $this->paymentProcessorFactory->getPaymentProcessor($group);
+        return $this->paymentProcessorFactory->getPaymentProcessorByPaymentAccount($paymentAccount);
     }
 
     /**
