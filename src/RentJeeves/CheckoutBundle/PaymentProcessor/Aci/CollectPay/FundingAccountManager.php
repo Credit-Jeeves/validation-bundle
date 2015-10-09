@@ -32,9 +32,9 @@ class FundingAccountManager extends AbstractManager
      */
     public function removePaymentFundingAccount(PaymentAccount $paymentAccount)
     {
-        $profileId = $paymentAccount->getUser()->getAciCollectPayProfileId();
+        $profile = $paymentAccount->getUser()->getAciCollectPayProfile();
 
-        if (!$profileId) {
+        if (!$profile) {
             $this->logger->alert(
                 sprintf(
                     '[ACI CollectPay Error]: Try to remove payment account "%s" for user #%d without aci profile.',
@@ -50,7 +50,7 @@ class FundingAccountManager extends AbstractManager
                 '[ACI CollectPay Info]:Try to remove funding account "%s" for user with id = "%d" and profile "%d"',
                 $paymentAccount->getName(),
                 $paymentAccount->getUser()->getId(),
-                $profileId
+                $profile->getProfileId()
             )
         );
 
@@ -59,13 +59,13 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setNickname($paymentAccount->getName());
         $fundingAccount->setFundingAccountId($paymentAccount->getToken());
 
-        $this->executeRemoveFundingRequest($profileId, $fundingAccount);
+        $this->executeRemoveFundingRequest($profile->getProfileId(), $fundingAccount);
 
         $this->logger->debug(
             sprintf(
                 '[ACI CollectPay Info]:Deleted funding account with id = "%s" to profile "%d" for user with id = "%d"',
                 $paymentAccount->getToken(),
-                $profileId,
+                $profile->getProfileId(),
                 $paymentAccount->getUser()->getId()
             )
         );
@@ -148,15 +148,6 @@ class FundingAccountManager extends AbstractManager
                 '[ACI CollectPay Info]:Try to modify funding account "%s" for user with id = "%d" and profile "%d"',
                 $paymentAccount->getName(),
                 $profile->getUser()->getId(),
-                $profile->getProfileId()
-            )
-        );
-
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to remove funding account "%s" for user with id = "%d" and profile "%d"',
-                $paymentAccount->getName(),
-                $paymentAccount->getUser()->getId(),
                 $profile->getProfileId()
             )
         );
@@ -333,7 +324,7 @@ class FundingAccountManager extends AbstractManager
         } catch (\Exception $e) {
             $this->logger->alert(
                 sprintf(
-                    '[ACI CollectPay FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
+                    '[ACI CollectPay Add FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
                     $profileId,
                     $fundingAccount->getFundingAccountId(),
                     $e->getMessage()
@@ -345,7 +336,7 @@ class FundingAccountManager extends AbstractManager
         if (!$request->getIsSuccessful()) {
             $this->logger->alert(
                 sprintf(
-                    '[ACI CollectPay FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
+                    '[ACI CollectPay Add FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
                     $profileId,
                     $fundingAccount->getFundingAccountId(),
                     $request->getMessages()
@@ -378,12 +369,26 @@ class FundingAccountManager extends AbstractManager
         try {
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('[ACI CollectPay Critical Error]:%s', $e->getMessage()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Remove FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $e->getMessage()
+                )
+            );
             throw $e;
         }
 
         if (!$request->getIsSuccessful()) {
-            $this->logger->alert(sprintf('[ACI CollectPay Error]:%s', $request->getMessages()));
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Remove FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $request->getMessages()
+                )
+            );
             throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
         }
     }

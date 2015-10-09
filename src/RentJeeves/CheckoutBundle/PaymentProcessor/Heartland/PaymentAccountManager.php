@@ -326,5 +326,4 @@ class PaymentAccountManager
             throw new RuntimeException($paymentDetails->getMessages());
         }
     }
-
 }

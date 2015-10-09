@@ -115,10 +115,12 @@ class SourcesCase extends BaseTestCase
                 'css',
                 sprintf('#payment-account-table td:contains("%s")', $bankPaymentAccount->getName())
             ),
-            sprintf('Payment account "%s" should be show', $bankPaymentAccount->getName())
+            sprintf('Payment account "%s" should be displayed', $bankPaymentAccount->getName())
         );
-
-        $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-1'));
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-row-1'),
+            'Row with payment account should be displayed on table'
+        );
 
         $row->clickLink('edit');
 
@@ -128,17 +130,17 @@ class SourcesCase extends BaseTestCase
             " && jQuery('.overlay-trigger').length <= 0"
         );
 
-        $this->assertNotNull(
+        $this->assertNotEmpty(
             $choices = $this->page->findAll(
                 'css',
                 '#rentjeeves_checkoutbundle_paymentaccounttype_type_box i'
-            )
+            ),
+            'Payment account type radio buttons should be displayed on payment account wizard'
         );
-        $this->assertCount(2, $choices);
+        $this->assertCount(2, $choices, 'Should be displayed both payment account types (card and bank)');
         $choices[1]->click();
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
-
         $this->fillForm(
             $form,
             [
@@ -151,13 +153,14 @@ class SourcesCase extends BaseTestCase
             ]
         );
 
-        $this->assertNotNull(
+        $this->assertNotEmpty(
             $choices = $this->page->findAll(
                 'css',
                 '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box i'
-            )
+            ),
+            'Billing Addresses choices should be displayed.'
         );
-        $this->assertCount(2, $choices);
+        $this->assertCount(2, $choices, 'Should be displayed 2 billing addresses');
         $choices[1]->click();
 
         $this->page->pressButton('payment_account.edit.save');
@@ -167,8 +170,15 @@ class SourcesCase extends BaseTestCase
             "jQuery.trim(jQuery('#payment-account-row-1 td:first').text()) == 'New Card'"
         );
 
-        $this->assertNotEmpty($cols = $this->page->findAll('css', '#payment-account-row-1 td'));
-        $this->assertEquals('New Card', $cols[0]->getText());
+        $this->assertNotEmpty(
+            $cols = $this->page->findAll('css', '#payment-account-row-1 td'),
+            'Should be displayed row with our updated payment account'
+        );
+        $this->assertEquals(
+            'New Card',
+            $cols[0]->getText(),
+            'First column should display updated nickname our payment account'
+        );
 
         $this->getEntityManager()->refresh($bankPaymentAccount);
 
@@ -198,33 +208,45 @@ class SourcesCase extends BaseTestCase
         $this->assertNotEmpty($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be exist');
 
         $createdPaymentAccount = $this->prepareFixturesAciCollectPay($tenant);
+        $id = $createdPaymentAccount->getId();
+
+        sleep(3);
 
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
-        $this->assertNotEmpty($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
+        $this->assertNotEmpty(
+            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+            'Should be displayed row with our added payment account'
+        );
+        $this->assertCount(1, $rows, 'Should be only one payment account');
         $rows[0]->clickLink('delete'); // remove last account
+
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+
         $this->page->clickLink('payment_account.delete.yes');
 
         $this->session->wait(
             $this->timeout,
             "jQuery('#payment-account-table').length"
         );
-        $this->assertEmpty($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
-
-        $this->getEntityManager()->refresh($tenant);
-
-        $this->assertCount(
-            0,
-            $tenant->getPaymentAccounts()->filter(
-                function (PaymentAccount $paymentAccount) use ($createdPaymentAccount) {
-                    return $createdPaymentAccount->getId() === $paymentAccount->getId();
-                }
-            ),
-            'Aci payment account should be removed.'
+        $this->assertEmpty(
+            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+            'Should not be displayed any rows (we remove last payment account)'
         );
+
+        $this->getEntityManager()->clear(); // should refresh cache
+
+        $result = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:PaymentAccount')
+            ->find($id);
+        $this->assertTrue(
+            is_null($result),
+            sprintf('Aci payment account "%d" should be removed.', $id)
+        );
+
         $this->logout();
     }
 

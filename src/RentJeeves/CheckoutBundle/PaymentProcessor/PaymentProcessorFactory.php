@@ -55,7 +55,8 @@ class PaymentProcessorFactory
             default:
                 throw new PaymentProcessorInvalidArgumentException(
                     sprintf(
-                        'Unknown processor type for group "%s" with id "%d"',
+                        'Unknown processor type "%s" for group "%s" with id "%d"',
+                        $group->getGroupSettings()->getPaymentProcessor(),
                         $group->getName(),
                         $group->getId()
                     )
@@ -80,8 +81,10 @@ class PaymentProcessorFactory
             default:
                 throw new PaymentProcessorInvalidArgumentException(
                     sprintf(
-                        'Unknown processor type for payment account "%s"',
-                        $paymentAccount->getName()
+                        'Unknown processor type "%s" for payment account "%s" with id = "%d"',
+                        $paymentAccount->getPaymentProcessor(),
+                        $paymentAccount->getName(),
+                        $paymentAccount->getId()
                     )
                 );
         }
