@@ -1298,7 +1298,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack">
                 <source>popup.invite.tenant.credittrack</source>
-                <target>CreditTrack</target>
+                <target>ScoreTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -1339,6 +1339,10 @@
             <trans-unit id="popup.tenant.build.credit.history">
                 <source>popup.tenant.build.credit.history</source>
                 <target>Build Credit History</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.credit_profile_and_analysis_updates">
+                <source>popup.tenant.credit_profile_and_analysis_updates</source>
+                <target>Credit Profile &amp; Analysis Updates</target>
             </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
@@ -2361,7 +2365,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.title">
                 <source>credittrack.pay.title</source>
-                <target>Sign up for CreditTrack</target>
+                <target>Sign up for ScoreTrack</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.edit.title">
                 <source>credittrack.pay.edit.title</source>
@@ -2883,13 +2887,17 @@
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
             </trans-unit>
+            <trans-unit id="credit_score.title">
+                            <source>credit_score.title</source>
+                            <target>Your Vantage Score</target>
+                        </trans-unit>
             <trans-unit id="credittrack.teaser.link">
                 <source>credittrack.teaser.link</source>
-                <target>Enroll in &lt;span class="highlight"&gt;CreditTrack&lt;/span&gt; to get monthly updates.</target>
+                <target>Enroll in &lt;span class="highlight"&gt;ScoreTrack&lt;/span&gt;&lt;br /&gt; to get monthly updates.</target>
             </trans-unit>
             <trans-unit id="credittrack.active.message">
                 <source>credittrack.active.message</source>
-                <target>Enrolled in CreditTrack</target>
+                <target>Enrolled in ScoreTrack</target>
             </trans-unit>
             <trans-unit id="tenant.no_balance.alert">
                 <source>tenant.no_balance.alert</source>

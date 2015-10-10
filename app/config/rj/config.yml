@@ -52,7 +52,7 @@ parameters:
     tenant_payment_per_month_dollars: 1
     tenant_payment_per_month_cents: 95
     credittrack_payment_per_month_currency: $
-    credittrack_payment_per_month_dollars: 9
+    credittrack_payment_per_month_dollars: 3
     credittrack_payment_per_month_cents: 95
     credittrack_payment_per_month: %credittrack_payment_per_month_dollars%.%credittrack_payment_per_month_cents%
     landlord_monthly_minimum: $9.95
@@ -117,6 +117,8 @@ twig:
         landlord_per_screen: %landlord_per_screen%
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
+        features:
+            allow_score_track: %allow_score_track%
         
 stof_doctrine_extensions:
     class:

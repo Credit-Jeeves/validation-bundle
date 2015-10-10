@@ -14,10 +14,7 @@
                 <div class="table-cell info-cell">
                     <div class="info-title pie-el">{{ 'popup.invite.tenant.credittrack' | trans() }}</div>
                     <div class="info-content">
-                        <sup>$</sup>{{ credittrack_payment_per_month_dollars }}
-                        <sup>
-                            {{ credittrack_payment_per_month_cents }}/{{ 'popup.invite.tenant.per_month' | trans() }}
-                        </sup>
+                        <sup>$</sup>{{ credittrack_payment_per_month_dollars }}<sup>{{ credittrack_payment_per_month_cents }}/{{ 'popup.invite.tenant.per_month' | trans() }}</sup>
                     </div>
                 </div>
             </li>
@@ -26,10 +23,16 @@
                 <div class="table-cell th">{{ 'popup.tenant.get.first.free' | trans() }}</div>
                 <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
             </li>
+            {# TODO ask about this row and vendors #}
+            {#<li>#}
+                {#<div class="table-cell th-cell">{{ 'popup.tenant.view.experian' | trans() }}</div>#}
+                {#<div class="table-cell th"></div>#}
+                {#<div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>#}
+            {#</li>#}
             <li>
-                <div class="table-cell th-cell">{{ 'popup.tenant.view.experian' | trans() }}</div>
-                <div class="table-cell th"></div>
-                <div class="table-cell th">{{ 'popup.tenant.credittrack.monthly' | trans() }}</div>
+                <div class="table-cell th-cell">{{ 'popup.tenant.credit_profile_and_analysis_updates' | trans() }}</div>
+                <div class="table-cell"></div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.tenant.pay.e-check' | trans() }}</div>

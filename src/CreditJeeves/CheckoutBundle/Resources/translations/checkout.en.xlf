@@ -159,15 +159,17 @@
             </trans-unit>
             <trans-unit id="credittrack.box.title">
                 <source>credittrack.box.title</source>
-                <target>Track Your Progress</target>
+                <target>Track Your Credit</target>
             </trans-unit>
             <trans-unit id="credittrack.box.message">
                 <source>credittrack.box.message</source>
-                <target>Online Monthly Credit Reports and Scores from Experian</target>
+                <target>We'll update your Vantage 3.0 score monthly.
+                We'll also refresh your credit profile, rank, and analysis every six months.
+                </target>
             </trans-unit>
             <trans-unit id="credittrack.buy.link">
                 <source>credittrack.buy.link</source>
-                <target>Learn More</target>
+                <target>Sing Up</target>
             </trans-unit>
             <trans-unit id="credittrack.promo.amount">
                 <source>credittrack.promo.amount</source>
@@ -177,7 +179,7 @@
             </trans-unit>
             <trans-unit id="credittrack.box.note">
                 <source>credittrack.box.note</source>
-                <target>CreditTrack&#8482;</target>
+                <target>ScoreTrack&#8482;</target>
             </trans-unit>
         </body>
     </file>
