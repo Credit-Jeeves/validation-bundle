@@ -2385,7 +2385,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.confirm">
                 <source>credittrack.pay.confirm</source>
-                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
+                <target>Bill me $%amount% each month for ScoreTrack starting today until cancelled.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.amount">
                 <source>credittrack.pay.amount</source>

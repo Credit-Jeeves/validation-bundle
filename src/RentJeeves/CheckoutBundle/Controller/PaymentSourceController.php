@@ -122,17 +122,31 @@ class PaymentSourceController extends Controller
 
         try {
             $contractId = $paymentAccountType->get('contractId')->getData();
+            $groupId = $request->get('group_id');
             $depositAccountType = $request->get('deposit_account_type', DepositAccountType::RENT);
+
             if ($contractId) {
                 /** @var Contract $contract */
                 $contract = $this->getDoctrine()
                     ->getRepository('RjDataBundle:Contract')
                     ->find($contractId);
+                $group = $contract->getGroup();
+                $tenant = $contract->getTenant();
+            } elseif ($groupId) {
+                $group = $this->getDoctrine()
+                    ->getRepository('DataBundle:Group')
+                    ->find($groupId);
+                $tenant = $this->getUser();
             }
-            if (empty($contract)) {
-                throw new \Exception('Contract is undefined.');
+            if (empty($contract) && empty($group)) {
+                throw new \Exception('Contract and Group are undefined.');
             }
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract, $depositAccountType);
+            $paymentAccountEntity = $this->savePaymentAccount(
+                $paymentAccountType,
+                $group,
+                $tenant,
+                $depositAccountType
+            );
         } catch (\Exception $e) {
             return new JsonResponse([
                 $paymentAccountType->getName() => [

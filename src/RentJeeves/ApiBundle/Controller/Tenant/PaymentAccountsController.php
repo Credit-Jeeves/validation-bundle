@@ -248,7 +248,7 @@ class PaymentAccountsController extends Controller
             $contract = $form->get('contract_url')->getData();
             try {
                 if ($this->isNewPaymentAccount($entity)) {
-                    $this->savePaymentAccount($form, $contract);
+                    $this->savePaymentAccount($form, $contract->getGroup(), $contract->getTenant());
                 } else {
                     $this->updatePaymentAccount($form);
                 }
