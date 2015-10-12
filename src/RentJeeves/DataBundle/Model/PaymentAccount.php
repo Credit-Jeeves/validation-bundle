@@ -113,7 +113,6 @@ abstract class PaymentAccount
      *      type="string",
      *      length=255
      * )
-     * @Serializer\Groups({"basic"});
      */
     protected $token;
 
@@ -123,7 +122,8 @@ abstract class PaymentAccount
      *      type="date",
      *      nullable=true
      * )
-     * @Serializer\Groups({"paymentAccounts"});
+     * @Serializer\Type("DateTime<'Y-m-d'>");
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $ccExpiration;
 
@@ -151,7 +151,6 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Groups({"basic"});
      */
     protected $updatedAt;
 
