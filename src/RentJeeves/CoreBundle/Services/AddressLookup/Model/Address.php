@@ -9,21 +9,21 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $country;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $state;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $city;
 
@@ -35,50 +35,49 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $street;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $number;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
      */
     protected $zip;
 
     /**
      * @var string using for GeoCoder
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"GoogleAddress"})
      */
     protected $jb;
 
     /**
      * @var string using for GeoCoder
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"GoogleAddress"})
      */
     protected $kb;
 
     /**
      * @var string using for SS
-     */
-    protected $index;
-
-    /**
-     * @var string using for SS
+     *
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $latitude;
 
     /**
      * @var string using for SS
+     *
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $longitude;
 

@@ -1,0 +1,130 @@
+<?php
+
+namespace RentJeeves\CoreBundle\Services\AddressLookup;
+
+use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
+use RentTrack\SmartyStreetsBundle\Model\SmartyStreetsAddress;
+use RentTrack\SmartyStreetsBundle\SmartyStreetsClient;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ValidatorInterface;
+
+class SmartyStreetsAddressLookupService implements AddressLookupInterface
+{
+    const DEFAULT_COUNTRY = 'US';
+
+    /**
+     * @var SmartyStreetsClient
+     */
+    protected $smartyStreetsClient;
+
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param SmartyStreetsClient $ssClient
+     * @param ValidatorInterface $validator
+     * @param LoggerInterface $logger
+     */
+    public function __construct(SmartyStreetsClient $ssClient, ValidatorInterface $validator, LoggerInterface $logger)
+    {
+        $this->smartyStreetsClient = $ssClient;
+        $this->validator = $validator;
+        $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function lookup($street, $city, $state, $zipCode)
+    {
+        try {
+            $this->logger->debug(
+                sprintf(
+                    '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s)',
+                    $street,
+                    $city,
+                    $state,
+                    $zipCode
+                )
+            );
+            $result = $this->smartyStreetsClient->getAddress($street, $city, $state, $zipCode);
+        } catch (SmartyStreetsException $e) {
+            $this->logger->debug(
+                $message = sprintf(
+                    '[SmartyStreetsAddressLookupService] Address not found : %s',
+                    $e->getMessage()
+                )
+            );
+            throw new AddressLookupException($message);
+        }
+
+        $address = $this->mapResponseToAddress($result);
+        $errors = $this->validate($address);
+        if (false === empty($errors)) {
+            $this->logger->debug(
+                $message = sprintf(
+                    '[SmartyStreetsAddressLookupService] SmartyStreets returned invalid address : %s',
+                    implode(', ', $errors)
+                )
+            );
+            throw new AddressLookupException($message);
+        }
+
+        return $address;
+    }
+
+    /**
+     * @param SmartyStreetsAddress $ssAddress
+     *
+     * @return Address
+     */
+    protected function mapResponseToAddress(SmartyStreetsAddress $ssAddress)
+    {
+        $addressMetadata = $ssAddress->getMetadata();
+        $addressComponents = $ssAddress->getComponents();
+        $address = new Address();
+        $address->setLatitude($addressMetadata->getLatitude());
+        $address->setLongitude($addressMetadata->getLongitude());
+        $address->setNumber($addressComponents->getPrimaryNumber());
+        $address->setStreet($addressComponents->getStreetName() . ' ' . $addressComponents->getStreetSuffix());
+        $address->setZip($addressComponents->getZipcode());
+        $address->setCity($addressComponents->getCityName());
+        $address->setCountry(self::DEFAULT_COUNTRY);
+        $address->setState($addressComponents->getStateAbbreviation());
+
+        return $address;
+    }
+
+    /**
+     * @param Address $address
+     *
+     * @return array
+     */
+    protected function validate(Address $address)
+    {
+        $errors = [];
+        /** @var ConstraintViolation $error */
+        $validatorErrors = $this->validator->validate($address, ['SmartyStreetsAddress']);
+        if ($validatorErrors->count() > 0) {
+            foreach ($validatorErrors as $error) {
+                $errors[] = sprintf(
+                    '%s : %s',
+                    $error->getPropertyPath(),
+                    $error->getMessage()
+                );
+            }
+        }
+
+        return $errors;
+    }
+}
