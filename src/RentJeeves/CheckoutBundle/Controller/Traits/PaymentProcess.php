@@ -51,6 +51,28 @@ trait PaymentProcess
     }
 
     /**
+     * @param Form $paymentAccountType
+     * @return PaymentAccount
+     */
+    protected function updatePaymentAccount(Form $paymentAccountType)
+    {
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $paymentAccountType->getData();
+
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this
+            ->get('payment_processor.factory')
+            ->getPaymentProcessorByPaymentAccount($paymentAccount);
+
+        /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
+        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+
+        $paymentProcessor->modifyPaymentAccount($paymentAccountMapped);
+
+        return $paymentAccountMapped->getEntity();
+    }
+
+    /**
      * Creates a new billing account, so a landlord can pay RentTrack.
      *
      * @param  Form     $billingAccountType

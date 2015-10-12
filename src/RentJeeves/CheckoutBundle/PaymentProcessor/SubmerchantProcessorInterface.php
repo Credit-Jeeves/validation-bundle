@@ -7,6 +7,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 interface SubmerchantProcessorInterface
@@ -28,6 +29,22 @@ interface SubmerchantProcessorInterface
     public function registerPaymentAccount(
         AccountData $accountData,
         DepositAccount $depositAccount
+    );
+
+    /**
+     * @param AccountData $accountData
+     * @return bool if true, then success, else a failure occurred.
+     */
+    public function modifyPaymentAccount(
+        AccountData $accountData
+    );
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     * @return bool if true, then success, else a failure occurred.
+     */
+    public function unregisterPaymentAccount(
+        PaymentAccount $paymentAccount
     );
 
     /**

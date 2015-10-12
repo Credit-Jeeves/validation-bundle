@@ -3,7 +3,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -60,10 +60,23 @@ class SourcesController extends Controller
         if (empty($paymentAccount) || $this->getUser()->getId() != $paymentAccount->getUser()->getId()) {
             throw $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
-        $em->remove($paymentAccount);
-        $em->flush($paymentAccount);
 
-        return $this->redirect($request->headers->get('referer'));
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this
+            ->get('payment_processor.factory')
+            ->getPaymentProcessorByPaymentAccount($paymentAccount);
+
+        if ($paymentProcessor->unregisterPaymentAccount($paymentAccount)) {
+            return $this->redirect($request->headers->get('referer'));
+        }
+
+        throw new \RuntimeException(
+            sprintf(
+                'Can\'t remove payment account "%s" with id #%d',
+                $paymentAccount->getName(),
+                $paymentAccount->getId()
+            )
+        );
     }
 
     /**
@@ -98,47 +111,28 @@ class SourcesController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
-        // TODO: deal with multiple groups
-        $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
-
         try {
-            // We can use any contract of this group
-            // because profile already created for aci_collect_pay
-            $contract = $this->getUser()->getContracts()->filter(
-                function (Contract $entry) use ($group) {
-                    return $entry->getGroup()->getId() === $group->getId();
-                }
-            )->first();
-
-            if (!$contract) {
-                throw new \RuntimeException('Contract for this Payment Source doesn\'t exist.');
-            }
-
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
+            $paymentAccountEntity = $this->updatePaymentAccount($paymentAccountType);
         } catch (\Exception $e) {
-            return new JsonResponse(
-                array(
-                    $paymentAccountType->getName() => array(
-                        '_globals' => explode('|', $e->getMessage())
-                    )
-                )
-            );
+            return new JsonResponse([
+                $paymentAccountType->getName() => [
+                    '_globals' => explode('|', $e->getMessage())
+                ]
+            ]);
         }
 
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'paymentAccount' => $this->get('jms_serializer')->serialize(
-                    $paymentAccountEntity,
-                    'array',
-                    SerializationContext::create()->setGroups(array('basic'))
-                ),
-                'newAddress' => $this->hasNewAddress($paymentAccountType) ?
-                    $this->get('jms_serializer')->serialize(
-                        $paymentAccountEntity->getAddress(),
-                        'array'
-                    ) : null
-            )
-        );
+        return new JsonResponse([
+            'success' => true,
+            'paymentAccount' => $this->get('jms_serializer')->serialize(
+                $paymentAccountEntity,
+                'array',
+                SerializationContext::create()->setGroups(['basic'])
+            ),
+            'newAddress' => $this->hasNewAddress($paymentAccountType) ?
+                $this->get('jms_serializer')->serialize(
+                    $paymentAccountEntity->getAddress(),
+                    'array'
+                ) : null
+        ]);
     }
 }
