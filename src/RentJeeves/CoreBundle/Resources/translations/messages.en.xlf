@@ -1312,10 +1312,6 @@
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
             </trans-unit>
-            <trans-unit id="popup.tenant.view.experian">
-                <source>popup.tenant.view.experian</source>
-                <target>View Your Experian Credit Report</target>
-            </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
                 <target>First One Free</target>
@@ -1355,10 +1351,6 @@
             <trans-unit id="popup.tenant.safeguards">
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
-            </trans-unit>
-            <trans-unit id="popup.tenant.prequalified.offers">
-                <source>popup.tenant.prequalified.offers</source>
-                <target>Pre-Qualified Credit Offers</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>

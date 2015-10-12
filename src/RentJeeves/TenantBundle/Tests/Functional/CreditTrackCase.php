@@ -4,11 +4,7 @@ namespace RentJeeves\TenantBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-/**
- * Tests CreditTrack code from the tenant's perspective
- * extends BaseTestCase //TODO return it back when CreditTrack will be on place
- */
-class CreditTrackCase
+class CreditTrackCase extends BaseTestCase
 {
     protected function enterSignupFlow()
     {

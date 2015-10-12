@@ -9,6 +9,8 @@ parameters:
 
     payment_one_time_until_value: '00:01'
 
+    allow_score_track: true
+
     credit_services:
         credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
 
