@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyRepository extends EntityRepository
@@ -11,8 +12,8 @@ class PropertyRepository extends EntityRepository
     public function getDuplicateProperties()
     {
         $query = $this->createQueryBuilder('property')
-                ->select(
-                    '
+            ->select(
+                '
                     property.id,
                     property.zip,
                     property.number,
@@ -21,17 +22,17 @@ class PropertyRepository extends EntityRepository
                     COUNT(property.number) AS number_c,
                     COUNT(property.zip) AS zip_c
                     '
-                )
-                ->groupBy(
-                    'property.street',
-                    'property.number',
-                    'property.zip'
-                )
-                ->having(
-                    'street_c > 1
+            )
+            ->groupBy(
+                'property.street',
+                'property.number',
+                'property.zip'
+            )
+            ->having(
+                'street_c > 1
                     AND number_c > 1
                     AND zip_c > 1'
-                );
+            );
 
         $query = $query->getQuery();
 
@@ -112,8 +113,8 @@ EOT;
             $searchBy = $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
             foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
+                $query->andWhere($searchBy . ' LIKE :search');
+                $query->setParameter('search', '%' . $item . '%');
             }
         }
         $query = $query->getQuery();
@@ -139,8 +140,8 @@ EOT;
             $searchBy = $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
             foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
+                $query->andWhere($searchBy . ' LIKE :search');
+                $query->setParameter('search', '%' . $item . '%');
             }
         }
         if ($isSortAsc) {
@@ -148,7 +149,7 @@ EOT;
         } else {
             $order = 'DESC';
         }
-        $query->orderBy('p.'.$sort, $order);
+        $query->orderBy('p.' . $sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
@@ -167,7 +168,7 @@ EOT;
                 $searchBy = 'CONCAT(p.street, p.number)';
                 break;
             default:
-                $searchBy = 'p.'.$searchBy;
+                $searchBy = 'p.' . $searchBy;
         }
 
         return $searchBy;
@@ -201,7 +202,7 @@ EOT;
     public function findOneWithUnitAndAlphaNumericSort($propertyId)
     {
         $query = $this->createQueryBuilder('p')
-                      ->select('LENGTH(unit.name) as co,p,unit');
+            ->select('LENGTH(unit.name) as co,p,unit');
         $query->leftJoin('p.units', 'unit');
         $query->where('p.id = :propertyId');
         $query->setParameter('propertyId', $propertyId);
@@ -365,5 +366,36 @@ EOT;
         $query->setParameter('externalPropertyId', $externalPropertyId);
 
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Address $address
+     *
+     * @return Property
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneByAddress(Address $address)
+    {
+        $query = $this->createQueryBuilder('p');
+        if ($address->getJb() !== null && $address->getKb() !== null) {
+            $query
+                ->where('p.jb = :jb AND p.kb = :kb')
+                ->setParameter('jb', $address->getJb())
+                ->setParameter('kb', $address->getKb());
+        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
+            $query
+                ->where('p.lat = :lat AND p.long = :long')
+                ->setParameter('lat', $address->getLatitude())
+                ->setParameter('long', $address->getLongitude());
+        } else {
+            throw new \LogicException('Address doesn`t have data about location');
+        }
+
+        return $query
+            ->andWhere('p.number = :number')
+            ->setParameter('number', $address->getNumber())
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

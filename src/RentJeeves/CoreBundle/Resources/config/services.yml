@@ -83,3 +83,9 @@ services:
             - @doctrine.orm.default_entity_manager
             - @aci_enrollment_file_deserializer
             - @validator
+
+    google_autocomplete_address_converter:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
+        arguments:
+            - @validator
+            - @logger
