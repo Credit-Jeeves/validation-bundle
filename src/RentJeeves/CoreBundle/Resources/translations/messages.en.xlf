@@ -1997,8 +1997,8 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-            <trans-unit id="property.number.not.exist">
-                <source>property.number.not.exist</source>
+            <trans-unit id="property.address_not_found">
+                <source>property.address_not_found</source>
                 <target>Address not found. Please try again.</target>
             </trans-unit>
             <trans-unit id="direct_deposit.info">

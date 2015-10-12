@@ -36,8 +36,8 @@ class GoogleAutocompleteAddressConverter
     {
         $data = json_decode($jsonData, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->logger->debug($message =
-                sprintf(
+            $this->logger->debug(
+                $message = sprintf(
                     '[GoogleAutocompleteAddressConverter] Invalid JSON : %s',
                     $jsonData
                 )

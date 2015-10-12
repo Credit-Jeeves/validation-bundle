@@ -272,7 +272,14 @@ class AjaxController extends Controller
         try {
             $address = $this->getGoogleAutocompleteAddressConverter()->convert($data['data']);
         } catch (\InvalidArgumentException $e) {
-            return new JsonResponse(['status' => 'ERROR', 'message' => $e->getMessage()]);
+            $this->get('logger')->debug($e->getMessage());
+
+            return new JsonResponse(
+                [
+                    'status' => 'ERROR',
+                    'message' => $this->get('translator')->trans('property.address_not_found')
+                ]
+            );
         }
 
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findOneByAddress($address);
@@ -294,7 +301,7 @@ class AjaxController extends Controller
         }
 
         $isLogin = $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY');
-        $isLandlord = $isLogin && $this->getUser()->getType() == UserType::LANDLORD;
+        $isLandlord = false;
         if ($isLogin) {
             $isLandlord = $this->getUser()->getType() == UserType::LANDLORD;
         }
@@ -303,7 +310,7 @@ class AjaxController extends Controller
         if ($isLandlord && $group && $addGroup && !$group->getGroupProperties()->contains($property)) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
-            if ($request->request->get('isSingle', false)) {
+            if ('true' === $request->request->get('isSingle', false)) {
                 $this->getPropertyProcess()->setupSingleProperty($property, ['doFlush' => false]);
             }
 
