@@ -5,7 +5,8 @@ namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\GroupType;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
@@ -20,9 +21,9 @@ use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingExcepti
 class GroupMapper extends AbstractMapper
 {
     /**
-     * @var PropertyProcess
+     * @var AddressLookupInterface
      */
-    protected $propertyProcess;
+    protected $addressLookupService;
 
     /**
      * @see parameter paydirect_fee_cc
@@ -43,12 +44,12 @@ class GroupMapper extends AbstractMapper
     protected $defaultDivisionId;
 
     /**
-     * @param PropertyProcess $propertyProcess
+     * @param AddressLookupInterface $addressLookupService
      * @param array $defaultParams
      */
-    public function __construct(PropertyProcess $propertyProcess, array $defaultParams = [])
+    public function __construct(AddressLookupInterface $addressLookupService, array $defaultParams = [])
     {
-        $this->propertyProcess = $propertyProcess;
+        $this->addressLookupService = $addressLookupService;
 
         $this->defaultFeeCC = isset($defaultParams['fee_cc']) ? $defaultParams['fee_cc'] : 0.0;
         $this->defaultFeeACH = isset($defaultParams['fee_ach']) ? $defaultParams['fee_ach'] : 0.0;
@@ -70,8 +71,11 @@ class GroupMapper extends AbstractMapper
         if (false === $this->isValidAddress()) {
             throw new MappingException(
                 sprintf(
-                    '[Mapping] : Address (%s) is not found by PropertyProcess',
-                    $this->getAddress()
+                    '[Mapping] : Address (%s, %s, %s, %s) is not found by AddressLookupService',
+                    $this->get('ll_address'),
+                    $this->get('ll_city'),
+                    $this->get('ll_state'),
+                    $this->get('ll_zipcode')
                 )
             );
         }
@@ -176,7 +180,18 @@ class GroupMapper extends AbstractMapper
      */
     protected function isValidAddress()
     {
-        return $this->propertyProcess->getGoogleGeocode($this->getAddress()) === false ? false : true;
+        try {
+            $this->addressLookupService->lookup(
+                $this->get('ll_address'),
+                $this->get('ll_city'),
+                $this->get('ll_state'),
+                $this->get('ll_zipcode')
+            );
+
+            return true;
+        } catch (AddressLookupException $e) {
+            return false;
+        }
     }
 
     /**

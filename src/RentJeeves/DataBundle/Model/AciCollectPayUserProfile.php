@@ -127,7 +127,7 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @return ArrayCollection|AciCollectPayProfileBilling[]
+     * @return ArrayCollection|AciCollectPayProfileBillingEntity[]
      */
     public function getAciCollectPayProfileBillings()
     {

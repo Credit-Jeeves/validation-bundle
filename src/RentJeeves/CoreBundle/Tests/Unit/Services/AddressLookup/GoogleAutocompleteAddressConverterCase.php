@@ -40,7 +40,7 @@ class GoogleAutocompleteAddressConverterCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException \RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException
      */
     public function shouldThrowExceptionIfJsonDoesntHaveGoogleLocation()
     {
@@ -53,15 +53,14 @@ class GoogleAutocompleteAddressConverterCase extends BaseTestCase
             {"long_name":"New York County","short_name":"New York County",
             "types":["administrative_area_level_2","political"]},{"long_name":"New York","short_name":"NY",
             "types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US",
-            "types":["country","political"]},{"long_name":"10013","short_name":"10013","types":["postal_code"]}],
-            }';
+            "types":["country","political"]},{"long_name":"10013","short_name":"10013","types":["postal_code"]}]}';
 
         $this->getGoogleAutocompleteAddressConverter()->convert($json);
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException \RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException
      */
     public function shouldThrowExceptionIfJsonDoesntHaveZipCode()
     {

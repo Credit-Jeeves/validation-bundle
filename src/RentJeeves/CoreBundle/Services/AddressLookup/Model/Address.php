@@ -9,21 +9,21 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $country;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $state;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $city;
 
@@ -35,35 +35,35 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $street;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $number;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $zip;
 
     /**
      * @var string using for GeoCoder
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $jb;
 
     /**
      * @var string using for GeoCoder
      *
-     * @Assert\NotBlank(groups={"Address", "GoogleAutocompleteAddress"})
+     * @Assert\NotBlank(groups={"Address", "GoogleAddress"})
      */
     protected $kb;
 
