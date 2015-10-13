@@ -2880,9 +2880,9 @@
                 <target>Include Transactions from All Groups</target>
             </trans-unit>
             <trans-unit id="credit_score.title">
-                            <source>credit_score.title</source>
-                            <target>Your Vantage Score</target>
-                        </trans-unit>
+                <source>credit_score.title</source>
+                <target>Your Vantage Score</target>
+            </trans-unit>
             <trans-unit id="credittrack.teaser.link">
                 <source>credittrack.teaser.link</source>
                 <target>Enroll in &lt;span class="highlight"&gt;ScoreTrack&lt;/span&gt;&lt;br /&gt; to get monthly updates.</target>
@@ -2936,7 +2936,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.cancel.title">
                 <source>settings.plans.cancel.title</source>
-                <target>Cancel CreditTrack</target>
+                <target>Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.text">
                 <source>settings.plans.cancel.text</source>
@@ -2946,7 +2946,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.cancel.yes">
                 <source>settings.plans.cancel.yes</source>
-                <target>Yes, Cancel CreditTrack</target>
+                <target>Yes, Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.no">
                 <source>settings.plans.cancel.no</source>
