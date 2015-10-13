@@ -51,19 +51,19 @@ services:
         tags:
             - { name: jms_serializer.serialization_visitor, format: csv_pipe }
 
-    deposit_account.repository:
+    merchant_account.repository:
         class: Doctrine\ORM\EntityRepository
         factory_service: doctrine.orm.default_entity_manager
         factory_method: getRepository
         arguments:
-            - RentJeeves\DataBundle\Entity\DepositAccount
+            - RentJeeves\DataBundle\Entity\MerchantAccountMigration
 
     aci_profiles_mapper:
         class: RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper
         public: false
         arguments:
             - %aci.collect_pay.business_id%
-            - @deposit_account.repository
+            - @merchant_account.repository
 
     aci_profiles_exporter:
         class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvExporter
