@@ -158,6 +158,8 @@ class PropertyProcess
     }
 
     /**
+     * @deprecated Don`t use it PLS
+     *
      * @param array $params
      *
      * @return null|object

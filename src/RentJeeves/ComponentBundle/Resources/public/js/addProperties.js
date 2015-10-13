@@ -47,15 +47,14 @@ function addProperties()
         }
 
         self.singlePropertyErrorMessage('');
-        var googleData = self.google().data;
-        googleData.addGroup = 1;
         jQuery.ajax({
             url: Routing.generate('landlord_property_add'),
             type: 'POST',
             dataType: 'json',
             data: {
                 'data': JSON.stringify(self.google().data, null),
-                'isSingle': self.isSingle()
+                'isSingle': self.isSingle(),
+                'addGroup': true
             },
             error: function(data) {
                 var content = JSON.parse(data.responseText);

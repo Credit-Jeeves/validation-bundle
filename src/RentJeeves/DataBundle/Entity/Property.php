@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
@@ -34,78 +35,6 @@ class Property extends Base
     public function getShrinkAddress($length = ShorteningAddressUtility::MAX_LENGTH)
     {
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress(), $length);
-    }
-
-    public function parseGoogleAddress($data)
-    {
-        $property = array();
-        if (isset($data['address'])) {
-            $address = $data['address'];
-            foreach ($address as $details) {
-                if (isset($details['types'])) {
-                    $types = $details['types'];
-                    if (in_array('postal_code', $types)) {
-                        $property['zip'] = $details['long_name'];
-                    }
-                    if (in_array('country', $types)) {
-                        $property['country'] = $details['short_name'];
-                    }
-                    if (in_array('administrative_area_level_1', $types)) {
-                        $property['area'] = $details['short_name'];
-                    }
-                    if (in_array('locality', $types)) {
-                        $property['city'] = $details['long_name'];
-                    }
-                    if (in_array('sublocality', $types)) {
-                        $property['district'] = $details['long_name'];
-                    }
-                    if (in_array('route', $types)) {
-                        $property['street'] = $details['long_name'];
-                    }
-                    if (in_array('street_number', $types)) {
-                        $property['number'] = $details['long_name'];
-                    }
-                }
-            }
-            if (empty($property['city']) && !empty($property['district'])) {
-                $property['city'] = $property['district'];
-                unset($property['district']);
-            }
-        }
-
-        return $property;
-    }
-
-    /**
-     *  jb = latitude, kb = longitude
-     *
-     * @param $data
-     * @return mixed
-     * @throws \Exception
-     */
-    public function parseGoogleLocation($data)
-    {
-        if (isset($data['geometry']['location'])) {
-            $location = $data['geometry']['location'];
-
-            if (count($location) == 2) {
-                $property['jb'] = reset($location);
-                $property['kb'] = end($location);
-            } else {
-                throw new \Exception("Unknown location from google", 1);
-            }
-        }
-
-        return $property;
-    }
-
-    public function fillPropertyData(array $details)
-    {
-        foreach ($details as $key => $value) {
-            $this->{$key} = $value;
-        }
-
-        return $this;
     }
 
     public function getItem($group = null)
@@ -322,5 +251,24 @@ class Property extends Base
         }
 
         return null;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddressFields(Address $address)
+    {
+        $this->setCountry($address->getCountry());
+        $this->setArea($address->getState());
+        $this->setCity($address->getCity());
+        $this->setDistrict($address->getDistrict());
+        $this->setStreet($address->getStreet());
+        $this->setNumber($address->getNumber());
+        $this->setZip($address->getZip());
+        $this->setJb($address->getJb());
+        $this->setKb($address->getKb());
+        $this->setLat($address->getLatitude());
+        $this->setLong($address->getLongitude());
+        $this->setIndex($address->getIndex());
     }
 }
