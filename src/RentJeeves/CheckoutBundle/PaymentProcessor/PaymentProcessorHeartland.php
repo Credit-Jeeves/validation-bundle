@@ -66,7 +66,7 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         AccountData $accountData,
         DepositAccount $depositAccount
     ) {
-        $this->paymentAccountManager->registerPaymentToken($accountData, $depositAccount);
+        $this->paymentAccountManager->registerPaymentToken($accountData, $depositAccount->getMerchantName());
 
         return true;
     }

@@ -202,7 +202,7 @@ abstract class PaymentAccount
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant",
      *      mappedBy="paymentAccount",
-     *      cascade={"persist", "remove", "merge"}
+     *      cascade={"persist", "merge"}
      * )
      * @var ArrayCollection
      */

@@ -19,7 +19,6 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicEx
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use RentJeeves\DataBundle\Enum\BankAccountType;
@@ -30,7 +29,7 @@ use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\DataBundle\Model\PaymentAccountHpsMerchant;
+use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant;
 use RuntimeException;
 
 class PaymentAccountManager
@@ -142,7 +141,8 @@ class PaymentAccountManager
         /** @var PaymentAccountHpsMerchant $merchant */
         foreach ($paymentAccount->getHpsMerchants() as $merchant) {
             $merchantName = $merchant->getMerchantName();
-            $paymentAccount->removeHpsMerchant($merchant);
+            $this->em->remove($merchant);
+            $this->em->flush();
             $this->registerPaymentToken($paymentAccountData, $merchantName);
         }
     }

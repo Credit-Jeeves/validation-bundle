@@ -35,7 +35,7 @@ class PaymentAccountHpsMerchant
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
      *     inversedBy="hpsMerchants",
-     *     cascade={"persist", "remove"}
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="payment_account_id", referencedColumnName="id")
      *
