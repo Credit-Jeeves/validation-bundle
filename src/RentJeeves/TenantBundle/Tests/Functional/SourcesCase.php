@@ -13,7 +13,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -427,105 +426,6 @@ class SourcesCase extends BaseTestCase
 
         //Check email notify landlord about removed contract by tenant
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
-    }
-
-    /**
-     * @test
-     * Active contracts mean not finished and not deleted contracts
-     */
-    public function shouldShowJustActivePaymentSources()
-    {
-        $this->setDefaultSession('goutte');
-        $this->load(true);
-        /** @var Tenant $tenant */
-        $tenant = $this->getEntityManager()
-            ->getRepository('RjDataBundle:Tenant')
-            ->findOneBy(['email' => 'tenant11@example.com']);
-        $this->assertNotEmpty($tenant);
-        $this->getEntityManager()->getConnection()->exec(
-            sprintf(
-                'UPDATE rj_contract SET status = "%s" WHERE tenant_id = %d',
-                ContractStatus::DELETED,
-                $tenant->getId()
-            )
-        );
-        $paymentAccounts = $tenant->getPaymentAccounts();
-        $this->assertCount(3, $paymentAccounts, 'Please check fixtures, tenant should have 3 payment accounts');
-
-        $this->login('tenant11@example.com', 'pass');
-        $this->page->clickLink('rent.sources');
-
-        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(
-            0,
-            $rows,
-            'Should display no payment accounts b/c tenant doesn\'t have any active contracts'
-        );
-        /** @var Contract $contract */
-        $contract = $tenant->getContracts()->first();
-        /** @var Contract $contract2 */
-        $contract2 = $tenant->getContracts()->next();
-        $contract->setStatus(ContractStatus::APPROVED);
-        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
-        $this->getEntityManager()->persist($contract);
-        $this->getEntityManager()->flush();
-
-        $this->session->reload();
-
-        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(
-            3,
-            $rows,
-            'Should display 3 payment accounts b/c tenant has 3 heartland payment account like active contracts group'
-        );
-
-        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
-        $this->getEntityManager()->flush();
-
-        $this->session->reload();
-
-        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(
-            0,
-            $rows,
-            'Should display no payment accounts b/c tenant has 3 heartland payment account' .
-            ' but active contract group has aci payment processor'
-        );
-
-        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
-        /** @var PaymentAccount $paymentAccount */
-        $paymentAccount = $paymentAccounts->first();
-        $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $this->getEntityManager()->persist($paymentAccount);
-        $this->getEntityManager()->flush();
-
-        $this->session->reload();
-
-        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(
-            2,
-            $rows,
-            'Should display 2 payment accounts b/c tenant has 2 heartland payment account like active contracts group' .
-            ' and shouldn\'t display 1 aci payment account'
-        );
-
-        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(25);
-        $contract2->setGroup($group);
-        $contract2->setStatus(ContractStatus::PENDING);
-        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
-        $this->getEntityManager()->persist($contract2);
-        $this->getEntityManager()->persist($group);
-        $this->getEntityManager()->flush();
-
-        $this->session->reload();
-
-        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(
-            3,
-            $rows,
-            'Should display 3 payment accounts b/c tenant has 2 heartland payment account like active contracts group' .
-            ' and should display 1 aci payment account like another active contract'
-        );
     }
 
     /**
