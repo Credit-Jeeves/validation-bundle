@@ -72,7 +72,7 @@ class GoogleAutocompleteAddressConverter
                     }
                 }
             }
-            if ($newAddress->getCity() == null && $newAddress != null) {
+            if ($newAddress->getCity() === null && $newAddress->getDistrict() !== null) {
                 $newAddress->setCity($newAddress->getDistrict());
                 $newAddress->setDistrict(null);
             }

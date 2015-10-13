@@ -378,16 +378,16 @@ EOT;
     public function findOneByAddress(Address $address)
     {
         $query = $this->createQueryBuilder('p');
-        if ($address->getJb() !== null && $address->getKb() !== null) {
-            $query
-                ->where('p.jb = :jb AND p.kb = :kb')
-                ->setParameter('jb', $address->getJb())
-                ->setParameter('kb', $address->getKb());
-        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
+        if ($address->getLatitude() !== null && $address->getLongitude() !== null) {
             $query
                 ->where('p.lat = :lat AND p.long = :long')
                 ->setParameter('lat', $address->getLatitude())
                 ->setParameter('long', $address->getLongitude());
+        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
+            $query
+                ->where('p.jb = :jb AND p.kb = :kb')
+                ->setParameter('jb', $address->getJb())
+                ->setParameter('kb', $address->getKb());
         } else {
             throw new \LogicException('Address doesn`t have data about location');
         }
