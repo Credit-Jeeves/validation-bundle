@@ -169,7 +169,7 @@
             </trans-unit>
             <trans-unit id="credittrack.buy.link">
                 <source>credittrack.buy.link</source>
-                <target>Sing Up</target>
+                <target>Sign Up</target>
             </trans-unit>
             <trans-unit id="credittrack.promo.amount">
                 <source>credittrack.promo.amount</source>

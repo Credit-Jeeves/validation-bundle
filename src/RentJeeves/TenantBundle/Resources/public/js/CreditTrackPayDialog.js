@@ -199,7 +199,8 @@ function CreditTrackPayDialog(options) {
 
     if (self.paymentAccounts().length == 0) {
         self.isNewPaymentAccount(true);
-        self.root.showOverlay();
     }
+
+    self.root.showOverlay();
 }
 

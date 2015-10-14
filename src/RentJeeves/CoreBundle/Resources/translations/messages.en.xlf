@@ -2393,7 +2393,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.note">
                 <source>credittrack.pay.note</source>
-                <target>We'll get your latest score and credit report when you complete your payment. You'll be leaving your free credit profile, so we'll no longer show you pre-qualified credit offers.</target>
+                <target>We'll get your latest score and credit report when you complete your payment.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.save">
                 <source>credittrack.pay.save</source>
@@ -2909,7 +2909,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.comment">
                 <source>settings.plans.comment</source>
-                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in report your payments to earn credit.</target>
+                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in to report your payments to earn credit.</target>
             </trans-unit>
             <trans-unit id="settings.plans.label">
                 <source>settings.plans.label</source>
@@ -2932,7 +2932,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.update">
                 <source>settings.plans.update</source>
-                <target>Update plan</target>
+                <target>Update Plan</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.title">
                 <source>settings.plans.cancel.title</source>
