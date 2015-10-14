@@ -2941,7 +2941,7 @@
             <trans-unit id="settings.plans.cancel.text">
                 <source>settings.plans.cancel.text</source>
                 <target>
-                    Are you sure want to cancel monthly updates of your score and credit report?
+                    Are you sure want to cancel monthly updates of your score and credit profile?
                 </target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.yes">

@@ -52,12 +52,6 @@
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
-            {% if features.allow_score_track %}
-                {% if not creditTrackEnabled %}
-                    <div class="row-20"></div>
-                    {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
-                {% endif %}
-            {% endif %}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
             <div class="row-20"></div>
