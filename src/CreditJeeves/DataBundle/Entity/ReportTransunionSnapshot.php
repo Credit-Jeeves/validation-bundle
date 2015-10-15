@@ -16,13 +16,23 @@ class ReportTransunionSnapshot extends Report
 {
     protected $snapshotData;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
+     *     mappedBy="reportTransunionSnapshot",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $operation;
+
     protected function getSnapshotData($snapshotPiece)
     {
         if (!$this->snapshotData) {
             $this->snapshotData = simplexml_load_string($this->getRawData());
         }
 
-        return (string)$this->snapshotData->$snapshotPiece;
+        return (string) $this->snapshotData->$snapshotPiece;
     }
 
     public function getBureauName()

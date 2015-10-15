@@ -3,10 +3,10 @@ namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\DataBundle\Entity\ReportD2c;
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
@@ -16,6 +16,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 class PayCreditTrack
@@ -41,18 +42,26 @@ class PayCreditTrack
     protected $paymentProcessorFactory;
 
     /**
+     * @var string
+     */
+    protected $creditSummaryVendor;
+
+    /**
      * @param OrderCreationManager $orderCreationManager
      * @param OrderStatusManagerInterface $orderStatusManager
      * @param EntityManager $em
+     * @param string $creditSummaryVendor
      */
     public function __construct(
         OrderCreationManager $orderCreationManager,
         OrderStatusManagerInterface $orderStatusManager,
-        EntityManager $em
+        EntityManager $em,
+        $creditSummaryVendor
     ) {
         $this->orderCreationManager = $orderCreationManager;
         $this->orderStatusManager = $orderStatusManager;
         $this->em = $em;
+        $this->creditSummaryVendor = $creditSummaryVendor;
     }
 
     /**
@@ -91,9 +100,9 @@ class PayCreditTrack
             $this->orderStatusManager->setError($order);
         }
 
-        if (OrderStatus::ERROR != $order->getStatus()) {
+        if (OrderStatus::COMPLETE === $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
-            $order->getOperations()->last()->setReportD2c($report);
+            $order->getOperations()->last()->setReportByVendor($this->creditSummaryVendor, $report);
             $job = $this->scheduleReportJob($report);
 
             $this->em->persist($report);
@@ -117,14 +126,24 @@ class PayCreditTrack
     }
 
     /**
-     * Creates a new D2C report.
+     * Creates a new report.
      *
-     * @param  User      $user
-     * @return ReportD2c
+     * @param  User $user
+     * @return ReportPrequal|ReportTransunionSnapshot
+     * @throws \Exception
      */
     protected function createReport(User $user)
     {
-        $report = new ReportD2c();
+        switch ($this->creditSummaryVendor) {
+            case CreditSummaryVendor::TRANSUNION:
+                $report = new ReportTransunionSnapshot();
+                break;
+            case CreditSummaryVendor::EXPERIAN:
+                $report = new ReportPrequal();
+                break;
+            default:
+                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $this->creditSummaryVendor));
+        }
         $report->setUser($user);
         $report->setRawData('');
 

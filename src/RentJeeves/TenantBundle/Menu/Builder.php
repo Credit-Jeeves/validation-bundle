@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\TenantBundle\Menu;
 
-use CreditJeeves\DataBundle\Entity\User;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -9,9 +8,6 @@ class Builder extends ContainerAware
 {
     public function mainMenu(FactoryInterface $factory, array $options)
     {
-        /** @var User $user */
-        $user = $this->container->get('core.session.tenant')->getUser();
-        $isCompleteOrder = $user->getLastCompleteReportOperation();
         $sRoute = $this->container->get('request')->get('_route');
 
         $menu = $factory->createItem('root');
@@ -29,15 +25,6 @@ class Builder extends ContainerAware
             )
         );
 
-        if ($isCompleteOrder) {
-            $menu->addChild(
-                'tabs.report',
-                array(
-                    'route' => 'user_report'
-                )
-            );
-        }
-
         switch ($sRoute) {
             case 'tenant_homepage':
             case 'property_add':
@@ -52,18 +39,9 @@ class Builder extends ContainerAware
             case 'tenant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;
-            case 'core_report_get_d2c':
+            case 'core_report_get_credittrack':
             case 'user_report':
                 $menu['tabs.report']->setAttribute('class', 'active');
-                break;
-            case 'user_password':
-            case 'user_contact':
-            case 'user_email':
-            case 'user_remove':
-            case 'user_addresses':
-            case 'user_address_add_edit':
-            case 'user_address_delete':
-//                $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
 

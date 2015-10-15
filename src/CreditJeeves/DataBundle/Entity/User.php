@@ -11,6 +11,7 @@ use RentJeeves\CoreBundle\Services\SocialSecurityNumberFormatter;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\PartnerUserMapping;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
@@ -463,5 +464,24 @@ abstract class User extends BaseUser
         }
 
         return null;
+    }
+
+    /**
+     * @param $vendor
+     * @return Report
+     * @throws \Exception
+     */
+    public function getLastReportByVendor($vendor)
+    {
+        CreditSummaryVendor::throwsInvalid($vendor);
+
+        switch ($vendor) {
+            case CreditSummaryVendor::TRANSUNION:
+                return $this->getReportsTUSnapshot()->last();
+            case CreditSummaryVendor::EXPERIAN:
+                return $this->getReportsPrequal()->last();
+            default:
+                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
+        }
     }
 }

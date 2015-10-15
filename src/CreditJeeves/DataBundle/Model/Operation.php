@@ -2,6 +2,8 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Order as OrderEntity;
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -114,10 +116,10 @@ abstract class Operation
     protected $order;
 
     /**
-     * @var \CreditJeeves\DataBundle\Entity\ReportD2c
+     * @var ReportTransunionSnapshot
      *
      * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot",
      *     inversedBy="operation"
      * )
      *
@@ -126,11 +128,26 @@ abstract class Operation
      *     referencedColumnName="id"
      * )
      */
-    protected $reportD2c;
+    protected $reportTransunionSnapshot;
+
+    /**
+     * @var ReportPrequal
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
+     *     inversedBy="operation"
+     * )
+     *
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_report_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $reportPrequal;
 
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
-     * 
+     *
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
      *     inversedBy="operations",
@@ -155,11 +172,10 @@ abstract class Operation
         $this->createdAt = new DateTime();
     }
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -175,6 +191,7 @@ abstract class Operation
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -197,6 +214,7 @@ abstract class Operation
     public function setAmount($amount)
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -219,13 +237,14 @@ abstract class Operation
     public function setCjApplicantReportId($cjApplicantReportId)
     {
         $this->cjApplicantReportId = $cjApplicantReportId;
+
         return $this;
     }
 
     /**
      * Get cjApplicantReportId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantReportId()
     {
@@ -241,6 +260,7 @@ abstract class Operation
     public function setPaidFor($paidFor)
     {
         $this->paidFor = $paidFor;
+
         return $this;
     }
 
@@ -263,14 +283,14 @@ abstract class Operation
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return DateTime 
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -278,27 +298,35 @@ abstract class Operation
     }
 
     /**
-     * Add reportsD2c
-     *
-     * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c
-     * 
-     * @return Operation
+     * @param ReportTransunionSnapshot $reportTransunionSnapshot
      */
-    public function setReportD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c)
+    public function setReportTransunionSnapshot(ReportTransunionSnapshot $reportTransunionSnapshot)
     {
-        $this->reportD2c = $reportD2c;
-
-        return $this;
+        $this->reportTransunionSnapshot = $reportTransunionSnapshot;
     }
 
     /**
-     * Get reportsD2c
-     *
-     * @return \CreditJeeves\DataBundle\Entity\ReportD2c
+     * @return ReportTransunionSnapshot
      */
-    public function getReportD2c()
+    public function getReportTransunionSnapshot()
     {
-        return $this->reportD2c;
+        return $this->reportTransunionSnapshot;
+    }
+
+    /**
+     * @param ReportPrequal $reportPrequal
+     */
+    public function setReportPrequal(ReportPrequal $reportPrequal)
+    {
+        $this->reportPrequal = $reportPrequal;
+    }
+
+    /**
+     * @return ReportPrequal
+     */
+    public function getReportPrequal()
+    {
+        return $this->reportPrequal;
     }
 
     /**
@@ -329,7 +357,7 @@ abstract class Operation
      * Set Contract
      *
      * @param \RentJeeves\DataBundle\Entity\Contract $contract
-     * 
+     *
      * @return Operation
      */
     public function setContract(\RentJeeves\DataBundle\Entity\Contract $contract = null)
@@ -357,6 +385,7 @@ abstract class Operation
     public function setGroup($group)
     {
         $this->group = $group;
+
         return $this;
     }
 
