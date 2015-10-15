@@ -40,18 +40,18 @@
             {{ render(controller('ComponentBundle:Score:index', {'user': User, 'Report': Report})) }}
         </div>
         <div class="column-small floatright">
-            {#% if creditTrackEnabled //TODO return it back when CreditTrack will be on place %#}
+            {% if features.allow_score_track %}
+                {% if creditTrackEnabled %}
+                    {{ render(controller('ComponentBundle:LearnMore:index')) }}
+                {% else %}
+                    {{ render(controller('TenantBundle:CreditTrack:promobox')) }}
+                {% endif %}
+            {% else %}
                 {{ render(controller('ComponentBundle:LearnMore:index')) }}
-            {#% else %}
-                {{ render(controller('TenantBundle:CreditTrack:promobox')) }}
-            {% endif %#}
+            {% endif %}
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
-            {#{% if not creditTrackEnabled %}#}
-              {#<div class="row-20"></div>#}
-              {#{{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}#}
-            {#{% endif %}#}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
             <div class="row-20"></div>
@@ -77,7 +77,9 @@
         <div class="clearboth"></div>
     </div>
 
-    {{ render(controller('TenantBundle:CreditTrack:pricing')) }}
-    {{ render(controller('TenantBundle:CreditTrack:pay')) }}
+    {% if features.allow_score_track %}
+        {{ render(controller('TenantBundle:CreditTrack:pricing')) }}
+        {{ render(controller('TenantBundle:CreditTrack:pay')) }}
+    {% endif %}
 
 {% endblock %}

@@ -22,3 +22,9 @@ fixtures:
     feeCC: "0"
     feeACH: "0"
     passedAch: 1
+  setting_RentTrackCorp:
+    isIntegrated: 0
+    group: RentTrackCorp
+    feeCC: "0"
+    feeACH: "0"
+    passedAch: 1

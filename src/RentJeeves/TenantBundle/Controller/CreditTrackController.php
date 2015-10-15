@@ -4,9 +4,7 @@ namespace RentJeeves\TenantBundle\Controller;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
-use RentJeeves\DataBundle\Model\PaymentAccount;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -30,19 +28,10 @@ class CreditTrackController extends Controller
             ->findOneByCode($this->container->getParameter('rt_group_code'));
         /** @var Tenant $user */
         $user = $this->getUser();
-        $paymentAccounts = $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) {
-            if (PaymentAccountType::BANK == $paymentAccount->getType()//Temporary #RT-529
-                || $paymentAccount->getDeletedAt()
-            ) {
-                return false;
-            }
-
-            return true;
-        });
         $serializer = $this->get('jms_serializer');
 
         $paymentAccounts = $serializer->serialize(
-            $paymentAccounts,
+            $user->getPaymentAccounts(),
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );

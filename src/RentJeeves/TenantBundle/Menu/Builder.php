@@ -2,8 +2,6 @@
 namespace RentJeeves\TenantBundle\Menu;
 
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -68,6 +66,7 @@ class Builder extends ContainerAware
 //                $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
+
         return $menu;
     }
 
@@ -89,11 +88,11 @@ class Builder extends ContainerAware
         );
         $menu->addChild('settings.email', array('route' => 'user_email'));
         $menu->addChild('settings.remove', array('route' => 'user_remove'));
-        //TODO return it back when CreditTrack will be on place
-//        $menu->addChild('settings.plans', array('route' => 'user_plans'));
+        if ($this->container->getParameter('allow_score_track')) {
+            $menu->addChild('settings.plans', array('route' => 'user_plans'));
+        }
         $menu->addChild('settings.address.head.manage', array('route' => 'user_addresses'));
 
-       
         switch ($sRoute) {
             case 'user_password':
                 $menu['settings.password']->setUri('');
@@ -114,6 +113,7 @@ class Builder extends ContainerAware
                 $menu['settings.address.head.manage']->setUri('');
                 break;
         }
+
         return $menu;
     }
 
@@ -141,6 +141,7 @@ class Builder extends ContainerAware
                 $menu['rent.sources']->setUri('');
                 break;
         }
+
         return $menu;
     }
 }

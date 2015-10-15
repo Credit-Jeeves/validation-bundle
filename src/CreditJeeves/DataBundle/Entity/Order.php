@@ -659,7 +659,14 @@ class Order extends Base
         $result['errorMessage'] = $this->getTransactionMessage();
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
-        $result['property'] = $this->getContract() ? $this->getContract()->getRentAddress() : 'N/A';
+
+        if ($this->hasContract()) {
+            $result['property'] = $this->getContract()->getRentAddress();
+        } elseif ($this->hasReport()) {
+            $result['property'] = 'ScoreTrack Subscription';
+        } else {
+            $result['property'] = 'N/A';
+        }
 
         $result['rent'] = $this->getRentAmount();
         $result['other'] = $this->getOtherAmount();
@@ -859,6 +866,19 @@ class Order extends Base
     {
         if ($this->getContract()) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasReport()
+    {
+        /** @var Operation $operation */
+        if ($operation = $this->getOperations()->last()) {
+            return !!$operation->getCjApplicantReportId();
         }
 
         return false;

@@ -33,12 +33,8 @@ class SourcesController extends Controller
      */
     public function indexAction()
     {
-        $paymentAccounts = $this->getDoctrine()
-            ->getRepository('RjDataBundle:PaymentAccount')
-            ->getActivePaymentAccountsForTenant($this->getUser());
-
         return [
-            'paymentAccounts' => $paymentAccounts,
+            'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'needDisplayGroups' => false,
             'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())

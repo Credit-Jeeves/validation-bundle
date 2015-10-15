@@ -43,6 +43,11 @@ services:
         class: RentJeeves\CoreBundle\Services\GeoCoder
         parent: bazinga_geocoder.geocoder
 
+    jms_serializer.array_date_time.handler:
+        class: RentJeeves\CoreBundle\Handler\DateHandler
+        tags:
+            - { name: jms_serializer.subscribing_handler }
+
     jms_serializer.csv_pipe_serialization_visitor:
         class: RentJeeves\CoreBundle\Visitor\CsvSerializationVisitor
         arguments:

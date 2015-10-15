@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Component\Form\Form;
@@ -27,20 +28,20 @@ trait PaymentProcess
      * Creates a new payment account. Right now only Heartland is supported.
      *
      * @param  Form $paymentAccountType
-     * @param  Contract $contract
-     * @param  string $depositAccountType
+     * @param Group $group
+     * @param Tenant $tenant
+     * @param string $depositAccountType
      * @return mixed
      */
     protected function savePaymentAccount(
         Form $paymentAccountType,
-        Contract $contract,
+        Group $group,
+        Tenant $tenant,
         $depositAccountType = DepositAccountType::RENT
     ) {
-        $group = $contract->getGroup();
-        $user = $contract->getTenant();
         /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
-        $paymentAccountMapped->getEntity()->setUser($user);
+        $paymentAccountMapped->getEntity()->setUser($tenant);
         $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */
