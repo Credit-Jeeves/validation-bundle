@@ -49,7 +49,7 @@ services:
             logger: "@logger"
             propertyManagement: "%property_management%"
             
-	jms_serializer.array_date_time.handler:
+    jms_serializer.array_date_time.handler:
         class: RentJeeves\CoreBundle\Handler\DateHandler
         tags:
             - { name: jms_serializer.subscribing_handler }
