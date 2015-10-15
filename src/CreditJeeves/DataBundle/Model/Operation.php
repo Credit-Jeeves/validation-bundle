@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Order as OrderEntity;
+use CreditJeeves\DataBundle\Entity\Report as ReportEntity;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -60,17 +61,6 @@ abstract class Operation
     protected $amount = 0;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(
-     *     name="cj_applicant_report_id",
-     *     type="bigint",
-     *     nullable=true
-     * )
-     */
-    protected $cjApplicantReportId;
-
-    /**
      * @ORM\Column(
      *     name="paid_for",
      *     type="date",
@@ -116,10 +106,10 @@ abstract class Operation
     protected $order;
 
     /**
-     * @var ReportTransunionSnapshot
+     * @var Report
      *
      * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Report",
      *     inversedBy="operation"
      * )
      *
@@ -128,22 +118,7 @@ abstract class Operation
      *     referencedColumnName="id"
      * )
      */
-    protected $reportTransunionSnapshot;
-
-    /**
-     * @var ReportPrequal
-     *
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
-     *     inversedBy="operation"
-     * )
-     *
-     * @ORM\JoinColumn(
-     *     name="cj_applicant_report_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $reportPrequal;
+    protected $report;
 
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
@@ -229,26 +204,11 @@ abstract class Operation
     }
 
     /**
-     * Set cjApplicantReportId
-     *
-     * @param integer $cjApplicantReportId
-     * @return Operation
+     * @return integer|null
      */
-    public function setCjApplicantReportId($cjApplicantReportId)
+    public function getUserReportId()
     {
-        $this->cjApplicantReportId = $cjApplicantReportId;
-
-        return $this;
-    }
-
-    /**
-     * Get cjApplicantReportId
-     *
-     * @return integer
-     */
-    public function getCjApplicantReportId()
-    {
-        return $this->cjApplicantReportId;
+        return $this->report ? $this->report->getId() : null;
     }
 
     /**
@@ -297,12 +257,9 @@ abstract class Operation
         return $this->createdAt;
     }
 
-    /**
-     * @param ReportTransunionSnapshot $reportTransunionSnapshot
-     */
-    public function setReportTransunionSnapshot(ReportTransunionSnapshot $reportTransunionSnapshot)
+    public function setReport(ReportEntity $report)
     {
-        $this->reportTransunionSnapshot = $reportTransunionSnapshot;
+        $this->report = $report;
     }
 
     /**
@@ -310,15 +267,7 @@ abstract class Operation
      */
     public function getReportTransunionSnapshot()
     {
-        return $this->reportTransunionSnapshot;
-    }
-
-    /**
-     * @param ReportPrequal $reportPrequal
-     */
-    public function setReportPrequal(ReportPrequal $reportPrequal)
-    {
-        $this->reportPrequal = $reportPrequal;
+        return ($this->report instanceof ReportTransunionSnapshot) ? $this->report : null;
     }
 
     /**
@@ -326,7 +275,7 @@ abstract class Operation
      */
     public function getReportPrequal()
     {
-        return $this->reportPrequal;
+        return ($this->report instanceof ReportPrequal) ? $this->report : null;
     }
 
     /**

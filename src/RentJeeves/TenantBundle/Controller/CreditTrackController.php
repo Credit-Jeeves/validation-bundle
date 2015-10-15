@@ -103,7 +103,7 @@ class CreditTrackController extends Controller
             return new JsonResponse(
                 array(
                     'success' => true,
-                    'url' => $this->generateUrl('user_report'),
+                    'url' => $this->generateUrl('tenant_summary'),
                 )
             );
         } else {

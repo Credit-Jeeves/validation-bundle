@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Service\CreditSummaryReport;
+namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 
 use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;

@@ -878,7 +878,7 @@ class Order extends Base
     {
         /** @var Operation $operation */
         if ($operation = $this->getOperations()->last()) {
-            return !!$operation->getCjApplicantReportId();
+            return !!($operation->getUserReportId());
         }
 
         return false;

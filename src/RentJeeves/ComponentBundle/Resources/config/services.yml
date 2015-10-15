@@ -10,10 +10,10 @@ parameters:
         dbHost: "%net_connect.precise_id.dbhost%"
         subCode: "%net_connect.precise_id.sub_code%"
 
-    credit_summary.base_report_builder.class: RentJeeves\ComponentBundle\Service\CreditSummaryReport\BaseSummaryReportBuilder
-    credit_summary.experian.report_builder.class: RentJeeves\ComponentBundle\Service\CreditSummaryReport\ExperianReportBuilder
-    credit_summary.transunion.report_builder.class: RentJeeves\ComponentBundle\Service\CreditSummaryReport\TransunionReportBuilder
-    credit_summary.report_builder_factory.class: RentJeeves\ComponentBundle\Service\CreditSummaryReport\CreditSummaryReportVendorFactory
+    credit_summary.base_report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\BaseSummaryReportBuilder
+    credit_summary.experian.report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\ExperianReportBuilder
+    credit_summary.transunion.report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\TransunionReportBuilder
+    credit_summary.report_builder_factory.class: RentJeeves\ComponentBundle\CreditSummaryReport\CreditSummaryReportVendorFactory
 
 services:
     pidkiq.message_generator:

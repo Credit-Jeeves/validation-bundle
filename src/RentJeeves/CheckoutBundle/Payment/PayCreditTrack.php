@@ -13,8 +13,6 @@ use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSt
 use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
-use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
@@ -102,11 +100,9 @@ class PayCreditTrack
 
         if (OrderStatus::COMPLETE === $order->getStatus()) {
             $report = $this->createReport($paymentAccount->getUser());
-            $order->getOperations()->last()->setReportByVendor($this->creditSummaryVendor, $report);
-            $job = $this->scheduleReportJob($report);
+            $order->getOperations()->last()->setReport($report);
 
             $this->em->persist($report);
-            $this->em->persist($job);
         }
 
         $this->em->flush();
@@ -148,23 +144,5 @@ class PayCreditTrack
         $report->setRawData('');
 
         return $report;
-    }
-
-    /**
-     * Creates a job to load report.
-     * TODO: change job command to be dependent on the credit_summary_vendor config setting
-     *
-     * @param Report $report
-     * @return Job
-     */
-    protected function scheduleReportJob(Report $report)
-    {
-        $job = new Job('experian-credit_profile:get', ['--app=rj']);
-        $job->addRelatedEntity($report);
-        $execute = new DateTime();
-        $execute->modify("+5 minutes");
-        $job->setExecuteAfter($execute);
-
-        return $job;
     }
 }

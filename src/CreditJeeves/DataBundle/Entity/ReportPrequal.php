@@ -17,16 +17,6 @@ use CreditJeeves\DataBundle\Enum\HardInquiriesPeriod;
  */
 class ReportPrequal extends Report
 {
-    /**
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     mappedBy="reportD2c",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $operation;
-
     private $creditSummary = null;
 
     public function getBureauName()

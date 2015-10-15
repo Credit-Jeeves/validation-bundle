@@ -475,25 +475,4 @@ class Operation extends Base
                 throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
         }
     }
-
-    /**
-     * @param $vendor
-     * @param Report $report
-     * @throws \Exception
-     */
-    public function setReportByVendor($vendor, Report $report)
-    {
-        CreditSummaryVendor::throwsInvalid($vendor);
-
-        switch ($vendor) {
-            case CreditSummaryVendor::TRANSUNION:
-                $this->setReportTransunionSnapshot($report);
-                break;
-            case CreditSummaryVendor::EXPERIAN:
-                $this->setReportPrequal($report);
-                break;
-            default:
-                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
-        }
-    }
 }

@@ -377,6 +377,6 @@ fixtures:
 
   rjOperation_report_1:
     order: rjOrder_report_1
-    reportTransunionSnapshot: cjApplicantReportTUSnapshot_1
-    amount: 9
-    paidFor: 'now'
+    report: reportTUSnapshot_1
+    amount: %credittrack_payment_per_month%
+    paidFor: '-5 days'

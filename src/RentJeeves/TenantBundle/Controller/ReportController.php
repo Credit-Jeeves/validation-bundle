@@ -3,18 +3,19 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use Doctrine\DBAL\DBALException;
 use Guzzle\Http\Exception\CurlException;
-use RentJeeves\ComponentBundle\Service\CreditSummaryReport\CreditSummaryReportBuilderInterface;
+use Monolog\Logger;
+use RentJeeves\ComponentBundle\CreditSummaryReport\CreditSummaryReportBuilderInterface;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/report")
- *
  */
 class ReportController extends Controller
 {
@@ -35,19 +36,6 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/get/credittrack", name="core_report_get_credittrack")
-     * @Template("TenantBundle:Report:get.html.twig")
-     *
-     * @return array
-     */
-    public function getCreditTrackAction()
-    {
-        $this->get('session')->getFlashBag()->set('shouldUpdateReport', true);
-
-        return $this->getAction(null, true);
-    }
-
-    /**
      * @Route("/get", name="core_report_get")
      * @Route("/get/{redirect}", name="core_report_get")
      * @Template()
@@ -63,10 +51,11 @@ class ReportController extends Controller
             throw $this->createNotFoundException('Report does not allowed');
         }
 
+        $this->getFlashBag()->set('shouldUpdateReport', $shouldUpdateReport);
+
         return [
             'url' => $this->generateUrl('core_report_get_ajax'),
             'redirect' => $redirect ? $this->generateUrl($redirect) : null
-            //$this->getRequest()->headers->get('referer'), //FIXME redirect does not preserve referer
         ];
     }
 
@@ -104,67 +93,93 @@ class ReportController extends Controller
     {
         if ($request->isMethod('POST')) {
             $session = $request->getSession();
+            /** @var Logger $logger */
+            $logger = $this->get('logger');
             ignore_user_abort();
             set_time_limit(90);
             if (false == $session->get('isReportProcessing', false)) {
                 $session->set('isReportProcessing', true);
-                $shouldUpdateReport = $this->get('session')->getFlashBag()->get('shouldUpdateReport');
+                $shouldUpdateReport = $this->getFlashBag()->get('shouldUpdateReport');
 
                 try {
                     if (!$this->saveCreditSummary($shouldUpdateReport)) {
-                        return new JsonResponse(['status' => 'finished']);
+                        $session->set('isReportProcessing', false);
+                        $logger->debug(
+                            '[Report Controller]Load credit summary report is not allowed for user #' .
+                            $this->getUser()->getId()
+                        );
+
+                        $title = $this->getTranslator()->trans('load.report.is_not_allowed.title');
+                        $body = $this->getTranslator()->trans(
+                            'load.report.is_not_allowed.message-%SUPPORT_EMAIL%',
+                            ['%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')]
+                        );
+
+                        return $this->createShowMessageResponse($title, $body);
                     }
                 } catch (DBALException $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     $session->set('isReportProcessing', false);
-                    $this->get('session')->getFlashBag()->set(
-                        'message_title',
-                        $this->get('translator.default')->trans('error.fatal.title')
-                    );
-                    $this->get('session')->getFlashBag()->set(
-                        'message_body',
-                        $this->get('translator.default')->trans(
-                            'error.fatal.message-%SUPPORT_EMAIL%',
-                            ['%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')]
-                        )
-                    );
+                    $logger->alert('[Report Controller]' . $e->getMessage());
 
-                    return new JsonResponse([
-                        'status' => 'error',
-                        'url' => $this->generateUrl('public_message_flash')
-                    ]);
+                    return $this->createShowMessageResponse();
                 } catch (CurlException $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
-                    $this->get('session')->getFlashBag()->set('shouldUpdateReport', $shouldUpdateReport);
                     $session->set('isReportProcessing', false);
-                    $this->get('session')->getFlashBag()->set(
-                        'message_title',
-                        $this->get('translator.default')->trans('error.fatal.title')
-                    );
+                    $logger->alert('[Report Controller]' . $e->getMessage());
 
-                    return new JsonResponse([
-                        'status' => 'warning',
-                        'url' => $this->generateUrl('public_message_flash')
-                    ]);
+                    return $this->createShowMessageResponse();
                 } catch (\Exception $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
-                    if (4000 == $e->getCode()) {
-                        $this->get('session')->getFlashBag()->set('shouldUpdateReport', $shouldUpdateReport);
-                        $session->set('isReportProcessing', false);
+                    $session->set('isReportProcessing', false);
 
-                        return new JsonResponse(['status' => 'warning']);
+                    if (4000 == $e->getCode()) { // need retry
+                        $logger->debug('[Report Controller]' . $e->getMessage());
+                        $this->getFlashBag()->set('shouldUpdateReport', $shouldUpdateReport);
+
+                        return new JsonResponse('warning');
                     } else {
-                        throw $e;
+                        $logger->alert('[Report Controller]' . $e->getMessage());
+
+                        return $this->createShowMessageResponse();
                     }
                 }
                 $session->set('isReportProcessing', false);
 
-                return new JsonResponse(['status' => 'finished']);
+                return new JsonResponse('finished');
             }
 
-            return new JsonResponse(['status' => 'processing']);
+            return new JsonResponse('processing');
         }
 
-        return new JsonResponse(['status' => 'processing']);
+        return new JsonResponse('processing');
+    }
+
+    /**
+     * @param string $title
+     * @param string $body
+     * @return JsonResponse
+     */
+    protected function createShowMessageResponse($title = '', $body = '')
+    {
+        if (!$title) {
+            $title = $this->getTranslator()->trans('error.fatal.title');
+        }
+        if (!$body) {
+            $body = $this->getTranslator()->trans(
+                'error.fatal.message-%SUPPORT_EMAIL%',
+                ['%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')]
+            );
+        }
+
+        $this->getFlashBag()->set('message_title',$title);
+        $this->getFlashBag()->set('message_body', $body);
+
+        return new JsonResponse(['url' => $this->generateUrl('public_message_flash')]);
+    }
+
+    /**
+     * @return FlashBagInterface
+     */
+    protected function getFlashBag()
+    {
+        return $this->get('session')->getFlashBag();
     }
 }

@@ -3,7 +3,6 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Report as BaseReport;
-use \Exception;
 
 /**
  * @ORM\Entity
@@ -19,4 +18,13 @@ use \Exception;
  */
 abstract class Report extends BaseReport implements ReportSummaryInterface
 {
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
+     *     mappedBy="report",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $operation;
 }

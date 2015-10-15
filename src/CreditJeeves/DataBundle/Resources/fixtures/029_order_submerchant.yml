@@ -369,6 +369,6 @@ fixtures:
     user: Tenant_22
     status: complete
     paymentType: cash
-    sum: 3.95
+    sum: %credittrack_payment_per_month%
     created_at: '-5 days'
     updated_at: '-5 days'
