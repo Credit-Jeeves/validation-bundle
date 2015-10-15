@@ -265,7 +265,7 @@ class PropertyProcess
             }
         }
 
-        $address = $this->addressLookup(
+        $address = $this->lookupAddress(
             $property->getAddress1(),
             $property->getCity(),
             $property->getArea(),
@@ -294,7 +294,7 @@ class PropertyProcess
     {
         $property = new Property();
 
-        if (null !== $address = $this->addressLookup($street, $city, $state, $zipCode)) {
+        if (null !== $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
             $property->setAddressFields($address);
             if ($propertyDB = $this->checkByMinimalArgs($property) or
                 $propertyDB = $this->checkByAllArgs($property)
@@ -362,7 +362,7 @@ class PropertyProcess
      *
      * @return Address|null
      */
-    public function addressLookup($street, $city, $state, $zipCode)
+    public function lookupAddress($street, $city, $state, $zipCode)
     {
         try {
             return $this->addressLookupService->lookup($street, $city, $state, $zipCode);
@@ -391,7 +391,7 @@ class PropertyProcess
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
             return $property;
         }
-        if (null === $address = $this->addressLookup($street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
             return null;
         }
 

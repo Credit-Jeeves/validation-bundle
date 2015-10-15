@@ -174,10 +174,7 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
-        $this->assertEquals(
-            'property.address_not_found',
-            $errors->getHtml()
-        );
+        $this->assertEquals('fill.full.address',$errors->getHtml());
         $fillAddress = '150 Amsterdam Avenue, Manhattan, New York, NY 10023';
         $this->fillForm(
             $form,

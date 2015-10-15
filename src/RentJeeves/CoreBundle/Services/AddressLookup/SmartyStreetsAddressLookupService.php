@@ -47,16 +47,16 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
      */
     public function lookup($street, $city, $state, $zipCode)
     {
+        $this->logger->debug(
+            sprintf(
+                '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s)',
+                $street,
+                $city,
+                $state,
+                $zipCode
+            )
+        );
         try {
-            $this->logger->debug(
-                sprintf(
-                    '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s)',
-                    $street,
-                    $city,
-                    $state,
-                    $zipCode
-                )
-            );
             $result = $this->smartyStreetsClient->getAddress($street, $city, $state, $zipCode);
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
