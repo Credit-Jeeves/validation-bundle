@@ -117,6 +117,7 @@ $(document).ready(function(){
             //get contractId
             $("#rentjeeves_checkoutbundle_paymentaccounttype_contractId").val(id)
             saving = false;
+            $("#deleteSource").hide()
             $.mobile.changePage('#addNewPayAccount')
         }
     });
@@ -156,9 +157,6 @@ $(document).ready(function(){
         showHideBankCardFields(bankVisibility,cardVisibility)
     })
 
-    //set to eCheck default
-        showHideBankCardFields("block","none")
-
         //remove textbox from is_new_address_link, not applicable here
     $("#"+accountPrefix+"is_new_address_link").hide()
     $("#"+accountPrefix+"address_choice").parent().hide()
@@ -166,7 +164,17 @@ $(document).ready(function(){
     $("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice").append('<input type="button" value="Add new address" onclick="showAddNewAddress()">')
 
     $("#rentjeeves_checkoutbundle_paymentaccounttype_save").hide() //we always save payment info, so button is not relevant
+    
+//set to eCheck default
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear").selectmenu()//fixes a bug where this does not self init
+    showHideBankCardFields("block","none")
 
+
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
+    if(isAndroid) {
+        $("#rentjeeves_checkoutbundle_paymenttype_amount").attr("type","numberDecimal") //address weird bug on samsung devices where decimal point is missing
+    }
 
 
 })
@@ -201,23 +209,28 @@ function editSource(name){
     saving = true;
     $("#rentjeeves_checkoutbundle_paymentaccounttype_name").val(name);
 
-    //hit http://dev-nr.renttrack.com/sources/save with POST data
-    $.mobile.changePage('#addNewPayAccount');
-
-}
-
-function deleteSource(name){
-    //hit http://dev-nr.renttrack.com/sources/del/
-
     //fetch our ID
     $.each(payAccounts, function (i, localPaymentAccountId) {
         if (localPaymentAccountId.name == name) {
             id = localPaymentAccountId.id;
         }
     })
+
+    $("#deleteSource").attr("onclick","deleteSource("+id+")")
+    $("#deleteSource").show()
+
+    //hit http://dev-nr.renttrack.com/sources/save with POST data
+    $.mobile.changePage('#addNewPayAccount');
+
+}
+
+function deleteSource(id){
+    //hit http://dev-nr.renttrack.com/sources/del/
+
+
     //use the ID to hit our source
     $.ajax({
-        url: '/sources/del'+id,
+        url: '/sources/del/'+id,
         type: 'post',
         async: 'true',
 
@@ -226,7 +239,8 @@ function deleteSource(name){
             if(debug){
                 console.log(result)
             }
-            window.refresh()
+            window.location="#sources?a="+Math.random()*10000000000
+
         },
         error: function (request, error) {  //ajax error!
 
@@ -664,7 +678,6 @@ function updateTotal(){
 
 //submit form with ajax to display dialog when completed
 
-
 function addNewPaymentSource(formObj){
 
     if(!saving) {   //it's a new account
@@ -693,6 +706,8 @@ function addNewPaymentSource(formObj){
                     $.mobile.changePage('#pay')
                     $("#" + prefix + "paymentAccount").append("<option value='" + result.paymentAccount.id + "' selected>" + result.paymentAccount.name + "</option>")
                     $("#" + prefix + "paymentAccount").selectmenu("refresh")
+
+
                 }
             },
             error: function (request, error) {  //ajax error!

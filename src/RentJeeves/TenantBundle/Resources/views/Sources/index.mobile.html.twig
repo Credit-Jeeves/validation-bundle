@@ -3,7 +3,8 @@
     <div data-role="panel" id="panelH" class="sideMenu">
         <ul data-role="listview">
             <li><a href="#main" class="menuOptions">Current Payments</a></li>
-            <li><a href="#paymentHistory" class="menuOptions"  class="selectedMenuOption">Payment History</a></li>
+            <li><a href="#paymentHistory" class="menuOptions"  class="menuOptions">Payment History</a></li>
+            <li><a href="#sources" class="selectedMenuOptions">Payment Sources</a></li>
             <li><a href="logout" class="menuOptions">Logout</a></li>
         </ul>
     </div>
@@ -11,12 +12,14 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a href="#panelH" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
         <h1 class="ui-title" role="heading" aria-level="1"><img class="headerLogo" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
-        <a href="#addNewPayAccount" onclick="saving=false" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Add</a>
+        {#
+        <a href="#addNewPayAccount" onclick="saving=false" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none; padding: 15px; font-size: 16px; font-weight: normal;">Add</a>
+        #}
     </div>
 
-    <div class="ui-content" role="main">
+    <div class="ui-content" id="paymentAccountsContent" role="main" style="background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;">
 
-
+{#
         <table class="properties-table zebra-grid contracts-table" id="payment-account-table">
             <thead>
             <tr class="contracts">
@@ -27,30 +30,45 @@
             </tr>
             </thead>
             <tbody>
-            {% for paymentAccount in paymentAccounts %}
-                <tr id="payment-account-row-{{ loop.revindex }}">
-                    <td class="font-helvetica">{{ paymentAccount.getName }}</td>
-                    <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
-                    <td class="font-helvetica">
-                        {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
-                    </td>
-                    <td class="font-helvetica">
-                        <a title="{{ 'edit' | trans }}"
-                           href="#"
-                           onclick="editSource('{{ paymentAccount.getName }}')"
-                                >
-                            <i class="fa fa-pencil-square-o"></i>
-                        </a>
-                        <a title="{{ 'delete' | trans }}"
-                           href="#"
-                           onclick="deleteSource('{{ paymentAccount.getName }}')"
-                                >
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </td>
+            #}
 
-                </tr>
-            {% endfor %}
+            {% for paymentAccount in paymentAccounts %}
+
+            {#
+            <tr id="payment-account-row-{{ loop.revindex }}">
+                <td class="font-helvetica">{{ paymentAccount.getName }}</td>
+                <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
+                <td class="font-helvetica">
+                    {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
+                </td>
+                <td class="font-helvetica">
+                    <a title="{{ 'edit' | trans }}"
+                       href="#"
+                       onclick="editSource('{{ paymentAccount.getName }}')"
+                            >
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                    <a title="{{ 'delete' | trans }}"
+                       href="#"
+                       onclick="deleteSource('{{ paymentAccount.getName }}')"
+                            >
+                        <i class="fa fa-times"></i>
+                    </a>
+                </td>
+
+            </tr>
+                #}
+                <div onclick="editSource('{{ paymentAccount.getName }}')" style="background: white; opacity: 0.8; color: black; border-radius: 4px; padding: 15px; margin-top: 7px; position: relative;">
+                    {% if paymentAccount.getType=='Credit Card' %}<i class="fa fa-credit-card"></i>{% else %}<i class="fa fa-university"></i>{% endif %}
+                    <span style="margin-left: 10px; font-weight: 600;">{{ paymentAccount.getName }}</span> - <span style="font-weight: 300;">{{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}</span>
+                    <a href="#" onclick="editSource('{{ paymentAccount.getName }}')" style="position: absolute; top: 16px; right: 18px;background: none;border: none; color: #eb6024;" class="ui-link">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                </div><br>
+
+        {% endfor %}
+
+
             </tbody>
         </table>
 
