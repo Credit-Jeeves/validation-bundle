@@ -5,7 +5,6 @@ namespace RentJeeves\ExternalApiBundle\Services\Binlist;
 use Doctrine\Common\Collections\ArrayCollection;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
-use JMS\Serializer\Serializer;
 
 class BinlistSource
 {
@@ -22,81 +21,33 @@ class BinlistSource
     protected $csvReader;
 
     /**
-     * @var Serializer
-     */
-    protected $serializer;
-
-    /**
      * @param LoggerInterface $logger
      * @param CsvFileReader $csvReader
-     * @param Serializer $serializer
      */
-    public function __construct(LoggerInterface $logger, CsvFileReader $csvReader, Serializer $serializer)
+    public function __construct(LoggerInterface $logger, CsvFileReader $csvReader)
     {
         $this->csvReader = $csvReader;
         $this->logger = $logger;
-        $this->serializer = $serializer;
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * Loads scv binlist data from github repo.
+     * As ScvReader works with files only, we need to save content to file first, and then parse that content.
+     * Returns an associative array if fieldName=>fieldValue from binlist.
+     *
+     * @return array
      */
-    protected function getFullBinlistCsv()
+    public function loadBinlistData()
     {
         try {
             $content = file_get_contents(self::SOURCE);
+            $path = sprintf('%s%s%s.csv', sys_get_temp_dir(), DIRECTORY_SEPARATOR, uniqid());
+            file_put_contents($path, $content);
+
+            return $this->csvReader->read($path);
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf('Could not get data(binlist): %s', $e->getMessage()));
+            $this->logger->alert(sprintf('Could not load binlist data: %s', $e->getMessage()));
             throw $e;
         }
-
-        return $content;
-    }
-
-    /**
-     * @param string $pathToCsv
-     * @return ArrayCollection
-     */
-    protected function mapCsvToCollection($pathToCsv)
-    {
-        $this->logger->debug('Start map csv string to collection of objects');
-        $result = $this->csvReader->read($pathToCsv);
-        $result = $this->serializer->deserialize(
-            json_encode($result),
-            'ArrayCollection<RentJeeves\DataBundle\Entity\DebitCardBinlist>',
-            'json'
-        );
-
-        return $result;
-    }
-
-    /**
-     * @param string $data
-     * @return string
-     */
-    protected function writeResponseToFile($data)
-    {
-        $path = sprintf(
-            '%s%s%s.csv',
-            sys_get_temp_dir(),
-            DIRECTORY_SEPARATOR,
-            uniqid()
-        );
-
-        file_put_contents($path, $data);
-        $this->logger->debug(sprintf('Path to csv: %s', $path));
-
-        return $path;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getBinListCollection()
-    {
-        $pathToCsv = $this->writeResponseToFile($this->getFullBinlistCsv());
-
-        return $this->mapCsvToCollection($pathToCsv);
     }
 }

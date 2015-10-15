@@ -92,16 +92,20 @@ class DebitCardBinlist
     protected $countryCode;
 
     /**
-     * @ORM\Column(
-     *      name="bank_name",
-     *      type="string",
-     *      nullable=true
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\BinlistBank",
+     *     inversedBy="debitCards",
+     *     cascade={"persist"}
      * )
-     * @Serializer\Type("string")
+     * @ORM\JoinColumn(
+     *     name="bank_id",
+     *     nullable=false,
+     *     referencedColumnName="id"
+     * )
      *
-     * @var string
+     * @var BinlistBank
      */
-    protected $bankName;
+    protected $binlistBank;
 
     /**
      * @ORM\Column(
@@ -244,19 +248,19 @@ class DebitCardBinlist
     }
 
     /**
-     * @return string
+     * @return BinlistBank
      */
-    public function getBankName()
+    public function getBinlistBank()
     {
-        return $this->bankName;
+        return $this->binlistBank;
     }
 
     /**
-     * @param string $bankName
+     * @param BinlistBank $bank
      */
-    public function setBankName($bankName)
+    public function setBinlistBank(BinlistBank $bank)
     {
-        $this->bankName = $bankName;
+        $this->binlistBank = $bank;
     }
 
     /**
