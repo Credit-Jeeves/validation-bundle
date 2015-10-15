@@ -1,8 +1,7 @@
 <?php
 namespace RentJeeves\CoreBundle\Services\AddressLookup;
 
-use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupEmptyResponseException;
-use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupUnavailableException;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 
 interface AddressLookupInterface
@@ -13,10 +12,8 @@ interface AddressLookupInterface
      * @param string $state
      * @param string $zipCode
      *
-     * @throws AddressLookupEmptyResponseException API returned empty response
-     *
-     * @throws AddressLookupUnavailableException problem with connecting or getting a response
-     * from the external lookup API
+     * @throws AddressLookupException API returned empty response|API returned not valid address|
+     * problem with connecting or getting a response from the external lookup API
      *
      * @return Address
      */

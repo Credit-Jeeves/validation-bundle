@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Services\AddressLookup;
 
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ValidatorInterface;
@@ -29,6 +30,9 @@ class GoogleAutocompleteAddressConverter
 
     /**
      * @param string $jsonData
+     *
+     * @throws \InvalidArgumentException input paremetrs is not valid JSON
+     * @throws AddressLookupException Address after convert JSON is not valid
      *
      * @return Address
      */
@@ -87,13 +91,14 @@ class GoogleAutocompleteAddressConverter
 
         $errors = $this->validate($newAddress);
         if (false === empty($errors)) {
-            throw new \InvalidArgumentException(
-                sprintf(
+            $this->logger->debug(
+                $message = sprintf(
                     '[GoogleAutocompleteAddressConverter] Address after convert JSON (%s) is not valid : %s.',
                     $jsonData,
                     implode(', ', $errors)
                 )
             );
+            throw new AddressLookupException($message);
         }
 
         return $newAddress;
@@ -110,7 +115,7 @@ class GoogleAutocompleteAddressConverter
     {
         $errors = [];
         /** @var ConstraintViolation $error */
-        $validatorErrors = $this->validator->validate($address, ['GoogleAutocompleteAddress']);
+        $validatorErrors = $this->validator->validate($address, ['GoogleAddress']);
         if ($validatorErrors->count() > 0) {
             foreach ($validatorErrors as $error) {
                 $errors[] = sprintf(

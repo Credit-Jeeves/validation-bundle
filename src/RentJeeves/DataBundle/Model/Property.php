@@ -760,21 +760,33 @@ abstract class Property
         return $this->google_reference;
     }
 
+    /**
+     * @deprecated use setJb
+     */
     public function setLatitude($data)
     {
         return $this->setJb($data);
     }
 
+    /**
+     * @deprecated use setKb
+     */
     public function setLongitude($data)
     {
         return $this->setKb($data);
     }
 
+    /**
+     * @deprecated use getJb
+     */
     public function getLatitude()
     {
         return $this->getJb();
     }
 
+    /**
+     * @deprecated use getKb
+     */
     public function getLongitude()
     {
         return $this->getKb();
@@ -826,5 +838,13 @@ abstract class Property
     public function setIndex($index)
     {
         $this->index = $index;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress1()
+    {
+        return sprintf('%s %s', $this->number, $this->street);
     }
 }

@@ -1,4 +1,5 @@
-# It moved here because #RT-407
+imports:
+    - { resource: address_lookup_services.yml }
 
 parameters:
     data.event_listener.group_settings_listener.class: RentJeeves\DataBundle\EventListener\GroupSettingsListener
@@ -8,6 +9,15 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
+    property.process:
+        class: RentJeeves\CoreBundle\Services\PropertyProcess
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @google
+            - @address_lookup_service
+            - @fp_badaboom.exception_catcher
+            - @logger
+
     data.event_listener.group_settings_listener:
         class: "%data.event_listener.group_settings_listener.class%"
         tags:
@@ -38,16 +48,12 @@ services:
             em: "@doctrine.orm.default_entity_manager"
             logger: "@logger"
             propertyManagement: "%property_management%"
-
-    renttrack.geocoder:
-        class: RentJeeves\CoreBundle\Services\GeoCoder
-        parent: bazinga_geocoder.geocoder
-
+            
     jms_serializer.array_date_time.handler:
         class: RentJeeves\CoreBundle\Handler\DateHandler
         tags:
             - { name: jms_serializer.subscribing_handler }
-
+            
     jms_serializer.csv_pipe_serialization_visitor:
         class: RentJeeves\CoreBundle\Visitor\CsvSerializationVisitor
         arguments:
@@ -88,9 +94,3 @@ services:
             - @doctrine.orm.default_entity_manager
             - @aci_enrollment_file_deserializer
             - @validator
-
-    google_autocomplete_address_converter:
-        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
-        arguments:
-            - @validator
-            - @logger
