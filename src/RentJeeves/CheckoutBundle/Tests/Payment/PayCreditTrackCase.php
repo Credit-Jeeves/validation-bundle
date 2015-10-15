@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Payment;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class PayCreditTrackCase extends BaseTestCase
@@ -16,18 +17,14 @@ class PayCreditTrackCase extends BaseTestCase
     {
         $this->load(true);
 
-        /** @var Group $group */
-        $group = $this->getContainer()
-            ->get('doctrine')
-            ->getRepository('DataBundle:Group')
-            ->findOneByCode($this->getContainer()->getParameter('rt_group_code'));
+        /** @var Tenant $user */
+        $user = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $paymentAccount = $user->getPaymentAccounts()->first();
 
         /** @var OrderSubmerchant $order */
         $order = $this->getContainer()
             ->get('payment.pay_credit_track')
-            ->executePaymentAccount(
-                $group->getRentDepositAccountForCurrentPaymentProcessor()->getPaymentAccounts()->first()
-            );
+            ->executePaymentAccount($paymentAccount);
 
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
     }

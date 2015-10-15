@@ -82,7 +82,7 @@ class PaymentAccountCase extends BaseTestCase
         try {
             $paymentAccountManager->registerPaymentToken(
                 $paymentAccountType,
-                $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND)
+                $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND)->getMerchantName()
             );
         } catch (RuntimeException $e) {
             //if we go into this place, test must be failed and we must show

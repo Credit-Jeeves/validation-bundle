@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Tests\Unit\PaymentProcessorMigration\Mapper;
 
+use Doctrine\ORM\EntityRepository;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper;
@@ -19,6 +20,7 @@ use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
 class AciProfileMapperCase extends BaseTestCase
 {
+    const ACI_DIVISION_ID = '564075';
     use WriteAttributeExtensionTrait;
 
     /**
@@ -27,10 +29,6 @@ class AciProfileMapperCase extends BaseTestCase
     public function shouldMapObjectIfItHasRelationWithUser()
     {
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $user->getActiveContracts()[0]->getGroup()->getDepositAccounts()->first();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
         $holding = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $address = $user->getDefaultAddress();
@@ -41,7 +39,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
@@ -77,11 +75,11 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->assertEquals(1, $accountRecord->getProfileId());
         $this->assertEquals(
-            BillingAccountManager::createUserBillingAccountNumber($user, $depositAccount->getMerchantName()),
+            BillingAccountManager::createUserBillingAccountNumber($user, self::ACI_DIVISION_ID),
             $accountRecord->getBillingAccountNumber(),
             'BillingAccountNumber is incorrect'
         );
-        $this->assertEquals('testMerchantName', $accountRecord->getDivisionId());
+        $this->assertEquals(self::ACI_DIVISION_ID, $accountRecord->getDivisionId());
         $this->assertEquals(
             $user->getFirstName() . ' ' . $user->getLastName(),
             $accountRecord->getNameOnBillingAccount()
@@ -124,13 +122,8 @@ class AciProfileMapperCase extends BaseTestCase
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $aciProfile = new AciCollectPayUserProfile();
         $aciProfile->setProfileId(1);
-
         $user->setAciCollectPayProfile($aciProfile);
 
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $user->getActiveContracts()[0]->getGroup()->getDepositAccounts()->first();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
         $holding = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $profile = new AciImportProfileMap();
@@ -138,13 +131,13 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
             4,
             $result,
-            '4 records expected: 1 Account record, 3 Funding Account records'
+            '4 records expected: 1 Account records, 3 Funding Account records'
         );
 
         $this->assertNotInstanceOf(
@@ -168,20 +161,19 @@ class AciProfileMapperCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldNotMapToAccountRecordIfGroupDoesNotHaveAciDepositAccount()
+    public function shouldNotMapToAccountRecordIfHpsMerchantDoesNotHaveAciDivision()
     {
-        $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
+        $migration = $this->getEntityManager()->getRepository('RjDataBundle:MerchantAccountMigration')->find(1);
+        $this->getEntityManager()->remove($migration);
+        $this->getEntityManager()->flush();
 
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $user->getActiveContracts()[0]->getGroup()->getDepositAccounts()->first();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND); // not ACI
-        $depositAccount->setMerchantName('testMerchantName');
+        $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $holding = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $profile = new AciImportProfileMap();
         $profile->setUser($user);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(4, count($result));
@@ -208,13 +200,9 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToFundingRecordIfUserHas1AciPaymentAccount()
     {
+        $this->load(true);
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
-        $user->getPaymentAccounts()->last()->setPaymentProcessor(PaymentProcessor::ACI); // ACI
-
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $user->getActiveContracts()[0]->getGroup()->getDepositAccounts()->first();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
+        $user->getPaymentAccounts()->last()->setPaymentProcessor(PaymentProcessor::ACI);
         $holding = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $profile = new AciImportProfileMap();
@@ -222,7 +210,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
@@ -246,10 +234,6 @@ class AciProfileMapperCase extends BaseTestCase
     public function shouldMapObjectIfItHasRelationWithGroup()
     {
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
-        $depositAccount = new DepositAccount();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
-        $group->addDepositAccount($depositAccount);
 
         $billingAccount = new BillingAccount();
         $billingAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
@@ -266,7 +250,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(3, count($result));
@@ -326,11 +310,6 @@ class AciProfileMapperCase extends BaseTestCase
     public function shouldNotMapToConsumerAndAccountRecordsIfGroupHasAciCollectPayProfile()
     {
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
-        $depositAccount = new DepositAccount();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
-        $group->addDepositAccount($depositAccount);
-
         $aciProfile = new AciCollectPayGroupProfile();
         $aciProfile->setProfileId('testId');
 
@@ -348,7 +327,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(1, count($result));
@@ -369,11 +348,6 @@ class AciProfileMapperCase extends BaseTestCase
     public function shouldNotMapToFundingRecordIfGroupHasAciBillingAccount()
     {
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
-        $depositAccount = new DepositAccount();
-        $depositAccount->setPaymentProcessor(PaymentProcessor::ACI);
-        $depositAccount->setMerchantName('testMerchantName');
-        $group->addDepositAccount($depositAccount);
-
         $billingAccount = new BillingAccount();
         $billingAccount->setPaymentProcessor(PaymentProcessor::ACI);
         $billingAccount->setToken('testToken');
@@ -386,7 +360,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getContainer()->get('deposit_account.repository'));
+        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(2, count($result));
@@ -410,7 +384,7 @@ class AciProfileMapperCase extends BaseTestCase
         $aciProfileMapper = $this->getMock(
             '\RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper',
             ['getContractForUser'],
-            ['testBusinessId', $this->getContainer()->get('deposit_account.repository')]
+            ['testBusinessId', $this->getMerchantAccountRepository()]
         );
 
         $aciProfileMapper->expects($this->once())
@@ -431,5 +405,13 @@ class AciProfileMapperCase extends BaseTestCase
             empty($result),
             'Result of AciProfileMapper::map for User without Addresses and without Contracts must be empty'
         );
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getMerchantAccountRepository()
+    {
+        return $this->getContainer()->get('merchant_account.repository');
     }
 }
