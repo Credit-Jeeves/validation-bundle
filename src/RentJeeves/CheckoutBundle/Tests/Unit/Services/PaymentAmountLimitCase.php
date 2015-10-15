@@ -4,9 +4,9 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit\Services;
 
 use RentJeeves\CheckoutBundle\Services\PaymentAmountLimit;
 use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class PaymentAmountLimitCase extends BaseTestCase
+class PaymentAmountLimitCase extends UnitTestBase
 {
     /**
      * @test
