@@ -3,6 +3,7 @@
 namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 use RentJeeves\ExternalApiBundle\Services\Transunion\TransUnionUserCreatorTrait;
 use CreditJeeves\DataBundle\Entity\User;
 use RentTrack\TransUnionBundle\CCS\Services\CreditSnapshot;
@@ -11,6 +12,9 @@ use RentTrack\TransUnionBundle\CCS\Services\VantageScore3;
 class TransunionReportBuilder extends BaseSummaryReportBuilder
 {
     const LOGGER_PREFIX = '[Transunion Report Builder]';
+
+    const VENDOR = CreditSummaryVendor::TRANSUNION;
+
     use TransUnionUserCreatorTrait;
 
     /**
@@ -62,17 +66,7 @@ class TransunionReportBuilder extends BaseSummaryReportBuilder
             static::LOGGER_PREFIX . 'Try build credit summary report for user #' . $user->getId()
         );
 
-        if ($shouldUpdateReport) {
-            $lastReportOperation = $user->getLastCompleteReportOperation();
-            if (!$lastReportOperation || !$lastReportOperation->getReportTransunionSnapshot()) {
-                $this->logger->alert(static::LOGGER_PREFIX . 'Doesn\'t have report for update');
-                throw new \RuntimeException('Doesn\'t have report for update');
-            }
-            $report = $lastReportOperation->getReportTransunionSnapshot();
-        } else {
-            $report = new ReportTransunionSnapshot();
-            $report->setUser($user);
-        }
+        $report = $this->getReport($user, $shouldUpdateReport);
 
         $transUnionUser = $this->getTransUnionUser($user);
         $snapshot = $this->snapshotCreator->getSnapshot($transUnionUser, $this->snapshotCreatorConfig);
@@ -88,5 +82,17 @@ class TransunionReportBuilder extends BaseSummaryReportBuilder
         $this->createScore($user, $newScore);
 
         $this->em->flush();
+    }
+
+    /**
+     * @param User $user
+     * @return ReportTransunionSnapshot
+     */
+    protected function createNewReport(User $user)
+    {
+        $report = new ReportTransunionSnapshot();
+        $report->setUser($user);
+
+        return $report;
     }
 }

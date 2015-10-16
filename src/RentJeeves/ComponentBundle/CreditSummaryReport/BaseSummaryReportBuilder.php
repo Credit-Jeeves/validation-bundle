@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -65,4 +66,36 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
 
         return true;
     }
+
+    /**
+     * @param User $user
+     * @param bool $shouldUpdateReport
+     * @return Report
+     * @throws \Exception
+     */
+    protected function getReport(User $user, $shouldUpdateReport)
+    {
+        if ($shouldUpdateReport) {
+            $lastReportOperation = $user->getLastCompleteReportOperation();
+            if (!$lastReportOperation || !$lastReportOperation->getReportPrequal()) {
+                $this->logger->alert(static::LOGGER_PREFIX . 'Doesn\'t have report for update');
+                throw new \RuntimeException('Doesn\'t have report for update');
+            }
+            $report = $lastReportOperation->getReportByVendor(static::VENDOR);
+            if ($report->getRawData()) {
+                $this->logger->alert(static::LOGGER_PREFIX . 'Report have been already updated');
+                throw new \RuntimeException('Report have been already updated');
+            }
+        } else {
+            $report = $this->createNewReport($user);
+        }
+
+        return $report;
+    }
+
+    /**
+     * @param User $user
+     * @return Report
+     */
+    abstract protected function createNewReport(User $user);
 }

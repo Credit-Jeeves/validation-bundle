@@ -169,7 +169,7 @@ class ReportController extends Controller
             );
         }
 
-        $this->getFlashBag()->set('message_title',$title);
+        $this->getFlashBag()->set('message_title', $title);
         $this->getFlashBag()->set('message_body', $body);
 
         return new JsonResponse(['url' => $this->generateUrl('public_message_flash')]);

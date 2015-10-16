@@ -5,11 +5,14 @@ namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 use CreditJeeves\CoreBundle\Enum\ScoreModelType;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\User;
-use RentJeeves\ExperianBundle\NetConnect\CreditProfile;
+use CreditJeeves\ExperianBundle\NetConnect\CreditProfile;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 
 class ExperianReportBuilder extends BaseSummaryReportBuilder
 {
     const LOGGER_PREFIX = '[Experian Report Builder]';
+
+    const VENDOR = CreditSummaryVendor::EXPERIAN;
     /**
      * @var CreditProfile
      */
@@ -33,19 +36,9 @@ class ExperianReportBuilder extends BaseSummaryReportBuilder
             static::LOGGER_PREFIX . 'Try build credit summary report for user #' . $user->getId()
         );
 
-        if ($shouldUpdateReport) {
-            $lastReportOperation = $user->getLastCompleteReportOperation();
-            if (!$lastReportOperation || !$lastReportOperation->getReportPrequal()) {
-                $this->logger->alert(static::LOGGER_PREFIX . 'Doesn\'t have report for update');
-                throw new \RuntimeException('Doesn\'t have report for update');
-            }
-            $report = $lastReportOperation->getReportPrequal();
-        } else {
-            $report = new ReportPrequal();
-            $report->setUser($user);
-        }
+        $report = $this->getReport($user, $shouldUpdateReport);
 
-        $reportData = $this->getArf($user);
+        $reportData = $this->creditProfile->getResponseOnUserData($user);
 
         $this->logger->debug(
             static::LOGGER_PREFIX . 'Got report data from experian for user #' . $user->getId()
@@ -62,10 +55,13 @@ class ExperianReportBuilder extends BaseSummaryReportBuilder
 
     /**
      * @param User $user
-     * @return array
+     * @return ReportPrequal
      */
-    protected function getArf(User $user)
+    protected function createNewReport(User $user)
     {
-        return $this->creditProfile->getResponseOnUserData($user);
+        $report = new ReportPrequal();
+        $report->setUser($user);
+
+        return $report;
     }
 }
