@@ -738,12 +738,6 @@
                   Credit Service Member
                 </target>
             </trans-unit>
-           <trans-unit id="ach.fee">
-                <source>ach.fee</source>
-                <target>
-                  Unit Fee Waived
-                </target>
-            </trans-unit>
            <trans-unit id="invite.tenant">
                 <source>invite.tenant</source>
                 <target>Invite Tenant</target>
