@@ -41,35 +41,6 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateDebitCardsAndSkipCreditCards()
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        $this->assertCount(
-            0,
-            $em->getRepository('RjDataBundle:DebitCardBinlist')->findAll(),
-            'DebitCards should be empty'
-        );
-
-        $this->executeCommand();
-
-        $debitCards = $em->getRepository('RjDataBundle:DebitCardBinlist')->findAll();
-        $this->assertCount(2, $debitCards, 'DebitCards should have 1 entity');
-        /** @var DebitCardBinlist $debitCard */
-        $this->assertInstanceOf('\RentJeeves\DataBundle\Entity\DebitCardBinlist', $debitCard = $debitCards[0]);
-        $this->assertEquals('341142', $debitCard->getIin(), 'IIN is wrong');
-        $this->assertEquals('ABC', $debitCard->getBinlistBank()->getBankName(), 'BankName is wrong');
-        $this->assertEquals('DEBIT', $debitCard->getCardType(), 'Only DEBIT cards are allowed');
-
-        /** @var DebitCardBinlist $debitCard2 */
-        $this->assertInstanceOf('\RentJeeves\DataBundle\Entity\DebitCardBinlist', $debitCard2 = $debitCards[1]);
-        $this->assertEquals('341143', $debitCard2->getIin(), 'IIN is wrong');
-        $this->assertEquals('DEBIT', $debitCard2->getCardType(), 'Only DEBIT cards are allowed');
-    }
-
-    /**
-     * @test
-     */
     public function shouldUpdateFieldsOnlyIfTheyHaveChanged()
     {
         $this->load(true);
@@ -82,7 +53,7 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
         $debitCardBinlist->setBinlistBank($bank);
         $debitCardBinlist->setBankPhone('12345689');
         $debitCardBinlist->setCardBrand('DINERS CLUB');
-        $debitCardBinlist->setCardType('DEBIT');
+        $debitCardBinlist->setCardType('CREDIT');
         $debitCardBinlist->setBankUrl('www.abc-a.com');
         $debitCardBinlist->setBankCity('NY');
         $em->persist($debitCardBinlist);
@@ -97,7 +68,7 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
         $this->assertEquals('www.abc-a.com', $debitCardBinlist->getBankUrl(), 'Bank url should not be changed');
         $this->assertNotEquals('NY', $debitCardBinlist->getBankCity(), 'Bank city should be changed');
         $this->assertNotEquals('DINERS CLUB', $debitCardBinlist->getCardBrand(), 'Card brand should be changed');
-        $this->assertEquals('DEBIT', $debitCardBinlist->getCardType(), 'Card type should not be changed');
+        $this->assertEquals('CREDIT', $debitCardBinlist->getCardType(), 'Card type should not be changed');
     }
 
     protected function executeCommand()
@@ -137,15 +108,10 @@ class UpdateDebitCardBinlistCommandCase extends BaseTestCase
                         'iin' => 341143,
                         'bank_name' => 'ABC America',
                         'card_brand' => 'AMEX',
-                        'card_type' => 'DEBIT',
+                        'card_type' => 'CREDIT',
                         'bank_phone' => '05989659999',
                         'bank_url' => 'www.abc-a.com',
                         'bank_city' => 'New York City'
-                    ],
-                    2 => [
-                        'iin' => 341144,
-                        'bank_name' => 'ABC',
-                        'card_type' => 'CREDIT',
                     ]
                 ]
             ));

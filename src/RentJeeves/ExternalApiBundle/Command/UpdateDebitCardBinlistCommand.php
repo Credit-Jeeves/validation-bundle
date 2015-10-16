@@ -12,8 +12,6 @@ use RentJeeves\CoreBundle\Command\BaseCommand;
 
 class UpdateDebitCardBinlistCommand extends BaseCommand
 {
-    const DEBIT_TYPE = 'DEBIT';
-
     /**
      * {@inheritdoc}
      */
@@ -38,15 +36,12 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
 
         foreach ($binlistData as $debitCardData) {
             try {
-                $cardType = $this->getFieldValue($debitCardData, 'card_type', true);
-                if (self::DEBIT_TYPE === $cardType) {
-                    /** @var DebitCardBinlist $debitCard */
-                    $debitCard = $repo->findOneByIin($this->getFieldValue($debitCardData, 'iin', true));
-                    if (null !== $debitCard) {
-                        $this->updateDebitCard($debitCard, $debitCardData);
-                    } else {
-                        $this->createDebitCard($debitCardData);
-                    }
+                /** @var DebitCardBinlist $debitCard */
+                $debitCard = $repo->findOneByIin($this->getFieldValue($debitCardData, 'iin', true));
+                if (null !== $debitCard) {
+                    $this->updateDebitCard($debitCard, $debitCardData);
+                } else {
+                    $this->createDebitCard($debitCardData);
                 }
             } catch (\Exception $e) {
                 $logger->error(sprintf(
