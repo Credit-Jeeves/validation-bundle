@@ -1,6 +1,9 @@
 <?php
 namespace RentJeeves\TestBundle\Mocks;
 
+/**
+ * @deprecated Pls use \RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait
+ */
 class CommonSystemMocks extends \PHPUnit_Framework_TestCase
 {
     /**

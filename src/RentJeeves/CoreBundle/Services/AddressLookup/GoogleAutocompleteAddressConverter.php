@@ -31,7 +31,7 @@ class GoogleAutocompleteAddressConverter
     /**
      * @param string $jsonData
      *
-     * @throws \InvalidArgumentException input paremetrs is not valid JSON
+     * @throws \InvalidArgumentException input parameter is not valid JSON
      * @throws AddressLookupException Address after convert JSON is not valid
      *
      * @return Address
