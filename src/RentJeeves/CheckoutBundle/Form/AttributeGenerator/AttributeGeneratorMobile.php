@@ -32,7 +32,7 @@ class AttributeGeneratorMobile extends AttributeGenerator
 
     public function dueDateAttrs()
     {
-        return [ parent::dueDateAttrs(), array('data-role' => 'date', 'data-inline' => 'true') ];
+        return array_merge(parent::dueDateAttrs(), array('data-role' => 'date', 'data-inline' => 'true'));
     }
 
     public function submitAttrs()
