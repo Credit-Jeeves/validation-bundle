@@ -25,9 +25,10 @@ class CreditTrackCase extends BaseTestCase
     protected function checkReport()
     {
         $this->session->wait($this->timeout, "$('.loading center').is(':visible')");
-        $this->session->wait($this->timeout * 3, "$('#report_page .summary h3').is(':visible')");
-        $this->assertNotNull($title = $this->page->find('css', '#report_page .summary h3'));
-        $this->assertEquals('component.credit.summary', $title->getText());
+        $this->session->wait($this->timeout * 3, "$('#summary_page p.credit-balance-title').is(':visible')");
+        $this->assertNotNull($title = $this->page->find('css', '#summary_page p.credit-balance-title span.floatright'));
+        $dateUpdating = new \DateTime();
+        $this->assertEquals('common.date ' . $dateUpdating->format('M j, Y'), $title->getText());
     }
 
     protected function makeNew()

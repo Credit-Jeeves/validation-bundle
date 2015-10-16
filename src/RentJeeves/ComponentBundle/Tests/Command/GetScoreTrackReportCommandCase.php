@@ -1,13 +1,10 @@
 <?php
 
-namespace RentJeeves\ExperianBundle\Tests\Command;
+namespace RentJeeves\ComponentBundle\Tests\Command;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
 use RentJeeves\ComponentBundle\Command\GetScoreTrackReportCommand;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -32,22 +29,15 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         $job = new Job();
         $job->addRelatedEntity($report);
         // should create new order and operation b/c we take report from it after it was paid
-        $order = new OrderSubmerchant();
-        $operation = new Operation();
-        $operation->setType(OperationType::REPORT);
-        $operation->setReport($report);
-        $operation->setOrder($order);
-        $operation->setPaidFor(new \DateTime());
-        $order->addOperation($operation);
-        $order->setUser($user);
-        $order->setSum(1);
+        /** @var OrderCreationManager $orderCretionManager */
+        $orderCretionManager = $this->getContainer()->get('payment_processor.order_creation_manager');
+        $order = $orderCretionManager->createCreditTrackOrder($user->getPaymentAccounts()->last());
+        $order->getOperations()->last()->setReport($report);
         $order->setStatus(OrderStatus::COMPLETE);
-        $order->setPaymentType(OrderPaymentType::CASH);
 
         $em->persist($report);
         $em->persist($job);
         $em->persist($order);
-        $em->persist($operation);
         $em->flush();
 
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);

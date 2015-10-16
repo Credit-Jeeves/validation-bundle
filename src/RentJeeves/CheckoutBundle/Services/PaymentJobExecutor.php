@@ -227,8 +227,6 @@ class PaymentJobExecutor
     {
         $job = new Job('score-track:get-report', ['--app=rj']);
         $job->addRelatedEntity($report);
-        $execute = new DateTime();
-        $job->setExecuteAfter($execute);
 
         return $job;
     }

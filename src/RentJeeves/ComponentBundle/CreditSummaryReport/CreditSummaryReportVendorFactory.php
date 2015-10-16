@@ -22,23 +22,18 @@ class CreditSummaryReportVendorFactory
     protected $defaultVendor;
 
     /**
-     * @param string $defaultVendor
-     */
-    public function setDefaultVendor($defaultVendor)
-    {
-        $this->defaultVendor = $defaultVendor;
-    }
-
-    /**
      * @param TransunionReportBuilder $transunionReportBuilder
      * @param ExperianReportBuilder $experianReportBuilder
+     * @param string $defaultVendor
      */
-    public function setReportBuilders(
+    public function __construct(
         TransunionReportBuilder $transunionReportBuilder,
-        ExperianReportBuilder $experianReportBuilder
+        ExperianReportBuilder $experianReportBuilder,
+        $defaultVendor
     ) {
         $this->transunionReportBuilder = $transunionReportBuilder;
         $this->experianReportBuilder = $experianReportBuilder;
+        $this->defaultVendor = $defaultVendor;
     }
 
     /**

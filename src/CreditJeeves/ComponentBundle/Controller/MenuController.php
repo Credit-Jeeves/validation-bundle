@@ -4,6 +4,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Alex
@@ -16,16 +17,10 @@ class MenuController extends Controller
      *
      * @return array
      */
-    public function tabsAction()
+    public function tabsAction(Request $request)
     {
-//        $nCountReports = $this->get('core.session.applicant')->getUser()->getReportsD2c()->count();
-        $nCountReports = 0;
-        $sRouteName = $this->getRequest()->get('_route');
-
-        //echo $sRouteName;
-        return array(
-            'sRouteName' => $sRouteName,
-            'nReport' => $nCountReports
-        );
+        return [
+            'routeName' => $request->get('_route'),
+        ];
     }
 }

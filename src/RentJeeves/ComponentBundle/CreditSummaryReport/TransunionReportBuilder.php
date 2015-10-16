@@ -4,8 +4,8 @@ namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
-use RentJeeves\ExternalApiBundle\Services\Transunion\TransUnionUserCreatorTrait;
 use CreditJeeves\DataBundle\Entity\User;
+use RentTrack\TransUnionBundle\CCS\Model\TransUnionUser;
 use RentTrack\TransUnionBundle\CCS\Services\CreditSnapshot;
 use RentTrack\TransUnionBundle\CCS\Services\VantageScore3;
 
@@ -14,8 +14,6 @@ class TransunionReportBuilder extends BaseSummaryReportBuilder
     const LOGGER_PREFIX = '[Transunion Report Builder]';
 
     const VENDOR = CreditSummaryVendor::TRANSUNION;
-
-    use TransUnionUserCreatorTrait;
 
     /**
      * @var CreditSnapshot
@@ -94,5 +92,28 @@ class TransunionReportBuilder extends BaseSummaryReportBuilder
         $report->setUser($user);
 
         return $report;
+    }
+
+    /**
+     * @param User $user
+     * @return TransUnionUser
+     */
+    protected function getTransUnionUser(User $user)
+    {
+        $address = $user->getDefaultAddress();
+
+        $tuUser = new TransUnionUser();
+        $tuUser
+            ->setClientId($user->getId())
+            ->setFirstName($user->getFirstName())
+            ->setLastName($user->getLastName())
+            ->setDateOfBirth($user->getDateOfBirth()->format('Y-m-d'))
+            ->setSsn($user->getSsn())
+            ->setStreet($address->getAddress())
+            ->setCity($address->getCity())
+            ->setState($address->getArea())
+            ->setZipCode($address->getZip());
+
+        return $tuUser;
     }
 }

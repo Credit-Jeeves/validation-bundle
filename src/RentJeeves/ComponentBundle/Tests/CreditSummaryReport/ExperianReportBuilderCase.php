@@ -2,14 +2,11 @@
 
 namespace RentJeeves\ComponentBundle\Tests\PidKiqProcessor;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
 use RentJeeves\ComponentBundle\CreditSummaryReport\ExperianReportBuilder;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -110,21 +107,14 @@ class ExperianReportBuilderCase extends BaseTestCase
         $report->setUser($this->user);
         $report->setRawData('');
         // should create new order and operation b/c we take report from it after it was paid
-        $order = new OrderSubmerchant();
-        $operation = new Operation();
-        $operation->setType(OperationType::REPORT);
-        $operation->setReport($report);
-        $operation->setOrder($order);
-        $operation->setPaidFor(new \DateTime());
-        $order->addOperation($operation);
-        $order->setUser($this->user);
-        $order->setSum(1);
+        /** @var OrderCreationManager $orderCretionManager */
+        $orderCretionManager = $this->getContainer()->get('payment_processor.order_creation_manager');
+        $order = $orderCretionManager->createCreditTrackOrder($this->user->getPaymentAccounts()->last());
+        $order->getOperations()->last()->setReport($report);
         $order->setStatus(OrderStatus::COMPLETE);
-        $order->setPaymentType(OrderPaymentType::CASH);
 
         $em->persist($report);
         $em->persist($order);
-        $em->persist($operation);
         $em->flush();
 
         $this->experianReportBuilder->build($this->user, true);

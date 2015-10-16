@@ -1,8 +1,6 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Doctrine\DBAL\DBALException;
-use Guzzle\Http\Exception\CurlException;
 use Monolog\Logger;
 use RentJeeves\ComponentBundle\CreditSummaryReport\CreditSummaryReportBuilderInterface;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
@@ -29,14 +27,13 @@ class ReportController extends Controller
         $vendor = $this->container->getParameter('credit_summary_vendor');
 
         if ($shouldUpdateReport) {
-            return $this->getUser()->getLastCompleteReportOperation()->getReportByVendor($vendor);
+            return (bool) $this->getUser()->getLastCompleteReportOperation()->getReportByVendor($vendor);
         } else {
             return !$this->getUser()->getLastReportByVendor($vendor);
         }
     }
 
     /**
-     * @Route("/get", name="core_report_get")
      * @Route("/get/{redirect}", name="core_report_get")
      * @Template()
      *
@@ -99,7 +96,7 @@ class ReportController extends Controller
             set_time_limit(90);
             if (false == $session->get('isReportProcessing', false)) {
                 $session->set('isReportProcessing', true);
-                $shouldUpdateReport = $this->getFlashBag()->get('shouldUpdateReport');
+                $shouldUpdateReport = reset($this->getFlashBag()->get('shouldUpdateReport'));
 
                 try {
                     if (!$this->saveCreditSummary($shouldUpdateReport)) {
@@ -117,16 +114,6 @@ class ReportController extends Controller
 
                         return $this->createShowMessageResponse($title, $body);
                     }
-                } catch (DBALException $e) {
-                    $session->set('isReportProcessing', false);
-                    $logger->alert('[Report Controller]' . $e->getMessage());
-
-                    return $this->createShowMessageResponse();
-                } catch (CurlException $e) {
-                    $session->set('isReportProcessing', false);
-                    $logger->alert('[Report Controller]' . $e->getMessage());
-
-                    return $this->createShowMessageResponse();
                 } catch (\Exception $e) {
                     $session->set('isReportProcessing', false);
 

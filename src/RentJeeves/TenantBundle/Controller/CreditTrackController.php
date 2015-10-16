@@ -1,8 +1,10 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +26,7 @@ class CreditTrackController extends Controller
     public function payAction()
     {
         $em = $this->getDoctrine()->getManager();
+        /** @var Group $group */
         $group = $em->getRepository('DataBundle:Group')
             ->findOneByCode($this->container->getParameter('rt_group_code'));
         /** @var Tenant $user */
@@ -31,7 +34,9 @@ class CreditTrackController extends Controller
         $serializer = $this->get('jms_serializer');
 
         $paymentAccounts = $serializer->serialize(
-            $user->getPaymentAccounts(),
+            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($group) {
+                return $paymentAccount->getPaymentProcessor() === $group->getGroupSettings()->getPaymentProcessor();
+            }),
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );

@@ -70,6 +70,7 @@ services:
             - [setScoreReceiver, ["@transunion.ccs.vantage_score_3", "%transunion.renttrack_vantage_score_3_bundle%"]]
     credit_summary.report_builder_factory:
         class: "%credit_summary.report_builder_factory.class%"
-        calls:
-            - [setDefaultVendor, ["%credit_summary_vendor%"]]
-            - [setReportBuilders, ["@credit_summary.transunion.report_builder", "@credit_summary.experian.report_builder"]]
+        arguments:
+            - @credit_summary.transunion.report_builder
+            - @credit_summary.experian.report_builder
+            - %credit_summary_vendor%

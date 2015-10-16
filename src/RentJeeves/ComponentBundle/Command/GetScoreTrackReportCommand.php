@@ -32,9 +32,9 @@ class GetScoreTrackReportCommand extends BaseCommand
         $job = $this->getEntityManager()->getRepository('RjDataBundle:Job')->find($jobId);
         if (empty($job)) {
             $this->getLogger()->debug(
-                '[Get ScoreTrack Report Command]' . sprintf('Can not fid --jms-job-id=%s', $jobId)
+                '[Get ScoreTrack Report Command]' . sprintf('Can not find --jms-job-id=%s', $jobId)
             );
-            throw new \RuntimeException(sprintf('Can not fid --jms-job-id=%s', $jobId));
+            throw new \RuntimeException(sprintf('Can not find --jms-job-id=%s', $jobId));
         }
 
         foreach ($job->getRelatedEntities() as $relatedEntity) {

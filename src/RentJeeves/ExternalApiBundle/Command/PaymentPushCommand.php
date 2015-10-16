@@ -81,7 +81,7 @@ class PaymentPushCommand extends ContainerAwareCommand
         /** @var Job $job */
         $job = $em->getRepository('RjDataBundle:Job')->findOneBy(['id' => $jobId]);
         if (empty($job)) {
-            throw new \RuntimeException("Can not fid --jms-job-id={$jobId}");
+            throw new \RuntimeException("Can not find --jms-job-id={$jobId}");
         }
 
         $arrayCollectionJobRelatedOrder = $job->getRelatedEntities();
@@ -107,7 +107,7 @@ class PaymentPushCommand extends ContainerAwareCommand
 
         $orderRepository = $em->getRepository('DataBundle:Order');
         if (false == $order = $orderRepository->find($orderId)) {
-            throw new \RuntimeException("Can not fid --order-id={$orderId}");
+            throw new \RuntimeException("Can not find --order-id={$orderId}");
         }
 
         return $order;
