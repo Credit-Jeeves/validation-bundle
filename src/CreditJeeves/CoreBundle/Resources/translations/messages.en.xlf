@@ -1295,7 +1295,7 @@
             </trans-unit>
             <trans-unit id="error.fatal.message">
                 <source>error.fatal.message-%SUPPORT_EMAIL%</source>
-                <target>YOops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
+                <target>Oops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
             </trans-unit>
             <!-- Did you know component -->
             <trans-unit id="dyk.subheading.default">
