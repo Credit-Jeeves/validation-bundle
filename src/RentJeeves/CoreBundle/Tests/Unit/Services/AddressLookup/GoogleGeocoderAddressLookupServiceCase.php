@@ -25,12 +25,12 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->throwException(new \Exception('test')));
 
-        $GoogleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
+        $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
             $this->getValidatorMock(),
             $this->getLoggerMock()
         );
-        $GoogleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
+        $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
     }
 
     /**
@@ -46,12 +46,12 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->returnValue(null));
 
-        $GoogleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
+        $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
             $this->getValidatorMock(),
             $this->getLoggerMock()
         );
-        $GoogleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
+        $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
     }
 
     /**
@@ -68,12 +68,12 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->returnValue($response));
 
-        $GoogleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
+        $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
             $this->getValidator(),
             $this->getLoggerMock()
         );
-        $GoogleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
+        $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
     }
 
     /**
@@ -97,12 +97,12 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->returnValue($response));
 
-        $GoogleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
+        $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
             $this->getValidator(),
             $this->getLoggerMock()
         );
-        $address = $GoogleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
+        $address = $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
 
         $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
     }

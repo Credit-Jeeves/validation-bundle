@@ -270,7 +270,15 @@ class Address
      */
     public function getIndex()
     {
-        /** @TODO: add logic */
+        $index = sprintf(
+            '%s%s%s%s',
+            $this->getNumber(),
+            $this->getStreet(),
+            $this->getCity(),
+            $this->getState()
+        );
+
+        return str_replace(' ', '', $index);
     }
 
     /**

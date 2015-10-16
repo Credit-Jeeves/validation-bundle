@@ -96,7 +96,13 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         $address->setLatitude($addressMetadata->getLatitude());
         $address->setLongitude($addressMetadata->getLongitude());
         $address->setNumber($addressComponents->getPrimaryNumber());
-        $address->setStreet($addressComponents->getStreetName() . ' ' . $addressComponents->getStreetSuffix());
+        $street = sprintf(
+            '%s %s %s',
+            $addressComponents->getStreetPredirection(),
+            $addressComponents->getStreetName(),
+            $addressComponents->getStreetSuffix()
+        );
+        $address->setStreet(trim($street));
         $address->setZip($addressComponents->getZipcode());
         $address->setCity($addressComponents->getCityName());
         $address->setCountry(self::DEFAULT_COUNTRY);
