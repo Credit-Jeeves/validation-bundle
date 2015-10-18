@@ -24,7 +24,7 @@ class CreditTrackCase extends BaseTestCase
 
     protected function checkReport()
     {
-        $this->session->wait($this->timeout, "$('.loading center').is(':visible')");
+        $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
         $this->session->wait($this->timeout * 3, "$('#summary_page p.credit-balance-title').is(':visible')");
         $this->assertNotNull($title = $this->page->find('css', '#summary_page p.credit-balance-title span.floatright'));
         $dateUpdating = new \DateTime();

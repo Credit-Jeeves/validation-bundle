@@ -209,18 +209,19 @@ class SourcesCase extends BaseTestCase
         $createdPaymentAccount = $this->prepareFixturesAciCollectPay($tenant);
         $id = $createdPaymentAccount->getId();
 
-        sleep(3);
-
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
-        $this->assertNotEmpty(
-            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Test ACI Bank\')'),
             'Should be displayed row with our added payment account'
         );
-        $this->assertCount(1, $rows, 'Should be only one payment account');
-        $rows[0]->clickLink('delete'); // remove last account
+        $this->assertNotEmpty(
+            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+            'Should be displayed rows with payment account and have at least 1 added new payment account'
+        );
+        $rows[count($rows) - 1]->clickLink('delete'); // remove last account
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
 
@@ -230,9 +231,13 @@ class SourcesCase extends BaseTestCase
             $this->timeout,
             "jQuery('#payment-account-table').length"
         );
-        $this->assertEmpty(
-            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
-            'Should not be displayed any rows (we remove last payment account)'
+
+        $beforeRemoveCount = count($rows);
+        $rows = $this->page->findAll('css', '#payment-account-table tbody tr');
+        $this->assertCount($beforeRemoveCount - 1, $rows, 'Should be removed one row');
+        $this->assertNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Test ACI Bank\')'),
+            'Should be removed row with our added payment account'
         );
 
         $this->getEntityManager()->clear(); // should refresh cache

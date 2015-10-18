@@ -96,8 +96,8 @@ class ReportController extends Controller
             set_time_limit(90);
             if (false == $session->get('isReportProcessing', false)) {
                 $session->set('isReportProcessing', true);
-                $shouldUpdateReport = reset($this->getFlashBag()->get('shouldUpdateReport'));
-
+                $shouldUpdateReport = $this->getFlashBag()->get('shouldUpdateReport');
+                $shouldUpdateReport = reset($shouldUpdateReport); // this is b/c flash bag converted all to array
                 try {
                     if (!$this->saveCreditSummary($shouldUpdateReport)) {
                         $session->set('isReportProcessing', false);
