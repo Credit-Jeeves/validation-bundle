@@ -19,10 +19,10 @@ class SmartyStreetsAddressIndexingCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('smarty-streets-address-indexing')
+            ->setName('smarty-streets:index')
             ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'ID of job')
             ->addOption('page', null, InputOption::VALUE_OPTIONAL, 'Number of page')
-            ->setDescription('Indexing address for all property');
+            ->setDescription('Indexing address for all properties');
     }
 
     /**
@@ -57,7 +57,7 @@ class SmartyStreetsAddressIndexingCommand extends BaseCommand
     {
         $this->getLogger()->debug('Start indexing page#' . $page);
         foreach ($this->getPropertiesByPage($page) as $property) {
-            if ($property->getIndex() === null || $property->getLat() === null || $property->getLong()) {
+            if ($property->getIndex() === null || $property->getLat() === null || $property->getLong() === null) {
                 $this->indexProperty($property);
             }
         }
@@ -89,7 +89,9 @@ class SmartyStreetsAddressIndexingCommand extends BaseCommand
             return;
         }
 
-        $property->setAddressFields($address);
+        $property->setLat($address->getLatitude());
+        $property->setLong($address->getLongitude());
+        $property->setIndex($address->getIndex());
     }
 
     /**
