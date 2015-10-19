@@ -222,7 +222,6 @@ services:
             - @checkout.paid_for
             - %rt_group_code%
             - %credittrack_payment_per_month%
-            - %lower_fee%
 
     payment.amount_limit:
         class: RentJeeves\CheckoutBundle\Services\PaymentAmountLimit

@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Enum\TypeDebitFee;
 
 class OrderCreationManager
 {
@@ -39,24 +40,17 @@ class OrderCreationManager
     protected $rtGroupCode;
 
     /**
-     * @var double
-     */
-    protected $lowerFee;
-
-    /**
      * @param EntityManager $em
      * @param PaidFor $paidFor
      * @param $rtGroupCode
      * @param $amount
-     * @param double $lowerFee
      */
-    public function __construct(EntityManager $em, PaidFor $paidFor, $rtGroupCode, $amount, $lowerFee)
+    public function __construct(EntityManager $em, PaidFor $paidFor, $rtGroupCode, $amount)
     {
         $this->em = $em;
         $this->paidFor = $paidFor;
         $this->rtGroupCode = $rtGroupCode;
         $this->creditTrackAmount = $amount;
-        $this->lowerFee = $lowerFee;
     }
 
     /**
@@ -319,7 +313,7 @@ class OrderCreationManager
                 $paymentAccount->isRegistered() &&
                 $groupSettings->isAllowedDebitFee()
             ) {
-                $order->setFee(round($order->getSum() * ($this->lowerFee / 100), 2));
+                $this->setDebitFeeIntoOrder($order, $groupSettings);
             } else {
                 $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
             }
@@ -333,6 +327,19 @@ class OrderCreationManager
             }
 
             $order->setPaymentType(OrderPaymentType::BANK);
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @param GroupSettings $groupSettings
+     */
+    protected function setDebitFeeIntoOrder(Order $order, GroupSettings $groupSettings)
+    {
+        if ($groupSettings->getTypeDebitFee() === TypeDebitFee::FLAT_FEE) {
+            $order->setFee($groupSettings->getDebitFee());
+        } elseif ($groupSettings->getTypeDebitFee() === TypeDebitFee::PERCENTAGE) {
+            $order->setFee(round($order->getSum() * ($groupSettings->getDebitFee() / 100), 2));
         }
     }
 }
