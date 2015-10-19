@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling as AciCollectPayProfileBillingEntity;
+use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling as EntityAciCollectPayProfileBilling;
 
 /**
  * @ORM\MappedSuperclass
@@ -55,7 +55,7 @@ abstract class AciCollectPayUserProfile
     protected $createdAt;
 
     /**
-     * @var ArrayCollection|AciCollectPayProfileBillingEntity[]
+     * @var ArrayCollection|EntityAciCollectPayProfileBilling[]
      *
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling",
@@ -127,7 +127,7 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @return ArrayCollection|AciCollectPayProfileBillingEntity[]
+     * @return ArrayCollection|EntityAciCollectPayProfileBilling[]
      */
     public function getAciCollectPayProfileBillings()
     {
@@ -135,17 +135,17 @@ abstract class AciCollectPayUserProfile
     }
 
     /**
-     * @param AciCollectPayProfileBillingEntity[] $aciCollectPayProfileBillings
+     * @param EntityAciCollectPayProfileBilling $aciCollectPayProfileBilling
      */
-    public function addAciCollectPayProfileBilling(AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling)
+    public function addAciCollectPayProfileBilling(EntityAciCollectPayProfileBilling $aciCollectPayProfileBilling)
     {
         $this->aciCollectPayProfileBillings->add($aciCollectPayProfileBilling);
     }
 
     /**
-     * @param AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling
+     * @param EntityAciCollectPayProfileBilling $aciCollectPayProfileBilling
      */
-    public function removeAciCollectPayProfileBilling(AciCollectPayProfileBillingEntity $aciCollectPayProfileBilling)
+    public function removeAciCollectPayProfileBilling(EntityAciCollectPayProfileBilling $aciCollectPayProfileBilling)
     {
         $this->aciCollectPayProfileBillings->removeElement($aciCollectPayProfileBilling);
     }
