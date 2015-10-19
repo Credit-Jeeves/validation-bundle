@@ -11,8 +11,7 @@ parameters:
 
     allow_score_track: true
 
-    credit_services:
-        credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
+    credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
 
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_test.yml" }

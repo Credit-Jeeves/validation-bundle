@@ -8,16 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ReportD2c extends Report
 {
-    /**
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     mappedBy="reportD2c",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $operation;
-
     /*
      *  This report does not currently implement the ReportSummaryInterface
      */

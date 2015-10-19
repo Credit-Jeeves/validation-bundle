@@ -37,7 +37,8 @@ function PaymentAccount(data, defaultType) {
         'cc_expiration': {
             create: function(options) {
                 var expDate = new Date(options.data);
-                options.parent.ExpirationMonth(expDate.getMonth() * 1 + 1);
+                // getMonth return value from 0 till 11 need add +1
+                options.parent.ExpirationMonth(expDate.getMonth() + 1);
                 options.parent.ExpirationYear(expDate.getFullYear());
                 delete options.parent.cc_expiration;
             }

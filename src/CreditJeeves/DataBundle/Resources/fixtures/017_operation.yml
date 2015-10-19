@@ -1,7 +1,0 @@
-model: CreditJeeves\DataBundle\Entity\Operation 
-fixtures:
-  cjOperationReport_1:
-    order: cjOrder_1
-    reportD2c: cjApplicantReportD2C_5
-    amount: 9
-    paidFor: now

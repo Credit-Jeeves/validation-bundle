@@ -5,13 +5,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreditTrackCommand extends ContainerAwareCommand
+class ScoreTrackCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('tenant:credit-track')
-            ->setDescription('Start collect Credit Track payments')
+            ->setName('score-track:collect-payments')
+            ->setDescription('Start collect Score Track payments')
             ->setHelp('This command must be run only once par day!');
     }
 

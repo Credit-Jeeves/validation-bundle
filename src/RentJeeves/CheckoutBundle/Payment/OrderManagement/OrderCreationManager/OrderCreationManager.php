@@ -14,7 +14,6 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Model\GroupSettings;
 use RuntimeException;
 
@@ -139,13 +138,10 @@ class OrderCreationManager
         $order = new OrderSubmerchant();
         $order->setUser($paymentAccount->getUser());
         $order->setSum($this->creditTrackAmount);
-        /** Not implement for ACI, PaymentProcess should be gotten from Group */
-        $order->setPaymentProcessor(PaymentProcessor::HEARTLAND);
-        $order->setPaymentAccount($paymentAccount);
-
         /** @var Group $rentTrackGroup */
         $rentTrackGroup = $this->em->getRepository('DataBundle:Group')->findOneByCode($this->rtGroupCode);
-
+        $order->setPaymentProcessor($rentTrackGroup->getGroupSettings()->getPaymentProcessor());
+        $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
 
         $this->createReportOperation($order);

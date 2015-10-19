@@ -10,6 +10,11 @@ parameters:
         dbHost: "%net_connect.precise_id.dbhost%"
         subCode: "%net_connect.precise_id.sub_code%"
 
+    credit_summary.base_report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\BaseSummaryReportBuilder
+    credit_summary.experian.report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\ExperianReportBuilder
+    credit_summary.transunion.report_builder.class: RentJeeves\ComponentBundle\CreditSummaryReport\TransunionReportBuilder
+    credit_summary.report_builder_factory.class: RentJeeves\ComponentBundle\CreditSummaryReport\CreditSummaryReportVendorFactory
+
 services:
     pidkiq.message_generator:
         class: "%pidkiq.message_generator.class%"
@@ -46,3 +51,26 @@ services:
         calls:
             - [setPidKiqProcessors, ["@pidkiq.experian_processor"]]
 
+    credit_summary.base_report_builder:
+        abstract:  true
+        class: "credit_summary.base_report_builder.class"
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+    credit_summary.experian.report_builder:
+        parent: credit_summary.base_report_builder
+        class: "%credit_summary.experian.report_builder.class%"
+        calls:
+            - [setCreditProfile, ["@experian.net_connect.credit_profile"]]
+    credit_summary.transunion.report_builder:
+        parent: credit_summary.base_report_builder
+        class: "%credit_summary.transunion.report_builder.class%"
+        calls:
+            - [setSnapshotCreator, ["@transunion.ccs.credit_snapshot", "%transunion.renttrack_snapshot_bundle%"]]
+            - [setScoreReceiver, ["@transunion.ccs.vantage_score_3", "%transunion.renttrack_vantage_score_3_bundle%"]]
+    credit_summary.report_builder_factory:
+        class: "%credit_summary.report_builder_factory.class%"
+        arguments:
+            - @credit_summary.transunion.report_builder
+            - @credit_summary.experian.report_builder
+            - %credit_summary_vendor%
