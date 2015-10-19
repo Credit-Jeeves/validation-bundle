@@ -138,6 +138,19 @@ abstract class PaymentAccount
     protected $bankAccountType;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      options={
+     *          "default" : 0
+     *      },
+     *     nullable=false
+     * )
+     */
+    protected $registered = false;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -580,5 +593,21 @@ abstract class PaymentAccount
     public function removeHpsMerchant(PaymentAccountHpsMerchantEntity $hpsMerchant)
     {
         $this->hpsMerchants->removeElement($hpsMerchant);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRegistered()
+    {
+        return $this->registered;
+    }
+
+    /**
+     * @param boolean $registered
+     */
+    public function setRegistered($registered)
+    {
+        $this->registered = $registered;
     }
 }
