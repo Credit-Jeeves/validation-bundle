@@ -25,6 +25,7 @@ parameters:
     aci.collect_pay.business_id: 563376
 
     payment_processor.hps.report_path: /tmp
+    lower_fee: 1
     heartland:
         env: testing
         application_id: 3
