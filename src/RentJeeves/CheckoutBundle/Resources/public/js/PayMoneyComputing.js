@@ -56,6 +56,14 @@ function PayMoneyComputing(parent, contract) {
             if (isText) {
                 fee = Format.money(fee);
             }
+        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+            fee = parseFloat(self.contract().groupSettings.feeDC);
+            var feeType = self.contract().groupSettings.typeFeeDC;
+            if (isText && 'percentage' == feeType) {
+                fee += '%';
+            } else if (isText) {
+                fee = Format.money(fee);
+            }
         }
         return fee;
     };
@@ -73,6 +81,8 @@ function PayMoneyComputing(parent, contract) {
             return 'checkout.fee.card.note-%FEE%';
         } else if ('bank' == parent.currentPaymentAccount().type()) {
             return 'checkout.fee.bank.note-%FEE%';
+        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+            return 'checkout.fee.debit_card.note-%FEE%';
         }
         return '';
     });
@@ -83,6 +93,8 @@ function PayMoneyComputing(parent, contract) {
             i18nKey = 'checkout.fee.card.note.help-%FEE%';
         } else if ('bank' == parent.currentPaymentAccount().type()) {
             i18nKey = 'checkout.fee.bank.note.help-%FEE%';
+        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+            i18nKey = 'checkout.fee.debit_card.note.help-%FEE%';
         }
         return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true)}) : '';
     });
@@ -94,6 +106,13 @@ function PayMoneyComputing(parent, contract) {
         } else if ('bank' == parent.currentPaymentAccount().type() &&
             self.contract().groupSettings.isPassedACH == true) {
             fee = parseFloat(self.contract().groupSettings.feeACH);
+        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+            var feeType = self.contract().groupSettings.typeFeeDC;
+            if ('percentage' == feeType) {
+                fee = parseFloat(self.contract().groupSettings.feeDC) / 100 * self.total();
+            } else {
+                fee = parseFloat(self.contract().groupSettings.feeDC);
+            }
         }
         if (isText) {
             fee = Format.money(fee);

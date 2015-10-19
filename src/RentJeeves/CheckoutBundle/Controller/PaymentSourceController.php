@@ -35,7 +35,13 @@ class PaymentSourceController extends Controller
      */
     public function sourceAction($formNameSuffix = null)
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser(), $formNameSuffix));
+        $paymentAccountType = $this->createForm(
+            new PaymentAccountType(
+                $this->getUser(),
+                $formNameSuffix,
+                $this->getDoctrine()->getManager()
+            )
+        );
 
         return ['paymentAccountType' => $paymentAccountType->createView()];
     }
@@ -114,7 +120,13 @@ class PaymentSourceController extends Controller
      */
     public function createSourceAction(Request $request, $formNameSuffix = null)
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser(), $formNameSuffix));
+        $paymentAccountType = $this->createForm(
+            new PaymentAccountType(
+                $this->getUser(),
+                $formNameSuffix,
+                $this->getDoctrine()->getManager()
+            )
+        );
         $paymentAccountType->handleRequest($request);
         if (!$paymentAccountType->isValid()) {
             return $this->renderErrors($paymentAccountType);
@@ -184,7 +196,11 @@ class PaymentSourceController extends Controller
      */
     public function sourceExistingAction(Request $request, $formNameSuffix = null)
     {
-        $formType = new PaymentAccountType($this->getUser(), $formNameSuffix);
+        $formType = new PaymentAccountType(
+            $this->getUser(),
+            $formNameSuffix,
+            $this->getDoctrine()->getManager()
+        );
         $formData = $request->get($formType->getName());
 
         $paymentAccountId = $formData['id'];

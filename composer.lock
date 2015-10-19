@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2d91b6d346575b3575db40f2fa979ae9",
+    "hash": "951bfe7789473abbcb557c3a6b836520",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1114,7 +1114,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/2f28f691d8bba2aedb3537d12917d92ba3f63cb8",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/5674222e181c9236abdabed19fc660f35619d82c",
                 "reference": "5173c05e65668449214373f1bf8997f73848d36c",
                 "shasum": ""
             },
@@ -1196,7 +1196,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9c5a4ebedb583b882062fb8b276b8af5ca9063ac",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/30f0ed4b5681842a2a78b861f54136782fbea963",
                 "reference": "8dc5d88800194304babf30695d231232cf65fedb",
                 "shasum": ""
             },
@@ -1280,7 +1280,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/861d3564c03b3867845ffd87d9b19f49dc673c69",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/93ec729e3f2f1bb882904cce9d2c1dde6f139ec8",
                 "reference": "f7138381aa884c0f679da4de41e369b94ead9cd3",
                 "shasum": ""
             },
@@ -1993,7 +1993,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/b63307ce86bd1318ea3325bf9fa6a005665191c7",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/663da6b3159a895b41f38222d44b497defb122b9",
                 "reference": "a1763eb9c8d3988d607b4448a1a24197f7bcf8cb",
                 "shasum": ""
             },
@@ -2759,7 +2759,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSecurityExtraBundle/zipball/9e9a697fd39c8cd2f6af73fbe4762227848f8e31",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSecurityExtraBundle/zipball/75bd0f773b1c645d70eb6174fff67ba5779a291e",
                 "reference": "2d84e414d7abfa6cf7d0372d21507b8062947d2a",
                 "shasum": ""
             },
@@ -2900,7 +2900,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/cefb06effc014e921e5fc0ba43518a53cd59097c",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/a63cd330588eff18f6deb0251fd142d2c1fe30b6",
                 "reference": "ca66cd3ace6bea5367838c6dfb00a6a0bacb8a79",
                 "shasum": ""
             },
@@ -3380,7 +3380,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/7c8b01021522cb429e5127a4c9175efa44a9cb69",
+                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/9af37448fa2f82856d068205afa96e9874527672",
                 "reference": "493963f0c0ab9b3272064a39f0d981172b976ad0",
                 "shasum": ""
             },
@@ -3516,7 +3516,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "c55488edb578121d0e13462f10bf9360bb7f1a5f"
+                "reference": "4b5c2b366fc429e72c410f7826784e9cbc3fd479"
             },
             "require": {
                 "ext-curl": "*",
@@ -3562,7 +3562,7 @@
             ],
             "description": "ACI integration with Payum",
             "homepage": "https://github.com/Credit-Jeeves/ACIClient",
-            "time": "2015-09-28 09:42:27"
+            "time": "2015-10-20 10:19:11"
         },
         {
             "name": "payum/core",
@@ -4234,7 +4234,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2015-05-14 12:54:46"
+            "time": "2015-08-31 16:03:10"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -4824,7 +4824,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/2ff8473e33e224af87dc00d48a552a35a75115af",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/7b3144572617b0555f9a443317dbc2f9cf5b524e",
                 "reference": "7370d18f511653d39c33d75c2190caaafdebb492",
                 "shasum": ""
             },
@@ -4935,12 +4935,12 @@
             "target-dir": "Symfony/Bundle/AsseticBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/AsseticBundle.git",
+                "url": "https://github.com/symfony/assetic-bundle.git",
                 "reference": "v2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/146dd3cb46b302bd471560471c6aaa930483dac1",
+                "url": "https://api.github.com/repos/symfony/assetic-bundle/zipball/146dd3cb46b302bd471560471c6aaa930483dac1",
                 "reference": "v2.3.0",
                 "shasum": ""
             },
@@ -4998,12 +4998,12 @@
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Icu.git",
+                "url": "https://github.com/symfony/icu.git",
                 "reference": "v1.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/b4081efff21a8a85c57789a39f454fed244f8e46",
+                "url": "https://api.github.com/repos/symfony/icu/zipball/b4081efff21a8a85c57789a39f454fed244f8e46",
                 "reference": "v1.1.0",
                 "shasum": ""
             },
@@ -5046,12 +5046,12 @@
             "target-dir": "Symfony/Bundle/MonologBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/MonologBundle.git",
+                "url": "https://github.com/symfony/monolog-bundle.git",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "shasum": ""
             },
@@ -5106,12 +5106,12 @@
             "target-dir": "Symfony/Bundle/SwiftmailerBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/SwiftmailerBundle.git",
+                "url": "https://github.com/symfony/swiftmailer-bundle.git",
                 "reference": "e98defd402f72e8b54a029ba4d3ac4cb51dc3577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/SwiftmailerBundle/zipball/e98defd402f72e8b54a029ba4d3ac4cb51dc3577",
+                "url": "https://api.github.com/repos/symfony/swiftmailer-bundle/zipball/e98defd402f72e8b54a029ba4d3ac4cb51dc3577",
                 "reference": "e98defd402f72e8b54a029ba4d3ac4cb51dc3577",
                 "shasum": ""
             },
@@ -5374,7 +5374,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/fe67c5ba3a2418f671307b17adfd8914ffc04b0b",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/112c5112609ff74df6e6a1a7375efc30f442c0db",
                 "reference": "6af8182fbd3ead19f8f9e01d33e9b09063e1a1b0",
                 "shasum": ""
             },
@@ -5495,7 +5495,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geocoder-php/BazingaGeocoderBundle/zipball/5b93692795cecf9d38a68afdeeec5fa6cbcd1950",
+                "url": "https://api.github.com/repos/geocoder-php/BazingaGeocoderBundle/zipball/c4275e827ec37c7fcdd320c5d361afe9f1959608",
                 "reference": "dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409",
                 "shasum": ""
             },
@@ -5549,7 +5549,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/BazingaJsTranslationBundle/zipball/76cf0666e7e731a622b82b61b8b99132e0e71139",
+                "url": "https://api.github.com/repos/willdurand/BazingaJsTranslationBundle/zipball/0b7a9b5034ff1a7f9879e4dc42e6c37bf8426863",
                 "reference": "c78a691faabb8d0933a8791217937a7052d890a9",
                 "shasum": ""
             },
@@ -5816,7 +5816,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/d95155ed2bc5ae940d78be286727a3b712c2513e",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/901254e402269e78476843614f728917925c8135",
                 "reference": "a61d282f41595d3386516077e25864265e5094e8",
                 "shasum": ""
             },
@@ -6099,7 +6099,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/MinkZombieDriver/zipball/db0ae2f95b8b0e9ea7c5a3ab44f28da112bb08ea",
+                "url": "https://api.github.com/repos/minkphp/MinkZombieDriver/zipball/257a2d46ffdc8cba28d107c2f1368fc1e5637d1b",
                 "reference": "d4f6de66f4c385ca12b4fc7a054123f57a97e39b",
                 "shasum": ""
             },
@@ -6189,7 +6189,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/bd44f6b6e40247b6530bc8abe802e4e4d914976a",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/a02f0e7e2c68cc0237c33cbc8e8605aceb3b481a",
                 "reference": "e847b073c2b5350045edbb40443645ad09a59538",
                 "shasum": ""
             },

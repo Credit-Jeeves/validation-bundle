@@ -84,7 +84,8 @@ abstract class PaymentAccount
      *      message="checkout.error.payment_type.empty",
      *      groups={
      *          "card",
-     *          "bank"
+     *          "bank",
+     *          "debit_card"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
@@ -101,7 +102,8 @@ abstract class PaymentAccount
      *      message="checkout.error.account_nickname.empty",
      *      groups={
      *          "card",
-     *          "bank"
+     *          "bank",
+     *          "debit_card"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
@@ -110,23 +112,35 @@ abstract class PaymentAccount
 
     /**
      * @ORM\Column(
-     *      name="token",
-     *      type="string",
-     *      length=255
+     *     name="token",
+     *     type="string",
+     *     length=255
      * )
      */
     protected $token;
 
     /**
      * @ORM\Column(
-     *      name="cc_expiration",
-     *      type="date",
-     *      nullable=true
+     *     name="cc_expiration",
+     *     type="date",
+     *     nullable=true
      * )
      * @Serializer\Type("DateTime<'Y-m-d'>");
      * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $ccExpiration;
+
+    /**
+     * @ORM\Column(
+     *     name="last_four",
+     *     type="string",
+     *     length=4,
+     *     nullable=true
+     * )
+     * @Serializer\Type("string");
+     * @Serializer\Groups({"basic", "paymentAccounts"});
+     */
+    protected $lastFour;
 
     /**
      * @ORM\Column(
@@ -609,5 +623,21 @@ abstract class PaymentAccount
     public function setRegistered($registered)
     {
         $this->registered = $registered;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastFour()
+    {
+        return $this->lastFour;
+    }
+
+    /**
+     * @param string $lastFour
+     */
+    public function setLastFour($lastFour)
+    {
+        $this->lastFour = $lastFour;
     }
 }

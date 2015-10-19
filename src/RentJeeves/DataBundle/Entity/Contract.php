@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\DisputeCode;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -154,6 +153,18 @@ class Contract extends Base
     public function isDisableCreditCard()
     {
         return $this->getGroup()->isDisableCreditCard();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("allowDebitCard")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return boolean
+     */
+    public function isAllowDebitCard()
+    {
+        return $this->getGroupSettings()->isAllowedDebitFee();
     }
 
     /**

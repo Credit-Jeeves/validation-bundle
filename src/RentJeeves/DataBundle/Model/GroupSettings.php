@@ -256,6 +256,8 @@ abstract class GroupSettings
      *     name="type_debit_fee",
      *     nullable=false
      * )
+     * @Serializer\SerializedName("typeFeeDC")
+     * @Serializer\Groups({"payRent"})
      * @var string
      */
     protected $typeDebitFee = TypeDebitFee::PERCENTAGE;
@@ -268,6 +270,8 @@ abstract class GroupSettings
      *      scale=2,
      *      nullable=true
      * )
+     * @Serializer\SerializedName("feeDC")
+     * @Serializer\Groups({"payRent"})
      */
     protected $debitFee;
 
