@@ -139,7 +139,6 @@ class UnitMapperCase extends AbstractMapperCase
         $this->assertEquals('50', $property->getNumber());
         $this->assertEquals('11201', $property->getZip());
         $this->assertEquals('US', $property->getCountry());
-//        $this->assertEquals('Brooklyn', $property->getDistrict());
         $this->assertTrue($group->getGroupProperties()->contains($property));
 
         $this->assertEquals('testUnitID', $unit->getUnitMapping()->getExternalUnitId());
