@@ -308,8 +308,7 @@ class OrderCreationManager
         PaymentAccount $paymentAccount
     ) {
         if (true === in_array($paymentAccount->getType(), [PaymentAccountType::CARD, PaymentAccountType::DEBIT_CARD])) {
-            if (
-                $paymentAccount->getType() === PaymentAccountType::DEBIT_CARD &&
+            if ($paymentAccount->getType() === PaymentAccountType::DEBIT_CARD &&
                 $paymentAccount->isRegistered() &&
                 $groupSettings->isAllowedDebitFee()
             ) {
