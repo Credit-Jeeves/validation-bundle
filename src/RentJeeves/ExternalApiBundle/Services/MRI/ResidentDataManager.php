@@ -78,6 +78,8 @@ class ResidentDataManager
         $this->logger->debug(sprintf('Get MRI Residents by page:%s', $nextPageLink));
         $mriResponse = $this->client->getResidentTransactionsByNextPageLink($nextPageLink);
 
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactionsByNextPageLink');
+
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
         return $mriResponse->getValues();
@@ -91,6 +93,8 @@ class ResidentDataManager
     {
         $this->logger->debug(sprintf('Get MRI Residents by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
+
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactions');
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
@@ -106,6 +110,8 @@ class ResidentDataManager
         $this->logger->debug(sprintf('Get MRI Residents RentRoll by page:%s', $nextPageLink));
         $mriResponse = $this->client->getResidentialRentRollByNextPageLink($nextPageLink);
 
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRollByNextPageLink');
+
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
         return $mriResponse->getValues();
@@ -120,8 +126,28 @@ class ResidentDataManager
         $this->logger->debug(sprintf('Get MRI Residents RentRoll by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentialRentRoll($externalPropertyId);
 
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRoll');
+
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
         return $mriResponse->getValues();
+    }
+
+    /**
+     *
+     * Throw an exception if the MRI client returns a false (which indicates a failure)
+     *
+     * TODO: this really should be thrown by the client itself and caught at the controller/console-command level
+     *
+     * @param mixed $mriResponse
+     * @param string $externalMethodName name of client method just called
+     *
+     * @throws \RuntimeException if $mriResponse is false which indicates a failure
+     */
+    protected function assertSuccessfulResponse($mriResponse, $externalMethodName)
+    {
+        if ($mriResponse === false) {
+            throw new \RuntimeException(sprintf('MRI Client call failed to %s.', $externalMethodName));
+        }
     }
 }

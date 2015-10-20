@@ -86,6 +86,14 @@
                 <source>api.errors.verification.payment_account.required</source>
                 <target>Should create payment account at first</target>
             </trans-unit>
+            <trans-unit id="api.errors.tenant.holding_id.empty">
+                <source>api.errors.tenant.holding_id.empty</source>
+                <target>You must specify parameter 'holding_id', if parameter 'resident_id' is specified</target>
+            </trans-unit>
+            <trans-unit id="api.errors.tenant.resident_id.empty">
+                <source>api.errors.tenant.resident_id.empty</source>
+                <target>You must specify parameter 'resident_id', if parameter 'holding_id' is specified</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
