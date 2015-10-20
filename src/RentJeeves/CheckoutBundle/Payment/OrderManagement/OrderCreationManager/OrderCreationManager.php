@@ -14,8 +14,8 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
-use RentJeeves\DataBundle\Model\GroupSettings;
-use RuntimeException;
+use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Enum\TypeDebitFee;
 
 class OrderCreationManager
 {
@@ -73,19 +73,7 @@ class OrderCreationManager
         $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
 
         $this->createRentOperations($payment, $order);
-
-        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($contract->getGroupSettings()->getFeeCC() / 100), 2));
-            $order->setPaymentType(OrderPaymentType::CARD);
-        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            if (true === $groupSettings->isPassedAch()) {
-                $order->setFee($groupSettings->getFeeACH());
-            } else {
-                $order->setFee(0);
-            }
-
-            $order->setPaymentType(OrderPaymentType::BANK);
-        }
+        $this->setFeeAndPaymentTypeIntoOrder($order, $groupSettings, $paymentAccount);
 
         return $order;
     }
@@ -111,18 +99,7 @@ class OrderCreationManager
 
         $this->createCustomOperation($payment, $order);
 
-        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($contract->getGroupSettings()->getFeeCC() / 100), 2));
-            $order->setPaymentType(OrderPaymentType::CARD);
-        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            if (true === $groupSettings->isPassedAch()) {
-                $order->setFee($groupSettings->getFeeACH());
-            } else {
-                $order->setFee(0);
-            }
-
-            $order->setPaymentType(OrderPaymentType::BANK);
-        }
+        $this->setFeeAndPaymentTypeIntoOrder($order, $groupSettings, $paymentAccount);
 
         return $order;
     }
@@ -143,19 +120,10 @@ class OrderCreationManager
         $order->setPaymentProcessor($rentTrackGroup->getGroupSettings()->getPaymentProcessor());
         $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($rentTrackGroup->getRentDepositAccountForCurrentPaymentProcessor());
-
-        $this->createReportOperation($order);
-
-        /** @var GroupSettings $groupSettings */
         $groupSettings = $rentTrackGroup->getGroupSettings();
 
-        if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
-            $order->setPaymentType(OrderPaymentType::CARD);
-        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $order->setFee($groupSettings->getFeeACH());
-            $order->setPaymentType(OrderPaymentType::BANK);
-        }
+        $this->createReportOperation($order);
+        $this->setFeeAndPaymentTypeIntoOrder($order, $groupSettings, $paymentAccount);
 
         return $order;
     }
@@ -209,7 +177,7 @@ class OrderCreationManager
      * Creates rent operations for given payment and order.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param Order $order
      */
     protected function createRentOperations(Payment $payment, Order $order)
     {
@@ -241,7 +209,7 @@ class OrderCreationManager
      * Creates operations if only balance is paid.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param Order $order
      */
     protected function createBalanceBasedOperations(Payment $payment, Order $order)
     {
@@ -251,7 +219,7 @@ class OrderCreationManager
         $rent = $contract->getRent();
         $paidForDates = array_keys($this->paidFor->getBaseArray($contract));
         if (empty($paidForDates)) {
-            throw new RuntimeException('Can not calculate paid_for');
+            throw new \RuntimeException('Can not calculate paid_for');
         }
         $paidForCounter = 0;
 
@@ -290,7 +258,7 @@ class OrderCreationManager
      * Creates plain rent operations.
      *
      * @param Payment $payment
-     * @param Order   $order
+     * @param Order $order
      */
     protected function createRegularOperations(Payment $payment, Order $order)
     {
@@ -327,5 +295,50 @@ class OrderCreationManager
         $operation->setAmount($order->getSum());
         $operation->setType(OperationType::REPORT);
         $operation->setOrder($order);
+    }
+
+    /**
+     * @param Order $order
+     * @param GroupSettings $groupSettings
+     * @param PaymentAccount $paymentAccount
+     */
+    protected function setFeeAndPaymentTypeIntoOrder(
+        Order $order,
+        GroupSettings $groupSettings,
+        PaymentAccount $paymentAccount
+    ) {
+        if (true === in_array($paymentAccount->getType(), [PaymentAccountType::CARD, PaymentAccountType::DEBIT_CARD])) {
+            if ($paymentAccount->getType() === PaymentAccountType::DEBIT_CARD &&
+                $paymentAccount->isRegistered() &&
+                $groupSettings->isAllowedDebitFee()
+            ) {
+                $this->setDebitFeeIntoOrder($order, $groupSettings);
+            } else {
+                $order->setFee(round($order->getSum() * ($groupSettings->getFeeCC() / 100), 2));
+            }
+
+            $order->setPaymentType(OrderPaymentType::CARD);
+        } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
+            if (true === $groupSettings->isPassedAch()) {
+                $order->setFee($groupSettings->getFeeACH());
+            } else {
+                $order->setFee(0);
+            }
+
+            $order->setPaymentType(OrderPaymentType::BANK);
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @param GroupSettings $groupSettings
+     */
+    protected function setDebitFeeIntoOrder(Order $order, GroupSettings $groupSettings)
+    {
+        if ($groupSettings->getTypeDebitFee() === TypeDebitFee::FLAT_FEE) {
+            $order->setFee($groupSettings->getDebitFee());
+        } elseif ($groupSettings->getTypeDebitFee() === TypeDebitFee::PERCENTAGE) {
+            $order->setFee(round($order->getSum() * ($groupSettings->getDebitFee() / 100), 2));
+        }
     }
 }
