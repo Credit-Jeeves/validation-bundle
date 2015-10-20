@@ -68,8 +68,8 @@ class OrderAdmin extends Admin
             ->add('user.email')
             ->add('_action', 'actions', [
                 'actions' => [
-                    'show' => [],
-                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig']
+                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig'],
+                    'outbound' => ['template' => 'AdminBundle:CRUD:list__order_outbound_transactions.html.twig'],
                 ]
             ]);
     }

@@ -1,0 +1,7 @@
+{% if object.getObjectType() == 'pay_direct' %}
+    <a href="{{ path('admin_outbound_transaction_list', {"filter": { "order__id": {"value": object.id} } }) }}"
+       class="btn btn-small outbound">
+        <i class="icon-list"></i>
+        {{ 'admin.list.order.outbound_transactions'|trans }}
+    </a>
+{% endif %}
