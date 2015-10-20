@@ -269,7 +269,7 @@ function Contracts() {
         });
     };
 
-    this.getLinkForAgentGroup = function(groupId) {
+    this.getLinkForAgentGroup = function() {
         return Routing.generate(
             'landlord_tenants_filter',
             {
@@ -284,14 +284,14 @@ function Contracts() {
         self.aContracts([]);
         self.notHaveResult(false);
         self.processLoading(true);
-
+        console.info(item);
         $.ajax({
             url: Routing.generate('landlord_group_set'),
             type: 'POST',
             dataType: 'json',
-            data: {'group_id': item.groupId},
+            data: {'group_id': item.id},
             success: function () {
-                window.location.href = self.getLinkForAgentGroup(item.groupId);
+                window.location.href = self.getLinkForAgentGroup();
             }
         });
 

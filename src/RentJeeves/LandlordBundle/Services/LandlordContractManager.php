@@ -63,26 +63,4 @@ class LandlordContractManager
 
         return $items;
     }
-
-    /**
-     * @param Group $group
-     * @param mixed $contracts
-     */
-    public function convertContractsToGroupArray(Group $currentGroup, $contracts)
-    {
-        $items = [];
-        /** @var Contract $contract */
-        foreach ($contracts as $contract) {
-            if ($contract->getGroup() === $currentGroup) {
-                continue;
-            }
-
-            $items[] = [
-                'groupName' => $contract->getGroup()->getName(),
-                'groupId' => $contract->getGroup()->getId()
-            ];
-        }
-
-        return $items;
-    }
 }

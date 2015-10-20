@@ -736,8 +736,8 @@
             <!-- ko foreach: { data: agentContracts() } -->
                 <!--ko if: $index() != 0-->,<!--/ko-->
                 <a href="#" data-bind="
-                        attr: {title: groupName},
-                        text: groupName,
+                        attr: {title: name},
+                        text: name,
                         click: $parent.changeGroup,
                         clickBubble: false"></a>
 

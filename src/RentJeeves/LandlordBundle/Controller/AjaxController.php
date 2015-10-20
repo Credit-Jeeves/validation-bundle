@@ -597,28 +597,34 @@ class AjaxController extends Controller
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         /** @var ContractRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('LandlordTenants');
+        $serializer = $this->get('jms_serializer');
+
         $total = $repo->countContracts(
             $this->getCurrentGroup(),
             $dataRequest['searchCollum'],
             $dataRequest['searchText']
         );
+
         $total = count($total);
         $order = ($dataRequest['isSortAsc'] === 'true') ? "ASC" : "DESC";
 
         $data['contracts'] = [];
         $data['total'] = $total;
-        $data['agent_contracts'] = $this->get('landlord.contract_manager')->convertContractsToGroupArray(
-            $this->getCurrentGroup(),
-            $repo->searchContractsPerAgentGroup(
+        $data['agent_contracts'] = $this->getEntityManager()->getRepository('DataBundle:Group')
+            ->searchGroupsPerContractFilter(
+                $this->getCurrentGroup(),
                 $this->get('core.session.landlord')->getGroups($this->getUser()),
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
-            )
-        );
+            );
         $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
 
         if (!$total) {
-            return new JsonResponse($data);
+            return new Response($serializer->serialize($data, 'json', $context));
         }
 
         $data['contracts'] = $this->get('landlord.contract_manager')->convertContractsToArray(
@@ -635,7 +641,7 @@ class AjaxController extends Controller
             $this->getUser()
         );
 
-        return new JsonResponse($data);
+        return new Response($serializer->serialize($data, 'json', $context));
     }
 
     /**
