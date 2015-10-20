@@ -463,7 +463,7 @@ class ReportSynchronizer
 
         $this->em->flush();
         $this->logger->debug(sprintf(
-            'PayDirect Deposit Transaction #%s:  Sync successful.',
+            'PayDirect Deposit Transaction #%s: Sync successful.',
             $transaction->getTransactionId()
         ));
     }
