@@ -227,7 +227,6 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c')
             ->innerJoin('c.property', 'p')
             ->innerJoin('c.tenant', 't')
-            ->leftJoin('t.settings', 's')
             ->where('c.group IN (:groups)')
             ->groupBy('c.group')
             ->setParameter('groups', $groupsId);

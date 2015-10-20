@@ -21,6 +21,10 @@ class LandlordContractManager
      */
     protected $residentManager;
 
+    /**
+     * @param TranslatorInterface $translator
+     * @param ResidentManager $residentManager
+     */
     public function __construct(TranslatorInterface $translator, ResidentManager $residentManager)
     {
         $this->translator = $translator;
