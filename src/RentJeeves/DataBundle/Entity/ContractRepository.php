@@ -193,6 +193,53 @@ class ContractRepository extends EntityRepository
 
     /**
      *
+     * @param mixed $groups
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return Contract[]
+     */
+    public function searchContractsPerAgentGroup(
+        $groups,
+        $searchField = '',
+        $searchString = ''
+    ) {
+        if (empty($groups)) {
+            return [];
+        }
+
+        $allowedFieldsToSearch = [
+            'tenant',
+            'tenantA',
+            'email'
+        ];
+
+        if (!in_array($searchField, $allowedFieldsToSearch)) {
+            return [];
+        }
+
+        $groupsId = [];
+        /** @var Group $group */
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+
+        $query = $this->createQueryBuilder('c')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('c.tenant', 't')
+            ->leftJoin('t.settings', 's')
+            ->where('c.group IN (:groups)')
+            ->groupBy('c.group')
+            ->setParameter('groups', $groupsId);
+
+        $query = $this->applySearchFilter($query, $searchField, $searchString);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     *
      * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @param integer $page
      * @param integer $limit

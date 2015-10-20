@@ -208,3 +208,10 @@ td .clarification>.one {
     line-height: 20px;
     font-size: 16px;
 }
+#foundMoreContainer {
+    margin-bottom: 15px;
+    margin-top: -5px;
+}
+#foundMoreContainer>span {
+    font-size: 13px !important;
+}

@@ -3255,6 +3255,10 @@
                 <source>load.report.is_not_allowed.title</source>
                 <target>Report loading is not allowed</target>
             </trans-unit>
+            <trans-unit id="landlord.tenant.found_more">
+                <source>landlord.tenant.found_more</source>
+                <target>Hi There! We found matching tenants in other groups. Go to:</target>
+            </trans-unit>
             <trans-unit id="load.report.is_not_allowed.message">
                 <source>load.report.is_not_allowed.message-%SUPPORT_EMAIL%</source>
                 <target>Report loading is not allowed.

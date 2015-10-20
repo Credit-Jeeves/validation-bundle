@@ -23,9 +23,18 @@ use Symfony\Component\Validator\ConstraintViolation;
 class TenantsController extends Controller
 {
     /**
-     * @Route("/tenants", name="landlord_tenants")
+     * @Route(
+     *      "/tenants/filter/{searchText}/{searchColumn}",
+     *      name="landlord_tenants_filter",
+     *      options={"expose"=true},
+     *      defaults={"searchText" = null, "searchColumn" = null}
+     * )
+     * @Route(
+     *      "/tenants",
+     *      name="landlord_tenants"
+     * )
      */
-    public function indexAction()
+    public function indexAction($searchText = null, $searchColumn = null)
     {
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $this->getCurrentGroup())
@@ -37,6 +46,8 @@ class TenantsController extends Controller
                 'nGroups' => $this->getGroups()->count(),
                 'Group' => $this->getCurrentGroup(),
                 'form' => $form->createView(),
+                'searchText' => $searchText,
+                'searchColumn' => $searchColumn
             ]
         );
     }
