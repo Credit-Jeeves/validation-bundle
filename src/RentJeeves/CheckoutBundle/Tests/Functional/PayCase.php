@@ -903,7 +903,8 @@ class PayCase extends BaseTestCase
             'css',
             '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio'
         );
-        $this->assertCount(2, $accountTypes);
+        $this->assertCount(3, $accountTypes);
+        $this->assertFalse($accountTypes[2]->isVisible(), 'DebitCard type should not be visible');
         $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
         $this->assertNotNull($cardType);
         // disable "show card"
