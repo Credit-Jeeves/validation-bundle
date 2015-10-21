@@ -34,7 +34,8 @@ class Version20151009162502 extends AbstractMigration
             SELECT pa.id, da.merchant_name
             FROM rj_payment_account pa
             inner join rj_payment_account_deposit_account pada on pa.id = pada.payment_account_id
-            inner join rj_deposit_account da on da.id = pada.deposit_account_id"
+            inner join rj_deposit_account da on da.id = pada.deposit_account_id
+            group by (concat(pa.id, da.merchant_name))"
         );
     }
 
