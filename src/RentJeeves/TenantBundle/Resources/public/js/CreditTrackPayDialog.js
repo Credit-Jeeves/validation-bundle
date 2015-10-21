@@ -67,7 +67,7 @@ function CreditTrackPayDialog(options) {
 
     // Connected Payment Source Component
     // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self, new PaymentSourceViewModel(self, null, false, 'card'));
+    ko.utils.extend(self, new PaymentSourceViewModel(self, null, {}, 'card'));
 
     self.changePaymentAccountHandler = function() {
         self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());

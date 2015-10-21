@@ -228,13 +228,13 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
-            $ccMonth = $fundingAccountData->get('expiration_month');
-            $ccYear = $fundingAccountData->get('expiration_year');
-            $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
+            $expMonth = $fundingAccountData->get('expiration_month');
+            $expYear = $fundingAccountData->get('expiration_year');
+            $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
             $account = new RequestModel\SubModel\CCardAccount();
 
-            $account->setExpMonth($ccMonth);
-            $account->setExpYear($ccYear);
+            $account->setExpMonth($expMonth);
+            $account->setExpYear($expYear);
             $account->setCardNumber($fundingAccountData->get('card_number'));
             $account->setCardType(
                 RequestModel\Validation\CreditCardChecker::getCreditCardType(
@@ -243,6 +243,15 @@ class FundingAccountManager extends AbstractManager
             );
             $account->setSecurityCode($fundingAccountData->get('csc_code'));
 
+        } elseif (PaymentAccountTypeEnum::DEBIT_CARD == $paymentAccount->getType()) {
+            $expMonth = $fundingAccountData->get('expiration_month');
+            $expYear = $fundingAccountData->get('expiration_year');
+            $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
+            $account = new RequestModel\SubModel\DCardAccount();
+
+            $account->setExpMonth($expMonth);
+            $account->setExpYear($expYear);
+            $account->setCardNumber($fundingAccountData->get('card_number'));
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccount->getType()) {
             $account = new RequestModel\SubModel\BankAccount();
 

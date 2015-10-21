@@ -189,6 +189,17 @@
                 <source>checkout.error.type.empty</source>
                 <target>Type is required.</target>
             </trans-unit>
+            <trans-unit id="checkout.error.type.disallow">
+                <source>checkout.error.type.disallow</source>
+                <target>Type "%value%" is disable for this contract.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.type.debit_card.invalid">
+                <source>checkout.error.type.debit_card.invalid</source>
+                <target>
+                    We're sorry, but we could not verify that your card is a Debit card.
+                    Please make your rent payment using the "Credit card" option.
+                </target>
+            </trans-unit>
             <trans-unit id="checkout.error.type.invalid">
                 <source>checkout.error.type.invalid</source>
                 <target>Type is invalid.</target>
@@ -305,6 +316,10 @@
                 <source>checkout.card</source>
                 <target>Credit Card</target>
             </trans-unit>
+            <trans-unit id="checkout.debit_card">
+                <source>checkout.debit_card</source>
+                <target>Debit Card</target>
+            </trans-unit>
             <trans-unit id="checkout.account_nickname">
                 <source>checkout.account_nickname</source>
                 <target>Account Nickname</target>
@@ -332,6 +347,10 @@
             <trans-unit id="checkout.routing_number.tooltip.title">
                 <source>checkout.routing_number.tooltip.title</source>
                 <target>Where to find your banking numbers:</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.tooltip.title">
+                <source>checkout.type.tooltip.title</source>
+                <target>Your debit card must have a MasterCard or Visa logo.</target>
             </trans-unit>
             <trans-unit id="checkout.account_number">
                 <source>checkout.account_number</source>
@@ -428,6 +447,14 @@
             <trans-unit id="checkout.fee.card.note.help">
                 <source>checkout.fee.card.note.help-%FEE%</source>
                 <target>You will see an additional fee for %FEE% of your payment amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.debit_card.note">
+                <source>checkout.fee.debit_card.note-%FEE%</source>
+                <target>NOTE: A %FEE% technology platform fee will be added to debit card payments.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.debit_card.note.help">
+                <source>checkout.fee.debit_card.note.help-%FEE%</source>
+                <target>You will see an additional fee for %FEE% of your payment amount when using a debit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.bank.note">
                 <source>checkout.fee.bank.note-%FEE%</source>

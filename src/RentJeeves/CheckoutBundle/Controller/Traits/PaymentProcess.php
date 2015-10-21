@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
@@ -42,6 +43,18 @@ trait PaymentProcess
         /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
         $paymentAccountMapped->getEntity()->setUser($tenant);
+
+        if ($paymentAccountMapped->getEntity()->getType() === PaymentAccountType::DEBIT_CARD) {
+            if (!$this->get('binlist.card')->isLowDebitFee($paymentAccountMapped->get('card_number'))) {
+                throw new \InvalidArgumentException(
+                    $this->get('translator')->trans('checkout.error.type.debit_card.invalid')
+                );
+            }
+
+            $paymentAccountMapped->getEntity()->setLastFour(substr($paymentAccountMapped->get('card_number'), -4));
+            $paymentAccountMapped->getEntity()->setRegistered(true);
+        }
+
         $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */

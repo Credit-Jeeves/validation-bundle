@@ -156,6 +156,18 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("allowDebitCard")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return boolean
+     */
+    public function isAllowDebitCard()
+    {
+        return $this->getGroupSettings()->isAllowedDebitFee();
+    }
+
+    /**
      * @inheritdoc
      */
     public function getDueDate()
