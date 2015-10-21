@@ -593,59 +593,55 @@ class AjaxController extends Controller
         //@TODO find best way for this implementation
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
-        $items = array();
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
-        $group = $this->getCurrentGroup();
         /** @var ContractRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('LandlordTenants');
+        $serializer = $this->get('jms_serializer');
+
+        $total = $repo->countContracts(
+            $this->getCurrentGroup(),
+            $dataRequest['searchCollum'],
+            $dataRequest['searchText']
+        );
+
         $total = count($total);
         $order = ($dataRequest['isSortAsc'] === 'true') ? "ASC" : "DESC";
-        if ($total) {
-            $contracts = $repo->getContractsPage(
-                $group,
+
+        $data['contracts'] = [];
+        $data['total'] = $total;
+        $data['agent_contracts'] = $this->getEntityManager()->getRepository('DataBundle:Group')
+            ->searchGroupsPerContractFilter(
+                $this->getCurrentGroup(),
+                $this->get('core.session.landlord')->getGroups($this->getUser()),
+                $dataRequest['searchCollum'],
+                $dataRequest['searchText']
+            );
+        $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
+
+        if (!$total) {
+            return new Response($serializer->serialize($data, 'json', $context));
+        }
+
+        $data['contracts'] = $this->get('landlord.contract_manager')->convertContractsToArray(
+            $repo->getContractsPage(
+                $this->getCurrentGroup(),
                 $dataRequest['page'],
                 $dataRequest['limit'],
                 $dataRequest['sortColumn'],
                 $order,
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
-            );
-            /**
-             * @var $resident ResidentManager
-             */
-            $resident = $this->get('resident_manager');
-            /**
-             * @var $translator Translator
-             */
-            $translator = $this->get('translator');
-            /** @var Contract $contract */
-            foreach ($contracts as $contract) {
-                $item = $contract->getItem();
-                if ($contract->getStatus() === ContractStatus::INVITE &&
-                    $group->getGroupSettings()->getIsIntegrated()
-                ) {
-                    $hasMultipleContracts = $resident->hasMultipleContracts(
-                        $contract->getTenant(),
-                        $this->getUser()->getHolding()
-                    );
-                    $count = ($hasMultipleContracts) ? 1 : 0;
-                    $item['revoke_message'] = $translator->transChoice(
-                        'notice.revoke.residentId.multiple_contracts',
-                        $count
-                    );
-                } else {
-                    $item['revoke_message'] = $this->get('translator')->trans('revoke.inv.ask');
-                }
-                $items[] = $item;
-            }
-        }
-        $data['contracts'] = $items;
-        $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
+            ),
+            $this->getCurrentGroup(),
+            $this->getUser()
+        );
 
-        return new JsonResponse($data);
+        return new Response($serializer->serialize($data, 'json', $context));
     }
 
     /**

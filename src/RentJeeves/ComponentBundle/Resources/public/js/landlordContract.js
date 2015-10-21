@@ -67,7 +67,7 @@ $(document).ready(function () {
         width: '520px'
     });
 
-    ContractsViewModel.ajaxAction();
+
     $('#searchFilter').linkselect("destroy");
     $('#searchFilter').linkselect({
         change: function (li, value, text) {
@@ -81,6 +81,14 @@ $(document).ready(function () {
             }
         }
     });
+
+    if ($('#searchColumn').val().length > 0 && $('#searchText').val().length > 0) {
+        $('#searchFilter').linkselect('val', $('#searchColumn').val());
+        ContractsViewModel.isSearch(true);
+        ContractsViewModel.searchCollum($('#searchColumn').val());
+        ContractsViewModel.searchText($('#searchText').val());
+    }
+    ContractsViewModel.ajaxAction();
 
     $('#tenant-add-property-button-cancel').click(function () {
         $('#tenant-add-property-popup').dialog('close');

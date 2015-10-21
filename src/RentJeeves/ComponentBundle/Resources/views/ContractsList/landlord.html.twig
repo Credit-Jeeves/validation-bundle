@@ -676,6 +676,10 @@
 <div id="contracts-block">
     <div class="landrord-box">
         <div class="title-box clearfix">
+
+            <input type="hidden" id="searchColumn" value="{{ searchColumn }}">
+            <input type="hidden" id="searchText" value="{{ searchText }}">
+
             <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
             <div class="fiter-box">
                 <label>{{'filter.by'|trans}}</label>
@@ -726,6 +730,20 @@
                 {% endif %}
             </div>
         </div>
+        <!-- ko if: $root.agentContracts().length > 0  -->
+        <div id="foundMoreContainer" class="information-box pie-el">
+            <span>{{ 'landlord.tenant.found_more'|trans }}</span>
+            <!-- ko foreach: { data: agentContracts() } -->
+                <!--ko if: $index() != 0-->,<!--/ko-->
+                <a href="#" data-bind="
+                        attr: {title: name},
+                        text: name,
+                        click: $parent.changeGroup,
+                        clickBubble: false"></a>
+
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
         <div class="content-box">
             <div class="properties-table-block table-wrap">
         <div class="table-margin">
@@ -839,7 +857,6 @@
       </div>
     </div>
   </div>
-
   <div class="landrord-box without-top clearfix">
     <div class="legeng-box">
       <ul class="legeng">
@@ -895,5 +912,6 @@
     </ul>
     <!-- /ko -->
     </nav>
+
   </div>
 </div>

@@ -12,14 +12,20 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\DateTime;
+use Symfony\Component\Form\FormView;
 
 class ContractsListController extends Controller
 {
     /**
+     * @param Group $Group
+     * @param FormView $form
+     * @param string $searchText
+     * @param string $searchColumn
+     *
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return mixed
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group, $form)
+    public function indexAction(Group $Group, FormView $form, $searchText = null, $searchColumn = null)
     {
         /** @var $user Landlord */
         $user = $this->getUser();
@@ -37,23 +43,26 @@ class ContractsListController extends Controller
         $date->modify('+1 year');
         $end = $date->format('m/d/Y');
 
-        return array(
+        return [
             'form'          => $form,
             'Group'         => $Group,
             'canInvite'     => $canInvite,
             'start'         => $start,
             'end'           => $end,
             'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
-        );
+            'searchText'    => $searchText,
+            'searchColumn'  => $searchColumn
+        ];
     }
 
     /**
+     * @param Group $group
+     *
      * @Template()
      */
-    public function actionsAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    public function actionsAction(Group $Group)
     {
-        return array(
-        );
+        return [];
     }
 
     /**

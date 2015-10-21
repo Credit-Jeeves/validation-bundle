@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\DisputeCode;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -213,6 +212,8 @@ class Contract extends Base
     }
 
     /**
+     * @TODO move to LandlordContractManager
+     *
      * @return array
      */
     public function getItem()
