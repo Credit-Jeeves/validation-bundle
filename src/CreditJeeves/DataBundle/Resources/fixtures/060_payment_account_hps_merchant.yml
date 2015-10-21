@@ -1,0 +1,30 @@
+model: RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant
+fixtures:
+    PaymentAccountMerchant_1:
+        paymentAccount: PaymentAccount_1
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_2:
+        paymentAccount: PaymentAccount_2
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_3:
+        paymentAccount: PaymentAccount_3
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_4:
+        paymentAccount: PaymentAccount_4
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_5:
+        paymentAccount: PaymentAccount_6
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_6:
+        paymentAccount: PaymentAccount_11
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_7:
+        paymentAccount: PaymentAccount_12
+        merchantName: Monticeto_Percent
+    PaymentAccountMerchant_8:
+        paymentAccount: PaymentAccount_13
+        merchantName: WestPac
+    PaymentAccountMerchant_9:
+        paymentAccount: PaymentAccount_14
+        merchantName: RentTrackCorp
+

@@ -8,10 +8,10 @@ parameters:
 
     experian.logging: false
 
+    allow_score_track: true
+
     server: local
     server_name_cj: cj2.dev
     server_name_rj: rj1.dev
 
-    transunion.ssl_key: /home/yurez/transunion.com/stg.renttrack.com.key
-    transunion.ca_certificate: /home/yurez/transunion.com/prodsupCA.pem
-    transunion.ssl_certificate: /home/yurez/transunion.com/CC2RentTrack-Test.crt
+    secrets_path: /home/yurez

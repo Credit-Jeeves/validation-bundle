@@ -1,0 +1,6 @@
+model: CreditJeeves\DataBundle\Entity\ReportTransUnionSnapshot
+fixtures:
+  reportTUSnapshot_1:
+    user: Tenant_22
+    created_at: '-5 days'
+    raw_data: '%file:data/trans_union/snapshot.xml%'

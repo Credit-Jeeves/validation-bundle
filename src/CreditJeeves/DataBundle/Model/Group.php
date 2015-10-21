@@ -29,7 +29,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentAccounts", "AdminProperty"});
+     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "LandlordTenants"});
      */
     protected $id;
 
@@ -124,7 +124,7 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string")
-     * @Serializer\Groups({"AdminProperty"});
+     * @Serializer\Groups({"AdminProperty", "LandlordTenants"});
      *
      * @Assert\NotBlank(groups={"landlordImport"})
      */
@@ -386,6 +386,7 @@ abstract class Group
      *     cascade={"persist", "remove", "merge"},
      *     fetch="EAGER"
      * )
+     * @Assert\Valid
      */
     protected $groupSettings;
 

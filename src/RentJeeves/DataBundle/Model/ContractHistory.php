@@ -6,6 +6,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 /**
  * @ORM\MappedSuperclass
@@ -62,6 +63,18 @@ abstract class ContractHistory extends AbstractLogEntry
      * )
      */
     protected $rent = null;
+
+    /**
+     * @ORM\Column(
+     *     type="PaymentAccepted",
+     *     nullable=false,
+     *     name="payment_accepted",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $paymentAccepted = PaymentAccepted::ANY;
 
     /**
      * @ORM\Column(
@@ -389,5 +402,21 @@ abstract class ContractHistory extends AbstractLogEntry
     public function getFinishAt()
     {
         return $this->finishAt;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPaymentAccepted()
+    {
+        return $this->paymentAccepted;
+    }
+
+    /**
+     * @param integer $paymentAccepted
+     */
+    public function setPaymentAccepted($paymentAccepted)
+    {
+        $this->paymentAccepted = $paymentAccepted;
     }
 }

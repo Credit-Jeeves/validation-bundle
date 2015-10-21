@@ -5,16 +5,12 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use RentJeeves\CheckoutBundle\Controller\Traits\AccountAssociate;
 use RentJeeves\DataBundle\Entity\DepositAccount;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Exception;
 
 class TransferPaymentAccountsCommand extends ContainerAwareCommand
 {
-    use AccountAssociate;
-
     protected function configure()
     {
         $description = 'Registers payment accounts belonging to one ' .

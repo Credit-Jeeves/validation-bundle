@@ -3,6 +3,8 @@
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\ORM\EntityRepository;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Exception\CsvMapException;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
@@ -10,8 +12,9 @@ use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\MerchantAccountMigration;
+use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class AciProfileMapper
@@ -32,11 +35,18 @@ class AciProfileMapper
     protected $businessId;
 
     /**
-     * @param string $businessId
+     * @var EntityRepository
      */
-    public function __construct($businessId)
+    protected $merchantAccountRepo;
+
+    /**
+     * @param string $businessId
+     * @param EntityRepository $repository
+     */
+    public function __construct($businessId, EntityRepository $repository)
     {
         $this->businessId = $businessId;
+        $this->merchantAccountRepo = $repository;
     }
 
     /**
@@ -151,23 +161,32 @@ class AciProfileMapper
         $user = $this->profile->getUser();
         $address = $user->getDefaultAddress();
         $records = [];
-        foreach ($user->getActiveContracts() as $contract) {
-            $depositAccount = $contract->getGroup()->getDepositAccount(
-                DepositAccountType::RENT,
-                PaymentProcessor::ACI
+
+        /** @var PaymentAccountHpsMerchant $merchant */
+        foreach ($this->getFilteredMerchantsForUser($user) as $merchant) {
+            /** @var MerchantAccountMigration $merchantAccountMigration */
+            $merchantAccountMigration = $this->merchantAccountRepo->findOneBy(
+                ['heartlandMerchantName' => $merchant->getMerchantName()]
             );
-            if (null === $depositAccount ||
-                $contract->hasAciCollectPayContractBillingForDepositAccountType(DepositAccountType::RENT) ||
-                ($this->holdings !== null && false === in_array($contract->getHolding(), $this->holdings))
+            /* if there is no HPS-to-ACI merchant account
+             * or user already has profile with enrolled billing account for given division id,
+             * then do nothing.
+             */
+            if (null === $merchantAccountMigration || (null !== $profile = $user->getAciCollectPayProfile() and
+                $profile->hasBillingAccountForDivisionId($merchantAccountMigration->getAciDivisionId()))
             ) {
                 continue;
             }
+
             $accountRecord = new AccountRecord();
             $accountRecord->setProfileId($this->profile->getId());
-            $accountRecord->setBillingAccountNumber($contract->getId());
-            $accountRecord->setDivisionId($depositAccount->getMerchantName());
+            $accountRecord->setBillingAccountNumber(BillingAccountManager::createUserBillingAccountNumber(
+                $user,
+                $merchantAccountMigration->getAciDivisionId()
+            ));
+            $accountRecord->setDivisionId($merchantAccountMigration->getAciDivisionId());
             $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName());
-            $accountRecord->setAddress1((string) $address);
+            $accountRecord->setAddress1((string)$address);
             $accountRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
             $accountRecord->setState($address ? $address->getArea() : '');
             $accountRecord->setZipCode($address ? $address->getZip() : '');
@@ -264,7 +283,9 @@ class AciProfileMapper
 
         $accountRecord = new AccountRecord();
         $accountRecord->setProfileId($this->profile->getId());
-        $accountRecord->setBillingAccountNumber($group->getId());
+        $accountRecord->setBillingAccountNumber(
+            BillingAccountManager::createGroupBillingAccountNumber($group, $this->businessId)
+        );
         $accountRecord->setDivisionId($this->businessId);
         $accountRecord->setNameOnBillingAccount($group->getName());
         $accountRecord->setAddress1($group->getStreetAddress1());
@@ -301,5 +322,24 @@ class AciProfileMapper
         }
 
         return $records;
+    }
+
+    /**
+     * @param Tenant $user
+     * @return array
+     */
+    protected function getFilteredMerchantsForUser(Tenant $user)
+    {
+        $result = [];
+        foreach ($user->getPaymentAccounts() as $paymentAccount) {
+            /** @var PaymentAccountHpsMerchant $merchant */
+            foreach ($paymentAccount->getHpsMerchants() as $merchant) {
+                if (!isset($result[$merchant->getMerchantName()])) {
+                    $result[$merchant->getMerchantName()] = $merchant;
+                }
+            }
+        }
+
+        return array_values($result);
     }
 }

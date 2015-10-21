@@ -67,7 +67,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             ]
         );
 
-        $fileData = file_get_contents($this->getFilePath());
+        $fileData = trim(file_get_contents($this->getFilePath()));
         $this->assertEquals(5, count(explode("\n", $fileData)));
     }
 
@@ -89,7 +89,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             ]
         );
 
-        $fileData = file_get_contents($this->getFilePath());
+        $fileData = trim(file_get_contents($this->getFilePath()));
         $this->assertEquals(7, count(explode("\n", $fileData)));// 5 for Holding#5 and 2 for other
     }
 
@@ -100,7 +100,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
     {
         return [
             [5, 6, 7],
-            [6, 7, 3],
+            [6, 7, 2],
         ];
     }
 
@@ -129,7 +129,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             ]
         );
 
-        $fileData = file_get_contents($this->getFilePath());
+        $fileData = trim(file_get_contents($this->getFilePath()));
         $this->assertEquals($expectedCount, count(explode("\n", $fileData)));
     }
 

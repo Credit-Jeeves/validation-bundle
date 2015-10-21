@@ -55,9 +55,36 @@ class PaymentProcessorFactory
             default:
                 throw new PaymentProcessorInvalidArgumentException(
                     sprintf(
-                        'Unknown processor type for group "%s" with id "%d"',
+                        'Unknown processor type "%s" for group "%s" with id "%d"',
+                        $group->getGroupSettings()->getPaymentProcessor(),
                         $group->getName(),
                         $group->getId()
+                    )
+                );
+        }
+    }
+
+    /**
+     * Returns a payment processor for a given payment account.
+     *
+     * @param PaymentAccountInterface $paymentAccount
+     * @return PaymentProcessor
+     * @throws PaymentProcessorInvalidArgumentException
+     */
+    public function getPaymentProcessorByPaymentAccount(PaymentAccountInterface $paymentAccount)
+    {
+        switch ($paymentAccount->getPaymentProcessor()) {
+            case PaymentProcessorEnum::ACI:
+                return $this->aciCollectPay;
+            case PaymentProcessorEnum::HEARTLAND:
+                return $this->heartland;
+            default:
+                throw new PaymentProcessorInvalidArgumentException(
+                    sprintf(
+                        'Unknown processor type "%s" for payment account "%s" with id = "%d"',
+                        $paymentAccount->getPaymentProcessor(),
+                        $paymentAccount->getName(),
+                        $paymentAccount->getId()
                     )
                 );
         }

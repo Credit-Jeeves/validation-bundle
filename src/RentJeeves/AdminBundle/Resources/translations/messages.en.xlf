@@ -254,6 +254,18 @@
                 <source>admin.holding.recurring_codes</source>
                 <target>Recurring Codes</target>
             </trans-unit>
+            <trans-unit id="admin.error.debit_fee_should_be_filled">
+                <source>admin.error.debit_fee_should_be_filled</source>
+                <target>If Allowed Debit Fee checked, you should fill Debit fee</target>
+            </trans-unit>
+            <trans-unit id="admin.error.debit_payment_processor">
+                <source>admin.error.debit_payment_processor</source>
+                <target>Allowed Debit Fee works only for ACI</target>
+            </trans-unit>
+            <trans-unit id="admin.list.order.outbound_transactions">
+                <source>admin.list.order.outbound_transactions</source>
+                <target>Outbound leg</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

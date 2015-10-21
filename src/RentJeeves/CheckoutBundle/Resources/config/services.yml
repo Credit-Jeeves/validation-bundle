@@ -33,6 +33,7 @@ services:
             - @payment_processor.order_creation_manager
             - @payment_processor.order_status_manager
             - @doctrine.orm.default_entity_manager
+            - %credit_summary_vendor%
         calls:
             - [setFactory, ["@payment_processor.factory"]]
 
@@ -233,3 +234,9 @@ services:
             - @checkout.paid_for
             - %rt_group_code%
             - %credittrack_payment_per_month%
+
+    payment.amount_limit:
+        class: RentJeeves\CheckoutBundle\Services\PaymentAmountLimit
+        arguments:
+            - %dod_limit_max_payment%
+            - @logger

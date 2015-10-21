@@ -36,9 +36,10 @@ class PaymentAccountCase extends BaseTestCase
             ->getQuery()
             ->getOneOrNullResult();
         $this->assertNotNull($paymentAccount);
+        $paymentAccountId = $paymentAccount->getId();
         $paymentId = $paymentAccount->getPayments()[0]->getId();
         $userSettingId = $paymentAccount->getCreditTrackUserSetting()->getId();
-        $depositAccountId = $paymentAccount->getDepositAccounts()[0]->getId();
+        $this->assertCount(1, $paymentAccount->getHpsMerchants(), 'Payment account should have 1 merchant');
 
         foreach ($em->getRepository('RjDataBundle:PaymentAccount')->findAll() as $pa) {
             $em->remove($pa);
@@ -54,14 +55,9 @@ class PaymentAccountCase extends BaseTestCase
         $today = new DateTime();
         $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
 
-        /** @var DepositAccount $depositAccount */
-        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')
-            ->findOneBy(array('id' => $depositAccountId));
-        $this->assertNotNull($depositAccount);
-
-        // FIXME the problem that relation item exists in the DB
-        // it works because sofdeleted item did not put to collection
-        $this->assertFalse($depositAccount->getPaymentAccounts()->contains($paymentAccount));
+        $paymentAccountMerchants = $em->getRepository('RjDataBundle:PaymentAccountHpsMerchant')
+            ->findBy(['paymentAccount' => $paymentAccountId]);
+        $this->assertCount(0, $paymentAccountMerchants, 'Payment account merchants should be removed');
 
         /** @var UserSettings $userSetting */
         $userSetting = $em->getRepository('RjDataBundle:UserSettings')

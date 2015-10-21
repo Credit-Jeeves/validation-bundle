@@ -315,6 +315,11 @@ function Pay(parent, contract) {
         return  contract ? contract.disableCreditCard : false;
     });
 
+    self.allowDebitCard = ko.computed(function () {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.allowDebitCard : false;
+    });
+
     self.propertyAddress = ko.computed(function() {
         var propertyFullAddress = new Address(self, self.addresses);
 
@@ -328,7 +333,16 @@ function Pay(parent, contract) {
 
     // Connected Payment Source Component
     // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self, new PaymentSourceViewModel(self, self.contractId, self.disableCreditCard));
+    ko.utils.extend(self,
+        new PaymentSourceViewModel(
+            self,
+            self.contractId,
+            {
+                'disableCreditCard': self.disableCreditCard,
+                'allowDebitCard' : self.allowDebitCard
+            }
+        )
+    );
 
     self.payment = new Payment(self);
 

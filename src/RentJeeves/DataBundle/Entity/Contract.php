@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\DisputeCode;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -157,6 +156,18 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("allowDebitCard")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return boolean
+     */
+    public function isAllowDebitCard()
+    {
+        return $this->getGroupSettings()->isAllowedDebitFee();
+    }
+
+    /**
      * @inheritdoc
      */
     public function getDueDate()
@@ -213,6 +224,8 @@ class Contract extends Base
     }
 
     /**
+     * @TODO move to LandlordContractManager
+     *
      * @return array
      */
     public function getItem()
@@ -1122,51 +1135,5 @@ class Contract extends Base
         $paidTo->modify('+1 month');
         //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
         $this->setPaidTo($paidTo);
-    }
-
-    /**
-     * Get Aci CollectPay Billing Account
-     *
-     * @param  string $divisionId
-     * @return AciCollectPayContractBilling
-     */
-    public function getAciCollectPayContractBilling($divisionId)
-    {
-        return $this->aciCollectPayContractBillings->filter(
-            function (AciCollectPayContractBilling $aciCollectPayContractBilling) use ($divisionId) {
-                return $aciCollectPayContractBilling->getDivisionId() == $divisionId;
-            }
-        )->first();
-    }
-
-    /**
-     * @param  string $depositAccountType
-     * @throws \InvalidArgumentException
-     * @return bool
-     */
-    public function hasAciCollectPayContractBillingForDepositAccountType($depositAccountType)
-    {
-        if (!$depositAccount = $this->getGroup()->getDepositAccount($depositAccountType, PaymentProcessor::ACI)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Deposit account should be present for deposit account type "%s" and payment processor "%s"',
-                    $depositAccountType,
-                    PaymentProcessor::ACI
-                )
-            );
-        }
-
-        if (!$depositAccount->getMerchantName()) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Deposit account should have merchant name (division id)' .
-                    ' for deposit account type "%s" and payment processor "%s"',
-                    $depositAccountType,
-                    PaymentProcessor::ACI
-                )
-            );
-        }
-
-        return !!$this->getAciCollectPayContractBilling($depositAccount->getMerchantName());
     }
 }

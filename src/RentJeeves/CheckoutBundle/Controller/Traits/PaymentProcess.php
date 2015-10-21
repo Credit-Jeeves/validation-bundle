@@ -6,20 +6,18 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
-use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
 
 /**
- * @author Ton Sharp <66Ton99@gmail.com>
- *
  * @method mixed get()
  * @method array renderErrors()
  * @method \Doctrine\Bundle\DoctrineBundle\Registry getDoctrine()
@@ -31,51 +29,61 @@ trait PaymentProcess
      * Creates a new payment account. Right now only Heartland is supported.
      *
      * @param  Form $paymentAccountType
-     * @param  Contract $contract
-     * @param  string $depositAccountType
+     * @param Group $group
+     * @param Tenant $tenant
+     * @param string $depositAccountType
      * @return mixed
      */
     protected function savePaymentAccount(
         Form $paymentAccountType,
-        Contract $contract,
+        Group $group,
+        Tenant $tenant,
         $depositAccountType = DepositAccountType::RENT
     ) {
-        $em = $this->getDoctrine()->getManager();
-        $paymentAccountEntity = $paymentAccountType->getData();
-
-        $group = $contract->getGroup();
-        $user = $contract->getTenant();
+        /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+        $paymentAccountMapped->getEntity()->setUser($tenant);
 
-        if ($paymentAccountEntity instanceof GroupAwareInterface) {
-            // if the account can have the group set directly, then set it
-            $paymentAccountEntity->setGroup($group);
-            $paymentAccountMapped->set('landlord', $this->getUser());
-        } else {
-            // otherwise add the the associated depositAccount
-            $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
-
-            // make sure this deposit account is added only once!
-            if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
-                $paymentAccountEntity->addDepositAccount($depositAccount);
+        if ($paymentAccountMapped->getEntity()->getType() === PaymentAccountType::DEBIT_CARD) {
+            if (!$this->get('binlist.card')->isLowDebitFee($paymentAccountMapped->get('card_number'))) {
+                throw new \InvalidArgumentException(
+                    $this->get('translator')->trans('checkout.error.type.debit_card.invalid')
+                );
             }
+
+            $paymentAccountMapped->getEntity()->setLastFour(substr($paymentAccountMapped->get('card_number'), -4));
+            $paymentAccountMapped->getEntity()->setRegistered(true);
         }
+
+        $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
-        $token = $paymentProcessor->createPaymentToken($paymentAccountMapped, $contract, $depositAccountType);
+        $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
 
-        $paymentAccountEntity->setToken($token);
+        return $paymentAccountMapped->getEntity();
+    }
 
-        if ($paymentAccountEntity instanceof UserAwareInterface) {
-            $paymentAccountEntity->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
-            $paymentAccountEntity->setUser($user);
-        }
+    /**
+     * @param Form $paymentAccountType
+     * @return PaymentAccount
+     */
+    protected function updatePaymentAccount(Form $paymentAccountType)
+    {
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $paymentAccountType->getData();
 
-        $em->persist($paymentAccountEntity);
-        $em->flush();
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this
+            ->get('payment_processor.factory')
+            ->getPaymentProcessorByPaymentAccount($paymentAccount);
 
-        return $paymentAccountEntity;
+        /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
+        $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
+
+        $paymentProcessor->modifyPaymentAccount($paymentAccountMapped);
+
+        return $paymentAccountMapped->getEntity();
     }
 
     /**
@@ -88,9 +96,6 @@ trait PaymentProcess
      */
     protected function createBillingAccount(Form $billingAccountType, Landlord $user, Group $group)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        // get BillingAccount entity from form data
         /** @var BillingAccount $billingAccount */
         $billingAccount = $billingAccountType->getData();
         $billingAccount->setGroup($group);
@@ -101,12 +106,7 @@ trait PaymentProcess
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         // We can use any contract because we use only it just for get group in this case
-        $token = $paymentProcessor->createBillingToken($paymentAccountMapped, $user);
-        $billingAccount->setToken($token);
-        $billingAccount->setPaymentProcessor($group->getGroupSettings()->getPaymentProcessor());
-
-        $em->persist($billingAccount);
-        $em->flush();
+        $paymentProcessor->registerBillingAccount($paymentAccountMapped, $user);
 
         return $billingAccount;
     }
@@ -172,6 +172,9 @@ trait PaymentProcess
         if ($contract->getStatus() === ContractStatus::INVITE) {
             $contract->setStatus(ContractStatus::APPROVED);
         }
+
+        $this->get('payment.amount_limit')->checkIfExceedsMax($paymentEntity);
+
         $em->persist($contract);
         $em->persist($paymentEntity);
         $em->flush();

@@ -1596,7 +1596,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Get reportsD2c
+     * Get reportsTUSnapshot
      *
      * @return \Doctrine\Common\Collections\Collection
      */

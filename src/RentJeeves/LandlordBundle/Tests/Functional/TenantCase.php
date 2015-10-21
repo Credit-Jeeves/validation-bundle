@@ -1137,4 +1137,57 @@ class TenantCase extends BaseTestCase
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
+
+    /**
+     * @test
+     */
+    public function searchTenantsInOtherGroups()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull(
+            $allContractsCount = $this->page->find('css', '.title-box>h2'),
+            'Empty box with numbers of contracts'
+        );
+        $this->assertEquals(self::ALL, $allContractsCount->getText());
+        $this->assertNotNull(
+            $searchColumn = $this->page->find('css', '#searchFilter_link'),
+            'Empty filter selectbox'
+        );
+        $searchColumn->click();
+        $this->assertNotNull(
+            $optionEmail = $this->page->find('css', '#searchFilter_li_1'),
+            'Empty options which should be email'
+        );
+        $optionEmail->click();
+        $this->assertNotNull(
+            $searchText = $this->page->find('css', '#searsh-field'),
+            'Empty search input'
+        );
+        $searchText->setValue('rent');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'), 'Empty search button');
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($allContractsCount = $this->page->find('css', '.title-box>h2'), 'Empty all contracts box');
+        $this->assertEquals('All (14)', $allContractsCount->getText());
+        $this->assertNotNull(
+            $linkToTenantInDifferentGroups = $this->page->findAll('css', '#foundMoreContainer>a'),
+            'We don\'t have links for groups which have result'
+        );
+        $this->assertCount(1, $linkToTenantInDifferentGroups, 'We didn\'t get correct number of links');
+        $this->assertEquals('Sea side Rent Group', $linkToTenantInDifferentGroups[0]->getText());
+        $linkToTenantInDifferentGroups[0]->click();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull(
+            $linkToTenantInDifferentGroups = $this->page->findAll('css', '#foundMoreContainer>a'),
+            'We don\'t have links for groups which have result'
+        );
+        $this->assertCount(1, $linkToTenantInDifferentGroups, 'We didn\'t get correct number of links');
+        $this->assertEquals('Test Rent Group', $linkToTenantInDifferentGroups[0]->getText());
+        $this->logout();
+    }
 }

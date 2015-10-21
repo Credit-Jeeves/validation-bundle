@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
@@ -45,6 +46,11 @@ class PaymentJobExecutor
     protected $payCreditTrack;
 
     /**
+     * @var string
+     */
+    protected $creditTrackVendor;
+
+    /**
      * @var Job
      */
     protected $job;
@@ -64,15 +70,29 @@ class PaymentJobExecutor
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
+     *     "creditTrackVendor" = @DI\Inject("%credit_summary_vendor%"),
      *     "logger" = @DI\Inject("logger")
+     *
      * })
+     *
+     * @param EntityManager $em
+     * @param PayRent $payRent
+     * @param PayCreditTrack $payCreditTrack
+     * @param $creditTrackVendor
+     * @param Logger $logger
      */
-    public function __construct($em, $payRent, $payCreditTrack, $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        PayRent $payRent,
+        PayCreditTrack $payCreditTrack,
+        $creditTrackVendor,
+        Logger $logger
+    ) {
         $this->em = $em;
         $this->payRent = $payRent;
         $this->payCreditTrack = $payCreditTrack;
         $this->logger = $logger;
+        $this->creditTrackVendor = $creditTrackVendor;
     }
 
     public function getMessage()
@@ -183,6 +203,31 @@ class PaymentJobExecutor
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
 
-        return $this->processStatus($order);
+        $isSuccessful = $this->processStatus($order);
+
+        if ($isSuccessful) {
+            /** @var Operation $operation */
+            $operation = $order->getOperations()->last();
+            $report = $operation->getReportByVendor($this->creditTrackVendor);
+            $this->em->persist($this->scheduleReportJob($report));
+        }
+
+        $this->em->flush();
+
+        return $isSuccessful;
+    }
+
+    /**
+     * Creates a job to load report.
+     *
+     * @param Report $report
+     * @return Job
+     */
+    protected function scheduleReportJob(Report $report)
+    {
+        $job = new Job('score-track:get-report', ['--app=rj']);
+        $job->addRelatedEntity($report);
+
+        return $job;
     }
 }

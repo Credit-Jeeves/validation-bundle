@@ -19,10 +19,32 @@ class PaymentAccount extends Base implements UserAwareInterface, PaymentAccountI
         return $this->getName();
     }
 
-    public function setDepositAccounts($depositAccounts)
+    /**
+     * @param string $merchantName
+     * @return bool
+     */
+    public function hasAssociatedHpsMerchant($merchantName)
     {
-        foreach ($depositAccounts as $depositAccount) {
-            $this->addDepositAccount($depositAccount);
+        if (null !== $this->getAssociatedHpsMerchant($merchantName)) {
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * @param $merchantName
+     * @return null|PaymentAccountHpsMerchant
+     */
+    public function getAssociatedHpsMerchant($merchantName)
+    {
+        /** @var PaymentAccountHpsMerchant $merchant */
+        foreach ($this->getHpsMerchants() as $merchant) {
+            if ($merchantName == $merchant->getMerchantName()) {
+                return $merchant;
+            }
+        }
+
+        return null;
     }
 }

@@ -1,0 +1,8 @@
+model: RentJeeves\DataBundle\Entity\MerchantAccountMigration
+fixtures:
+    MerchantAccountMigration_1:
+        heartlandMerchantName: Monticeto_Percent
+        aciDivisionId: 564075
+    MerchantAccountMigration_2:
+        heartlandMerchantName: WestPac
+        aciDivisionId: 564075

@@ -2,20 +2,22 @@
  *
  * @param parent
  * @param contractId ko.observable
- * @param disableCreditCard ko.observable
+ * @param settings ko.observable
  * @param defaultType
  * @constructor
  */
-function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultType) {
+function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
     var self = this;
 
     if (typeof (defaultType) == 'undefined') {
         defaultType = 'bank';
     }
 
-    self.disableCreditCard = ko.observable(null);
-
     self.contractId = ko.observable(null);
+
+    self.disableCreditCard = ko.observable(false);
+
+    self.allowDebitCard = ko.observable(false);
 
     if (contractId) {
         self.contractId = contractId;
@@ -27,10 +29,11 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
         });
     }
 
-    self.disableCreditCard = ko.observable(null);
-
-    if (disableCreditCard) {
-        self.disableCreditCard = disableCreditCard;
+    if (settings && settings.disableCreditCard) {
+        self.disableCreditCard = settings.disableCreditCard;
+    }
+    if (settings && settings.allowDebitCard) {
+        self.allowDebitCard = settings.allowDebitCard;
     }
 
     self.paymentAccounts = ko.observableArray([]);
@@ -133,7 +136,12 @@ function PaymentSourceViewModel(parent, contractId, disableCreditCard, defaultTy
         } else {
             self.load(self.contractId());
         }
-        jQuery('input:radio[value="card"]').closest('label.radio').attr('data-bind', 'visible: !disableCreditCard()');
+        jQuery('input:radio[value="card"]')
+            .closest('label.radio')
+            .attr('data-bind', 'visible: !disableCreditCard()');
+        jQuery('input:radio[value="debit_card"]')
+            .closest('label.radio')
+            .attr('data-bind', 'visible: (!disableCreditCard() && allowDebitCard())');
     };
 
 

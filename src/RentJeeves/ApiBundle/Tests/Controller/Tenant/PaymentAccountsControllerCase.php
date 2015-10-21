@@ -273,22 +273,23 @@ class PaymentAccountsControllerCase extends BaseApiTestCase
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
-        /** @var PaymentAccount $last */
-        $last = $repo->findOneBy([
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $repo->findOneBy([
             'user' => $tenant,
         ], ['id' => 'DESC']);
 
-        $encodedId = $this->getIdEncoder()->encode($last->getId());
+        $encodedId = $this->getIdEncoder()->encode($paymentAccount->getId());
 
         $response = $this->putRequest($encodedId, $requestParams);
 
         $this->assertResponse($response, $statusCode);
 
-        $this->getEm()->refresh($last);
+        $this->getEm()->clear();
+        $modifiedPaymentAccount = $repo->find($paymentAccount->getId());
 
-        $this->assertEquals($last->getType(), $requestParams['type']);
-        $this->assertEquals($last->getName(), $requestParams['nickname']);
-        $this->assertNotNull($last->getToken());
+        $this->assertEquals($modifiedPaymentAccount->getType(), $requestParams['type']);
+        $this->assertEquals($modifiedPaymentAccount->getName(), $requestParams['nickname']);
+        $this->assertNotNull($modifiedPaymentAccount->getToken());
     }
 
     /**

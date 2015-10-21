@@ -246,6 +246,17 @@ services:
             - CreditJeeves\DataBundle\Entity\Settings
             - 'SonataAdminBundle:CRUD'
 
+    sonata.admin.outbound_transaction:
+        class: RentJeeves\AdminBundle\Admin\OutboundTransactionAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Outbound Transactions" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\OutboundTransaction
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [messages]]
+
     rental_report:
         class: RentJeeves\AdminBundle\Form\RentalReportType
         tags:

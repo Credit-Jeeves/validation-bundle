@@ -7,6 +7,73 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class GroupRepository extends EntityRepository
 {
+    /**
+     *
+     * @param Group $currentGroup
+     * @param mixed $groups
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return Group[]
+     */
+    public function searchGroupsPerContractFilter(
+        Group $currentGroup,
+        $groups,
+        $searchField = '',
+        $searchString = ''
+    ) {
+        if (empty($groups)) {
+            return [];
+        }
+
+        $allowedFieldsToSearch = [
+            'tenant',
+            'tenantA',
+            'email'
+        ];
+
+        if (!in_array($searchField, $allowedFieldsToSearch)) {
+            return [];
+        }
+
+        $groupsId = [];
+        /** @var Group $group */
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+
+        $query = $this->createQueryBuilder('g')
+            ->innerJoin('g.contracts', 'c')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('c.tenant', 't')
+            ->where('g.id IN (:groups)')
+            ->groupBy('c.group')
+            ->andWhere('c.status <> :status')
+            ->andWhere('g.id <> :currentGroup')
+            ->setParameter('currentGroup', $currentGroup->getId())
+            ->setParameter('status', ContractStatus::DELETED)
+            ->setParameter('groups', $groupsId);
+
+        if (!empty($searchField) && !empty($searchString)) {
+            $search = preg_replace('/\s+/', ' ', trim($searchString));
+            $search = explode(' ', $search);
+            switch ($searchField) {
+                case 'tenant':
+                case 'tenantA':
+                    foreach ($search as $item) {
+                        $query->andWhere('CONCAT(t.first_name, t.last_name) LIKE :search')
+                              ->setParameter('search', '%' . $item . '%');
+                    }
+                    break;
+                case 'email':
+                    $query->andWhere('t.email LIKE :search')
+                          ->setParameter('search', '%' . $searchString . '%');
+                    break;
+            }
+        }
+
+        return $query->getQuery()->execute();
+    }
 
     /**
      * @param Holding $holding
