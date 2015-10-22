@@ -20,13 +20,13 @@ class ResidentDataClient extends AbstractClient
 
     public function getResidents($propertyId)
     {
-        $postMonth = new DateTime();
+        $moveOut1 = new DateTime();
         $parameters = array(
             'GetResidents' => array_merge(
                 $this->getLoginCredentials(),
                 [
                     'YardiPropertyId' => $propertyId,
-                    'PostMonth1' => $postMonth->format('m/d/Y')
+                    'MoveOut1' => $moveOut1->format('m/d/Y')
                 ]
             )
         );
