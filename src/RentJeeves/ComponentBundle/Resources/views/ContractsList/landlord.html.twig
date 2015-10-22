@@ -734,14 +734,12 @@
         <div id="foundMoreContainer" class="information-box pie-el">
             <span>{{ 'landlord.tenant.found_more'|trans }}</span>
             <!-- ko foreach: { data: agentContracts() } -->
-                <!--ko if: $index() != 0-->,<!--/ko-->
                 <a href="#" data-bind="
                         attr: {title: name},
                         text: name,
                         click: $parent.changeGroup,
-                        clickBubble: false"></a>
-
-            <!-- /ko -->
+                        clickBubble: false">
+                </a><span data-bind="visible: $index() < $parents.length && $root.agentContracts().length > 1">, </span><!-- /ko -->
         </div>
         <!-- /ko -->
         <div class="content-box">
