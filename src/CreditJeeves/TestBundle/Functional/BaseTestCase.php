@@ -85,7 +85,8 @@ abstract class BaseTestCase extends Base
     protected function setDefaultSession($name)
     {
         $this->getMink()->setDefaultSessionName($name);
-        $this->setUp();
+        $this->session = $this->getMink()->getSession();
+        $this->page = $this->session->getPage();
     }
 
     /**
