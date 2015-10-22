@@ -2387,7 +2387,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.note">
                 <source>credittrack.pay.note</source>
-                <target>We'll get your latest score and credit report when you complete your payment.</target>
+                <target>We'll show your latest score and credit profile when you complete your payment.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.save">
                 <source>credittrack.pay.save</source>
