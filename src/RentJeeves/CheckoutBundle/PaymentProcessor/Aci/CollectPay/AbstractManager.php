@@ -144,12 +144,21 @@ abstract class AbstractManager
         $billingAccountAddress = new Address();
         $group = $depositAccount->getGroup();
 
-        $billingAccountAddress->setAddress1($group->getStreetAddress1());
-        $billingAccountAddress->setAddress2($group->getStreetAddress2());
-        $billingAccountAddress->setCity($group->getCity());
-        $billingAccountAddress->setPostalCode($group->getZip());
-        $billingAccountAddress->setState($group->getState());
-        $billingAccountAddress->setCountryCode($group->getCountry());
+        if ($group->getStreetAddress1() && $group->getCity() && $group->getZip() && $group->getState()) {
+            $billingAccountAddress->setAddress1($group->getStreetAddress1());
+            $billingAccountAddress->setAddress2($group->getStreetAddress2());
+            $billingAccountAddress->setCity($group->getCity());
+            $billingAccountAddress->setPostalCode($group->getZip());
+            $billingAccountAddress->setState($group->getState());
+            $billingAccountAddress->setCountryCode($group->getCountry());
+        } else {
+            $billingAccountAddress->setAddress1('');
+            $billingAccountAddress->setAddress2('');
+            $billingAccountAddress->setCity('');
+            $billingAccountAddress->setPostalCode('');
+            $billingAccountAddress->setState('');
+            $billingAccountAddress->setCountryCode($group->getCountry());
+        }
 
         return $billingAccountAddress;
     }
