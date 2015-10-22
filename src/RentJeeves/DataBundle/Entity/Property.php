@@ -106,7 +106,7 @@ class Property extends Base
             $result[] = $area;
         }
 
-        return implode(', ', $result).' '.$this->getZip();
+        return implode(', ', $result) . ' ' . $this->getZip();
     }
 
     public function hasLandlord()
@@ -120,7 +120,8 @@ class Property extends Base
         /** @var Group $group */
         foreach ($groups as $group) {
             if (($depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) &&
-                $depositAccount->isComplete()) {
+                $depositAccount->isComplete()
+            ) {
                 $merchantExist = true;
                 break;
             }
@@ -193,7 +194,8 @@ class Property extends Base
         if ($isSingle == true) {
             if ((!$this->hasUnits() && !$this->hasGroups()) ||
                 (!$this->hasUnits() && count($this->getPropertyGroups()) == 1
-                    && $this->getPropertyGroups()->first()->getId() == $groupId)) {
+                    && $this->getPropertyGroups()->first()->getId() == $groupId)
+            ) {
                 return true;
             }
         }
@@ -265,10 +267,13 @@ class Property extends Base
         $this->setStreet($address->getStreet());
         $this->setNumber($address->getNumber());
         $this->setZip($address->getZip());
-        $this->setJb($address->getJb());
-        $this->setKb($address->getKb());
-        $this->setLat($address->getLatitude());
-        $this->setLong($address->getLongitude());
-        $this->setIndex($address->getIndex());
+        if ($address->getJb() && $address->getKb()) {
+            $this->setJb($address->getJb());
+            $this->setKb($address->getKb());
+        } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
+            $this->setLat($address->getLatitude());
+            $this->setLong($address->getLongitude());
+            $this->setIndex($address->getIndex());
+        }
     }
 }
