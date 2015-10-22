@@ -333,7 +333,8 @@ function Pay(parent, contract) {
 
     // Connected Payment Source Component
     // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self,
+    ko.utils.extend(
+        self,
         new PaymentSourceViewModel(
             self,
             self.contractId,
@@ -421,9 +422,9 @@ function Pay(parent, contract) {
 
     self.step('details');
 
-    self.prepareDialog();
-
     self.mapPayment(contract);
 
     ko.applyBindings(self, jQuery('#pay-popup').get(0));
+
+    self.prepareDialog();
 }
