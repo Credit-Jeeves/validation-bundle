@@ -157,7 +157,13 @@
                 _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
             }
             {% if isInPaymentWindow %}
-                $('#contract-pay-1').click();
+                if (window.paymentHistoryLoadedCallback) {
+                    window.paymentHistoryLoadedCallback = function () {
+                        $('#contract-pay-1').click();
+                    }
+                } else {
+                    $('#contract-pay-1').click();
+                }
             {% endif %}
         {% endif %}
     });

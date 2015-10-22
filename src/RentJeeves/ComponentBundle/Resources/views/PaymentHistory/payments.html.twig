@@ -62,6 +62,7 @@
 </div>
 
 <script type="text/javascript">
+    var paymentHistoryLoadedCallback = function () {};
     $(document).ready(function() {
         var viewModel = new TenantPaymentsViewModel();
         ko.applyBindings(viewModel, $('#tenant-payments').get(0));

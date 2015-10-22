@@ -238,7 +238,16 @@ function PayAnything(parent, contract) {
 
     // Connected Payment Source Component
     // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self, new PaymentSourceViewModel(self, self.contractId, self.disableCreditCard));
+    ko.utils.extend(
+        self,
+        new PaymentSourceViewModel(
+            self,
+            self.contractId,
+            {
+                'disableCreditCard': self.disableCreditCard
+            }
+        )
+    );
 
     self.payment = new Payment(self);
 
