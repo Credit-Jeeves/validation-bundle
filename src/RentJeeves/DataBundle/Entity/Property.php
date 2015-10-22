@@ -267,7 +267,7 @@ class Property extends Base
         $this->setStreet($address->getStreet());
         $this->setNumber($address->getNumber());
         $this->setZip($address->getZip());
-        if ($address->getJb() && $address->getKb()) {
+        if ($this->getJb() === null && $this->getKb() === null && $address->getJb() && $address->getKb()) {
             $this->setJb($address->getJb());
             $this->setKb($address->getKb());
         } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
