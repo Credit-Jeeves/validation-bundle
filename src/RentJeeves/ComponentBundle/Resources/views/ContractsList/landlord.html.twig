@@ -739,7 +739,7 @@
                         text: name,
                         click: $parent.changeGroup,
                         clickBubble: false">
-                </a><span data-bind="visible: $index() < $parents.length && $root.agentContracts().length > 1">, </span><!-- /ko -->
+                </a><span data-bind="visible: $index()+1 < $root.agentContracts().length && $root.agentContracts().length > 1">, </span><!-- /ko -->
         </div>
         <!-- /ko -->
         <div class="content-box">
