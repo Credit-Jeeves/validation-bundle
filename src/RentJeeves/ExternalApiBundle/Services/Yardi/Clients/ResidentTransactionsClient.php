@@ -6,6 +6,7 @@ use DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
 use SoapVar;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 
 class ResidentTransactionsClient extends AbstractClient
 {
@@ -106,6 +107,12 @@ class ResidentTransactionsClient extends AbstractClient
         );
     }
 
+    /**
+     * @param $transactionXml
+     * @return Messages
+     * @throws \Exception
+     * @throws \SoapFault
+     */
     public function importResidentTransactionsLogin($transactionXml)
     {
         $parameters = array(
