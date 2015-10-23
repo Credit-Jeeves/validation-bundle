@@ -174,7 +174,7 @@ class ReversalReceiptSender
                 /** @var Messages $result */
                 $result = $residentClient->importResidentTransactionsLogin($transactionXml);
                 if ($result instanceof Messages) {
-                    $this->logger->info($result->getMessage());
+                    $this->logger->info($result->getMessage()->getMessage());
                 } else {
                     $this->logger->alert(
                         sprintf(
