@@ -337,7 +337,7 @@ class PropertyProcess
      */
     public function getPropertyFromDBIn2steps(Property $property)
     {
-        if ($propertyDB  = $this->checkByAllArgs($property)) {
+        if ($propertyDB = $this->checkByAllArgs($property)) {
             return $propertyDB;
         }
 
@@ -393,7 +393,7 @@ class PropertyProcess
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
             return $property;
         }
-        if (null === $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
             return null;
         }
 
