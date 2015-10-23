@@ -14,7 +14,6 @@
     bootstrap                   = "app/bootstrap.php.cache" >
 
     <testsuites>
-
         <!--                                  -->
         <!-- Default TestSuite run by Jenkins -->
         <!--                                  -->
