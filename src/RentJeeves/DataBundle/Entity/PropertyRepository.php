@@ -372,17 +372,14 @@ EOT;
      * @param Address $address
      *
      * @return Property
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findOneByAddress(Address $address)
     {
         $query = $this->createQueryBuilder('p');
-        if ($address->getLatitude() !== null && $address->getLongitude() !== null) {
+        if ($address->getIndex() !== null) {
             $query
-                ->where('p.lat = :lat AND p.long = :long')
-                ->setParameter('lat', $address->getLatitude())
-                ->setParameter('long', $address->getLongitude());
+                ->where('p.index = :index')
+                ->setParameter('index', $address->getIndex());
         } elseif ($address->getJb() !== null && $address->getKb() !== null) {
             $query
                 ->where('p.jb = :jb AND p.kb = :kb')
@@ -395,6 +392,7 @@ EOT;
         return $query
             ->andWhere('p.number = :number')
             ->setParameter('number', $address->getNumber())
+            ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */
             ->getQuery()
             ->getOneOrNullResult();
     }
