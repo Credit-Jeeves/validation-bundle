@@ -136,8 +136,9 @@ class SourcesCase extends BaseTestCase
             ),
             'Payment account type radio buttons should be displayed on payment account wizard'
         );
-        $this->assertCount(2, $choices, 'Should be displayed both payment account types (card and bank)');
+        $this->assertCount(3, $choices, 'Should be displayed both payment account types (card and bank)');
         $choices[1]->click();
+        $this->assertFalse($choices[2]->isVisible(), 'DebitCard type should not be visible');
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
         $this->fillForm(
