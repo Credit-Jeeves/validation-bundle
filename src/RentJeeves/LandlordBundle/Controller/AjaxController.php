@@ -283,7 +283,8 @@ class AjaxController extends Controller
 
         $itsNewProperty = false;
         $property = $this->getPropertyProcess()->findPropertyByAddressInDb(
-            $address->getAddress1(),
+            $address->getNumber(),
+            $address->getStreet(),
             $address->getCity(),
             $address->getState(),
             $address->getZip()
