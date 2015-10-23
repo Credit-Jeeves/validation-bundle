@@ -2907,7 +2907,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.label">
                 <source>settings.plans.label</source>
-                <target>Plan type:</target>
+                <target>Plan:</target>
             </trans-unit>
             <trans-unit id="settings.plans.free">
                 <source>settings.plans.free</source>
@@ -2920,7 +2920,7 @@
             <trans-unit id="settings.plans.paid">
                 <source>settings.plans.paid</source>
                 <target><![CDATA[
-                    Credit Track TM - Track your credit monthly as you build credit history.<br />
+                    ScoreTrack TM - Track your score and credit profile monthly as you build credit history.<br />
                     <span class="bold">Payment Account:</span> "%PAYMENT_ACCOUNT%"
                 ]]></target>
             </trans-unit>
