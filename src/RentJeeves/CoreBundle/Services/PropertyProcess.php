@@ -372,6 +372,7 @@ class PropertyProcess
     }
 
     /**
+     * @param string $number
      * @param string $street
      * @param string $city
      * @param string $state
@@ -379,9 +380,10 @@ class PropertyProcess
      *
      * @return Property|null
      */
-    public function findPropertyByAddressInDb($street, $city, $state, $zipCode)
+    public function findPropertyByAddressInDb($number, $street, $city, $state, $zipCode)
     {
         $params = [
+            'number' => $number,
             'city' => $city,
             'area' => $state,
             'street' => $street,
