@@ -29,7 +29,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "LandlordTenants"});
+     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "ContractList"});
      */
     protected $id;
 
@@ -124,7 +124,7 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string")
-     * @Serializer\Groups({"AdminProperty", "LandlordTenants"});
+     * @Serializer\Groups({"AdminProperty", "ContractList"});
      *
      * @Assert\NotBlank(groups={"landlordImport"})
      */

@@ -44,6 +44,7 @@ class ResolveCase extends BaseTestCase
      */
     public function resolvePaid()
     {
+        $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
