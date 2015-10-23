@@ -3,8 +3,8 @@ namespace RentJeeves\CoreBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
+use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
-use Monolog\Logger;
 
 class LandlordController extends BaseController
 {
@@ -37,7 +37,7 @@ class LandlordController extends BaseController
     }
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
     public function getLogger()
     {
