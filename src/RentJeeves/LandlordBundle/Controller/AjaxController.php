@@ -265,28 +265,33 @@ class AjaxController extends Controller
      */
     public function addProperty(Request $request)
     {
-        $itsNewProperty = false;
         $addGroup = (boolean) $request->request->get('addGroup', false);
         $data = $request->request->all('address');
 
         try {
             $address = $this->getGoogleAutocompleteAddressConverter()->convert($data['data']);
         } catch (\InvalidArgumentException $e) {
-            $this->get('logger')->debug($e->getMessage());
+            $this->getLogger()->debug($e->getMessage());
 
             return new JsonResponse(
                 [
                     'status' => 'ERROR',
-                    'message' => $this->get('translator')->trans('property.address_not_found')
+                    'message' => $this->getTranslator()->trans('property.address_not_found')
                 ]
             );
         }
 
-        $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findOneByAddress($address);
+        $itsNewProperty = false;
+        $property = $this->getPropertyProcess()->findPropertyByAddressInDb(
+            $address->getAddress1(),
+            $address->getCity(),
+            $address->getState(),
+            $address->getZip()
+        );
         if (null === $property) {
+            $itsNewProperty = true;
             $property = new Property();
             $property->setAddressFields($address);
-            $itsNewProperty = true;
 
             $this->getEntityManager()->persist($property);
         }
@@ -379,17 +384,14 @@ class AjaxController extends Controller
     {
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $user = $this->getUser();
         $group = $this->getCurrentGroup();
         $em = $this->getDoctrine()->getManager();
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
         foreach ($records as $entity) {
-            $em->remove($entity);
-            $em->flush();
+            $this->getEntityManager()->remove($entity);
         }
         $group->removeGroupProperty($property);
-        $em->persist($group);
-        $em->flush();
+        $this->getEntityManager()->flush();
 
         return new JsonResponse(array());
     }
