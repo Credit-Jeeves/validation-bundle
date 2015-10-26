@@ -687,7 +687,7 @@ class ContractRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('c');
         $query->distinct();
-        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $this->whereReportToExperian($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
@@ -804,7 +804,7 @@ class ContractRepository extends EntityRepository
         $query->select(
             'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
         );
-        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $this->whereReportToTransUnion($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
