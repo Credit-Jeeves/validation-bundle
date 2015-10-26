@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Unit\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Enum\GroupType;
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper;
@@ -17,7 +18,7 @@ class GroupMapperCase extends AbstractMapperCase
      */
     public function shouldThrowExceptionIfGetNonexistentValue()
     {
-        $mapper = new GroupMapper($this->getPropertyProcess());
+        $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEmMock());
 
@@ -28,11 +29,11 @@ class GroupMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by PropertyProcess
+     * @expectedExceptionMessage [Mapping] : Address (test test, test, test, test) is not found by AddressLookupService
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
-        $mapper = new GroupMapper($this->getPropertyProcess());
+        $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
@@ -92,7 +93,7 @@ class GroupMapperCase extends AbstractMapperCase
     public function shouldCreateGroupAndRelatedEntityIfAddressIsValid($data, $groupName)
     {
         $mapper = new GroupMapper(
-            $this->getPropertyProcess(),
+            $this->getAddressLookupService(),
             [
                 'fee_cc' => 1.2,
                 'fee_ach' => 2.7,
@@ -159,7 +160,7 @@ class GroupMapperCase extends AbstractMapperCase
 
         $this->getEntityManager()->flush($group);
 
-        $mapper = new GroupMapper($this->getPropertyProcess());
+        $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManager());
 
@@ -171,10 +172,10 @@ class GroupMapperCase extends AbstractMapperCase
     }
 
     /**
-     * @return \RentJeeves\CoreBundle\Services\PropertyProcess
+     * @return AddressLookupInterface
      */
-    protected function getPropertyProcess()
+    protected function getAddressLookupService()
     {
-        return $this->getContainer()->get('property.process');
+        return $this->getContainer()->get('address_lookup_service');
     }
 }

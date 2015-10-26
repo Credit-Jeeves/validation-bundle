@@ -11,6 +11,8 @@ parameters:
     resman.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
     amsi.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
     mri.contract_sync.class: 'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'
+    binlist.source.class: 'RentJeeves\ExternalApiBundle\Services\Binlist\BinlistSource'
+    binlist.card.class: 'RentJeeves\ExternalApiBundle\Services\Binlist\BinlistCard'
 
 services:
     mri.contract_sync:
@@ -103,3 +105,20 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@resman.resident_data"
             - "@logger"
+
+    binlist.debit_card_repo:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - RentJeeves\DataBundle\Entity\DebitCardBinlist
+    binlist.source:
+        class: "%binlist.source.class%"
+        arguments:
+            - "@logger"
+            - "@reader.csv"
+            - "@jms_serializer"
+    binlist.card:
+        class: "%binlist.card.class%"
+        arguments:
+            - "@binlist.debit_card_repo"

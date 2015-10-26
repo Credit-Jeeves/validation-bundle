@@ -3,6 +3,8 @@ parameters:
     database_driver: pdo_mysql
     database_port: null
 
+    secrets_path: /var/www/%server_name_rj%/app/config/secrets
+
     mailer_transport: mail
     mailer_host: 127.0.0.1
     mailer_user: null
@@ -65,6 +67,8 @@ parameters:
 
     # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
     allow_duplicate_contracts: false
+    # parameter was added for task RT-1668, we can fast allow and disallow feature that show Score Track
+    allow_score_track: false
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
@@ -79,9 +83,9 @@ parameters:
     transunion.account_name: 'CC2RentTrack'
     transunion.password: 'Pfr5Nm$c'
     transunion.environment: stage
-    transunion.ssl_key: /var/www/%server_name_rj%/app/config/secrets/transunion/stg.renttrack.com.key
-    transunion.ca_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/prodsupCA.pem
-    transunion.ssl_certificate: /var/www/%server_name_rj%/app/config/secrets/transunion/CC2RentTrack-Test.crt
+    transunion.ssl_key: %secrets_path%/transunion/stg.renttrack.com.key
+    transunion.ca_certificate: %secrets_path%/transunion/prodsupCA.pem
+    transunion.ssl_certificate: %secrets_path%/transunion/CC2RentTrack-Test.crt
     transunion.renttrack_snapshot_bundle: 'CC2RentTrackTUReportSnapshot'
     transunion.renttrack_vantage_score_3_bundle: 'CC2RentTrackTUVantage3Score'
 

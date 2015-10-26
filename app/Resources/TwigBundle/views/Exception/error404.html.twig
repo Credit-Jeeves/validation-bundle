@@ -2,12 +2,15 @@
     ? "CoreBundle::rj_base.html.twig"
     : "CoreBundle::base.html.twig" %}
 
-{% block title '404 Error' %}
+{% block title 'Oops! 404 Error' %}
 
 {% block content %}
 
     <div class="column-large">
-        <h1>404 Error</h1>
+        <h1>Ooops! Page Not Found.</h1>
+        <img src="/bundles/rjpublic/images/RentTrack-Logo-Sideways.png">
+        <br /><br /> 
+        <p>Looks like things have gotten off track. Try <a href="https://my.renttrack.com/">going back home</a> or <a href="http://help.renttrack.com/">visiting help</a> if this continues.</p>
     </div>
     <div class="clearboth"></div>
 {% endblock %}

@@ -66,6 +66,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new BeSimple\SoapBundle\BeSimpleSoapBundle(),
             new RentTrack\TransUnionBundle\TransUnionBundle(),
+            new RentTrack\SmartyStreetsBundle\SmartyStreetsBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),

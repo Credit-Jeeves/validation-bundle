@@ -1,6 +1,0 @@
-model: CreditJeeves\DataBundle\Entity\ReportD2c
-fixtures:
-  cjApplicantReportD2C_5:
-    user: cjApplicant_5
-    created_at: '-32 days'
-    raw_data: '%file:data/experian/netConnect/emilio.arf%'

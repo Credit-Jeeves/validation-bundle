@@ -6,172 +6,216 @@ use ACI\Client\CollectPay\Enum\BankAccountType;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
-use Payum\AciCollectPay\Request\ProfileRequest\ModifyFunding;
+use Payum\AciCollectPay\Request\ProfileRequest\DeleteFunding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as FundingAccountData;
-use RentJeeves\DataBundle\Entity\GroupAwareInterface;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
+use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class FundingAccountManager extends AbstractManager
 {
     /**
-     * @param  int                $fundingAccountId
-     * @param  int                $profileId
-     * @param  FundingAccountData $fundingAccountData
-     * @param  User               $user
-     * @return int
+     * @param PaymentAccount $paymentAccount
      *
      * @throws \Exception
+     * @throws PaymentProcessorLogicException
      */
-    public function modifyFundingAccount(
-        $fundingAccountId,
-        $profileId,
-        FundingAccountData $fundingAccountData,
-        User $user = null
-    ) {
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
-        $fundingAccount->setFundingAccountId($fundingAccountId);
+    public function removePaymentFundingAccount(PaymentAccount $paymentAccount)
+    {
+        $profile = $paymentAccount->getUser()->getAciCollectPayProfile();
 
-        $profile = new RequestModel\Profile();
-        $profile->setProfileId($profileId);
-        $profile->setFundingAccount($fundingAccount);
-
-        $request = new ModifyFunding($profile);
-
-        try {
-            $this->paymentProcessor->execute($request);
-        } catch (\Exception $e) {
+        if (!$profile) {
             $this->logger->alert(
                 sprintf(
-                    '[ACI CollectPay FundingAccount Exception]:%s(%s):%s',
-                    ($user != null) ? "PaymentAccount" : "BillingAccount",
-                    $fundingAccountId,
-                    $e->getMessage()
+                    '[ACI CollectPay Error]: Try to remove payment account "%s" for user #%d without aci profile.',
+                    $paymentAccount->getName(),
+                    $paymentAccount->getUser()->getId()
                 )
             );
-            throw $e;
-        }
-
-        if (!$request->getIsSuccessful()) {
-            $this->logger->alert(
-                sprintf(
-                    '[ACI CollectPay FundingAccount Error]:%s(%s):%s',
-                    ($user != null) ? "PaymentAccount" : "BillingAccount",
-                    $fundingAccountId,
-                    $request->getMessages()
-                )
-            );
-            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
+            throw new PaymentProcessorLogicException('Can\'t remove payment account without aci profile.');
         }
 
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Modify funding account with id = "%s" to profile "%d" for user with id = "%d"',
-                $fundingAccountId,
-                $profileId,
-                $user->getId()
+                '[ACI CollectPay Info]:Try to remove funding account "%s" for user with id = "%d" and profile "%d"',
+                $paymentAccount->getName(),
+                $paymentAccount->getUser()->getId(),
+                $profile->getProfileId()
             )
         );
 
-        return $fundingAccountId;
+        $fundingAccount = new RequestModel\SubModel\FundingAccount();
+
+        $fundingAccount->setNickname($paymentAccount->getName());
+        $fundingAccount->setFundingAccountId($paymentAccount->getToken());
+
+        $this->executeRemoveFundingRequest($profile->getProfileId(), $fundingAccount);
+
+        $this->logger->debug(
+            sprintf(
+                '[ACI CollectPay Info]:Deleted funding account with id = "%s" to profile "%d" for user with id = "%d"',
+                $paymentAccount->getToken(),
+                $profile->getProfileId(),
+                $paymentAccount->getUser()->getId()
+            )
+        );
+
+        $this->em->remove($paymentAccount);
+        $this->em->flush($paymentAccount);
     }
 
     /**
-     * @param  int                              $profileId
-     * @param  FundingAccountData               $fundingAccountData
-     * @param  User                             $user
-     * @return int
-     * @throws PaymentProcessorRuntimeException|PaymentProcessorInvalidArgumentException
+     * @param AciCollectPayUserProfile $profile
+     * @param FundingAccountData $fundingAccountData
      */
-    public function addFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user = null)
+    public function addPaymentFundingAccount(AciCollectPayUserProfile $profile, FundingAccountData $fundingAccountData)
     {
-        if (!$fundingAccountData->getEntity() instanceof PaymentAccountInterface) {
-            throw new PaymentProcessorInvalidArgumentException('Entity should implement PaymentAccountInterface');
-        }
+        if (!$fundingAccountData->getEntity()->getToken()) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
+                    $profile->getUser()->getId(),
+                    $profile->getProfileId()
+                )
+            );
 
-        if ($fundingAccountData->getEntity() instanceof UserAwareInterface) {
-            return $this->addPaymentFundingAccount($profileId, $fundingAccountData, $user);
-        } elseif ($fundingAccountData->getEntity() instanceof GroupAwareInterface) {
-            return $this->addBillingFundingAccount($profileId, $fundingAccountData);
+            $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $profile->getUser());
+
+            $fundingAccountId = $this->executeAddFundingRequest($profile->getProfileId(), $fundingAccount);
+
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user id = "%d"',
+                    $fundingAccountId,
+                    $profile->getProfileId(),
+                    $profile->getUser()->getId()
+                )
+            );
+
+            /** @var PaymentAccount $paymentAccount */
+            $paymentAccount = $fundingAccountData->getEntity();
+            $paymentAccount->setToken($fundingAccountId);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
         } else {
-            throw new PaymentProcessorInvalidArgumentException('Unsupported Payment Account Type');
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Funding account for user id = "%d" and profile "%d" already exists',
+                    $profile->getUser()->getId(),
+                    $profile->getProfileId()
+                )
+            );
         }
     }
 
     /**
-     * @param int $profileId
      * @param FundingAccountData $fundingAccountData
-     * @param User $user
-     * @return int
+     * @throws PaymentProcessorLogicException
      */
-    protected function addPaymentFundingAccount($profileId, FundingAccountData $fundingAccountData, User $user)
-    {
+    public function modifyPaymentFundingAccount(
+        FundingAccountData $fundingAccountData
+    ) {
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $fundingAccountData->getEntity();
+
+        $profile = $paymentAccount->getUser()->getAciCollectPayProfile();
+
+        if (!$profile) {
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Error]: Try to modify payment account "%s" for user #%d without aci profile.',
+                    $paymentAccount->getName(),
+                    $paymentAccount->getUser()->getId()
+                )
+            );
+            throw new PaymentProcessorLogicException('Can\'t modify payment account without aci profile.');
+        }
+
         $this->logger->debug(
             sprintf(
-                '[ACI CollectPay Info]:Try to add new funding account for user with id = "%d" and profile "%d"',
-                $user->getId(),
-                $profileId
+                '[ACI CollectPay Info]:Try to modify funding account "%s" for user with id = "%d" and profile "%d"',
+                $paymentAccount->getName(),
+                $profile->getUser()->getId(),
+                $profile->getProfileId()
             )
         );
 
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData, $user);
+        $fundingAccount = new RequestModel\SubModel\FundingAccount();
 
-        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+        $fundingAccount->setNickname($paymentAccount->getName());
+        $fundingAccount->setFundingAccountId($paymentAccount->getToken());
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for user with id = "%d"',
-                $fundingAccountId,
-                $profileId,
-                $user->getId()
-            )
-        );
+        $this->executeRemoveFundingRequest($profile->getProfileId(), $fundingAccount);
 
-        return $fundingAccountId;
+        $paymentAccount->setToken(null);
+
+        $this->addPaymentFundingAccount($profile, $fundingAccountData);
     }
 
     /**
-     * @param int $profileId
+     * @param AciCollectPayGroupProfile $profile
      * @param FundingAccountData $fundingAccountData
-     * @return int
      */
-    protected function addBillingFundingAccount($profileId, FundingAccountData $fundingAccountData)
+    public function addBillingFundingAccount(AciCollectPayGroupProfile $profile, FundingAccountData $fundingAccountData)
     {
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
-                $fundingAccountData->getEntity()->getGroup()->getName(),
-                $profileId
-            )
-        );
+        if (!$fundingAccountData->getEntity()->getToken()) {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Try to add new funding account for group "%s" and profile "%d"',
+                    $fundingAccountData->getEntity()->getGroup()->getName(),
+                    $profile->getProfileId()
+                )
+            );
 
-        $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
+            $fundingAccount = $this->prepareFundingAccount($fundingAccountData);
 
-        $fundingAccountId = $this->executeRequest($profileId, $fundingAccount);
+            $fundingAccountId = $this->executeAddFundingRequest($profile->getProfileId(), $fundingAccount);
 
-        $this->logger->debug(
-            sprintf(
-                '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
-                $fundingAccountId,
-                $profileId,
-                $fundingAccountData->getEntity()->getGroup()->getName()
-            )
-        );
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Added funding account with id = "%s" to profile "%d" for group "%s"',
+                    $fundingAccountId,
+                    $profile->getProfileId(),
+                    $fundingAccountData->getEntity()->getGroup()->getName()
+                )
+            );
 
-        return $fundingAccountId;
+            /** @var BillingAccount $paymentAccount */
+            $paymentAccount = $fundingAccountData->getEntity();
+            $paymentAccount->setToken($fundingAccountId);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
+
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
+        } else {
+            $this->logger->debug(
+                sprintf(
+                    '[ACI CollectPay Info]:Group funding account for group "%s" and profile "%d" already exists',
+                    $fundingAccountData->getEntity()->getGroup()->getName(),
+                    $profile->getProfileId()
+                )
+            );
+        }
     }
 
     /**
      * @param  FundingAccountData                   $fundingAccountData
      * @param  User                                 $user
      * @return RequestModel\SubModel\FundingAccount
+     *
+     * @throws PaymentProcessorInvalidArgumentException
      */
     public function prepareFundingAccount(FundingAccountData $fundingAccountData, User $user = null)
     {
@@ -184,13 +228,13 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
         if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
-            $ccMonth = $fundingAccountData->get('expiration_month');
-            $ccYear = $fundingAccountData->get('expiration_year');
-            $paymentAccount->setCcExpiration(new \DateTime("last day of {$ccYear}-{$ccMonth}"));
+            $expMonth = $fundingAccountData->get('expiration_month');
+            $expYear = $fundingAccountData->get('expiration_year');
+            $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
             $account = new RequestModel\SubModel\CCardAccount();
 
-            $account->setExpMonth($ccMonth);
-            $account->setExpYear($ccYear);
+            $account->setExpMonth($expMonth);
+            $account->setExpYear($expYear);
             $account->setCardNumber($fundingAccountData->get('card_number'));
             $account->setCardType(
                 RequestModel\Validation\CreditCardChecker::getCreditCardType(
@@ -199,6 +243,15 @@ class FundingAccountManager extends AbstractManager
             );
             $account->setSecurityCode($fundingAccountData->get('csc_code'));
 
+        } elseif (PaymentAccountTypeEnum::DEBIT_CARD == $paymentAccount->getType()) {
+            $expMonth = $fundingAccountData->get('expiration_month');
+            $expYear = $fundingAccountData->get('expiration_year');
+            $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
+            $account = new RequestModel\SubModel\DCardAccount();
+
+            $account->setExpMonth($expMonth);
+            $account->setExpYear($expYear);
+            $account->setCardNumber($fundingAccountData->get('card_number'));
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccount->getType()) {
             $account = new RequestModel\SubModel\BankAccount();
 
@@ -261,8 +314,11 @@ class FundingAccountManager extends AbstractManager
      * @param int $profileId
      * @param RequestModel\SubModel\FundingAccount $fundingAccount
      * @return int
+     *
+     * @throws \Exception
+     * @throws PaymentProcessorRuntimeException
      */
-    protected function executeRequest($profileId, RequestModel\SubModel\FundingAccount $fundingAccount)
+    protected function executeAddFundingRequest($profileId, RequestModel\SubModel\FundingAccount $fundingAccount)
     {
         $profile = new RequestModel\Profile();
 
@@ -277,7 +333,7 @@ class FundingAccountManager extends AbstractManager
         } catch (\Exception $e) {
             $this->logger->alert(
                 sprintf(
-                    '[ACI CollectPay FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
+                    '[ACI CollectPay Add FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
                     $profileId,
                     $fundingAccount->getFundingAccountId(),
                     $e->getMessage()
@@ -289,7 +345,7 @@ class FundingAccountManager extends AbstractManager
         if (!$request->getIsSuccessful()) {
             $this->logger->alert(
                 sprintf(
-                    '[ACI CollectPay FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
+                    '[ACI CollectPay Add FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
                     $profileId,
                     $fundingAccount->getFundingAccountId(),
                     $request->getMessages()
@@ -299,5 +355,50 @@ class FundingAccountManager extends AbstractManager
         }
 
         return $request->getModel()->getFundingAccount()->getFundingAccountId();
+    }
+
+    /**
+     * @param int $profileId
+     * @param RequestModel\SubModel\FundingAccount $fundingAccount
+     * @return int
+     *
+     * @throws \Exception
+     * @throws PaymentProcessorRuntimeException
+     */
+    protected function executeRemoveFundingRequest($profileId, RequestModel\SubModel\FundingAccount $fundingAccount)
+    {
+        $profile = new RequestModel\Profile();
+
+        $profile->setProfileId($profileId);
+
+        $profile->setFundingAccount($fundingAccount);
+
+        $request = new DeleteFunding($profile);
+
+        try {
+            $this->paymentProcessor->execute($request);
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Remove FundingAccount Exception]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $e->getMessage()
+                )
+            );
+            throw $e;
+        }
+
+        if (!$request->getIsSuccessful()) {
+            $this->logger->alert(
+                sprintf(
+                    '[ACI CollectPay Remove FundingAccount Error]:Profile(%s):FundingAccount(%s):%s',
+                    $profileId,
+                    $fundingAccount->getFundingAccountId(),
+                    $request->getMessages()
+                )
+            );
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($request->getMessages()));
+        }
     }
 }

@@ -1,10 +1,12 @@
 {% if score > 0 %}
 <div class="pod-middle pod-border pod-padding shadow credit-score-graph">
   <div class="score-column">
-    <h3>Your Credit Score</h3>
+    <h3 style="padding-bottom: 10px">{{ 'credit_score.title' | trans }}</h3>
     <div class="score-current">{{ score }}</div>
     <div class="score-date">as of&nbsp;{{ date }}</div>
-    <div class="score-fico">{{ bureau }} Vantage3 Score</div>
+    {% if not features.allow_score_track %}
+      <div class="score-fico">{{ bureau }} Vantage3 Score</div>
+    {% endif %}
   </div>
   <div class="score-column score-tenant">
     <div class="vertical-rainbow-chart">
@@ -12,15 +14,15 @@
     </div>
     <div class="clearboth"></div>
   </div>
-  {# //TODO return it back when CreditTrack will be on place
-  <div class="credittrack-teaser font-helvetica">
-    {% if creditTrackEnabled %}
-      <i><span class="text enrolled">{{ 'credittrack.active.message' | trans | raw }}</span></i>
-    {% else %}
-      <i><a href="#" class="text show-credittrack-pricing-popup">{{ 'credittrack.teaser.link' | trans | raw }}</a></i>
-    {% endif %}
-  </div>
-  #}
+  {% if features.allow_score_track %}
+    <div class="credittrack-teaser font-helvetica">
+      {% if creditTrackEnabled %}
+        <i><span class="text enrolled">{{ 'credittrack.active.message' | trans | raw }}</span></i>
+      {% else %}
+        <i><a href="#" class="text show-credittrack-pricing-popup">{{ 'credittrack.teaser.link' | trans | raw }}</a></i>
+      {% endif %}
+    </div>
+  {% endif %}
   <div class="clearboth"></div>
 </div>
 

@@ -11,6 +11,7 @@ use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerResponseRecord
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingResponseRecord;
 use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
@@ -106,10 +107,12 @@ class CsvImporter
             $newAciProfile = new AciCollectPayUserProfile();
             $newAciProfile->setUser($aciProfileMap->getUser());
             $newAciProfile->setProfileId($record->getProfileId());
+            $aciProfileMap->getUser()->setAciCollectPayProfile($newAciProfile);
         } else {
             $newAciProfile = new AciCollectPayGroupProfile();
             $newAciProfile->setGroup($aciProfileMap->getGroup());
             $newAciProfile->setProfileId($record->getProfileId());
+            $aciProfileMap->getGroup()->setAciCollectPayProfile($newAciProfile);
         }
 
         $this->em->persist($newAciProfile);
@@ -122,23 +125,34 @@ class CsvImporter
      */
     protected function importAccountResponseRecord(AccountResponseRecord $record, AciImportProfileMap $aciProfileMap)
     {
-        if (null !== $aciProfileMap->getUser()) {
-            if (null === $contract = $this->getContractRepository()->find($record->getBillingAccountNumber())) {
+        if (null !== $user = $aciProfileMap->getUser()) {
+            /** AciCollectPayUserProfile $userProfile */
+            if (null === $userProfile = $user->getAciCollectPayProfile()) {
                 $this->errors[] = sprintf(
-                    'AccountResponseRecord: Contract with id#%d not found',
-                    $record->getBillingAccountNumber()
+                    'AccountResponseRecord: UserProfile for user #%d does not exist',
+                    $user->getId()
                 );
 
                 return;
             }
 
-            $newAciContractBilling = new AciCollectPayContractBilling();
-            $newAciContractBilling->setContract($contract);
-            $depositAccount = $contract->getGroup()->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::ACI);
-            $newAciContractBilling->setDivisionId($depositAccount ? $depositAccount->getMerchantName() : '');
+            if ($userProfile->hasBillingAccountForDivisionId($record->getDivisionId())) {
+                return;
+            }
 
-            $this->em->persist($newAciContractBilling);
-            $this->em->flush($newAciContractBilling);
+            $newAciProfileBilling = new AciCollectPayProfileBilling();
+            $newAciProfileBilling->setProfile($userProfile);
+            $newAciProfileBilling->setDivisionId($record->getDivisionId());
+            $newAciProfileBilling->setBillingAccountNumber($record->getBillingAccountNumber());
+            $userProfile->addAciCollectPayProfileBilling($newAciProfileBilling);
+
+            $this->em->persist($newAciProfileBilling);
+            $this->em->flush($newAciProfileBilling);
+        } else {
+            $groupProfile = $aciProfileMap->getGroup()->getAciCollectPayProfile();
+            $groupProfile->setBillingAccountNumber($record->getBillingAccountNumber());
+
+            $this->em->flush($groupProfile);
         }
     }
 

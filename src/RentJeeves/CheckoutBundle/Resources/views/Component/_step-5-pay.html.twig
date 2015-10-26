@@ -124,7 +124,7 @@
                 </div>
             </div>
         </div>
-        <div data-bind="visible: 'card' == currentPaymentAccount().type()">
+        <div data-bind="visible: ['card', 'debit_card'].indexOf(currentPaymentAccount().type()) !== -1">
             <div class="form-row clearfix" data-bind="visible: isNewPaymentAccount()">
                 <label>{{ 'checkout.card.account_name' | trans }}</label>
                 <div class="fields-box">

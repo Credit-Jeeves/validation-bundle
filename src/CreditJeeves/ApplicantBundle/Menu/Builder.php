@@ -28,7 +28,7 @@ class Builder extends ContainerAware
             case 'applicant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;
-            case 'core_report_get_d2c':
+            case 'core_report_get_credittrack':
             case 'user_report':
                 $menu['tabs.report']->setAttribute('class', 'active');
                 break;
@@ -43,6 +43,7 @@ class Builder extends ContainerAware
                 $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
+
         return $menu;
     }
 
@@ -75,6 +76,7 @@ class Builder extends ContainerAware
 //                $menu['settings.address.head.manage']->setUri('');
 //                break;
         }
+
         return $menu;
     }
 }

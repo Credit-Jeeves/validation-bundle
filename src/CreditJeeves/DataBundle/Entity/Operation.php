@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 
 /**
  * Operation
@@ -454,5 +455,24 @@ class Operation extends Base
         }
 
         return null;
+    }
+
+    /**
+     * @param $vendor
+     * @return Report
+     * @throws \Exception
+     */
+    public function getReportByVendor($vendor)
+    {
+        CreditSummaryVendor::throwsInvalid($vendor);
+
+        switch ($vendor) {
+            case CreditSummaryVendor::TRANSUNION:
+                return $this->getReportTransunionSnapshot();
+            case CreditSummaryVendor::EXPERIAN:
+                return $this->getReportPrequal();
+            default:
+                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
+        }
     }
 }

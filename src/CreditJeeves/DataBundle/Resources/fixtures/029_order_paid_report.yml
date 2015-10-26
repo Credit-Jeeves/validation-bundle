@@ -1,0 +1,9 @@
+model: CreditJeeves\DataBundle\Entity\OrderSubmerchant
+fixtures:
+  rjOrder_report_1:
+    user: Tenant_22
+    status: complete
+    paymentType: cash
+    sum: %credittrack_payment_per_month%
+    created_at: '-5 days'
+    updated_at: '-5 days'

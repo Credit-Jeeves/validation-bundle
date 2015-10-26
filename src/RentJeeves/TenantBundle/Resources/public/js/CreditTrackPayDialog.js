@@ -1,15 +1,16 @@
 function CreditTrackPayDialog(options) {
-    this.root = $('#credit-track-pay-popup');
-
-    ko.cleanNode(this.root.get(0));
-
-    this.paymentAccounts = ko.observableArray($.map(this.root.data('paymentAccounts'), function(value) {
-      return [value];
-    }));
-    this.paymentGroup = this.root.data('paymentGroup');
-
     var self = this;
     var current = 0;
+
+    self.root = $('#credit-track-pay-popup');
+
+    ko.cleanNode(self.root.get(0));
+
+    self.paymentAccounts = ko.observableArray($.map(self.root.data('paymentAccounts'), function(value) {
+      return [value];
+    }));
+    self.paymentGroup = self.root.data('paymentGroup');
+
     this.infoMessage = ko.observable(null);
 
     this.getCurrentStep = function() {
@@ -59,16 +60,19 @@ function CreditTrackPayDialog(options) {
     });
 
     ko.utils.extend(self, new PayAddress(self, self.propertyAddress));
+    // Use event for remove loader
+    self.afterMapAddressesHandler = function () {
+        self.root.hideOverlay();
+    };
 
     // Connected Payment Source Component
     // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self, new PaymentSourceViewModel(self, null, false, 'card'));
+    ko.utils.extend(self, new PaymentSourceViewModel(self, null, {}, 'card'));
 
     self.changePaymentAccountHandler = function() {
         self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
     };
 
-    jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_type_row').hide(); //Temporary #RT-529
     this.getLastPaymentDay = 'no finish date';
 
     this.stepExist = function(step) {
@@ -163,7 +167,7 @@ function CreditTrackPayDialog(options) {
     };
 
     self.prepareDialog = function () {
-        $('#credit-track-pay-popup').dialog({ // TODO replace by knockout custom handler
+        self.root.dialog({
             width: 650,
             modal: true,
             beforeClose: function() {
@@ -192,5 +196,11 @@ function CreditTrackPayDialog(options) {
     ko.applyBindings(this, $('#credit-track-pay-popup').get(0));
 
     this.prepareDialog();
+
+    if (self.paymentAccounts().length == 0) {
+        self.isNewPaymentAccount(true);
+    }
+
+    self.root.showOverlay();
 }
 

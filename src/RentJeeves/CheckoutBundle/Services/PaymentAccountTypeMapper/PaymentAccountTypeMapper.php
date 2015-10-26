@@ -49,7 +49,7 @@ class PaymentAccountTypeMapper
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData->set('account_name', $paymentAccountType->get('PayorName')->getData());
-        } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
+        } else {
             $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
         }
 

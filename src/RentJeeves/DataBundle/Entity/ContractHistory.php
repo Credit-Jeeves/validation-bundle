@@ -39,5 +39,8 @@ class ContractHistory extends Base
         if (isset($data['finishAt'])) {
             $this->setFinishAt($data['finishAt']);
         }
+        if (isset($data['paymentAccepted'])) {
+            $this->setPaymentAccepted($data['paymentAccepted']);
+        }
     }
 }

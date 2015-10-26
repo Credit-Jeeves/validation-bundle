@@ -42,6 +42,13 @@ abstract class AciCollectPayGroupProfile
     protected $profileId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="billing_account_number", type="string", length=40, nullable=false)
+     */
+    protected $billingAccountNumber;
+
+    /**
      * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
@@ -106,5 +113,21 @@ abstract class AciCollectPayGroupProfile
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBillingAccountNumber()
+    {
+        return $this->billingAccountNumber;
+    }
+
+    /**
+     * @param string $billingAccountNumber
+     */
+    public function setBillingAccountNumber($billingAccountNumber)
+    {
+        $this->billingAccountNumber = $billingAccountNumber;
     }
 }

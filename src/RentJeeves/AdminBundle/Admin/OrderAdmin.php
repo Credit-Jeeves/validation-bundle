@@ -61,15 +61,15 @@ class OrderAdmin extends Admin
             ->add('created_at', 'date', ['format' => 'Y-m-d'])
             ->add('paymentType')
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
-            ->add('heartland_transaction_ids', 'string', ['label' => 'Transaction Ids'])
+            ->add('transaction_ids', 'string', ['label' => 'Transaction Ids'])
             ->add('sum', 'money')
             ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
             ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
             ->add('user.email')
             ->add('_action', 'actions', [
                 'actions' => [
-                    'show' => [],
-                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig']
+                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig'],
+                    'outbound' => ['template' => 'AdminBundle:CRUD:list__order_outbound_transactions.html.twig'],
                 ]
             ]);
     }

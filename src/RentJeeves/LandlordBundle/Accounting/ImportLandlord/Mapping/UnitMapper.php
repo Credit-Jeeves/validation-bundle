@@ -136,10 +136,21 @@ class UnitMapper extends AbstractMapper
      */
     protected function getOrCreateProperty()
     {
-        $property = $this->propertyProcess->getPropertyByAddress($this->getAddress());
+        $property = $this->propertyProcess->getPropertyByAddress(
+            $this->get('streetaddress'),
+            $this->get('city_name'),
+            $this->get('state_name'),
+            $this->get('zipcode')
+        );
         if ($property === null) {
             throw new MappingException(
-                sprintf('[Mapping] : Address (%s) is not found by PropertyProcess', $this->getAddress())
+                sprintf(
+                    '[Mapping] : Address (%s , %s, %s, %s) is not found by PropertyProcess',
+                    $this->get('streetaddress'),
+                    $this->get('city_name'),
+                    $this->get('state_name'),
+                    $this->get('zipcode')
+                )
             );
         }
 
@@ -148,20 +159,6 @@ class UnitMapper extends AbstractMapper
         }
 
         return $property;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getAddress()
-    {
-        return sprintf(
-            '%s , %s, %s, %s',
-            $this->get('streetaddress'),
-            $this->get('city_name'),
-            $this->get('state_name'),
-            $this->get('zipcode')
-        );
     }
 
     /**

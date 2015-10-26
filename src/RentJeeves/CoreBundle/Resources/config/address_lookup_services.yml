@@ -1,0 +1,22 @@
+services:
+    address_lookup_service: @address_lookup_service.google
+
+    address_lookup_service.google:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleGeocoderAddressLookupService
+        arguments:
+            - @bazinga_geocoder.geocoder
+            - @validator
+            - @logger
+
+    address_lookup_service.smarty_streets:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupService
+        arguments:
+            - @smarty_streets.client
+            - @validator
+            - @logger
+
+    google_autocomplete_address_converter:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
+        arguments:
+            - @validator
+            - @logger

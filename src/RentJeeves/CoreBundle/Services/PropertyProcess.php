@@ -2,37 +2,30 @@
 
 namespace RentJeeves\CoreBundle\Services;
 
-use Geocoder\Result\Geocoded;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
-use Doctrine\ORM\EntityManager;
+use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManagerInterface;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\Service\Google;
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
-use CreditJeeves\DataBundle\Entity\Group;
-use Geocoder\Geocoder as GoogleGeoCoder;
-use Exception;
-use RuntimeException;
-use Monolog\Logger;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("property.process")
- */
 class PropertyProcess
 {
+    const NEW_PROPERTY = "new_property";
+
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $em;
 
     /**
-     * @var GoogleGeoCoder
+     * @var AddressLookupInterface
      */
-    protected $geocoder;
+    protected $addressLookupService;
 
     /**
      * @var Google
@@ -40,41 +33,37 @@ class PropertyProcess
     protected $google;
 
     /**
-     * @var array
-     */
-    protected $validProperties = array();
-
-    /**
      * @var ExceptionCatcher
      */
     protected $exceptionCatcher;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
-    const NEW_PROPERTY = "new_property";
+    /**
+     * @var array
+     */
+    protected $validProperties = [];
 
     /**
-     * @InjectParams({
-     *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
-     *     "google"           = @Inject("google"),
-     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder"),
-     *     "exceptionCatcher" = @Inject("fp_badaboom.exception_catcher"),
-     *     "logger"           = @Inject("logger")
-     * })
+     * @param EntityManagerInterface $em
+     * @param Google $google
+     * @param AddressLookupInterface $addressLookupService
+     * @param ExceptionCatcher $exceptionCatcher
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        EntityManager $em,
+        EntityManagerInterface $em,
         Google $google,
-        GoogleGeoCoder $geocoder,
+        AddressLookupInterface $addressLookupService,
         ExceptionCatcher $exceptionCatcher,
-        Logger $logger
+        LoggerInterface $logger
     ) {
-        $this->geocoder = $geocoder;
         $this->em = $em;
         $this->google = $google;
+        $this->addressLookupService = $addressLookupService;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->logger = $logger;
     }
@@ -91,9 +80,10 @@ class PropertyProcess
      *              If false, you will need to flush yourself.  Setting this to false is useful if you have other
      *              objects that also need flushing.
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
+     *
      * @param Property $property
-     * @param array $options optional options.
+     * @param array $options
      *
      * @return Unit
      */
@@ -109,13 +99,13 @@ class PropertyProcess
             $groups = $property->getPropertyGroups();
             $groupCount = $groups->count();
             if ($groupCount < 1) {
-                throw new RuntimeException("ERROR: Cannot create a standalone unit for a property without a group");
+                throw new \RuntimeException("ERROR: Cannot create a standalone unit for a property without a group");
             } elseif ($groupCount > 1) {
                 $groupIds = "";
                 foreach ($groups as $group) {
                     $groupIds = $groupIds . " " . $group->getId();
                 }
-                throw new RuntimeException(
+                throw new \RuntimeException(
                     "ERROR: Cannot create a standalone unit for a property with multiple groups. Ids: " . $groupIds
                 );
             }
@@ -146,18 +136,20 @@ class PropertyProcess
             } else {
                 $msg = $logPrefix . "Has a unit but wrong name";
                 $this->logger->error($msg);
-                throw new RuntimeException($msg);
+                throw new \RuntimeException($msg);
             }
         } else {
             $msg = $logPrefix . "Already has multiple units -- cannot set as single property";
             $this->logger->error($msg);
-            throw new RuntimeException($msg);
+            throw new \RuntimeException($msg);
         }
 
         return $unit;
     }
 
     /**
+     * @deprecated Don`t use it PLS
+     *
      * @param array $params
      *
      * @return null|object
@@ -186,9 +178,9 @@ class PropertyProcess
     public function checkByMinimalArgs(Property $property)
     {
         $params = array(
-            'jb'        => $property->getJb(),
-            'kb'        => $property->getKb(),
-            'number'    => $property->getNumber(),
+            'jb' => $property->getJb(),
+            'kb' => $property->getKb(),
+            'number' => $property->getNumber(),
         );
 
         return $this->getPropertyFromDB($params);
@@ -201,12 +193,12 @@ class PropertyProcess
     public function checkByAllArgs(Property $property)
     {
         $params = array(
-            'number'    => $property->getNumber(),
-            'city'      => $property->getCity(),
-            'district'  => $property->getDistrict(),
-            'area'      => $property->getArea(),
-            'street'    => $property->getStreet(),
-            'country'   => $property->getCountry(),
+            'number' => $property->getNumber(),
+            'city' => $property->getCity(),
+            'district' => $property->getDistrict(),
+            'area' => $property->getArea(),
+            'street' => $property->getStreet(),
+            'country' => $property->getCountry(),
         );
 
         return $this->getPropertyFromDB($params);
@@ -251,11 +243,11 @@ class PropertyProcess
     public function saveToGoogle(Property $property)
     {
         if (!$this->isValidProperty($property)) {
-            throw new Exception("Can't save invalid property to google");
+            throw new \Exception("Can't save invalid property to google");
         }
         try {
             $this->google->savePlace($property);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
         }
     }
@@ -273,8 +265,15 @@ class PropertyProcess
             }
         }
 
-        if ($response = $this->getGoogleGeocode($property->getFullAddress())) {
-            $this->mapGeocodeResponseToProperty($response, $property);
+        $address = $this->lookupAddress(
+            $property->getAddress1(),
+            $property->getCity(),
+            $property->getArea(),
+            $property->getZip()
+        );
+
+        if ($address instanceof Address) {
+            $property->setAddressFields($address);
             $this->validProperties[] = $property;
 
             return true;
@@ -284,90 +283,22 @@ class PropertyProcess
     }
 
     /**
-     * @param $address
-     * @return bool|Geocoded
-     */
-    public function getGoogleGeocode($address)
-    {
-        try {
-            $result = $this->geocoder->using('cache')->geocode($address);
-        } catch (Exception $e) {
-            $this->exceptionCatcher->handleException($e);
-
-            return false;
-        }
-        if (empty($result)) {
-            return false;
-        }
-
-        if (!$this->isSetRequiredFields($result)) {
-            return false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param Geocoded $response
-     * @param Property $property
-     * @return Property
-     */
-    public function mapGeocodeResponseToProperty(Geocoded $response, Property $property)
-    {
-        $property->setLatitude($response->getLatitude());
-        $property->setLongitude($response->getLongitude());
-        $property->setZip($response->getZipcode());
-        $property->setArea($response->getRegionCode());
-        $property->setCountry($response->getCountryCode());
-        $property->setCity($response->getCity());
-        if (!$property->getCity()) {
-            $property->setCity($response->getCityDistrict());
-        }
-        $property->setNumber($response->getStreetNumber());
-        $property->setStreet($response->getStreetName());
-        $property->setDistrict($response->getCityDistrict());
-
-        return $property;
-    }
-
-    /**
-     * @param Geocoded $googleResult
-     * @return bool
-     */
-    protected function isSetRequiredFields(Geocoded $googleResult)
-    {
-        $fields = array(
-            'latitude',
-            'longitude',
-            'streetNumber',
-            'streetName'
-        );
-
-        foreach ($fields as $field) {
-            $method = 'get'.ucfirst($field);
-            $value = $googleResult->$method();
-
-            if (empty($value)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $address
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     *
      * @return null|Property
      */
-    public function getPropertyByAddress($address)
+    public function getPropertyByAddress($street, $city, $state, $zipCode)
     {
         $property = new Property();
 
-        if ($googleResult = $this->getGoogleGeocode($address)) {
-            $property = $this->mapGeocodeResponseToProperty($googleResult, $property);
-
+        if (null !== $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
+            $property->setAddressFields($address);
             if ($propertyDB = $this->checkByMinimalArgs($property) or
-                $propertyDB = $this->checkByAllArgs($property)) {
+                $propertyDB = $this->checkByAllArgs($property)
+            ) {
                 /** Property */
 
                 return $propertyDB;
@@ -381,27 +312,6 @@ class PropertyProcess
         return null;
     }
 
-    /**
-     * This method try to find Property in DB in 2 steps:
-     *   - First step try to find it in DB using address parameters
-     *   - Second step go to Geocode Service for normalized address and try to find it in DB again
-     *
-     * @param Property $property
-     * @return Property|false
-     */
-    public function getPropertyFromDBIn2steps(Property $property)
-    {
-        if ($propertyDB  = $this->checkByAllArgs($property)) {
-            return $propertyDB;
-        }
-
-        if (($propertyDB = $this->getPropertyByAddress($property->getFullAddress())) && $propertyDB->getId()) {
-            return $propertyDB;
-        }
-
-        return false;
-    }
-
     private function getPropertyIdentifier(Property $property)
     {
         $identifier = self::NEW_PROPERTY;
@@ -413,5 +323,104 @@ class PropertyProcess
         }
 
         return $identifier;
+    }
+
+    /**
+     * @deprecated use findPropertyByAddressInDb
+     *
+     * This method try to find Property in DB in 2 steps:
+     *   - First step try to find it in DB using address parameters
+     *   - Second step go to Geocode Service for normalized address and try to find it in DB again
+     *
+     * @param Property $property
+     * @return Property|false
+     */
+    public function getPropertyFromDBIn2steps(Property $property)
+    {
+        if ($propertyDB = $this->checkByAllArgs($property)) {
+            return $propertyDB;
+        }
+
+        $propertyDB = $this->getPropertyByAddress(
+            $property->getAddress1(),
+            $property->getCity(),
+            $property->getArea(),
+            $property->getZip()
+        );
+        if (null !== $propertyDB && $propertyDB->getId()) {
+            return $propertyDB;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     *
+     * @return Address|null
+     */
+    public function lookupAddress($street, $city, $state, $zipCode)
+    {
+        try {
+            return $this->addressLookupService->lookup($street, $city, $state, $zipCode);
+        } catch (AddressLookupException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $number
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     *
+     * @return Property|null
+     */
+    public function findPropertyByAddressInDb($number, $street, $city, $state, $zipCode)
+    {
+        $params = [
+            'number' => $number,
+            'city' => $city,
+            'area' => $state,
+            'street' => $street,
+            'zip' => $zipCode,
+        ];
+        $params = array_filter($params); // remove empty values
+        if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+            return $property;
+        }
+        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+            return null;
+        }
+
+        if (null !== $property = $this->getPropertyRepository()->findOneByAddress($address)) {
+            return $property;
+        }
+
+        $params = [
+            'number' => $address->getNumber(),
+            'city' => $address->getCity(),
+            'area' => $address->getState(),
+            'street' => $address->getStreet(),
+            'country' => $address->getCountry(),
+        ];
+        $params = array_filter($params); // remove empty values
+        if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+            return $property;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\PropertyRepository
+     */
+    protected function getPropertyRepository()
+    {
+        return $this->em->getRepository('RjDataBundle:Property');
     }
 }

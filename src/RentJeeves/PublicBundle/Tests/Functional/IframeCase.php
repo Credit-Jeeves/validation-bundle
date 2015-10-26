@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\User;
@@ -175,10 +174,7 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
-        $this->assertEquals(
-            'property.number.not.exist',
-            $errors->getHtml()
-        );
+        $this->assertEquals('fill.full.address', $errors->getHtml());
         $fillAddress = '150 Amsterdam Avenue, Manhattan, New York, NY 10023';
         $this->fillForm(
             $form,

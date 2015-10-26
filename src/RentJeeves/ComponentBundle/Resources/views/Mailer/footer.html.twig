@@ -12,12 +12,7 @@
         text-align: center;
         margin-top: 10px;
         ">
-        {% if isPoweredBy %}
-            <p>
-                Payments and Reporting powered By
-            </p>
-            <img width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/logo_rj.png"/>
-        {% else %}
+        {% if not isPoweredBy %}
             <a style="color: #1985ea;" href="http://renttrack.uservoice.com/">
                 {{ 'email.help' | trans }}
             </a>
@@ -39,22 +34,24 @@
         ">
         You received this email because you are a member of {{ partnerName }}, or were invited by a member.
     </div>
+    {% if not isPoweredBy %}
+        <div style="
+        text-align: center;
+        font-size: 12px;
+        margin-top: 5px;
+        color: #707070;
+        ">
+            To manage your alert settings or change your email address, please visit the <a
+                    style="text-decoration: none; color: #1985ea;" href="http://my.renttrack.com/">My Account</a> page.
+        </div>
+    {% endif %}
     <div style="
         text-align: center;
         font-size: 12px;
         margin-top: 5px;
         color: #707070;
         ">
-        To manage your alert settings or change your email address, please visit the <a
-                style="text-decoration: none; color: #1985ea;" href="http://my.renttrack.com/email">My Account page</a>.
-    </div>
-    <div style="
-        text-align: center;
-        font-size: 12px;
-        margin-top: 5px;
-        color: #707070;
-        ">
-        <em>Copyright &copy;&nbsp;2014 RentTrack LLC, All rights reserved.</em>
+        <em>Copyright &copy;&nbsp;2015 {{ partnerName }}, All rights reserved.</em>
     </div>
     <div style="
         text-align: center;
@@ -71,19 +68,30 @@
         ">
         {{ partnerAddress }}
     </div>
-    <div style="
+    {%  if isPoweredBy %}
+        <div style="
+        text-align: center;
+        font-size: 12px;
+        margin-top: 10px;
+        color: #707070;
+        ">
+            Payments and Reporting powered By <img style="vertical-align: middle;" width="auto" src="http://{{ serverName }}/bundles/rjpublic/images/logo_rj_sm.png"/>
+        </div>
+    {% else %}
+        <div style="
         text-align: center;
         font-size: 12px;
         ">
-        <a style="color: #1985ea;" href="http://www.renttrack.com/privacy-policy">Privacy Policy </a>&nbsp;|&nbsp;<a
-                style="color: #1985ea;" href="http://www.renttrack.com/terms-of-service">Terms of Service</a>
-    </div>
+            <a style="color: #1985ea;" href="http://www.renttrack.com/privacy-policy">Privacy Policy </a>&nbsp;|&nbsp;<a
+                    style="color: #1985ea;" href="http://www.renttrack.com/terms-of-service">Terms of Service</a>
+        </div>
+    {% endif %}
     <div style="
         text-align: center;
         font-size: 12px;
         margin-top: 10px;
         padding: 10px;
         ">
-        <a style="color: #1985ea;" href="http://my.renttrack.com/unsub?md_email={{ emailTo }}">Click here to unsubscribe from all RentTrack email.</a>
+        <a style="color: #1985ea;" href="http://my.renttrack.com/unsub?md_email={{ emailTo }}">Unsubscribe</a> from {{ partnerName }} payment-related email.
     </div>
 </div>

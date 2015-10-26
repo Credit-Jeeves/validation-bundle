@@ -738,12 +738,6 @@
                   Credit Service Member
                 </target>
             </trans-unit>
-           <trans-unit id="ach.fee">
-                <source>ach.fee</source>
-                <target>
-                  Unit Fee Waived
-                </target>
-            </trans-unit>
            <trans-unit id="invite.tenant">
                 <source>invite.tenant</source>
                 <target>Invite Tenant</target>
@@ -1298,7 +1292,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack">
                 <source>popup.invite.tenant.credittrack</source>
-                <target>CreditTrack</target>
+                <target>ScoreTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -1311,10 +1305,6 @@
             <trans-unit id="popup.tenant.get.credit.score">
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
-            </trans-unit>
-            <trans-unit id="popup.tenant.view.experian">
-                <source>popup.tenant.view.experian</source>
-                <target>View Your Experian Credit Report</target>
             </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
@@ -1340,6 +1330,10 @@
                 <source>popup.tenant.build.credit.history</source>
                 <target>Build Credit History</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.credit_profile_and_analysis_updates">
+                <source>popup.tenant.credit_profile_and_analysis_updates</source>
+                <target>Credit Profile &amp; Analysis Updates</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
                 <target>Build Credit History</target>
@@ -1351,10 +1345,6 @@
             <trans-unit id="popup.tenant.safeguards">
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
-            </trans-unit>
-            <trans-unit id="popup.tenant.prequalified.offers">
-                <source>popup.tenant.prequalified.offers</source>
-                <target>Pre-Qualified Credit Offers</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>
@@ -1997,8 +1987,8 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-            <trans-unit id="property.number.not.exist">
-                <source>property.number.not.exist</source>
+            <trans-unit id="property.address_not_found">
+                <source>property.address_not_found</source>
                 <target>Address not found. Please try again.</target>
             </trans-unit>
             <trans-unit id="direct_deposit.info">
@@ -2361,7 +2351,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.title">
                 <source>credittrack.pay.title</source>
-                <target>Sign up for CreditTrack</target>
+                <target>Sign up for ScoreTrack</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.edit.title">
                 <source>credittrack.pay.edit.title</source>
@@ -2381,7 +2371,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.confirm">
                 <source>credittrack.pay.confirm</source>
-                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
+                <target>Bill me $%amount% each month for ScoreTrack starting today until cancelled.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.amount">
                 <source>credittrack.pay.amount</source>
@@ -2397,7 +2387,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.note">
                 <source>credittrack.pay.note</source>
-                <target>We'll get your latest score and credit report when you complete your payment. You'll be leaving your free credit profile, so we'll no longer show you pre-qualified credit offers.</target>
+                <target>We'll show your latest score and credit profile when you complete your payment.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.save">
                 <source>credittrack.pay.save</source>
@@ -2883,13 +2873,17 @@
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
             </trans-unit>
+            <trans-unit id="credit_score.title">
+                <source>credit_score.title</source>
+                <target>Your Vantage Score</target>
+            </trans-unit>
             <trans-unit id="credittrack.teaser.link">
                 <source>credittrack.teaser.link</source>
-                <target>Enroll in &lt;span class="highlight"&gt;CreditTrack&lt;/span&gt; to get monthly updates.</target>
+                <target>Enroll in &lt;span class="highlight"&gt;ScoreTrack&lt;/span&gt;&lt;br /&gt; to get monthly updates.</target>
             </trans-unit>
             <trans-unit id="credittrack.active.message">
                 <source>credittrack.active.message</source>
-                <target>Enrolled in CreditTrack</target>
+                <target>Enrolled in ScoreTrack</target>
             </trans-unit>
             <trans-unit id="tenant.no_balance.alert">
                 <source>tenant.no_balance.alert</source>
@@ -2909,11 +2903,11 @@
             </trans-unit>
             <trans-unit id="settings.plans.comment">
                 <source>settings.plans.comment</source>
-                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in report your payments to earn credit.</target>
+                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in to report your payments to earn credit.</target>
             </trans-unit>
             <trans-unit id="settings.plans.label">
                 <source>settings.plans.label</source>
-                <target>Plan type:</target>
+                <target>Plan:</target>
             </trans-unit>
             <trans-unit id="settings.plans.free">
                 <source>settings.plans.free</source>
@@ -2926,27 +2920,27 @@
             <trans-unit id="settings.plans.paid">
                 <source>settings.plans.paid</source>
                 <target><![CDATA[
-                    Credit Track TM - Track your credit monthly as you build credit history.<br />
+                    ScoreTrack TM - Track your score and credit profile monthly as you build credit history.<br />
                     <span class="bold">Payment Account:</span> "%PAYMENT_ACCOUNT%"
                 ]]></target>
             </trans-unit>
             <trans-unit id="settings.plans.update">
                 <source>settings.plans.update</source>
-                <target>Update plan</target>
+                <target>Update Plan</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.title">
                 <source>settings.plans.cancel.title</source>
-                <target>Cancel CreditTrack</target>
+                <target>Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.text">
                 <source>settings.plans.cancel.text</source>
                 <target>
-                    Are you sure want to cancel monthly updates of your score and credit report?
+                    Are you sure want to cancel monthly updates of your score and credit profile?
                 </target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.yes">
                 <source>settings.plans.cancel.yes</source>
-                <target>Yes, Cancel CreditTrack</target>
+                <target>Yes, Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.no">
                 <source>settings.plans.cancel.no</source>
@@ -3256,6 +3250,19 @@
             <trans-unit id="pay_anything_popup.title">
                 <source>pay_anything_popup.title</source>
                 <target>Pay Something Else</target>
+            </trans-unit>
+            <trans-unit id="load.report.is_not_allowed.title">
+                <source>load.report.is_not_allowed.title</source>
+                <target>Report loading is not allowed</target>
+            </trans-unit>
+            <trans-unit id="landlord.tenant.found_more">
+                <source>landlord.tenant.found_more</source>
+                <target>Hi There! We found matching tenants in other groups. Go to:</target>
+            </trans-unit>
+            <trans-unit id="load.report.is_not_allowed.message">
+                <source>load.report.is_not_allowed.message-%SUPPORT_EMAIL%</source>
+                <target>Report loading is not allowed.
+                Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
         </body>
     </file>

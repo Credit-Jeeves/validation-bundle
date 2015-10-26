@@ -9,8 +9,6 @@ fixtures:
         ccExpiration: 'last day of +1 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_2:
         user: Tenant_1
         type: bank
@@ -18,8 +16,6 @@ fixtures:
         token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_2
     PaymentAccount_3:
         user: Tenant_2
         type: bank
@@ -27,8 +23,6 @@ fixtures:
         token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_4:
         user: Tenant_2
         address: TenantAddres_2
@@ -38,8 +32,6 @@ fixtures:
         ccExpiration: 'last day of +4 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_6:
         user: Tenant_4
         address: TenantAddres_4
@@ -49,8 +41,6 @@ fixtures:
         ccExpiration: 'last day of +5 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_11:
         user: Tenant_9
         type: bank
@@ -58,8 +48,6 @@ fixtures:
         token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_12:
         user: Tenant_10
         type: bank
@@ -67,8 +55,6 @@ fixtures:
         token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
         createdAt: '2014-02-28'
         updatedAt: '2014-02-28'
-        depositAccounts:
-            - DepositAccount_1
     PaymentAccount_13:
         user: Tenant_9
         address: rjAddress_1
@@ -78,8 +64,6 @@ fixtures:
         ccExpiration: 'last day of +1 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_3
     PaymentAccount_14:
         user: Tenant_1
         address: TenantAddres_1
@@ -89,5 +73,3 @@ fixtures:
         ccExpiration: 'last day of +3 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
-        depositAccounts:
-            - DepositAccount_RentTrackCorp

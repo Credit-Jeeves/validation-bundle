@@ -18,6 +18,9 @@ class TenantController extends BaseController
      */
     protected $score;
 
+    /**
+     * @return Tenant
+     */
     public function getUser()
     {
         if ($user = parent::getUser()) {

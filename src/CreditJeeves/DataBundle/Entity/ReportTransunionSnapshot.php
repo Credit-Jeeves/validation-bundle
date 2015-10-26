@@ -16,13 +16,19 @@ class ReportTransunionSnapshot extends Report
 {
     protected $snapshotData;
 
+    /**
+     * @param string $snapshotPiece
+     * @return string
+     */
     protected function getSnapshotData($snapshotPiece)
     {
-        if (!$this->snapshotData) {
+        if (is_null($this->snapshotData)) {
             $this->snapshotData = simplexml_load_string($this->getRawData());
+        } elseif (!$this->snapshotData) {
+            return '';
         }
 
-        return (string)$this->snapshotData->$snapshotPiece;
+        return (string) $this->snapshotData->$snapshotPiece;
     }
 
     public function getBureauName()

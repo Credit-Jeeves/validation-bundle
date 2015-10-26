@@ -158,12 +158,15 @@ class AciCollectPayCase extends BaseTestCase
         $this->getEntityManager()->refresh($this->contractForCreate);
         $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
 
-        $this->assertNotEmpty($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
+        $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
 
         $merchantName = $this->contractForCreate
             ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
 
-        $this->assertNotEmpty($this->contractForCreate->getAciCollectPayContractBilling($merchantName));
+        $this->assertTrue(
+            $profile->hasBillingAccountForDivisionId($merchantName),
+            'Profile should have billing account'
+        );
 
         $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
         $this->assertEquals($countsBefore + 1, $countsAfter);

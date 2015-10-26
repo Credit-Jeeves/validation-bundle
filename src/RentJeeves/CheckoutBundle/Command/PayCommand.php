@@ -30,7 +30,7 @@ class PayCommand extends ContainerAwareCommand
         /** @var Job $job */
         $job = $em->getRepository('RjDataBundle:Job')->findOneBy(array('id' => $jobId));
         if (empty($job)) {
-            throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
+            throw new RuntimeException("Can not find --jms-job-id={$jobId}");
         }
 
         $paymentJobExecutor = $this->getContainer()->get('checkout.payment_job_executor');

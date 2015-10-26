@@ -1575,6 +1575,12 @@ label.error b {
   width:170px;
 }
 
+.payments-popup .tooltip-box.type5 {
+  left:410px;
+  top:3px;
+  width:160px;
+}
+
 #pay-anything-popup .tooltip-box.type2{
   left:355px;
 }
@@ -1591,16 +1597,24 @@ label.error b {
   width:200px;
 }
 
-.payments-popup .tooltip-box.type2:before {
+.payments-popup .tooltip-box.type2:before, .payments-popup .tooltip-box.type5:before {
   bottom:22px;
   top:auto;
   margin-top:0;
   margin-bottom:-7px;
 }
 
-.payments-popup .tooltip-box.type2:after {
+.payments-popup .tooltip-box.type5:before {
+  top:-2px;
+}
+
+.payments-popup .tooltip-box.type2:after, .payments-popup .tooltip-box.type5:after {
   bottom:22px;
   top:auto;
+}
+
+.payments-popup .tooltip-box.type5:after {
+  top:5px;
 }
 
 .payments-popup .tooltip-box p {

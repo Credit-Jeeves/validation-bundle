@@ -22,6 +22,7 @@ class GroupsController extends Controller
             $aItem['id'] = $group->getId();
             $result[] = $aItem;
         }
+
         return array(
             'aGroups' => $result,
             'nCurrent' => $this->get('core.session.landlord')->getGroupId()
