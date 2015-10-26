@@ -266,10 +266,15 @@ class Address
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getIndex()
     {
+        // For google geocoder
+        if ($this->latitude === null && $this->longitude === null) {
+            return null;
+        }
+
         $index = sprintf(
             '%s%s%s%s',
             $this->getNumber(),

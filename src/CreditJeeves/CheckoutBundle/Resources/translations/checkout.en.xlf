@@ -164,7 +164,7 @@
             <trans-unit id="credittrack.box.message">
                 <source>credittrack.box.message</source>
                 <target>We'll update your Vantage 3.0 score monthly.
-                We'll also refresh your credit profile, rank, and analysis every six months.
+                We'll also refresh your credit profile, rank, and analysis every month.
                 </target>
             </trans-unit>
             <trans-unit id="credittrack.buy.link">

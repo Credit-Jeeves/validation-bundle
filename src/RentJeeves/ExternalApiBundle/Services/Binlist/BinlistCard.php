@@ -2,9 +2,12 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Binlist;
 
-use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Entity\DebitCardBinlist;
+use RentJeeves\DataBundle\Entity\DebitCardBinlistRepository;
 
+/**
+ * Service binlist.card
+ */
 class BinlistCard
 {
     const IIN_LENGTH = 6;
@@ -12,14 +15,14 @@ class BinlistCard
     const TYPE_DEBIT = 'DEBIT';
 
     /**
-     * @var EntityRepository
+     * @var DebitCardBinlistRepository
      */
     protected $debitCardRepository;
 
     /**
-     * @param EntityRepository $repo
+     * @param DebitCardBinlistRepository $repo
      */
-    public function __construct(EntityRepository $repo)
+    public function __construct(DebitCardBinlistRepository $repo)
     {
         $this->debitCardRepository = $repo;
     }
@@ -32,7 +35,7 @@ class BinlistCard
     {
         $iin = $this->extractIin($cardNumber);
         /** @var DebitCardBinlist $binlistDebitCard */
-        $binlistDebitCard = $this->debitCardRepository->findOneBy(['iin' => $iin, 'cardType' => self::TYPE_DEBIT]);
+        $binlistDebitCard = $this->debitCardRepository->getDebitCardByIin($iin);
         if (null !== $binlistDebitCard) {
             return $binlistDebitCard->getBinlistBank()->getLowDebitFee();
         }

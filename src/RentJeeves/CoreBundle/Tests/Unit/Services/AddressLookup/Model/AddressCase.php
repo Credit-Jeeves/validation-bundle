@@ -18,6 +18,8 @@ class AddressCase extends \PHPUnit_Framework_TestCase
                     'Street' => 'N Bedford Dr',
                     'City' => 'Beverly Hills',
                     'State' => 'CA',
+                    'Longitude' => 1.1,
+                    'Latitude' => 2
                 ],
                 '360NBedfordDrBeverlyHillsCA'
             ],
@@ -27,8 +29,21 @@ class AddressCase extends \PHPUnit_Framework_TestCase
                     'Street' => 'Broadway',
                     'City' => 'New York',
                     'State' => 'NY',
+                    'Longitude' => 1,
+                    'Latitude' => 2.2
                 ],
                 '770BroadwayNewYorkNY'
+            ],
+            [
+                [
+                    'Number' => '770',
+                    'Street' => 'Broadway',
+                    'City' => 'New York',
+                    'State' => 'NY',
+                    'Longitude' => null,
+                    'Latitude' => null
+                ],
+                null
             ]
         ];
     }
@@ -47,6 +62,8 @@ class AddressCase extends \PHPUnit_Framework_TestCase
         $address->setStreet($addressArray['Street']);
         $address->setCity($addressArray['City']);
         $address->setState($addressArray['State']);
+        $address->setLongitude($addressArray['Longitude']);
+        $address->setLatitude($addressArray['Latitude']);
 
         $this->assertEquals($expectedIndex, $address->getIndex(), 'Index formed incorrectly');
     }

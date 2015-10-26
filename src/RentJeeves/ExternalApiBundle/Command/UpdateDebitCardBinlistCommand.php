@@ -34,7 +34,9 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
         $binlistSource = $this->getContainer()->get('binlist.source');
         $binlistData = $binlistSource->loadBinlistData();
 
+        $i = 0;
         foreach ($binlistData as $debitCardData) {
+            $i++;
             try {
                 /** @var DebitCardBinlist $debitCard */
                 $debitCard = $repo->findOneByIin($this->getFieldValue($debitCardData, 'iin', true));
@@ -49,6 +51,10 @@ class UpdateDebitCardBinlistCommand extends BaseCommand
                     $e->getMessage(),
                     implode(',', $debitCardData)
                 ));
+            }
+            if ($i == 100) {
+                $this->getEntityManager()->clear();
+                $i = 0;
             }
         }
         $logger->info('Updating binlist data finished!');

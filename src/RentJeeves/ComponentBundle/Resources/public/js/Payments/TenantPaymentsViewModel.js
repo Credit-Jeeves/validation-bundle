@@ -34,6 +34,10 @@ function TenantPaymentsViewModel()
 
                         return false;
                     });
+                if (typeof (window.paymentHistoryLoadedCallback) == 'function') {
+                    window.paymentHistoryLoadedCallback();
+                    window.paymentHistoryLoadedCallback = false;
+                }
                 self.isLoading(false);
             }
         });

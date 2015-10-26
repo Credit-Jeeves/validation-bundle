@@ -22,8 +22,8 @@ class BinlistCardCase extends UnitTestBase
 
         $repository = $this->getRepositoryMock();
         $repository->expects($this->once())
-            ->method('findOneBy')
-            ->with(['iin' => 123456, 'cardType' => BinlistCard::TYPE_DEBIT])
+            ->method('getDebitCardByIin')
+            ->with(123456)
             ->will($this->returnValue($card));
 
         $binlistCard = new BinlistCard($repository);
@@ -45,8 +45,8 @@ class BinlistCardCase extends UnitTestBase
 
         $repository = $this->getRepositoryMock();
         $repository->expects($this->once())
-            ->method('findOneBy')
-            ->with(['iin' => 123456, 'cardType' => BinlistCard::TYPE_DEBIT])
+            ->method('getDebitCardByIin')
+            ->with(123456)
             ->will($this->returnValue($card));
 
         $binlistCard = new BinlistCard($repository);
@@ -63,8 +63,8 @@ class BinlistCardCase extends UnitTestBase
     {
         $repository = $this->getRepositoryMock();
         $repository->expects($this->once())
-            ->method('findOneBy')
-            ->with(['iin' => 123456, 'cardType' => BinlistCard::TYPE_DEBIT])
+            ->method('getDebitCardByIin')
+            ->with(123456)
             ->will($this->returnValue(null));
 
         $binlistCard = new BinlistCard($repository);
@@ -89,6 +89,6 @@ class BinlistCardCase extends UnitTestBase
      */
     protected function getRepositoryMock()
     {
-        return $this->getMock('\Doctrine\ORM\EntityRepository', [], [], '', false);
+        return $this->getMock('\RentJeeves\DataBundle\Entity\DebitCardBinlistRepository', [], [], '', false);
     }
 }
