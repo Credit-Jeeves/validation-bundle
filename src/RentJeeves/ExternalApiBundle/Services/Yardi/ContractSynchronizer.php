@@ -442,10 +442,12 @@ class ContractSynchronizer
     {
         $balance = 0;
         $transactions = $resident->getServiceTransactions()->getTransactions();
-
+        /** @var ResidentTransactionTransactions $transaction */
         foreach ($transactions as $transaction) {
             if ($transaction->getCharge()) {
                 $balanceDue = $transaction->getCharge()->getDetail()->getBalanceDue();
+            } elseif ($transaction->getPayment()) {
+                $balanceDue = $transaction->getPayment()->getDetail()->getAmount()*-1;
             } else {
                 $balanceDue = 0;
             }
