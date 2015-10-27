@@ -447,7 +447,7 @@ class ContractSynchronizer
             if ($transaction->getCharge()) {
                 $balanceDue = $transaction->getCharge()->getDetail()->getBalanceDue();
             } elseif ($transaction->getPayment()) {
-                $balanceDue = $transaction->getPayment()->getDetail()->getAmount()*-1;
+                $balanceDue = $transaction->getPayment()->getDetail()->getAmount() * -1;
             } else {
                 $balanceDue = 0;
             }
