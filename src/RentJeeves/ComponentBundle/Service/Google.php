@@ -73,6 +73,7 @@ class Google
 
         if (is_object($result) && property_exists($result, 'reference')) {
             $property->setGoogleReference($result->reference);
+            $this->em->persist($property);
             $this->em->flush();
 
             return true;
