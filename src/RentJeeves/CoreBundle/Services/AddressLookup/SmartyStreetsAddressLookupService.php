@@ -69,16 +69,28 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         }
 
         $address = $this->mapResponseToAddress($result);
-        $errors = $this->validate($address);
-        if (false === empty($errors)) {
+        $this->validate($address);
+
+        return $address;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function lookupAddressByFreeForm($address)
+    {
+        $this->logger->debug(sprintf('[SmartyStreetsAddressLookupService] Searching freeForm address (%s)', $address));
+        try {
+            $result = $this->smartyStreetsClient->getAddress($address, '', '', '');
+        } catch (SmartyStreetsException $e) {
             $this->logger->debug(
-                $message = sprintf(
-                    '[SmartyStreetsAddressLookupService] SmartyStreets returned invalid address : %s',
-                    implode(', ', $errors)
-                )
+                $message = sprintf('[SmartyStreetsAddressLookupService] Address not found : %s', $e->getMessage())
             );
             throw new AddressLookupException($message);
         }
+
+        $address = $this->mapResponseToAddress($result);
+        $this->validate($address);
 
         return $address;
     }
@@ -114,7 +126,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * @param Address $address
      *
-     * @return array
+     * @throws AddressLookupException if returned address is not valid
      */
     protected function validate(Address $address)
     {
@@ -131,6 +143,14 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             }
         }
 
-        return $errors;
+        if (false === empty($errors)) {
+            $this->logger->debug(
+                $message = sprintf(
+                    '[SmartyStreetsAddressLookupService] SmartyStreets returned invalid address : %s',
+                    implode(', ', $errors)
+                )
+            );
+            throw new AddressLookupException($message);
+        }
     }
 }

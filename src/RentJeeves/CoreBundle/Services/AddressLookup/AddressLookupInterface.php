@@ -18,4 +18,14 @@ interface AddressLookupInterface
      * @return Address
      */
     public function lookup($street, $city, $state, $zipCode);
+
+    /**
+     * @param string $address
+     *
+     * @throws AddressLookupException API returned empty response|API returned not valid address|
+     * problem with connecting or getting a response from the external lookup API
+     *
+     * @return Address
+     */
+    public function lookupAddressByFreeForm($address);
 }

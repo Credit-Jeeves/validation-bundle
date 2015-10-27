@@ -108,6 +108,19 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldReturnAddressIfLookupAddressByFreeForm()
+    {
+        $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI 48823, United States';
+
+        $googleAddressLookupService = $this->getGoogleGeocoderAddressLookupService();
+        $address = $googleAddressLookupService->lookupAddressByFreeForm($freeFormAddress);
+
+        $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
+    }
+
+    /**
      * @return \Geocoder\Geocoder
      */
     protected function getGeocoder()
@@ -129,5 +142,13 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
     protected function getGeocoderMock()
     {
         return $this->getMock('\Geocoder\Geocoder', ['geocode'], [], '', false);
+    }
+
+    /**
+     * @return GoogleGeocoderAddressLookupService
+     */
+    protected function getGoogleGeocoderAddressLookupService()
+    {
+        return $this->getContainer()->get('address_lookup_service.google');
     }
 }

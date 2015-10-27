@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -266,11 +268,18 @@ class AjaxController extends Controller
     public function addProperty(Request $request)
     {
         $addGroup = (boolean) $request->request->get('addGroup', false);
-        $data = $request->request->all('address');
+        if (null === $stringAddress = $request->request->get('stringAddress', null)) {
+            return new JsonResponse(
+                [
+                    'status' => 'ERROR',
+                    'message' => $this->getTranslator()->trans('property.address_not_found')
+                ]
+            );
+        }
 
         try {
-            $address = $this->getGoogleAutocompleteAddressConverter()->convert($data['data']);
-        } catch (\InvalidArgumentException $e) {
+            $address = $this->getLookupService()->lookupAddressByFreeForm($stringAddress);
+        } catch (AddressLookupException $e) {
             $this->getLogger()->debug($e->getMessage());
 
             return new JsonResponse(
@@ -1248,6 +1257,14 @@ class AjaxController extends Controller
     protected function getGoogleAutocompleteAddressConverter()
     {
         return $this->get('google_autocomplete_address_converter');
+    }
+
+    /**
+     * @return AddressLookupInterface
+     */
+    protected function getLookupService()
+    {
+        return $this->get('address_lookup_service');
     }
 
     /**

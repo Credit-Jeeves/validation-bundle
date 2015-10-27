@@ -70,16 +70,37 @@ class GoogleGeocoderAddressLookupService implements AddressLookupInterface
         }
 
         $address = $this->mapResponseToAddress($result);
-        $errors = $this->validate($address);
-        if (false === empty($errors)) {
-            $this->logger->debug(
+        $this->validate($address);
+
+        return $address;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function lookupAddressByFreeForm($address)
+    {
+        $this->logger->debug(sprintf('[GoogleGeocoderAddressLookupService] Searching freeForm address (%s)', $address));
+
+        try {
+            $result = $this->geoCoder->using('cache')->geocode($address);
+        } catch (\Exception $e) {
+            $this->logger->error(
                 $message = sprintf(
-                    '[GoogleGeocoderAddressLookupService] Google returned invalid address : %s',
-                    implode(', ', $errors)
+                    '[GoogleGeocoderAddressLookupService] Could not reach Google GeoCode : %s',
+                    $e->getMessage()
                 )
             );
             throw new AddressLookupException($message);
         }
+
+        if (empty($result) || (!$result instanceof Geocoded)) {
+            $this->logger->debug($message = '[GoogleGeocoderAddressLookupService] Google returned empty response');
+            throw new AddressLookupException($message);
+        }
+
+        $address = $this->mapResponseToAddress($result);
+        $this->validate($address);
 
         return $address;
     }
@@ -111,9 +132,7 @@ class GoogleGeocoderAddressLookupService implements AddressLookupInterface
     /**
      * @param Address $address
      *
-     * @throws \InvalidArgumentException When Address is not valid
-     *
-     * @return array
+     * @throws AddressLookupException When Address is not valid
      */
     protected function validate(Address $address)
     {
@@ -130,6 +149,14 @@ class GoogleGeocoderAddressLookupService implements AddressLookupInterface
             }
         }
 
-        return $errors;
+        if (false === empty($errors)) {
+            $this->logger->debug(
+                $message = sprintf(
+                    '[GoogleGeocoderAddressLookupService] Google returned invalid address : %s',
+                    implode(', ', $errors)
+                )
+            );
+            throw new AddressLookupException($message);
+        }
     }
 }

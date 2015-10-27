@@ -95,6 +95,19 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldReturnAddressIfLookupAddressByFreeForm()
+    {
+        $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI 48823, United States';
+
+        $ssAddressLookupService = $this->getSmartyStreetsClient();
+        $address = $ssAddressLookupService->lookupAddressByFreeForm($freeFormAddress);
+
+        $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
+    }
+
+    /**
      * @return \Symfony\Component\Validator\Validator
      */
     protected function getValidator()
@@ -108,5 +121,13 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
     protected function getSmartyStreetsClientMock()
     {
         return $this->getMock('\RentTrack\SmartyStreetsBundle\SmartyStreetsClient', [], [], '', false);
+    }
+
+    /**
+     * @return SmartyStreetsAddressLookupService
+     */
+    protected function getSmartyStreetsClient()
+    {
+        return $this->getContainer()->get('address_lookup_service.smarty_streets');
     }
 }
