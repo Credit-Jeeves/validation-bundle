@@ -1,0 +1,7 @@
+{% if object.orders %}
+    <a href="{{ path('admin_creditjeeves_data_order_list', {"filter": { "payment__id": {"value": object.id} } }) }}"
+       class="btn btn-small">
+        <i class="icon-list"></i>
+        {{ 'admin.list.payment.orders_action'|trans }}
+    </a>
+{% endif %}

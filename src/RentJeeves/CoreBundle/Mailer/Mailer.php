@@ -249,6 +249,8 @@ class Mailer extends BaseMailer
             'type' => $order->getPaymentType(),
             'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
             'statementDescriptor' => $this->getStatementDescriptor($order),
+            'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt() : null
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -476,6 +478,8 @@ class Mailer extends BaseMailer
             'paymentProcessor' => $order->getPaymentProcessor(),
             'type' => $order->getPaymentType(),
             'statementDescriptor' => $this->getStatementDescriptor($order),
+            'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt() : null
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());
