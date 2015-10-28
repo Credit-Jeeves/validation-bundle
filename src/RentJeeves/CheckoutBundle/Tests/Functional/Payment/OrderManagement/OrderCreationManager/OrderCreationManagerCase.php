@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Functional\Payment\OrderManagement\OrderCreationManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
@@ -59,6 +60,32 @@ class OrderCreationManagerCase extends BaseTestCase
         $order = $this->getOrderCreationManager()->createRentOrder($payment);
 
         $this->assertEquals($expectedFee, $order->getFee(), 'Expected fee not equals actual fee');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotCreateOperationsWithZeroAmount()
+    {
+        $this->load(true);
+
+        /** @var Payment $payment */
+        $payment = $this->getEntityManager()->find('RjDataBundle:Payment', 1);
+        $this->assertNotNull($payment, 'Payment id#1 not found');
+
+        $payment->setAmount(0);
+        $payment->setTotal(114);
+
+        $order = $this->getOrderCreationManager()->createRentOrder($payment);
+        $this->assertCount(1, $order->getOperations(), 'Order with only OTHER amount should create 1 OTHER operation');
+        $this->assertEquals(OperationType::OTHER, $order->getOperations()->first(), 'Expected OTHER operation type');
+
+        $payment->setAmount(114);
+        $payment->setTotal(114);
+
+        $order2 = $this->getOrderCreationManager()->createRentOrder($payment);
+        $this->assertCount(1, $order2->getOperations(), 'Order with only RENT amount should create 1 RENT operation');
+        $this->assertEquals(OperationType::RENT, $order2->getOperations()->first(), 'Expected RENT operation type');
     }
 
     /**
