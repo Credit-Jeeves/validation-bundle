@@ -443,13 +443,13 @@ class ContractSynchronizer
                 $details = $transaction->getCharge()->getDetail();
                 if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
                     // Need to strip out commas
-                    $chargeAmount = str_replace(",","",$details->getAmount());
+                    $chargeAmount = str_replace(',', '', $details->getAmount());
                     $sumRecurringCharges += $chargeAmount;
                 }
             } elseif ($transaction->getConcession() !== null) {
                 $details = $transaction->getConcession()->getDetail();
                 if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
-                    $concessionAmount = str_replace(",","",$details->getAmount());
+                    $concessionAmount = str_replace(',', '', $details->getAmount());
                     $sumRecurringCharges -= $concessionAmount;
                 }
             }
