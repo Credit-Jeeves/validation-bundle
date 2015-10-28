@@ -1252,14 +1252,6 @@ class AjaxController extends Controller
     }
 
     /**
-     * @return \RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
-     */
-    protected function getGoogleAutocompleteAddressConverter()
-    {
-        return $this->get('google_autocomplete_address_converter');
-    }
-
-    /**
      * @return AddressLookupInterface
      */
     protected function getLookupService()
