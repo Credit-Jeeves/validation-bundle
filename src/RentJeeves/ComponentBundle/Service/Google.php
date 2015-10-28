@@ -185,5 +185,4 @@ class Google
 
         return $toString ? $locationData['latitude'] . ',' . $locationData['longitude'] : $locationData;
     }
-
 }
