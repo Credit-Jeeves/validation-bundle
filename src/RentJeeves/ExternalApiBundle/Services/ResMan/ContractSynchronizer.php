@@ -442,12 +442,15 @@ class ContractSynchronizer
             if ($transaction->getCharge() !== null) {
                 $details = $transaction->getCharge()->getDetail();
                 if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
-                    $sumRecurringCharges += $details->getAmount();
+                    // Need to strip out commas
+                    $chargeAmount = str_replace(",","",$details->getAmount());
+                    $sumRecurringCharges += $chargeAmount;
                 }
             } elseif ($transaction->getConcession() !== null) {
                 $details = $transaction->getConcession()->getDetail();
                 if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
-                    $sumRecurringCharges -= $details->getAmount();
+                    $concessionAmount = str_replace(",","",$details->getAmount());
+                    $sumRecurringCharges -= $concessionAmount;
                 }
             }
         }
