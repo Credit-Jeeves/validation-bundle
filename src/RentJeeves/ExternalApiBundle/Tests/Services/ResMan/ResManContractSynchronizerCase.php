@@ -113,7 +113,7 @@ class ResManContractSynchronizerCase extends Base
 
         $this->getEntityManager()->flush();
 
-        $this->getResManContractSynchronizer()->syncRecurringCharge();
+        $this->getResManContractSynchronizer()->syncRent();
 
         $this->getEntityManager()->clear($contract);
         $this->assertNotEquals(123321, $contract->getRent(), 'Rent should be updated');

@@ -3,191 +3,97 @@
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
-use RentJeeves\DataBundle\Entity\PropertyMappingRepository;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Charge;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Detail;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
-use Symfony\Component\Console\Output\OutputInterface;
+use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
 
-class ContractSynchronizer
+/**
+ * DI\Service("resman.contract_sync")
+ */
+class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const COUNT_PROPERTIES_PER_SET = 20;
-    const COUNT_CONTRACTS_FOR_FLUSH = 20;
+    const LOGGER_PREFIX = '[ResMan ContractSynchronizer]';
 
     /**
-     * @var EntityManager
+     * {@inheritdoc}
      */
-    protected $em;
-
-    /**
-     * @var ResidentDataManager
-     */
-    protected $residentDataManager;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $outputLogger;
-
-    /**
-     * @param EntityManager $em
-     * @param ResidentDataManager $residentDataManager
-     * @param LoggerInterface $logger
-     */
-    public function __construct(EntityManager $em, ResidentDataManager $residentDataManager, LoggerInterface $logger)
+    protected function setExternalSettings(Holding $holding)
     {
-        $this->em = $em;
-        $this->logger = $logger;
-        $this->residentDataManager = $residentDataManager;
+        $this->residentDataManager->setSettings($holding->getResManSettings());
     }
 
     /**
-     * Execute synchronization balance
+     * {@inheritdoc}
      */
-    public function syncBalance()
+    protected function getHoldingsForUpdatingBalance()
     {
-        try {
-            $holdings = $this->getHoldings();
-            if (empty($holdings)) {
-                return $this->logMessage('ResMan ResidentBalanceSynchronizer: No data to update');
-            }
+        return $this->getHoldingRepository()->findHoldingsForUpdatingBalanceResMan();
+    }
 
-            foreach ($holdings as $holding) {
-                $this->residentDataManager->setSettings($holding->getExternalSettings());
-                $this->logMessage(
-                    sprintf('ResMan ResidentBalanceSynchronizer start work with holding %s', $holding->getId())
-                );
-                $this->updateBalancesForHolding($holding);
-            }
-        } catch (\Exception $e) {
-            $this->logger->alert(
+    /**
+     * @param RtCustomer $resident
+     * @param PropertyMapping $propertyMapping
+     */
+    protected function updateContractBalanceForResidentTransaction(
+        $resident,
+        PropertyMapping $propertyMapping
+    ) {
+        if ($resident->getCustomers()->getCustomer()->isEmpty()) {
+            $this->logMessage(
                 sprintf(
-                    '(ResMan ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
+                    '[SyncBalance]Skip RtCustomer(%s) with empty customer collection for external property "%s".',
+                    $resident->getCustomerId(),
+                    $propertyMapping->getExternalPropertyId()
                 )
             );
 
-            return $this->logMessage($e->getMessage());
+            return;
         }
-    }
-
-    /**
-     * @param OutputInterface $outputLogger
-     * @return self
-     */
-    public function usingOutput(OutputInterface $outputLogger)
-    {
-        $this->outputLogger = $outputLogger;
-
-        return $this;
-    }
-
-    /**
-     * @param Holding $holding
-     * @throws \Exception
-     */
-    protected function updateBalancesForHolding(Holding $holding)
-    {
-        $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-        $propertySets = ceil(
-            $propertyRepository->countContractPropertiesByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
-        );
-        for ($offset = 1; $offset <= $propertySets; $offset++) {
-            $properties = $propertyRepository->findContractPropertiesByHolding(
-                $holding,
-                $offset,
-                self::COUNT_PROPERTIES_PER_SET
-            );
-            /** @var Property $property */
-            foreach ($properties as $property) {
-                $propertyMapping = $property->getPropertyMappingByHolding($holding);
-
-                if (empty($propertyMapping)) {
-                    throw new \Exception(
-                        sprintf(
-                            'PropertyID \'%s\', doesn\'t have external ID',
-                            $property->getId()
-                        )
-                    );
-                }
-
-                $residentTransactions = $this->residentDataManager->getResidents(
-                    $propertyMapping->getExternalPropertyId()
-                );
-
-                if ($residentTransactions) {
-                    $this->logMessage(
-                        sprintf(
-                            'ResMan ResidentBalanceSynchronizer: Processing resident transactions for property %s of
-                             holding %s',
-                            $propertyMapping->getExternalPropertyId(),
-                            $holding->getName()
-                        )
-                    );
-                    $this->processResidentTransactions($residentTransactions, $holding, $property);
-                    continue;
-                }
-
-                $this->logMessage(
-                    sprintf(
-                        'ERROR: Could not load resident transactions ResMan for property %s of holding %s',
-                        $propertyMapping->getExternalPropertyId(),
-                        $holding->getName()
-                    )
-                );
-            }
-            $this->em->flush();
-            $this->em->clear();
+        if (null === $contracts = $this->getContractsForUpdateBalance($resident, $propertyMapping)) {
+            return;
         }
-    }
 
-    /**
-     * @return \CreditJeeves\DataBundle\Entity\Holding[]
-     */
-    protected function getHoldings()
-    {
-        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalanceResMan();
-    }
-
-    /**
-     * @param Holding $holding
-     * @param Property $property
-     * @param RtCustomer $customerBase
-     * @return null|Contract[]|ContractWaiting[]
-     * @throws \Exception
-     */
-    protected function getContractsForUpdateBalance(Holding $holding, Property $property, RtCustomer $customerBase)
-    {
-        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-        $externalLeaseId = $customerBase->getCustomerId();
-        $unitName = $customerBase->getRtUnit()->getUnitId();
-        $contracts = $contractRepo->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
-            $holding,
-            $property,
-            $externalLeaseId,
-            $unitName
-        );
-
-        if ($contracts) {
+        foreach ($contracts as $contract) {
             $this->logMessage(
                 sprintf(
-                    'Found contracts with propertyId %s, unitName %s, $externalLeaseId %s',
-                    $property->getId(),
+                    '[SyncBalance]Processing %s #%d.',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId()
+                )
+            );
+            $this->doUpdateBalanceAndPaymentAccepted($resident, $contract);
+        }
+    }
+
+    /**
+     * @param RtCustomer $customerBase
+     * @param PropertyMapping $propertyMapping
+     * @return null|Contract[]|ContractWaiting[]
+     */
+    protected function getContractsForUpdateBalance(RtCustomer $customerBase, PropertyMapping $propertyMapping)
+    {
+        $externalLeaseId = $customerBase->getCustomerId();
+        $unitName = $customerBase->getRtUnit()->getUnitId();
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
+                $propertyMapping->getHolding(),
+                $propertyMapping->getProperty(),
+                $externalLeaseId,
+                $unitName
+            );
+
+        if (!empty($contracts)) {
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]Found %d contracts with propertyId %s, unitName %s, $externalLeaseId %s',
+                    count($contracts),
+                    $propertyMapping->getProperty()->getId(),
                     $unitName,
                     $externalLeaseId
                 )
@@ -196,26 +102,33 @@ class ContractSynchronizer
             return $contracts;
         }
 
-        $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findByHoldingPropertyUnitExternalLeaseId($holding, $property, $unitName, $externalLeaseId);
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
+            ->findByHoldingPropertyUnitExternalLeaseId(
+                $propertyMapping->getHolding(),
+                $propertyMapping->getProperty(),
+                $unitName,
+                $externalLeaseId
+            );
 
-        if ($contractWaiting) {
+        if (!empty($contractsWaiting)) {
             $this->logMessage(
                 sprintf(
-                    'Found contractsWaiting with propertyId %s, unitName %s, $externalLeaseId %s',
-                    $property->getId(),
+                    '[SyncBalance]Found %s contractsWaiting with propertyId %s, unitName %s, $externalLeaseId %s',
+                    count($contractsWaiting),
+                    $propertyMapping->getProperty()->getId(),
                     $unitName,
                     $externalLeaseId
                 )
             );
 
-            return $contractWaiting;
+            return $contractsWaiting;
         }
 
         $this->logMessage(
             sprintf(
-                'Could not find contract with property %s, unitName %s, externalLeaseId %s',
-                $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
+                '[SyncBalance]Could not find any contract with external property %s, unitName %s, externalLeaseId %s',
+                $propertyMapping->getExternalPropertyId(),
                 $unitName,
                 $externalLeaseId
             )
@@ -225,204 +138,73 @@ class ContractSynchronizer
     }
 
     /**
-     * @param array $residentTransactions
-     * @param Holding $holding
-     * @param Property $property
-     * @throws \Exception
-     */
-    protected function processResidentTransactions(
-        array $residentTransactions,
-        Holding $holding,
-        Property $property
-    ) {
-        /** @var RtCustomer $customerBase */
-        foreach ($residentTransactions as $customerBase) {
-            if ($customerBase->getCustomers()->getCustomer()->count() === 0) {
-                continue;
-            }
-            $contracts = $this->getContractsForUpdateBalance($holding, $property, $customerBase);
-            if (!$contracts) {
-                continue;
-            }
-
-            $this->doUpdateBalanceAndPaymentAccepted($customerBase, $contracts);
-        }
-    }
-
-    /**
      * @param RtCustomer $baseCustomer
-     * @param array $contract
+     * @param Contract|ContractWaiting $contract
      */
-    protected function doUpdateBalanceAndPaymentAccepted(RtCustomer $baseCustomer, array $contracts)
+    protected function doUpdateBalanceAndPaymentAccepted(RtCustomer $baseCustomer, $contract)
     {
-        foreach ($contracts as $contract) {
-            $contract->setPaymentAccepted($baseCustomer->getRentTrackPaymentAccepted());
-            $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
-
-            $this->logMessage(
-                sprintf(
-                    'ResMan: payment accepted to %s, balance %s.
-                    For ContractID: %s',
-                    $contract->getPaymentAccepted(),
-                    $contract->getIntegratedBalance(),
-                    $contract->getId()
-                )
-            );
-        }
-    }
-
-    /**
-     * @param string $message
-     */
-    protected function logMessage($message, $level = 100)
-    {
-        $this->logger->log($level, $message);
-        if ($this->outputLogger) {
-            $this->outputLogger->writeln($message);
-        }
-    }
-
-    public function syncRecurringCharge()
-    {
-        $holdings = $this->getHoldingRepository()->findHoldingsForResmanSyncRecurringCharges();
-        if (empty($holdings)) {
-            $this->logMessage('ResMan sync Recurring Charge: No data to update.');
-        }
-
-        foreach ($holdings as $holding) {
-            $this->updateContractsRentForHolding($holding);
-        }
-    }
-
-    /**
-     * @param Holding $holding
-     */
-    protected function updateContractsRentForHolding(Holding $holding)
-    {
-        $this->logMessage(sprintf('ResMan sync Recurring Charge: start work with holding %d', $holding->getId()));
-
-        $this->residentDataManager->setSettings($holding->getExternalSettings());
-        $countPropertyMappingSets = ceil(
-            $this->getPropertyMappingRepository()->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
-        );
-
-        $this->logMessage(sprintf('Found %d pages of property mappings', $countPropertyMappingSets));
-
-        for ($offset = 1; $offset <= $countPropertyMappingSets; $offset++) {
-            $this->logMessage(sprintf('ResMan sync Recurring Charge: Open %d page of property mappings', $offset));
-
-            $propertyMappings = $this->getPropertyMappingRepository()->findUniqueByHolding(
-                $holding,
-                $offset,
-                self::COUNT_PROPERTIES_PER_SET
-            );
-
-            $counter = 0;
-            /** @var PropertyMapping $propertyMapping */
-            foreach ($propertyMappings as $propertyMapping) {
-                $this->updateContractsRentForPropertyMapping($propertyMapping);
-                $counter++;
-                if ($counter === self::COUNT_CONTRACTS_FOR_FLUSH) {
-                    $this->em->flush();
-                    $counter = 0;
-                }
-            }
-
-            $this->em->flush();
-            $this->em->clear();
-        }
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
-     */
-    protected function updateContractsRentForPropertyMapping(PropertyMapping $propertyMapping)
-    {
+        $contract->setPaymentAccepted($baseCustomer->getRentTrackPaymentAccepted());
+        $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
         $this->logMessage(
             sprintf(
-                'ResMan sync Recurring Charge: start work with propertyMapping \'%s\'',
-                $propertyMapping->getExternalPropertyId()
+                '[SyncBalance]Payment accepted set to %s and balance to %s. For %s #%d',
+                $contract->getPaymentAccepted(),
+                $contract->getIntegratedBalance(),
+                $contract->getId(),
+                (new \ReflectionObject($contract))->getShortName()
             )
         );
-
-        try {
-            $rtResidentTransactions = $this->residentDataManager->getRTServiceTransactionsWithRecurringCharges(
-                $propertyMapping->getExternalPropertyId()
-            );
-        } catch (\Exception $e) {
-            $this->logMessage(
-                sprintf(
-                    'ResMan sync Recurring Charge: \'%s\'',
-                    $e->getMessage()
-                ),
-                500
-            );
-
-            return;
-        }
-
-        if (false == $rtResidentTransactions) {
-            $this->logMessage(
-                sprintf(
-                    'ResMan sync Recurring Charge: ERROR:
-                    Could not load resident transactions for Property %s of Holding#%d',
-                    $propertyMapping->getExternalPropertyId(),
-                    $propertyMapping->getHolding()->getId()
-                ),
-                500
-            );
-
-            return;
-        }
-
-        foreach ($rtResidentTransactions as $rtResidentTransaction) {
-            $this->updateContractsRentForRTServiceTransactions($propertyMapping, $rtResidentTransaction);
-        }
     }
 
     /**
-     * @param PropertyMapping $propertyMapping
-     * @param RtServiceTransactions $rtServiceTransaction
+     * {@inheritdoc}
      */
-    protected function updateContractsRentForRTServiceTransactions(
-        PropertyMapping $propertyMapping,
-        RtServiceTransactions $rtServiceTransaction
-    ) {
-        $this->logMessage('ResMan sync Recurring Charge: Searching for contracts.');
+    public function getHoldingsForUpdatingRent()
+    {
+        return $this->getHoldingRepository()->findHoldingsForResmanSyncRecurringCharges();
+    }
 
-        if (null === $contracts = $this->getContractsForSyncRecurringCharges($propertyMapping, $rtServiceTransaction)) {
+    /**
+     * @param RtServiceTransactions $resident
+     * @param PropertyMapping $propertyMapping
+     *
+     */
+    protected function updateContractRentForResidentTransaction(
+        $resident,
+        PropertyMapping $propertyMapping
+    ) {
+        if (null === $contracts = $this->getContractsForUpdateRent($resident, $propertyMapping)) {
             return;
         }
 
         foreach ($contracts as $contract) {
             $this->logMessage(
                 sprintf(
-                    'ResMan sync Recurring Charge: start work with %s#%d.',
-                    get_class($contract),
+                    '[SyncRent]Processing %s #%d.',
+                    (new \ReflectionObject($contract))->getShortName(),
                     $contract->getId()
                 )
             );
             $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
-            $sumRecurringCharges = $this->getSumRecurringCharges($rtServiceTransaction, $recurringCodes);
+            $sumRecurringCharges = $this->getSumRecurringCharges($resident, $recurringCodes);
 
             if ($sumRecurringCharges <= 0) {
-                $this->logMessage(
+                throw new \LogicException(
                     sprintf(
-                        'ResMan sync Recurring Charge: ERROR: sum of RecurringCharges for contract(%d) = %d',
+                        'Sum of RecurringCharges for %s #%d = %d',
+                        (new \ReflectionObject($contract))->getShortName(),
                         $contract->getId(),
                         $sumRecurringCharges
-                    ),
-                    500
+                    )
                 );
-
-                return;
             }
-
             $contract->setRent($sumRecurringCharges);
             $this->logMessage(
                 sprintf(
-                    'ResMan sync Recurring Charge: Rent for Contract#%d updated',
-                    $contract->getId()
+                    '[SyncRent]Rent for %s #%d updated to %s',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId(),
+                    $sumRecurringCharges
                 )
             );
         }
@@ -460,61 +242,58 @@ class ContractSynchronizer
 
     /**
      * @param PropertyMapping $propertyMapping
-     * @param RtServiceTransactions $rtServiceTransaction
      *
      * @return null|Contract[]|ContractWaiting[]
      */
-    protected function getContractsForSyncRecurringCharges(
-        PropertyMapping $propertyMapping,
-        RtServiceTransactions $rtServiceTransaction
+    protected function getContractsForUpdateRent(
+        RtServiceTransactions $rtServiceTransaction,
+        PropertyMapping $propertyMapping
     ) {
-        $firstDetailFortServiceTransaction = $this->getFirstDetailForRTServiceTransaction($rtServiceTransaction);
-        if (null === $firstDetailFortServiceTransaction) {
-            $this->logMessage(
-                'ResMan sync Recurring Charge: ERROR: rtServiceTransaction does not have details.',
-                500
+        if (null === $firstDetail = $this->getFirstDetailForRTServiceTransaction($rtServiceTransaction)) {
+            throw new \InvalidArgumentException(
+                'rtServiceTransaction does not have details.'
+            );
+        }
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
+                $propertyMapping->getHolding(),
+                $propertyMapping->getProperty(),
+                $firstDetail->getCustomerId(),
+                $firstDetail->getUnitID()
             );
 
-            return null;
-        }
-
-        $contracts = $this->getContractRepository()->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
-            $propertyMapping->getHolding(),
-            $propertyMapping->getProperty(),
-            $firstDetailFortServiceTransaction->getCustomerId(),
-            $firstDetailFortServiceTransaction->getUnitID()
-        );
-
-        if ($contracts) {
+        if (!empty($contracts)) {
             $this->logMessage(
                 sprintf(
-                    'ResMan sync Recurring Charge:
-                    Found contracts with property %s, unitId %s, externalLeaseId %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $firstDetailFortServiceTransaction->getUnitID(),
-                    $firstDetailFortServiceTransaction->getCustomerId()
+                    '[SyncRent]Found %d contracts with propertyId %s, externalLeaseId %s and unitName "%s"',
+                    count($contracts),
+                    $propertyMapping->getProperty()->getId(),
+                    $firstDetail->getCustomerId(),
+                    $firstDetail->getUnitID()
                 )
             );
 
             return $contracts;
         }
 
-        $contractsWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
             ->findByHoldingPropertyUnitExternalLeaseId(
                 $propertyMapping->getHolding(),
                 $propertyMapping->getProperty(),
-                $firstDetailFortServiceTransaction->getUnitID(),
-                $firstDetailFortServiceTransaction->getCustomerId()
+                $firstDetail->getUnitID(),
+                $firstDetail->getCustomerId()
             );
 
-        if ($contractsWaiting) {
+        if (!empty($contractsWaiting)) {
             $this->logMessage(
                 sprintf(
-                    'ResMan sync Recurring Charge:
-                    Found contractsWaiting with property %s, unitName %s, externalLeaseId %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $firstDetailFortServiceTransaction->getUnitID(),
-                    $firstDetailFortServiceTransaction->getCustomerId()
+                    '[SyncRent]Found %d contractsWaiting with propertyId %s, externalLeaseId %s and unitName "%s"',
+                    count($contractsWaiting),
+                    $propertyMapping->getProperty()->getId(),
+                    $firstDetail->getCustomerId(),
+                    $firstDetail->getUnitID()
                 )
             );
 
@@ -523,11 +302,10 @@ class ContractSynchronizer
 
         $this->logMessage(
             sprintf(
-                'ResMan sync Recurring Charge:
-                Could not find contracts/contractsWaiting with property %s, unitName %s, externalLeaseId %s',
+                '[SyncBalance]Could not find any contract with external property %s, unitName %s, externalLeaseId %s',
                 $propertyMapping->getExternalPropertyId(),
-                $firstDetailFortServiceTransaction->getUnitID(),
-                $firstDetailFortServiceTransaction->getCustomerId()
+                $firstDetail->getUnitID(),
+                $firstDetail->getCustomerId()
             )
         );
 
@@ -553,26 +331,29 @@ class ContractSynchronizer
     }
 
     /**
-     * @return \CreditJeeves\DataBundle\Entity\HoldingRepository
+     * @param RtServiceTransactions $rtServiceTransaction
+     * @param array $recurringCodes
+     *
+     * @return float
      */
-    protected function getHoldingRepository()
+    protected function getSumRecurringCharges(RtServiceTransactions $rtServiceTransaction, array $recurringCodes)
     {
-        return $this->em->getRepository('DataBundle:Holding');
-    }
+        $sumRecurringCharges = 0;
+        /** @var Transactions $transaction */
+        foreach ($rtServiceTransaction->getTransactions() as $transaction) {
+            if ($transaction->getCharge() !== null) {
+                $details = $transaction->getCharge()->getDetail();
+                if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
+                    $sumRecurringCharges += $details->getAmount();
+                }
+            } elseif ($transaction->getConcession() !== null) {
+                $details = $transaction->getConcession()->getDetail();
+                if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
+                    $sumRecurringCharges -= $details->getAmount();
+                }
+            }
+        }
 
-    /**
-     * @return PropertyMappingRepository
-     */
-    protected function getPropertyMappingRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:PropertyMapping');
-    }
-
-    /**
-     * @return \RentJeeves\DataBundle\Entity\ContractRepository
-     */
-    protected function getContractRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:Contract');
+        return $sumRecurringCharges;
     }
 }
