@@ -3,7 +3,52 @@
     var paidForArr={{ paidForArr | serialize('json') | raw }};
     var isVerified='{{ user.getIsVerified }}';
 </script>
-        <div data-role="page" id="main">
+        <div data-role="page" id="main"> {# have it on this page for now since we use contracts data #}
+            <div data-role="panel" id="panel" class="sideMenu">
+                <ul data-role="listview">
+                    <li><a href="#main" style="color: #666 !important;">Home</a></li>
+                    <li><a href="#contracts" class="selectedMenuOptions">Current Payments</a></li>
+                    <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
+                    <li><a href="#sources" class="menuOptions">Payment Sources</a></li>
+                    <li><a href="logout" class="menuOptions" data-ajax="false">Logout</a></li>
+                </ul>
+
+            </div>
+
+            <div data-role="header" role="banner" class="ui-header ui-bar-inherit">
+                <a href="#panel" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+
+                <h1 class="ui-title" role="heading" aria-level="1" style="background: transparent;"><img class="headerLogo" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
+            </div>
+
+            <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;'>
+
+
+                <div id="payRent" style="display: table;background: #6C9F2C;text-align: center; border: 3px solid white; border-radius: 50%; font-size: 32pt; color: white; height: 100px; width: 100px;"><i class="fa fa-usd"></i></div>
+
+
+                <div id="payments">
+                        <div class="paymentBox" id="intro">
+                            <div class="addressBox">
+                                Once you set up a payment,
+                                you'll see its progress here.
+                            </div>
+                            <div class="paymentStatusBox">
+                                <span style="left: 0px;"><i class="fa fa-usd"></i><br>Charged</span>
+                                <span style="left: 40px;">- - - - - - - - <i class="fa fa-arrow-right"></i><br>Sent</span>
+                                <span style="left: 180px;">- - - - - - - - <i class="fa fa-circle-o"></i><br>Delivered</span>
+                            </div>
+                            <div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">
+                                Set Up a Rent Payment
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+
+
+        <div data-role="page" id="contracts">
 
             <div data-role="panel" id="panel" class="sideMenu">
                 <ul data-role="listview">

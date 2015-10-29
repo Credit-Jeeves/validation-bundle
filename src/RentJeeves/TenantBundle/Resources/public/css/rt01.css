@@ -703,3 +703,25 @@ body{
     position: relative;
     margin-left: -53px;
 }
+
+
+#payments{
+    margin-top: 150px;
+}
+.paymentBox{
+    margin-top: 50px;
+    background: rgb(230,230,230); padding: 10px 10px 10px 20px; height: 150px; width: 260px; font-size: 10pt; text-align: center;
+}
+
+.addressBox{
+    padding: 5px; font-weight: 700;
+}
+
+.paymentStatusBox{
+    margin-top: 10px; margin-bottom: 10px;height: 40px; position: relative; font-size: 8;
+}
+
+.paymentStatusBox span{
+    position: absolute;
+    text-align: center;
+}

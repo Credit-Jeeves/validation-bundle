@@ -32,6 +32,10 @@ debug=false;
 
 $(document).ready(function(){
 
+    //load main page payments info
+
+    loadPaymentTable()
+
     //check that we are at main page
 
     $.mobile.changePage('#main')
@@ -812,14 +816,15 @@ function getHistory(historyId) {
                 $.each(data.tenantPayments, function (index, entry) {
                     htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
                 })
-
+                loadOrderTable(data.tenantPayments,data.tenantPayments[0].property)
             }else{
                 htmlStr='Nothing here yet!'
             }
-
             $("#paymentHistoryTable" + historyId).append(htmlStr)
             $("#paymentHistoryTableI" + historyId).append(htmlStr)
             $(".loadingPaymentHistory").hide()
+
+
         })
     }
 }
@@ -829,3 +834,77 @@ function getOrdinal(n) {
         v=n%100;
     return n+(s[(v-20)%10]||s[v]||s[0]);
 }
+
+function loadOrderTable(tenantPayments,address){ // get order boxes for main page
+    console.log(tenantPayments)
+    $.each(tenantPayments, function (index, entry) {
+        if(entry.status.toString()=="pending") {
+            orderBox("Payment en route - $"+entry.total, address,entry.status.toString())
+        }
+        if(entry.status.toString()=="complete"){
+            orderBox("Payment Received - $"+entry.total, address,entry.status.toString())
+        }
+    })
+}
+
+function loadPaymentTable(){ //get payment boxes for main page
+    $.each(contractsJson, function (index, entry) {
+        if(entry.payment){
+            orderBox(entry.payment.type+" scheduled"+entry.payment.total,entry.property.number+" "+entry.property.street,"")
+        }
+    })
+}
+
+function orderBox(desc,address,status){ //status = complete, pending, error, "" (scheduled but no order), refund
+    $("#intro").hide() // we don't need default box
+    htmlStr="";
+    //htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
+    htmlStr+='<div class="paymentBox"><div class="addressBox"><i class="fa fa-home"></i> '+address+'</div>'
+    htmlStr+='<div class="paymentStatusBox">'
+    if(status!=""){
+        htmlStr+='<span style="left: 0px; color: #6BAB1B;"><i class="fa fa-usd"></i><br>Charged</span>'
+    }else{
+        htmlStr+='<span style="left: 0px;"><i class="fa fa-usd"></i><br>Charged</span>'
+    }
+    if(status=="pending" || status=="complete"){
+        htmlStr+='<span style="left: 40px; color: #6BAB1B;">- - - - - - - - <i class="fa fa-arrow-right"></i></span>'
+    }else if(status=="error") {
+        htmlStr+='<span style="left: 100px; color: red;">- - - - - - - - <i class="fa fa-times"></i></span>'
+    }else {
+        htmlStr+='<span style="left: 100px;">- - - - - - - - <i class="fa fa-arrow-right"></i></span>'
+    }
+    if(status=="complete") {
+        htmlStr += '<span style="left: 130px; color: #6BAB1B;">- - - - - - - - <i class="fa fa-check"></i><br>Delivered</span>'
+    }else {
+        htmlStr+='<span style="left: 130px;">- - - - - - - - <i class="fa fa-circle-o"></i><br>Delivered</span>'
+    }
+    htmlStr+='</div>'
+    htmlStr+='<div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">'
+    htmlStr+=desc
+    htmlStr+='</div>'
+    htmlStr+='</div></div>'
+    $("#payments").append(htmlStr)
+}
+
+/*
+
+
+
+ <div class="paymentBox" id="intro">
+ <div class="addressBox">
+ Once you set up a payment,
+ you'll see its progress here.
+ </div>
+ <div class="paymentStatusBox">
+ <span style="left: 0px;">$<br>Charged</span>
+ <span style="left: 100px;">-><br>Sent</span>
+ <span style="left: 180px;">/<br>Delivered</span>
+ </div>
+ <div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">
+ Set Up a Rent Payment
+ </div>
+ </div>
+
+
+
+ */
