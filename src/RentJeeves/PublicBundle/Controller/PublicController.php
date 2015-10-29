@@ -4,7 +4,7 @@ namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -123,9 +123,9 @@ class PublicController extends Controller
 
         if ($countGroup > 0) {
             /**
-             * @var $propertyProcess PropertyProcess
+             * @var $propertyProcess PropertyManager
              */
-            $propertyProcess = $this->container->get('property.process');
+            $propertyProcess = $this->container->get('property.manager');
             if (!$property->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
                 $propertyProcess->saveToGoogle($property);
             }

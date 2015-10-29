@@ -42,7 +42,7 @@ class UnitMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by PropertyProcess
+     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by PropertyManager
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
@@ -145,10 +145,10 @@ class UnitMapperCase extends AbstractMapperCase
     }
 
     /**
-     * @return \RentJeeves\CoreBundle\Services\PropertyProcess
+     * @return \RentJeeves\CoreBundle\Services\PropertyManager
      */
     protected function getPropertyProcess()
     {
-        return $this->getContainer()->get('property.process');
+        return $this->getContainer()->get('property.manager');
     }
 }

@@ -3,7 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
@@ -16,14 +16,14 @@ use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingExcepti
 class UnitMapper extends AbstractMapper
 {
     /**
-     * @var PropertyProcess
+     * @var PropertyManager
      */
     protected $propertyProcess;
 
     /**
-     * @param PropertyProcess $propertyProcess
+     * @param PropertyManager $propertyProcess
      */
-    public function __construct(PropertyProcess $propertyProcess)
+    public function __construct(PropertyManager $propertyProcess)
     {
         $this->propertyProcess = $propertyProcess;
     }
@@ -145,7 +145,7 @@ class UnitMapper extends AbstractMapper
         if ($property === null) {
             throw new MappingException(
                 sprintf(
-                    '[Mapping] : Address (%s , %s, %s, %s) is not found by PropertyProcess',
+                    '[Mapping] : Address (%s , %s, %s, %s) is not found by PropertyManager',
                     $this->get('streetaddress'),
                     $this->get('city_name'),
                     $this->get('state_name'),

@@ -617,8 +617,7 @@ abstract class Property
     }
 
     /**
-     *
-     * You should set this using "property.process"->setupSingleProperty() instead.
+     * You should set this using "property.manager"->setupSingleProperty() instead.
      *
      * @param boolean $isSingle
      *

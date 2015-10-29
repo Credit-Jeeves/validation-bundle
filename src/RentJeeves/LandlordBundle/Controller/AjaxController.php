@@ -10,9 +10,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
-use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
-use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -1264,10 +1262,10 @@ class AjaxController extends Controller
     }
 
     /**
-     * @return PropertyProcess
+     * @return PropertyManager
      */
     protected function getPropertyProcess()
     {
-        return $this->get('property.process');
+        return $this->get('property.manager');
     }
 }

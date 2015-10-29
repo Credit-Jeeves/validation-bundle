@@ -13,7 +13,10 @@ use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 
-class PropertyProcess
+/**
+ * Service name "property.manager"
+ */
+class PropertyManager
 {
     const NEW_PROPERTY = "new_property";
 

@@ -8,7 +8,7 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
@@ -128,10 +128,10 @@ abstract class MappingAbstract implements MappingInterface
         $this->em = $em;
     }
 
-    /** @var  PropertyProcess $propertyProcess */
+    /** @var  PropertyManager $propertyProcess */
     protected $propertyProcess;
 
-    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    public function setPropertyProcess(PropertyManager $propertyProcess)
     {
         $this->propertyProcess = $propertyProcess;
     }

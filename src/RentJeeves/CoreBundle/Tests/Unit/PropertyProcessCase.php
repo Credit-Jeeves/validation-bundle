@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Unit;
 
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -13,6 +13,7 @@ class PropertyProcessCase extends BaseTestCase
     public function getContainer()
     {
         static::$kernel = null;
+
         return parent::getContainer();
     }
 
@@ -24,9 +25,9 @@ class PropertyProcessCase extends BaseTestCase
         $this->load(true);
         $container = $this->getContainer();
         /**
-         * @var $propertyProcess PropertyProcess
+         * @var $propertyProcess PropertyManager
          */
-        $propertyProcess = $container->get('property.process');
+        $propertyProcess = $container->get('property.manager');
 
         $propertyFirst = new Property();
         $propertyFirst->setArea('MI');
@@ -42,7 +43,6 @@ class PropertyProcessCase extends BaseTestCase
         $propertySecond->setLatitude(42.772304);
         $propertySecond->setLongitude(-84.486397);
 
-
         $property = $propertyProcess->checkPropertyDuplicate(
             $propertyFirst,
             $saveToGoogle = true
@@ -56,9 +56,9 @@ class PropertyProcessCase extends BaseTestCase
 
         $container = $this->getContainer();
         /**
-         * @var $propertyProcess PropertyProcess
+         * @var $propertyProcess PropertyManager
          */
-        $propertyProcess = $container->get('property.process');
+        $propertyProcess = $container->get('property.manager');
         $propertyProcess->checkPropertyDuplicate(
             $propertySecond,
             $saveToGoogle = true
@@ -83,9 +83,9 @@ class PropertyProcessCase extends BaseTestCase
         $this->load(true);
         $container = $this->getContainer();
         /**
-         * @var $propertyProcess PropertyProcess
+         * @var $propertyProcess PropertyManager
          */
-        $propertyProcess = $container->get('property.process');
+        $propertyProcess = $container->get('property.manager');
         $property = new Property();
         $property->addPropertyGroup(new Group());
         $propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
@@ -108,9 +108,9 @@ class PropertyProcessCase extends BaseTestCase
         $this->load(true);
         $container = $this->getContainer();
         /**
-         * @var $propertyProcess PropertyProcess
+         * @var $propertyProcess PropertyManager
          */
-        $propertyProcess = $container->get('property.process');
+        $propertyProcess = $container->get('property.manager');
         $property = new Property();
         $propertyProcess->setupSingleProperty($property);
     }
@@ -125,9 +125,9 @@ class PropertyProcessCase extends BaseTestCase
         $this->load(true);
         $container = $this->getContainer();
         /**
-         * @var $propertyProcess PropertyProcess
+         * @var $propertyProcess PropertyManager
          */
-        $propertyProcess = $container->get('property.process');
+        $propertyProcess = $container->get('property.manager');
         $property = new Property();
         $property->addPropertyGroup(new Group());
         $property->addPropertyGroup(new Group());

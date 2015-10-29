@@ -65,7 +65,7 @@ class UnitsController extends Controller
             /** @var Property $property */
             $property = $form->getData();
 
-            if ($property = $this->get('property.process')->getPropertyFromDBIn2steps($property)) {
+            if ($property = $this->get('property.manager')->getPropertyFromDBIn2steps($property)) {
 
                 $result = $this
                     ->getDoctrine()

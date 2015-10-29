@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
@@ -42,7 +42,7 @@ class ContractProcessor
     protected $contractProcess;
 
     /**
-     * @var PropertyProcess
+     * @var PropertyManager
      */
     protected $propertyProcess;
 
@@ -51,14 +51,14 @@ class ContractProcessor
      * @param Mailer $mailer
      * @param $locale
      * @param ContractProcess $contractProcess
-     * @param PropertyProcess $propertyProcess
+     * @param PropertyManager $propertyProcess
      *
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "mailer" = @DI\Inject("project.mailer"),
      *     "locale" = @DI\Inject("%kernel.default_locale%"),
      *     "contractProcess" = @DI\Inject("contract.process"),
-     *     "propertyProcess" = @DI\Inject("property.process")
+     *     "propertyProcess" = @DI\Inject("property.manager")
      * })
      */
     public function __construct(
@@ -66,7 +66,7 @@ class ContractProcessor
         Mailer $mailer,
         $locale,
         ContractProcess $contractProcess,
-        PropertyProcess $propertyProcess
+        PropertyManager $propertyProcess
     ) {
         $this->em = $em;
         $this->mailer = $mailer;

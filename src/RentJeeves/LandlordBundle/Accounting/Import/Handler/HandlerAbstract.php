@@ -100,7 +100,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public $supportEmail;
 
     /**
-     * @Inject("property.process")
+     * @Inject("property.manager")
      */
     public $propertyProcess;
 
