@@ -39,7 +39,7 @@ class AMSIContractSynchronizerCase extends Base
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
-        $balanceSynchronizer->syncRecurringCharge();
+        $balanceSynchronizer->syncRent();
         $updatedContract = $repo->find($contract->getId());
 
         $this->assertGreaterThan(0, $updatedContract->getRent(), 'Rent should be greater than 0');
