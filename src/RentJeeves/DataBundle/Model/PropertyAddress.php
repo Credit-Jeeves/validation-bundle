@@ -323,4 +323,20 @@ class PropertyAddress
     {
         $this->updatedAt = $updatedAt;
     }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return sprintf('%s %s', $this->number, $this->street);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullAddress()
+    {
+        return sprintf('%s, %s, %s %s', $this->getAddress(), $this->city, $this->state, $this->zip);
+    }
 }

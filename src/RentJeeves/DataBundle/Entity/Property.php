@@ -6,23 +6,15 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Traits\AddressTrait;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
 /**
- * Property
- *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PropertyRepository")
  * @ORM\Table(name="rj_property")
- *
  */
 class Property extends Base
 {
-    use AddressTrait {
-        getFullAddress as fullAddress;
-    }
-
     /**
      * This method is needed only for SonataAdminBundle, please don't use it.
      * @return bool
