@@ -107,7 +107,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
-        $balanceSynchronizer->syncRecurringCharge();
+        $balanceSynchronizer->syncRent();
         $updatedContract = $repo->find($contract->getId());
         $this->assertGreaterThan(0, (int) $updatedContract->getRent(), 'Rent not updated');
     }
@@ -141,7 +141,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
-        $balanceSynchronizer->syncRecurringCharge();
+        $balanceSynchronizer->syncRent();
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertGreaterThan(0, (int) $updatedContractWaiting->getRent(), 'Balance not updated');

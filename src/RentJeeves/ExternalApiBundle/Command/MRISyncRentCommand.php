@@ -24,6 +24,6 @@ class MRISyncRentCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('mri.contract_sync')
-            ->syncRecurringCharge();
+            ->syncRent();
     }
 }
