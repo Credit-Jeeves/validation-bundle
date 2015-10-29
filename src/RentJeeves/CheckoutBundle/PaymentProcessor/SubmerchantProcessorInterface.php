@@ -84,4 +84,12 @@ interface SubmerchantProcessorInterface
      * @return PaymentProcessorReport
      */
     public function loadReport();
+
+    /**
+     * @param $paymentType is of type CreditJeeves\DataBundle\Enum\OrderPaymentType
+     * @param $executeDate
+     * @return Date the estimated deposit date
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate);
+
 }

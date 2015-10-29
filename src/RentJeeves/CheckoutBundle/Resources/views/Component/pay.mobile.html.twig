@@ -126,4 +126,13 @@
 
 </div>
 
-{{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
+{% if form_name_suffix is defined %}
+    {{ render(controller('RjCheckoutBundle:PaymentSource:source', {'formNameSuffix' : form_name_suffix, 'mobile':'true'})) }}
+{% else %}
+    {{ render(controller('RjCheckoutBundle:PaymentSource:source',{'mobile':'true'})) }}
+{% endif %}
+
+{#
+
+{{ render(controller('RjCheckoutBundle:PaymentSource:source',{'mobile':'true'})) }}
+#}

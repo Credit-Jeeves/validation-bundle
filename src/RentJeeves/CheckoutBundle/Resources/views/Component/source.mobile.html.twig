@@ -1,15 +1,4 @@
-<script type="text/javascript">
-
-    window.addressesViewModels = [];
-    window.paymentAccounts = [];
-    var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
-
-    jQuery.each(payAccounts, function(key, val){
-        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").append("<option value='"+val.id+"'>"+val.name+"</option>");
-        window.paymentAccounts.push(val);
-    });
-</script>
-
+{% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
 
 <div data-role="page" id="addNewPayAccount">
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
@@ -23,7 +12,7 @@
     <div class="ui-content" role="main">
 
         <div id='sourceErrorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
-            </div>
+        </div>
 
         <form {{ form_enctype(paymentAccountType) }} novalidate method="post" onsubmit="addNewPaymentSource(this); return false;">
             {{ form_widget(paymentAccountType) }}

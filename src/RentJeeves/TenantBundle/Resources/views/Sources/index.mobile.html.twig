@@ -1,16 +1,17 @@
 <div data-role="page" id="sources">
 
-    <div data-role="panel" id="panelH" class="sideMenu">
+    <div data-role="panel" id="panelSources" class="sideMenu">
         <ul data-role="listview">
-            <li><a href="#main" class="menuOptions">Current Payments</a></li>
-            <li><a href="#paymentHistory" class="menuOptions"  class="menuOptions">Payment History</a></li>
-            <li><a href="#sources" class="selectedMenuOptions">Payment Sources</a></li>
-            <li><a href="logout" class="menuOptions">Logout</a></li>
+            <li><a href="#main" class="menuOptions">Home</a></li>
+            <li><a href="#contracts" class="menuOptions">Current Payments</a></li>
+            <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
+            <li><a href="#sources" style="color: #666 !important;" class="selectedMenuOptions">Payment Sources</a></li>
+            <li><a href="logout" class="menuOptions" data-ajax="false">Logout</a></li>
         </ul>
     </div>
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#panelH" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
+        <a href="#panelSources" class="headerButton" data-role="none"><i class="fa fa-bars" style="background: none; color: white; font-size: 22pt;"></i></a>
         <h1 class="ui-title" role="heading" aria-level="1"><img class="headerLogo" src="/bundles/rjcore/images/mobile/home-logo.png"></h1>
         {#
         <a href="#addNewPayAccount" onclick="saving=false" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none; padding: 15px; font-size: 16px; font-weight: normal;">Add</a>
@@ -76,3 +77,4 @@
     </div>
 
 </div>
+

@@ -12,10 +12,11 @@ bankVisibleFields=[
     "ACHDepositType_1",
     "ACHDepositType_2",
     "AccountNumber_AccountNumber",
-    "AccountNumber_AccountNumberAgain"
+    "AccountNumber_AccountNumberAgain",
+    "ACHDepositType_box",
 ]
 cardVisibleFields=[
-    "CardAccountName",
+    //"CardAccountName",
     "CardAccountNumber",
     "VerificationCode",
     "ExpirationYear-button",
@@ -23,14 +24,34 @@ cardVisibleFields=[
     "address_choice",
     "is_new_address_link",
     "address",
+    "address_choice_box",
     //"address_area-button",
     //"address_zip",
-    "CardNumber"
+    "CardNumber",
+    "CardAccountName_box"
 ]
 
 debug=false;
 
+payAccounts=[]
+
 $(document).ready(function(){
+
+    h=$.mobile.getScreenHeight();
+    h-=60;
+    $(".ui-content").css('min-height',h+'px');
+
+        $.getJSON("/checkout/payment-accounts/list",function(d){
+            payAccounts=d
+            init() //we need payAccounts first
+            $.each(historyIds,function(key,value){
+                getHistory(value) //this eventually calls deposit date, which needs payAccounts
+            })
+        })
+
+})
+
+function init(){
 
     //load main page payments info
 
@@ -73,12 +94,9 @@ $(document).ready(function(){
     });
 
     //contract individual pages info filled out from JSON
-
-    h=$.mobile.getScreenHeight();
-    h-=60;
-    $(".ui-content").css('min-height',h+'px');
-    for (i = 0; i < contractsJson.length;i++) {
-        var contract = contractsJson[i];
+    contractsArr = $.map(contractsJson, function(el) { return el });
+    for (i = 0; i < contractsArr.length;i++) {
+        var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
         var dueDate=contract.startAt.substr(5,2)
         if(dueDate.charAt(0)=="0"){
@@ -90,7 +108,7 @@ $(document).ready(function(){
             $("#contractTotal" + contract.id).html(contract.payment.total)
             $("#cancel" + contract.id).attr("onclick", "setTimeout(function(){cancelPayment(" + contract.payment.id + "); $('.ui-dialog').hide()},50)")
             //settimeout hide dialog fixes weird bug with simpledialog
-
+        
             $.each(payAccounts, function (index, localPaymentAccount) {
                 if (localPaymentAccount.id == contract.payment.paymentAccountId) {
                     $("#contractFromAcc" + contract.id).html(localPaymentAccount.name)
@@ -108,20 +126,24 @@ $(document).ready(function(){
 
     }
 
+    $.each(payAccounts, function(index, payAccount){
+        $("#"+prefix+"paymentAccount").append("<option value='"+payAccount.id+"'>"+payAccount.name+"</option>")
+    })
+
     //add "Add new payment source"
     $("#"+prefix+"paymentAccount").append("<option value='-1'>Add new payment source</option>")
     $("#"+prefix+"paymentAccount").bind( "change", function(event, ui) {
         if($(this).val()==-1){
             var id=$("#rentjeeves_checkoutbundle_paymenttype_contractId").val()
-            for (i = 0; i < contractsJson.length;i++) {//retrieve our groupId
-                if (contractsJson[i].id == id) {
+            for (i = 0; i < contractsArr.length;i++) {//retrieve our groupId
+                if (contractsArr[i].id == id) {
                     $("#rentjeeves_checkoutbundle_paymentaccounttype_groupId").val(contractsJson[i].groupId)
                 }
             }
             //get contractId
             $("#rentjeeves_checkoutbundle_paymentaccounttype_contractId").val(id)
             saving = false;
-            $("#deleteSource").hide()
+            $("#deleteSource").parent().hide()
             $.mobile.changePage('#addNewPayAccount')
         }
     });
@@ -149,25 +171,51 @@ $(document).ready(function(){
 
     //show card/bank depending on radio selection
 
-    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_0").bind("change", function(event,id){
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_0").bind("change", function(event,id){//bank
         var cardVisibility="none"
         var bankVisibility="block"
         showHideBankCardFields(bankVisibility,cardVisibility)
     })
 
-    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_1").bind("change", function(event,id){
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_1").bind("change", function(event,id){//credit
         var cardVisibility="block"
         var bankVisibility="none"
         showHideBankCardFields(bankVisibility,cardVisibility)
     })
 
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_2").bind("change", function(event,id){//debit
+        var cardVisibility="block"
+        var bankVisibility="none"
+        showHideBankCardFields(bankVisibility,cardVisibility)
+    })
+
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_CardNumber_box").find("ul").hide()
+    //remove card type helper
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode_box").find("i").hide()
+
+
+    //remove csc helper
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_is_new_address_link_row").hide()
+
+    //$("#rentjeeves_checkoutbundle_paymentaccounttype_type_box").last().hide()
+    //delete tooltip
+
+    $("input [name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").parent().hide()
+
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber_box").children().last().hide()
+    //remove routing number tooltip
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box").children().last().hide()
+
         //remove textbox from is_new_address_link, not applicable here
     $("#"+accountPrefix+"is_new_address_link").hide()
     $("#"+accountPrefix+"address_choice").parent().hide()
 
-    $("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice").append('<input type="button" value="Add new address" onclick="showAddNewAddress()">')
-
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_row").append('<input type="button" value="Add new address" onclick="showAddNewAddress()" id="addNewAddressBttn">')
+    $("#addNewAddressBttn").button()
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_type_box").children().last().hide() // remove tooltip
     $("#rentjeeves_checkoutbundle_paymentaccounttype_save").hide() //we always save payment info, so button is not relevant
+
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_CardNumber_box").show()
     
 //set to eCheck default
     $("#rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear").selectmenu()//fixes a bug where this does not self init
@@ -181,7 +229,11 @@ $(document).ready(function(){
     }
 
 
-})
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_CardNumber_box").show()
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode_box").show()
+
+    $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
+}
 
 function showAddNewAddress(){
     $("#rentjeeves_checkoutbundle_paymentaccounttype_address").parent().css("display","block")
@@ -221,7 +273,7 @@ function editSource(name){
     })
 
     $("#deleteSource").attr("onclick","deleteSource("+id+")")
-    $("#deleteSource").show()
+    $("#deleteSource").parent().show()
 
     //hit http://dev-nr.renttrack.com/sources/save with POST data
     $.mobile.changePage('#addNewPayAccount');
@@ -288,11 +340,11 @@ function setupPayForm(id) {
     //reset 'other' amount
 
     $("#"+prefix+"amountOther").val("0.00")
+    contractsArr = $.map(contractsJson, function(el) { return el });
+    for (i = 0; i < contractsArr.length;i++) {
+        if(contractsArr[i].id==id){
 
-    for (i = 0; i < contractsJson.length;i++) {
-        if(contractsJson[i].id==id){
-
-            var contract=contractsJson[i]
+            var contract=contractsArr[i]
 
             //check that user is verified
 
@@ -400,6 +452,10 @@ function setupPayForm(id) {
 
                 $("#"+prefix+"startMonth").val(contract.payment.startMonth);
                 $("#"+prefix+"startYear").val(contract.payment.startYear);
+
+                $("#"+prefix+"ends_0").attr("checked",true)
+                $("#"+prefix+"ends_1").attr("checked",false)
+
                 if(contract.payment.endMonth){
                     $("#"+prefix+"endMonth").val(contract.payment.endMonth);
                     $("#"+prefix+"endYear").val(contract.payment.endYear);
@@ -509,11 +565,11 @@ function createReview(){
     if(validatePayment()) {
 
         total = updateTotal();
+        contractsArr = $.map(contractsJson, function(el) { return el });
+        for (i = 0; i < contractsArr.length; i++) {
+            if (contractsArr[i].id == globalContractId) {
 
-        for (i = 0; i < contractsJson.length; i++) {
-            if (contractsJson[i].id == globalContractId) {
-
-                var contract = contractsJson[i]
+                var contract = contractsArr[i]
                 var method = ""
                 var fee = 0.00;
 
@@ -816,12 +872,16 @@ function getHistory(historyId) {
                 $.each(data.tenantPayments, function (index, entry) {
                     htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
                 })
-                loadOrderTable(data.tenantPayments,data.tenantPayments[0].property)
+                //orderBox(desc,address,status,date,contractId,paymentType)
+                    loadOrderTable(data.tenantPayments,data.tenantPayments[0].property,historyId)
+
+                $("#paymentHistoryTable" + historyId).append(htmlStr)
+                $("#paymentHistoryTableI" + historyId).append(htmlStr)
+
             }else{
-                htmlStr='Nothing here yet!'
+                //htmlStr='Nothing here yet!'
             }
-            $("#paymentHistoryTable" + historyId).append(htmlStr)
-            $("#paymentHistoryTableI" + historyId).append(htmlStr)
+
             $(".loadingPaymentHistory").hide()
 
 
@@ -835,76 +895,94 @@ function getOrdinal(n) {
     return n+(s[(v-20)%10]||s[v]||s[0]);
 }
 
-function loadOrderTable(tenantPayments,address){ // get order boxes for main page
-    console.log(tenantPayments)
+function loadOrderTable(tenantPayments,address,contractId){ //HISTORICAL
     $.each(tenantPayments, function (index, entry) {
-        if(entry.status.toString()=="pending") {
-            orderBox("Payment en route - $"+entry.total, address,entry.status.toString())
+        entryDate = new Date(entry.date)
+        curDate = new Date()
+        paymentType="bank"
+        if(entry.type=="credit-card"){
+            paymentType="card"
         }
-        if(entry.status.toString()=="complete"){
-            orderBox("Payment Received - $"+entry.total, address,entry.status.toString())
+        date = entry.date.split("/")
+        date = date[2]+"-"+date[0]+"-"+date[1]
+        if(new Date(curDate - entryDate).getTime() < 259200000) { //check for within 3 days
+            if (entry.status.toString() == "pending") {
+                orderBox("Payment En Route - $" + entry.total, address, entry.status.toString(),date,contractId,paymentType)
+            }
+            if (entry.status.toString() == "complete") {
+                orderBox("Payment Received - $" + entry.total, address, entry.status.toString(),date,contractId,paymentType)
+            }
+            //orderBox(desc,address,status,date,contractId,paymentType)
         }
     })
 }
 
-function loadPaymentTable(){ //get payment boxes for main page
+function loadPaymentTable(){ //CURRENT
     $.each(contractsJson, function (index, entry) {
         if(entry.payment){
-            orderBox(entry.payment.type+" scheduled"+entry.payment.total,entry.property.number+" "+entry.property.street,"")
+            payAccountType="card";
+            $.each(payAccounts,function(k,v){
+                if(v.id==entry.payment.paymentAccountId){
+                    payAccountType= v.type
+                }
+            })
+            //date = entry.payment.startYear+"-"+entry.payment.startMonth+"-"+entry.payment.dueDate
+            date = entry.payment.paidDate.split("/")
+            date = date[2]+"-"+date[0]+"-"+date[1]
+            orderBox("<b>"+entry.payment.type.capitalizeFirstLetter().replace("_"," ").capitalizeFirstLetter().replace("time","Time")+" Payment Scheduled</b> - $"+entry.payment.total,entry.property.number+" "+entry.property.street,"",date,entry.id, payAccountType)
+            //desc,address,status,date,contractId,paymentType
         }
     })
 }
 
-function orderBox(desc,address,status){ //status = complete, pending, error, "" (scheduled but no order), refund
+
+function getDepositDate(contractId, date, paymentType, recId){
+    //ajax/deliveryDate/2/2015-10-29/card
+    $.getJSON("/ajax/deliveryDate/"+contractId+"/" + date.replace(/\//g,"-") + "/"+paymentType, function (data) {
+        s = data.date;
+        ourDate = formatDate(s.split(" ")[0])
+        $("#"+recId).html(ourDate);//substring without time and then change hyphens to non-breaking hyphens
+    })
+}
+
+function formatDate(s){ //takes yyyy-dd-mm and converts to mm/dd/yyyy
+    d = s.split("-")
+    return d[1]+"/"+d[2]+"/"+d[0];
+}
+
+function orderBox(desc,address,status,date,contractId,paymentType){ //status = complete, pending, error, "" (scheduled but no order), refund
+    randId="a"+Math.floor(Math.random()*9999999)
+    if(contractId!=-1) {
+        getDepositDate(contractId, date, paymentType, randId)
+    }
     $("#intro").hide() // we don't need default box
     htmlStr="";
     //htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
     htmlStr+='<div class="paymentBox"><div class="addressBox"><i class="fa fa-home"></i> '+address+'</div>'
     htmlStr+='<div class="paymentStatusBox">'
-    if(status!=""){
-        htmlStr+='<span style="left: 0px; color: #6BAB1B;"><i class="fa fa-usd"></i><br>Charged</span>'
-    }else{
-        htmlStr+='<span style="left: 0px;"><i class="fa fa-usd"></i><br>Charged</span>'
-    }
-    if(status=="pending" || status=="complete"){
-        htmlStr+='<span style="left: 40px; color: #6BAB1B;">- - - - - - - - <i class="fa fa-arrow-right"></i></span>'
-    }else if(status=="error") {
-        htmlStr+='<span style="left: 100px; color: red;">- - - - - - - - <i class="fa fa-times"></i></span>'
-    }else {
-        htmlStr+='<span style="left: 100px;">- - - - - - - - <i class="fa fa-arrow-right"></i></span>'
-    }
-    if(status=="complete") {
-        htmlStr += '<span style="left: 130px; color: #6BAB1B;">- - - - - - - - <i class="fa fa-check"></i><br>Delivered</span>'
-    }else {
-        htmlStr+='<span style="left: 130px;">- - - - - - - - <i class="fa fa-circle-o"></i><br>Delivered</span>'
-    }
+        htmlStr+='<div class="paymentStatusCont">'
+        if(status!=""){
+            htmlStr+='<span style="left: 0px; color: #6BAB1B;"><i class="fa fa-usd"></i><br>Charged<br>'+formatDate(date)+'</span>'
+        }else{
+            htmlStr+='<span style="left: 0px;"><i class="fa fa-usd"></i><br>Charge on<br>'+formatDate(date)+'<br></span>'
+        }
+        if(status=="pending" || status=="complete"){
+            htmlStr+='<span style="left: 48px; color: #6BAB1B;">- - - - - - - - <i class="fa fa-arrow-right"></i>- - - - - - -</span>'
+        }else if(status=="error") {
+            htmlStr+='<span style="left: 48px; color: red;">- - - - - - - - <i class="fa fa-times">- - - - - - -</i></span>'
+        }else {
+            htmlStr+='<span style="left: 48px;">- - - - - - - - <i class="fa fa-arrow-right"></i>- - - - - - -</span>'
+        }
+        if(status=="complete") {
+            htmlStr += '<span style="left: 178px; color: #6BAB1B; text-align: left;">- - - <i class="fa fa-check"></i><br>Received<br><span id="'+randId+'"></span></span>'
+        }else {
+            htmlStr+='<span style="left: 178px; text-align: left; width: 100px;">- - - <i class="fa fa-circle-o"></i><br>Receive on<br><span id="'+randId+'"></span></span>'
+        }
+        htmlStr+='</div>'
     htmlStr+='</div>'
-    htmlStr+='<div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">'
+    htmlStr+='<div style="color: #6BAB1B; padding: 5px; text-shadow: none; text-align: center;">'
     htmlStr+=desc
     htmlStr+='</div>'
     htmlStr+='</div></div>'
     $("#payments").append(htmlStr)
 }
-
-/*
-
-
-
- <div class="paymentBox" id="intro">
- <div class="addressBox">
- Once you set up a payment,
- you'll see its progress here.
- </div>
- <div class="paymentStatusBox">
- <span style="left: 0px;">$<br>Charged</span>
- <span style="left: 100px;">-><br>Sent</span>
- <span style="left: 180px;">/<br>Delivered</span>
- </div>
- <div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">
- Set Up a Rent Payment
- </div>
- </div>
-
-
-
- */

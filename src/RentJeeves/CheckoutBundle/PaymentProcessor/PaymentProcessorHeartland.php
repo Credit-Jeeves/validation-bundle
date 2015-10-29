@@ -4,11 +4,13 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -133,6 +135,18 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     public function loadReport()
     {
         return $this->reportLoader->loadReport();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate)
+    {
+        if ($paymentType === OrderPaymentType::BANK) {
+            return BusinessDaysCalculator::getBusinessDate($executeDate, 3);
+        }
+
+        return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
     }
 
     /**
