@@ -78,7 +78,7 @@ class GoogleGeocoderAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookupAddressByFreeForm($address)
+    public function lookupFreeform($address)
     {
         $this->logger->debug(sprintf('[GoogleGeocoderAddressLookupService] Searching freeForm address (%s)', $address));
 

@@ -2,14 +2,16 @@
 namespace RentJeeves\CoreBundle\Tests\Unit\Services;
 
 use RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupService;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
 use RentTrack\SmartyStreetsBundle\Model\Components;
 use RentTrack\SmartyStreetsBundle\Model\Metadata;
 use RentTrack\SmartyStreetsBundle\Model\SmartyStreetsAddress;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 
-class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
+class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
@@ -51,9 +53,17 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'))
             ->will($this->returnValue($response));
 
+        $constraintViolationList = new ConstraintViolationList();
+        $constraintViolationList->add(new ConstraintViolation('test','',[],'','',''));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue($constraintViolationList));
+
         $ssAddressLookupService = new SmartyStreetsAddressLookupService(
             $ssClient,
-            $this->getValidator(),
+            $validator,
             $this->getLoggerMock()
         );
         $ssAddressLookupService->lookup('test', 'test', 'test', 'test');
@@ -84,9 +94,14 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'))
             ->will($this->returnValue($response));
 
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(new ConstraintViolationList()));
+
         $ssAddressLookupService = new SmartyStreetsAddressLookupService(
             $ssClient,
-            $this->getValidator(),
+            $validator,
             $this->getLoggerMock()
         );
         $address = $ssAddressLookupService->lookup('test', 'test', 'test', 'test');
@@ -97,22 +112,43 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldReturnAddressIfLookupAddressByFreeForm()
+    public function shouldReturnAddressIfLookupFreeForm()
     {
         $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI 48823, United States';
 
-        $ssAddressLookupService = $this->getSmartyStreetsClient();
-        $address = $ssAddressLookupService->lookupAddressByFreeForm($freeFormAddress);
+        $response = new SmartyStreetsAddress();
+        $metadata = new Metadata();
+        $metadata->setLatitude('test');
+        $metadata->setLongitude('test');
+        $response->setMetadata($metadata);
+        $components = new Components();
+        $components->setPrimaryNumber('test');
+        $components->setStreetName('test');
+        $components->setStreetSuffix('test');
+        $components->setZipCode('test');
+        $components->setCityName('test');
+        $components->setStateAbbreviation('test');
+        $response->setComponents($components);
+
+        $ssClient = $this->getSmartyStreetsClientMock();
+        $ssClient->expects($this->once())
+            ->method('getAddress')
+            ->with($freeFormAddress, '', '', '')
+            ->will($this->returnValue($response));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(new ConstraintViolationList()));
+
+        $ssAddressLookupService = new SmartyStreetsAddressLookupService(
+            $ssClient,
+            $validator,
+            $this->getLoggerMock()
+        );
+        $address = $ssAddressLookupService->lookupFreeform($freeFormAddress);
 
         $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\Validator
-     */
-    protected function getValidator()
-    {
-        return $this->getContainer()->get('validator');
     }
 
     /**
@@ -121,13 +157,5 @@ class SmartyStreetsAddressLookupServiceCase extends BaseTestCase
     protected function getSmartyStreetsClientMock()
     {
         return $this->getMock('\RentTrack\SmartyStreetsBundle\SmartyStreetsClient', [], [], '', false);
-    }
-
-    /**
-     * @return SmartyStreetsAddressLookupService
-     */
-    protected function getSmartyStreetsClient()
-    {
-        return $this->getContainer()->get('address_lookup_service.smarty_streets');
     }
 }

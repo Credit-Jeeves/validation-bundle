@@ -77,7 +77,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookupAddressByFreeForm($address)
+    public function lookupFreeform($address)
     {
         $this->logger->debug(sprintf('[SmartyStreetsAddressLookupService] Searching freeForm address (%s)', $address));
         try {

@@ -27,5 +27,5 @@ interface AddressLookupInterface
      *
      * @return Address
      */
-    public function lookupAddressByFreeForm($address);
+    public function lookupFreeform($address);
 }

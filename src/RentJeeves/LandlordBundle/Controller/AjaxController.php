@@ -39,9 +39,7 @@ use Exception;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- *
  * @Route("/ajax")
- *
  */
 class AjaxController extends Controller
 {
@@ -263,12 +261,17 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      *
+     * @throws BadRequestHttpException if request doesn`t have stringAddress
+     *
      * @return JsonResponse
      */
     public function addProperty(Request $request)
     {
-        $addGroup = (boolean) $request->request->get('addGroup', false);
-        if (null === $stringAddress = $request->request->get('stringAddress', null)) {
+        if (false === $request->request->has('stringAddress')) {
+            throw new BadRequestHttpException('Pls send `stringAddress`');
+        }
+
+        if (null == $stringAddress = $request->request->get('stringAddress')) {
             return new JsonResponse(
                 [
                     'status' => 'ERROR',
@@ -278,14 +281,14 @@ class AjaxController extends Controller
         }
 
         try {
-            $address = $this->getLookupService()->lookupAddressByFreeForm($stringAddress);
+            $address = $this->getLookupService()->lookupFreeform($stringAddress);
         } catch (AddressLookupException $e) {
             $this->getLogger()->debug($e->getMessage());
 
             return new JsonResponse(
                 [
                     'status' => 'ERROR',
-                    'message' => $this->getTranslator()->trans('property.address_not_found')
+                    'message' => $this->getTranslator()->trans('fill.full.address')
                 ]
             );
         }
@@ -322,6 +325,7 @@ class AjaxController extends Controller
         }
 
         $group = $this->getCurrentGroup();
+        $addGroup = (boolean) $request->request->get('addGroup', false);
         if ($isLandlord && $group && $addGroup && !$group->getGroupProperties()->contains($property)) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);

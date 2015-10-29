@@ -146,7 +146,7 @@
             self.infowindow = new google.maps.InfoWindow();
             //setup markers
             if (settings.markers) {
-                $.each($('.stringAddress'), function (index, value) {
+                $.each($('.addressText'), function () {
                     var lat = $(this).find('.lat').val();
                     var lng = $(this).find('.lng').val();
                     var addressSelect = $(this).find('.addressSelect').val();
@@ -289,7 +289,6 @@
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        'data': JSON.stringify(data, null),
                         'stringAddress': data.stringAddress
                     },
                     error: function (jqXHR, errorThrown, textStatus) {
@@ -345,7 +344,6 @@
                     executeSearch(self.data);
                 } else {
                     self.infowindow.close();
-                    //var stringAddress = $(".pac-container .pac-item:first").text();
                     var geocoder = new google.maps.Geocoder();
                     geocoder.geocode({"address": stringAddress}, function (results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
