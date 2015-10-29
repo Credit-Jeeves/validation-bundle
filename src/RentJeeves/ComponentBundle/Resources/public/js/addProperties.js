@@ -46,6 +46,8 @@ function addProperties()
             return;
         }
 
+        var stringAddress = $('#property-search').val();
+
         self.singlePropertyErrorMessage('');
         jQuery.ajax({
             url: Routing.generate('landlord_property_add'),
@@ -54,6 +56,7 @@ function addProperties()
             data: {
                 'data': JSON.stringify(self.google().data, null),
                 'isSingle': self.isSingle(),
+                'stringAddress': stringAddress,
                 'addGroup': true
             },
             error: function(data) {

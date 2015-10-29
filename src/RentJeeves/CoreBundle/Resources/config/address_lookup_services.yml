@@ -15,8 +15,3 @@ services:
             - @validator
             - @logger
 
-    google_autocomplete_address_converter:
-        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
-        arguments:
-            - @validator
-            - @logger
