@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class ResidentTransactionCharge
+class ResidentTransactionPayment
 {
     /**
      * @Serializer\SerializedName("Detail")

@@ -177,11 +177,21 @@ class PropertyProcess
      */
     public function checkByMinimalArgs(Property $property)
     {
-        $params = array(
-            'jb' => $property->getJb(),
-            'kb' => $property->getKb(),
-            'number' => $property->getNumber(),
-        );
+        $params = [];
+
+        if ($property->getIndex() !== null) {
+            $params[] = [
+                'ss_index' => $property->getIndex()
+            ];
+        } elseif ($property->getJb() !== null && $property->getKb() !== null) {
+            $params[] = [
+                'jb' => $property->getJb(),
+                'kb' => $property->getKb(),
+                'number' => $property->getNumber(),
+            ];
+        } else {
+            throw new \LogicException('Property doesn`t have data about location');
+        }
 
         return $this->getPropertyFromDB($params);
     }
@@ -214,6 +224,11 @@ class PropertyProcess
         Property $property,
         $saveToGoogle = false
     ) {
+        // verify and standardize address
+        if (!$this->isValidProperty($property)) {
+            return null;
+        }
+
         foreach (array('checkByMinimalArgs', 'checkByAllArgs') as $method) {
             $propertyInDB = $this->$method($property);
             if ($propertyInDB && $saveToGoogle) {
@@ -223,10 +238,6 @@ class PropertyProcess
             } elseif ($propertyInDB) {
                 return $propertyInDB;
             }
-        }
-
-        if (!$this->isValidProperty($property)) {
-            return null;
         }
 
         if ($saveToGoogle) {
@@ -382,6 +393,9 @@ class PropertyProcess
      */
     public function findPropertyByAddressInDb($number, $street, $city, $state, $zipCode)
     {
+        $this->logger->debug(
+            sprintf('findPropertyByAddressInDb: %s %s, %s, %s, %', $number, $street, $city, $state, $zipCode)
+        );
         $params = [
             'number' => $number,
             'city' => $city,
@@ -391,13 +405,16 @@ class PropertyProcess
         ];
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+            $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
             return $property;
         }
         if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+            $this->logger->debug('Address not found by external address service');
             return null;
         }
 
         if (null !== $property = $this->getPropertyRepository()->findOneByAddress($address)) {
+            $this->logger->debug(sprintf('Found property(%s) by standardized address index!', $property->getId()));
             return $property;
         }
 
@@ -410,6 +427,7 @@ class PropertyProcess
         ];
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+            $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
             return $property;
         }
 
