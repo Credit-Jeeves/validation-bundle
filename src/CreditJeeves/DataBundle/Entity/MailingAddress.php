@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\AddressRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class Address extends Base
+class MailingAddress extends Base
 {
     /**
      * @return string
