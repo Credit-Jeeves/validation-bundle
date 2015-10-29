@@ -65,6 +65,6 @@ class MappingResman extends MappingCsv
     {
         $this->residentDataManager->setSettings($this->settings);
 
-        return $this->residentDataManager->getResidents($externalPropertyId);
+        return $this->residentDataManager->getResidentTransactions($externalPropertyId);
     }
 }

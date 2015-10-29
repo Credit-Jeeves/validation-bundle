@@ -62,8 +62,8 @@ class MappingYardi extends MappingCsv
         }
 
         $externalPropertyId = $propertyMapping->getExternalPropertyId();
-        $transactionData = $this->residentData->getResidentTransactions($holding, $externalPropertyId);
-        $residentsTransaction = $transactionData->getProperty()->getCustomers();
+        $this->residentData->setSettings($holding->getYardiSettings());
+        $residentsTransaction = $this->residentData->getResidentTransactions($externalPropertyId);
 
         $residents = $this->residentData->getCurrentAndNoticesResidents($holding, $property);
         $roommates = [];

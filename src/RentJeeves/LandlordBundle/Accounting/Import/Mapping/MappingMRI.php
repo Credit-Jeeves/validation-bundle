@@ -102,7 +102,7 @@ class MappingMRI extends MappingCsv
     public function getResidents($externalPropertyId)
     {
         $this->residentDataManager->setSettings($this->settings);
-        $residents = $this->residentDataManager->getResidents($externalPropertyId);
+        $residents = $this->residentDataManager->getResidentsFirstPage($externalPropertyId);
 
         return $residents;
     }
