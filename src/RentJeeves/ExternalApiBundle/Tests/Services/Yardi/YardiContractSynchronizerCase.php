@@ -117,7 +117,7 @@ class YardiContractSynchronizerCase extends Base
         $em->flush();
 
         $contractSynchronizer = $this->getContainer()->get('yardi.contract_sync');
-        $contractSynchronizer->syncRecurringCharge();
+        $contractSynchronizer->syncRent();
         /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Did not find contract which should be updated');
@@ -167,7 +167,7 @@ class YardiContractSynchronizerCase extends Base
         $em->flush();
 
         $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
-        $contractSyncronizer->syncRecurringCharge();
+        $contractSyncronizer->syncRent();
         /** @var Contract $contract */
         $this->assertEquals(
             900.00,
