@@ -1107,10 +1107,7 @@ class TenantCase extends BaseTestCase
         $em = $doctrine->getManager();
         /** @var $user User */
         $user = $em->getRepository('DataBundle:User')->findOneBy(array('email' => 'test123@email.ru'));
-        if (empty($user)) {
-            $this->assertFalse(true, 'User does not exist');
-        }
-
+        $this->assertNotNull($user, 'User does not exist');
         $user->setIsActive(true);
         $em->persist($user);
         $em->flush();

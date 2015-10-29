@@ -1,5 +1,5 @@
 services:
-    address_lookup_service: @address_lookup_service.google
+    address_lookup_service: @address_lookup_service.smarty_streets
 
     address_lookup_service.google:
         class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleGeocoderAddressLookupService

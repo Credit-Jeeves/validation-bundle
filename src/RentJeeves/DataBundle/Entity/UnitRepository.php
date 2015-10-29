@@ -135,9 +135,10 @@ class UnitRepository extends EntityRepository
 
     /**
      * @param array $params
+     *
      * @return array<Unit>
      */
-    public function getUnitsByAddress($params)
+    public function getUnitsByAddress(array $params)
     {
         $number = isset($params['number']) ? $params['number'] : '';
         $street = isset($params['street']) ? $params['street'] : '';

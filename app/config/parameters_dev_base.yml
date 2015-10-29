@@ -68,7 +68,7 @@ parameters:
     # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
     allow_duplicate_contracts: false
     # parameter was added for task RT-1668, we can fast allow and disallow feature that show Score Track
-    allow_score_track: false
+    allow_score_track: true
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db

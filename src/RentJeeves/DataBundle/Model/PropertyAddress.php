@@ -361,6 +361,10 @@ class PropertyAddress
      */
     public function getAddress()
     {
+        if (null === $this->number || null === $this->street) {
+            return '';
+        }
+
         return sprintf('%s %s', $this->number, $this->street);
     }
 
@@ -369,6 +373,10 @@ class PropertyAddress
      */
     public function getFullAddress()
     {
+        if ('' === $this->getAddress() || null === $this->city || null === $this->state || null === $this->zip) {
+            return '';
+        }
+
         return sprintf('%s, %s, %s %s', $this->getAddress(), $this->city, $this->state, $this->zip);
     }
 
