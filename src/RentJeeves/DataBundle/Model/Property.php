@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -270,6 +271,15 @@ abstract class Property
      * @var ImportMappingByProperty
      */
     protected $importMappingByProperty;
+
+    /**
+     * @var PropertyAddress
+     *
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress")
+     * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=true)
+     * @TODO: ORM\JoinColumn(name="property_address_id", referencedColumnName="id") after migration
+     */
+    protected $propertyAddress;
 
     /**
      * @return ImportMappingByProperty
@@ -846,5 +856,21 @@ abstract class Property
     public function getAddress1()
     {
         return sprintf('%s %s', $this->number, $this->street);
+    }
+
+    /**
+     * @return PropertyAddressEntity
+     */
+    public function getPropertyAddress()
+    {
+        return $this->propertyAddress;
+    }
+
+    /**
+     * @param PropertyAddressEntity $propertyAddress
+     */
+    public function setPropertyAddress(PropertyAddressEntity $propertyAddress)
+    {
+        $this->propertyAddress = $propertyAddress;
     }
 }
