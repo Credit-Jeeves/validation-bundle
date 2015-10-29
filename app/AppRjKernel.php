@@ -53,7 +53,6 @@ class AppRjKernel extends AppKernel
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
             new Bazinga\Bundle\GeocoderBundle\BazingaGeocoderBundle(),
-            new Ivory\OrderedFormBundle\IvoryOrderedFormBundle(),
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
@@ -67,6 +66,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new BeSimple\SoapBundle\BeSimpleSoapBundle(),
             new RentTrack\TransUnionBundle\TransUnionBundle(),
+            new RentTrack\SmartyStreetsBundle\SmartyStreetsBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),

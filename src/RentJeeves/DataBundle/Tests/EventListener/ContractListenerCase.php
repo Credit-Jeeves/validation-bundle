@@ -7,7 +7,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
@@ -82,46 +81,6 @@ class ContractListenerCase extends Base
     /**
      * @test
      */
-    public function updateBalance()
-    {
-        $this->load(true);
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
-            array(
-                "status" => ContractStatus::APPROVED,
-            )
-        );
-
-        $rent = $contract->getRent();
-
-        $contract->setRent($rent);
-        $contract->setBalance('1.00');
-        $em->flush($contract);
-        $id = $contract->getId();
-        self::$kernel = null;
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($id);
-        $contract->setStatus(ContractStatus::CURRENT);
-        $em->flush($contract);
-
-        $this->assertEquals($rent, $contract->getBalance());
-    }
-
-    /**
-     * @test
-     */
     public function shouldSendPaymentEmail()
     {
         $this->load(true);
@@ -184,11 +143,11 @@ class ContractListenerCase extends Base
          */
         $contract = $tenant->getContracts()[1];
         $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
-        $activePayment = $contract->getActivePayment();
+        $activePayment = $contract->getActiveRentPayment();
         $this->assertNotNull($activePayment);
         $em->flush($contract);
         $em->refresh($contract);
-        $activePayment = $contract->getActivePayment();
+        $activePayment = $contract->getActiveRentPayment();
         $this->assertNull($activePayment);
     }
 }

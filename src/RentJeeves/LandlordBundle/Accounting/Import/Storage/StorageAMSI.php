@@ -49,7 +49,8 @@ class StorageAMSI extends ExternalApiStorage
             15 => Mapping::KEY_CITY,
             16 => Mapping::KEY_STREET,
             17 => Mapping::KEY_ZIP,
-            18 => Mapping::KEY_STATE
+            18 => Mapping::KEY_STATE,
+            19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
         ];
 
         $this->writeCsvToFile($mapping);
@@ -73,11 +74,16 @@ class StorageAMSI extends ExternalApiStorage
 
         /** @var Lease $lease */
         foreach ($residentLeases as $lease) {
+            $unit = $lease->getUnit();
+            if ($unit === null) {
+                continue;  // we don't have unit details -- skip.
+            }
+
             $paymentAccepted = $lease->getBlockPaymentAccess();
-            if (strtolower($paymentAccepted) === 'n') {
-                $paymentAccepted = PaymentAccepted::ANY;
-            } else {
+            if (strtolower($paymentAccepted) === 'y') {
                 $paymentAccepted = PaymentAccepted::DO_NOT_ACCEPT;
+            } else {
+                $paymentAccepted = PaymentAccepted::ANY;
             }
 
             $moveOutDate = $lease->getActualMoveOutDateObject();
@@ -86,13 +92,11 @@ class StorageAMSI extends ExternalApiStorage
             $startAt = $lease->getLeaseBeginDateObject();
             $finishAt = $lease->getLeaseEndDateObject();
             $today = new \DateTime();
-            if ($finishAt instanceof \DateTime && $today > $finishAt) {
+            if ($finishAt instanceof \DateTime && $today > $finishAt && empty($moveOutDate)) {
                 $monthToMonth = 'Y';
             } else {
                 $monthToMonth = 'N';
             }
-
-            $unit = $lease->getUnit();
 
             $street = $unit->getAddress1();
             $city = $unit->getCity();
@@ -107,12 +111,7 @@ class StorageAMSI extends ExternalApiStorage
                 $email = $occupant->getEmail();
                 $unitName = $occupant->getUnitId();
                 $residentId = $occupant->getOccuSeqNo();
-                $externalUnitId = sprintf(
-                    '%s|%s|%s',
-                    $lease->getPropertyId(),
-                    $lease->getBldgId(),
-                    $lease->getUnitId()
-                );
+                $externalUnitId = $lease->getExternalUnitId();
 
                 $data = [
                     $residentId,
@@ -132,7 +131,8 @@ class StorageAMSI extends ExternalApiStorage
                     $city,
                     $street,
                     $zip,
-                    $state
+                    $state,
+                    $this->getImportExternalPropertyId()
                 ];
 
                 $this->writeCsvToFile($data);

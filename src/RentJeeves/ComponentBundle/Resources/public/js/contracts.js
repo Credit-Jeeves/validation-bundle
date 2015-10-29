@@ -5,6 +5,7 @@ function Contracts() {
     var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
     var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit';
     this.aContracts = ko.observableArray([]);
+    this.agentContracts = ko.observableArray([]);
     this.pages = ko.observableArray([]);
     this.total = ko.observable(0);
     this.current = ko.observable(1);
@@ -97,7 +98,7 @@ function Contracts() {
                 self.needRefresh([]);
                 self.aContracts([]);
                 self.aContracts(response.contracts);
-
+                self.agentContracts(response.agent_contracts);
                 self.total(response.total);
                 self.pages(response.pagination);
                 if (self.countContracts() <= 0) {
@@ -198,6 +199,7 @@ function Contracts() {
         var position = $('#edit-' + data.id).position();
         DetailsViewModel.reviewContract(data);
     };
+
     this.addTenant = function () {
         this.getUnits($(idProperty).linkselect('val'));
         $('#tenant-add-property-popup').dialog('open');
@@ -226,28 +228,38 @@ function Contracts() {
         });
     };
 
-    this.getUnits = function(propertyId) {
-        $(idUnit).linkselect('destroy');
-        $(idUnit).html(' ');
-        $(idUnit).linkselect();
+    /**
+     * Get all units for current group + property
+     * and
+     * create linkselect for widget "Unit"
+     *
+     * @param propertyId - integer
+     */
+    this.getUnits = function (propertyId) {
+        $('#unitLoading').show();
+
         $.ajax({
             url: Routing.generate('landlord_units_list'),
             type: 'POST',
             dataType: 'json',
             data: {'property_id': propertyId},
             success: function (response) {
+                $('#unitLoading').hide();
 
                 if (response.units.length == 0 || response.isSingle == true) {
+                    $(idUnit).linkselect('destroy');
+                    $(idUnit).html(' ');
+                    $(idUnit).linkselect();
                     $('#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link').hide();
+                    
                     return;
                 }
 
                 var html = '';
-                $.each(response.units, function (index, value) {
+                $.each(response.units, function () {
                     var id = $(this).get(0).id;
                     var name = $(this).get(0).name;
-                    var option = '<option value="' + id + '">' + name + '</option>';
-                    html += option;
+                    html += '<option value="' + id + '">' + name + '</option>';
                 });
 
                 $(idUnit).linkselect('destroy');
@@ -257,8 +269,33 @@ function Contracts() {
         });
     };
 
-    this.filterAddress = function (data) {
-        //console.log(data.id);
-    };
+    this.getLinkForAgentGroup = function() {
+        return Routing.generate(
+            'landlord_tenants_filter',
+            {
+                'searchText': self.searchText(),
+                'searchColumn':self.searchCollum(),
+            }
+        );
+    }
+
+    this.changeGroup = function(item)
+    {
+        self.aContracts([]);
+        self.notHaveResult(false);
+        self.processLoading(true);
+        console.info(item);
+        $.ajax({
+            url: Routing.generate('landlord_group_set'),
+            type: 'POST',
+            dataType: 'json',
+            data: {'group_id': item.id},
+            success: function () {
+                window.location.href = self.getLinkForAgentGroup();
+            }
+        });
+
+        return false;
+    }
 }
 

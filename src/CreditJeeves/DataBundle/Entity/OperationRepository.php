@@ -9,53 +9,53 @@ use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
-use \DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
 class OperationRepository extends EntityRepository
 {
-    public function getExperianRentOperationsForMonth($contractId, $monthNo, $yearNo)
-    {
+    /**
+     * @param Contract $contract
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Operation[]
+     */
+    public function getExperianRentOperationsForMonth(
+        Contract $contract,
+        \DateTime $month,
+        \DateTime $startDate,
+        \DateTime $endDate
+    ) {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
         $query = $this->createQueryBuilder('op');
-        $query->innerJoin('op.contract', 'c');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
-        $query->where('c.id = :contractId');
+        $query->where('op.contract = :contract');
         $query->andWhere('op.type = :operationType');
         $query->andWhere('MONTH(op.paidFor) = :month');
         $query->andWhere('YEAR(op.paidFor) = :year');
-        $query->setParameter('contractId', $contractId);
+        $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
+
+        $query->setParameter('contract', $contract);
         $query->setParameter('operationType', OperationType::RENT);
         $query->setParameter('orderStatus', OrderStatus::COMPLETE);
-        $query->setParameter('month', $monthNo);
-        $query->setParameter('year', $yearNo);
+        $query->setParameter('month', $month->format('m'));
+        $query->setParameter('year', $month->format('Y'));
+        $query->setParameter('startDate', $startDate);
+        $query->setParameter('endDate', $endDate);
         $query = $query->getQuery();
 
         return $query->execute();
     }
 
-    public function getTransUnionRentOperationsForMonth($contractId, $monthNo, $yearNo)
-    {
-        $query = $this->createQueryBuilder('op');
-        $query->select('sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for');
-        $query->innerJoin('op.contract', 'c');
-        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
-        $query->where('c.id = :contractId');
-        $query->andWhere('op.type = :operationType');
-        // TODO: Consider lease closures with no payments this month! RT-1299
-        $query->andWhere('MONTH(op.paidFor) = :month');
-        $query->andWhere('YEAR(op.paidFor) = :year');
-        $query->groupBy('op.paidFor');
-        $query->setParameter('contractId', $contractId);
-        $query->setParameter('operationType', OperationType::RENT);
-        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
-        $query->setParameter('month', $monthNo);
-        $query->setParameter('year', $yearNo);
-        $query = $query->getQuery();
-
-        return $query->getScalarResult();
-    }
-
-    public function getOperationForImport(
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param DateTime $paidFor
+     * @return array
+     */
+    public function getOperationsForImport(
         Tenant $tenant,
         Contract $contract,
         \DateTime $paidFor
@@ -80,7 +80,7 @@ class OperationRepository extends EntityRepository
 
         $query = $query->getQuery();
 
-        return $query->getOneOrNullResult();
+        return $query->getResult();
     }
 
     /**
@@ -141,5 +141,30 @@ class OperationRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return \DateTime|null
+     */
+    public function getLastContractPaidFor(Contract $contract)
+    {
+        $query = $this->createQueryBuilder('operation');
+        $query->select('operation.paidFor as paid_for');
+        $query->innerJoin("operation.order", "ord", Expr\Join::WITH, 'ord.status = :completeStatus');
+        $query->where("operation.contract = :contract");
+        $query->andWhere("operation.type = :rent");
+        $query->orderBy('operation.paidFor', 'DESC');
+        $query->setMaxResults(1);
+
+        $query->setParameter('completeStatus', OrderStatus::COMPLETE);
+        $query->setParameter('contract', $contract);
+        $query->setParameter('rent', OperationType::RENT);
+        $result = $query->getQuery()->getResult();
+        if (isset($result[0]['paid_for'])) {
+            return $result[0]['paid_for'];
+        }
+
+        return null;
     }
 }

@@ -1,10 +1,15 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
@@ -21,13 +26,28 @@ abstract class DepositAccount
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *      inversedBy="depositAccounts"
+     * )
+     * @ORM\JoinColumn(
+     *      name="holding_id",
+     *      referencedColumnName="id",
+     *      nullable=false
+     * )
+     * @var Holding
+     */
+    protected $holding;
+
+    /**
+     * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *      inversedBy="depositAccount"
+     *      inversedBy="depositAccounts"
      * )
      * @ORM\JoinColumn(
      *      name="group_id",
-     *      referencedColumnName="id"
+     *      referencedColumnName="id",
+     *      nullable=false
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
      */
@@ -51,7 +71,6 @@ abstract class DepositAccount
      *         "default"="init"
      *      }
      * )
-     *
      */
     protected $status = DepositAccountStatus::DA_INIT;
 
@@ -63,30 +82,6 @@ abstract class DepositAccount
      * )
      */
     protected $message;
-
-    /**
-     * @ORM\Column(
-     *      type="decimal",
-     *      precision=10,
-     *      scale=2,
-     *      nullable=true
-     * )
-     * @Serializer\SerializedName("feeCC")
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $feeCC;
-
-    /**
-     * @ORM\Column(
-     *      type="decimal",
-     *      precision=10,
-     *      scale=2,
-     *      nullable=true
-     * )
-     * @Serializer\SerializedName("feeACH")
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $feeACH;
 
     /**
      * @ORM\ManyToMany(
@@ -106,19 +101,105 @@ abstract class DepositAccount
     protected $mid;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean", name="is_passed_ach")
-     *
-     * @Serializer\SerializedName("isPassedACH")
-     * @Serializer\Groups({"payRent"})
+     * @ORM\Column(
+     *     type="PaymentProcessor",
+     *     name="payment_processor",
+     *     nullable=false
+     * )
      */
-    protected $passedAch;
+    protected $paymentProcessor = PaymentProcessor::HEARTLAND;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="DepositAccountType", options={"default" = "rent"})
+     */
+    protected $type = DepositAccountType::RENT;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *      mappedBy="depositAccount",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $payments;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="depositAccount",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $orders;
+
+    /**
+     * @ORM\Column(
+     *      name="account_number",
+     *      type="string",
+     *      nullable=true,
+     *      length=255
+     * )
+     */
+    protected $accountNumber;
 
     public function __construct()
     {
         $this->paymentAccounts = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
         $this->passedAch = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * @param string $accountNumber
+     */
+    public function setAccountNumber($accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
+    }
+
+    /**
+     * @return Holding
+     */
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    /**
+     * @param Holding $holding
+     */
+    public function setHolding(Holding $holding)
+    {
+        $this->holding = $holding;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentProcessor()
+    {
+        return $this->paymentProcessor;
+    }
+
+    /**
+     * @param string $paymentProcessor
+     */
+    public function setPaymentProcessor($paymentProcessor)
+    {
+        $this->paymentProcessor = $paymentProcessor;
     }
 
     /**
@@ -200,71 +281,6 @@ abstract class DepositAccount
     }
 
     /**
-     * @param float $feeACH
-     */
-    public function setFeeACH($feeACH)
-    {
-        $this->feeACH = $feeACH;
-    }
-
-    /**
-     * @return double
-     */
-    public function getFeeACH()
-    {
-        return $this->feeACH;
-    }
-
-    /**
-     * @param double $feeCC
-     */
-    public function setFeeCC($feeCC)
-    {
-        $this->feeCC = $feeCC;
-    }
-
-    /**
-     * @return double
-     */
-    public function getFeeCC()
-    {
-        return $this->feeCC;
-    }
-
-    /**
-     * Add payment account
-     *
-     * @param  \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     * @return DepositAccount
-     */
-    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->add($paymentAccount);
-
-        return $this;
-    }
-
-    /**
-     * Remove payment account
-     *
-     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     */
-    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->removeElement($paymentAccount);
-    }
-
-    /**
-     * Get payment accounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentAccounts()
-    {
-        return $this->paymentAccounts;
-    }
-
-    /**
      * @return string
      */
     public function getMid()
@@ -281,18 +297,50 @@ abstract class DepositAccount
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isPassedAch()
+    public function getType()
     {
-        return $this->passedAch;
+        return $this->type;
     }
 
     /**
-     * @param boolean $passedAch
+     * @param string $type
      */
-    public function setPassedAch($passedAch)
+    public function setType($type)
     {
-        $this->passedAch = $passedAch;
+        $this->type = $type;
+    }
+
+    /*
+     * @return ArrayCollection|PaymentEntity[]
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param PaymentEntity $payment
+     */
+    public function addPayment(PaymentEntity $payment)
+    {
+        $this->payments->add($payment);
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
     }
 }

@@ -10,6 +10,9 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\ExternalApiBundle\Model\MRI\Charge;
+use RentJeeves\ExternalApiBundle\Model\MRI\Resident;
+use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
@@ -100,20 +103,23 @@ class MRIClientCase extends Base
         $mriClient = $this->getMriClient();
         $mriResponse = $mriClient->getResidentTransactions(self::PROPERTY_ID);
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse', $mriResponse);
-        $this->assertGreaterThan(21, $mriResponse->getValues(), "MRI Dataset not the size expected - did it change?");
+        $this->assertGreaterThan(
+            18,
+            count($mriResponse->getValues()),
+            'MRI Dataset not the size expected - did it change?'
+        );
+
         /** @var Value $value */
-        $value = $mriResponse->getValues()[20];
+        $value = $mriResponse->getValues()[3];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
         $this->assertNotEmpty($value->getFirstName());
         $this->assertNotEmpty($value->getLastName());
-        $this->assertNotEmpty($value->getLeaseBalance());
+        $this->assertGreaterThan(0, $value->getLeaseBalance());
         $this->assertNotEmpty($value->getLeaseMonthlyRentAmount());
         $this->assertInstanceOf('\DateTime', $value->getLastUpdateDate());
-        $this->assertInstanceOf('\DateTime', $value->getLeaseMoveOut());
         $this->assertInstanceOf('\DateTime', $value->getLeaseEnd());
-        $this->assertInstanceOf('\DateTime', $value->getLeaseStart());
     }
 
     /**
@@ -122,7 +128,6 @@ class MRIClientCase extends Base
     public function shouldPostPayments()
     {
         $mriClient = $this->getMriClient();
-        $mriClient->setDebug(false);
         $order = $this->getOrder();
         $property = $order->getContract()->getProperty();
         /** @var PropertyMapping $propertyMapping */
@@ -145,5 +150,46 @@ class MRIClientCase extends Base
         $em->flush();
 
         $this->assertTrue($mriClient->postPayment($order, self::PROPERTY_ID));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnResidentialRentRoll()
+    {
+        $mriClient = $this->getMriClient();
+        /** @var ResidentialRentRoll $mriResponse */
+        $mriResponse = $mriClient->getResidentialRentRoll(self::PROPERTY_ID);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll', $mriResponse);
+        $this->assertNotEmpty($values = $mriResponse->getValues(), 'ResidentialRentRoll should have entry');
+        /** @var Value $value */
+        $value = reset($values);
+        $this->assertNotEmpty($currentCharges = $value->getCurrentCharges(), 'Entry should have Charges');
+        $this->assertNotEmpty($charges = $currentCharges->getCharges(), 'CurrentCharges should have charges');
+        /** @var Charge $charge */
+        $charge = reset($charges);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Charge', $charge);
+        $this->assertNotEmpty($charge->getAmount(), 'Amount for charge should be filled');
+        $this->assertNotEmpty($charge->getBuildingId(), 'Building for charge should be filled');
+        $this->assertNotEmpty($charge->getUnitId(), 'UnitId for charge should be filled');
+        $this->assertNotEmpty($charge->getChargeCode(), 'ChargeCode for charge should be filled');
+        $this->assertNotEmpty($charge->getEffectiveDate(), 'EffectiveDate for charge should be filled');
+        $this->assertNotEmpty($charge->getPropertyId(), 'PropertyId for charge should be filled');
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\MRI\Residents',
+            $residents = $value->getResidents()
+        );
+        $residentsArray = $residents->getResidentArray();
+        /** @var Resident $resident */
+        $resident = reset($residentsArray);
+        $this->assertNotEmpty($resident->getResidentId(), 'ResidentId for resident should be filled');
+        $this->assertNotEmpty($resident->getResidentStatus(), 'Status for resident should be filled');
+        $this->assertNotEmpty(
+            $nextPageLink = $mriResponse->getNextPageLink(),
+            'Next page link for ResidentRentRoll should be filled'
+        );
+
+        $mriResponse = $mriClient->getResidentialRentRollByNextPageLink($nextPageLink);
+        $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll', $mriResponse);
     }
 }

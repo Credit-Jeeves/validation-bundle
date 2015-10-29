@@ -1,25 +1,38 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 
 class UnitRepository extends EntityRepository
 {
-    public function getUnitsArray($property, $group = null)
+    /**
+     * @param Property $property
+     * @param Group $group
+     *
+     * @return array
+     */
+    public function getUnitsArray(Property $property, Group $group = null)
     {
-        $units = $this->getUnits($property, $group);
-        $result = array();
-        foreach ($units as $unit) {
-            $item = array();
-            $item['id'] = $unit->getId();
-            $item['name'] = $unit->getName();
-            $result[] = $item;
+        $result = [];
+        foreach ($this->getUnits($property, $group) as $unit) {
+            $result[] = [
+                'id' => $unit->getId(),
+                'name' => $unit->getName(),
+            ];
         }
 
         return $result;
     }
 
-    public function getUnits($property, $group = null)
+    /**
+     * @param Property $property
+     * @param Group $group
+     *
+     * @return Unit[]
+     */
+    public function getUnits(Property $property, Group $group = null)
     {
 
         $query = $this->createQueryBuilder('u');
@@ -85,6 +98,11 @@ class UnitRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param int $id
+     * @return Unit
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getUnitWithLandlord($id)
     {
         return $this
@@ -97,13 +115,35 @@ class UnitRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Return Units belongs to this Property with mapped Groups
+     *
+     * @param Property $property
+     * @return array<Unit>
+     */
+    public function getUnitsByPropertyWithGroup(Property $property)
+    {
+        return $this
+            ->createQueryBuilder('u')
+            ->innerJoin('u.property', 'p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('u.property = :property')
+            ->setParameter('property', $property)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param array $params
+     * @return array<Unit>
+     */
     public function getUnitsByAddress($params)
     {
-        $number = $params['number'];
-        $street = $params['street'];
-        $state = $params['state'];
-        $city = $params['city'];
-        $zip = $params['zip'];
+        $number = isset($params['number']) ? $params['number'] : '';
+        $street = isset($params['street']) ? $params['street'] : '';
+        $state = isset($params['state']) ? $params['state'] : '';
+        $city = isset($params['city']) ? $params['city'] : '';
+        $zip = isset($params['zip']) ? $params['zip'] : '';
 
         return $this
             ->createQueryBuilder('u')
@@ -135,10 +175,31 @@ class UnitRepository extends EntityRepository
         }
 
         return $this->createQueryBuilder('u')
+            ->addSelect('CONCAT(property.number, property.street) AS HIDDEN sortField')
             ->innerJoin('u.contractsWaiting', 'cw')
+            ->innerJoin('u.property', 'property')
             ->where('cw.id IN (:ids)')
+            ->orderBy('sortField')
             ->setParameter('ids', implode(' , ', $contractWaitingIds))
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $externalUnitId
+     *
+     * @return Unit|null
+     */
+    public function findOneByHoldingAndExternalId(Holding $holding, $externalUnitId)
+    {
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->where('um.externalUnitId = :externalId')
+            ->andWhere('u.holding = :holding')
+            ->setParameter('holding', $holding)
+            ->setParameter('externalId', $externalUnitId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

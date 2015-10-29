@@ -1,11 +1,12 @@
 <?php
 namespace RentJeeves\TenantBundle\Controller;
 
-use Payum2\Request\BinaryMaskStatusRequest;
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
-use RentJeeves\DataBundle\Model\PaymentAccount;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -24,26 +25,18 @@ class CreditTrackController extends Controller
      */
     public function payAction()
     {
-        $rtMerchantName = $this->container->getParameter('rt_merchant_name');
-
         $em = $this->getDoctrine()->getManager();
+        /** @var Group $group */
         $group = $em->getRepository('DataBundle:Group')
-            ->findOneByCode($rtMerchantName);
+            ->findOneByCode($this->container->getParameter('rt_group_code'));
         /** @var Tenant $user */
         $user = $this->getUser();
-        $paymentAccounts = $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) {
-            if (PaymentAccountType::BANK == $paymentAccount->getType()//Temporary #RT-529
-                || $paymentAccount->getDeletedAt()
-            ) {
-                return false;
-            }
-
-            return true;
-        });
         $serializer = $this->get('jms_serializer');
 
         $paymentAccounts = $serializer->serialize(
-            $paymentAccounts,
+            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($group) {
+                return $paymentAccount->getPaymentProcessor() === $group->getGroupSettings()->getPaymentProcessor();
+            }),
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
         );
@@ -101,11 +94,11 @@ class CreditTrackController extends Controller
             );
         }
 
-        /** @var BinaryMaskStatusRequest $statusRequest */
-        $statusRequest = $this->get('payment.pay_credit_track')
+        /** @var OrderSubmerchant $order */
+        $order = $this->get('payment.pay_credit_track')
             ->executePaymentAccount($paymentAccount);
 
-        if ($statusRequest->isSuccess()) {
+        if (OrderStatus::COMPLETE === $order->getStatus()) {
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $settings->setCreditTrackEnabledAt(new DateTime('now'));
 
@@ -115,14 +108,14 @@ class CreditTrackController extends Controller
             return new JsonResponse(
                 array(
                     'success' => true,
-                    'url' => $this->generateUrl('user_report'),
+                    'url' => $this->generateUrl('tenant_summary'),
                 )
             );
         } else {
             return new JsonResponse(
                 array(
                     PaymentAccountFromType::NAME => array(
-                        '_globals' => array($statusRequest->getModel()->getMessages())
+                        '_globals' => array($order->getErrorMessage())
                     )
                 )
             );

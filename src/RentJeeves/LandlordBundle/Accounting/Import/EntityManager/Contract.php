@@ -81,72 +81,6 @@ trait Contract
         $tenant->addContract($contract);
     }
 
-    /**
-     * @param $dueDate
-     */
-    public function movePaidToOfContract($dueDate)
-    {
-        if ($this->isNeedCreateCashOperation($this->currentImportModel->getContract())) {
-            $paidTo = new DateTime();
-            $paidTo->modify('+1 month');
-            $paidTo->setDate(
-                $paidTo->format('Y'),
-                $paidTo->format('n'),
-                $dueDate
-            );
-
-            $this->currentImportModel->getContract()->setPaidTo($paidTo);
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNeedCreateCashOperation()
-    {
-        $isNeedCreateCashOperation = false;
-        $paidTo = new DateTime();
-        $balance = $this->currentImportModel->getContract()->getIntegratedBalance();
-        $currentPaidTo = $this->currentImportModel->getContract()->getPaidTo();
-        if ($this->currentImportModel->getContract()->getId() !== null) {
-            // normally, we don't want to mess with paid_to for existing contracts unless
-            // it is obvious someone paid outside of RentTrack:
-            if ($balance <= 0 && $currentPaidTo <= $paidTo && !$this->isAlreadyPaid($paidTo)) {
-                $isNeedCreateCashOperation = true;
-            }
-        } else {
-            // this contract is new, so let's set paid_to accordingly
-            // Set paidTo to next month if balance is <=0 so that the next month shows up in PaidFor in the wizard
-            if ($balance <= 0) {
-                $isNeedCreateCashOperation = true;
-            }
-        }
-
-        return $isNeedCreateCashOperation;
-    }
-
-    /**
-     * @param $dueDate
-     */
-    public function getOperationByDueDate($dueDate)
-    {
-        $contract = $this->currentImportModel->getContract();
-        if ($contract->getStatus() === ContractStatus::CURRENT) {
-            $paidFor = new DateTime();
-            $paidFor->setDate(
-                $paidFor->format('Y'),
-                $paidFor->format('n'),
-                $dueDate
-            );
-
-            $operation = $this->getOperationByPaidFor($paidFor);
-
-            return $operation;
-        }
-
-        return null;
-    }
-
     public function getDueDateOfContract()
     {
         $contract = $this->currentImportModel->getContract();
@@ -236,7 +170,10 @@ trait Contract
         }
 
         $this->currentImportModel->getContract()->setIntegratedBalance($integratedBalance);
-        $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
+
+        if ($this->currentImportModel->isNeedUpdateRent()) {
+            $this->currentImportModel->getContract()->setRent($row[Mapping::KEY_RENT]);
+        }
 
         if (!empty($row[Mapping::KEY_MOVE_OUT])) {
             $this->currentImportModel->setMoveOut(
@@ -252,9 +189,18 @@ trait Contract
         if ($this->currentImportModel->getMoveOut() !== null) {
             $this->currentImportModel->getContract()->setFinishAt($this->currentImportModel->getMoveOut());
             // only finish the contract if MoveOut is today or earlier
-            if ($this->currentImportModel->getMoveOut() <= $today) {
+            $moveOutInt = (int) $this->currentImportModel->getMoveOut()->format('Ymd');
+            $todayInt = $today->format('Ymd');
+            if ($moveOutInt <= $todayInt) {
                 $this->setFinishedContract();
             }
+        } elseif (isset($row[Mapping::KEY_TENANT_STATUS]) &&
+            trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) == Tenant::$tenantStatusCurrent &&
+            $leaseEnd <= $today
+        ) {
+            // if tenant status is "C" and today is past lease-end,
+            // then we should ignore month-to-month field and treat as month-to-month.
+            $this->currentImportModel->getContract()->setFinishAt(null);
         } elseif (isset($row[Mapping::KEY_MONTH_TO_MONTH]) &&
             strtoupper($row[Mapping::KEY_MONTH_TO_MONTH] == 'Y')
         ) {
@@ -294,12 +240,16 @@ trait Contract
         );
 
         if ($contractWaitingInDb) {
-            //Do update some fields
-            $contractWaitingInDb->setRent($contractWaiting->getRent());
+            // update some fields
             $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
             $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
+
+            if ($this->currentImportModel->isNeedUpdateRent(true)) {
+                // but conditionally update rent
+                $contractWaitingInDb->setRent($contractWaiting->getRent());
+            }
 
             return $contractWaitingInDb;
         }
@@ -309,7 +259,10 @@ trait Contract
 
     public function setFinishedContract()
     {
-        if ($this->isContractInPast()) {
+        $moveOut = $this->currentImportModel->getMoveOut();
+        $isMoveOutInPast = $moveOut instanceof \DateTime && $moveOut <= new \DateTime();
+
+        if ($this->isContractInPast() || $isMoveOutInPast) {
             $this->currentImportModel->getContract()->setStatus(ContractStatus::FINISHED);
         }
     }
@@ -319,9 +272,15 @@ trait Contract
      */
     public function isContractInPast()
     {
-        $today = new DateTime();
+        $finishAt = $this->currentImportModel->getContract()->getFinishAt();
+        if (empty($finishAt)) {
+            return false;
+        }
 
-        return ($this->currentImportModel->getContract()->getFinishAt() &&
-                $this->currentImportModel->getContract()->getFinishAt() < $today) ? true : false;
+        $today = new DateTime();
+        $todayInt = (int) $today->format('Ymd');
+        $finishAtInt = (int) $finishAt->format('Ymd');
+
+        return $finishAtInt <= $todayInt ? true : false;
     }
 }

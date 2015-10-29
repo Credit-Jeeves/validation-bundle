@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\AMSI\Enum;
 use CreditJeeves\CoreBundle\Enum;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 
 class ReversalReasonEnum extends Enum
 {
@@ -20,9 +20,11 @@ class ReversalReasonEnum extends Enum
      */
     public static function getReasonByOrder(Order $order)
     {
-        if ($order->getStatus() === OrderStatus::RETURNED && $order->getType() === OrderType::HEARTLAND_BANK) {
+        if ($order->getStatus() === OrderStatus::RETURNED && $order->getPaymentType() === OrderPaymentType::BANK) {
             return self::REASON_NSF;
-        } elseif ($order->getStatus() === OrderStatus::RETURNED && $order->getType() === OrderType::HEARTLAND_CARD) {
+        } elseif ($order->getStatus() === OrderStatus::RETURNED &&
+            $order->getPaymentType() === OrderPaymentType::CARD
+        ) {
             return self::REASON_CHARGE_BACK;
         } else {
             return self::REASON_REVERSE;

@@ -2,10 +2,10 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
@@ -26,8 +26,10 @@ class TransactionRepository extends EntityRepository
             h.transactionId,
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as dateInitiated,
-            o.type as paymentType,
+            o.paymentType as paymentType,
             o.status as orderStatus,
+            d.accountNumber as accountNumber,
+            d.type as depositAccountType,
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', prop.number, prop.street) as property,
@@ -36,11 +38,12 @@ class TransactionRepository extends EntityRepository
         );
         $query->orderBy('h.batchId', 'DESC');
         $query->innerJoin('h.order', 'o');
+        $query->leftJoin('o.depositAccount', 'd');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
-        $query->innerJoin('t.unit', 'unit');
+        $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
@@ -124,8 +127,8 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('end', $end);
 
-        $query->andWhere('o.type in (:paymentTypes)');
-        $query->setParameter('paymentTypes', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->andWhere('o.paymentType in (:paymentTypes)');
+        $query->setParameter('paymentTypes', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
@@ -159,7 +162,7 @@ class TransactionRepository extends EntityRepository
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,
-            o.type as paymentType,
+            o.paymentType as paymentType,
             o.status as orderStatus,
             h.status as transactionStatus,
             h.messages,
@@ -174,7 +177,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
-        $query->innerJoin('t.unit', 'unit');
+        $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
@@ -201,6 +204,7 @@ class TransactionRepository extends EntityRepository
         $query->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch');
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('p.contract', 't');
         $query->where('t.group = :group');
         $query->andWhere('h.depositDate IS NOT NULL');
@@ -210,7 +214,7 @@ class TransactionRepository extends EntityRepository
         $query->groupBy('batch');
 
         if ($accountType) {
-            $query->andWhere('o.type = :type');
+            $query->andWhere('o.paymentType = :type');
             $query->setParameter('type', $accountType);
         }
 
@@ -220,17 +224,19 @@ class TransactionRepository extends EntityRepository
     }
 
     /**
-     * TODO: get result without using Orders repository
+     * @param Group $group
+     * @param string $accountType
+     * @param int $page
+     * @param int $limit
+     * @return array
      */
-    public function getDepositedOrders(Group $group, $accountType, OrderRepository $ordersRepo, $page = 1, $limit = 100)
+    public function getBatchedDeposits(Group $group, $accountType, $page = 1, $limit = 100)
     {
-        // get Batch Ids
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
-        $query->select(
-            "IF(h.batchId is null, h.depositDate, h.batchId) as batch, sum(p.amount) as order_amount, h.depositDate"
-        );
+        $query->select('h.batchId as batchNumber, sum(p.amount) as orderAmount, h.depositDate, da.type as depositType');
         $query->innerJoin('h.order', 'o');
+        $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->where('t.group = :group');
@@ -238,33 +244,16 @@ class TransactionRepository extends EntityRepository
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
         if ($accountType) {
-            $query->andWhere('o.type = :type');
+            $query->andWhere('o.paymentType = :type');
             $query->setParameter('type', $accountType);
         }
-        $query->groupBy('batch');
+        $query->groupBy('batchNumber');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('h.depositDate', 'DESC');
         $query = $query->getQuery();
-        $deposits = $query->getScalarResult();
 
-        foreach ($deposits as $key => $deposit) {
-            $batchId = is_numeric($deposit['batch']) ? $deposit['batch'] : null;
-
-            $ordersQuery = $ordersRepo->getDepositedOrdersQuery(
-                $group,
-                $accountType,
-                $batchId,
-                $deposit['depositDate']
-            );
-
-            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
-            $depositDate = new DateTime($deposit['depositDate']);
-            $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-            $deposits[$key]['isDeposit'] = $batchId ? true : false;
-        }
-
-        return $deposits;
+        return $query->getScalarResult();
     }
 
     /**

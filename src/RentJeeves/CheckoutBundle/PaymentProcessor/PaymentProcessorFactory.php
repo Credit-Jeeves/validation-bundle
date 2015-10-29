@@ -5,7 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Group;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface as PaymentProcessor;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface as PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentProcessor as PaymentProcessorEnum;
 
 /**
@@ -24,8 +24,8 @@ class PaymentProcessorFactory
     protected $aciCollectPay;
 
     /**
-     * @param PaymentProcessorInterface $heartland
-     * @param PaymentProcessorInterface $aciCollectPay
+     * @param PaymentProcessor $heartland
+     * @param PaymentProcessor $aciCollectPay
      *
      * @DI\InjectParams({
      *     "heartland" = @DI\Inject("payment_processor.heartland"),
@@ -48,16 +48,43 @@ class PaymentProcessorFactory
     public function getPaymentProcessor(Group $group)
     {
         switch ($group->getGroupSettings()->getPaymentProcessor()) {
-            case PaymentProcessorEnum::ACI_COLLECT_PAY:
+            case PaymentProcessorEnum::ACI:
                 return $this->aciCollectPay;
             case PaymentProcessorEnum::HEARTLAND:
                 return $this->heartland;
             default:
                 throw new PaymentProcessorInvalidArgumentException(
                     sprintf(
-                        'Unknown processor type for group "%s" with id "%d"',
+                        'Unknown processor type "%s" for group "%s" with id "%d"',
+                        $group->getGroupSettings()->getPaymentProcessor(),
                         $group->getName(),
                         $group->getId()
+                    )
+                );
+        }
+    }
+
+    /**
+     * Returns a payment processor for a given payment account.
+     *
+     * @param PaymentAccountInterface $paymentAccount
+     * @return PaymentProcessor
+     * @throws PaymentProcessorInvalidArgumentException
+     */
+    public function getPaymentProcessorByPaymentAccount(PaymentAccountInterface $paymentAccount)
+    {
+        switch ($paymentAccount->getPaymentProcessor()) {
+            case PaymentProcessorEnum::ACI:
+                return $this->aciCollectPay;
+            case PaymentProcessorEnum::HEARTLAND:
+                return $this->heartland;
+            default:
+                throw new PaymentProcessorInvalidArgumentException(
+                    sprintf(
+                        'Unknown processor type "%s" for payment account "%s" with id = "%d"',
+                        $paymentAccount->getPaymentProcessor(),
+                        $paymentAccount->getName(),
+                        $paymentAccount->getId()
                     )
                 );
         }

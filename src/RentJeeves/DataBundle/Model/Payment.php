@@ -3,9 +3,9 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\DepositAccount as DepositAccountEntity;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\CoreBundle\DateTime;
 use JMS\Serializer\Annotation as Serializer;
@@ -62,6 +62,22 @@ class Payment
     protected $paymentAccount;
 
     /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *      inversedBy="payments",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="deposit_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var DepositAccountEntity
+     */
+    protected $depositAccount;
+
+    /**
      * @ORM\Column(type="PaymentType")
      * @Assert\NotBlank(
      *      message="checkout.error.type.empty"
@@ -93,7 +109,8 @@ class Payment
      * @Assert\Range(
      *      min=0,
      *      minMessage="checkout.error.amount.min",
-     *      invalidMessage="checkout.error.amount.valid"
+     *      invalidMessage="checkout.error.amount.valid",
+     *      groups={"Default", "pay_anything"}
      * )
      * @Serializer\Groups({"payRent"})
      *
@@ -114,7 +131,8 @@ class Payment
      * @Assert\Range(
      *      min=1,
      *      minMessage="checkout.error.total.min",
-     *      invalidMessage="checkout.error.total.valid"
+     *      invalidMessage="checkout.error.total.valid",
+     *      groups={"Default", "pay_anything"}
      * )
      * @Serializer\Groups({"payRent"})
      *
@@ -569,5 +587,21 @@ class Payment
     public function setCloseDetails(array $closeDetails)
     {
         $this->closeDetails = $closeDetails;
+    }
+
+    /**
+     * @return DepositAccountEntity
+     */
+    public function getDepositAccount()
+    {
+        return $this->depositAccount;
+    }
+
+    /**
+     * @param DepositAccountEntity $depositAccount
+     */
+    public function setDepositAccount(DepositAccountEntity $depositAccount)
+    {
+        $this->depositAccount = $depositAccount;
     }
 }

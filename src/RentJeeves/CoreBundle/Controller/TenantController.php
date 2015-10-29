@@ -18,10 +18,13 @@ class TenantController extends BaseController
      */
     protected $score;
 
+    /**
+     * @return Tenant
+     */
     public function getUser()
     {
         if ($user = parent::getUser()) {
-            $user = $this->get('core.session.applicant')->getUser();
+            $user = $this->get('core.session.tenant')->getUser();
             $this->getUserDetails($user);
 
             return $user;
@@ -46,15 +49,15 @@ class TenantController extends BaseController
 
     public function isMobile()
     {
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-            $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
-            $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
-            $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
-            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $user_agent)) {
-                return true;
-            }
-        }
+//        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+//            $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+//            $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
+//            $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
+//            $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
+//            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $user_agent)) {
+//                return true;
+//            }
+//        }
         return false;
     }
 }

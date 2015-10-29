@@ -24,7 +24,7 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
+            <div data-bind="visible: paymentAccounts().length > 0" class="form-row clearfix" >
                 <label>{{ 'payment.account' | trans }}*</label>
                 <div class="fields-box payment-accounts">
                     <small ><b>*</b>{{ 'required' | trans }}</small>
@@ -34,7 +34,7 @@
                                 required="required"
                                 data-bind="
                                     value: $data.id,
-                                    checked: $parent.paymentSource.id
+                                    checked: $root.currentPaymentAccountId
                                 " />
                             <i></i>
                             <span data-bind="text: $data.name"></span>
@@ -47,8 +47,8 @@
                     </div>
                 </div>
             </div>
-            <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
-                {{ render(controller('RjCheckoutBundle:Component:source')) }}
+            <div data-bind="visible: isNewPaymentAccount">
+                {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
             </div>
         </div>
 
@@ -104,80 +104,80 @@
                         <label>{{ 'checkout.method' | trans }}</label>
                         <div class="fields-box">
                             <span class="value"
-                                  data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
+                                  data-bind="text: 'checkout.' + currentPaymentAccount().type(), i18n: {}"
                                   id="checkout-payment-source"
                             >
 
                             </span>
                         </div>
                     </div>
-                    <div data-bind="visible: !newPaymentAccount()">
+                    <div data-bind="visible: !isNewPaymentAccount()">
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.account_nickname' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.name"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().name"></span>
                             </div>
                         </div>
                     </div>
-                    <div data-bind="visible: 'bank' == paymentSource.type() && newPaymentAccount()">
+                    <div data-bind="visible: 'bank' == currentPaymentAccount().type() && isNewPaymentAccount()">
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.payor_name' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.PayorName"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().PayorName"></span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.routing_number' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().RoutingNumber"></span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.account_number' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().AccountNumber"></span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.account_type' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="visible: 'Checking' == paymentSource.ACHDepositType()">
+                                <span class="value" data-bind="visible: 'Checking' == currentPaymentAccount().ACHDepositType()">
                                     {{ 'checkout.account_type.checking' | trans }}
                                 </span>
-                                <span class="value" data-bind="visible: 'Savings' == paymentSource.ACHDepositType()">
+                                <span class="value" data-bind="visible: 'Savings' == currentPaymentAccount().ACHDepositType()">
                                     {{ 'checkout.account_type.savings' | trans }}
                                 </span>
-                                <span class="value" data-bind="visible: 'Unassigned' == paymentSource.ACHDepositType()">
+                                <span class="value" data-bind="visible: 'Unassigned' == currentPaymentAccount().ACHDepositType()">
                                     {{ 'checkout.account_type.business_checking' | trans }}
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div data-bind="visible: 'card' == paymentSource.type()">
-                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                    <div data-bind="visible: ['card', 'debit_card'].indexOf(currentPaymentAccount().type()) !== -1">
+                        <div class="form-row clearfix" data-bind="visible: isNewPaymentAccount()">
                             <label>{{ 'checkout.card.account_name' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().CardAccountName"></span>
                             </div>
                         </div>
-                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                        <div class="form-row clearfix" data-bind="visible: isNewPaymentAccount()">
                             <label>{{ 'checkout.card_number' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
+                                <span class="value" data-bind="text: currentPaymentAccount().getCardNumber"></span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.expiration' | trans }}</label>
                             <div class="fields-box">
                                 <span class="value"
-                                      data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()">
+                                      data-bind="text: currentPaymentAccount().ExpirationMonth() + '/' + currentPaymentAccount().ExpirationYear()">
                                 </span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.billing_address' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: currentAddress()"></span>
+                                <span class="value" data-bind="text: billingaddress.current()"></span>
                             </div>
                         </div>
                     </div>

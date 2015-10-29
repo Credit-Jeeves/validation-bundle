@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group as GroupEntity;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
@@ -27,7 +28,6 @@ use Symfony\Component\Validator\Validator;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\Forms;
 use RentJeeves\LandlordBundle\Accounting\Import\Form\FormBind;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Contract;
-use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Operation;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Property;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Resident;
 use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
@@ -52,7 +52,6 @@ abstract class HandlerAbstract implements HandlerInterface
     use FormBind;
     use Unit;
     use OnlyReviewNewTenantsAndExceptionsTrait;
-    use Operation;
     use Group;
     use FormErrors;
 
@@ -110,6 +109,12 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var ContractProcess
      */
     public $contractProcess;
+
+    /**
+     * @Inject("payment_processor.order_status_manager")
+     * @var OrderStatusManagerInterface
+     */
+    public $orderStatusManager;
 
     /**
      * @Inject("monolog.logger.import")
@@ -188,7 +193,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $newFilePath = $this->getNewFilePath();
         $this->copyHeader($newFilePath);
         $self = $this;
-        $total = $this->mapping->getTotal();
+        $total = $this->mapping->getTotalContent();
 
         $callbackSuccess = function () use ($self, $filePath) {
             $self->removeLastLineInFile($filePath);
@@ -198,12 +203,17 @@ abstract class HandlerAbstract implements HandlerInterface
             $self->moveLine($filePath);
         };
 
-        for ($i = 1; $i <= $total; $i++) {
+        $this->getReport()->setTotal($total);
+
+        for ($i = $total; $i >= 1; $i--) {
             $this->updateMatchedContractsWithCallback(
+                $this->getReport(),
                 $callbackSuccess,
                 $callbackFailed
             );
         }
+
+        $this->getReport()->save();
 
         krsort($this->lineFromCsvFile);
         file_put_contents($newFilePath, implode('', $this->lineFromCsvFile), FILE_APPEND | LOCK_EX);
@@ -353,7 +363,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->getReport()->addError(
             $this->currentImportModel->getRow(),
             $errors,
-            $this->currentImportModel->getOffset()
+            $this->currentImportModel->getRow()
         );
     }
 
@@ -373,10 +383,9 @@ abstract class HandlerAbstract implements HandlerInterface
         } else {
             $tenantName = $row[ImportMapping::FIRST_NAME_TENANT] . " " . $row[ImportMapping::LAST_NAME_TENANT];
         }
-        $this->logger->debug(sprintf("Creating import model for %s", $tenantName));
+        $this->logger->debug(sprintf('Creating import model for %s', $tenantName));
 
         $this->currentImportModel = new ModelImport();
-        $this->currentImportModel->setOffset($this->storage->getOffsetStart()+$lineNumber);
         $this->currentImportModel->setRow($row);
         $this->currentImportModel->setHandler($this);
         $this->currentImportModel->setNumber($lineNumber);
@@ -486,7 +495,7 @@ abstract class HandlerAbstract implements HandlerInterface
                 $this->currentImportModel->getCsrfToken()
             );
 
-            if ($this->isUsedResidentId($this->currentImportModel->getResidentMapping())) {
+            if ($this->isUsedResidentId()) {
                 $this->logger->warning("ResidentID already in use");
                 $keyFieldInUI = ImportMapping::KEY_RESIDENT_ID;
                 $message = $this->translator
@@ -601,8 +610,7 @@ abstract class HandlerAbstract implements HandlerInterface
     public function initCollectionImportModel()
     {
         $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
-        //minus 1 -> because first line it's header
-        $this->getReport()->setTotal($this->mapping->getTotal()-1);
+        $this->getReport()->setTotal($this->mapping->getTotalContent());
         $this->collectionImportModel = new ArrayCollection([]);
 
         foreach ($data as $key => $values) {
@@ -655,7 +663,7 @@ abstract class HandlerAbstract implements HandlerInterface
                     $lines[] = $lineNumber;
                     $this->currentImportModel = $import;
                     if ($this->currentImportModel->isSkipped()) {
-                        $this->getReport()->incrementSkipped($this->currentImportModel->getOffset());
+                        $this->getReport()->incrementSkipped($this->currentImportModel->getRow());
                     }
                     // Validate data which get from client by post request
                     $resultBind = $this->bindForm($postData, $errors);
@@ -721,6 +729,9 @@ abstract class HandlerAbstract implements HandlerInterface
     {
         try {
             $tenantEmail = $this->currentImportModel->getTenant()->getEmail();
+            if ($this->currentImportModel->getPropertyMapping()) {
+                $this->flushEntity($this->currentImportModel->getPropertyMapping());
+            }
 
             if (empty($tenantEmail)) {
                 $contractWaiting = $this->getContractWaiting();
@@ -742,23 +753,23 @@ abstract class HandlerAbstract implements HandlerInterface
                 $this->flushEntity($unitMapping);
             }
 
-            if ($this->currentImportModel->getPropertyMapping()) {
-                $this->flushEntity($this->currentImportModel->getPropertyMapping());
-            }
-
             if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
                 //Remove contract because we get duplicate contract
                 $this->currentImportModel->getTenant()->removeContract($contract);
                 $this->flushEntity($this->currentImportModel->getTenant());
-                $contract = $this->contractProcess->createContractFromWaiting(
+                $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting()
                 );
 
-                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
-                $contract->setStatus(ContractStatus::INVITE);
-                $this->flushEntity($contract);
-
+                $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+                $contractFromWaiting->setStatus(ContractStatus::INVITE);
+                $contractFromWaiting->setIntegratedBalance($contract->getIntegratedBalance());
+                $contractFromWaiting->setRent($contract->getRent());
+                $contractFromWaiting->setStartAt($contract->getStartAt());
+                $contractFromWaiting->setFinishAt($contract->getFinishAt());
+                $contractFromWaiting->setPaidToByBalanceDue();
+                $this->flushEntity($contractFromWaiting);
                 $this->sendInviteEmail();
 
                 return true;
@@ -795,8 +806,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->getReport()->addException(
             $this->currentImportModel->getRow(),
             $e->getMessage(),
-            $uniqueKeyException,
-            $this->currentImportModel->getOffset()
+            $uniqueKeyException
         );
 
         $exception = new ImportHandlerException($e);
@@ -804,11 +814,12 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setUniqueKeyException($uniqueKeyException);
         $this->exceptionCatcher->handleException($exception);
         $messageForLogging = sprintf(
-            'Exception %s: %s, in File: %s, In Line: %s',
+            'Exception %s: %s, in File: %s, In Line: %s, Trace: %s',
             $uniqueKeyException,
             $e->getMessage(),
             $e->getFile(),
-            $e->getLine()
+            $e->getLine(),
+            $e->getTraceAsString()
         );
         $this->logger->addCritical($messageForLogging);
 
@@ -902,12 +913,15 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @return ImportSummaryManager
      */
-    protected function getReport()
+    public function getReport()
     {
         $this->reportSummaryManager->initialize(
             $this->group,
             $this->storage->getImportType(),
             $this->storage->getImportSummaryReportPublicId()
+        );
+        $this->storage->setImportSummaryReportPublicId(
+            $this->reportSummaryManager->getReportPublicId()
         );
 
         return $this->reportSummaryManager;

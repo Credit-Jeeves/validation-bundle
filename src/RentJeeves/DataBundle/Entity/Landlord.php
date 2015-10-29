@@ -31,12 +31,20 @@ class Landlord extends User
      */
     protected $agent_groups;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="external_landlord_id", nullable=true)
+     */
+    protected $externalLandlordId;
+
     public function __construct()
     {
         parent::__construct();
         $this->agent_groups = new ArrayCollection();
+        $this->landlordMapping = new ArrayCollection();
     }
-    
+
     /**
      * Add groups
      *
@@ -51,6 +59,7 @@ class Landlord extends User
         foreach ($groups as $group) {
             $this->addAgentGroup($group);
         }
+
         return $this;
     }
 
@@ -63,6 +72,7 @@ class Landlord extends User
     public function addAgentGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
         $this->agent_groups[] = $group;
+
         return $this;
     }
 
@@ -111,6 +121,7 @@ class Landlord extends User
     {
         if ($isAdmin = $this->getIsSuperAdmin()) {
             $holding = $this->getHolding();
+
             return $holding->getGroups() ? $holding->getGroups() : null;
         } else {
             return $this->getAgentGroups() ? $this->getAgentGroups() : null;
@@ -140,13 +151,32 @@ class Landlord extends User
         }
 
         $merchantExist = false;
+        /** @var Group $group */
         foreach ($groups as $group) {
-            if (($depositAccount = $group->getDepositAccount()) && $depositAccount->isComplete()) {
+            if (($depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor()) &&
+                $depositAccount->isComplete()
+            ) {
                 $merchantExist = true;
                 break;
             }
         }
 
         return $merchantExist;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalLandlordId()
+    {
+        return $this->externalLandlordId;
+    }
+
+    /**
+     * @param string $externalLandlordId
+     */
+    public function setExternalLandlordId($externalLandlordId)
+    {
+        $this->externalLandlordId = $externalLandlordId;
     }
 }

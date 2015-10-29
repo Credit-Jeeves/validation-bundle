@@ -84,6 +84,27 @@ class ContractsController extends Controller
      *     description="Details info for create new unit with invitation landlord and creating contract."
      * )
      * @RequestParam(
+     *     name="rent",
+     *     description="Rent amount. include decimal."
+     * )
+     * @RequestParam(
+     *     name="due_date",
+     *     description="Day of the month."
+     * )
+     * @RequestParam(
+     *     name="lease_start",
+     *     requirements="\d{4}-\d{2}-\d{2}",
+     *     description="Lease start date. Format YYYY-mm-dd."
+     * )
+     * @RequestParam(
+     *     name="lease_end",
+     *     strict=false,
+     *     requirements="\d{4}-\d{2}-\d{2}",
+     *     default=null,
+     *     nullable=true,
+     *     description="Lease end date. Can be empty if contract is month-to-month. Format YYYY-mm-dd."
+     * )
+     * @RequestParam(
      *     name="experian_reporting",
      *     default="disabled",
      *     requirements="enabled|disabled",
@@ -116,7 +137,7 @@ class ContractsController extends Controller
 
         if ($form->isValid()) {
             if (!$entity->getId()) {
-                /** @var $processor ContractProcessor */
+                /** @var ContractProcessor $processor */
                 $processor = $this->get('api.contract.processor');
 
                 $contract = $processor->process($form, $this->getUser());
@@ -161,6 +182,27 @@ class ContractsController extends Controller
      *     strict=false,
      *     encoder="api.default_url_encoder",
      *     description="Resource url for Unit."
+     * )
+     * @RequestParam(
+     *     name="rent",
+     *     description="Rent amount. include decimal."
+     * )
+     * @RequestParam(
+     *     name="due_date",
+     *     description="Day of the month."
+     * )
+     * @RequestParam(
+     *     name="lease_start",
+     *     requirements="\d{4}-\d{2}-\d{2}",
+     *     description="Lease start date. Format YYYY-mm-dd."
+     * )
+     * @RequestParam(
+     *     name="lease_end",
+     *     strict=false,
+     *     requirements="\d{4}-\d{2}-\d{2}",
+     *     default=null,
+     *     nullable=true,
+     *     description="Lease end date. Can be empty if contract is month-to-month. Format YYYY-mm-dd."
      * )
      * @RequestParam(
      *     name="experian_reporting",

@@ -1,0 +1,381 @@
+model: CreditJeeves\DataBundle\Entity\Operation 
+fixtures:
+  rjOperation_report_1:
+    order: rjOrder_report_1
+    report: reportTUSnapshot_1
+    amount: %credittrack_payment_per_month%
+    paidFor: '-5 days'
+  rjOperation_1:
+    order: rjOrder_1
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-50 days'
+  rjOperation_2:
+    order: rjOrder_2
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-40 days'
+  rjOperation_2_1:
+    order: rjOrder_2
+    contract: Contract_7
+    type: other
+    amount: 300
+    paidFor: '-40 days'
+  rjOperation_3:
+    order: rjOrder_3
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-30 days'
+  rjOperation_3_error:
+    order: rjOrder_3_error
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-30 days'
+  rjOperation_3_cancelled:
+    order: rjOrder_3_cancelled
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: 'now'
+  rjOperation_3_refunded:
+    order: rjOrder_3_refunded
+    contract: Contract_7
+    type: rent
+    amount: 700
+    paidFor: '-30 days'
+  rjOperation_3_returned:
+    order: rjOrder_3_returned
+    contract: Contract_7
+    type: rent
+    amount: 750
+    paidFor: '-30 days'
+  rjOperation_3_returned_1:
+      order: rjOrder_3_returned_1
+      contract: Contract_7
+      type: rent
+      amount: 800
+      paidFor: '-30 days'
+  rjOperation_4:
+    order: rjOrder_4
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-20 days'
+  rjOperation_5:
+    order: rjOrder_5
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: '-10 days'
+  rjOperation_6:
+    order: rjOrder_6
+    contract: Contract_6
+    type: rent
+    amount: 1500
+    paidFor: '-1 month'
+  rjOperation_66:
+    order: rjOrder_66
+    contract: Contract_66
+    type: rent
+    amount: 3700
+    paidFor: 'now'
+
+# finished contract
+  rjOperation_3_1:
+    order: rjOrder_3_1
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-370 days'
+  rjOperation_3_2_1:
+    order: rjOrder_3_2_1
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: ''
+  rjOperation_3_2_2:
+    order: rjOrder_3_2_2
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-340 days'
+  rjOperation_3_3:
+    order: rjOrder_3_3
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-310 days'
+  rjOperation_3_4:
+    order: rjOrder_3_4
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-280 days'
+  rjOperation_3_5:
+    order: rjOrder_3_5
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-250 days'
+  rjOperation_3_6:
+    order: rjOrder_3_6
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-220 days'
+  rjOperation_3_7:
+    order: rjOrder_3_7
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-190 days'
+  rjOperation_3_8:
+    order: rjOrder_3_8
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-160 days'
+  rjOperation_3_9:
+    order: rjOrder_3_9
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-130 days'
+  rjOperation_3_10:
+    order: rjOrder_3_10
+    contract: Contract_3
+    type: rent
+    amount: 1500
+    paidFor: '-100 days'
+
+  rjOperation_4_1:
+    order: rjOrder_4_1
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-8 month'
+    createdAt: '-8 month'
+  rjOperation_4_2:
+    order: rjOrder_4_2
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-7 month'
+    createdAt: '-7 month'
+  rjOperation_4_3:
+    order: rjOrder_4_3
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-6 month'
+    createdAt: '-6 month'
+  rjOperation_4_4:
+    order: rjOrder_4_4
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-5 month'
+    createdAt: '-5 month'
+  rjOperation_4_5:
+    order: rjOrder_4_5
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-4 month'
+    createdAt: '-4 month'
+  rjOperation_4_6:
+    order: rjOrder_4_6
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-3 month'
+    createdAt: '-3 month'
+  rjOperation_4_7:
+    order: rjOrder_4_7
+    contract: Contract_4
+    type: rent
+    amount: 1250
+    paidFor: '-1 month'
+    createdAt: '-1 month'
+
+  rjOperation_5_1:
+    order: rjOrder_5_1
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-11 month'
+  rjOperation_5_2:
+    order: rjOrder_5_2
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-10 month'
+  rjOperation_5_3:
+    order: rjOrder_5_3
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-9 month'
+  rjOperation_5_4:
+    order: rjOrder_5_4
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-8 month'
+  rjOperation_5_5:
+    order: rjOrder_5_5
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-7 month'
+  rjOperation_5_6:
+    order: rjOrder_5_6
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-6 month'
+  rjOperation_5_7:
+    order: rjOrder_5_7
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-5 month'
+  rjOperation_5_8:
+    order: rjOrder_5_8
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-4 month'
+  rjOperation_5_9:
+    order: rjOrder_5_9
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-3 month'
+  rjOperation_5_10:
+    order: rjOrder_5_10
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-2 month'
+  rjOperation_5_11:
+    order: rjOrder_5_11
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: '-1 month'
+  rjOperation_5_12:
+    order: rjOrder_5_12
+    contract: Contract_2
+    type: rent
+    amount: 1250
+    paidFor: 'now'
+
+  rjOperation_6_1:
+    order: rjOrder_6_1
+    contract: Contract_16
+    type: rent
+    amount: 1
+    paidFor: '-1 days'
+  rjOperation_6_2:
+    order: rjOrder_6_2
+    contract: Contract_16
+    type: rent
+    amount: 2
+    paidFor: '-1 days'
+
+  rjOperation_8:
+    order: rjOrder_8
+    contract: Contract_14
+    type: rent
+    amount: 1500
+    paidFor: '-1 month'
+
+  rjOperation_9_1_1:
+    order: rjOrder_9_1
+    contract: Contract_19
+    type: rent
+    amount: 987
+    paidFor: '2014-01-01'
+    createdAt: '2014-01-11'
+  rjOperation_9_1_2:
+    order: rjOrder_9_1
+    contract: Contract_19
+    type: other
+    amount: 13
+    paidFor: '2014-01-01'
+    createdAt: '2014-01-01'
+  rjOperation_9_2_1:
+    order: rjOrder_9_2
+    contract: Contract_19
+    type: rent
+    amount: 987
+    paidFor: '2014-02-01'
+    createdAt: '2014-02-01'
+  rjOperation_9_2_2:
+    order: rjOrder_9_2
+    contract: Contract_19
+    type: other
+    amount: 13
+    paidFor: '2014-02-01'
+    createdAt: '2014-02-01'
+  rjOperation_9_3_1:
+    order: rjOrder_9_3
+    contract: Contract_19
+    type: rent
+    amount: 987
+    paidFor: '2014-03-01'
+    createdAt: '2014-03-01'
+  rjOperation_9_3_2:
+    order: rjOrder_9_3
+    contract: Contract_19
+    type: other
+    amount: 13
+    paidFor: '2014-03-01'
+    createdAt: '2014-03-01'
+  rjOperation_9_4_1:
+    order: rjOrder_9_4_1
+    contract: Contract_19
+    type: rent
+    amount: 820
+    paidFor: '2014-04-01'
+    createdAt: '2014-04-01'
+  rjOperation_9_4_2:
+    order: rjOrder_9_4_2
+    contract: Contract_19
+    type: rent
+    amount: 180
+    paidFor: '2014-04-01'
+    createdAt: '2014-05-05'
+
+  rjOperation_10_1:
+    order: rjOrder_10
+    contract: Contract_21
+    type: rent
+    amount: 500
+    paidFor: 'now'
+    createdAt: 'now'
+  rjOperation_10_2:
+    order: rjOrder_10
+    contract: Contract_21
+    type: rent
+    amount: 500
+    paidFor: '+1 months'
+    createdAt: 'now'
+  rjOperation_10_3:
+    order: rjOrder_10
+    contract: Contract_21
+    type: other
+    amount: 111
+    paidFor: 'now'
+    createdAt: 'now'
+  rjOperation_3_error_second_rent:
+    order: rjOrder_3_error
+    contract: Contract_7
+    type: rent
+    amount: 1500
+    paidFor: 'now'

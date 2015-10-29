@@ -2,17 +2,21 @@
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use ACI\Utils\OldProfilesStorage;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
@@ -69,6 +73,45 @@ class PaymentCommandsCase extends BaseTestCase
     }
 
     /**
+     * @return OrderStatusManagerInterface
+     */
+    protected function getOrderStatusManager()
+    {
+        return $this->getContainer()->get('payment_processor.order_status_manager');
+    }
+
+    /**
+     * @return array
+     */
+    public function providerForCheckingOptionIsPaymentsEnabled()
+    {
+        return [
+            [true, 1],
+            [false, 0]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider providerForCheckingOptionIsPaymentsEnabled
+     *
+     * @param boolean $isPaymentsEnabled
+     * @param integer $jobsCount
+     */
+    public function shouldCheckOptionIsPaymentsEnabled($isPaymentsEnabled, $jobsCount)
+    {
+        $this->load(true);
+        /** @var Holding $holding */
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->setPaymentsEnabled($isPaymentsEnabled);
+        $this->getEntityManager()->flush();
+
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount($jobsCount, $jobs);
+    }
+
+    /**
      * @test
      */
     public function collectAndPay()
@@ -80,7 +123,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
         $this->assertCount(1, $this->plugin->getPreSendMessages());
-        $this->assertEquals('Rent Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
+        $this->assertEquals('RentTrack Payment Receipt', $this->plugin->getPreSendMessage(0)->getSubject());
 
         $this->plugin->clean();
 
@@ -145,13 +188,15 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
         $this->assertNotNull($completeTransaction = $order->getCompleteTransaction());
-        $this->assertNotNull($order->getHeartlandBatchId());
-        $this->assertNotNull($paymentAccount = $completeTransaction->getPaymentAccount());
+        $this->assertNotNull($order->getTransactionBatchId());
+        $this->assertNotNull($paymentAccount = $order->getPaymentAccount());
+        $this->assertNotNull($depositAccount = $order->getDepositAccount());
         $this->assertEquals($payment->getPaymentAccount()->getId(), $paymentAccount->getId());
+        $this->assertEquals($payment->getDepositAccount()->getId(), $depositAccount->getId());
         $operations = $order->getOperations();
         $this->assertCount(3, $operations);
 
@@ -169,8 +214,8 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertEquals($amount, $contract->getIntegratedBalance());
 
-        $order->setStatus(OrderStatus::COMPLETE);
-        $em->flush($order);
+        $this->getOrderStatusManager()->setComplete($order);
+
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
     }
@@ -206,10 +251,10 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $amount));
         $this->assertNotNull($order);
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
         $operations = $order->getOperations();
         $this->assertCount(1, $operations);
 
@@ -227,8 +272,8 @@ class PaymentCommandsCase extends BaseTestCase
 
         $this->assertEquals($amount, $contract->getIntegratedBalance());
 
-        $order->setStatus(OrderStatus::COMPLETE);
-        $em->flush($order);
+        $this->getOrderStatusManager()->setComplete($order);
+
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
     }
@@ -268,11 +313,11 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => $contract->getRent()));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus());
-        $this->assertNotNull($order->getHeartlandBatchId());
+        $this->assertNotNull($order->getTransactionBatchId());
     }
 
     /**
@@ -311,7 +356,7 @@ class PaymentCommandsCase extends BaseTestCase
         // "Your Rent is Processing" Email
         $this->assertCount(2, $plugin->getPreSendMessages());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '-888'));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::ERROR, $order->getStatus());
@@ -331,22 +376,15 @@ class PaymentCommandsCase extends BaseTestCase
         $contract = $this->getContract($em);
 
         /* Prepare Group */
-        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $paySettings = new AciCollectPaySettings();
+        $depositAccount = new DepositAccount($contract->getGroup());
+        $depositAccount->setPaymentProcessor($contract->getGroup()->getGroupSettings()->getPaymentProcessor());
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($contract->getGroup()->getHolding());
 
-        $paySettings->setBusinessId(564075);
-        $paySettings->setGroup($contract->getGroup());
-
-        $contract->getGroup()->setAciCollectPaySettings($paySettings);
-
-        $em->persist($contract->getGroup());
-        $em->persist($paySettings);
-
-        /* Remove enrollment Account if it was created before */
-        if ($profileId = $this->getOldProfileId(md5($contract->getTenant()->getId()))) {
-            $this->deleteAciCollectPayProfile($profileId);
-        }
+        $contract->getGroup()->addDepositAccount($depositAccount);
 
         /* Create Payment Accounts */
         /** @var PaymentProcessorAciCollectPay $paymentProcessor */
@@ -355,9 +393,10 @@ class PaymentCommandsCase extends BaseTestCase
         $paymentAccount1 = new PaymentAccount();
 
         $paymentAccount1->setUser($contract->getTenant());
-        $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $paymentAccount1->setPaymentProcessor(PaymentProcessor::ACI);
         $paymentAccount1->setType(PaymentAccountTypeEnum::BANK);
         $paymentAccount1->setName('Test ACI Bank');
+        $paymentAccount1->setBankAccountType(BankAccountType::CHECKING);
 
         $paymentAccountData = new PaymentAccountData();
 
@@ -371,30 +410,24 @@ class PaymentCommandsCase extends BaseTestCase
             ->set('card_number', '5110200200001115')
             ->set('routing_number', '063113057')
             ->set('account_number', '123245678')
-            ->set('ach_deposit_type', ACHDepositTypeEnum::CHECKING)
             ->set('csc_code', '123');
 
         $paymentAccount2 = clone $paymentAccount1;
 
-        $paymentAccount1->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         $this->setOldProfileId(
             md5($contract->getTenant()->getId()),
             $contract->getTenant()->getAciCollectPayProfileId()
         );
 
-        $em->persist($paymentAccount1);
-
         $paymentAccount2->setType(PaymentAccountTypeEnum::CARD);
         $paymentAccount2->setName('Test ACI Card');
+        $paymentAccount2->setBankAccountType(null);
 
         $paymentAccountData->setEntity($paymentAccount2);
 
-        $paymentAccount2->setToken($paymentProcessor->createPaymentAccount($paymentAccountData, $contract));
-
-        $em->persist($paymentAccount2);
-
-        $em->flush();
+        $paymentProcessor->registerPaymentAccount($paymentAccountData, $depositAccount);
 
         return [$paymentAccount1, $paymentAccount2];
     }
@@ -404,6 +437,7 @@ class PaymentCommandsCase extends BaseTestCase
      */
     public function collectAndPayAciCollectPay()
     {
+        $this->load(true);
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
@@ -418,36 +452,87 @@ class PaymentCommandsCase extends BaseTestCase
 
         $bankPayment = clone $cardPayment;
 
-        $bankPayment->setPaymentAccount($bankPaymentAccount);
-
         $cardPayment->setAmount(-200);
+
+        $bankPayment->setPaymentAccount($bankPaymentAccount);
+        // should create another payment for another contract
+        $contract2 = $em->getRepository('RjDataBundle:Contract')->findOneBy([
+            'status' => ContractStatus::CURRENT,
+            'tenant' => $contract->getTenant(),
+            'group' => $contract->getGroup(),
+        ]);
+
+        $this->assertNotNull($contract2);
+
+        $bankPayment2 = $this->createPayment($contract2, 1002);
+        $bankPayment2->setPaidFor(new DateTime());
+        $bankPayment2->setPaymentAccount($bankPaymentAccount);
 
         $em->persist($cardPayment);
         $em->persist($bankPayment);
+        $em->persist($bankPayment2);
         $em->flush();
 
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $this->executeCommand();
-
+        $this->executeCommand(3); // created 3 jobs for 3 payments
+        $messages = $plugin->getPreSendMessages();
         // "Your Rent is Processing" Email
-        $this->assertCount(3, $plugin->getPreSendMessages()); // 2 for Order; 1 - Monolog Message
+        $this->assertCount(4, $messages); // 3 for Order; 1 - Monolog Message
 
+        // Should get 2 Orders with Pending and Error statuses
+        /** @var OrderSubmerchant[] $orders */
         $orders = $em->getRepository('DataBundle:Order')->findBy(
-            ['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY],
-            ['status' => 'ASC']
+            ['paymentProcessor' => PaymentProcessor::ACI],
+            ['status' => 'DESC']
         );
 
-        $this->assertCount(2, $orders);
+        $this->assertCount(3, $orders);
 
-        $this->assertEquals(OrderStatus::COMPLETE, $orders[0]->getStatus());
-        $this->assertEquals(OrderStatus::ERROR, $orders[1]->getStatus());
+        // first contract bank account
+        $this->assertEquals(
+            OrderStatus::PENDING,
+            $orders[0]->getStatus(),
+            $orders[0]->getTransactions()->first()->getMessages()
+        );
+
+        // second contract the same account
+        $this->assertEquals(
+            OrderStatus::PENDING,
+            $orders[1]->getStatus(),
+            $orders[1]->getTransactions()->first()->getMessages()
+        );
+
+        // first contract card account error with minus amount
+        $this->assertEquals(OrderStatus::ERROR, $orders[2]->getStatus());
 
         $this->assertNotEmpty($orders[0]->getTransactions()->first()->getTransactionId());
-        $this->assertNotEmpty($orders[1]->getTransactions()->first()->getMessages());
+        $this->assertNotEmpty($orders[1]->getTransactions()->first()->getTransactionId());
+        $this->assertNotEmpty($orders[2]->getTransactions()->first()->getMessages());
 
-        $this->deleteAciCollectPayProfile($orders[0]->getContract()->getTenant()->getAciCollectPayProfileId());
+        $date = new \DateTime();
+
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[0]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[0]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order1'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[1]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[1]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order2'
+        );
+        $this->assertEquals(
+            sprintf('%dB%s', $orders[2]->getDepositAccount()->getId(), $date->format('Ymd')),
+            $orders[2]->getTransactions()->first()->getBatchId(),
+            'Expected batchId not found for order3'
+        );
+
+        $expectedDate = $date->format('Ymd');
+        $this->assertEquals($expectedDate, $orders[0]->getTransactions()->first()->getBatchDate()->format('Ymd'));
+        $this->assertEquals($expectedDate, $orders[1]->getTransactions()->first()->getBatchDate()->format('Ymd'));
+        $this->assertEquals($expectedDate, $orders[2]->getTransactions()->first()->getBatchDate()->format('Ymd'));
     }
 
     /**
@@ -476,6 +561,7 @@ class PaymentCommandsCase extends BaseTestCase
         $payment->setStatus(PaymentStatus::ACTIVE);
         $payment->setContract($contract);
         $payment->setPaymentAccount($paymentAccount);
+        $payment->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
         $today = new DateTime();
         $payment->setDueDate($today->format('j'));
         $payment->setStartMonth($today->format('n'));
@@ -484,13 +570,16 @@ class PaymentCommandsCase extends BaseTestCase
         return $payment;
     }
 
-    protected function executeCommand()
+    /**
+     * @param int $countJobs
+     */
+    protected function executeCommand($countJobs = 2)
     {
         $application = new Application($this->getKernel());
         $application->add(new PayCommand());
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
-        $this->assertCount(2, $jobs);
+        $this->assertCount($countJobs, $jobs);
 
         $command = $application->find('payment:pay');
         $commandTester = new CommandTester($command);
@@ -508,7 +597,11 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(0, $jobs);
     }
 
-    protected function getContract($em)
+    /**
+     * @param EntityManager $em
+     * @return Contract
+     */
+    protected function getContract(EntityManager $em)
     {
         $rentAmount = 987;
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(array('rent' => $rentAmount));
@@ -533,5 +626,20 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
+    }
+
+    protected function tearDown()
+    {
+        /**
+         * Remove all aci profiles
+         */
+        $profiles = $this->getOldProfileIds();
+        if (is_array($profiles) && !empty($profiles)) {
+            foreach ($profiles as $profile) {
+                if ($profile) {
+                    $this->deleteAciCollectPayProfile($profile);
+                }
+            }
+        }
     }
 }

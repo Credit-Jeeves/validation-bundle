@@ -36,15 +36,27 @@
             </trans-unit>
             <trans-unit id="admin.report.choose_type">
                 <source>admin.report.choose_type</source>
-                <target>Choose report type:</target>
+                <target>Type:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_bureau">
+                <source>admin.report.choose_bureau</source>
+                <target>Bureau:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_start_date">
+                <source>admin.report.choose_start_date</source>
+                <target>Start date (created_at date of operation):</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_end_date">
+                <source>admin.report.choose_end_date</source>
+                <target>End date:</target>
             </trans-unit>
             <trans-unit id="admin.report.choose_month">
                 <source>admin.report.choose_month</source>
-                <target>Choose report month:</target>
+                <target>Month:</target>
             </trans-unit>
             <trans-unit id="admin.report.choose_year">
                 <source>admin.report.choose_year</source>
-                <target>Choose report year:</target>
+                <target>Year:</target>
             </trans-unit>
             <trans-unit id="admin.rental_reports">
                 <source>admin.rental_reports</source>
@@ -64,7 +76,7 @@
             </trans-unit>
             <trans-unit id="admin.report.notice">
                 <source>admin.report.notice</source>
-                <target>Data to report for %m%/%y% not found</target>
+                <target>Data to report for %m% not found</target>
             </trans-unit>
             <trans-unit id="admin.deposit_account.merchant_name">
                 <source>admin.deposit_account.merchant_name</source>
@@ -121,6 +133,138 @@
             <trans-unit id="admin.email.actions.send_test.wrong_json">
                 <source>admin.email.actions.send_test.wrong_json</source>
                 <target>Test variables : JSON is not valid</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion">
+                <source>admin.late_report.transunion</source>
+                <target>Transunion Late Report</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.experian">
+                <source>admin.late_report.experian</source>
+                <target>Experian Late Report</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.lastname">
+                <source>admin.late_report.lastname</source>
+                <target>Lastname</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.firstname">
+                <source>admin.late_report.firstname</source>
+                <target>Firstname</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.email">
+                <source>admin.late_report.email</source>
+                <target>email</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.due_date">
+                <source>admin.late_report.due_date</source>
+                <target>Due Date</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.last_paid_for">
+                <source>admin.late_report.last_paid_for</source>
+                <target>Last PaidFor</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.integrated_balance">
+                <source>admin.late_report.integrated_balance</source>
+                <target>Integrated Balance</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.group">
+                <source>admin.late_report.group</source>
+                <target>Group</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.rent">
+                <source>admin.late_report.rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.links">
+                <source>admin.late_report.links</source>
+                <target>Links</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.links.contract">
+                <source>admin.late_report.links.contract</source>
+                <target>Contract</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.links.operations">
+                <source>admin.late_report.links.operations</source>
+                <target>Operations</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion.status">
+                <source>admin.late_report.transunion.status</source>
+                <target>Status (Field 17A)</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion.amount_confirmed">
+                <source>admin.late_report.transunion.amount_confirmed</source>
+                <target>Amt Confirmed (Field 16)</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion.payment_rating">
+                <source>admin.late_report.transunion.payment_rating</source>
+                <target>Pmt Rating (Field 17B)</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion.comment_code">
+                <source>admin.late_report.transunion.comment_code</source>
+                <target>Comment (Field 19)</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.transunion.review">
+                <source>admin.late_report.transunion.review</source>
+                <target>Review Late TransUnion</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.experian.review">
+                <source>admin.late_report.experian.review</source>
+                <target>Review Late Experian</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.landlord.send_email">
+                <source>admin.late_report.landlord.send_email</source>
+                <target>Send Notification to Landlord</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.tenant.send_email">
+                <source>admin.late_report.tenant.send_email</source>
+                <target>Send Notification to Tenant</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.error" extype="json">
+                <source>admin.late_report.error</source>
+                <target>Unexpected error occurred!</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.emails_sent" extype="json">
+                <source>admin.late_report.emails_sent</source>
+                <target>Emails have been sent!</target>
+            </trans-unit>
+            <trans-unit id="admin.late_report.choose_contract" extype="json">
+                <source>admin.late_report.choose_contract</source>
+                <target>Choose a contract please</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account_number">
+                <source>admin.error.deposit_account_number</source>
+                <target>You already have deposit account with such type, account number, payment processor and holding.</target>
+            </trans-unit>
+            <trans-unit id="admin.holding.payment_processor_locked">
+                <source>admin.holding.payment_processor_locked</source>
+                <target>Payment Processor changes locked?</target>
+            </trans-unit>
+            <trans-unit id="admin.holding.payments_enabled">
+                <source>admin.holding.payments_enabled</source>
+                <target>Payments enabled?</target>
+            </trans-unit>
+            <trans-unit id="admin.holding.use_recurring_charges">
+                <source>admin.holding.use_recurring_charges</source>
+                <target>Use Recurring Charges for Rent</target>
+            </trans-unit>
+            <trans-unit id="admin.holding.recurring_codes">
+                <source>admin.holding.recurring_codes</source>
+                <target>Recurring Codes</target>
+            </trans-unit>
+            <trans-unit id="admin.error.debit_fee_should_be_filled">
+                <source>admin.error.debit_fee_should_be_filled</source>
+                <target>If Allowed Debit Fee checked, you should fill Debit fee</target>
+            </trans-unit>
+            <trans-unit id="admin.error.debit_payment_processor">
+                <source>admin.error.debit_payment_processor</source>
+                <target>Allowed Debit Fee works only for ACI</target>
+            </trans-unit>
+            <trans-unit id="admin.list.order.outbound_transactions">
+                <source>admin.list.order.outbound_transactions</source>
+                <target>Outbound leg</target>
             </trans-unit>
         </body>
     </file>

@@ -231,7 +231,7 @@ class Transaction extends Base
     public function getPaymentType()
     {
         if ($order = $this->getOrder()) {
-            return $order->getOrderTypes();
+            return $order->getOrderPaymentTypes();
         }
 
         return null;
@@ -277,30 +277,8 @@ class Transaction extends Base
      */
     public function getDepositAccountNumber()
     {
-        $contract = $this->getContract();
+        $depositAccount = $this->getOrder()->getDepositAccount();
 
-        if (!$contract || !($group = $contract->getGroup())) {
-            return null;
-        }
-
-        return $group->getAccountNumber();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Type")
-     * @Serializer\XmlAttribute
-     * @Serializer\Groups({"soapYardiReversed"})
-     * @Serializer\Type("string")
-     *
-     * @return string
-     */
-    public function getReversal()
-    {
-        /** @var YardiSettings $yardiSettings */
-        $yardiSettings = $this->getContract()->getHolding()->getYardiSettings();
-        $order = $this->getOrder();
-
-        return $yardiSettings->getReversalType($order);
+        return $depositAccount ? $depositAccount->getAccountNumber() : null;
     }
 }

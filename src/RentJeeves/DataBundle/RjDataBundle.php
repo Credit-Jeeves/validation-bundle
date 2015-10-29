@@ -32,13 +32,19 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentTypeACH', 'RentJeeves\DataBundle\Enum\PaymentTypeACH');
             Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
             Type::addType('ExternalApi', 'RentJeeves\DataBundle\Enum\ExternalApi');
-            # TODO: YardiPaymentAccepted line below needed for column rename migration, remove after release 4.3
-            Type::addType('YardiPaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('PaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('ApiIntegrationType', 'RentJeeves\DataBundle\Enum\ApiIntegrationType');
             Type::addType('PaymentBatchStatus', 'RentJeeves\DataBundle\Enum\PaymentBatchStatus');
             Type::addType('PaymentProcessor', 'RentJeeves\DataBundle\Enum\PaymentProcessor');
             Type::addType('ImportType', 'RentJeeves\DataBundle\Enum\ImportType');
+            Type::addType('SynchronizationStrategy', 'RentJeeves\DataBundle\Enum\SynchronizationStrategy');
+            Type::addType('BankAccountType', 'RentJeeves\DataBundle\Enum\BankAccountType');
+            Type::addType('OrderAlgorithmType', 'RentJeeves\DataBundle\Enum\OrderAlgorithmType');
+            Type::addType('OutboundTransactionType', 'RentJeeves\DataBundle\Enum\OutboundTransactionType');
+            Type::addType('OutboundTransactionStatus', 'RentJeeves\DataBundle\Enum\OutboundTransactionStatus');
+            Type::addType('DepositAccountType', 'RentJeeves\DataBundle\Enum\DepositAccountType');
+            Type::addType('YardiPostMonthOption', 'RentJeeves\DataBundle\Enum\YardiPostMonthOption');
+            Type::addType('TypeDebitFee', 'RentJeeves\DataBundle\Enum\TypeDebitFee');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

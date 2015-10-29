@@ -25,11 +25,11 @@ parameters:
     email_from: no-reply@renttrack.com
     email_name: RentTrack
 
-    rt_merchant_name: 'RentTrackCorp'
+    rt_group_code: 'RentTrackCorp'
 
     property_management:
         name: 'RENTTRACK'
-        address: '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305'
+        address: '4601 EXCELSIOR BLVD # 403A ST. LOUIS PARK MN 55416'
         phone: '8668419090'
 
     external_urls:
@@ -39,17 +39,22 @@ parameters:
     partners:
         price: 0
         product: 'registration'
+# parameters for landlord import
+    paydirect_fee_cc: 2.79
+    paydirect_fee_ach: 2.50
+
+    dod_limit_max_payment: 5000
 
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side
     payment_card_fee: 2.95% # feeCC
     payment_dollars: $20
-    payment_one_time_until_value: '21:50' # 01:59
+    payment_one_time_until_value: '18:45'
     tenant_payment_per_month_curence: $
     tenant_payment_per_month_dollars: 1
     tenant_payment_per_month_cents: 95
     credittrack_payment_per_month_currency: $
-    credittrack_payment_per_month_dollars: 9
+    credittrack_payment_per_month_dollars: 3
     credittrack_payment_per_month_cents: 95
     credittrack_payment_per_month: %credittrack_payment_per_month_dollars%.%credittrack_payment_per_month_cents%
     landlord_monthly_minimum: $9.95
@@ -114,6 +119,8 @@ twig:
         landlord_per_screen: %landlord_per_screen%
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
+        features:
+            allow_score_track: %allow_score_track%
         
 stof_doctrine_extensions:
     class:
@@ -126,6 +133,8 @@ payum:
     payments:
         aci_collect_pay:
             aci_collect_pay: %aci_collect_pay%
+        aci_pay_anyone:
+            aci_pay_anyone: %aci_pay_anyone%
 
 payum2:
     contexts:

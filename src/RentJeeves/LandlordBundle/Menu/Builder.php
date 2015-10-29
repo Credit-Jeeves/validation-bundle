@@ -2,7 +2,7 @@
 namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
+use RentJeeves\LandlordBundle\Menu\LandlordPermission as Permission;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Builder extends ContainerAware
@@ -11,42 +11,45 @@ class Builder extends ContainerAware
     {
         $sRoute = $this->container->get('request')->get('_route');
         $menu = $factory->createItem('root');
+        /**
+         * @var $permission Permission
+         */
+        $permission = $this->container->get('landlord.permission');
         $menu->addChild(
             'tabs.dashboard',
             array(
                 'route' => 'landlord_homepage'
             )
         );
-        $menu->addChild(
-            'tabs.properties',
-            array(
-                'route' => 'landlord_properties'
-            )
-        );
+        if ($permission->hasAccessToPropertiesTab()) {
+            $menu->addChild(
+                'tabs.properties',
+                array(
+                    'route' => 'landlord_properties'
+                )
+            );
+        }
         $menu->addChild(
             'tabs.tenants',
             array(
                 'route' => 'landlord_tenants'
             )
         );
-        /**
-         * @var $permission Permission
-         */
-        $permission = $this->container->get('accounting.permission');
+
         if ($permission->hasAccessToAccountingTab()) {
             if ($permission->hasAccessToImport()) {
                 $menu->addChild(
                     'tab.accounting',
-                    array(
+                    [
                         'route' => 'accounting_import_file'
-                    )
+                    ]
                 );
             } else {
                 $menu->addChild(
                     'tab.accounting',
-                    array(
+                    [
                         'route' => 'accounting_export'
-                    )
+                    ]
                 );
             }
         }
@@ -58,6 +61,7 @@ class Builder extends ContainerAware
             case 'landlord_properties':
                 $menu['tabs.properties']->setAttribute('class', 'active');
                 break;
+            case 'landlord_tenants_filter':
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
@@ -66,6 +70,7 @@ class Builder extends ContainerAware
             case 'accounting_import_file':
             case 'import_summary_report':
             case 'accounting_export':
+            case 'accounting_deposit':
                 $menu['tab.accounting']->setAttribute('class', 'active');
                 break;
             default:
@@ -101,37 +106,47 @@ class Builder extends ContainerAware
     public function accountingMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
+
         /**
-         * @var $permission Permission
+         * @var Permission $permission
          */
-        $permission = $this->container->get('accounting.permission');
+        $permission = $this->container->get('landlord.permission');
 
         if ($permission->hasAccessToImport()) {
             $menu->addChild(
-                'import',
-                array(
+                'accounting.menu.import',
+                [
                     'route' => 'accounting_import_file'
-                )
+                ]
             );
         }
         if ($permission->hasAccessToExport()) {
             $menu->addChild(
-                'export',
-                array(
+                'accounting.menu.export',
+                [
                     'route' => 'accounting_export'
-                )
+                ]
             );
         }
+        $menu->addChild(
+            'accounting.menu.batched_deposits',
+            [
+                'route' => 'accounting_deposit'
+            ]
+        );
 
         $route = $this->container->get('request')->get('_route');
         switch ($route) {
             case 'accounting_match_file':
             case 'accounting_import':
             case 'accounting_import_file':
-                $menu['import']->setUri('');
+                $menu['accounting.menu.import']->setUri('');
                 break;
             case 'accounting_export':
-                $menu['export']->setUri('');
+                $menu['accounting.menu.export']->setUri('');
+                break;
+            case 'accounting_deposit':
+                $menu['accounting.menu.batched_deposits']->setUri('');
                 break;
         }
 

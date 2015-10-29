@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -10,6 +11,7 @@ use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -84,7 +86,7 @@ class ContractProcess
                 $contract->setGroup($propertyGroup);
                 $contract->setUnit($property->getExistingSingleUnit());
             } else {
-                if (!$unit = $property->searchUnit($unitName)) {
+                if (Unit::SEARCH_UNIT_UNASSIGNED === $unitName || !$unit = $property->searchUnit($unitName)) {
                     return $this->createContractForEachGroup($tenant, $property, $unitName);
                 }
 
@@ -99,6 +101,9 @@ class ContractProcess
                 return false;
             }
 
+            if (null === $contract->getDueDate()) {
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+            }
 
             $this->em->persist($contract);
             $this->em->flush();
@@ -128,6 +133,7 @@ class ContractProcess
         $contract->setUnit($contractWaiting->getUnit());
         $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
+        $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
@@ -167,7 +173,6 @@ class ContractProcess
         return $contract;
     }
 
-
     /**
      * @param Tenant $tenant
      * @param Property $property
@@ -195,9 +200,13 @@ class ContractProcess
             return false;
         }
 
+        /** @var Group $group */
         foreach ($groups as $group) {
             $contract->setHolding($group->getHolding());
             $contract->setGroup($group);
+            if (null === $contract->getDueDate()) {
+                $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+            }
             $this->em->persist($contract);
             $result[] = $contract;
             $contract = clone $contract;

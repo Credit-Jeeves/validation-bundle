@@ -22,7 +22,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
  *     "doctrine.event_listener",
  *     attributes = {
  *         "event"="prePersist",
- *         "method"="prePersist" 
+ *         "method"="prePersist"
  *     }
  * )
  * @Tag(
@@ -110,7 +110,7 @@ class PaymentListener
         $entity = $eventArgs->getEntity();
         if (($entity instanceof Contract) &&
             ContractStatus::DELETED == $entity->getStatus() &&
-            ($payment = $entity->getActivePayment()) &&
+            ($payment = $entity->getActiveRentPayment()) &&
             PaymentStatus::CLOSE != $payment->getStatus()
         ) {
             $payment->setClosed($this, PaymentCloseReason::CONTRACT_DELETED);

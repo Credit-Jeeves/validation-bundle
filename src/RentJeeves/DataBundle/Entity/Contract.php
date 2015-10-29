@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
@@ -155,6 +156,18 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("allowDebitCard")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return boolean
+     */
+    public function isAllowDebitCard()
+    {
+        return $this->getGroupSettings()->isAllowedDebitFee();
+    }
+
+    /**
      * @inheritdoc
      */
     public function getDueDate()
@@ -198,26 +211,6 @@ class Contract extends Base
         return $holdingName;
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("payment")
-     * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
-     * @Serializer\Groups({"payRent"})
-     *
-     * @return Payment
-     */
-    public function getNotClosedPayment()
-    {
-        /** @var Payment $payment */
-        if (($payments = $this->getPayments()) && ($payment = $payments->last())) {
-            if (PaymentStatus::CLOSE != $payment->getStatus()) {
-                return $payment;
-            }
-        }
-
-        return null;
-    }
-
     public function isDeniedOnExternalApi()
     {
         if (in_array(
@@ -231,6 +224,8 @@ class Contract extends Base
     }
 
     /**
+     * @TODO move to LandlordContractManager
+     *
      * @return array
      */
     public function getItem()
@@ -585,9 +580,7 @@ class Contract extends Base
      */
     private function fixDay($newDate)
     {
-        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate() &&
-            (0 == $this->getBalance() || abs($this->getBalance()) == $this->getRent())
-        ) {
+        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate()) {
             if ($newDate->format('t') >= $this->getDueDate() && 3 >= abs($newDate->format('j') - $this->getDueDate())) {
                 $newDate->setDate(null, null, $this->getDueDate());
             }
@@ -670,6 +663,7 @@ class Contract extends Base
     }
 
     /**
+     * @TODO: move to new service
      * @TODO make it with serializer, it's sucks currently
      * @TODO remove EntityManager Entity must not use it
      *
@@ -712,7 +706,7 @@ class Contract extends Base
             }
         }
 
-        if ($payment = $this->getNotClosedPayment()) {
+        if ($payment = $this->getActiveRentPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
@@ -722,6 +716,20 @@ class Contract extends Base
             if (10 < strlen($result['row_payment_source'])) {
                 $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10).'...';
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+            }
+        }
+
+        $result['hasCustomPayments'] = false;
+
+        if ($payments = $this->getActiveCustomPayments() and !$payments->isEmpty()) {
+            $result['hasCustomPayments'] = true;
+            foreach ($payments as $payment) {
+                $paymentResult['amount'] = $payment->getAmount();
+                $paymentResult['scheduled_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
+                $paymentResult['pay_for'] = DepositAccountType::title($payment->getDepositAccount()->getType());
+                $paymentResult['id'] = $payment->getId();
+
+                $result['customPayments'][] = $paymentResult;
             }
         }
 
@@ -740,6 +748,9 @@ class Contract extends Base
         $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        $result['is_allowed_to_pay_anything'] =
+            ($groupSettings->isAllowPayAnything() &&
+                !$this->getGroup()->getNotRentDepositAccountsForCurrentPaymentProcessor()->isEmpty());
         // display only integrated balance
         $result['balance'] = $isIntegrated ? sprintf('$%s', $this->getIntegratedBalance()) : '';
         $result['in_day_range'] = DayRangeValidator::inRange(
@@ -840,13 +851,21 @@ class Contract extends Base
     /**
      * @throws RuntimeException
      *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("payment")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
+     * @Serializer\Groups({"payRent"})
+     *
      * @return Payment
      */
-    public function getActivePayment()
+    public function getActiveRentPayment()
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                    (!$payment->getDepositAccount() ||
+                        DepositAccountType::RENT === $payment->getDepositAccount()->getType())
+                ) {
                     return true;
                 }
 
@@ -860,7 +879,20 @@ class Contract extends Base
             return null;
         }
 
-        return $collection[0];
+        return $collection->first();
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection|Payment[]
+     */
+    public function getActiveCustomPayments()
+    {
+        return $this->getPayments()->filter(
+            function (Payment $payment) {
+                return (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                    DepositAccountType::RENT !== $payment->getDepositAccount()->getType());
+            }
+        );
     }
 
     /**
@@ -920,6 +952,8 @@ class Contract extends Base
     }
 
     /**
+     * @deprecated
+     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("depositAccount")
      * @Serializer\Type("RentJeeves\DataBundle\Entity\DepositAccount")
@@ -927,7 +961,18 @@ class Contract extends Base
      */
     public function getDepositAccount()
     {
-        return $this->getGroup()->getDepositAccount();
+        return $this->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\GroupSettings")
+     * @Serializer\Groups({"payRent"})
+     */
+    public function getGroupSettings()
+    {
+        return $this->getGroup()->getGroupSettings();
     }
 
     /**
@@ -969,13 +1014,16 @@ class Contract extends Base
         return $this->getStartAt();
     }
 
+    /**
+     * @return float
+     */
     public function getCurrentBalance()
     {
         if ($this->getSettings()->getIsIntegrated()) {
             return $this->getIntegratedBalance();
-        } else {
-            return $this->getBalance();
         }
+
+        return 0;
     }
 
     /**
@@ -1061,5 +1109,31 @@ class Contract extends Base
         }
 
         return false;
+    }
+
+    /**
+     * @link https://credit.atlassian.net/browse/RT-1006
+     *
+     * Setting paidTo logic from contract waiting.
+     * Use this method only when contract created from contract waiting and need set up paidTo.
+     */
+    public function setPaidToByBalanceDue()
+    {
+        $this->getDueDate();
+        $paidTo = new DateTime();
+        $paidTo->setDate(
+            null,
+            null,
+            $this->getDueDate()
+        );
+        //if balance is >0 then balance due, set paidTo to duedate to current month.
+        if ($this->getIntegratedBalance() > 0) {
+            $this->setPaidTo($paidTo);
+
+            return;
+        }
+        $paidTo->modify('+1 month');
+        //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
+        $this->setPaidTo($paidTo);
     }
 }

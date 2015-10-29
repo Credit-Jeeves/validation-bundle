@@ -34,6 +34,10 @@ function TenantPaymentsViewModel()
 
                         return false;
                     });
+                if (typeof (window.paymentHistoryLoadedCallback) == 'function') {
+                    window.paymentHistoryLoadedCallback();
+                    window.paymentHistoryLoadedCallback = false;
+                }
                 self.isLoading(false);
             }
         });
@@ -61,7 +65,7 @@ function TenantPaymentsViewModel()
 
     this.isSuccessfulStatus = function(status)
     {
-        if (status == 'new' || status == 'complete' || status == 'pending') {
+        if (status == 'new' || status == 'complete' || status == 'pending' || status == 'sending') {
             return true;
         }
 

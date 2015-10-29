@@ -23,7 +23,7 @@ use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
- * @UniqueEntity(fields={"email"}, groups={"invite", "import"})
+ * @UniqueEntity(fields={"email"}, groups={"invite", "import", "landlordImport"})
  */
 abstract class User extends BaseUser
 {
@@ -55,7 +55,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Length(
@@ -72,7 +73,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
@@ -130,7 +132,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Length(
@@ -147,7 +150,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Regex(
@@ -177,7 +181,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "invitationApi",
      *         "tenant_invite",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @Assert\Email(
@@ -189,7 +194,8 @@ abstract class User extends BaseUser
      *         "account_landlord",
      *         "api_identity_check",
      *         "import",
-     *         "api"
+     *         "api",
+     *         "landlordImport"
      *     }
      * )
      * @InviteEmail(
@@ -326,7 +332,8 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "invitationApi",
      *         "api",
-     *         "import_phone"
+     *         "import_phone",
+     *         "landlordImport"
      *     }
      * )
      */
@@ -388,9 +395,9 @@ abstract class User extends BaseUser
     protected $invite_code;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
+     * @ORM\Column(name="email_notification", type="boolean", nullable=true, options={"default"="1"})
      */
-    protected $score_changed_notification = true;
+    protected $emailNotification = true;
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
@@ -1198,26 +1205,26 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Set score_changed_notification
+     * Set emailNotification
      *
      * @param  boolean $scoreChangedNotification
      * @return User
      */
-    public function setScoreChangedNotification($scoreChangedNotification)
+    public function setEmailNotification($scoreChangedNotification)
     {
-        $this->score_changed_notification = $scoreChangedNotification;
+        $this->emailNotification = $scoreChangedNotification;
 
         return $this;
     }
 
     /**
-     * Get score_changed_notification
+     * Get emailNotification
      *
      * @return boolean
      */
-    public function getScoreChangedNotification()
+    public function getEmailNotification()
     {
-        return $this->score_changed_notification;
+        return $this->emailNotification;
     }
 
     /**
@@ -1589,7 +1596,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Get reportsD2c
+     * Get reportsTUSnapshot
      *
      * @return \Doctrine\Common\Collections\Collection
      */

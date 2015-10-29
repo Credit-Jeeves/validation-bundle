@@ -2,8 +2,14 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Exception;
 
+use RentJeeves\DataBundle\Enum\PaymentGroundType;
+
 class PaymentProcessorInvalidArgumentException extends \InvalidArgumentException
 {
+    /**
+     * @param string $paymentProcessor
+     * @return PaymentProcessorInvalidArgumentException
+     */
     public static function invalidPaymentProcessor($paymentProcessor)
     {
         return new self(
@@ -12,5 +18,21 @@ class PaymentProcessorInvalidArgumentException extends \InvalidArgumentException
                 $paymentProcessor
             )
         );
+    }
+
+    /**
+     * @param string $paymentGroundType
+     * @throws self
+     */
+    public static function assertPaymentGroundType($paymentGroundType)
+    {
+        if (!PaymentGroundType::isValid($paymentGroundType)) {
+            throw new self(
+                sprintf(
+                    'Payment Ground Type "%s" is invalid',
+                    $paymentGroundType
+                )
+            );
+        }
     }
 }

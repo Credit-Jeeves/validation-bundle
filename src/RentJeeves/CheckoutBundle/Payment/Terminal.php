@@ -2,150 +2,128 @@
 
 namespace RentJeeves\CheckoutBundle\Payment;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
-use Payum2\Heartland\Model\PaymentDetails;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentDetailsMapper;
+use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Transaction;
-use Payum2\Heartland\Soap\Base\BillTransaction;
-use Payum2\Heartland\Soap\Base\CardProcessingMethod;
-use Payum2\Heartland\Soap\Base\MakePaymentRequest;
-use Payum2\Heartland\Soap\Base\TokenToCharge;
-use Payum2\Heartland\Soap\Base\Transaction as RequestTransaction;
-use Payum2\Request\BinaryMaskStatusRequest;
-use Payum2\Request\CaptureRequest;
-use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
-use Payum2\Payment as PaymentProcessor;
-use RuntimeException;
-use DateTime;
+use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
-/**
- * @DI\Service("payment_terminal")
- */
 class Terminal
 {
+    /**
+     * @var OrderCreationManager
+     */
+    protected $orderCreationManager;
+
+    /**
+     * @var OrderStatusManagerInterface
+     */
+    protected $orderStatusManager;
+
     /**
      * @var EntityManager
      */
     protected $em;
-    /**
-     * @var PaymentProcessor
-     */
-    protected $payment;
-    /**
-     * @var PaymentDetailsMapper
-     */
-    protected $paymentDetailsMapper;
-    /**
-     * @var string
-     */
-    protected $merchantName;
 
     /**
-     * @param EntityManager        $em
-     * @param PayumAwareRegistry   $payum
-     * @param PaymentDetailsMapper $paymentDetailsMapper
-     * @param string               $merchantName
-     *
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "payum" = @DI\Inject("payum2"),
-     *     "paymentDetailsMapper" = @DI\Inject("payment.heartland.payment_details_mapper"),
-     *     "merchantName" = @DI\Inject("%rt_merchant_name%"),
-     * })
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var PaymentProcessorFactory
+     */
+    protected $paymentProcessorFactory;
+
+    /**
+     * @param OrderCreationManager $orderCreationManager
+     * @param OrderStatusManagerInterface $orderStatusManager
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
      */
     public function __construct(
+        OrderCreationManager $orderCreationManager,
+        OrderStatusManagerInterface $orderStatusManager,
         EntityManager $em,
-        PayumAwareRegistry $payum,
-        PaymentDetailsMapper $paymentDetailsMapper,
-        $merchantName
+        LoggerInterface $logger
     ) {
+        $this->orderCreationManager = $orderCreationManager;
+        $this->orderStatusManager = $orderStatusManager;
         $this->em = $em;
-        $this->payment = $payum->getPayment('heartland');
-        $this->paymentDetailsMapper = $paymentDetailsMapper;
-        $this->merchantName = $merchantName;
+        $this->logger = $logger;
     }
 
-    public function pay(Group $group, $amount, $id4)
+    /**
+     * @param PaymentProcessorFactory $factory
+     *
+     * Setter injection is used b/c PaymentProcessorFactory doesn't exist when __construct is called.
+     */
+    public function setFactory(PaymentProcessorFactory $factory)
     {
-        $order = new Order();
-        $operation = new Operation();
-        $operation->setType(OperationType::CHARGE);
-        $operation->setAmount($amount);
-        $operation->setGroup($group);
-        $operation->setPaidFor(new DateTime());
-        $order->addOperation($operation);
+        $this->paymentProcessorFactory = $factory;
+    }
 
-        $users = $group->getGroupAgents();
-        if ($users->count() == 0) {
-            throw new RuntimeException("Group user not found");
+    /**
+     * @param Group $group
+     * @param float $amount
+     * @param string $descriptor
+     * @throws \Exception
+     * @return Transaction
+     */
+    public function pay(Group $group, $amount, $descriptor)
+    {
+        $this->logger->debug(
+            sprintf(
+                'Trying to get new charge order for group ID %s',
+                $group->getId()
+            )
+        );
+
+        try {
+            $order = $this->orderCreationManager->createChargeOrder($group, $amount, $descriptor);
+
+            $this->orderStatusManager->setNew($order);
+
+            if ($this->getPaymentProcessor($group)->executeOrder(
+                $order,
+                $group->getActiveBillingAccount(),
+                PaymentGroundType::CHARGE
+            )) {
+                $this->orderStatusManager->setComplete($order);
+            } else {
+                $this->orderStatusManager->setError($order);
+            }
+        } catch (\Exception $e) {
+            $this->logger->alert('VirtualTerminal error occurred:' .  $e->getMessage());
+            if (!empty($order)) {
+                $this->orderStatusManager->setError($order);
+            }
+            throw $e;
         }
 
-        $groupUser = $users->first();
+        $this->logger->debug(
+            sprintf(
+                'New charge order created! ID %d, status: %s',
+                $order->getId(),
+                $order->getStatus()
+            )
+        );
 
-        $order->setType(OrderType::HEARTLAND_BANK);
-        $order->setUser($groupUser);
-        $order->setSum($amount);
-        $order->setStatus(OrderStatus::NEWONE);
-
-        $paymentRequest = new MakePaymentRequest();
-
-        $billTransaction = new BillTransaction();
-        $billTransaction->setID1(substr($group->getName(), 0, 50));
-        $billTransaction->setID4($id4);
-        $billTransaction->setBillType('Subscription Services');
-        $billTransaction->setAmountToApplyToBill($amount);
-        $paymentRequest->getBillTransactions()->setBillTransaction(array($billTransaction));
-
-        $tokenToCharge = new TokenToCharge();
-        $tokenToCharge->setAmount($amount);
-        $tokenToCharge->setExpectedFeeAmount(0);
-        $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
-        $tokenToCharge->setToken($group->getActiveBillingAccount()->getToken());
-
-        $paymentRequest->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
-
-        $requestTransaction = new RequestTransaction();
-        $requestTransaction->setAmount($amount);
-        $requestTransaction->setFeeAmount(0);
-        $paymentRequest->setTransaction($requestTransaction);
-
-        $paymentDetails = new PaymentDetails();
-        $paymentDetails->setMerchantName($this->merchantName);
-        $paymentDetails->setRequest($paymentRequest);
-
-        $transaction = new Transaction();
-        $transaction->setMerchantName($this->merchantName);
-        $transaction->setOrder($order);
-        $this->em->persist($order);
         $this->em->flush();
 
-        $captureRequest = new CaptureRequest($paymentDetails);
-        $this->payment->execute($captureRequest);
+        return $order->getTransactions()->last();
+    }
 
-        $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-        $this->payment->execute($statusRequest);
-
-        $transaction = $this->paymentDetailsMapper->map($paymentDetails, $transaction);
-        $order->addTransaction($transaction);
-
-        if ($statusRequest->isSuccess()) {
-            $order->setStatus(OrderStatus::COMPLETE);
-        } else {
-            $order->setStatus(OrderStatus::ERROR);
-        }
-
-        $transaction->setAmount($amount);
-        $transaction->setIsSuccessful($statusRequest->isSuccess());
-        $this->em->persist($transaction);
-        $this->em->flush();
-
-        return $transaction;
+    /**
+     * @param  Group $group
+     * @return SubmerchantProcessorInterface
+     */
+    protected function getPaymentProcessor(Group $group)
+    {
+        return $this->paymentProcessorFactory->getPaymentProcessor($group);
     }
 }

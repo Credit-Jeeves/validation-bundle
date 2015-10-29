@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\DiExtraBundle\Annotation as DI;
 
 use RentJeeves\DataBundle\Entity\Property;
@@ -29,19 +28,19 @@ class Google
     const DEFAULT_LIMIT = 19;
 
     /**
-     * @var GooglePlaces 
+     * @var GooglePlaces
      */
     protected $place;
 
     /**
-     * @var EntityManager 
+     * @var EntityManager
      */
     protected $em;
-    
+
     /**
      * Constructor.
      *
-     * @param parameter from config     $google_maps_key  
+     * @param parameter from config     $google_maps_key
      *
      * @DI\InjectParams({
      *     "google_maps_key"    = @DI\Inject("%google_maps_key%"),
@@ -100,65 +99,6 @@ class Google
 
     }
 
-    /**
-    * Save property to google
-    *
-    * @return array Property
-    */
-    public function searchPropertyInRadius (
-        Property $property,
-        $name = self::DEFAULT_NAME,
-        $radius = self::DEFAULT_RADIUS
-    ) {
-        $propertyList = array();
-        $latitude   = $property->getJb();
-        $longitude = $property->getKb();
-        $this->place->setLocation($latitude . ',' . $longitude);
-
-        $this->place->setRadius($radius);
-        $this->place->setLanguage(self::DEFAULT_LANGUAGE);
-        $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
-        $this->place->setName($name);
-        $this->place->setTypes(self::DEFAULT_TYPES);
-        $this->place->setSensor('false');
-
-        $results = $this->place->nearbySearch();
-
-        if (empty($results['errors']) && isset($results['result'])) {
-
-            $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-            $i = 0;
-            foreach ($results['result'] as $key => $value) {
-
-                $jb = $value['geometry']['location']['lat'];
-                $kb = $value['geometry']['location']['lng'];
-
-                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb);
-
-                if (empty($nearProperty)) {
-                    continue;
-                }
-
-                if (isset($propertyList[$nearProperty->getId()])) {
-                    continue;
-                }
-
-                if (!$nearProperty->hasLandlord()) {
-                    continue;
-                }
-
-                if ($i >= self::DEFAULT_LIMIT) {
-                    break;
-                }
-
-                $propertyList[$nearProperty->getId()] =  $nearProperty;
-                $i++;
-            }
-        }
-        
-        return $propertyList;
-    }
-
     public function deletePlace(Property $property, $reference, $name = self::DEFAULT_NAME)
     {
         $latitude   = $property->getJb();
@@ -205,7 +145,7 @@ class Google
         if (empty($results['errors']) && isset($results['result'])) {
             return $results['result'];
         }
-        
+
         throw new \Exception("Error processing(searchPlace) google request for Property ID =".$property->getId(), 1);
     }
 

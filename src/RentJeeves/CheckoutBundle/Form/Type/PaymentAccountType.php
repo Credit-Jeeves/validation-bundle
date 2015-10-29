@@ -2,15 +2,20 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\DataBundle\Model\User;
-use RentJeeves\CheckoutBundle\Form\Enum\ACHDepositTypeEnum;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\CardScheme;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 class PaymentAccountType extends AbstractType
 {
@@ -21,11 +26,36 @@ class PaymentAccountType extends AbstractType
      */
     protected $user;
 
-    public function __construct(User $user)
+    /**
+     * @var string
+     */
+    protected $formNameSuffix = '';
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var int
+     */
+    protected $contractId;
+
+    /**
+     * @param User $user
+     * @param string $formNameSuffix
+     * @param EntityManager|null $em
+     */
+    public function __construct(User $user, $formNameSuffix = '', EntityManager $em = null)
     {
         $this->user = $user;
+        $this->formNameSuffix = $formNameSuffix ? '_' . $formNameSuffix : '';
+        $this->em = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -36,14 +66,26 @@ class PaymentAccountType extends AbstractType
                 'expanded' => true,
                 'choices' => [
                     PaymentAccountTypeEnum::BANK => 'checkout.bank',
-                    PaymentAccountTypeEnum::CARD => 'checkout.card'
+                    PaymentAccountTypeEnum::CARD => 'checkout.card',
+                    PaymentAccountTypeEnum::DEBIT_CARD => 'checkout.debit_card',
                 ],
                 'empty_value'  => false,
                 'data'  => PaymentAccountTypeEnum::BANK,
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.type'
+                    'data-bind' => 'checked: currentPaymentAccount().type',
+                    'html' => '<div
+                            data-bind="visible: \'debit_card\' == currentPaymentAccount().type()"
+                            class="tooltip-box type5 pie-el">' .
+                        '<h4 data-bind="i18n: {}">checkout.type.tooltip.title</h4>' .
+                        '</div>',
                 ],
-                'invalid_message' => 'checkout.error.payment_type.invalid',
+                'invalid_message' => 'checkout.error.type.invalid',
+                'constraints' => [
+                    new Callback([
+                        'callback' => [$this, 'isValidPaymentAccountType'],
+                        'groups' => ['bank', 'card', 'debit_card'],
+                    ])
+                ]
              ]
         );
 
@@ -53,10 +95,7 @@ class PaymentAccountType extends AbstractType
             [
                 'label' => 'checkout.account_nickname',
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.name',
-                    'row_attr' => [
-                        'data-bind' => 'visible: paymentSource.save'
-                    ]
+                    'data-bind' => 'value: currentPaymentAccount().name',
                 ]
             ]
         );
@@ -69,9 +108,9 @@ class PaymentAccountType extends AbstractType
                 'label' => 'checkout.payor_name',
                 'attr' => [
                     'placeholder' => 'checkout.payor_name.placeholder',
-                    'data-bind' => 'value: paymentSource.PayorName',
+                    'data-bind' => 'value: currentPaymentAccount().PayorName',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -103,9 +142,9 @@ class PaymentAccountType extends AbstractType
                         '<p class="banking-numbers clearfix"></p>' .
                         '</div>',
                     'tooltip_text_class' => 'banking-numbers clearfix',
-                    'data-bind' => 'value: paymentSource.RoutingNumber',
+                    'data-bind' => 'value: currentPaymentAccount().RoutingNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -126,12 +165,18 @@ class PaymentAccountType extends AbstractType
                 'first_name' => 'AccountNumber',
                 'second_name' => 'AccountNumberAgain',
                 'first_options'  => [
-                    'label' => 'checkout.account_number'
+                    'label' => 'checkout.account_number',
+                    'attr' => [
+                        'data-bind' => 'value: currentPaymentAccount().AccountNumber',
+                    ],
                 ],
                 'second_options' => [
                     'label' => 'checkout.account_number_again',
                     'label_attr' => [
                         'class' => 'clear',
+                    ],
+                    'attr' => [
+                        'data-bind' => 'value: currentPaymentAccount().AccountNumberAgain',
                     ],
                 ],
                 'invalid_message' => 'checkout.error.account_number.match',
@@ -139,9 +184,8 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.AccountNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ],
                 ],
                 'constraints' => [
@@ -159,13 +203,13 @@ class PaymentAccountType extends AbstractType
             'ACHDepositType',
             'choice',
             [
-                'mapped' => false,
+                'property_path' => 'bankAccountType',
                 'label' => 'checkout.account_type',
                 'expanded' => true,
                 'choices' => [
-                    ACHDepositTypeEnum::CHECKING => 'checkout.account_type.checking',
-                    ACHDepositTypeEnum::SAVINGS => 'checkout.account_type.savings',
-                    ACHDepositTypeEnum::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
+                    BankAccountType::CHECKING => 'checkout.account_type.checking',
+                    BankAccountType::SAVINGS => 'checkout.account_type.savings',
+                    BankAccountType::BUSINESS_CHECKING => 'checkout.account_type.business_checking'
                 ],
                 'empty_value'  => false,
                 'invalid_message' => 'checkout.error.account_type.invalid',
@@ -178,9 +222,9 @@ class PaymentAccountType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.ACHDepositType',
+                    'data-bind' => 'checked: currentPaymentAccount().ACHDepositType',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'bank\' == currentPaymentAccount().type()'
                     ]
                 ]
             ]
@@ -195,15 +239,15 @@ class PaymentAccountType extends AbstractType
                 'constraints' => [
                     new NotBlank(
                         [
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.card_account_name.empty',
                         ]
                     ),
                 ],
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.CardAccountName',
+                    'data-bind' => 'value: currentPaymentAccount().CardAccountName',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ]
                 ]
             ]
@@ -220,21 +264,42 @@ class PaymentAccountType extends AbstractType
                         '<li><span class="cc visa">visa</span></li>' .
                         '<li><span class="cc mc">mastercard</span></li>' .
 //                        '<li><span class="cc ae">american express</span></li>' .
-                        '<li><span class="cc discover">discover</span></li>' .
+                        '<li data-bind="visible: \'card\' == currentPaymentAccount().type()">' .
+                            '<span class="cc discover">discover</span>' .
+                        '</li>' .
 //                        '<li><span class="cc dc">diners club</span></li>',
                         '</ul>',
-                    'data-bind' => 'value: paymentSource.CardNumber',
+                    'data-bind' => 'value: currentPaymentAccount().CardNumber',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ]
                 ],
                 'constraints' => [
                     new NotBlank(
                         [
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.card_number.empty',
                         ]
                     ),
+                    new CardScheme(
+                        [
+                            'groups' => ['card'],
+                            'schemes' => [
+                                'VISA',
+                                'MASTERCARD',
+                                'DISCOVER'
+                            ]
+                        ]
+                    ),
+                    new CardScheme(
+                        [
+                            'groups' => ['debit_card'],
+                            'schemes' => [
+                                'VISA',
+                                'MASTERCARD',
+                            ]
+                        ]
+                    )
                 ]
             ]
         );
@@ -248,9 +313,9 @@ class PaymentAccountType extends AbstractType
                 'attr' => [
                     'class' => 'phone-width',
                     'help' => 'checkout.csc.help',
-                    'data-bind' => 'value: paymentSource.VerificationCode',
+                    'data-bind' => 'value: currentPaymentAccount().VerificationCode',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
                     ]
                 ],
                 'constraints' => [
@@ -260,6 +325,13 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.csc.empty',
                         ]
                     ),
+                    new Regex(
+                        [
+                            'pattern' => '/^[0-9]{3}$/',
+                            'groups' => ['card'],
+                            'message' => 'checkout.error.csc.type',
+                        ]
+                    )
                 ]
             ]
         );
@@ -274,16 +346,16 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => 'common.month',
                 'attr' => [
                     'class' => 'original',
-                    'data-bind' => 'value: paymentSource.ExpirationMonth',
+                    'data-bind' => 'value: currentPaymentAccount().ExpirationMonth',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ]
                 ],
                 'invalid_message' => 'checkout.error.ExpirationMonth.invalid',
                 'constraints' => [
                     new NotBlank(
                         [
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.ExpirationMonth.empty',
                         ]
                     ),
@@ -303,16 +375,16 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => 'common.year',
                 'attr' => [
                     'class' => 'original',
-                    'data-bind' => 'value: paymentSource.ExpirationYear',
+                    'data-bind' => 'value: currentPaymentAccount().ExpirationYear',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ]
                 ],
                 'invalid_message' => 'checkout.error.ExpirationYear.invalid',
                 'constraints' => [
                     new NotBlank(
                         [
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.ExpirationYear.empty',
                         ]
                     ),
@@ -331,17 +403,19 @@ class PaymentAccountType extends AbstractType
                 'expanded' => true,
                 'choices' => clone $this->user->getAddresses(),
                 'attr' => [
-                    'data-bind' => 'checked: paymentSource.address.addressChoice',
+                    'data-bind' => 'checked: billingaddress.addressChoice',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && window.addressesViewModels.length'
+                        'data-bind' => 'visible: ' .
+                            '(["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1' .
+                            ' && addresses().length > 0)'
                     ],
                     'html' =>
-                        '<!-- ko foreach: newUserAddress -->' .
+                        '<!-- ko foreach: newAddresses -->' .
                             '<label class="checkbox radio">' .
                                 '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
                                     'required="required"' .
                                     'data-bind="' .
-                                        'checked: $parent.paymentSource.address.addressChoice, ' .
+                                        'checked: $parent.billingaddress.addressChoice, ' .
                                         'attr: {\'id\': \'' . $this->getName() . '_address_choice_\' + $data.id() }, ' .
                                         'value: $data.id()' .
                                     '" />' .
@@ -368,7 +442,7 @@ class PaymentAccountType extends AbstractType
             [
                 'mapped' => false,
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.address.isAddNewAddress'
+                    'data-bind' => 'value: billingaddress.isAddNewAddress'
                 ]
             ]
         );
@@ -382,10 +456,10 @@ class PaymentAccountType extends AbstractType
                 'attr' => [
                     'data-bind' => 'visible: false',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ],
-                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                    'html' => '<div class="fields-box" data-bind="visible: !billingaddress.isAddNewAddress()">' .
+                        '<a href="#" data-bind="i18n: {}, click: billingaddress.addAddress">' .
                         'common.add_new' .
                         '</a>' .
                         '</div>',
@@ -396,7 +470,7 @@ class PaymentAccountType extends AbstractType
 
         $builder->add(
             'address',
-            new UserAddressType('paymentSource.'),
+            new UserAddressType('billing'),
             [
                 'mapped' => false,
                 'label' => 'checkout.billing_address.new',
@@ -405,25 +479,10 @@ class PaymentAccountType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() ' .
-                            '&& paymentSource.address.isAddNewAddress()',
+                        'data-bind' => 'visible: ' .
+                            '(["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1' .
+                            ' && billingaddress.isAddNewAddress())',
                         'class' => 'form-row-custom clearfix type-text'
-                    ]
-                ]
-            ]
-        );
-
-        $builder->add(
-            'save',
-            'checkbox',
-            [
-                'mapped' => false,
-                'label' => 'checkout.payment.save',
-                'attr' => [
-                    'help' => 'checkout.payment.save.help',
-                    'data-bind' => 'checked: paymentSource.save',
-                    'row_attr' => [
-                        'data-bind' => 'visible: !paymentSource.isForceSave()'
                     ]
                 ]
             ]
@@ -431,18 +490,7 @@ class PaymentAccountType extends AbstractType
 
         $builder->add('submit', 'submit', ['attr' => ['force_row' => true, 'class' => 'hide_submit']]);
 
-        $builder->add('id', 'hidden', ['attr' => ['data-bind' => 'value: paymentSource.id']]);
-
-        $builder->add(
-            'groupId',
-            'hidden',
-            [
-                'mapped' => false,
-                'attr' => [
-                    'data-bind' => 'value: paymentSource.groupId',
-                ]
-            ]
-        );
+        $builder->add('id', 'hidden', ['attr' => ['data-bind' => 'value: currentPaymentAccount().id']]);
 
         $builder->add(
             'contractId',
@@ -450,7 +498,7 @@ class PaymentAccountType extends AbstractType
             [
                 'mapped' => false,
                 'attr' => [
-                    'data-bind' => 'value: paymentSource.contractId',
+                    'data-bind' => 'value: currentPaymentAccount().contractId',
                 ]
             ]
         );
@@ -464,9 +512,10 @@ class PaymentAccountType extends AbstractType
                 'data_class' => 'RentJeeves\DataBundle\Entity\PaymentAccount',
                 'validation_groups' => function (FormInterface $form) {
                     $data = $form->getData();
+                    $this->contractId = $form->get('contractId')->getData();
                     $type = $data->getType();
                     $groups = [];
-                    if (PaymentAccountTypeEnum::CARD == $type) {
+                    if (PaymentAccountTypeEnum::CARD == $type || PaymentAccountTypeEnum::DEBIT_CARD == $type) {
                         if ('false' == $form->get('is_new_address')->getData()) {
                             $groups[] = 'address_choice';
                         }
@@ -474,10 +523,6 @@ class PaymentAccountType extends AbstractType
                             $groups[] = 'user_address_new';
                         }
                     }
-                    if ($form->get('save')->getData()) {
-                        $groups[] = 'save';
-                    }
-
                     $groups[] = $type;
 
                     return $groups;
@@ -486,8 +531,31 @@ class PaymentAccountType extends AbstractType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
-        return static::NAME;
+        return static::NAME . $this->formNameSuffix;
+    }
+
+    /**
+     * @param $data
+     * @param ExecutionContextInterface $context
+     */
+    public function isValidPaymentAccountType($data, ExecutionContextInterface $context)
+    {
+        if ($data === PaymentAccountTypeEnum::BANK || is_null($this->em) || empty($this->contractId)) {
+            return;
+        }
+        /** @var Contract $contract */
+        if (!$contract = $this->em->getRepository('RjDataBundle:Contract')->find($this->contractId)) {
+            return;
+        }
+        if ($contract->getGroup()->isDisableCreditCard()) {
+            $context->addViolation('checkout.error.type.disallow', ['%value%' => $data]);
+        } elseif (!$contract->getGroupSettings()->isAllowedDebitFee() && $data === PaymentAccountTypeEnum::DEBIT_CARD) {
+            $context->addViolation('checkout.error.type.disallow', ['%value%' => $data]);
+        }
     }
 }

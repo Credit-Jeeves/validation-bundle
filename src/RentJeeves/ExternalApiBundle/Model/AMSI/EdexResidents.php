@@ -53,7 +53,17 @@ class EdexResidents
      *
      * @var int
      */
-    protected $includeRecurringCharges = 1;
+    protected $includeRecurringCharges = 0;
+
+    /**
+     * @Serializer\SerializedName("includeallstatuses")
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"GetPropertyUnits"})
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @var int
+     */
+    protected $includeAllStatuses = 1;
 
     /**
      * @return string
@@ -133,5 +143,21 @@ class EdexResidents
     public function setIncludeRecurringCharges($includeRecurringCharges)
     {
         $this->includeRecurringCharges = $includeRecurringCharges;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIncludeAllStatuses()
+    {
+        return $this->includeAllStatuses;
+    }
+
+    /**
+     * @param int $includeAllStatuses
+     */
+    public function setIncludeAllStatuses($includeAllStatuses)
+    {
+        $this->includeAllStatuses = $includeAllStatuses;
     }
 }

@@ -2,9 +2,16 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
-use \DateTime;
+use CreditJeeves\DataBundle\Entity\Order;
+use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\SerializationContext;
+use RentJeeves\DataBundle\Entity\YardiSettings;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
+use RentJeeves\ExternalApiBundle\Services\Yardi\YardiXmlCleaner;
 use SoapVar;
+use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
 
 class PaymentClient extends AbstractClient
 {
@@ -28,44 +35,55 @@ class PaymentClient extends AbstractClient
     );
 
     /**
-     * @param DateTime $depositDate
-     * @param string $yardiPropertyId
-     * @param null $batchId
-     * @param null $depositMemo
+     * @link https://credit.atlassian.net/browse/RT-1507
+     *
+     * @param string $externalPropertyId
+     * @param \DateTime $paymentBatchDate
+     * @param string $description
      *
      * @return integer|null
      */
-    public function openReceiptBatchDepositDate(
-        DateTime $depositDate,
+    public function openBatch(
         $yardiPropertyId,
-        $batchId = null,
-        $depositMemo = null
+        \DateTime $depositDate,
+        $description
     ) {
         $this->debugMessage('Run OpenReceiptBatch_DepositDate');
-        $parameters = array(
+        /** @var YardiSettings $settings */
+        $settings = $this->getSettings();
+        $synchStrategy = $settings->getSynchronizationStrategy();
+        $parameters = [
+            'YardiPropertyId'   => $yardiPropertyId,
+            'BatchDescription'  => $description,
+            'DepositMemo'       => null
+        ];
+
+        if ($synchStrategy === SynchronizationStrategy::DEPOSITED) {
+            $parameters['DepositDate'] = $depositDate;
+        }
+
+        $parametersForRequest = [
             'OpenReceiptBatch_DepositDate' => array_merge(
                 $this->getLoginCredentials(),
-                array(
-                    'YardiPropertyId'   => $yardiPropertyId,
-                    'BatchDescription'  => 'RentTrack Batch #' . $batchId,
-                    'DepositDate'       => $depositDate,
-                    'DepositMemo'       => $depositMemo
-                )
-            ),
-        );
+                $parameters
+            )
+        ];
 
         return $this->sendRequest(
             'OpenReceiptBatch_DepositDate',
-            $parameters
+            $parametersForRequest
         );
     }
 
     /**
+     * Why strange method name, which can be confusing, described:
+     * @link https://credit.atlassian.net/browse/RT-813?jql=text%20~%20%22PostReceiptBatch%22
+     *
      * @param $batchId
      *
      * @return boolean
      */
-    public function closeReceiptBatch($batchId)
+    public function closeBatch($batchId)
     {
         $this->debugMessage('Run PostReceiptBatch');
         $parameters = array(
@@ -84,6 +102,55 @@ class PaymentClient extends AbstractClient
 
         if ($result instanceof Messages) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Order $order
+     * @param string $externalPropertyId
+     * @return boolean|string
+     */
+    public function addPaymentToBatch(Order $order, $externalPropertyId)
+    {
+        if (!$externalLeaseId = $order->getContract()->getExternalLeaseId()) {
+            $this->logger->alert(
+                sprintf(
+                    'Order(ID:%s) will not send to Yardi, because his contract(ID:%s) does not have externalLeaseId.',
+                    $order->getId(),
+                    $order->getContract()->getId()
+                )
+            );
+
+            return false;
+        }
+
+        $orders = new ArrayCollection([$order]);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $yardiSettings = $order->getContract()->getHolding()->getYardiSettings();
+        if (YardiPostMonthOption::NONE === $yardiSettings->getPostMonthNode()) {
+            $serializationGroup = 'baseRequest';
+        } else {
+            $serializationGroup = 'withPostMonth';
+        }
+        $context->setGroups($serializationGroup);
+        $residentTransactions = new ResidentTransactions(
+            $this->getSettings(),
+            $orders
+        );
+        $xml = $this->serializer->serialize(
+            $residentTransactions,
+            'xml',
+            $context
+        );
+        $xml = YardiXmlCleaner::prepareXml($xml);
+
+        $result = $this->addReceiptsToBatch($order->getBatchId(), $xml);
+
+        if ($result instanceof Messages) {
+            return $result->getMessage()->getMessage();
         }
 
         return false;

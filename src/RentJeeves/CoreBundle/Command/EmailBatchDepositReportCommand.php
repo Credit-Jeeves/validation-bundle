@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -83,7 +84,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 $groups[] = [
                     'groupName' => $group->getName(),
-                    'accountNumber' => $group->getAccountNumber(),
+                    'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
+                    'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
                     'batches' => $this->prepareBatchReportData($batchData),
                     'returns' => $reversalData,
                 ];
@@ -96,7 +98,9 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 }
             }
             if ($needSend) {
-                $mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend);
+                if (!$mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend)) {
+                    $output->writeln('Sending email is failed. Check template.');
+                }
                 $output->write('.');
             }
         }
@@ -114,14 +118,16 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 // only send if no groupid option specified, or if groupid option matches current group
                 if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
                     if (count($batchData) > 0 || count($reversalData) > 0) {
-                        $mailer->sendBatchDepositReportLandlord(
+                        if (!$mailer->sendBatchDepositReportLandlord(
                             $landlord,
                             $group,
                             $date,
                             $this->prepareBatchReportData($batchData),
                             $reversalData,
                             $resend
-                        );
+                        )) {
+                            $output->writeln('Sending email is failed. Check template.');
+                        }
                         $output->write('.');
                     }
                 }
@@ -147,6 +153,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
                     'transactions' => $transactions,
+                    'accountNumber' => $data[$i]['accountNumber'],
+                    'depositAccountType' => DepositAccountType::title($data[$i]['depositAccountType']),
                     'paymentTotal' => number_format($paymentTotal, 2, '.', ''),
                 ];
                 $transactions = [];

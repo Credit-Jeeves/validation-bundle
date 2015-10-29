@@ -2,7 +2,9 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\Unit as EntityUnit;
 use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
@@ -22,6 +24,31 @@ trait Unit
     protected $unitList = [];
 
     /**
+     * @param Group $group
+     * @param string $unitId
+     * @return UnitMapping|null
+     */
+    protected function getUnitMappingByExternalUnitId(Group $group, $unitId)
+    {
+        try {
+            if ($unitId) {
+                return $this->em->getRepository('RjDataBundle:UnitMapping')->getMappingForImport(
+                    $group,
+                    $unitId
+                );
+            }
+
+            return null;
+        } catch (NonUniqueResultException $e) {
+            $this->logger->debug(
+                sprintf('GroupId#%s and externalUnitId#%s duplicate in DB!', $group->getId(), $unitId)
+            );
+
+            return null;
+        }
+    }
+
+    /**
      * @param $row
      *
      * @return EntityUnit
@@ -36,15 +63,19 @@ trait Unit
         if ($property->isSingle()) {
             return $property->getExistingSingleUnit();
         }
-
+        // unit name is empty -- treat as a new single property
+        $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : '';
         // all units should have group and holding set
         if ($this->group) {
             $params['group'] = $this->group->getId();
             !$this->group->getHolding() || $params['holding'] = $this->group->getHolding()->getId();
+            $externalUnitMapping = $this->getUnitMappingByExternalUnitId($this->group, $unitId);
         }
 
-        // unit name is empty -- treat as a new single property
-        $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : '';
+        if (!empty($externalUnitMapping)) {
+            return $externalUnitMapping->getUnit();
+        }
+
         $unitName = $row[Mapping::KEY_UNIT];
         if ($this->isEmptyString($unitName) && !$this->isEmptyString($unitId)) {
             $this->logger->debug(sprintf('Unit name is empty, but has unit id (%s)', $unitId));
@@ -61,6 +92,8 @@ trait Unit
 
         if ($this->storage->isMultipleProperty() && !is_null($property)) {
             $params['property'] = $property->getId();
+        } elseif (!empty($row[Mapping::KEY_PROPERTY_ID]) && !$this->storage->isMultipleProperty()) {
+            $params['property'] = $row[Mapping::KEY_PROPERTY_ID];
         } elseif ($this->storage->getPropertyId()) {
             $params['property'] = $this->storage->getPropertyId();
         }
@@ -135,10 +168,10 @@ trait Unit
 
         $this->logger->debug('looking up unit mapping from DB...');
         $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-            array(
+            [
                 'externalUnitId' => $externalUnitId,
                 'unit' => $unit
-            )
+            ]
         );
         if (empty($unitMapping)) {
             $this->logger->debug('...no mapping found. create one!');

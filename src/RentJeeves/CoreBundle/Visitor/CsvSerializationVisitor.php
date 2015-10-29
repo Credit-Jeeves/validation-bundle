@@ -7,13 +7,9 @@ use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
-use JMS\Serializer\scalar;
 use JMS\Serializer\VisitorInterface;
-use PhpOption;
 
 /**
  * @Service("jms_serializer.csv_serialization_visitor")
@@ -21,23 +17,37 @@ use PhpOption;
  */
 class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterface
 {
-    const DELIMITER = ",";
-
-    const ENCLOSURE = '"';
 
     protected $navigator;
+
+    /**
+     * @var string
+     */
+    protected $delimiter;
+
+    /**
+     * @var string
+     */
+    protected $enclosure;
 
     protected $fp;
 
     // $eol: probably one of "\r\n", "\n", or for super old macs ^-^ : "\r"
     protected $eol = "\n";
 
-    protected $currentLine = array();
+    protected $currentLine = [];
 
     private $headerFlag = false;
 
-    public function __construct()
+    /**
+     * @param string $delimiter
+     * @param string $enclosure
+     */
+    public function __construct($delimiter = ',', $enclosure = '"')
     {
+        $this->delimiter = $delimiter;
+        $this->enclosure = $enclosure;
+
         $this->initOutput();
     }
 
@@ -60,7 +70,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      */
     public function visitString($data, array $type, Context $context)
     {
-        return (string)$data;
+        return (string) $data;
     }
 
     /**
@@ -93,7 +103,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      */
     public function visitInteger($data, array $type, Context $context)
     {
-        return (int)$data;
+        return (int) $data;
     }
 
     /**
@@ -127,12 +137,12 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $useHeader = $context->attributes->get('use_header');
-        if ($useHeader instanceof PhpOption\Some && $useHeader->get() === false) {
+        if ($useHeader instanceof \PhpOption\Some && $useHeader->get() === false) {
             $this->headerFlag = true;
         }
 
         $eol = $context->attributes->get('eol');
-        if ($eol instanceof PhpOption\Some && $eol = $eol->get()) {
+        if ($eol instanceof \PhpOption\Some && $eol = $eol->get()) {
             $this->eol = $eol;
         }
 
@@ -178,11 +188,12 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      *
      * @param GraphNavigator $navigator
      *
-     * @return void
+     * @return self
      */
     public function setNavigator(GraphNavigator $navigator)
     {
         $this->navigator = $navigator;
+
         return $this;
     }
 
@@ -216,7 +227,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
 
     protected function fputcsvEol($array)
     {
-        fputcsv($this->fp, $array, self::DELIMITER, self::ENCLOSURE);
+        fputcsv($this->fp, $array, $this->delimiter, $this->enclosure);
         if ("\n" != $this->eol && 0 === fseek($this->fp, -1, SEEK_CUR)) {
             fwrite($this->fp, $this->eol);
         }

@@ -2,13 +2,18 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
-use Doctrine\ORM\EntityManager;
+use CreditJeeves\DataBundle\Entity\Holding;
+use JMS\JobQueueBundle\Command\RunCommand;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\ExternalApiBundle\Command\PaymentPushCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients\PaymentClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -40,10 +45,11 @@ class PaymentPushCommandCase extends BaseTestCase
     }
 
     /**
-     * @param $apiIntegrationType
-     * @param $residentId
-     * @param $externalPropertyId
-     * @param $externalLeaseId
+     * @param string $apiIntegrationType
+     * @param string $residentId
+     * @param string $externalPropertyId
+     * @param string $externalLeaseId
+     * @param string $externalUnitId
      *
      * @test
      * @dataProvider dataForSendPaymentToExternalApi
@@ -56,9 +62,14 @@ class PaymentPushCommandCase extends BaseTestCase
         $externalUnitId
     ) {
         $this->load(true);
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getEntityManager();
 
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $this->assertCount(0, $jobs);
         $transaction = $this->createTransaction(
             $apiIntegrationType,
             $residentId,
@@ -72,8 +83,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            ApiIntegrationType::RESMAN,
-            ResManClientCase::EXTERNAL_PROPERTY_ID
+            $apiIntegrationType
         ));
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
@@ -82,7 +92,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertCount(1, $jobs);
 
-        $job = reset($jobs);
+        $job = end($jobs);
 
         $application = new Application($this->getKernel());
         $application->add(new PaymentPushCommand());
@@ -96,5 +106,171 @@ class PaymentPushCommandCase extends BaseTestCase
             ]
         );
         $this->assertRegExp("/Start\nSuccess/", $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendPaymentToYardiApi()
+    {
+        $apiIntegrationType = ApiIntegrationType::YARDI_VOYAGER;
+        $residentId = PaymentClientCase::RESIDENT_ID;
+        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
+        $externalLeaseId = PaymentClientCase::RESIDENT_ID;
+        $externalUnitId = null;
+
+        $this->load(true);
+        $em = $this->getEntityManager();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+        $this->assertCount(0, $jobs);
+
+        /** @var Holding $holding */
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
+        $em->flush($holding->getYardiSettings());
+
+        $transaction = $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId,
+            null
+        );
+
+        /** @var PaymentBatchMappingRepository $repo */
+        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
+
+        $this->assertFalse($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            $apiIntegrationType
+        ));
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+
+        $this->assertCount(1, $jobs);
+
+        $job = end($jobs);
+
+        $application = new Application($this->getKernel());
+        $application->add(new PaymentPushCommand());
+
+        $command = $application->find('external_api:payment:push');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command'       => $command->getName(),
+                '--jms-job-id'  => $job->getId(),
+            ]
+        );
+        $this->assertRegExp("/Start\nSuccess/", $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldOpenOnlyOneBatch()
+    {
+        $apiIntegrationType = ApiIntegrationType::YARDI_VOYAGER;
+        $residentId = PaymentClientCase::RESIDENT_ID;
+        $externalPropertyId = PaymentClientCase::PROPERTY_ID;
+        $externalLeaseId = PaymentClientCase::RESIDENT_ID;
+        $externalUnitId = null;
+
+        $this->load(true);
+        $em = $this->getEntityManager();
+
+        $em->getConnection()->exec(
+            'UPDATE jms_jobs SET state="finished";'
+        );
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+        $this->assertCount(0, $jobs);
+
+        /** @var Holding $holding */
+        $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
+        $this->assertNotEmpty($holding);
+        $holding->getYardiSettings()->setSynchronizationStrategy(SynchronizationStrategy::REAL_TIME);
+        $em->flush($holding->getYardiSettings());
+
+        $transaction = $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId,
+            null
+        );
+
+        $transaction2 = $this->createTransaction(
+            $apiIntegrationType,
+            $residentId,
+            $externalPropertyId,
+            $externalLeaseId,
+            null
+        );
+
+        $this->assertEquals($transaction->getBatchId(), $transaction2->getBatchId());
+
+        /** @var PaymentBatchMappingRepository $repo */
+        $repo = $em->getRepository('RjDataBundle:PaymentBatchMapping');
+
+        $this->assertFalse($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            $apiIntegrationType
+        ));
+
+        /** @var Job[] $jobs */
+        $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
+            ['command' => 'external_api:payment:push']
+        );
+
+        $this->assertCount(2, $jobs);
+
+        $application = new Application($this->getKernel());
+        $application->add(new RunCommand());
+
+        $command = $application->find('jms-job-queue:run');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command'       => $command->getName(),
+                '--max-runtime'  => 5,
+            ]
+        );
+
+        $em->refresh($jobs[0]);
+        $em->refresh($jobs[1]);
+
+        $this->assertEquals(Job::STATE_FINISHED, $jobs[0]->getState());
+        $this->assertEquals(Job::STATE_FINISHED, $jobs[1]->getState());
+
+        $this->assertTrue($repo->isOpenedBatch(
+            $transaction->getBatchId(),
+            $apiIntegrationType
+        ));
+
+        $batches = $repo->createQueryBuilder('pbm')
+            ->select('pbm.accountingBatchId')
+            ->where('pbm.paymentBatchId = :paymentBatchId')
+            ->andWhere('pbm.accountingPackageType = :accountingPackageType')
+            ->andWhere('pbm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pbm.status = :status')
+            ->setParameters([
+                'paymentBatchId' => $transaction->getBatchId(),
+                'accountingPackageType' => $apiIntegrationType,
+                'externalPropertyId' => $externalPropertyId,
+                'status' => PaymentBatchStatus::OPENED,
+            ])
+            ->getQuery()
+            ->getResult();
+
+        $this->assertCount(1, $batches);
     }
 }

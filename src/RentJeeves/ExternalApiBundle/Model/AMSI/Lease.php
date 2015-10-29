@@ -660,6 +660,8 @@ class Lease
     {
         if (!empty($this->leaseBeginDate)) {
             return \DateTime::createFromFormat('m/d/Y', $this->leaseBeginDate);
+        } elseif (!empty($this->moveInDate)) {
+            return \DateTime::createFromFormat('Y-m-d\TH:i:s', $this->moveInDate);
         }
 
         return $this->leaseBeginDate;
@@ -820,5 +822,18 @@ class Lease
     public function setRecurringCharges(array $recurringCharges)
     {
         $this->recurringCharges = $recurringCharges;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getPropertyId(),
+            $this->getBldgId(),
+            $this->getUnitId()
+        );
     }
 }

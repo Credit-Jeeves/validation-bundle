@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use CreditJeeves\CoreBundle\Translation\Translator;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -13,6 +14,7 @@ use RentJeeves\CoreBundle\Services\PropertyProcess;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,9 +24,8 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpFoundation\Response;
@@ -104,7 +105,7 @@ class AjaxController extends Controller
 
         return new JsonResponse(
             array(
-                'status'  => 'successful',
+                'status' => 'successful',
             )
         );
     }
@@ -128,8 +129,8 @@ class AjaxController extends Controller
         if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
             return new JsonResponse(
                 array(
-                    'status'  => 'error',
-                    'errors'  => array(
+                    'status' => 'error',
+                    'errors' => array(
                         'Invalid date',
                     )
                 )
@@ -143,7 +144,7 @@ class AjaxController extends Controller
 
         return new JsonResponse(
             array(
-                'status'  => 'successful',
+                'status' => 'successful',
             )
         );
     }
@@ -177,7 +178,7 @@ class AjaxController extends Controller
 
         return new JsonResponse(
             array(
-                'status'  => 'successful',
+                'status' => 'successful',
             )
         );
     }
@@ -195,7 +196,7 @@ class AjaxController extends Controller
     {
         $group = $this->getCurrentGroup();
         $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Property');
-        $properties = $repo->getPropetiesAll($group);
+        $properties = $repo->getAllPropertiesInGroup($group);
 
         foreach ($properties as $property) {
             $item = $property->getItem($group);
@@ -260,126 +261,112 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      *
-     * @return array
+     * @return JsonResponse
      */
     public function addProperty(Request $request)
     {
-        $itsNewProperty = false;
+        $addGroup = (boolean) $request->request->get('addGroup', false);
         $data = $request->request->all('address');
-        $data = json_decode($data['data'], true);
-        $addGroup = (isset($data['addGroup']) && $data['addGroup'] === 1) ?  true : false;
 
-        // validate google found a street number
-        $property = new Property();
-        $propertyDataAddress = $property->parseGoogleAddress($data);
-        $propertyDataLocation = $property->parseGoogleLocation($data);
-        if (!isset($propertyDataAddress['number'])) {
+        try {
+            $address = $this->getGoogleAutocompleteAddressConverter()->convert($data['data']);
+        } catch (\InvalidArgumentException $e) {
+            $this->getLogger()->debug($e->getMessage());
+
             return new JsonResponse(
-                array(
-                    'status'  => 'ERROR',
-                    'message' => $this->get('translator')->trans('property.number.not.exist')
-                )
+                [
+                    'status' => 'ERROR',
+                    'message' => $this->getTranslator()->trans('property.address_not_found')
+                ]
             );
         }
 
-        // lookup property in DB by street number and location
-        /** @var $propertyProcess PropertyProcess */
-        $propertyProcess = $this->container->get('property.process');
-        $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
-        /** @var Property $property */
-        $property = $propertyProcess->getPropertyFromDB($propertySearch);
-        $em = $this->getDoctrine()->getManager();
-
-        if (empty($property)) {
-            // not found so create a new one
-            $property = new Property();
-            $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
-            $property->fillPropertyData($propertyData);
+        $itsNewProperty = false;
+        $property = $this->getPropertyProcess()->findPropertyByAddressInDb(
+            $address->getNumber(),
+            $address->getStreet(),
+            $address->getCity(),
+            $address->getState(),
+            $address->getZip()
+        );
+        if (null === $property) {
             $itsNewProperty = true;
+            $property = new Property();
+            $property->setAddressFields($address);
+
+            $this->getEntityManager()->persist($property);
         }
 
-        // validate property
-        if (!$propertyProcess->isValidProperty($property)) {
+        if (false === $this->getPropertyProcess()->isValidProperty($property)) {
             return new JsonResponse(
-                array(
-                    'status'  => 'ERROR',
+                [
+                    'status' => 'ERROR',
                     'message' => $this->get('translator')->trans('fill.full.address')
-                )
+                ]
             );
         }
 
-        // get security context
-        $securityContext = $this->container->get('security.context');
-        $isLogin = $securityContext->isGranted('IS_AUTHENTICATED_FULLY') ? true : false;
+        $isLogin = $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY');
         $isLandlord = false;
         if ($isLogin) {
-            $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
+            $isLandlord = $this->getUser()->getType() == UserType::LANDLORD;
         }
 
-        // for landlords, add the property to their account group
         $group = $this->getCurrentGroup();
         if ($isLandlord && $group && $addGroup && !$group->getGroupProperties()->contains($property)) {
-
-            // map the property to the account group
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
-
-            // is it a single-unit property, if so create unit
-            if ($request->request->has('isSingle') && $request->request->get('isSingle') === 'true') {
-                $propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            if ('true' === $request->request->get('isSingle', false)) {
+                $this->getPropertyProcess()->setupSingleProperty($property, ['doFlush' => false]);
             }
-            $em->persist($group);
+
+            $this->getEntityManager()->persist($group);
         }
 
-        // save property to DB
         try {
-            $em->persist($property);
-            $em->flush();
+            $this->getEntityManager()->flush();
         } catch (DBALException $e) {
             return new JsonResponse(
-                array(
-                    'status'  => 'ERROR',
+                [
+                    'status' => 'ERROR',
                     'message' => $this->get('translator')->trans('fill.full.address')
-                )
+                ]
             );
         } catch (Exception $e) {
             return new JsonResponse(
-                array(
+                [
                     'message' => $this->get('translator')->trans(
                         'property.error.can_not_be_added',
-                        array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                        ['%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')]
                     )
-                ),
+                ],
                 500
             );
         }
 
-        // save google place for mapping later
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
-            $propertyProcess->saveToGoogle($property);
+            $this->getPropertyProcess()->saveToGoogle($property);
         }
 
         // return json for property
         //@TODO refactor - change array to entity JSM serialisation
-        $data = array(
-            'status'                => 'OK',
-            'hasLandlord'           => $property->hasLandlord(),
-            'isLogin'               => $isLogin,
-            'isLandlord'            => $isLandlord,
-            'propertyDataAddress'   => $propertyDataAddress,
-            'propertyDataLocation'  => $propertyDataLocation,
-            'property'      => array(
-                'id'        => $property->getId(),
-                'city'      => $property->getCity(),
-                'number'    => ($property->getNumber()) ? $property->getNumber() : '',
-                'street'    => $property->getStreet(),
-                'area'      => $property->getArea(),
-                'zip'       => ($property->getZip()) ? $property->getZip() : '',
-                'jb'        => $property->getJb(),
-                'kb'        => $property->getKb(),
-                'address'   => $property->getAddress(),
-            ),
-        );
+        $data = [
+            'status' => 'OK',
+            'hasLandlord' => $property->hasLandlord(),
+            'isLogin' => $isLogin,
+            'isLandlord' => $isLandlord,
+            'property' => [
+                'id' => $property->getId(),
+                'city' => $property->getCity(),
+                'number' => ($property->getNumber()) ? $property->getNumber() : '',
+                'street' => $property->getStreet(),
+                'area' => $property->getArea(),
+                'zip' => ($property->getZip()) ? $property->getZip() : '',
+                'jb' => $property->getJb(),
+                'kb' => $property->getKb(),
+                'address' => $property->getAddress(),
+            ],
+        ];
 
         return new JsonResponse($data);
     }
@@ -398,22 +385,17 @@ class AjaxController extends Controller
     {
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $user = $this->getUser();
         $group = $this->getCurrentGroup();
         $em = $this->getDoctrine()->getManager();
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $group);
         foreach ($records as $entity) {
-            $em->remove($entity);
-            $em->flush();
+            $this->getEntityManager()->remove($entity);
         }
         $group->removeGroupProperty($property);
-        $em->persist($group);
-        $em->flush();
+        $this->getEntityManager()->flush();
 
         return new JsonResponse(array());
     }
-
-    /* Unit */
 
     /**
      * @Route(
@@ -427,22 +409,18 @@ class AjaxController extends Controller
      */
     public function getUnitsList(Request $request)
     {
-        $result = array('property' => '', 'units' => array());
-        $user = $this->getUser();
-        $group = $this->getCurrentGroup();
-        $data = $request->request->all('property_id');
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $result['property'] = $property->getAddress();
-        $result['isSingle'] = $property->getIsSingle();
+        /** @var Property $property */
+        $property = $this->getEntityManager()->find('RjDataBundle:Property', $request->request->get('property_id'));
         $this->get('soft.deleteable.control')->enable();
-        $result['units'] = $this->getDoctrine()
+        $units = $this->getEntityManager()
             ->getRepository('RjDataBundle:Unit')
-            ->getUnitsArray(
-                $property,
-                $group
-            );
+            ->getUnitsArray($property, $this->getCurrentGroup());
 
-        return new JsonResponse($result);
+        return new JsonResponse([
+            'property' => $property->getAddress(),
+            'isSingle' => $property->isSingle(),
+            'units' => $units
+        ]);
     }
 
     //@TODO find best way for this implementation
@@ -513,8 +491,8 @@ class AjaxController extends Controller
         foreach ($units as $key => $unit) {
             $id = (!empty($unit['id'])) ? $unit['id'] : uniqid();  // should probably fail instead of uniqid()
             $newUnits[$id] = array(
-                'id'    => $unit['id'],
-                'name'  => $unit['name'],
+                'id' => $unit['id'],
+                'name' => $unit['name'],
                 'isNew' => (empty($unit['id'])) ? true : false,
             );
         }
@@ -618,59 +596,55 @@ class AjaxController extends Controller
         //@TODO find best way for this implementation
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
-        $items = array();
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
-        $group = $this->getCurrentGroup();
         /** @var ContractRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('LandlordTenants');
+        $serializer = $this->get('jms_serializer');
+
+        $total = $repo->countContracts(
+            $this->getCurrentGroup(),
+            $dataRequest['searchCollum'],
+            $dataRequest['searchText']
+        );
+
         $total = count($total);
-        $order  = ($dataRequest['isSortAsc'] === 'true') ? "ASC" : "DESC";
-        if ($total) {
-            $contracts = $repo->getContractsPage(
-                $group,
+        $order = ($dataRequest['isSortAsc'] === 'true') ? "ASC" : "DESC";
+
+        $data['contracts'] = [];
+        $data['total'] = $total;
+        $data['agent_contracts'] = $this->getEntityManager()->getRepository('DataBundle:Group')
+            ->searchGroupsPerContractFilter(
+                $this->getCurrentGroup(),
+                $this->get('core.session.landlord')->getGroups($this->getUser()),
+                $dataRequest['searchCollum'],
+                $dataRequest['searchText']
+            );
+        $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
+
+        if (!$total) {
+            return new Response($serializer->serialize($data, 'json', $context));
+        }
+
+        $data['contracts'] = $this->get('landlord.contract_manager')->convertContractsToArray(
+            $repo->getContractsPage(
+                $this->getCurrentGroup(),
                 $dataRequest['page'],
                 $dataRequest['limit'],
                 $dataRequest['sortColumn'],
                 $order,
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
-            );
-            /**
-             * @var $resident ResidentManager
-             */
-            $resident = $this->get('resident_manager');
-            /**
-             * @var $translator Translator
-             */
-            $translator = $this->get('translator');
-            /** @var Contract $contract */
-            foreach ($contracts as $contract) {
-                $item = $contract->getItem();
-                if ($contract->getStatus() === ContractStatus::INVITE &&
-                    $group->getGroupSettings()->getIsIntegrated()
-                ) {
-                    $hasMultipleContracts = $resident->hasMultipleContracts(
-                        $contract->getTenant(),
-                        $this->getUser()->getHolding()
-                    );
-                    $count = ($hasMultipleContracts) ? 1 : 0;
-                    $item['revoke_message'] = $translator->transChoice(
-                        'notice.revoke.residentId.multiple_contracts',
-                        $count
-                    );
-                } else {
-                    $item['revoke_message'] = $this->get('translator')->trans('revoke.inv.ask');
-                }
-                $items[] = $item;
-            }
-        }
-        $data['contracts'] = $items;
-        $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
+            ),
+            $this->getCurrentGroup(),
+            $this->getUser()
+        );
 
-        return new JsonResponse($data);
+        return new Response($serializer->serialize($data, 'json', $context));
     }
 
     /**
@@ -836,8 +810,6 @@ class AjaxController extends Controller
 
         if ($contract->getSettings()->getIsIntegrated()) {
             $contract->setIntegratedBalance($details['balance']);
-        } else {
-            $contract->setBalance($details['balance']);
         }
 
         if ($action == 'remove') {
@@ -873,7 +845,7 @@ class AjaxController extends Controller
                 $residentMapping->setHolding($holding);
                 $residentMapping->setTenant($tenant);
             }
-            $residentMapping->setResidentId($details['residentId']);
+            $residentMapping->setResidentId(trim($details['residentId']));
             $resident = $this->get('resident_manager');
             $errors = array_merge(
                 $errors,
@@ -936,19 +908,18 @@ class AjaxController extends Controller
                     if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
                         return new JsonResponse(
                             array(
-                                'status'  => 'error',
-                                'errors'  => array(
+                                'status' => 'error',
+                                'errors' => array(
                                     'Invalid rent payment date',
                                 )
                             )
                         );
                     }
                     // Create order
-                    $order = new Order();
+                    $order = new OrderSubmerchant();
                     $order->setUser($tenant);
                     $order->setSum($amount);
-                    $order->setStatus(OrderStatus::COMPLETE);
-                    $order->setType(OrderType::CASH);
+                    $order->setPaymentType(OrderPaymentType::CASH);
                     $order->setCreatedAt($createdAt);
                     $em->persist($order);
                     // Create operation
@@ -960,16 +931,15 @@ class AjaxController extends Controller
                     $operation->setPaidFor($paidFor);
                     $operation->setCreatedAt($createdAt);
                     $em->persist($operation);
-                    $contract->shiftPaidTo($amount);
-                    $contract->setBalance($contract->getBalance() - $amount);
-                    if ($contract->getSettings()->getIsIntegrated()) {
-                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $amount);
-                    }
+
+                    $this->get('payment_processor.order_status_manager')->setNew($order);
+
+                    $this->get('payment_processor.order_status_manager')->setComplete($order);
                 } else {
                     return new JsonResponse(
                         array(
-                            'status'  => 'error',
-                            'errors'  => array(
+                            'status' => 'error',
+                            'errors' => array(
                                 'Invalid amount',
                             )
                         )
@@ -987,7 +957,7 @@ class AjaxController extends Controller
         // TODO blank page detection
         return new JsonResponse(
             array(
-                'status'  => 'successful',
+                'status' => 'successful',
             )
         );
     }
@@ -1078,22 +1048,16 @@ class AjaxController extends Controller
         $limit = $request->request->get('limit');
         $filter = $request->request->get('filter');
 
-        $group = $this->getCurrentGroup();
-        $em = $this->getDoctrine()->getManager();
-        $orderRepo = $em->getRepository('DataBundle:Order');
-        $transactionRepo = $em->getRepository('RjDataBundle:Transaction');
+        /** @var BatchDepositsManager $batchDepositsManager */
+        $batchDepositsManager = $this->get('landlord.batch_deposits.manager');
+        $total = $batchDepositsManager->getCountDeposits($this->getCurrentGroup(), $filter);
+        $deposits = $batchDepositsManager->getDeposits($this->getCurrentGroup(), $filter, $page, $limit);
 
-        $total = $transactionRepo->getCountDeposits($group, $filter);
-        $deposits = array();
-        if ($total) {
-            $deposits = $transactionRepo->getDepositedOrders($group, $filter, $orderRepo, $page, $limit);
-        }
-
-        $result = array(
+        $result = [
             'deposits' => $deposits,
             'total' => $total,
-            'pagination' => $this->datagridPagination($total, $limit)
-        );
+            'pages' => [ceil($total / $limit)]
+        ];
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
@@ -1157,10 +1121,10 @@ class AjaxController extends Controller
         }
 
         $data = array(
-            'userExist'     => (!empty($user)) ? true : false,
-            'isTenant'      => (!empty($user) && $user->getType() === UserType::TETNANT) ? true : false,
-            'residentId'    => $residentId,
-            'isIntegrated'  => $isIntegrated
+            'userExist' => (!empty($user)) ? true : false,
+            'isTenant' => (!empty($user) && $user->getType() === UserType::TETNANT) ? true : false,
+            'residentId' => $residentId,
+            'isIntegrated' => $isIntegrated
         );
 
         return new JsonResponse($data);
@@ -1276,5 +1240,21 @@ class AjaxController extends Controller
         $result[] = 'Last';
 
         return $result;
+    }
+
+    /**
+     * @return \RentJeeves\CoreBundle\Services\AddressLookup\GoogleAutocompleteAddressConverter
+     */
+    protected function getGoogleAutocompleteAddressConverter()
+    {
+        return $this->get('google_autocomplete_address_converter');
+    }
+
+    /**
+     * @return PropertyProcess
+     */
+    protected function getPropertyProcess()
+    {
+        return $this->get('property.process');
     }
 }

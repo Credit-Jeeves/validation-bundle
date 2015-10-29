@@ -5,8 +5,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
-use RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
@@ -69,7 +67,6 @@ class StorageResman extends ExternalApiStorage
         }
 
         ini_set('max_execution_time', '120');
-
         /** @var $customerBase RtCustomer  */
         foreach ($customers as $customerBase) {
             $filePath = $this->getFilePath(true);
@@ -92,21 +89,11 @@ class StorageResman extends ExternalApiStorage
                 $startAt = $this->getDateString($customerUser->getLease()->getLeaseFromDate());
                 $finishAt = $this->getDateString($customerUser->getLease()->getLeaseToDate());
                 $moveOut = $this->getDateString($customerUser->getLease()->getActualMoveOut());
-                $paymentAccepted = strtolower($customerBase->getPaymentAccepted());
-                /**
-                 * Possible Values are:
-                 * Yes - All forms of payment accepted
-                 * No - Online payments are not accepted
-                 * Certified Funds Only - Only payments guaranteed to be successful are allowed
-                 * (Credit Card, Debit Card, Money Order, etc)
-                 *
-                 * Currently we don't work with 3 point - it's will be seperated task
-                 */
-                $paymentAccepted = ('yes' === $paymentAccepted) ? PaymentAccepted::ANY : PaymentAccepted::DO_NOT_ACCEPT;
+                $paymentAccepted = $customerBase->getRentTrackPaymentAccepted();
                 $today = new \DateTime();
                 $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
 
-                if ($today > $finishAtObject) {
+                if ($today > $finishAtObject && empty($moveOut)) {
                     $monthToMonth = 'Y';
                 } else {
                     $monthToMonth = 'N';
@@ -114,7 +101,7 @@ class StorageResman extends ExternalApiStorage
 
                 $residentId = $customerUser->getCustomerId();
                 $address = $customerUser->getAddress();
-
+                $externalUnitId = $customerUser->getExternalUnitId($customerBase);
                 $data = [
                     $residentId,
                     $customerBase->getRtUnit()->getUnitId(),
@@ -125,11 +112,11 @@ class StorageResman extends ExternalApiStorage
                     $customerUser->getUserName()->getLastName(),
                     $address->getEmail(),
                     $moveOut,
-                    $this->getBalance($customerBase->getRtServiceTransactions()),
+                    $customerBase->getRentTrackBalance(),
                     $monthToMonth,
                     $paymentAccepted,
                     $externalLeaseId,
-                    $customerBase->getRtUnit()->getUnitId(),
+                    $externalUnitId,
                     $address->getCity(),
                     $address->getAddress1(),
                     $address->getPostalCode(),
@@ -142,42 +129,6 @@ class StorageResman extends ExternalApiStorage
         }
 
         return true;
-    }
-
-    /**
-     * @param  RtServiceTransactions $rtServiceTransactions
-     * @return float|int
-     */
-    protected function getBalance(RtServiceTransactions $rtServiceTransactions)
-    {
-        $transactions = $rtServiceTransactions->getTransactions();
-        $balance = 0;
-
-        /**
-         * @var $transaction Transactions
-         */
-        foreach ($transactions as $transaction) {
-
-            $charge = $transaction->getCharge();
-            $payment = $transaction->getPayment();
-            $credit = $transaction->getConcession();
-
-            if (!empty($charge)) {
-                $balance += $charge->getDetail()->getAmount();
-                continue;
-            }
-
-            if (!empty($payment)) {
-                $balance -= $payment->getDetail()->getAmount();
-                continue;
-            }
-
-            if (!empty($credit)) {
-                $balance -= $credit->getDetail()->getAmount();
-            }
-        }
-
-        return $balance;
     }
 
     /**

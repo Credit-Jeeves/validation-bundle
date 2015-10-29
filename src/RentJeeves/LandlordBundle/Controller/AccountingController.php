@@ -2,14 +2,19 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Enum\ImportType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
@@ -20,7 +25,7 @@ use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Import\ImportFactory;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\Yardi;
-use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
+use RentJeeves\LandlordBundle\Accounting\LandlordPermission as Permission;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract as ImportHandler;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
@@ -61,7 +66,7 @@ class AccountingController extends Controller
         /**
          * @var $accountingPermission Permission
          */
-        $accountingPermission = $this->get('accounting.permission');
+        $accountingPermission = $this->get('landlord.permission');
         if (!$accountingPermission->hasAccessToAccountingTab()) {
             throw new Exception("Don't have access");
         }
@@ -359,29 +364,21 @@ class AccountingController extends Controller
         $collection = [];
 
         $handler = $importFactory->getHandler();
-        $total = $mapping->getTotal();
+        $total = $mapping->getTotalContent();
 
         $this->getImportLogger()->debug("Getting total of " . $total);
 
         if ($total > 0) {
             $collection = $handler->getCurrentCollectionImportModel();
-        } else {
+        } elseif (!$storage->isOnlyException()) {
             $storage->clearSession();
         }
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('RentJeevesImport');
-        /** @var ImportSummaryManager $importSummaryManager */
-        $importSummaryManager = $this->get('import_summary.manager');
-
-        $importSummaryManager->initialize(
-            $this->getCurrentGroup(),
-            $storage->getImportType(),
-            $storage->getImportSummaryReportPublicId()
-        );
-
-        $storage->setImportSummaryReportPublicId($importSummaryManager->getReportPublicId());
+        $importSummaryManager = $handler->getReport();
+        $importSummaryManager->setTotal($total);
 
         $result['rows'] = $collection;
         $result['total'] = $total;
@@ -448,33 +445,86 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/yardi",
-     *     name="accounting_import_residents_yardi",
+     *     "/import/property_mapping/yardi",
+     *     name="accounting_import_property_mapping_yardi",
      *     options={"expose"=true}
      * )
      */
-    public function getResidentsYardi()
+    public function getMappedPropertiesYardi()
     {
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
-        $mapping = $importFactory->getMapping();
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
-        /** @var $propertyMappingManager PropertyMappingManager */
-        $propertyMappingManager = $this->get('property_mapping.manager');
-        $propertyMapping = $propertyMappingManager->createPropertyMapping(
-            $storage->getImportPropertyId(),
-            $storage->getImportExternalPropertyId()
-        );
 
-        $holding = $this->getUser()->getHolding();
+        $mappedProperties = [];
 
         if ($storage->getImportLoaded() === false) {
-            $residents = $mapping->getResidents($holding, $propertyMapping->getProperty());
-            $residents = array_values($residents); //For start array from 0, but why don't remember
-        } else {
-            $residents = array();
+            /** @var $propertyMappingManager PropertyMappingManager */
+            $propertyMappingManager = $this->get('property_mapping.manager');
+
+            if (ImportType::SINGLE_PROPERTY === $storage->getImportType()) {
+                /** @var PropertyMapping[] $mappedProperties */
+                $mappedProperties[] = $propertyMappingManager->createPropertyMapping(
+                    $storage->getImportPropertyId(),
+                    $storage->getImportExternalPropertyId()
+                );
+            } else {
+                $mappedProperties = $propertyMappingManager->getMappedProperties();
+            }
+
         }
 
+        $response = new Response($this->get('jms_serializer')->serialize($mappedProperties, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @param int $propertyMappingId
+     *
+     * @Route(
+     *     "/import/residents/yardi/{propertyMappingId}",
+     *     name="accounting_import_residents_yardi",
+     *     options={"expose"=true}
+     * )
+     *
+     * @return Response
+     */
+    public function getResidentsYardi($propertyMappingId)
+    {
+        /** @var $importFactory ImportFactory */
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageYardi $storage */
+        $storage = $importFactory->getStorage();
+
+        $residents = [];
+
+        if ($storage->getImportLoaded() === false) {
+            /** @var MappingYardi $mapping */
+            $mapping = $importFactory->getMapping();
+            /** @var Holding $holding */
+            $holding = $this->getUser()->getHolding();
+            /** @var $propertyMapping PropertyMapping */
+            $propertyMapping = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
+                'id' => $propertyMappingId,
+                'holding' => $holding->getId()
+            ]);
+            if ($propertyMapping) {
+                $residents = array_merge(
+                    $mapping->getResidents($holding, $propertyMapping->getProperty()),
+                    $residents
+                );
+            }
+        }
+        $em = $this->getEntityManager();
+        if (!$em->getConnection()->isConnected()) {
+            $em->getConnection()->close();
+            $em->getConnection()->connect();
+        }
+        $handler = $importFactory->getHandler();
+        $handler->getReport()->setTotal(count($residents));
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
         $response->headers->set('Content-Type', 'application/json');
 
@@ -531,7 +581,31 @@ class AccountingController extends Controller
      */
     public function getResidentsMri()
     {
-        return $this->getBaseResidents();
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var MappingMRI $mapping */
+        $mapping = $importFactory->getMapping();
+        /** @var StorageMRI $storage */
+        $storage = $importFactory->getStorage();
+        $nextPageLink = $this->get('request')->request->get('nextPageLink');
+
+        if (empty($nextPageLink)) {
+            $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
+        } else {
+            $residents = $mapping->getResidentsByNextPageLink($nextPageLink);
+        }
+
+        $result = $storage->saveToFile($residents);
+        $newNextPageLink = $mapping->getNextPageLink();
+        //We need update matched contracts only after download all of them, that's why check var newNextPageLink
+        if ($storage->isOnlyException() && empty($newNextPageLink)) {
+            $handler = $importFactory->getHandler();
+            $handler->updateMatchedContracts();
+        }
+
+        $response = new JsonResponse(['nextPageLink' => $newNextPageLink]);
+        $response->setStatusCode((!empty($nextPageLink) || $result) ? 200 : 400);
+
+        return $response;
     }
 
     /**
@@ -548,12 +622,17 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/resident/yardi/{residentId}/{isLast}",
+     *     "/import/resident/yardi/{propertyMappingId}/{isLast}",
      *     name="accounting_import_resident_data_yardi",
      *     options={"expose"=true}
      * )
+     *
+     * @param int $propertyMappingId
+     * @param int $isLast
+     * @return Response
+     * @throws Exception
      */
-    public function getResidentData($residentId, $isLast = 0)
+    public function getResidentData($propertyMappingId, $isLast = 0)
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
@@ -579,15 +658,23 @@ class AccountingController extends Controller
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
         $em = $this->getDoctrine()->getManager();
-        /** @var $propertyMapping PropertyMapping */
-        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            array(
-                'property'              => $storage->getImportPropertyId(),
-                'holding'               => $holding->getId()
-            )
-        );
+
         try {
+            /*
+             * Search PropertyMapping by id with holding
+             * for be sure that we can work only with property belongs to our holding
+             */
+            /** @var PropertyMapping $propertyMapping */
+            $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
+                'id' => $propertyMappingId,
+                'holding' => $holding->getId()
+            ]);
+            if (!$propertyMapping) {
+                throw new \RuntimeException('PropertyMapping is not defined.');
+            }
+
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
+            $storage->setImportPropertyId($propertyMapping->getProperty()->getId());
             $storage->saveToFile($residentLeaseFile, $resident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
@@ -629,20 +716,36 @@ class AccountingController extends Controller
      */
     public function updateMatchedContractsCsv()
     {
-        /**
-         * @var $importFactory ImportFactory
-         */
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $handler = $importFactory->getHandler();
         $result = $handler->updateMatchedContracts();
-
         $response = new JsonResponse(
-            array('success' => $result)
+            ['success' => $result]
         );
 
         $statusCode = ($result) ? 200 : 400;
         $response->setStatusCode($statusCode);
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/deposit",
+     *     name="accounting_deposit",
+     *     options={"expose"=true}
+     * )
+     */
+    public function batchDepositsAction()
+    {
+        return $this->render(
+            'LandlordBundle:Accounting:deposit.html.twig',
+            [
+                'nGroups' => $this->getGroups()->count(),
+                'showFilter' =>
+                    $this->getCurrentGroup()->getGroupSettings()->getPaymentProcessor() == PaymentProcessor::HEARTLAND
+            ]
+        );
     }
 }

@@ -3,7 +3,6 @@
 namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseIDQuestions;
 use JMS\Serializer\SerializationContext;
@@ -28,25 +27,39 @@ class SummaryController extends Controller
         $user = $this->getUser();
         if (UserIsVerified::PASSED != $user->getIsVerified()) {
             return new RedirectResponse(
-                $this->get('router')->generate('personal_info_fill_pidkiq')
+                $this->generateUrl('personal_info_fill_pidkiq')
             );
         }
 
         $sEmail = $user->getEmail();
-        $Report  = $this->getReport();
+        $report  = $this->getReport();
 
-        if (!$Report) {
-            return $this->forward('ExperianBundle:Report:get');
+        if (!$report) {
+            return $this->forward(
+                'TenantBundle:Report:get',
+                [
+                    'redirect' => 'tenant_summary',
+                ]
+            );
+        } elseif (!$report->getRawData()) {
+            return $this->forward(
+                'TenantBundle:Report:get',
+                [
+                    'redirect' => 'tenant_summary',
+                    'shouldUpdateReport' => true
+                ]
+            );
         }
 
-        $Score = $this->getScore();
-        return array(
+        $score = $this->getScore();
+
+        return [
             'sEmail' => $sEmail,
-            'Report' => $Report,
-            'Score' => $Score,
+            'Report' => $report,
+            'Score' => $score,
             'User' => $user,
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
-        );
+        ];
     }
 
     /**
@@ -68,12 +81,10 @@ class SummaryController extends Controller
         }
         $addressChoice = $personalInfoForm->get('address_choice')->getData();
         if ($personalInfoForm->isSubmitted()) {
-            $defaultAddressId = (!empty($addressChoice))? $addressChoice->getId() : null;
+            $defaultAddressId = (!empty($addressChoice)) ? $addressChoice->getId() : null;
         } else {
             $defaultAddressId = ($address = $this->getUser()->getDefaultAddress()) ? $address->getId() : null;
         }
-
-
 
         $addressesJson = $this->get('jms_serializer')->serialize(
             $this->getUser()->getAddresses(),

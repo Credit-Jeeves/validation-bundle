@@ -1,3 +1,4 @@
 MerchantName,BatchID,BatchCloseDate,TransactionID,ConsumerAmount,ConsumerFeeAmount,MerchantDepositAmount,MerchantDepositDate,DepositType,MerchantChargeAmount,MerchantChargeDate,ChargeType
 "MrchntNm","286616","8/1/2014 12:00:00 AM","5355372",715.85,1.95,715.85,"8/4/2014 6:55:01 PM","Batch",,"",""
 "MrchntNm","286616","8/1/2014 12:00:00 AM","5355373",715.85,1.95,715.85,"","Batch",,"",""
+"MrchntNm","2344665","8/1/2015 12:00:00 AM","561232653",750.00,1.95,750.00,"8/4/2015 6:55:01 PM","Batch",,"",""

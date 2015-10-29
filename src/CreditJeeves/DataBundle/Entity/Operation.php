@@ -2,10 +2,11 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 
 /**
  * Operation
@@ -290,7 +291,7 @@ class Operation extends Base
      */
     public function getIsCash()
     {
-        if ($this->getOrder()->getType() === OrderType::CASH) {
+        if ($this->getOrder()->getPaymentType() === OrderPaymentType::CASH) {
             return true;
         }
 
@@ -308,11 +309,11 @@ class Operation extends Base
      */
     public function getCheckNumber()
     {
-        if ($this->getOrder()->getType() === OrderType::HEARTLAND_CARD) {
+        if ($this->getOrder()->getPaymentType() === OrderPaymentType::CARD) {
             $code = 'PMTCRED';
-        } elseif ($this->getOrder()->getType() === OrderType::HEARTLAND_BANK) {
+        } elseif ($this->getOrder()->getPaymentType() === OrderPaymentType::BANK) {
             $code = 'PMTCHECK';
-        } elseif ($this->getOrder()->getType() === OrderType::CASH) {
+        } elseif ($this->getOrder()->getPaymentType() === OrderPaymentType::CASH) {
             $code = 'EXTERNAL';
         } else {
             $code = '';
@@ -410,11 +411,11 @@ class Operation extends Base
     /**
      * Add orders
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $order
+     * @param Order $order
      *
      * @return Operation
      */
-    public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
+    public function setOrder(Order $order)
     {
         parent::setOrder($order);
         if (!$order->getOperations()->contains($this)) {
@@ -450,9 +451,28 @@ class Operation extends Base
                 return  $trans->getTransactionId();
             }
 
-            return $order->getHeartlandTransactionId();
+            return $order->getTransactionId();
         }
 
         return null;
+    }
+
+    /**
+     * @param $vendor
+     * @return Report
+     * @throws \Exception
+     */
+    public function getReportByVendor($vendor)
+    {
+        CreditSummaryVendor::throwsInvalid($vendor);
+
+        switch ($vendor) {
+            case CreditSummaryVendor::TRANSUNION:
+                return $this->getReportTransunionSnapshot();
+            case CreditSummaryVendor::EXPERIAN:
+                return $this->getReportPrequal();
+            default:
+                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
+        }
     }
 }

@@ -68,4 +68,12 @@ class PropertyMappingManager
 
         return $propertyMapping->getProperty()->getPropertyMappingByHolding($this->holding);
     }
+
+    /**
+     * @return PropertyMapping[]
+     */
+    public function getMappedProperties()
+    {
+        return $this->em->getRepository('RjDataBundle:PropertyMapping')->findBy(['holding' => $this->holding]);
+    }
 }

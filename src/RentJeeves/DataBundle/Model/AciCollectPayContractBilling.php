@@ -22,12 +22,19 @@ abstract class AciCollectPayContractBilling
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      *
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
-     *     inversedBy="aciCollectPayContractBilling"
+     *     inversedBy="aciCollectPayContractBillings"
      * )
      */
     protected $contract;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="division_id", type="string", nullable=true)
+     */
+    protected $divisionId;
 
     /**
      * @var \DateTime
@@ -78,5 +85,21 @@ abstract class AciCollectPayContractBilling
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDivisionId()
+    {
+        return $this->divisionId;
+    }
+
+    /**
+     * @param string $divisionId
+     */
+    public function setDivisionId($divisionId)
+    {
+        $this->divisionId = $divisionId;
     }
 }

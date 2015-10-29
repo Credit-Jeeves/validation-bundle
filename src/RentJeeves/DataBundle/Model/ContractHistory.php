@@ -1,15 +1,12 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
-use DateTime;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 /**
  * @ORM\MappedSuperclass
@@ -69,6 +66,18 @@ abstract class ContractHistory extends AbstractLogEntry
 
     /**
      * @ORM\Column(
+     *     type="PaymentAccepted",
+     *     nullable=false,
+     *     name="payment_accepted",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $paymentAccepted = PaymentAccepted::ANY;
+
+    /**
+     * @ORM\Column(
      *     type="decimal",
      *     precision=10,
      *     scale=2,
@@ -77,20 +86,6 @@ abstract class ContractHistory extends AbstractLogEntry
      * )
      */
     protected $uncollectedBalance;
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     */
-    protected $balance = 0.00;
 
     /**
      * @ORM\Column(
@@ -243,6 +238,7 @@ abstract class ContractHistory extends AbstractLogEntry
     public function setStatus($status = ContractStatus::PENDING)
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -265,6 +261,7 @@ abstract class ContractHistory extends AbstractLogEntry
     public function setRent($rent)
     {
         $this->rent = $rent;
+
         return $this;
     }
 
@@ -276,22 +273,6 @@ abstract class ContractHistory extends AbstractLogEntry
     public function getRent()
     {
         return $this->rent;
-    }
-
-    /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
     }
 
     /**
@@ -309,7 +290,6 @@ abstract class ContractHistory extends AbstractLogEntry
     {
         return $this->integratedBalance;
     }
-
 
     /**
      * @param float $uncollectedBalance
@@ -330,19 +310,20 @@ abstract class ContractHistory extends AbstractLogEntry
     /**
      * Set Paid to
      *
-     * @param DateTime $paidTo
+     * @param \DateTime $paidTo
      * @return $this
      */
     public function setPaidTo($paidTo)
     {
         $this->paidTo = $paidTo;
+
         return $this;
     }
 
     /**
      * Get startAt
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getPaidTo()
     {
@@ -350,6 +331,7 @@ abstract class ContractHistory extends AbstractLogEntry
         if (empty($date)) {
             $date = $this->getStartAt();
         }
+
         return $date;
     }
 
@@ -362,6 +344,7 @@ abstract class ContractHistory extends AbstractLogEntry
     public function setReporting($reporting)
     {
         $this->reporting = $reporting;
+
         return $this;
     }
 
@@ -378,19 +361,20 @@ abstract class ContractHistory extends AbstractLogEntry
     /**
      * Set startAt
      *
-     * @param DateTime $startAt
+     * @param \DateTime $startAt
      * @return $this
      */
     public function setStartAt($startAt)
     {
         $this->startAt = $startAt;
+
         return $this;
     }
 
     /**
      * Get startAt
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getStartAt()
     {
@@ -400,19 +384,20 @@ abstract class ContractHistory extends AbstractLogEntry
     /**
      * Set finishAt
      *
-     * @param DateTime $finishAt
+     * @param \DateTime $finishAt
      * @return $this
      */
     public function setFinishAt($finishAt)
     {
         $this->finishAt = $finishAt;
+
         return $this;
     }
 
     /**
      * Get finishAt
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getFinishAt()
     {
@@ -420,88 +405,18 @@ abstract class ContractHistory extends AbstractLogEntry
     }
 
     /**
-     * Set updatedAt
-     *
-     * @param DateTime $updatedAt
-     * @return $this
+     * @return integer
      */
-    public function setUpdatedAt($updatedAt)
+    public function getPaymentAccepted()
     {
-        $this->updatedAt = $updatedAt;
-        return $this;
+        return $this->paymentAccepted;
     }
 
     /**
-     * Get updatedAt
-     *
-     * @return DateTime
+     * @param integer $paymentAccepted
      */
-    public function getUpdatedAt()
+    public function setPaymentAccepted($paymentAccepted)
     {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Add payment
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
-     * @return $this
-     */
-    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
-    {
-        $this->operations[] = $operation;
-        return $this;
-    }
-
-    /**
-     * Remove payment
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
-     */
-    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
-    {
-        $this->operations->removeElement($operation);
-    }
-
-    /**
-     * Get operations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOperations()
-    {
-        return $this->operations;
-    }
-
-    /**
-     * Add payment
-     *
-     * @param \RentJeeves\DataBundle\Entity\Payment $payment
-     * @return $this
-     */
-    public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
-    {
-        $this->payments[] = $payment;
-        return $this;
-    }
-
-    /**
-     * Remove payment
-     *
-     * @param \RentJeeves\DataBundle\Entity\Payment $opeartion
-     */
-    public function removePayment(\RentJeeves\DataBundle\Entity\Payment $payment)
-    {
-        $this->payments->removeElement($payment);
-    }
-
-    /**
-     * Get payments
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPayments()
-    {
-        return $this->payments;
+        $this->paymentAccepted = $paymentAccepted;
     }
 }

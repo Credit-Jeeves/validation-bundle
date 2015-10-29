@@ -73,6 +73,16 @@ class Tenant extends User
      */
     protected $residentsMapping;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciImportProfileMap",
+     *     mappedBy="user"
+     * )
+     *
+     * @var AciImportProfileMap
+     */
+    protected $aciImportProfileMap;
+
     public function __construct()
     {
         parent::__construct();
@@ -90,7 +100,7 @@ class Tenant extends User
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|ResidentMapping[]
      */
     public function getResidentsMapping()
     {
@@ -151,13 +161,16 @@ class Tenant extends User
     /**
      * Get contracts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Contract[]
      */
     public function getContracts()
     {
         return $this->contracts;
     }
 
+    /**
+     * @return Contract[]
+     */
     public function getActiveContracts()
     {
         $result = array();
@@ -165,21 +178,6 @@ class Tenant extends User
 
         foreach ($contracts as $contract) {
             if (in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::DELETED))) {
-                continue;
-            }
-            $result[] = $contract;
-        }
-
-        return $result;
-    }
-
-    public function getContractsHomePage()
-    {
-        $result = array();
-        $contracts = $this->getContracts();
-
-        foreach ($contracts as $contract) {
-            if (in_array($contract->getStatus(), array(ContractStatus::DELETED))) {
                 continue;
             }
             $result[] = $contract;
@@ -225,7 +223,7 @@ class Tenant extends User
     /**
      * Get paymentAccounts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PaymentAccount[]
      */
     public function getPaymentAccounts()
     {
@@ -267,5 +265,21 @@ class Tenant extends User
         }
 
         return null;
+    }
+
+    /**
+     * @return AciImportProfileMap|null
+     */
+    public function getAciImportProfileMap()
+    {
+        return $this->aciImportProfileMap;
+    }
+
+    /**
+     * @param AciImportProfileMap $aciImportProfileMap
+     */
+    public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
+    {
+        $this->aciImportProfileMap = $aciImportProfileMap;
     }
 }

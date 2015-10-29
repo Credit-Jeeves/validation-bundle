@@ -2,8 +2,6 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
@@ -16,7 +14,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\DiExtraBundle\Annotation as DI;
-use \Exception;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class PaymentAdminController extends CRUDController

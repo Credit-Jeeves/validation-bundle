@@ -8,22 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ReportD2c extends Report
 {
-    /**
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     mappedBy="reportD2c",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $operation;
-
     /*
      *  This report does not currently implement the ReportSummaryInterface
      */
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getBalanceRevolvingAccounts()
     {
@@ -31,7 +21,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getBalanceMortgageAccounts()
     {
@@ -39,7 +29,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getBalanceInstallmentAccounts()
     {
@@ -47,7 +37,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getBalanceOpenCollectionAccounts()
     {
@@ -55,7 +45,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalMonthlyPayments()
     {
@@ -63,7 +53,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalAccounts()
     {
@@ -71,7 +61,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalOpenAccounts()
     {
@@ -79,7 +69,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalClosedAccounts()
     {
@@ -87,7 +77,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalDerogatoryAccounts()
     {
@@ -95,7 +85,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalOpenCollectionAccounts()
     {
@@ -103,7 +93,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getTotalPublicRecords()
     {
@@ -111,7 +101,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getUtilization()
     {
@@ -119,7 +109,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getNumberOfInquieres()
     {
@@ -127,7 +117,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getOldestTradelineInYears()
     {
@@ -135,7 +125,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getNumberOfInquiries()
     {
@@ -143,7 +133,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getInquiriesPeriod()
     {
@@ -151,7 +141,7 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function getBureauName()
     {
@@ -159,10 +149,10 @@ class ReportD2c extends Report
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function notImplemented()
     {
-        throw new Exception("Not implemented.");
+        throw new \Exception("Not implemented.");
     }
 }

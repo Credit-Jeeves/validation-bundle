@@ -2,17 +2,31 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\MappedSuperclass
+ *
+ * Serializer can not work with the existing orderType column.
+ * The discriminator field name "orderType" of the base-class "CreditJeeves\DataBundle\Model\\Order" conflicts with
+ * a regular property of the sub-class "CreditJeeves\DataBundle\Entity\Order".
+ * That is why we use objectType.
+ *
+ * @Serializer\Discriminator(field = "objectType", map = {
+ *    "submerchant": "CreditJeeves\DataBundle\Entity\OrderSubmerchant",
+ *    "pay_direct": "CreditJeeves\DataBundle\Entity\OrderPayDirect",
+ *    "base": "CreditJeeves\DataBundle\Entity\Order"
+ * })
  */
 abstract class Order
 {
@@ -49,20 +63,19 @@ abstract class Order
     /**
      * @ORM\Column(
      *     type="OrderStatus",
-     *     options={
-     *         "default"="new"
-     *     }
+     *     nullable=false
      * )
      */
-    protected $status = OrderStatus::NEWONE;
+    protected $status;
 
     /**
      * @ORM\Column(
-     *     type="OrderType",
-     *     nullable=true
+     *     name="payment_type",
+     *     type="OrderPaymentType",
+     *     nullable=false
      * )
      */
-    protected $type = OrderType::CASH;
+    protected $paymentType;
 
     /**
      * @ORM\Column(
@@ -149,13 +162,59 @@ abstract class Order
      */
     protected $paymentProcessor = PaymentProcessor::HEARTLAND;
 
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     name="descriptor",
+     *     nullable=true
+     * )
+     */
+    protected $descriptor;
+
+    /**
+     * @var string
+     */
+    protected $orderType = OrderAlgorithmType::SUBMERCHANT;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="orders",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="payment_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var PaymentAccount
+     */
+    protected $paymentAccount;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *      inversedBy="orders",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="deposit_account_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var DepositAccount
+     */
+    protected $depositAccount;
+
     public function __construct()
     {
-        $this->operations   = new ArrayCollection();
+        $this->operations = new ArrayCollection();
         $this->transactions = new ArrayCollection();
-        $this->operations   = new ArrayCollection();
-        $this->sentOrder    = new ArrayCollection();
-        $this->created_at   = new DateTime();
+        $this->operations = new ArrayCollection();
+        $this->sentOrder = new ArrayCollection();
+        $this->created_at = new DateTime();
     }
 
     /**
@@ -188,7 +247,7 @@ abstract class Order
      * Set cj_applicant_id
      *
      * @param  integer $cjApplicantId
-     * @return Order
+     * @return self
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -211,7 +270,7 @@ abstract class Order
      * Set status
      *
      * @param  OrderStatus $status
-     * @return Order
+     * @return self
      */
     public function setStatus($status)
     {
@@ -233,12 +292,12 @@ abstract class Order
     /**
      * Set type
      *
-     * @param  OrderType $type
+     * @param  OrderPaymentType $paymentType
      * @return Order
      */
-    public function setType($type)
+    public function setPaymentType($paymentType)
     {
-        $this->type = $type;
+        $this->paymentType = $paymentType;
 
         return $this;
     }
@@ -246,18 +305,18 @@ abstract class Order
     /**
      * Get type
      *
-     * @return OrderType
+     * @return OrderPaymentType
      */
-    public function getType()
+    public function getPaymentType()
     {
-        return $this->type;
+        return $this->paymentType;
     }
 
     /**
      * Set sum
      *
      * @param  double $sum
-     * @return Order
+     * @return self
      */
     public function setSum($sum)
     {
@@ -280,7 +339,7 @@ abstract class Order
      * Set fee
      *
      * @param  double $fee
-     * @return Order
+     * @return self
      */
     public function setFee($fee)
     {
@@ -303,7 +362,7 @@ abstract class Order
      * Set created_date
      *
      * @param  DateTime $createdAt
-     * @return Order
+     * @return self
      */
     public function setCreatedAt($createdAt)
     {
@@ -326,7 +385,7 @@ abstract class Order
      * Set updated_at
      *
      * @param  DateTime $updatedAt
-     * @return Order
+     * @return self
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -349,7 +408,7 @@ abstract class Order
      * Set user
      *
      * @param  \CreditJeeves\DataBundle\Entity\User $user
-     * @return Order
+     * @return self
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
@@ -372,7 +431,7 @@ abstract class Order
      * Add order's operation
      *
      * @param  \CreditJeeves\DataBundle\Entity\Operation $operation
-     * @return Order
+     * @return self
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
@@ -405,7 +464,7 @@ abstract class Order
      * Add transaction
      *
      * @param  \RentJeeves\DataBundle\Entity\Transaction $transaction
-     * @return Order
+     * @return self
      */
     public function addTransaction(\RentJeeves\DataBundle\Entity\Transaction $transaction)
     {
@@ -457,5 +516,78 @@ abstract class Order
     public function setPaymentProcessor($paymentProcessor)
     {
         $this->paymentProcessor = $paymentProcessor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptor()
+    {
+        return $this->descriptor;
+    }
+
+    /**
+     * @param string $descriptor
+     */
+    public function setDescriptor($descriptor)
+    {
+        $this->descriptor = $descriptor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderType()
+    {
+        return $this->orderType;
+    }
+
+    /**
+     * @param string $orderType
+     */
+    public function setOrderType($orderType)
+    {
+        $this->orderType = $orderType;
+    }
+
+    /**
+     * @return PaymentAccount
+     */
+    public function getPaymentAccount()
+    {
+        return $this->paymentAccount;
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     */
+    public function setPaymentAccount(PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccount = $paymentAccount;
+    }
+
+    /**
+     * @return DepositAccount
+     */
+    public function getDepositAccount()
+    {
+        return $this->depositAccount;
+    }
+
+    /**
+     * @param DepositAccount $depositAccount
+     */
+    public function setDepositAccount(DepositAccount $depositAccount)
+    {
+        $this->depositAccount = $depositAccount;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return 'base';
     }
 }

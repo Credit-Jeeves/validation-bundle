@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -21,93 +20,170 @@ class TenantCase extends BaseTestCase
     const ALL_PLUS_ONE = 'All (19)';
     const ALL_MINUS_ONE = 'All (17)';
 
+    protected function loadTenantTab()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->session->getDriver()->resizeWindow(1600, 1200);
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+    }
+
     /**
+     * Approve contract for tenant
      * @test
      */
     public function approve()
     {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
-        $this->assertCount(3, $contractPendings, 'Wrong number of pending');
-        $this->assertEquals('contract.statuses.pending', $contractPendings[0]->getHtml());
-        $this->assertEquals('contract.statuses.pending', $contractPendings[1]->getHtml());
-        $this->assertEquals('contract.statuses.contract_ended', $contractPendings[2]->getHtml());
-        $this->assertNotNull($approve = $this->page->find('css', '.approve'));
-        $approve->click();
+        $this->loadTenantTab();
+        $this->assertNotEmpty(
+            $contractPendings = $this->page->findAll('css', '.contract-pending>div'),
+            'Check fixtures, landlord1@example.com should have pending contracts on first page of tenant tab.'
+        );
+        $this->assertCount(
+            3,
+            $contractPendings,
+            'Check fixtures, landlord1@example.com should have 3 pending contracts on first page of tenant tab.'
+        );
+        $this->assertEquals(
+            'contract.statuses.pending',
+            $contractPendings[0]->getHtml(),
+            'Check fixtures, first pending contract should have status "contract.statuses.pending"'
+        );
+        $this->assertEquals(
+            'contract.statuses.pending',
+            $contractPendings[1]->getHtml(),
+            'Check fixtures, second pending contract should have status "contract.statuses.pending"'
+        );
+        $this->assertEquals(
+            'contract.statuses.contract_ended',
+            $contractPendings[2]->getHtml(),
+            'Check fixtures, third pending contract should have status "contract.statuses.contract_ended"'
+        );
+        $this->assertNotNull(
+            $approve = $this->page->find('css', '.approve'),
+            'Button "Approve" for contract doesn\'t found'
+        );
+        $approve->click(); // open dialog
         $this->page->pressButton('approve.tenant');
-        $this->session->wait($this->timeout, "$('div.attention-box').is(':visible')");
-        $this->assertNotNull($errors = $this->page->findAll('css', 'div.attention-box ul.default li'));
+        $this->session->wait($this->timeout, "$('.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+        $this->assertNotEmpty(
+            $errors = $this->page->findAll('css', 'div.attention-box ul.default li'),
+            'Should show errors'
+        );
         $this->assertCount(1, $errors, 'Wrong number of errors');
-        $this->assertNotNull($start = $this->page->find('css', '#contractApproveStart'));
+        $this->assertNotNull(
+            $start = $this->page->find('css', '#contractApproveStart'),
+            'Start on date field not found'
+        );
         $start->click();
         $this->session->wait($this->timeout, "$('#ui-datepicker-div .ui-datepicker-today').is(':visible')");
         $this->assertNotNull($today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today'));
         $today->click();
-        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $this->assertNotNull(
+            $amount = $this->page->find('css', '#amount-approve'),
+            'Amount field not found'
+        );
         $amount->setValue('200');
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "!$('#tenant-approve-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
-        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
-        $this->assertCount(2, $contractPendings, 'Wrong number of pending');
-        $this->assertEquals('contract.statuses.pending', $contractPendings[0]->getHtml());
-        $this->assertEquals('contract.statuses.contract_ended', $contractPendings[1]->getHtml());
+        $this->assertNotNull(
+            $propertiesTable = $this->page->find('css', '.properties-table'),
+            'Contract table can not load'
+        );
+        $this->assertNotEmpty(
+            $contractPendings = $this->page->findAll('css', '.contract-pending>div'),
+            'Landlord should have pending contracts on first page'
+        );
+        $this->assertCount(
+            2,
+            $contractPendings,
+            'Wrong number of pending contract, after approve should have just 2 pending contracts on first page'
+        );
+
         $this->logout();
     }
 
     /**
+     * Check sorting for contract list on tenant tab
      * @test
      */
     public function sort()
     {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
+        $this->loadTenantTab();
+        $this->assertNotEmpty(
+            $td = $this->page->findAll('css', 'td'),
+            'Check fixtures, landlord1@example.com should have contracts.'
+        );
+        $this->assertEquals(
+            'Timothy Applegate',
+            $td[1]->getText(),
+            'Check fixtures, first contract should have tenant name "Timothy Applegate"'
+        );
 
-        $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
+        $this->assertNotNull(
+            $tenant = $this->page->find('css', '#first_name'),
+            'Column header with first name sort clickable btn not found'
+        );
         $tenant->click();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('William Johnson', $td[1]->getText(), 'Wrong text in field');
-
-        $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
-        $tenant->click();
+        $this->assertNotNull(
+            $this->page->find('css', '#contracts-block .properties-table'),
+            'Contract list table should be visible'
+        );
+        $this->assertNotEmpty(
+            $td = $this->page->findAll('css', 'td'),
+            'Contract list should not be empty'
+        );
+        $this->assertEquals(
+            'William Johnson',
+            $td[1]->getText(),
+            'After first sorting first contract should have tenant name "William Johnson"(sort desc)'
+        );
+        $tenant->click(); // click again and sort asc
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('Alex Jordan', $td[1]->getText(), 'Wrong text in field');
+        $this->assertNotNull(
+            $this->page->find('css', '#contracts-block .properties-table'),
+            'Contract list table should be visible'
+        );
+        $this->assertNotEmpty(
+            $td = $this->page->findAll('css', 'td'),
+            'Contract list should not be empty'
+        );
+        $this->assertEquals(
+            'Alex Jordan',
+            $td[1]->getText(),
+            'After second sorting first contract should have tenant name "Alex Jordan"(sort asc)'
+        );
+
         $this->logout();
     }
 
+    /**
+     * @return array
+     */
     public function providerEdit()
     {
-        return array(
-            array($isIntegrated = false),
-            array($isIntegrated = true),
-        );
+        return [
+            [$isIntegrated = false],
+            [$isIntegrated = true],
+        ];
     }
 
     /**
      * @test
      * @dataProvider providerEdit
+     * @param $isIntegrated
      */
     public function edit($isIntegrated)
     {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $this->session->getDriver()->resizeWindow(1600, 1200);
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $this->loadTenantTab();
+        // Prepare Group for test
+        $em = $this->getEntityManager();
         /** @var $group Group */
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
         $setting = $group->getGroupSettings();
@@ -115,188 +191,191 @@ class TenantCase extends BaseTestCase
         $em->persist($setting);
         $em->flush();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-
-        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'));
+        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'), 'Can not find group selector');
         $select->click();
 
-        $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
+        $this->assertNotNull(
+            $selectOption = $this->page->find('css', '#holding-group_li_1>span'),
+            'Can not find group option in group selector'
+        );
         $selectOption->click();
-        $this->session->wait($this->timeout - 20000, "false"); // wait refresh page, try set less time
+        $this->session->wait($this->timeout - 25000, "false"); // wait refresh page, try set less time
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($approve = $this->page->find('css', '.approve'));
+        $this->assertNotNull($approve = $this->page->find('css', '.approve'), 'Can not find Approve button');
         $approve->click();
 
         $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
 
-        $this->assertNotNull($amountInput = $this->page->find('css', '#amount-approve'));
+        // Check that amount refresh from server each time after close and open dialog
+        $this->assertNotNull($amountInput = $this->page->find('css', '#amount-approve'), 'Can not find amount input');
         $amount = $amountInput->getValue();
         $amountInput->setValue('999999999TEST');
         $this->assertNotNull(
-            $closeBtn = $this->page->find('css', '.ui-dialog-titlebar-close')
+            $closeBtn = $this->page->find('css', '.ui-dialog-titlebar-close'),
+            'Can not find close button'
         );
         $closeBtn->click();
         $approve->click();
         $this->session->wait($this->timeout, "$('#tenant-approve-property-popup .footer-button-box').is(':visible')");
         $this->session->wait($this->timeout, "$('.overlay').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
-        $this->assertEquals($amount, $amountInput->getValue());
+        $this->assertEquals($amount, $amountInput->getValue(), 'Amount should load from server and set again');
 
         $this->page->pressButton('edit.Info');
         $this->session->wait(
             $this->timeout + 3000,
-            "$('#unit-edit').val() > 0 && $('#unit-edit').is(':visible') && $('#amount-edit').is(':visible')"
+            "$('#unit-edit').is(':visible') && $('#amount-edit').is(':visible')"
         );
-        $this->session->evaluateScript(
-            "$('#amount-edit').val(' ');"
-        );
-
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
-        $amount->setValue('7677.00');
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
-            $this->session->evaluateScript(
-                "$('#resident-edit').val(' ');"
+            $this->assertNotNull(
+                $resident = $this->page->find('css', '#resident-edit'),
+                'Can not find resident field on the page'
             );
             $resident->setValue('t12345');
         }
 
-        $this->session->evaluateScript(
-            "$('#contractEditStart').focus()"
-        );
-
         // click next_payment_date and select today
         $start = $this->page->find('css', '#contractEditStart');
-        $this->assertNotNull($start);
+        $this->assertNotNull($start, 'Can not find #contractEditStart on the page');
         $start->click();
 
         $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
 
         $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
-        $this->assertNotNull($today);
+        $this->assertNotNull($today, 'Can not find datepicker value for today');
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
         // end selected next_payment_date
 
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'), 'Can not find amount input');
         $amount->setValue(7677.00);
         // choose input radio ON, and select date finish
 
         $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabel');
-        $this->assertNotNull($endAtRadio);
+        $this->assertNotNull($endAtRadio, 'Can not find finishAt radio button');
         $endAtRadio->click();
 
         $finish = $this->page->find('css', '#contractEditFinish');
-        $this->assertNotNull($finish);
+        $this->assertNotNull($finish, 'Can not find finish contract popup');
         $finish->click();
         $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
 
         $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
-        $this->assertNotNull($next);
+        $this->assertNotNull($next, 'Can not find NEXT on the datepicker');
         $next->click();
 
         $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
-        $this->assertNotNull($future);
+        $this->assertNotNull($future, 'Can not find FUTURE on the datepicker');
         $future[count($future) - 1]->click();
         // end select finish date
 
-        $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
+        $this->assertNotNull(
+            $contractEditStart = $this->page->find('css', '#contractEditStart'),
+            'Can not find #contractEditStart on the page'
+        );
         $start = $contractEditStart->getValue();
 
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
         $finish = $contractEditStart->getValue();
 
-        $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
-        $unitEdit->selectOption('2-e'); //
+        $this->assertNotNull(
+            $unitEdit = $this->page->find('css', '#unit-edit'),
+            'Can not find UNIT select box'
+        );
+        $unitEdit->selectOption('2-e');
 
-        $this->assertNotNull($unitEdit = $this->page->find('css', '.dueDateEdit'));
-        $unitEdit->selectOption('14'); //
+        $this->assertNotNull(
+            $dueDateEdit = $this->page->find('css', '.dueDateEdit'),
+            'Can not find dueDate select box'
+        );
+        $dueDateEdit->selectOption('14');
 
         if ($isIntegrated) {
-            $this->assertNotNull($balanceField = $this->page->find('css', '.balance-field'));
-            $balanceField->setValue("200.00");
+            $this->assertNotNull(
+                $balanceField = $this->page->find('css', '.balance-field'),
+                'Can not find balance field'
+            );
+            $balanceField->setValue('200.00');
         }
 
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($approve = $this->page->find('css', '.approve'));
+        $this->assertNotNull($approve = $this->page->find('css', '.approve'), 'Can not find APPROVE button');
         $approve->click();
 
-        $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
-        $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
-        $this->assertNotNull($address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'));
-        $this->assertEquals($start, $editStart->getValue(), 'Wrong edit start');
-        $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
-        $this->assertEquals(7677.00, $amount->getValue(), 'Wrong edit amount');
-        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
+        $this->assertNotNull(
+            $editStart = $this->page->find('css', '#contractApproveStart'),
+            'Can not find contract start'
+        );
+        $this->assertNotNull(
+            $editFinish = $this->page->find('css', '#contractApproveFinish'),
+            'Can not find contract finish'
+        );
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'), 'Can not find contract amount');
+        $this->assertNotNull(
+            $address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'),
+            'Can not find contract address'
+        );
+        $this->assertEquals($start, $editStart->getValue(), 'Wrong start date after edit');
+        $this->assertEquals($finish, $editFinish->getValue(), 'Wrong finish date after edit');
+        $this->assertEquals(7677.00, $amount->getValue(), 'Wrong amount after edit');
+        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong unit after edit');
 
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#residentId'));
-            $this->assertEquals('t12345', $resident->getValue(), 'Wrong edit resident id');
+            $this->assertNotNull($resident = $this->page->find('css', '#residentId'), 'Can not find resident');
+            $this->assertEquals('t12345', $resident->getValue(), 'Wrong resident id after edit');
         }
 
         $this->page->pressButton('close');
-        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'), 'Can not find contract edit button');
         $edit->click();
 
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
         $endAtRadio = $this->page->find('css', '#tenant-edit-property-popup .finishAtLabelM2M');
-        $this->assertNotNull($endAtRadio);
+        $this->assertNotNull($endAtRadio, 'Can not find contract endAt radio button');
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
-            $this->session->evaluateScript(
-                "$('#resident-edit').val(' ');"
-            );
+            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'), 'Can not find resident field');
             $resident->setValue('t123457');
         }
-        $endAtRadio->click();
+        $endAtRadio->click(); // set End of contract to 'When Cancelled'
         $this->page->pressButton('savechanges');
         $this->session->reload();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($edit = $this->page->find('css', '.edit'));
+        $this->assertNotNull($edit = $this->page->find('css', '.edit'), 'Can not find contract edit button');
         $edit->click();
 
         $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
-        $this->session->wait($this->timeout, "$('.loader').is(':visible') === false");
+        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
         // for find and check radio need show it (default "display:none")
-        $this->session->evaluateScript('$(\'input[name="optionsFinishAtEdit"]\').show();');
+        $this->session->evaluateScript('$(\'#tenant-edit-property-popup label checkbox input[type="radio"]\').show();');
         $checkedMonth2Month = $this->page->find(
             'css',
-            '#tenant-edit-property-popup .monthToMonth'
+            '#tenant-edit-property-popup input.monthToMonth'
         );
-        $this->assertNotNUll($checkedMonth2Month);
-        $this->assertNotNUll($checkedMonth2Month->getAttribute('checked'));
-        $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue());
-        $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'));
+        $this->assertNotNull($checkedMonth2Month, 'MonthToMonth should not be null');
+        $this->assertNotNull($checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should have attr CHECKED');
+        $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue(), 'MonthToMonth value is wrong');
+        $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should be checked');
         if ($isIntegrated) {
-            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'));
+            $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'), 'Can not find resident field');
             $this->assertEquals('t123457', $resident->getValue(), 'Wrong edit resident id');
         }
         $this->logout();
 
-        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
-            array(
-                'rent' => 7677.00
-            )
-        );
-        $this->assertCount(1, $contracts, 'Wrong count contract');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(['rent' => 7677.00]);
+        $this->assertCount(1, $contracts, 'Wrong count contract. Should be 1.');
 
         /**
-         * @var $contract Contract
+         * @var Contract $contract
          */
         $contract = reset($contracts);
         if ($isIntegrated) {
-            $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong balance');
-            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
+            $this->assertEquals(200.00, $contract->getIntegratedBalance(), 'Wrong integrated balance');
         } else {
-            $this->assertEquals(0, $contract->getBalance(), 'Wrong balance');
-            $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong balance');
+            $this->assertEquals(0, $contract->getIntegratedBalance(), 'Wrong integrated balance');
         }
     }
 
@@ -577,7 +656,6 @@ class TenantCase extends BaseTestCase
         $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2').val('30')");
         $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn3').val('9041')");
 
-
         $this->fillForm(
             $form,
             array(
@@ -704,14 +782,12 @@ class TenantCase extends BaseTestCase
             )
         );
 
-
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
             $this->timeout + 10000,
             "jQuery('#id-source-step:visible').length"
         );
-
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
 
@@ -727,14 +803,12 @@ class TenantCase extends BaseTestCase
             )
         );
 
-
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
             $this->timeout + 85000, // local need more time for passed test
             "!jQuery('#id-source-step').is(':visible')"
         );
-
 
         $this->session->wait(
             $this->timeout,
@@ -756,7 +830,6 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
         $this->assertFalse($pay->isVisible());
         $this->logout();
-
 
         /**
          * @var $em EntityManager
@@ -1117,5 +1190,58 @@ class TenantCase extends BaseTestCase
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
+    }
+
+    /**
+     * @test
+     */
+    public function searchTenantsInOtherGroups()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull(
+            $allContractsCount = $this->page->find('css', '.title-box>h2'),
+            'Empty box with numbers of contracts'
+        );
+        $this->assertEquals(self::ALL, $allContractsCount->getText());
+        $this->assertNotNull(
+            $searchColumn = $this->page->find('css', '#searchFilter_link'),
+            'Empty filter selectbox'
+        );
+        $searchColumn->click();
+        $this->assertNotNull(
+            $optionEmail = $this->page->find('css', '#searchFilter_li_1'),
+            'Empty options which should be email'
+        );
+        $optionEmail->click();
+        $this->assertNotNull(
+            $searchText = $this->page->find('css', '#searsh-field'),
+            'Empty search input'
+        );
+        $searchText->setValue('rent');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'), 'Empty search button');
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($allContractsCount = $this->page->find('css', '.title-box>h2'), 'Empty all contracts box');
+        $this->assertEquals('All (14)', $allContractsCount->getText());
+        $this->assertNotNull(
+            $linkToTenantInDifferentGroups = $this->page->findAll('css', '#foundMoreContainer>a'),
+            'We don\'t have links for groups which have result'
+        );
+        $this->assertCount(1, $linkToTenantInDifferentGroups, 'We didn\'t get correct number of links');
+        $this->assertEquals('Sea side Rent Group', $linkToTenantInDifferentGroups[0]->getText());
+        $linkToTenantInDifferentGroups[0]->click();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull(
+            $linkToTenantInDifferentGroups = $this->page->findAll('css', '#foundMoreContainer>a'),
+            'We don\'t have links for groups which have result'
+        );
+        $this->assertCount(1, $linkToTenantInDifferentGroups, 'We didn\'t get correct number of links');
+        $this->assertEquals('Test Rent Group', $linkToTenantInDifferentGroups[0]->getText());
+        $this->logout();
     }
 }

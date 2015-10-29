@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\PartnerCode
+fixtures:
+    PartnerCode_1:
+        partner: partner_1
+        user: Tenant_7
+        code: PARTCODE1

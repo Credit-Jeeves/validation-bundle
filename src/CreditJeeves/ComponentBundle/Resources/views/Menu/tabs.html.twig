@@ -1,26 +1,18 @@
 <div class="top-nav">
     <ul>
-        <li class="{% if sRouteName == 'applicant_homepage' %}active{% endif %}">
+        <li class="{% if routeName == 'applicant_homepage' %}active{% endif %}">
             <a href="{{ path('applicant_homepage') }}">
                 <span class="tab-corner"></span>
                 {{ 'action_plan'|trans }}
             </a>
         </li>
-        <li class="{% if sRouteName == 'applicant_summary' %}active{% endif %}">
+        <li class="{% if routeName == 'applicant_summary' %}active{% endif %}">
             <a href="{{ path('applicant_summary') }}">
                 <span class="tab-corner"></span>
                 {{ 'credit_summary'|trans }}
             </a>
         </li>
-        {% if nReport > 0 %}
-        <li class="{% if sRouteName == 'user_report' %}active{% endif %}">
-            <a href="{{ path('user_report') }}">
-                <span class="tab-corner"></span>
-                {{ 'tab.report'|trans }}
-            </a>
-        </li>
-        {% endif %}
-        <li class="{% if sRouteName == 'user_password' %}active{% endif %}">
+        <li class="{% if routeName == 'user_password' %}active{% endif %}">
             <a href="{{ path('user_password') }}">
                 <span class="tab-corner"></span>
                 {{ 'my_account'|trans }}

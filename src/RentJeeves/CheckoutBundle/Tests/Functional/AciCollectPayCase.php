@@ -5,9 +5,10 @@ namespace RentJeeves\CheckoutBundle\Tests\Functional;
 use ACI\Utils\OldProfilesStorage;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -21,11 +22,19 @@ class AciCollectPayCase extends BaseTestCase
     /**
      * @var string
      */
-    protected $paidForString;
+    protected $paidForStringForCreate;
     /**
      * @var string
      */
-    protected $payButtonName;
+    protected $paidForStringForUpdate;
+    /**
+     * @var string
+     */
+    protected $payButtonNameForCreate;
+    /**
+     * @var string
+     */
+    protected $payButtonNameForUpdate;
     /**
      * @var FileLocator
      */
@@ -33,7 +42,12 @@ class AciCollectPayCase extends BaseTestCase
     /**
      * @var Contract
      */
-    protected $contract;
+    protected $contractForCreate;
+
+    /**
+     * @var Contract
+     */
+    protected $contractForUpdate;
 
     public function setUp()
     {
@@ -45,30 +59,35 @@ class AciCollectPayCase extends BaseTestCase
             [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
         );
 
-        $contractToSelect = 2;
+        $contractToSelectForCreate = 2;
+        $contractToSelectForUpdate = 1;
         $tenantEmail = 'tenant11@example.com';
-        $this->contract = $this->getContract($tenantEmail, $contractToSelect);
-
-        if ($profileId = $this->getOldProfileId(md5($this->contract->getTenant()->getId()))) {
+        $this->contractForCreate = $this->getContract($tenantEmail, $contractToSelectForCreate);
+        $this->contractForUpdate = $this->getContract($tenantEmail, $contractToSelectForUpdate);
+        if ($profileId = $this->getOldProfileId(md5($this->contractForCreate->getTenant()->getId()))) {
             $this->deleteProfile($profileId);
         }
 
-        $this->contract->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI_COLLECT_PAY);
+        $this->contractForCreate->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $paySettings = new AciCollectPaySettings();
+        $depositAccount = new DepositAccount($this->contractForCreate->getGroup());
+        $depositAccount->setPaymentProcessor(
+            $this->contractForCreate->getGroup()->getGroupSettings()->getPaymentProcessor()
+        );
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setMerchantName(564075);
+        $depositAccount->setHolding($this->contractForCreate->getGroup()->getHolding());
 
-        $paySettings->setBusinessId(564075);
-        $paySettings->setGroup($this->contract->getGroup());
+        $this->contractForCreate->getGroup()->addDepositAccount($depositAccount);
 
-        $this->contract->getGroup()->setAciCollectPaySettings($paySettings);
-
-        $this->getEntityManager()->persist($this->contract->getGroup());
-        $this->getEntityManager()->persist($paySettings);
+        $this->getEntityManager()->persist($this->contractForCreate->getGroup());
 
         $this->getEntityManager()->flush();
 
-        $this->paidForString = $this->getPaidForDate($this->contract)->format('Y-m-d');
-        $this->payButtonName = "contract-pay-" . ($contractToSelect);
+        $this->paidForStringForCreate = $this->getPaidForDate($this->contractForCreate)->format('Y-m-d');
+        $this->paidForStringForUpdate = $this->getPaidForDate($this->contractForUpdate)->format('Y-m-d');
+        $this->payButtonNameForCreate = "contract-pay-" . ($contractToSelectForCreate);
+        $this->payButtonNameForUpdate = "contract-pay-". ($contractToSelectForUpdate);
     }
 
     /**
@@ -91,12 +110,12 @@ class AciCollectPayCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $repo = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
 
-        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
+        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
         $repo->clear();
 
         $this->login('tenant11@example.com', 'pass');
 
-        $this->page->pressButton($this->payButtonName);
+        $this->page->pressButton($this->payButtonNameForCreate);
 
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
@@ -111,10 +130,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => date('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
             ]
         );
 
@@ -124,8 +143,6 @@ class AciCollectPayCase extends BaseTestCase
             $this->timeout + 10000,
             "jQuery('#id-source-step:visible').length"
         );
-
-        $this->page->clickLink('payment.account.new');
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
 
@@ -138,23 +155,70 @@ class AciCollectPayCase extends BaseTestCase
             "!jQuery('#id-source-step').is(':visible')"
         );
 
-        $this->getEntityManager()->refresh($this->contract);
-        $this->getEntityManager()->refresh($this->contract->getTenant());
+        $this->getEntityManager()->refresh($this->contractForCreate);
+        $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
 
-        $this->assertNotEmpty($this->contract->getTenant()->getAciCollectPayProfileId());
+        $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
 
-        $this->setOldProfileId(
-            md5($this->contract->getTenant()->getId()),
-            $this->contract->getTenant()->getAciCollectPayProfileId()
+        $merchantName = $this->contractForCreate
+            ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
+
+        $this->assertTrue(
+            $profile->hasBillingAccountForDivisionId($merchantName),
+            'Profile should have billing account'
         );
 
-        $this->assertNotEmpty($this->contract->getAciCollectPayContractBilling());
+        $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
+        $this->assertEquals($countsBefore + 1, $countsAfter);
+        $this->assertNotEmpty($closeButton = $this->page->find('css', '.ui-dialog-titlebar .ui-button'));
+        $closeButton->click();
+        //Check update
+        $this->page->pressButton($this->payButtonNameForUpdate);
 
-        $countsAfter = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI_COLLECT_PAY]));
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
 
-        $this->assertEquals($countsBefore +1, $countsAfter);
+        $this->assertNotEmpty($forms = $this->page->findAll('css', 'form'));
+        $this->assertCount(4, $forms);
 
-        $this->deleteProfile($this->contract->getTenant()->getAciCollectPayProfileId());
+        $forms[0]->find('css', 'select[name="rentjeeves_checkoutbundle_paymenttype[type]"]')->selectOption(
+            PaymentTypeEnum::ONE_TIME
+        );
+        $forms[0]->find('css', 'select[name="rentjeeves_checkoutbundle_paymenttype[paidFor]"]')->setValue(
+            $this->paidForStringForUpdate
+        );
+        $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[amount]"]')->setValue('1000');
+        $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[start_date]"]')->setValue(
+            (new \DateTime('+2 day'))->format('n/j/Y')
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $this->assertNotEmpty($radioButton = $this->page->find('css', '.ui-dialog .payment-accounts .radio input'));
+        $radioButton->getParent()->click();
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->getEntityManager()->refresh($this->contractForUpdate);
+        $this->assertNotEmpty($this->contractForUpdate->getTenant()->getAciCollectPayProfileId());
+
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+
+        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -232,5 +296,72 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckValidationCardAndCVSOnPaymentSource()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonNameForCreate);
+
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $startDate = new \DateTime();
+        $startDate->modify('+1 day');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => $startDate->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '511020020000111588',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '12H',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
+                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_53' => true,
+            ]
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout,
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->assertNotEmpty($errors = $this->page->findAll('css', '.attention-box li'));
+        $this->assertCount(2, $errors);
+        $this->assertEquals('Unsupported card type or invalid card number.', $errors[0]->getText());
+        $this->assertEquals('checkout.error.csc.type', $errors[1]->getText());
+
     }
 }

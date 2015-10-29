@@ -1,10 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Enum\HardInquiriesPeriod;
 
@@ -162,12 +159,13 @@ class ReportPrequal extends Report
 
         return $this->creditSummary;
     }
-    
+
     protected function getSummaryValue($key)
     {
         if (isset($this->getSummary()[$key])) {
             return $this->getSummary()[$key];
         }
+
         return 0;
     }
 }

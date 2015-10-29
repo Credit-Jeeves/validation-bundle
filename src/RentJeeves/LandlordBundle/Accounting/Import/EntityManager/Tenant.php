@@ -2,15 +2,16 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\PhoneNumberFormatter;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant as EntityTenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Model\Import;
-use Symfony\Component\Validator\Validator;
 
 /**
+ * @TODO move static var about tenantStatus to constant when we going to refactoring
  * @property Import currentImportModel
  */
 trait Tenant
@@ -18,7 +19,17 @@ trait Tenant
     /**
      * @var string
      */
-    public static $tenantStatus = 'c';
+    public static $tenantStatusCurrent = 'c';
+
+    /**
+     * @var string
+     */
+    public static $tenantStatusPast = 'p';
+
+    /**
+     * @var string
+     */
+    public static $tenantStatusFuture = 'f';
 
     /**
      * @var array
@@ -77,11 +88,28 @@ trait Tenant
             $residentMapping = $tenant->getResidentsMapping()->first();
             if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
                 $this->logger->warn(
-                    "Imported resident id: " . $residentId . " doesn't match DB " . $residentMapping->getResidentId()
+                    sprintf(
+                        'Imported resident id: %s doesn\'t match DB %s',
+                        $residentId,
+                        $residentMapping->getResidentId()
+                    )
                 );
                 $tenant = $this->createTenant($row);
                 $this->currentImportModel->setTenant($tenant);
-                $this->userEmails[$tenant->getEmail()] = 2; //Make it error, because resident ID different
+                $errors = $this->currentImportModel->getErrors();
+                $this->setUnrecoverableError(
+                    $this->currentImportModel->getNumber(),
+                    'import_contract_residentMapping_residentId',
+                    $this->translator->trans(
+                        'error.residentId.already_use',
+                        [
+                            '%email%'   => $residentMapping->getTenant()->getEmail(),
+                            '%support_email%' => $this->supportEmail
+                        ]
+                    ),
+                    $errors
+                );
+                $this->currentImportModel->setErrors($errors);
 
                 return;
             }
@@ -178,6 +206,7 @@ trait Tenant
     }
 
     /**
+     * @link https://credit.atlassian.net/browse/RT-1468
      * @param array $row
      */
     protected function checkTenantStatus(array $row)
@@ -185,8 +214,43 @@ trait Tenant
         if (!isset($row[Mapping::KEY_TENANT_STATUS])) {
             return;
         }
+        $tenantStatus = trim(strtolower($row[Mapping::KEY_TENANT_STATUS]));
+        /**
+         * Rule #1
+         * If Tenant Status is "P", then finish the contract. (treat the same as if "move-out" is set)
+         * If no move_out date available, then set it to today's date.
+         */
+        if ($tenantStatus === self::$tenantStatusPast) {
+            $moveOutDate = $row[Mapping::KEY_MOVE_OUT];
+            $moveOutDate = (!empty($moveOutDate)) ? $this->getDateByField($moveOutDate) : new \DateTime();
+            $this->currentImportModel->setMoveOut($moveOutDate);
 
-        if (trim(strtolower($row[Mapping::KEY_TENANT_STATUS])) === self::$tenantStatus) {
+            return;
+        }
+
+        /**
+         * Rule #2
+         * If Tenant Status is "C", then do not finish, or skip contract.
+         * Only finish if Move Out field is populated.
+         */
+        if ($tenantStatus === self::$tenantStatusCurrent) {
+            return;
+        }
+        /** @var Group $group */
+        $group = $this->getGroup($row);
+        $isAllowedCreateFutureContract = false;
+        if ($group && $holding = $group->getHolding()) {
+            $isAllowedCreateFutureContract = $holding->isAllowedFutureContract();
+        }
+        /**
+         * Rule/Config-Option #3
+         * If Tenant Status is "F", add property
+         * Set rule to
+         * a) Add property/property_group_mapping/unit (if not exist), or
+         * b) Add property/property_group_mapping/unit (if not exist) and add contract if PM says Yes.
+         * Config option at holding level: "Add future contract"
+         */
+        if ($isAllowedCreateFutureContract && $tenantStatus === self::$tenantStatusFuture) {
             return;
         }
 

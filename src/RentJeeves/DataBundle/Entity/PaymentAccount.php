@@ -1,18 +1,17 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Model\PaymentAccount as Base;
-use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentAccountInterface;
+use RentJeeves\DataBundle\Model\PaymentAccount as Base;
 
 /**
  * @ORM\Table(name="rj_payment_account")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentAccountRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class PaymentAccount extends Base implements UserAwareInterface
+class PaymentAccount extends Base implements UserAwareInterface, PaymentAccountInterface
 {
 
     public function __toString()
@@ -20,10 +19,32 @@ class PaymentAccount extends Base implements UserAwareInterface
         return $this->getName();
     }
 
-    public function setDepositAccounts($depositAccounts)
+    /**
+     * @param string $merchantName
+     * @return bool
+     */
+    public function hasAssociatedHpsMerchant($merchantName)
     {
-        foreach ($depositAccounts as $depositAccount) {
-            $this->addDepositAccount($depositAccount);
+        if (null !== $this->getAssociatedHpsMerchant($merchantName)) {
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * @param $merchantName
+     * @return null|PaymentAccountHpsMerchant
+     */
+    public function getAssociatedHpsMerchant($merchantName)
+    {
+        /** @var PaymentAccountHpsMerchant $merchant */
+        foreach ($this->getHpsMerchants() as $merchant) {
+            if ($merchantName == $merchant->getMerchantName()) {
+                return $merchant;
+            }
+        }
+
+        return null;
     }
 }

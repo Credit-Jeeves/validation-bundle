@@ -11,6 +11,8 @@ use RentJeeves\DataBundle\Entity\ImportError;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\Validator\ValidatorInterface;
 
 /**
  * @Service("import_summary.manager")
@@ -23,9 +25,14 @@ class ImportSummaryManager
     protected $em;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
 
     /**
      * @var ImportSummary
@@ -33,15 +40,21 @@ class ImportSummaryManager
     protected $importSummaryModel;
 
     /**
+     * @param EntityManager $em
+     * @param ValidatorInterface $validator
+     * @param LoggerInterface $logger
+     *
      * @InjectParams({
      *     "em" = @Inject("doctrine.orm.entity_manager"),
+     *     "validator" = @Inject("validator"),
      *     "logger" = @Inject("logger")
      * })
      */
-    public function __construct(EntityManager $em, LoggerInterface $logger = null)
+    public function __construct(EntityManager $em, ValidatorInterface $validator, LoggerInterface $logger = null)
     {
         $this->em = $em;
         $this->logger = $logger ? $logger : new Logger(get_class());
+        $this->validator = $validator;
     }
 
     /**
@@ -97,6 +110,10 @@ class ImportSummaryManager
      */
     public function setTotal($total)
     {
+        if ($this->importSummaryModel->getCountTotal() > 0) {
+            return;
+        }
+
         $this->importSummaryModel->setCountTotal($total);
     }
 
@@ -125,15 +142,15 @@ class ImportSummaryManager
     /**
      * Increment the number of skipped row
      *
-     * @param integer $offset
+     * @param array $rowContent
      */
-    public function incrementSkipped($offset)
+    public function incrementSkipped(array $rowContent)
     {
         $importError = new ImportError();
-        $importError->setRowOffset($offset);
+        $importError->setRowContent($rowContent);
         $importError->setImportSummary($this->importSummaryModel);
 
-        if ($this->isExistEntityErrorInTheDB($importError)) {
+        if (!$this->isValid($importError)) {
             return;
         }
         $this->logger->debug('Import summary report: increment skipped');
@@ -158,13 +175,11 @@ class ImportSummaryManager
      *
      * @param array   $row
      * @param array   $errorMessages
-     * @param integer $offset
      */
-    public function addError(array $row, array $errorMessages, $offset)
+    public function addError(array $row, array $errorMessages)
     {
         $importError = new ImportError();
         $importError->setMessages($errorMessages);
-        $importError->setRowOffset($offset);
         $importError->setRowContent($row);
         $importError->setImportSummary($this->importSummaryModel);
 
@@ -177,13 +192,11 @@ class ImportSummaryManager
      * @param array   $row
      * @param string  $exceptionMessage
      * @param string  $exceptionId
-     * @param integer $offset
      */
-    public function addException(array $row, $exceptionMessage, $exceptionId, $offset)
+    public function addException(array $row, $exceptionMessage, $exceptionId)
     {
         $importError = new ImportError();
         $importError->setMessages([$exceptionMessage]);
-        $importError->setRowOffset($offset);
         $importError->setRowContent($row);
         $importError->setExceptionUid($exceptionId);
         $importError->setImportSummary($this->importSummaryModel);
@@ -207,34 +220,29 @@ class ImportSummaryManager
      */
     protected function saveImportError(ImportError $importError)
     {
-        if ($this->isExistEntityErrorInTheDB($importError)) {
+        if (!$this->isValid($importError)) {
             return;
         }
         $this->logger->debug(
-            sprintf('Add error to import summary report, row offset "%s"', $importError->getRowOffset())
+            sprintf('Add error to import summary report, row: "%s"', $importError->getStringRow())
         );
         $this->em->persist($importError);
         $this->em->flush($importError);
     }
 
     /**
-     * @param  ImportError $importError
+     * @param  mixed $model
      * @return boolean
      */
-    protected function isExistEntityErrorInTheDB(ImportError $importError)
+    protected function isValid($model)
     {
-        $searchParameters = [
-            'rowOffset' => $importError->getRowOffset(),
-            'importSummary' => $importError->getImportSummary()->getId()
-        ];
+        $errors = $this->validator->validate($model);
 
-        if ($importError->getExceptionUid()) {
-            $searchParameters['exceptionUid'] = $importError->getExceptionUid();
+        if ($errors->count() > 0) {
+            return false;
         }
 
-        $importError = $this->em->getRepository('RjDataBundle:ImportError')->findOneBy($searchParameters);
-
-        return $importError instanceof ImportError;
+        return true;
     }
 
     /**
@@ -258,7 +266,6 @@ class ImportSummaryManager
     }
 
     /**
-     * @param Group   $group
      * @param string  $importType
      * @param integer $publicId
      *

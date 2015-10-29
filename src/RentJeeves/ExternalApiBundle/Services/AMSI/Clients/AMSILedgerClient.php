@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI\Clients;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Batches;
 use RentJeeves\ExternalApiBundle\Model\AMSI\EdexSettlement;
@@ -41,6 +41,7 @@ class AMSILedgerClient extends AMSIBaseClient
                 if (self::SUCCESSFUL_RESPONSE_CODE == $resultPayment->getErrorCode()) {
                     return true;
                 } else {
+                    // TODO: replace alert with exception. See RT-1449
                     $this->logger->alert(sprintf(
                         'AMSI: Failed posting order(ID#%d). Got error code %d, error description %s',
                         $order->getId(),
@@ -49,12 +50,14 @@ class AMSILedgerClient extends AMSIBaseClient
                     ));
                 }
             } else {
+                // TODO: replace alert with exception. See RT-1449
                 $this->logger->alert(sprintf(
                     'AMSI: Failed posting order(ID#%d). Cannot deserialize response.',
                     $order->getId()
                 ));
             }
         } catch (\Exception $e) {
+            // TODO: replace alert with exception. See RT-1449
             $this->logger->alert(sprintf(
                 'AMSI: Failed posting order(ID#%d). Got exception %s',
                 $order->getId(),
@@ -225,7 +228,7 @@ class AMSILedgerClient extends AMSIBaseClient
     }
 
     /**
-     * @param  Order  $order
+     * @param Order $order
      * @return string
      */
     protected function getParametersForAddPaymentCall(Order $order)
@@ -252,18 +255,18 @@ class AMSILedgerClient extends AMSIBaseClient
         $payment->setClientTransactionDate($order->getCreatedAt());
         $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());
 
-        switch ($order->getType()) {
-            case OrderType::HEARTLAND_CARD:
+        switch ($order->getPaymentType()) {
+            case OrderPaymentType::CARD:
                 $payment->setPaymentType('P');
                 break;
-            case OrderType::HEARTLAND_BANK:
+            case OrderPaymentType::BANK:
                 $payment->setPaymentType('C');
                 break;
             default:
                 throw new \LogicException(
                     sprintf(
                         'We can\'t post this transaction, because we send just card and bank, not: %s',
-                        $order->getType()
+                        $order->getPaymentType()
                     )
                 );
         }

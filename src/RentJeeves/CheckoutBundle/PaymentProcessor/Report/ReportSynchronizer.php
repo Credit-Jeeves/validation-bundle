@@ -5,49 +5,82 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Report;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
+use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
+use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
+use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 
-/**
- * @DI\Service("payment_processor.report_synchronizer")
- */
 class ReportSynchronizer
 {
-    /** @var EntityManager */
+    /*
+     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
+     */
+    const EM_CLEANUP_PERIOD = 100;
+
+    /**
+     * @var PeriodicExecutor
+     */
+    protected $periodicExecutor;
+
+    /**
+     * @var  OrderStatusManagerInterface
+     */
+    protected $orderStatusManager;
+
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
-    /** @var Logger */
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "logger" = @DI\Inject("logger")
-     * })
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     * @param OrderStatusManagerInterface $orderStatusManager
      */
-    public function __construct(EntityManager $em, Logger $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        LoggerInterface $logger,
+        OrderStatusManagerInterface $orderStatusManager
+    ) {
         $this->em = $em;
         $this->logger = $logger;
+        $this->orderStatusManager = $orderStatusManager;
     }
 
     /**
      * Synchronizes payment processor report's data.
      *
      * @param  PaymentProcessorReport $report
+     * @param  string $reportName - the name of the report to be used in log statements
+     * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
-    public function synchronize(PaymentProcessorReport $report)
+    public function synchronize(PaymentProcessorReport $report, $reportName = "", $alertIfEmpty = true)
     {
         if (!$report->getTransactions()) {
-            $this->logger->alert('Report synchronizer: No transactions in payment processor report');
+            $message = sprintf('%s Report synchronizer: No transactions in payment processor report', $reportName);
+            if ($alertIfEmpty) {
+                $this->logger->alert($message);
+            } else {
+                $this->logger->info($message);
+            }
 
             return 0;
         }
+
+        // setup running EM cleanup periodically
+        $this->periodicExecutor =
+            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
 
         /** @var PaymentProcessorReportTransaction $reportTransaction */
         foreach ($report->getTransactions() as $reportTransaction) {
@@ -58,12 +91,32 @@ class ReportSynchronizer
                 case $reportTransaction instanceof ReversalReportTransaction:
                     $this->processReversalTransaction($reportTransaction);
                     break;
+                case $reportTransaction instanceof PayDirectDepositReportTransaction:
+                    $this->processPayDirectDepositTransaction($reportTransaction);
+                    break;
+                case $reportTransaction instanceof PayDirectResponseReportTransaction:
+                    $this->processPayDirectResponseTransaction($reportTransaction);
+                    break;
+                case $reportTransaction instanceof PayDirectReversalReportTransaction:
+                    $this->processPayDirectReversalReportTransaction($reportTransaction);
+                    break;
                 default:
                     throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
             }
+            $this->periodicExecutor->increment();
         }
 
         return count($report->getTransactions());
+    }
+
+    /**
+     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
+     * to avoid having doctrine slow WAY down.
+     */
+    public function cleanupDoctrineCallback()
+    {
+        $this->logger->debug('Clearing Entity Manager');
+        $this->em->clear();
     }
 
     /**
@@ -129,10 +182,24 @@ class ReportSynchronizer
         }
 
         if ($reportTransaction->getAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
-            $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
             if (!$transaction->getDepositDate()) {
                 $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
                 $transaction->setDepositDate($depositDate);
+            }
+            /*
+             * Transactions in report may have such sort order that first go reversed transaction, then - deposited.
+             * Moreover, deposit report with all transactions for the month may be processed at the end of month --
+             * then again we should not set order to COMPLETE.
+             *
+             * So if order already has reversed transaction, we should not set it to COMPLETE.
+             */
+            if (!$transaction->getOrder()->getReversedTransaction()) {
+                $this->orderStatusManager->setComplete($transaction->getOrder());
+            } else {
+                $this->logger->debug(sprintf(
+                    'Deposit Transaction ID %s can not set order to COMPLETE due to existing reversed transaction',
+                    $transaction->getTransactionId()
+                ));
             }
         }
         $this->em->flush();
@@ -168,7 +235,6 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::RETURNED);
         $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
         $reversalTransaction->setBatchId($reportTransaction->getBatchId());
         $originalDepositDate = $originalTransaction->getDepositDate();
@@ -183,6 +249,9 @@ class ReportSynchronizer
 
         $this->em->persist($reversalTransaction);
         $this->em->flush();
+
+        // this needs to run after the reversalTransaction is persisted
+        $this->orderStatusManager->setReturned($order);
 
         $this->logger->debug(sprintf(
             'Returned transaction %s: Sync successful.',
@@ -219,7 +288,6 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::REFUNDED);
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
         // For reversal, from Heartland:
         // "The funds would be removed from the merchant’s account on the next business day.
@@ -231,6 +299,9 @@ class ReportSynchronizer
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        // this needs to run after the voidedTransaction is persisted
+        $this->orderStatusManager->setRefunded($order);
 
         $this->logger->debug(sprintf(
             'Refunded transaction %s: Sync successful.',
@@ -270,12 +341,14 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $order->setStatus(OrderStatus::CANCELLED);
         $originalTransaction->setDepositDate();
         $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
 
         $this->em->persist($voidedTransaction);
         $this->em->flush();
+
+        // this needs to run after the voidedTransaction is persisted
+        $this->orderStatusManager->setCancelled($order);
 
         $this->logger->debug(sprintf(
             'Cancelled transaction %s: Sync successful.',
@@ -293,7 +366,31 @@ class ReportSynchronizer
     }
 
     /**
-     * @param  Order                     $order
+     * @param string $transactionId
+     *
+     * @return \RentJeeves\DataBundle\Entity\OutboundTransaction
+     */
+    protected function findDepositOutboundTransaction($transactionId)
+    {
+        return $this->em->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
+            ['transactionId' => $transactionId, 'type' => OutboundTransactionType::DEPOSIT]
+        );
+    }
+
+    /**
+     * @param string $transactionId
+     *
+     * @return \RentJeeves\DataBundle\Entity\OutboundTransaction
+     */
+    protected function findReversalOutboundTransaction($transactionId)
+    {
+        return $this->em->getRepository('RjDataBundle:OutboundTransaction')->findOneBy(
+            ['transactionId' => $transactionId, 'type' => OutboundTransactionType::REVERSAL]
+        );
+    }
+
+    /**
+     * @param  Order $order
      * @param  ReversalReportTransaction $reportTransaction
      * @return HeartlandTransaction
      */
@@ -320,6 +417,196 @@ class ReportSynchronizer
     }
 
     /**
+     * @param PayDirectDepositReportTransaction $reportTransaction
+     */
+    protected function processPayDirectDepositTransaction(PayDirectDepositReportTransaction $reportTransaction)
+    {
+        $this->logger->debug(sprintf(
+            'PayDirect Deposit Transaction #%s: Start sync...',
+            $reportTransaction->getTransactionId()
+        ));
+
+        if (null === $transaction = $this->findDepositOutboundTransaction($reportTransaction->getTransactionId())) {
+            $this->logger->alert(sprintf(
+                'Deposit Outbound Transaction #%s not found',
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+
+        if (null !== $transaction->getDepositDate()) {
+            $this->logger->alert(sprintf(
+                'PayDirect Deposit Transaction #%s already has deposit date. Skipping.',
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+        $order = $transaction->getOrder();
+
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
+            $this->logger->alert(sprintf(
+                'Status for Order #%d must be \'%s\', \'%s\' given',
+                $order->getId(),
+                OrderStatus::SENDING,
+                $order->getStatus()
+            ));
+
+            return;
+        }
+
+        $this->orderStatusManager->setComplete($order);
+        if ($reportTransaction->getDepositDate() !== null) {
+            $transaction->setDepositDate($reportTransaction->getDepositDate());
+        }
+
+        $this->em->flush();
+        $this->logger->debug(sprintf(
+            'PayDirect Deposit Transaction #%s: Sync successful.',
+            $transaction->getTransactionId()
+        ));
+    }
+
+    /**
+     * @param PayDirectReversalReportTransaction $reportTransaction
+     */
+    protected function processPayDirectReversalReportTransaction(PayDirectReversalReportTransaction $reportTransaction)
+    {
+        $this->logger->debug(sprintf(
+            'PayDirect Reversal Transaction #%s: Start sync...',
+            $reportTransaction->getTransactionId()
+        ));
+
+        if (null === $transaction = $this->findDepositOutboundTransaction($reportTransaction->getTransactionId())) {
+            $this->logger->alert(sprintf(
+                'Deposit Outbound Transaction #%s not found',
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+
+        if (true === $this->isAlreadyProcessedPayDirectReversal($reportTransaction)) {
+            $this->logger->alert(sprintf(
+                'Reversal Outbound Transaction #%s is already processed',
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+
+        $order = $transaction->getOrder();
+
+        /* PayDirect order can go to reversal state in 2 cases:
+         * 1. When order was set to complete (sending) by inbound leg and then outbound leg reverse comes
+         * 2. When order was set to returned by inbound leg and then outbound leg reverse comes
+         */
+        if ($order->getStatus() !== OrderStatus::SENDING && $order->getStatus() !== OrderStatus::RETURNED) {
+            $this->logger->alert(sprintf(
+                'Unexpected order #%s status (%s) when transaction #%s processing',
+                $order->getId(),
+                $order->getStatus(),
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+
+        $newReversalOutboundTransaction = new OutboundTransaction();
+        $newReversalOutboundTransaction->setDepositDate($reportTransaction->getTransactionDate());
+        $newReversalOutboundTransaction->setTransactionId($reportTransaction->getTransactionId());
+        $newReversalOutboundTransaction->setAmount($reportTransaction->getAmount());
+        $newReversalOutboundTransaction->setType(OutboundTransactionType::REVERSAL);
+        $newReversalOutboundTransaction->setReversalDescription($reportTransaction->getReversalDescription());
+        $newReversalOutboundTransaction->setOrder($order);
+
+        if ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REFUNDING) {
+            $this->orderStatusManager->setRefunded($order);
+            $this->logger->alert(
+                sprintf(
+                    'Check#%s for Order#%d has been refunded. Need to refund to tenant via CollectV4 Client Console.
+                    Transaction #%s',
+                    $reportTransaction->getTransactionId(),
+                    $order->getId(),
+                    $transaction->getTransactionId()
+                )
+            );
+        } elseif ($reportTransaction->getTransactionType() === PayDirectReversalReportTransaction::TYPE_REISSUED) {
+            $this->orderStatusManager->setReissued($order);
+            $this->logger->alert(
+                sprintf(
+                    'Check#%s has been reissued to \'%s\' group. No action required.',
+                    $reportTransaction->getTransactionId(),
+                    $order->getGroupName()
+                )
+            );
+        } else {
+            throw new \LogicException(sprintf(
+                'Wrong type for PayDirectReversalReportTransaction - %s',
+                $reportTransaction->getTransactionType()
+            ));
+        }
+
+        $this->em->persist($newReversalOutboundTransaction);
+        $this->em->flush();
+
+        $this->logger->debug(sprintf(
+            'PayDirect Response Transaction #%s:  Sync successful.',
+            $transaction->getTransactionId()
+        ));
+    }
+
+    /**
+     * @param PayDirectResponseReportTransaction $reportTransaction
+     */
+    protected function processPayDirectResponseTransaction(PayDirectResponseReportTransaction $reportTransaction)
+    {
+        $this->logger->debug(sprintf(
+            'PayDirect Response Transaction #%s: Start sync...',
+            $reportTransaction->getTransactionId()
+        ));
+
+        if (null === $transaction = $this->findDepositOutboundTransaction($reportTransaction->getTransactionId())) {
+            $this->logger->alert(sprintf(
+                'Deposit Outbound Transaction #%s not found',
+                $reportTransaction->getTransactionId()
+            ));
+
+            return;
+        }
+        if ($reportTransaction->getResponseCode() !== PayDirectResponseReportTransaction::PAY_DIRECT_RESPONSE_STATUS) {
+            $date = $reportTransaction->getBatchCloseDate();
+            $this->logger->emergency(sprintf(
+                'ERRORCODE value different from the expected value.
+                    PAYMENTID : %s,
+                    TRNAMT: %s,
+                    BATCHID: %s,
+                    DTDUE: %s,
+                    ERRORCODE: %s,
+                    ERRORMESSAGE: %s.',
+                $reportTransaction->getTransactionId(),
+                $reportTransaction->getAmount(),
+                $reportTransaction->getBatchId(),
+                $date !== null ? $date->format('ymd') : '',
+                $reportTransaction->getResponseCode(),
+                $reportTransaction->getResponseMessage()
+            ));
+
+            return;
+        }
+
+        $transaction->setBatchId($reportTransaction->getBatchId());
+        $transaction->setBatchCloseDate($reportTransaction->getBatchCloseDate());
+        $this->em->flush($transaction);
+
+        $this->logger->debug(sprintf(
+            'PayDirect Response Transaction #%s:  Sync successful.',
+            $transaction->getTransactionId()
+        ));
+    }
+
+    /**
      * @param ReversalReportTransaction $transaction
      */
     protected function fillEmptyBatchId(ReversalReportTransaction $transaction)
@@ -335,5 +622,15 @@ class ReportSynchronizer
             $transaction->setBatchId($batchId);
             $this->em->flush($transaction);
         }
+    }
+
+    /**
+     * @param PayDirectReversalReportTransaction $reportTransaction
+     *
+     * @return bool
+     */
+    protected function isAlreadyProcessedPayDirectReversal(PayDirectReversalReportTransaction $reportTransaction)
+    {
+        return null !== $this->findReversalOutboundTransaction($reportTransaction->getTransactionId());
     }
 }

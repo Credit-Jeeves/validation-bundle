@@ -41,22 +41,6 @@ class MRIResponse
     }
 
     /**
-     * @return string
-     */
-    public function getMetadata()
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * @param string $metadata
-     */
-    public function setMetadata($metadata)
-    {
-        $this->metadata = $metadata;
-    }
-
-    /**
      * @return array
      */
     public function getValues()

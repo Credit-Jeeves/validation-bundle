@@ -4,10 +4,12 @@ namespace RentJeeves\ExternalApiBundle\Services;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
+use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 
 /**
  * @DI\Service("accounting.api_client.factory")
@@ -15,48 +17,67 @@ use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 class ExternalApiClientFactory
 {
     /**
-     * @var SettingsInterface
+     * @var SoapClientFactory
      */
-    protected $settings;
+    protected $soapClientFactory;
+
+    /**
+     * @var array
+     */
+    protected $externalSoapClients = [
+        ApiIntegrationType::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
+        ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEDGER
+    ];
 
     /**
      * @DI\InjectParams({
      *     "resManClient" = @DI\Inject("resman.client"),
-     *     "mriClient"    = @DI\Inject("mri.client")
+     *     "mriClient"    = @DI\Inject("mri.client"),
+     *     "soapClientFactory"  = @DI\Inject("soap.client.factory")
      * })
      */
-    public function __construct(ResManClient $resManClient, MRIClient $mriClient)
+    public function __construct(ResManClient $resManClient, MRIClient $mriClient, SoapClientFactory $soapClientFactory)
     {
         $this->accountingServiceClientMap[ApiIntegrationType::RESMAN] = $resManClient;
         $this->accountingServiceClientMap[ApiIntegrationType::MRI] = $mriClient;
+        $this->soapClientFactory = $soapClientFactory;
     }
 
     /**
-     * @param  string          $accountingType
+     * @param  string            $accountingType
+     * @param  SettingsInterface $accountingSettings
      * @return ClientInterface
      */
-    public function createClient($accountingType)
+    public function createClient($accountingType, SettingsInterface $accountingSettings)
     {
+        if ($this->isSoapClient($accountingType)) {
+            $serviceName = $this->externalSoapClients[$accountingType];
+            $clientService = $this->soapClientFactory->getClient(
+                $accountingSettings,
+                $serviceName
+            );
+
+            return $clientService;
+        }
+
         if (empty($this->accountingServiceClientMap[$accountingType])) {
-            throw new \Exception("Can't map service '{$accountingType}' in factory");
+            throw new \Exception(sprintf('Can\'t map service "%s" in factory', $accountingType));
         }
 
         /** @var ClientInterface $client */
         $client = $this->accountingServiceClientMap[$accountingType];
 
-        !$this->settings || $client->setSettings($this->settings);
+        $client->setSettings($accountingSettings);
 
         return $client;
     }
 
     /**
-     * @param  SettingsInterface $settings
-     * @return $this
+     * @param $accountingType
+     * @return bool
      */
-    public function setSettings(SettingsInterface $settings)
+    public function isSoapClient($accountingType)
     {
-        $this->settings = $settings;
-
-        return $this;
+        return array_key_exists($accountingType, $this->externalSoapClients);
     }
 }

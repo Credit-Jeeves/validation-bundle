@@ -8,6 +8,7 @@ use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
+use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
@@ -24,7 +25,8 @@ class MRIClient implements ClientInterface
 
     protected $mappingSerialize = [
         'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
-        'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment'
+        'MRI_S-PMRM_PaymentDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\Payment',
+        'MRI_S-PMRM_ResidentialRentRoll' => 'RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll',
     ];
 
     /**
@@ -195,12 +197,48 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * @param $externalPropertyId
+     * @param mixed $mriResponse
+     * @return MRIResponse
+     */
+    protected function checkResponseResidentTransactions($mriResponse)
+    {
+        if (!$mriResponse instanceof MRIResponse) {
+            $mriResponse = new MRIResponse();
+        }
+
+        $this->logger->debug(
+            sprintf(
+                'MRI api call "getResidentTransactions" return %s number of Transactions',
+                count($mriResponse->getValues())
+            )
+        );
+
+        return $mriResponse;
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return MRIResponse
+     */
+    public function getResidentTransactionsByNextPageLink($nextPageLink)
+    {
+        $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
+        $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
+        $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
+        $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
+        parse_str($urlQuery, $nextPageParams);
+        $mriResponse = $this->sendRequest($method, $nextPageParams);
+
+        return $this->checkResponseResidentTransactions($mriResponse);
+    }
+
+    /**
+     * @param string $externalPropertyId
      * @return MRIResponse
      */
     public function getResidentTransactions($externalPropertyId)
     {
-        $this->logger->addDebug(
+        $this->logger->debug(
             sprintf('MRI api call getResidentTransactions for property ID: %s', $externalPropertyId)
         );
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
@@ -208,36 +246,49 @@ class MRIClient implements ClientInterface
             'RMPROPID' => $externalPropertyId
         ];
 
-        $this->debugMessage("Call MRI method: {$method}");
+        $this->debugMessage(sprintf('Call MRI method: %s', $method));
+
         $mriResponse = $this->sendRequest($method, $params);
-        $nextPageLink = $mriResponse->getNextPageLink();
-        $values = $mriResponse->getValues();
 
-        while (!empty($nextPageLink)) {
-            $this->logger->addDebug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
-            $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
-            $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
-            parse_str($urlQuery, $nextPageParams);
-            $mriResponse = $this->sendRequest($method, $nextPageParams);
+        return $this->checkResponseResidentTransactions($mriResponse);
+    }
 
-            if ($mriResponse instanceof MRIResponse) {
-                $nextPageLink = $mriResponse->getNextPageLink();
-                $values = array_merge($values, $mriResponse->getValues());
-
-                continue;
-            }
-
-            $nextPageLink = null;
-        }
-
-        $this->logger->addDebug(
-            sprintf('MRI api call "getResidentTransactions" return %s number of Transactions', count($values))
+    /**
+     * @param $externalPropertyId
+     * @param string|null $buildingId
+     * @param string|null $unitId
+     * @return ResidentialRentRoll
+     */
+    public function getResidentialRentRoll($externalPropertyId, $buildingId = null, $unitId = null)
+    {
+        $this->logger->debug(
+            sprintf('MRI api call getResidentialRentRoll for property ID: %s', $externalPropertyId)
         );
+        $method = 'MRI_S-PMRM_ResidentialRentRoll';
+        $params = [
+            'PROPERTYID' => $externalPropertyId,
+            'BUILDINGID' => $buildingId,
+            'UNITID'     => $unitId
+        ];
 
-        $response = new MRIResponse();
-        $response->setValues($values);
+        $this->debugMessage(sprintf('Call MRI method: %s', $method));
 
-        return $response;
+        return $this->sendRequest($method, $params);
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return ResidentialRentRoll
+     */
+    public function getResidentialRentRollByNextPageLink($nextPageLink)
+    {
+        $method = 'MRI_S-PMRM_ResidentialRentRoll';
+        $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
+        $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
+        $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
+        parse_str($urlQuery, $nextPageParams);
+
+        return $this->sendRequest($method, $nextPageParams);
     }
 
     /**
@@ -266,7 +317,13 @@ class MRIClient implements ClientInterface
             $error = $payment->getEntryResponse()->getError();
 
             if (!empty($error)) {
-                throw new Exception(sprintf("Api return error %s", $error->getMessage()));
+                $message = sprintf(
+                    'MRI: Failed posting order(ID#%d). Error message: %s',
+                    $order->getId(),
+                    $error->getMessage()
+                );
+                $this->logger->alert($message); // TODO: replace alert with exception. See RT-1449
+                throw new Exception($message);
             }
 
             return true;

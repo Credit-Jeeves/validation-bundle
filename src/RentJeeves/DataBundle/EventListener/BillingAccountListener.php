@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
+use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -37,13 +38,19 @@ class BillingAccountListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $billingAccounts = $em->getRepository('RjDataBundle:BillingAccount')->findBy(
-            array('group' => $entity->getGroup(), 'isActive' => true)
-        );
+        $billingAccounts = $em->getRepository('RjDataBundle:BillingAccount')
+            ->findBy(
+                [
+                    'group' => $entity->getGroup(),
+                    'paymentProcessor' => $entity->getPaymentProcessor(),
+                    'isActive' => true
+                ]
+            );
 
         // first payment account has to be active
         if (count($billingAccounts) == 0) {
             $entity->setIsActive(true);
+
             return;
         }
 
@@ -51,9 +58,7 @@ class BillingAccountListener
             return;
         }
 
-        foreach ($billingAccounts as $account) {
-            $account->setIsActive(false);
-        }
+        $this->deactivateBillingAccounts($eventArgs->getEntityManager(), $entity);
     }
 
     public function preUpdate(PreUpdateEventArgs $eventArgs)
@@ -67,7 +72,16 @@ class BillingAccountListener
             return;
         }
 
-        $em = $eventArgs->getEntityManager();
-        $em->getRepository('RjDataBundle:BillingAccount')->deactivateAccounts($entity->getGroup());
+        $this->deactivateBillingAccounts($eventArgs->getEntityManager(), $entity);
+    }
+
+    /**
+     * @param EntityManager $em
+     * @param BillingAccount $billingAccount
+     */
+    protected function deactivateBillingAccounts(EntityManager $em, BillingAccount $billingAccount)
+    {
+        $em->getRepository('RjDataBundle:BillingAccount')
+            ->deactivateAccounts($billingAccount->getGroup(), $billingAccount->getPaymentProcessor());
     }
 }

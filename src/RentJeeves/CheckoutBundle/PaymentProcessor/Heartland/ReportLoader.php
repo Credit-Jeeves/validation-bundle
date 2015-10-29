@@ -61,9 +61,16 @@ class ReportLoader
         $this->logger->debug('HPS: Trying to load report');
 
         $depositReport = $this->loadDepositReport();
-        $reversalReport = $this->loadReversalReport();
+        $depositReportBackwards = array_reverse($depositReport);
+        unset($depositReport);
 
-        $reportTransactions = array_merge($depositReport, $reversalReport);
+        $reversalReport = $this->loadReversalReport();
+        $reversalReportBackwards = array_reverse($reversalReport);
+        unset($reversalReport);
+
+        $reportTransactions = array_merge($depositReportBackwards, $reversalReportBackwards);
+        unset($depositReportBackwards);
+        unset($reversalReportBackwards);
 
         $report = new PaymentProcessorReport();
         $report->setTransactions($reportTransactions);
@@ -77,7 +84,8 @@ class ReportLoader
     protected function loadDepositReport()
     {
         if (!$reportFiles = $this->findReports(self::DEPOSIT_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->alert('HPS: deposit report not found');
+            $this->logger->emergency('HPS: deposit report not found');
+
             return [];
         }
 
@@ -108,7 +116,8 @@ class ReportLoader
     protected function loadReversalReport()
     {
         if (!$reportFiles = $this->findReports(self::REVERSAL_REPORT_FILENAME_SUFFIX)) {
-            $this->logger->alert('HPS: reversal report not found');
+            $this->logger->emergency('HPS: reversal report not found');
+
             return [];
         }
 

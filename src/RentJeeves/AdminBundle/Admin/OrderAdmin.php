@@ -59,17 +59,17 @@ class OrderAdmin extends Admin
         $listMapper
             ->addIdentifier('id', null, ['route' => ['name' => 'show']])
             ->add('created_at', 'date', ['format' => 'Y-m-d'])
-            ->add('type')
+            ->add('paymentType')
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
-            ->add('heartland_transaction_ids', 'string', ['label' => 'Transaction Ids'])
+            ->add('transaction_ids', 'string', ['label' => 'Transaction Ids'])
             ->add('sum', 'money')
             ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
             ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
             ->add('user.email')
             ->add('_action', 'actions', [
                 'actions' => [
-                    'show' => [],
-                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig']
+                    'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig'],
+                    'outbound' => ['template' => 'AdminBundle:CRUD:list__order_outbound_transactions.html.twig'],
                 ]
             ]);
     }
@@ -78,7 +78,7 @@ class OrderAdmin extends Admin
     {
         $datagridMapper
             ->add('user.email')
-            ->add('type')
+            ->add('paymentType')
             ->add('sum')
             ->add(
                 'transaction_id',
@@ -198,7 +198,7 @@ class OrderAdmin extends Admin
         $formMapper
             ->add('user', null, array('route' => array('name' => 'show')))
             ->add('status')
-            ->add('type')
+            ->add('paymentType')
             ->add('sum')
             ->add('created_at')
             ->add('updated_at')

@@ -2,9 +2,10 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ExternalApi;
@@ -13,36 +14,8 @@ use DateTime;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- *
- * Aliases for this class
- * o - Order
- * p - payment, table rj_payment, class Payment
- * c - contract, table rj_contract, class Contract
- * t - tenant, table cj_user, class Tenant
- * g - group, table cj_account_group, class Group
- * oper - Operation
- * prop - Property
- * unit - Unit
- *
- */
 class OrderRepository extends EntityRepository
 {
-    /**
-     *
-     * @param \CreditJeeves\DataBundle\Entity\User $User
-     */
-    public function deleteUserOrders(\CreditJeeves\DataBundle\Entity\User $User)
-    {
-        $query = $this->createQueryBuilder('o')
-            ->delete()
-            ->where('o.cj_applicant_id = :id')
-            ->setParameter('id', $User->getId())
-            ->getQuery()
-            ->execute();
-    }
-
     /**
      * @param  Group $group
      * @param  string $searchBy
@@ -74,8 +47,8 @@ class OrderRepository extends EntityRepository
         }
 
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
 
         $query->groupBy('o.id');
@@ -146,8 +119,8 @@ class OrderRepository extends EntityRepository
         }
         $this->applySortField($sort);
         if (!$showCashPayments) {
-            $query->andWhere('o.type != :cash');
-            $query->setParameter('cash', OrderType::CASH);
+            $query->andWhere('o.paymentType != :cash');
+            $query->setParameter('cash', OrderPaymentType::CASH);
         }
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
@@ -259,7 +232,7 @@ class OrderRepository extends EntityRepository
      * @param array $groups
      * @param string $exportBy
      * @param Property $property
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getOrdersForYardiGenesis(
         $start,
@@ -302,6 +275,7 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
+            $query->andWhere("transaction.status = 'complete'");
             $query->andWhere('o.status IN (:statuses)');
             $query->setParameter('statuses', [
                 OrderStatus::COMPLETE,
@@ -361,7 +335,6 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('ten.residentsMapping', 'res');
         $query->innerJoin('t.unit', 'unit');
-        $query->innerJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('o.transactions', 'transaction');
         $query->innerJoin('t.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
@@ -369,6 +342,7 @@ class OrderRepository extends EntityRepository
         if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
             $query->where('o.status IN (:statuses)');
             $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
+            $query->andWhere("transaction.status = 'complete'");
             $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
             $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
         } else {
@@ -382,7 +356,7 @@ class OrderRepository extends EntityRepository
             ]);
         }
 
-        $query->andWhere('o.type in (:orderType)');
+        $query->andWhere('o.paymentType in (:paymentType)');
         $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
         $query->andWhere('res.holding = :holding');
@@ -393,7 +367,7 @@ class OrderRepository extends EntityRepository
         foreach ($groups as $group) {
             $groupsId[] = $group->getId();
         }
-        $query->setParameter('orderType', [OrderType::HEARTLAND_CARD, OrderType::HEARTLAND_BANK]);
+        $query->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
         $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
@@ -403,30 +377,40 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getDepositedOrdersQuery($group, $accountType, $batchId, $depositDate)
+    /**
+     * @param Group $group
+     * @param string $accountType
+     * @param string $batchId
+     * @param string $depositDate
+     * @return Order[]
+     */
+    public function getDepositedOrders(Group $group, $accountType, $batchId, $depositDate)
     {
-        $ordersQuery = $this->createQueryBuilder('o');
-        $ordersQuery->innerJoin('o.operations', 'p');
-        $ordersQuery->innerJoin('p.contract', 't');
-        $ordersQuery->innerJoin('o.transactions', 'h');
-        $ordersQuery->where('t.group = :group');
-        $ordersQuery->andWhere('h.depositDate IS NOT NULL');
+        $ordersQuery = $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->innerJoin('p.contract', 't')
+            ->innerJoin('o.transactions', 'h')
+            ->where('t.group = :group')
+            ->andWhere('h.depositDate IS NOT NULL')
+            ->setParameter('group', $group);
         if ($batchId) {
-            $ordersQuery->andWhere('h.batchId = :batchId');
-            $ordersQuery->setParameter('batchId', $batchId);
+            $ordersQuery
+                ->andWhere('h.batchId = :batchId')
+                ->setParameter('batchId', $batchId);
         } else {
-            $ordersQuery->andWhere('h.batchId is null');
-            $ordersQuery->andWhere('h.depositDate = :depositDate');
-            $ordersQuery->setParameter('depositDate', $depositDate);
+            $ordersQuery
+                ->andWhere('h.batchId is null')
+                ->andWhere('h.depositDate = :depositDate')
+                ->setParameter('depositDate', $depositDate);
         }
 
-        $ordersQuery->setParameter('group', $group);
         if ($accountType) {
-            $ordersQuery->andWhere('o.type = :type');
-            $ordersQuery->setParameter('type', $accountType);
+            $ordersQuery
+                ->andWhere('o.paymentType = :type')
+                ->setParameter('type', $accountType);
         }
 
-        return $ordersQuery;
+        return $ordersQuery->getQuery()->execute();
     }
 
     public function getTenantPayments(Tenant $tenant, $page = 1, $contractId = null, $limit = 20)
@@ -569,7 +553,7 @@ class OrderRepository extends EntityRepository
     /**
      * @param  User $user
      * @param  array $excludedStatuses
-     * @return Order[]
+     * @return OrderSubmerchant[]
      */
     public function getUserOrders(User $user, array $excludedStatuses = [OrderStatus::NEWONE])
     {
@@ -583,5 +567,57 @@ class OrderRepository extends EntityRepository
         }
 
         return $query->getQuery()->execute();
+    }
+
+    /**
+     * @return Order[]
+     */
+    public function findOrdersForChurnRecapture()
+    {
+        $currentDate = new \DateTime();
+
+        $forMinus2month = clone $currentDate;
+        $minus2month = $forMinus2month->modify('-2 month');
+
+        $forMinus1month = clone $currentDate;
+        $minus1month = $forMinus1month->modify('-1 month');
+
+        $subQuery = '
+          SELECT o2
+          FROM DataBundle:Order o2
+          WHERE o2.cj_applicant_id = o.cj_applicant_id
+          AND o2.status IN (:statuses)
+          AND o2.paymentType in (:paymentTypes)
+          AND o2.fee IS NOT NULL
+          AND o2.sum > 3
+          AND o2.created_at >= :minus1month AND o2.created_at < :currentDate
+        ';
+
+        $subQueryActivePayment = '
+          SELECT p FROM RjDataBundle:Payment p WHERE p.status=\'active\' and p.contract = c.id
+        ';
+
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'op')
+            ->innerJoin('op.contract', 'c')
+            ->where('o.status in (:statuses)')
+            ->where('o.sum > 3')
+            ->andWhere('o.paymentType in (:paymentTypes)')
+            ->andWhere('o.fee IS NOT NULL')
+            ->andWhere('o.created_at >= :minus2month AND o.created_at < :minus1month')
+            ->andWhere('c.finishAt > :currentDate')
+            ->andWhere('c.status in (:contractStatuses)')
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQuery))
+            ->andWhere(sprintf('NOT EXISTS (%s)', $subQueryActivePayment))
+            ->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::PENDING])
+            ->setParameter('paymentTypes', [OrderPaymentType::BANK, OrderPaymentType::CARD])
+            ->setParameter('contractStatuses', [ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('currentDate', $currentDate)
+            ->setParameter('minus2month', $minus2month)
+            ->setParameter('minus1month', $minus1month)
+            ->groupBy('o.cj_applicant_id')// need 1 order for 1 tenant
+            ->orderBy('o.created_at', 'DESC')// need Order with max created_at
+            ->getQuery()
+            ->getResult();
     }
 }

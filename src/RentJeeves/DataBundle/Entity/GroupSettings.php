@@ -2,10 +2,12 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Model\GroupSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\Exception\LogicException;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * GroupSettings
@@ -57,6 +59,45 @@ class GroupSettings extends Base
         } else {
             $return = array_merge(range($this->getOpenDate(), 31), range(1, $this->getCloseDate()));
         }
+
         return $return;
+    }
+
+    /**
+     * @Assert\True(
+     *     message="admin.error.debit_payment_processor",
+     *     groups={
+     *         "debit_fee"
+     *     }
+     * )
+     */
+    public function isValidPaymentProcessorPerAllowedDebitFee()
+    {
+        if ($this->getPaymentProcessor() !== PaymentProcessor::ACI && $this->isAllowedDebitFee()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @Assert\True(
+     *     message="admin.error.debit_fee_should_be_filled",
+     *     groups={
+     *         "debit_fee"
+     *     }
+     * )
+     */
+    public function isFilledDebitFeePerAllowedDebitFee()
+    {
+        if (!$this->isAllowedDebitFee()) {
+            return true;
+        }
+
+        if (!empty($this->debitFee)) {
+            return true;
+        }
+
+        return false;
     }
 }

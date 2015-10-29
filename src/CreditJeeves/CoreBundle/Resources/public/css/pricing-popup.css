@@ -25,6 +25,7 @@
     text-align:center;
     line-height:18px;
     padding:10px;
+    font-size:13px;
 }
 
 .pricing-table li .table-cell.title-cell {
@@ -296,19 +297,27 @@
     width:210px;
 }
 
+#pay-anything-popup .col.long-label input[type=text] {
+    width:175px;
+}
+
 .pricing-popup.payments-popup .col input[type=text].all-width {
     width:300px;
+}
+
+#pay-anything-popup .col input[type=text].all-width {
+    width:293px;
 }
 
 .pricing-popup.payments-popup .col input[type=text].phone-width {
     width:30px;
 }
 
-.pricing-popup.payments-popup .col input[type=text].city-width {
+#pay-anything-popup .col input[type=text].city-width, .pricing-popup.payments-popup .col input[type=text].city-width {
     width:150px;
 }
 
-.pricing-popup.payments-popup .col input[type=text].zc-width {
+#pay-anything-popup .col input[type=text].zc-width, .pricing-popup.payments-popup .col input[type=text].zc-width {
     width:60px;
 }
 
@@ -413,7 +422,7 @@
 }
 
 .pricing-popup.properties-popup  .col-box .col .form-row .fields-box label.checkbox {
-    margin:4px 10px 0;
+    margin:4px 6px 0;
 }
 
 .properties-box .col-box .col .form-row .fields-box label.fixed,

@@ -6,6 +6,7 @@ use DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
 use SoapVar;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 
 class ResidentTransactionsClient extends AbstractClient
 {
@@ -30,7 +31,10 @@ class ResidentTransactionsClient extends AbstractClient
             self::MAPPING_FIELD_STD_CLASS    => 'ImportResidentTransactions_LoginResult',
             self::MAPPING_DESERIALIZER_CLASS => 'Messages',
         ),
-
+        'GetResidentLeaseCharges_Login' => array(
+            self::MAPPING_FIELD_STD_CLASS    => 'GetResidentLeaseCharges_LoginResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'ResidentLeaseChargesLoginResponse',
+        ),
     );
 
     /**
@@ -103,6 +107,12 @@ class ResidentTransactionsClient extends AbstractClient
         );
     }
 
+    /**
+     * @param $transactionXml
+     * @return Messages
+     * @throws \Exception
+     * @throws \SoapFault
+     */
     public function importResidentTransactionsLogin($transactionXml)
     {
         $parameters = array(
@@ -116,6 +126,35 @@ class ResidentTransactionsClient extends AbstractClient
 
         return $this->sendRequest(
             'ImportResidentTransactions_Login',
+            $parameters
+        );
+    }
+
+    /**
+     * @param $externalPropertyId
+     * @param DateTime $postMonth
+     * @return mixed
+     * @throws \Exception
+     * @throws \SoapFault
+     */
+    public function getResidentLeaseCharges($externalPropertyId, \DateTime $postMonth = null)
+    {
+        if (empty($postMonth)) {
+            $postMonth = new \DateTime();
+        }
+
+        $parameters = [
+            'GetResidentLeaseCharges_Login' => array_merge(
+                $this->getLoginCredentials(),
+                [
+                    'YardiPropertyId' => $externalPropertyId,
+                    'PostMonth' => $postMonth
+                ]
+            )
+        ];
+
+        return $this->sendRequest(
+            'GetResidentLeaseCharges_Login',
             $parameters
         );
     }

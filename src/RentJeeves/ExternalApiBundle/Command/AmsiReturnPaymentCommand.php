@@ -70,7 +70,7 @@ class AmsiReturnPaymentCommand extends ContainerAwareCommand
      */
     protected function getSettlementAmount(Transaction $completeTransaction)
     {
-        return $completeTransaction->getDepositDate() ? $completeTransaction->getOrder()->getSum() : 0;
+        return $completeTransaction->getOrder()->getSum();
     }
 
     /**

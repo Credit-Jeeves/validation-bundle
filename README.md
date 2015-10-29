@@ -113,6 +113,9 @@ ec2-user@54.243.130.78 - SELENIUM ssh user alex
 
 PHP Coding Standards Fixer
 ---
+To check your code against PHP Coding Standards, run from the project root directory:
+./bin/cs.sh <path_to_file>
+
 The PHP Coding Standards Fixer tool fixes most issues in your code when you want to follow the PHP coding standards as defined in the PSR-1 and PSR-2 documents.
 
 We use Fixer with git pre-commit hook.

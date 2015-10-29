@@ -8,7 +8,7 @@
               <DocumentNumber>123123</DocumentNumber>
               <TransactionDate>%date%</TransactionDate>
               <BatchID>testBatchId</BatchID>
-              <UnitID>AAABBB-7</UnitID>
+              <UnitID>1102</UnitID>
               <CustomerID></CustomerID>
               <PaidBy>TIMOTHY APPLEGATE</PaidBy>
               <Amount>1500.00</Amount>

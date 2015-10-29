@@ -3,10 +3,11 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -22,11 +23,13 @@ class ResManClientCase extends Base
 
     const EXTERNAL_PROPERTY_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d';
 
-    const RESIDENT_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
+    const RESIDENT_ID = 'e0278ce2-a4c5-4c61-af79-d3c0689d92e9';
 
-    const EXTERNAL_LEASE_ID = '09948a58-7c50-4089-8942-77e1456f40ec';
+    const EXTERNAL_LEASE_ID = 'e724deb6-56e5-49b0-9583-b12b3bebdc9e';
 
-    const EXTERNAL_UNIT_ID = '2';
+    const EXTERNAL_UNIT_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d|1|1102';
+
+    const RESMAN_UNIT_ID = '1108';
 
     /**
      * @test
@@ -151,10 +154,14 @@ class ResManClientCase extends Base
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
             [
                 'user'  => $tenant->getId(),
-                'type'  => OrderType::HEARTLAND_CARD
+                'paymentType' => OrderPaymentType::CARD
             ]
         );
-
+        /** @var UnitMapping $unitMapping */
+        $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneByExternalUnitId('AAABBB-7');
+        $this->assertNotEmpty($unitMapping, 'Should have unitMapping with externalUnitId AAABBB-7 in DB.');
+        $unitMapping->setExternalUnitId(self::EXTERNAL_UNIT_ID);
+        $em->flush();
         $this->assertNotNull($order);
         $order->setBatchId('testBatchId');
 
@@ -195,7 +202,7 @@ class ResManClientCase extends Base
         $settings->setAccountId('400');
         $resManClient->setSettings($settings);
 
-        $result = $resManClient->closeBatch(self::EXTERNAL_PROPERTY_ID, $batchId);
+        $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);
 
         $this->assertTrue($result);
     }

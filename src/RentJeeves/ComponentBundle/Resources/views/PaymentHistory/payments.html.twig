@@ -41,7 +41,10 @@
                         <td data-bind="text: date"></td>
                         <td data-bind="text: property"></td>
                         <td data-bind="text: rent"></td>
-                        <td data-bind="text: other"></td>
+                        <td>
+                            <div data-bind="text: other"></div>
+                            <div data-bind="visible: deposit_type, text: deposit_type, i18n: {}"></div>
+                        </td>
                         <td data-bind="text: total"></td>
                         <td class="type-box"><span data-bind="css: 'clarification ' + type()"><i></i></span></td>
                     </tr>
@@ -59,6 +62,7 @@
 </div>
 
 <script type="text/javascript">
+    var paymentHistoryLoadedCallback = function () {};
     $(document).ready(function() {
         var viewModel = new TenantPaymentsViewModel();
         ko.applyBindings(viewModel, $('#tenant-payments').get(0));

@@ -3,6 +3,7 @@ fixtures:
     Payment_2:
         contract: Contract_2
         paymentAccount: PaymentAccount_1
+        depositAccount: DepositAccount_1
         type: recurring
         status: active
         amount: 1400
@@ -15,6 +16,7 @@ fixtures:
     Payment_3:
         contract: Contract_3
         paymentAccount: PaymentAccount_2
+        depositAccount: DepositAccount_2
         type: recurring
         status: close
         amount: 1500
@@ -27,6 +29,7 @@ fixtures:
     Payment_4:
         contract: Contract_41
         paymentAccount: PaymentAccount_4
+        depositAccount: DepositAccount_1
         type: recurring
         status: active
         amount: 1700
@@ -39,6 +42,7 @@ fixtures:
     Payment_6:
         contract: Contract_6
         paymentAccount: PaymentAccount_6
+        depositAccount: DepositAccount_1
         type: recurring
         status: active
         amount: 1700
@@ -51,6 +55,7 @@ fixtures:
     Payment_11:
         contract: Contract_11
         paymentAccount: PaymentAccount_11
+        depositAccount: DepositAccount_1
         type: recurring
         status: active
         amount: 2100
@@ -63,6 +68,7 @@ fixtures:
     Payment_12:
         contract: Contract_12
         paymentAccount: PaymentAccount_12
+        depositAccount: DepositAccount_1
         type: recurring
         status: active
         amount: 2100

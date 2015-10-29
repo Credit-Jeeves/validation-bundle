@@ -2,50 +2,201 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Heartland;
 
+use Doctrine\ORM\EntityManager;
 use CreditJeeves\DataBundle\Entity\Group;
 use Payum2\Heartland\Model\PaymentDetails;
 use Payum2\Heartland\Soap\Base\ACHAccountType;
 use Payum2\Heartland\Soap\Base\ACHDepositType;
 use Payum2\Heartland\Soap\Base\GetTokenRequest;
 use Payum2\Heartland\Soap\Base\GetTokenResponse;
+use Payum2\Bundle\PayumBundle\Registry\ContainerAwareRegistry as Payum2AwareRegistry;
+use Payum2\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
 use Payum2\Payment;
 use Payum2\Request\BinaryMaskStatusRequest;
 use Payum2\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorConfigurationException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
+use RentJeeves\DataBundle\Enum\BankAccountType;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use Payum2\Heartland\Soap\Base\TokenPaymentMethod;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant;
 use RuntimeException;
 
 class PaymentAccountManager
 {
+    /** @var Payment */
+    protected $payment;
+
+    /** @var string */
     protected $defaultMerchantName;
 
-    protected $payum;
+    /** @var  EntityManager */
+    protected $em;
 
-    public function setDefaultMerchantName($defaultMerchantName)
+    /**
+     * PaymentAccountManager constructor.
+     * @param EntityManager $em
+     * @param Payum2AwareRegistry $payum2
+     * @param string $rtGroupCode
+     */
+    public function __construct(EntityManager $em, Payum2AwareRegistry $payum2, $rtGroupCode)
     {
-        $this->defaultMerchantName = $defaultMerchantName;
+        $this->payment = $payum2->getPayment('heartland');
+        $this->em = $em;
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByCode($rtGroupCode);
+        $depositAccount = $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND);
+        $this->defaultMerchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
     }
 
-    public function getDefaultMerchantName()
-    {
-        return $this->defaultMerchantName;
+    /**
+     * Registers a payment token for given payment account, user and deposit account.
+     *
+     * @param  PaymentAccountData $paymentAccountData
+     * @param  string $merchantName
+     * @throws PaymentProcessorConfigurationException
+     */
+    public function registerPaymentToken(
+        PaymentAccountData $paymentAccountData,
+        $merchantName
+    ) {
+        $paymentAccount = $paymentAccountData->getEntity();
+        if (!$paymentAccount->getToken()) {
+            if (empty($merchantName)) {
+                throw new PaymentProcessorConfigurationException(
+                    'Heartland payment processor error: merchant name not found'
+                );
+            }
+            $tokenRequest = $this->getTokenRequest($paymentAccountData, $paymentAccount->getUser());
+            $token = $this->getTokenResponse($tokenRequest, $merchantName);
+
+            /** @var PaymentAccount $paymentAccount */
+            $paymentAccount = $paymentAccountData->getEntity();
+            $paymentAccount->setToken($token);
+            $paymentAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+
+            if (false === $paymentAccount->hasAssociatedHpsMerchant($merchantName)) {
+                $this->addAssociationWithMerchant($paymentAccount, $merchantName);
+            }
+
+            $this->em->persist($paymentAccount);
+            $this->em->flush($paymentAccount);
+        } else {
+            $this->ensureAccountAssociation($paymentAccount, $merchantName);
+        }
     }
 
-    public function setPayum($payum)
-    {
-        $this->payum = $payum;
+    /**
+     * Registers a billing token for given payment account and user.
+     *
+     * @param PaymentAccountData $paymentAccountData
+     * @param User $user
+     */
+    public function registerBillingToken(
+        PaymentAccountData $paymentAccountData,
+        User $user
+    ) {
+        $billingAccount = $paymentAccountData->getEntity();
+        if (!$billingAccount->getToken()) {
+            $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
+            $token = $this->getTokenResponse($tokenRequest, $this->defaultMerchantName);
+
+            /** @var BillingAccount $billingAccount */
+            $billingAccount = $paymentAccountData->getEntity();
+            $billingAccount->setToken($token);
+            $billingAccount->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+
+            $this->em->persist($billingAccount);
+            $this->em->flush($billingAccount);
+        }
     }
 
-    public function getPayum()
+    /**
+     * @param PaymentAccountData $paymentAccountData
+     * @throws PaymentProcessorLogicException
+     */
+    public function modifyPaymentAccount(PaymentAccountData $paymentAccountData)
     {
-        return $this->payum;
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $paymentAccountData->getEntity();
+
+        $paymentAccount->setToken(null);
+
+        if ($paymentAccount->getHpsMerchants()->isEmpty()) {
+            throw new PaymentProcessorLogicException(
+                'Payment account for heartland should have at least one associated merchant.'
+            );
+        }
+
+        /** @var PaymentAccountHpsMerchant $merchant */
+        foreach ($paymentAccount->getHpsMerchants() as $merchant) {
+            $merchantName = $merchant->getMerchantName();
+            $this->em->remove($merchant);
+            $this->em->flush();
+            $this->registerPaymentToken($paymentAccountData, $merchantName);
+        }
+    }
+
+    /**
+     * @param PaymentAccountEntity $paymentAccount
+     */
+    public function removePaymentAccount(PaymentAccountEntity $paymentAccount)
+    {
+        $this->em->remove($paymentAccount);
+
+        $this->em->flush($paymentAccount);
+    }
+
+    /**
+     * Ensure there is an association between the given paymentAccount and
+     * merchant name. If there isn't, form the association by requesting
+     * registerTokenToAdditionalMerchant from heartland, then creating a DB
+     * association between the paymentAccount and the merchantName.
+     *
+     * @param  PaymentAccount $paymentAccount
+     * @param  string $merchantName
+     */
+    public function ensureAccountAssociation(PaymentAccount $paymentAccount, $merchantName)
+    {
+        if (null == $registerToMerchantName = $merchantName) {
+            throw new \RuntimeException('Cannot register to a group without a merchant name.');
+        }
+
+        if ($paymentAccount->hasAssociatedHpsMerchant($merchantName)) {
+            return true;
+        }
+
+        if ($paymentAccount->getHpsMerchants()->isEmpty()) {
+            throw new RuntimeException(
+                'Registering to another merchant only works when ' .
+                'there is at least one existing association.'
+            );
+        }
+
+        // any previously registered merchant will work
+        $existingMerchantName = $paymentAccount->getHpsMerchants()->first()->getMerchantName();
+        $token = $paymentAccount->getToken();
+
+        $this->registerTokenToAdditionalMerchant(
+            $existingMerchantName,
+            $registerToMerchantName,
+            $token
+        );
+
+        // create the association
+        $this->addAssociationWithMerchant($paymentAccount, $merchantName);
+        $this->em->persist($paymentAccount);
+        $this->em->flush();
     }
 
     /**
@@ -94,15 +245,20 @@ class PaymentAccountManager
             $request->getAccountHolderData()->setLastName($lastName);
             $request->setRoutingNumber($paymentAccountData->get('routing_number'));
             $request->setAccountNumber($paymentAccountData->get('account_number'));
-            $ACHDepositType = $paymentAccountData->get('ach_deposit_type');
 
-            if (ACHDepositType::UNASSIGNED == $ACHDepositType) {
+            if (BankAccountType::BUSINESS_CHECKING === $paymentAccountEntity->getBankAccountType()) {
                 $request->setACHDepositType(ACHDepositType::CHECKING);
                 $request->setACHAccountType(ACHAccountType::BUSINESS);
             } else {
-                $request->setACHDepositType($ACHDepositType);
                 $request->setACHAccountType(ACHAccountType::PERSONAL);
+
+                if (BankAccountType::SAVINGS == $paymentAccountEntity->getBankAccountType()) {
+                    $request->setACHDepositType(ACHDepositType::SAVINGS);
+                } else {
+                    $request->setACHDepositType(ACHDepositType::CHECKING);
+                }
             }
+
             $request->setPaymentMethod(TokenPaymentMethod::ACH);
         }
 
@@ -120,13 +276,10 @@ class PaymentAccountManager
         $paymentDetails->setMerchantName($merchantName);
         $paymentDetails->setRequest($tokenRequest);
         $captureRequest = new CaptureRequest($paymentDetails);
-
-        /** @var Payment $payment */
-        $payment = $this->getPayum()->getPayment('heartland');
-        $payment->execute($captureRequest);
+        $this->payment->execute($captureRequest);
 
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-        $payment->execute($statusRequest);
+        $this->payment->execute($statusRequest);
 
         /** @var GetTokenResponse $response */
         $response = $statusRequest->getModel()->getResponse();
@@ -139,28 +292,46 @@ class PaymentAccountManager
     }
 
     /**
-     * Requests a token for given payment account, user and group merchant name.
-     *
-     * @param  PaymentAccountData $paymentAccountData
-     * @param  User $user
-     * @param  Group $group if group is null use the default merchant account
-     * @return string
-     * @throws PaymentProcessorConfigurationException
+     * @param string $merchantName
+     * @param string $registerToMerchantName
+     * @param string $token
+     * @throws \Exception
+     * @throws \Payum2\Request\InteractiveRequestInterface
      */
-    public function getToken(PaymentAccountData $paymentAccountData, User $user, Group $group = null)
+    protected function registerTokenToAdditionalMerchant($merchantName, $registerToMerchantName, $token)
     {
-        $merchantName = $this->defaultMerchantName;
-        if ($group !== null) {
-            $merchantName = $group->getMerchantName();
-        }
-        if (empty($merchantName)) {
-            throw new PaymentProcessorConfigurationException(
-                'Heartland payment processor error: merchant name not found'
-            );
-        }
-        $tokenRequest = $this->getTokenRequest($paymentAccountData, $user);
-        $token = $this->getTokenResponse($tokenRequest, $merchantName);
+        $request = new RegisterTokenToAdditionalMerchantRequest();
+        $request->setToken($token);
+        $request->getRegisterToMerchantCredential()->setMerchantName($registerToMerchantName);
 
-        return $token;
+        $paymentDetails = new PaymentDetails();
+        $paymentDetails->setMerchantName($merchantName);
+        $paymentDetails->setRequest($request);
+        $captureRequest = new CaptureRequest($paymentDetails);
+
+        $this->payment->execute($captureRequest);
+
+        $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
+        $this->payment->execute($statusRequest);
+
+        /** @var GetTokenResponse $response */
+        $response = $statusRequest->getModel()->getResponse();
+
+        if (!$statusRequest->isSuccess()) {
+            throw new RuntimeException($paymentDetails->getMessages());
+        }
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     * @param string $merchantName
+     */
+    protected function addAssociationWithMerchant(PaymentAccount $paymentAccount, $merchantName)
+    {
+        $associatedMerchant = new PaymentAccountHpsMerchant();
+        $associatedMerchant->setPaymentAccount($paymentAccount);
+        $associatedMerchant->setMerchantName($merchantName);
+        $paymentAccount->addHpsMerchant($associatedMerchant);
+        $this->em->persist($associatedMerchant);
     }
 }

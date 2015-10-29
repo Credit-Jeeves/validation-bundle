@@ -3,8 +3,10 @@ namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
@@ -16,6 +18,7 @@ use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 
 /**
  * @DI\Service("checkout.payment_job_executor")
@@ -43,6 +46,11 @@ class PaymentJobExecutor
     protected $payCreditTrack;
 
     /**
+     * @var string
+     */
+    protected $creditTrackVendor;
+
+    /**
      * @var Job
      */
     protected $job;
@@ -62,15 +70,29 @@ class PaymentJobExecutor
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
+     *     "creditTrackVendor" = @DI\Inject("%credit_summary_vendor%"),
      *     "logger" = @DI\Inject("logger")
+     *
      * })
+     *
+     * @param EntityManager $em
+     * @param PayRent $payRent
+     * @param PayCreditTrack $payCreditTrack
+     * @param $creditTrackVendor
+     * @param Logger $logger
      */
-    public function __construct($em, $payRent, $payCreditTrack, $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        PayRent $payRent,
+        PayCreditTrack $payCreditTrack,
+        $creditTrackVendor,
+        Logger $logger
+    ) {
         $this->em = $em;
         $this->payRent = $payRent;
         $this->payCreditTrack = $payCreditTrack;
         $this->logger = $logger;
+        $this->creditTrackVendor = $creditTrackVendor;
     }
 
     public function getMessage()
@@ -137,9 +159,10 @@ class PaymentJobExecutor
         $contract = $payment->getContract();
 
         $filterClosure = function (Operation $operation) use ($date) {
-            if (($order = $operation->getOrder()) &&
+            if (($operation->getType() === OperationType::RENT) &&
+                ($order = $operation->getOrder()) &&
                 $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
-                $order->getType() != OrderType::CASH &&
+                $order->getPaymentType() != OrderPaymentType::CASH &&
                 OrderStatus::ERROR != $order->getStatus() &&
                 OrderStatus::CANCELLED != $order->getStatus()
             ) {
@@ -148,7 +171,9 @@ class PaymentJobExecutor
 
             return false;
         };
-        if ($contract->getOperations()->filter($filterClosure)->count()) {
+        if (DepositAccountType::RENT === $payment->getDepositAccount()->getType() &&
+            !$contract->getOperations()->filter($filterClosure)->isEmpty()
+        ) {
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
             $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
@@ -178,6 +203,31 @@ class PaymentJobExecutor
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);
 
-        return $this->processStatus($order);
+        $isSuccessful = $this->processStatus($order);
+
+        if ($isSuccessful) {
+            /** @var Operation $operation */
+            $operation = $order->getOperations()->last();
+            $report = $operation->getReportByVendor($this->creditTrackVendor);
+            $this->em->persist($this->scheduleReportJob($report));
+        }
+
+        $this->em->flush();
+
+        return $isSuccessful;
+    }
+
+    /**
+     * Creates a job to load report.
+     *
+     * @param Report $report
+     * @return Job
+     */
+    protected function scheduleReportJob(Report $report)
+    {
+        $job = new Job('score-track:get-report', ['--app=rj']);
+        $job->addRelatedEntity($report);
+
+        return $job;
     }
 }

@@ -2,7 +2,8 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -11,8 +12,6 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class RjGroupAdmin extends Admin
 {
@@ -22,9 +21,9 @@ class RjGroupAdmin extends Admin
      */
     const TYPE = 'group';
 
-    protected $formOptions = array(
-            'validation_groups' => ['holding', 'unique_mapping']
-    );
+    protected $formOptions = [
+        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee']
+    ];
 
     /**
      * {@inheritdoc}
@@ -57,6 +56,12 @@ class RjGroupAdmin extends Admin
             $query->setParameter('holding_id', $nHoldingId);
         }
 
+        $id = $this->getRequest()->get('id', null);
+        if (!empty($id)) {
+            $query->andWhere($alias.'.id = :group_id');
+            $query->setParameter('group_id', $id);
+        }
+
         return $query;
     }
 
@@ -66,6 +71,25 @@ class RjGroupAdmin extends Admin
     public function prePersist($object)
     {
         $object->setType(GroupType::RENT);
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+            $depositAccount->setHolding($object->getHolding());
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function preUpdate($object)
+    {
+        $depositAccounts = $object->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($depositAccounts as $depositAccount) {
+            $depositAccount->setGroup($object);
+            $depositAccount->setHolding($object->getHolding());
+        }
     }
 
     /**
@@ -84,15 +108,6 @@ class RjGroupAdmin extends Admin
             ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
-            ->add(
-                'depositAccount',
-                'sonata_type_model',
-                array(
-                    'empty_value' => 'None',
-                    'required' => false,
-                    'label' => 'Merchant status'
-                )
-            )
             ->add('disableCreditCard')
             ->add(
                 '_action',
@@ -134,48 +149,31 @@ class RjGroupAdmin extends Admin
                 )
                 ->add('name')
                 ->add('statementDescriptor', null, ['label' => 'ID4', 'required' => true])
-            ->end()
-            ->with('Deposit Account')
-                // admin.deposit_account.merchant_name
-                ->add('depositAccount.merchantName', null, array('label' => 'Merchant Name', 'required' => false))
                 ->add(
-                    'accountNumberMapping.accountNumber',
-                    null,
-                    array(
-                        'label' => 'Account Number',
-                        'required' => false,
-                    )
-                )
-                ->add(
-                    'depositAccount.status',
+                    'orderAlgorithm',
                     'choice',
-                    array(
-                        'label' => 'Status',
-                        'required' => false,
-                        'choices' => DepositAccountStatus::cachedTitles()
-                    )
+                    [
+                        'choices' => OrderAlgorithmType::cachedTitles()
+                    ]
                 )
+                ->add('mailingAddressName', null, ['required' => false])
+                ->add('city', null, ['required' => false])
+                ->add('state', null, ['required' => false])
+                ->add('zip', null, ['required' => false])
+                ->add('street_address_1', null, ['required' => false])
+                ->add('street_address_2')
+            ->end()
+            ->with('Deposit Accounts')
                 ->add(
-                    'depositAccount.feeCC',
-                    'number',
-                    array('label' => 'CC Fee (%)', 'required' => false) //admin.deposit_account.fee_cc
+                    'depositAccounts',
+                    'sonata_type_collection',
+                    [],
+                    [
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'sortable' => 'position',
+                    ]
                 )
-                ->add(
-                    'depositAccount.feeACH',
-                    'number',
-                    array('label' => 'ACH Fee ($)', 'required' => false) //admin.deposit_account.fee_ach
-                )
-                ->add(
-                    'depositAccount.mid',
-                    'number',
-                    ['label' => 'Mid', 'required' => false]
-                )
-                ->add(
-                    'depositAccount.passedAch',
-                    'checkbox',
-                    ['label' => 'Is passed ach', 'required' => false]
-                )
-                ->add('disableCreditCard', 'checkbox', ['label' => 'Disable Credit Card?', 'required' => false])
             ->end()
             ->with('Group Phones')
                 ->add(
@@ -233,28 +231,12 @@ class RjGroupAdmin extends Admin
                     )
                 )
             ->end();
-
-        $self = $this;
-        $formMapper->getFormBuilder()->addEventListener(
-            FormEvents::SUBMIT,
-            function (FormEvent $event) use ($self) {
-                $form = $event->getForm();
-                /** @var Group $group */
-                $group = $form->getData();
-                $accountMapping = $group->getAccountNumberMapping();
-                if (!$accountMapping->getHolding()) {
-                    $holding = $group->getHolding();
-                    $accountMapping->setHolding($holding);
-                }
-            }
-        );
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name')
-            ->add('depositAccount.status', null, array('label' => 'Merchant status'));
+            ->add('name');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)

@@ -12,14 +12,20 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\DateTime;
+use Symfony\Component\Form\FormView;
 
 class ContractsListController extends Controller
 {
     /**
+     * @param Group $Group
+     * @param FormView $form
+     * @param string $searchText
+     * @param string $searchColumn
+     *
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return mixed
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group, $form)
+    public function indexAction(Group $Group, FormView $form, $searchText = null, $searchColumn = null)
     {
         /** @var $user Landlord */
         $user = $this->getUser();
@@ -28,7 +34,8 @@ class ContractsListController extends Controller
         $canInvite = false;
 
         if (!empty($group)) {
-            $merchantName = $group->getMerchantName();
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+            $merchantName = $depositAccount ? $depositAccount->getMerchantName() : '';
             $canInvite = (!empty($merchantName)) ? true : false;
         }
         $date = new DateTime();
@@ -36,23 +43,26 @@ class ContractsListController extends Controller
         $date->modify('+1 year');
         $end = $date->format('m/d/Y');
 
-        return array(
+        return [
             'form'          => $form,
             'Group'         => $Group,
             'canInvite'     => $canInvite,
             'start'         => $start,
             'end'           => $end,
             'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
-        );
+            'searchText'    => $searchText,
+            'searchColumn'  => $searchColumn
+        ];
     }
 
     /**
+     * @param Group $group
+     *
      * @Template()
      */
-    public function actionsAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    public function actionsAction(Group $Group)
     {
-        return array(
-        );
+        return [];
     }
 
     /**
@@ -84,6 +94,7 @@ class ContractsListController extends Controller
         $isNewUser = false;
         $isInPaymentWindow = false;
         $hasIntegratedBalance = false;
+        $allowPayAnything = false;
         if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
             $isNewUser = true;
             /** @var Contract $contract */
@@ -105,6 +116,14 @@ class ContractsListController extends Controller
             if (!$hasIntegratedBalance && $contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
                 $hasIntegratedBalance = true;
             }
+            if (($contract->getStatus() !== ContractStatus::FINISHED) &&
+                end($contractsArr)['is_allowed_to_pay_anything']
+            ) {
+                $activeContracts[] = $contract;
+            }
+            if (!$allowPayAnything && end($contractsArr)['is_allowed_to_pay_anything']) {
+                $allowPayAnything = true;
+            }
         }
 
         $contractsJson = $this->get('jms_serializer')->serialize(
@@ -121,6 +140,7 @@ class ContractsListController extends Controller
             'isNewUser'     => $isNewUser,
             'hasIntegratedBalance' => $hasIntegratedBalance,
             'isInPaymentWindow' => $isInPaymentWindow,
+            'allowPayAnything' => $allowPayAnything,
         );
 
         if ($mobile) {

@@ -2,23 +2,21 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
-use Exception;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 
 /**
@@ -64,19 +62,13 @@ class AccountingPaymentSynchronizer
      */
     protected $debug = false;
 
-    protected $allowedIntegrationApi = [
-        ApiIntegrationType::RESMAN,
-        ApiIntegrationType::MRI,
-        ApiIntegrationType::AMSI,
-    ];
-
     /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "apiClientFactory" = @DI\Inject("accounting.api_client.factory"),
      *     "soapClientFactory" = @DI\Inject("soap.client.factory"),
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
-     *     "exceptionCatcher" = @DI\Inject( "fp_badaboom.exception_catcher"),
+     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
      *     "logger" = @DI\Inject("logger")
      * })
      */
@@ -97,15 +89,42 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param Holding $holding
+     * @param Order $order
      *
      * @return bool
      */
-    public function isAllowedToSend(Holding $holding)
+    public function isAllowedToSend(Order $order)
     {
-        if (in_array($holding->getApiIntegrationType(), $this->allowedIntegrationApi)) {
-            return true;
+        $this->logger->debug('Checking if external payment post is allowed and order can be send...');
+
+        if ($order->getCustomOperation()) {
+            $this->logger->debug('Order with custom operation NOT allowed for external payment post. done.');
+
+            return false;
         }
+
+        if (!$contract = $order->getContract()) {
+            $this->logger->debug('Order does not have contract, we don\'t send it to external API');
+
+            return false;
+        }
+
+        $holding = $contract->getHolding();
+        $integrationType = $holding->getApiIntegrationType();
+        $isIntegrated = (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE);
+        if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
+            $this->logger->debug('Holding is allowed for external payment post.');
+            $group = $contract->getGroup();
+            if ($group->isExistGroupSettings() && $group->getGroupSettings()->getIsIntegrated() === true) {
+                $this->logger->debug('Group is allowed for external payment post. Post!');
+
+                return true;
+            }
+            $this->logger->debug('Group is NOT allowed for external payment post. done.');
+
+            return false;
+        }
+        $this->logger->debug('Holding is NOT allowed for external payment post. done.');
 
         return false;
     }
@@ -126,16 +145,17 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
      */
     public function sendOrderToAccountingSystem(Order $order)
     {
         try {
             if (!$order->hasContract()) {
-                $this->logger->debug(
+                // This should be an alert - orders should have associated contracts!
+                $this->logger->alert(
                     sprintf(
-                        'Order(%s) not associated with a lease contract don\'t sent to accounting system',
+                        'Order(%s) does not have an associated contract - cannot send to accounting system.',
                         $order->getId()
                     )
                 );
@@ -143,11 +163,11 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
-            $holding = $order->getContract()->getHolding();
-            if (!$this->isAllowedToSend($holding)) {
+            if (!$this->isAllowedToSend($order)) {
+                // This should not be an alert since we're just checking if we should send.
                 $this->logger->debug(
                     sprintf(
-                        "Order(%d) is not allowed to be sent to accounting system.",
+                        "Order(%d) should not be sent to the accounting system.",
                         $order->getId()
                     )
                 );
@@ -155,15 +175,18 @@ class AccountingPaymentSynchronizer
                 return false;
             }
 
+            $contract = $order->getContract();
+            $holding = $contract->getHolding();
             if (!($transaction = $order->getCompleteTransaction() and
                 $holding->getExternalSettings() and
                 $paymentBatchId = $transaction->getBatchId() and
                 $apiClient = $this->getApiClient($holding->getApiIntegrationType(), $holding->getExternalSettings()) and
                 $this->existsExternalMapping($order, $apiClient)
             )) {
-                $this->logger->debug(
+                // This should be an alert - mappings are missing!
+                $this->logger->alert(
                     sprintf(
-                        'Order(%d) can not be sent to accounting system(%s)',
+                        'Order(%d) can not be sent to accounting system(%s) - potentially due to missing mappings.',
                         $order->getId(),
                         $holding->getApiIntegrationType()
                     )
@@ -179,26 +202,40 @@ class AccountingPaymentSynchronizer
                     $holding->getApiIntegrationType()
                 )
             );
-            if ($apiClient->supportsBatches()) {
-                $this->openBatch($order);
+
+            if ($apiClient->supportsBatches() && !$this->openBatch($order)) {
+                throw new \RuntimeException(
+                    sprintf('Can\'t open batch on accounting system(%s)', $holding->getApiIntegrationType())
+                );
             }
+
             $result = $this->addPaymentToBatch($order);
             $message = sprintf(
-                "Order(%d) was sent to accounting system(%s) with result: %s",
+                'Order(%d) was sent to accounting system(%s) with result: %s',
                 $order->getId(),
                 $holding->getApiIntegrationType(),
                 $result
             );
-            $this->logger->debug($message);
 
             if ($result === false) {
-                throw new Exception($message);
+                throw new \Exception($message);
             }
 
+            $this->logger->debug($message);
+
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    'Failed posting payment! Exception(%s): "%s" File:%s, Line:%s, Trace:%s',
+                    $e->getCode(),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString()
+                )
+            );
             $this->exceptionCatcher->handleException($e);
-            $this->logger->addCritical($e->getMessage());
 
             return false;
         }
@@ -224,20 +261,22 @@ class AccountingPaymentSynchronizer
     {
         if ($apiClient->supportsProperties()) {
             $holding = $order->getContract()->getHolding();
-            $externalPropertyMapping = $order
-                ->getUnit()
-                ->getProperty()
-                ->getPropertyMappingByHolding($holding);
+            if ($property = $order->getProperty()) {
+                $externalPropertyMapping = $property->getPropertyMappingByHolding($holding);
+            }
 
-            if ($externalPropertyMapping && $externalPropertyId = $externalPropertyMapping->getExternalPropertyId()) {
+            if (!empty($externalPropertyMapping) &&
+                $externalPropertyId = $externalPropertyMapping->getExternalPropertyId()
+            ) {
                 return true;
             }
         } else {
             // if apiClient doesn't support properties, we should check unit mapping
-            $externalUnitMapping = $order
-                ->getUnit()
-                ->getUnitMapping();
-            if ($externalUnitMapping && $externalUnitId = $externalUnitMapping->getExternalUnitId()) {
+            if ($unit = $order->getUnit()) {
+                $externalUnitMapping = $unit->getUnitMapping();
+            }
+
+            if (!empty($externalUnitMapping) && $externalUnitId = $externalUnitMapping->getExternalUnitId()) {
                 return true;
             }
         }
@@ -262,8 +301,7 @@ class AccountingPaymentSynchronizer
             $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
             $batchId = $repo->getAccountingBatchId(
                 $paymentBatchId,
-                $accountingPackageType,
-                $externalPropertyId
+                $accountingPackageType
             );
 
             $order->setBatchId($batchId);
@@ -281,8 +319,9 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return bool
+     * @throws \Exception
      */
     protected function openBatch(Order $order)
     {
@@ -291,48 +330,68 @@ class AccountingPaymentSynchronizer
         $accountingType = $this->getAccountingType($order);
         $externalPropertyId = $order->getPropertyPrimaryId();
 
-        /** @var PaymentBatchMappingRepository $repo */
-        $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
+        // Should open transaction before lock because
+        // when we try to flush record Doctrine2 open transaction and all locks for tables get broken
+        $this->em->beginTransaction();
+        try {
+            /** @var PaymentBatchMappingRepository $repo */
+            $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
 
-        if ($repo->isOpenedBatch($paymentBatchId, $accountingType, $externalPropertyId)) {
+            $repo->lockTable();
+
+            if ($repo->isOpenedBatch($paymentBatchId, $accountingType)) {
+                $this->em->getConnection()->exec(
+                    'UNLOCK TABLES;'
+                );
+                $this->em->commit();
+
+                return true;
+            }
+
+            $paymentBatchDate = new \DateTime();
+            $description = sprintf(
+                'RentTrack Online Payments Batch #%s',
+                $paymentBatchId
+            );
+            $apiClient = $this->getApiClientByOrder($order);
+
+            $accountingBatchId = $apiClient->openBatch(
+                $externalPropertyId,
+                $paymentBatchDate,
+                $description
+            );
+
+            if (!$accountingBatchId) {
+                $this->em->getConnection()->exec('UNLOCK TABLES;');
+                $this->em->commit();
+
+                return false;
+            }
+
+            $paymentBatchMapping = new PaymentBatchMapping();
+            $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
+            $paymentBatchMapping->setPaymentBatchId($paymentBatchId);
+            $paymentBatchMapping->setAccountingPackageType($accountingType);
+            $paymentBatchMapping->setExternalPropertyId($externalPropertyId);
+
+            $this->em->persist($paymentBatchMapping);
+            $this->em->flush($paymentBatchMapping);
+            $this->em->getConnection()->exec('UNLOCK TABLES;');
+            $this->em->commit();
+
             return true;
+
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
         }
-
-        $paymentBatchDate = new DateTime();
-        $description = sprintf(
-            'RentTrack Online Payments Batch #%s',
-            $paymentBatchId
-        );
-        $accountingBatchId = $this->getApiClientByOrder($order)->openBatch(
-            $externalPropertyId,
-            $paymentBatchDate,
-            $description
-        );
-
-        if (!$accountingBatchId) {
-            return false;
-        }
-
-        $paymentBatchMapping = new PaymentBatchMapping();
-        $paymentBatchMapping->setAccountingBatchId($accountingBatchId);
-        $paymentBatchMapping->setPaymentBatchId($paymentBatchId);
-        $paymentBatchMapping->setAccountingPackageType($accountingType);
-        $paymentBatchMapping->setExternalPropertyId($externalPropertyId);
-
-        $this->em->persist($paymentBatchMapping);
-        $this->em->flush($paymentBatchMapping);
-
-        return true;
     }
 
+    /**
+     * @param string $accountingType
+     */
     public function closeBatches($accountingType)
     {
-        $apiClient = $this->getApiClient($accountingType);
-
-        if (!$apiClient) {
-            return false;
-        }
-
         /** @var PaymentBatchMappingRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:PaymentBatchMapping');
         $mappingBatches = $repo->getTodayBatches($accountingType);
@@ -343,12 +402,22 @@ class AccountingPaymentSynchronizer
         foreach ($mappingBatches as $mappingBatch) {
             /** @var PaymentBatchMapping $mappingBatch */
             $holding = $repo->getMerchantHoldingByBatchId($mappingBatch->getPaymentBatchId());
+            $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings());
+
+            if (!$apiClient) {
+                throw new \LogicException(
+                    'Api client is missed. Check accountingType: %s and holdingID: %s.
+                     They must have settings by choices type',
+                    $accountingType,
+                    $holding->getId()
+                );
+            }
+
             if (!$holding || $holding->getApiIntegrationType() != $accountingType) {
                 continue;
             }
 
-            $apiClient->setSettings($holding->getExternalSettings());
-            if ($apiClient->closeBatch($mappingBatch->getExternalPropertyId(), $mappingBatch->getAccountingBatchId())) {
+            if ($apiClient->closeBatch($mappingBatch->getAccountingBatchId(), $mappingBatch->getExternalPropertyId())) {
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
                 $this->em->flush();
@@ -371,29 +440,14 @@ class AccountingPaymentSynchronizer
     }
 
     /**
-     * @param $accountingType
-     * @param $accountingSettings
+     * @param string $accountingType
+     * @param SettingsInterface $accountingSettings
      * @return Interfaces\ClientInterface
      */
-    protected function getApiClient($accountingType, $accountingSettings = null)
+    protected function getApiClient($accountingType, SettingsInterface $accountingSettings)
     {
-        /**
-         * if we add more than one soap client to AccountingPaymentSynchronizer,
-         * we should extract this logic to a different layer
-         */
-        if (ApiIntegrationType::AMSI == $accountingType) {
-            $apiClient = $this->soapClientFactory->getClient(
-                $accountingSettings,
-                SoapClientEnum::AMSI_LEDGER,
-                $this->debug
-            );
-        } else {
-            $apiClient = $this->apiClientFactory->createClient($accountingType);
-            $apiClient->setDebug($this->debug);
-            if ($accountingSettings) {
-                $apiClient->setSettings($accountingSettings);
-            }
-        }
+        $apiClient = $this->apiClientFactory->createClient($accountingType, $accountingSettings);
+        $apiClient->setDebug($this->debug);
 
         return $apiClient;
     }

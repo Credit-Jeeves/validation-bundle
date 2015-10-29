@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * PropertyMapping
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PropertyMappingRepository")
  * @ORM\Table(
  *      name="rj_property_mapping",
  *      uniqueConstraints={

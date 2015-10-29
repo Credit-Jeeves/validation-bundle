@@ -1,6 +1,9 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
+use RentJeeves\CheckoutBundle\Constraint\DayRange;
+use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Constraint\StartDateValidator;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -8,6 +11,8 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorInterface;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Date;
 
 class PaymentBalanceOnlyType extends PaymentType
 {
@@ -32,46 +37,127 @@ class PaymentBalanceOnlyType extends PaymentType
             $closeDay,
             $attributes
         );
+
         $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-        $builder->remove('type');
+        if ($this->attributes->isMobile()) {
+            $builder->add(
+                'paymentAccount',
+                'choice',
+                [
+                    'choices' => [],
+                    'attr' => $this->attributes->paymentAccountAttrs(),
+                    'required' => false,
+                ]
+            );
+        }
+
         $builder->add(
             'type',
             'choice',
-            array(
+            [
                 'label' => 'checkout.type',
-                'position' => array('before' => 'start_date'),
                 'empty_data' => PaymentTypeEnum::ONE_TIME,
-                'choices' => array(
+                'choices' => [
                     PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
-                ),
-                'attr' => array(
+                ],
+                'attr' => [
                     'class' => 'original',
                     'data-bind' => 'value: payment.type',
-                    'row_attr' => array(
+                    'row_attr' => [
                         'data-bind' => ''
-                    )
-                ),
+                    ]
+                ],
                 'invalid_message' => 'checkout.error.type.invalid',
+            ]
+        );
+
+        $builder->add(
+            'start_date',
+            'date',
+            [
+                'mapped'          => false,
+                'label'           => 'checkout.date',
+                'input'           => 'string',
+                'widget'          => 'single_text',
+                'format'          => 'MM/dd/yyyy',
+                'empty_data'      => '',
+                'attr'            => $this->attributes->startDateAttrs(
+                    StartDateValidator::isPastCutoffTime(new \DateTime(), $this->oneTimeUntilValue)
+                ),
+                'invalid_message' => 'checkout.error.date.valid',
+                'constraints'     => [
+                    new Date(
+                        [
+                            'groups'  => ['one_time'],
+                            'message' => 'checkout.error.date.valid',
+                        ]
+                    ),
+                    new StartDate(
+                        [
+                            'groups'            => [
+                                'recurring',
+                                'one_time'
+                            ],
+                            'oneTimeUntilValue' => $this->oneTimeUntilValue,
+                        ]
+                    ),
+                    new DayRange(
+                        [
+                            'groups' =>[
+                                'recurring',
+                                'one_time'
+                            ],
+                            'openDay' => $this->openDay,
+                            'closeDay' => $this->closeDay
+                        ]
+                    ),
+                    new Callback(
+                        [
+                            'groups'  => ['one_time'],
+                            'methods' => [[$this, 'isLaterOrEqualNow']]
+                        ]
+                    ),
+                ]
+            ]
+        );
+
+        $builder->add(
+            'next',
+            'submit',
+            [
+                'attr' => $this->attributes->submitAttrs()
+            ]
+        );
+
+        $builder->add(
+            'paymentAccountId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => $this->attributes->paymentAccountIdAttrs()
+            )
+        );
+        $builder->add(
+            'contractId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => $this->attributes->contractIdAttrs()
+            )
+        );
+        $builder->add(
+            'id',
+            'hidden',
+            array(
+                'attr' => $this->attributes->idAttrs()
             )
         );
 
-        $builder->remove('amount');
-        $builder->remove('paidFor');
-        $builder->remove('amountOther');
-        $builder->remove('total');
-        $builder->remove('frequency');
-        $builder->remove('dueDate');
-        $builder->remove('startMonth');
-        $builder->remove('startYear');
-        $builder->remove('startMonth');
         $builder->remove('ends');
-        $builder->remove('endMonth');
-        $builder->remove('endYear');
 
         $self = $this;
         $builder->addEventListener(
@@ -98,14 +184,17 @@ class PaymentBalanceOnlyType extends PaymentType
         );
     }
 
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'cascade_validation'    => true,
                 'data_class'            => 'RentJeeves\DataBundle\Entity\Payment',
-                'validation_groups'     => array(PaymentTypeEnum::ONE_TIME),
-            )
+                'validation_groups'     => [PaymentTypeEnum::ONE_TIME],
+            ]
         );
     }
 }

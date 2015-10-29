@@ -137,36 +137,23 @@ class ResManClient implements ClientInterface
      * @param $method
      * @param  array  $params
      * @return ResMan
+     * @throws Exception
      */
     public function sendRequest($method, array $params)
     {
-        try {
-            $baseParams = [
-                'IntegrationPartnerID'  => $this->integrationPartnerId,
-                'ApiKey'                => $this->apiKey,
-            ];
+        $baseParams = [
+            'IntegrationPartnerID'  => $this->integrationPartnerId,
+            'ApiKey'                => $this->apiKey,
+        ];
 
-            $uri = $this->apiUrl . $method;
+        $uri = $this->apiUrl . $method;
 
-            $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
-            $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
-            $request = $this->httpClient->post($uri, $headers = null, $postBody);
+        $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
+        $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
 
-            return $this->manageResponse($this->httpClient->send($request));
-        } catch (Exception $e) {
-            $this->debugMessage(
-                sprintf(
-                    "Error message: %s In file: %s By line: %s",
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                )
-            );
+        $request = $this->httpClient->post($uri, $headers = null, $postBody);
 
-            $this->exceptionCatcher->handleException($e);
-        }
-
-        return false;
+        return $this->manageResponse($this->httpClient->send($request));
     }
 
     /**
@@ -194,16 +181,19 @@ class ResManClient implements ClientInterface
             $this->replaceResponseTo,
             $body
         );
-
         $resMan = $this->deserializeResponse($body, $this->mappingResponse[self::BASE_RESPONSE]);
         if (!($resMan instanceof ResMan)) {
-            $message = sprintf("Can't deserialize response. Http code: %s. Body: %s", $httpCode, $body);
+            $message = $this->createExceptionMessage(
+                sprintf("Can't deserialize response. Http code: %s. Body: %s", $httpCode, $body)
+            );
             $this->debugMessage($message);
             throw new Exception($message);
         }
 
         if ($resMan->getStatus() !== 'Success') {
-            $message = sprintf("Failed request. Http code: %s. Body: %s", $httpCode, $body);
+            $message = $this->createExceptionMessage(
+                sprintf("Failed request. Http code: %s. Body: %s", $httpCode, $body)
+            );
             $this->debugMessage($message);
             throw new Exception($message);
         }
@@ -242,12 +232,50 @@ class ResManClient implements ClientInterface
         ];
 
         $this->debugMessage("Call ResMan method: {$method}");
-        $resMan = $this->sendRequest($method, $params);
-        if ($resMan instanceof ResMan) {
-            return $resMan->getResponse()->getResidentTransactions();
+        try {
+            $resMan = $this->sendRequest($method, $params);
+        } catch (Exception $e) {
+            $message = $this->createExceptionMessage(
+                sprintf('Can\'t get residents by externalPropertyId(ID#%s)', $externalPropertyId),
+                $e
+            );
+            $this->logger->alert($message); // TODO: replace alert with exception. See RT-1449
+            throw new Exception($message);
         }
 
-        throw new Exception(sprintf('Can\'t get residents for ResMan by propertyID - %s', $externalPropertyId));
+        return $resMan->getResponse()->getResidentTransactions();
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @param \DateTime $date
+     *
+     * @return ResidentTransactions
+     *
+     * @throws Exception
+     */
+    public function getTransactionsForRecurringCharges($externalPropertyId, \DateTime $date)
+    {
+        $method = 'GetRecurringCharges2_0';
+        $params = [
+            'PropertyID' => $externalPropertyId,
+            'PostingMonth' => $date->format('Y-m-d'),
+        ];
+
+        $this->debugMessage("Call ResMan method: {$method}");
+        try {
+            $resMan = $this->sendRequest($method, $params);
+        } catch (Exception $e) {
+            throw new Exception(
+                sprintf(
+                    'Can\'t get residents by externalPropertyId(ID#%s) : %s',
+                    $externalPropertyId,
+                    $e
+                )
+            );
+        }
+
+        return $resMan->getResponse()->getResidentTransactions();
     }
 
     /**
@@ -269,7 +297,16 @@ class ResManClient implements ClientInterface
             'Date' => $batchDate->format('Y-m-d')
         ];
 
-        $response = $this->sendRequest($method, $params);
+        $response = null;
+        try {
+            $response = $this->sendRequest($method, $params);
+        } catch (Exception $e) {
+            $message = $this->createExceptionMessage(
+                sprintf('Can\'t open batch for externalPropertyId(ID#%s)', $externalPropertyId),
+                $e
+            );
+            $this->logErrorAndContinue($message, $e);
+        }
 
         if ($response && $response->getResponse()) {
             return $response->getResponse()->getBatchId();
@@ -279,12 +316,12 @@ class ResManClient implements ClientInterface
     }
 
     /**
-     * @param $externalPropertyId
-     * @param $accountingBatchId
+     * @param string $accountingBatchId
+     * @param string $externalPropertyId
      * @param  mixed $accountId Can be get from settings
      * @return bool
      */
-    public function closeBatch($externalPropertyId, $accountingBatchId, $accountId = null)
+    public function closeBatch($accountingBatchId, $externalPropertyId, $accountId = null)
     {
         $method = 'CloseBatch';
         $this->debugMessage("Call ResMan method: {$method}");
@@ -295,7 +332,16 @@ class ResManClient implements ClientInterface
             'BatchID' => strtolower($accountingBatchId)
         ];
 
-        $resMan = $this->sendRequest($method, $params);
+        $resMan = null;
+        try {
+            $resMan = $this->sendRequest($method, $params);
+        } catch (Exception $e) {
+            $message = $this->createExceptionMessage(
+                sprintf('Can\'t close batch for externalPropertyId(ID#%s)', $externalPropertyId),
+                $e
+            );
+            $this->logErrorAndContinue($message, $e);
+        }
 
         return $resMan instanceof ResMan;
     }
@@ -319,7 +365,16 @@ class ResManClient implements ClientInterface
             'xml'        => $residentTransactionsXml,
         ];
 
-        $result = $this->sendRequest($method, $paramsToRequest);
+        $result = null;
+        try {
+            $result = $this->sendRequest($method, $paramsToRequest);
+        } catch (Exception $e) {
+            $message = $this->createExceptionMessage(
+                sprintf('Can\'t add payment to batch for OrderID(ID#%s)', $order->getId()),
+                $e
+            );
+            $this->logErrorAndContinue($message, $e);
+        }
 
         return $result instanceof ResMan;
     }
@@ -343,5 +398,31 @@ class ResManClient implements ClientInterface
         $residentTransactionsXml = SerializerXmlHelper::removeStandartHeaderXml($residentTransactionsXml);
 
         return $residentTransactionsXml;
+    }
+
+    protected function createExceptionMessage($message, $e = null)
+    {
+        $formattedMessage = sprintf('ResMan: %s.', $message);
+        if ($e != null) {
+            $formattedMessage = sprintf(
+                '%s Error message: %s In file: %s By line: %s',
+                $formattedMessage,
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            );
+        }
+
+        return $formattedMessage;
+    }
+
+    /**
+     * @param $message
+     * @param $e
+     */
+    protected function logErrorAndContinue($message, $e)
+    {
+        $this->logger->alert($message); // TODO: replace alert with exception. See RT-1449
+        $this->exceptionCatcher->handleException($e);
     }
 }

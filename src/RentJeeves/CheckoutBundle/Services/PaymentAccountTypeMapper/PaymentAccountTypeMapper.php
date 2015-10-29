@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper;
 
-use RentJeeves\ApiBundle\Forms\Enum\ACHDepositType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as TenantPaymentAccount;
 use RentJeeves\ApiBundle\Forms\PaymentAccountType as ApiPaymentAccount;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\PaymentAccountTypeMapException;
@@ -25,7 +24,9 @@ class PaymentAccountTypeMapper
      */
     public function map(Form $paymentAccountType)
     {
-        if (TenantPaymentAccount::NAME == $paymentAccountType->getName()) {
+        if ($paymentAccountType->getName() &&
+            strpos($paymentAccountType->getName(), TenantPaymentAccount::NAME) === 0
+        ) {
             $paymentAccountData = $this->mapTenantAccountTypeForm($paymentAccountType);
         } elseif (ApiPaymentAccount::NAME == $paymentAccountType->getName()) {
             $paymentAccountData = $this->mapApiAccountTypeForm($paymentAccountType);
@@ -48,7 +49,7 @@ class PaymentAccountTypeMapper
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData->set('account_name', $paymentAccountType->get('PayorName')->getData());
-        } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
+        } else {
             $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
         }
 
@@ -67,7 +68,6 @@ class PaymentAccountTypeMapper
             ->set('card_number', $paymentAccountType->get('CardNumber')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
-            ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData())
             ->set('csc_code', $paymentAccountType->get('VerificationCode')->getData());
 
         return $paymentAccountData;
@@ -82,8 +82,7 @@ class PaymentAccountTypeMapper
         $paymentAccountData
             ->set('account_name', $paymentAccountType->get('PayorName')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
-            ->set('account_number', $paymentAccountType->get('AccountNumber')->getData())
-            ->set('ach_deposit_type', $paymentAccountType->get('ACHDepositType')->getData());
+            ->set('account_number', $paymentAccountType->get('AccountNumber')->getData());
 
         return $paymentAccountData;
     }
@@ -100,13 +99,12 @@ class PaymentAccountTypeMapper
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData
                 ->set('routing_number', $paymentAccountType->get('bank')->get('routing')->getData())
-                ->set('account_number', $paymentAccountType->get('bank')->get('account')->getData())
-                ->set(
-                    'ach_deposit_type',
-                    ACHDepositType::getMapValue(
-                        $paymentAccountType->get('bank')->get('type')->getData()
-                    )
-                );
+                ->set('account_number', $paymentAccountType->get('bank')->get('account')->getData());
+
+            $paymentAccountData->getEntity()->setBankAccountType(
+                $paymentAccountType->get('bank')->get('type')->getData()
+            );
+
         } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
             $expirationDate = $paymentAccountType->get('card')->getData()->getExpiration();
             $paymentAccountData

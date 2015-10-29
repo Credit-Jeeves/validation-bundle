@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\AciImportProfileMap
+fixtures:
+    AciImportProfileMap_1:
+        user: Tenant_1
+    AciImportProfileMap_2:
+        group: RentGroup_6

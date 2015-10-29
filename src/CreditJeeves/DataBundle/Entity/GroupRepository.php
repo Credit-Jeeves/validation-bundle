@@ -7,16 +7,88 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class GroupRepository extends EntityRepository
 {
+    /**
+     *
+     * @param Group $currentGroup
+     * @param mixed $groups
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return Group[]
+     */
+    public function searchGroupsPerContractFilter(
+        Group $currentGroup,
+        $groups,
+        $searchField = '',
+        $searchString = ''
+    ) {
+        if (empty($groups)) {
+            return [];
+        }
+
+        $allowedFieldsToSearch = [
+            'tenant',
+            'tenantA',
+            'email'
+        ];
+
+        if (!in_array($searchField, $allowedFieldsToSearch)) {
+            return [];
+        }
+
+        $groupsId = [];
+        /** @var Group $group */
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+
+        $query = $this->createQueryBuilder('g')
+            ->innerJoin('g.contracts', 'c')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('c.tenant', 't')
+            ->where('g.id IN (:groups)')
+            ->groupBy('c.group')
+            ->andWhere('c.status <> :status')
+            ->andWhere('g.id <> :currentGroup')
+            ->setParameter('currentGroup', $currentGroup->getId())
+            ->setParameter('status', ContractStatus::DELETED)
+            ->setParameter('groups', $groupsId);
+
+        if (!empty($searchField) && !empty($searchString)) {
+            $search = preg_replace('/\s+/', ' ', trim($searchString));
+            $search = explode(' ', $search);
+            switch ($searchField) {
+                case 'tenant':
+                case 'tenantA':
+                    foreach ($search as $item) {
+                        $query->andWhere('CONCAT(t.first_name, t.last_name) LIKE :search')
+                              ->setParameter('search', '%' . $item . '%');
+                    }
+                    break;
+                case 'email':
+                    $query->andWhere('t.email LIKE :search')
+                          ->setParameter('search', '%' . $searchString . '%');
+                    break;
+            }
+        }
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     *
+     * @return Group[]
+     */
     public function getGroupsWithoutDepositAccount(Holding $holding)
     {
-        $query = $this->createQueryBuilder('g');
-        $query->leftJoin('g.depositAccount', 'da');
-        $query->where("g.holding = :holdingId");
-        $query->andWhere("da.id IS NULL");
-        $query->setParameter('holdingId', $holding->getId());
-        $query = $query->getQuery();
-
-        return $query->execute();
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.depositAccounts', 'da')
+            ->where("g.holding = :holdingId")
+            ->andWhere("da.id IS NULL")
+            ->setParameter('holdingId', $holding->getId())
+            ->getQuery()
+            ->execute();
     }
 
     public function getGroupsWithPendingContracts(Holding $holding)
@@ -56,14 +128,30 @@ class GroupRepository extends EntityRepository
      */
     public function getGroupByAccountNumber($accountNumber, Holding $holding)
     {
-        return $this->createQueryBuilder('g')
-            ->join('g.accountNumberMapping', 'd')
+        $groups = $this->createQueryBuilder('g')
+            ->join('g.depositAccounts', 'd')
             ->where('d.accountNumber = :accountNumber')
             ->andWhere('d.holding = :holding')
             ->setParameter('accountNumber', $accountNumber)
             ->setParameter('holding', $holding)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->execute();
+
+        if (count($groups) > 1) {
+            throw new \Exception(
+                sprintf(
+                    'Something wrong with index for accountNumber. Please check data: accountNumber %s holdingId %s',
+                    $accountNumber,
+                    $holding->getId()
+                )
+            );
+        }
+
+        if (empty($groups)) {
+            return null;
+        }
+
+        return reset($groups);
     }
 
     /**

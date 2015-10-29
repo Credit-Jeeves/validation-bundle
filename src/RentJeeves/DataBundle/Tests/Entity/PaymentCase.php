@@ -78,7 +78,7 @@ class PaymentCase extends BaseTestCase
             ->getQuery()
             ->getOneOrNullResult();
         $this->assertNotNull($contract);
-        $this->assertNotNull($payment = $contract->getActivePayment());
+        $this->assertNotNull($payment = $contract->getActiveRentPayment());
         $paymentId = $payment->getId();
         $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
 

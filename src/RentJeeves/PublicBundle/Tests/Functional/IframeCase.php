@@ -2,11 +2,12 @@
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
-use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use DateTime;
@@ -173,10 +174,7 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
-        $this->assertEquals(
-            'property.number.not.exist',
-            $errors->getHtml()
-        );
+        $this->assertEquals('fill.full.address', $errors->getHtml());
         $fillAddress = '150 Amsterdam Avenue, Manhattan, New York, NY 10023';
         $this->fillForm(
             $form,
@@ -273,8 +271,7 @@ class IframeCase extends BaseTestCase
         );
         $form->pressButton('continue');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('table.properties-table').length");
 
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $contract, 'Wrong number of pending');
@@ -310,7 +307,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
             )
         );
-        
+
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
     }
@@ -434,27 +431,33 @@ class IframeCase extends BaseTestCase
         $this->assertFalse($partnerCode->getIsCharged());
         $this->assertEquals('CREDITCOM', $partnerCode->getPartner()->getRequestName());
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $operation = new Operation();
         $contract = new Contract();
         $contract->setPaidTo(new DateTime());
+        /** @var Property $property */
         $property = $em->getRepository('RjDataBundle:Property')
             ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
         $unit = $property->getExistingSingleUnit();
         $contract->setProperty($property);
         $contract->setUnit($unit);
         $contract->setStatus(ContractStatus::PENDING);
+        $contract->setGroup($property->getPropertyGroups()->first());
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
         $operation->setPaidFor($contract->getPaidTo());
         $order->addOperation($operation);
         $order->setUser($user);
-        $order->setStatus(OrderStatus::NEWONE);
-        $em->persist($order);
+        $order->setPaymentType(OrderPaymentType::CASH);
+        $order->setSum(100);
+
+        $this->getContainer()->get('payment_processor.order_status_manager')->setNew($order);
+
+        $this->getEntityManager()->refresh($partnerCode);
+
         $date = new DateTime();
         $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
         $this->assertFalse($partnerCode->getIsCharged());
-        $em->detach($order);
     }
 
     protected function checkResendInvite()
@@ -516,59 +519,5 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $this->checkResendInvite();
-    }
-
-    /**
-     * @test
-     */
-    public function checkHoldingSelectForNew()
-    {
-        $this->load(true);
-        $this->setDefaultSession('selenium2');
-        $doctrine = $this->getContainer()->get('doctrine');
-        $em = $doctrine->getManager();
-
-        $holdingFirst = $em->getRepository('DataBundle:Holding')->findOneBy(
-            array(
-                'name' => 'Rent Holding'
-            )
-        );
-
-        $holdingSecond = $em->getRepository('DataBundle:Holding')->findOneBy(
-            array(
-                'name' => 'Estate Holding'
-            )
-        );
-
-        $this->assertNotNull($holdingFirst);
-        $this->assertNotNull($holdingSecond);
-
-        $link1 = $this->getContainer()->get('router')
-            ->generate(
-                'iframe_new',
-                array(
-                    'id'  => $holdingFirst->getId(),
-                    'type'=> 'holding'
-                )
-            );
-        $link2 = $this->getContainer()->get('router')
-            ->generate(
-                'iframe_new',
-                array(
-                    'id'  => $holdingSecond->getId(),
-                    'type'=> 'holding'
-                )
-            );
-        $link =  substr($this->getUrl(), 0, -1);
-        $link1 = $link.$link1;
-        $link2 = $link.$link2;
-
-        $this->session->visit($link1);
-        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(4, count($thisIsMyRental));
-
-        $this->session->visit($link2);
-        $this->assertNotNull($thisIsMyRental = $this->page->findAll('css', '.thisIsMyRental'));
-        $this->assertEquals(1, count($thisIsMyRental));
     }
 }

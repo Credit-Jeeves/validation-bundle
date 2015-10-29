@@ -1,10 +1,9 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
-use CreditJeeves\DataBundle\Enum\UserType;
+use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -12,6 +11,9 @@ abstract class User
 {
     protected $data = array();
 
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
     protected $session;
@@ -37,7 +39,7 @@ abstract class User
 
     public function isAdmin()
     {
-        return (bool)$this->session->get('observe_admin_id');
+        return (bool) $this->session->get('observe_admin_id');
     }
 
     protected function findUser($nUserId)

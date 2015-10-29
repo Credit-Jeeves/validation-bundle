@@ -1,5 +1,30 @@
 model: RentJeeves\DataBundle\Entity\GroupSettings
 fixtures:
-  setting:
+  setting_1:
     isIntegrated: 1
     group: RentGroup_1
+    passedAch: 0
+  setting_2:
+    isIntegrated: 0
+    group: RentGroup_2
+    passedAch: 0
+  setting_3:
+    isIntegrated: 0
+    group: RentGroup_3
+    passedAch: 0
+  setting_4:
+    isIntegrated: 0
+    group: RentGroup_4
+    passedAch: 0
+  setting_5:
+    isIntegrated: 0
+    group: RentGroup_5
+    feeCC: "0"
+    feeACH: "0"
+    passedAch: 1
+  setting_RentTrackCorp:
+    isIntegrated: 0
+    group: RentTrackCorp
+    feeCC: "0"
+    feeACH: "0"
+    passedAch: 1

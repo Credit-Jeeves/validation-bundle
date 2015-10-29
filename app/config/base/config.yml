@@ -1,16 +1,16 @@
 parameters:
+
     doctrine.dbal.connection.wrapper_class: ~
     translator.class: 'CreditJeeves\CoreBundle\Translation\Translator'
     date_short: 'M j, Y'
     date_full: 'F j, Y'
     email_admins:
-        - darryl@creditjeeves.com
-    experian.logging: false
+        - darryl@renttrack.com
+    experian.logging: true
     login.attempts: 6
     login.delay: 30
 
-    credit_services:
-        credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
+    credit_summary_vendor: transunion #experian # supported values are 'transunion' or 'experian'
 
 simulation:
     entity_name: '\CreditJeeves\DataBundle\Entity\Atb'

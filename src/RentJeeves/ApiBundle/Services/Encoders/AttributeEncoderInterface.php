@@ -33,7 +33,7 @@ interface AttributeEncoderInterface
     /**
      * $sipNotValid default = true
      * @param bool $isSkip
-     * @return $this
+     * @return self
      */
     public function setSkipNotValid($isSkip);
 }

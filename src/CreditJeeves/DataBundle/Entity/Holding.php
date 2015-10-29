@@ -48,4 +48,16 @@ class Holding extends BaseHolding
 
         return $landlords;
     }
+
+    /**
+     * @return bool
+     */
+    public function isAllowedToSendRealTimePayments()
+    {
+        if (!$this->getExternalSettings()) {
+            return false;
+        }
+
+        return $this->getExternalSettings()->isAllowedToSendRealTimePayments();
+    }
 }

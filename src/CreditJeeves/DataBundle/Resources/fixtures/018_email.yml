@@ -86,3 +86,17 @@ fixtures:
         name: rjYardiPaymentAcceptedTurnOn.html
     email_43:
         name: rjYardiPaymentAcceptedTurnOff.html
+    email_44:
+        name: rjLateReportingLandlord.html
+    email_45:
+        name: rjLateReportingTenant.html
+    email_46:
+        name: rjSecondChanceForContract.html
+    email_47:
+        name: rjOrderSending.html
+    email_48:
+        name: rjOrderRefunding.html
+    email_49:
+        name: rjOrderReissued.html
+    email_50:
+        name: rjChurnRecapture.html

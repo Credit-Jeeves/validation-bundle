@@ -2,6 +2,8 @@ model: RentJeeves\DataBundle\Entity\Landlord
 fixtures:
     Landlord_1:
         holding:  rjHolding_1
+        agent_groups:
+          - RentGroup_1
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE
@@ -35,7 +37,7 @@ fixtures:
         is_super_admin: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -57,7 +59,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: en
         has_data: true
@@ -80,7 +82,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture:  'en'
         has_data: false
@@ -103,7 +105,7 @@ fixtures:
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: en
         has_data: true
@@ -130,7 +132,7 @@ fixtures:
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
         type: landlord
-        score_changed_notification: false
+        emailNotification: false
         offer_notification: false
         culture:  %locale%
         has_data: false
@@ -154,7 +156,7 @@ fixtures:
         is_super_admin: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
+        emailNotification: true
         offer_notification: true
         culture: %locale%
         has_data: true
@@ -180,7 +182,7 @@ fixtures:
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
         type: landlord
-        score_changed_notification: false
+        emailNotification: false
         offer_notification: false
         culture:  %locale%
         has_data: false

@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customers;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Bridge\Monolog\Logger;
@@ -51,7 +52,7 @@ class ResidentDataManager
 
     /**
      * @param $externalPropertyId
-     * @return array
+     * @return RtCustomer[]
      */
     public function getResidents($externalPropertyId)
     {
@@ -73,5 +74,47 @@ class ResidentDataManager
 
             return true;
         });
+    }
+
+    /**
+     * @param $externalPropertyId
+     *
+     * @return array
+     */
+    public function getRTServiceTransactionsWithRecurringCharges($externalPropertyId)
+    {
+        $residents = $this->client->getTransactionsForRecurringCharges($externalPropertyId, new \DateTime());
+        $customers = $residents->getProperty()->getRtCustomers();
+
+        $result = [];
+        /** @var RtCustomer $customer */
+        foreach ($customers as $customer) {
+            if (null === $rtTransactions = $customer->getRtServiceTransactions()) {
+                continue;
+            }
+
+            foreach ($rtTransactions->getTransactions() as $transaction) {
+                if (true === $this->hasRecurringCharges($transaction)) {
+                    $result[] = $rtTransactions;
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param Transactions $transactions
+     *
+     * @return bool
+     */
+    protected function hasRecurringCharges(Transactions $transactions)
+    {
+        if ($transactions->getCharge() !== null || $transactions->getConcession() !== null) {
+            return true;
+        }
+
+        return false;
     }
 }

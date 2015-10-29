@@ -94,6 +94,25 @@
                                     {% else %}
                                         {{ contract.status | upper }}
                                     {% endif %}
+                                    {% if contract.hasCustomPayments %}
+                                        {% for payment in contract.customPayments %}
+                                            <div class="no-rent-scheduled-payment">
+                                                <p>${{ payment.amount|number_format(2, '.', ',') }}</p>
+                                                {{
+                                                    'checkout.pay_anything.payment.scheduled.text' |
+                                                    trans({
+                                                        '%payment_date%': payment.scheduled_date,
+                                                        '%pay_for%': payment.pay_for | trans
+                                                    })
+                                                }}
+                                                <a id="pay-anything-cancel-{{ payment.id }}"
+                                                   href="javascript:void(0)"
+                                                   data-bind="click: openPayAnythingCancelPopup.bind($data, {{ payment.id }})">
+                                                    {{ 'checkout.pay_anything.payment.cancel' | trans }}
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 {% endif %}
                             </td>
 
@@ -121,6 +140,9 @@
 </div>
 
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
+{% if allowPayAnything %}
+    {{ render(controller('RjCheckoutBundle:PayAnything:pay')) }}
+{% endif %}
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -135,9 +157,14 @@
                 _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
             }
             {% if isInPaymentWindow %}
-                $('#contract-pay-1').click();
+                if (window.paymentHistoryLoadedCallback) {
+                    window.paymentHistoryLoadedCallback = function () {
+                        $('#contract-pay-1').click();
+                    }
+                } else {
+                    $('#contract-pay-1').click();
+                }
             {% endif %}
         {% endif %}
     });
 </script>
-

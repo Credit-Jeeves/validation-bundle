@@ -15,6 +15,9 @@ class PidKiqInvalidXmlException extends \Exception
     public function setWsdlErrors(array $errors)
     {
         $this->wsdlErrors = $errors;
+        if (count($errors) > 0) {
+            $this->message .= sprintf('Errors: %s', $this->getWsdlErrorsMessages());
+        }
     }
 
     /**
@@ -23,5 +26,21 @@ class PidKiqInvalidXmlException extends \Exception
     public function getWsdlErrors()
     {
         return $this->wsdlErrors;
+    }
+
+    /**
+     * @param bool $asString
+     * @param string $separator
+     * @return array <string>|string
+     */
+    protected function getWsdlErrorsMessages($asString = true, $separator = '')
+    {
+        $messages = [];
+        foreach ($this->getWsdlErrors() as $error) {
+            /** @var \LibXMLError $error */
+            $messages[] = trim($error->message);
+        }
+
+        return $asString ? implode($separator, $messages) : $messages;
     }
 }

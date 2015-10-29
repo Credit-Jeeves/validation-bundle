@@ -2,20 +2,46 @@
 
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityRepository;
 
 class BillingAccountRepository extends EntityRepository
 {
-    public function deactivateAccounts($group)
+    /**
+     * @param Group $group
+     * @param string $paymentProcessor
+     *
+     * @return BillingAccount[]
+     */
+    public function deactivateAccounts(Group $group, $paymentProcessor)
     {
-        $query = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->update()
             ->set('c.isActive', 0)
             ->where('c.group = :group')
             ->andWhere('c.isActive = 1')
+            ->andWhere('c.paymentProcessor = :paymentProcessor')
             ->setParameter('group', $group)
-            ->getQuery();
+            ->setParameter('paymentProcessor', $paymentProcessor)
+            ->getQuery()
+            ->execute();
+    }
 
-        return $query->execute();
+    /**
+     * @todo: After adding replace this function to $repo->findOneBy(['token' => $token]);
+     *
+     * @param string $token
+     *
+     * @return BillingAccount|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneOrNullByToken($token)
+    {
+        return $this->createQueryBuilder('ba')
+            ->where('ba.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

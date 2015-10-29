@@ -133,7 +133,6 @@ class IdentityVerificationController extends Controller
      * This is needed for correct parsing url and get id
      * @RequestParam(
      *     name="answers",
-     *     strict=true,
      *     array=true,
      *     description="Array with answers."
      * )
@@ -158,31 +157,32 @@ class IdentityVerificationController extends Controller
 
         /** @var PidKiqProcessorInterface|PidKiqStateAwareInterface $pidKiqProcessor */
         $pidKiqProcessor = $this->get('pidkiq.processor_factory')->getPidKiqProcessor();
-
-        if (!$pidKiqProcessor->processAnswers($this->prepareAnswer($request->get('answers')))) {
-            throw new BadRequestHttpException($pidKiqProcessor->getMessage());
-        }
+        $pidKiqProcessor->processAnswers($this->prepareAnswers($request->get('answers')));
 
         return $this->get('response_resource.factory')
             ->getResponse($pidKiqProcessor->getPidkiqModel());
     }
 
     /**
+     * [
+     *     ["<question_id>" : "<choice_id>" ],
+     *     ...
+     * ]
      * @param array $answers
      * @return array
      */
-    protected function prepareAnswer(array $answers)
+    protected function prepareAnswers(array $answers)
     {
-        usort($answers, function ($a, $b) {
-            return (int) key($a) - (int) key($b);
+        usort($answers, function ($answer1, $answer2) {
+            return (int) key($answer1) - (int) key($answer2);
         });
 
-        $onlyAnswer = [];
+        $onlyAnswers = [];
 
         foreach ($answers as $answer) {
-            $onlyAnswer[] = reset($answer);
+            $onlyAnswers[] = reset($answer);
         }
 
-        return $onlyAnswer;
+        return $onlyAnswers;
     }
 }

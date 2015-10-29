@@ -27,6 +27,11 @@ parameters:
         username: RTAPI
         password: $RTapi13
 
+    # aci.collect_pay.sftp.login: 'donotcheckin'      # this is set locally on server
+    # aci.collect_pay.sftp.password: 'donotcheckin'   # this is set locally on server
+    # aci.collect_pay.business_id: donotcheckin       # this is set locally on server
+    # aci.pay_anyone.sftp.login: 'donotcheckin'       # this is set locally on server
+    # aci.pay_anyone.sftp.password: 'donotcheckin'    # this is set locally on server
 
     net_connect.precise_id.url: 'https://ss3.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID' #required!
@@ -46,6 +51,8 @@ parameters:
 
     # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
     allow_duplicate_contracts: false
+    # parameter was added for task RT-1668, we can fast allow and disallow feature that show Score Track
+    allow_score_track: false
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
@@ -68,5 +75,5 @@ parameters:
 
     monolog.email_from: systems@renttrack.com
     monolog.alert.email_to: escalations@renttrack.com
-    monolog.emergency.email_to: emergency@renttrack.com
+    monolog.emergency.email_to: emergency-email-alerts@renttrack.pagerduty.com
 

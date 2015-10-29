@@ -24,9 +24,6 @@ class ContractHistory extends Base
         if (isset($data['uncollectedBalance'])) {
             $this->setUncollectedBalance($data['uncollectedBalance']);
         }
-        if (isset($data['balance'])) {
-            $this->setBalance($data['balance']);
-        }
         if (isset($data['integratedBalance'])) {
             $this->setIntegratedBalance($data['integratedBalance']);
         }
@@ -41,6 +38,9 @@ class ContractHistory extends Base
         }
         if (isset($data['finishAt'])) {
             $this->setFinishAt($data['finishAt']);
+        }
+        if (isset($data['paymentAccepted'])) {
+            $this->setPaymentAccepted($data['paymentAccepted']);
         }
     }
 }

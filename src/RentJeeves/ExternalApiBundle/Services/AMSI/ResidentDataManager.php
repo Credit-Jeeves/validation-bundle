@@ -55,15 +55,26 @@ class ResidentDataManager
 
     /**
      * @param string $externalPropertyId
-     * @return array
+     * @param boolean $includeRecurringCharges
+     *
+     * @return Lease[]
+     *
      * @throws \LogicException
      */
-    public function getResidents($externalPropertyId)
+    public function getResidents($externalPropertyId, $includeRecurringCharges = false)
     {
         $this->logger->debug(sprintf('Get AMSI Residents by external property ID:%s', $externalPropertyId));
         $client = $this->getApiClient(SoapClientEnum::AMSI_LEASING);
-        $currentResidents = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_CURRENT);
-        $residentsOnNotice = $client->getPropertyResidents($externalPropertyId, Lease::STATUS_NOTICE);
+        $currentResidents = $client->getPropertyResidents(
+            $externalPropertyId,
+            Lease::STATUS_CURRENT,
+            $includeRecurringCharges
+        );
+        $residentsOnNotice = $client->getPropertyResidents(
+            $externalPropertyId,
+            Lease::STATUS_NOTICE,
+            $includeRecurringCharges
+        );
 
         $leases = array_merge($currentResidents->getLeases(), $residentsOnNotice->getLeases());
 
@@ -88,6 +99,18 @@ class ResidentDataManager
             $this->logger->debug(
                 sprintf('Lease UnitId: %s, Building ID: %s', $lease->getUnitId(), $lease->getBldgId())
             );
+
+            if (!array_key_exists($lookUpKey, $unitsLookup)) {
+                $this->logger->alert(
+                    sprintf(
+                        'AMSI: Resident for UnitId: %s, Building ID: %s found, but unit not found by GetPropertyUnits',
+                        $lease->getUnitId(),
+                        $lease->getBldgId()
+                    )
+                );
+                continue;
+            }
+
             $lease->setUnit($unitsLookup[$lookUpKey]);
         }
         $this->logger->debug('Unit mapping complete.');
@@ -95,6 +118,15 @@ class ResidentDataManager
         return $leases;
     }
 
+    /**
+     * @param string $externalPropertyId
+     *
+     * @return Lease[]
+     */
+    public function getResidentsWithRecurringCharges($externalPropertyId)
+    {
+        return $this->getResidents($externalPropertyId, true);
+    }
     /**
      * @return AMSILeasingClient|AMSILedgerClient
      */

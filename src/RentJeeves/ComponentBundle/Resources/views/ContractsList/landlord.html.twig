@@ -499,7 +499,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'request.payments'|trans }}</span>
@@ -578,6 +578,7 @@
             <div class="fields-box">
               {{ form_widget(form.contract.property) }}
               {{ form_widget(form.contract.unit) }}
+                <img id="unitLoading" src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" style="display: none">
             </div>
           </div>
           <div class="form-row clearfix userInfo">
@@ -601,7 +602,7 @@
                 </div>
             {% endif %}
         </div>
-        
+
         <div class="col">
           <h4 class="clearfix">
             <span>{{'request.payments'|trans}}</span>
@@ -675,6 +676,10 @@
 <div id="contracts-block">
     <div class="landrord-box">
         <div class="title-box clearfix">
+
+            <input type="hidden" id="searchColumn" value="{{ searchColumn }}">
+            <input type="hidden" id="searchText" value="{{ searchText }}">
+
             <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
             <div class="fiter-box">
                 <label>{{'filter.by'|trans}}</label>
@@ -687,13 +692,13 @@
                     <option value="tenant">{{ 'tenant'|trans }}</option>
                 </select>
                 <div id="searchInput" style="display:none;" class="finder-box">
-                    <input 
+                    <input
                         type="text"
                         id="searsh-field"
                         name="searsh-field"
                         data-bind="value: searchText"
                         value="">
-                    <a 
+                    <a
                         href="#"
                         id="delete"
                         class="pie-el"
@@ -725,6 +730,18 @@
                 {% endif %}
             </div>
         </div>
+        <!-- ko if: $root.agentContracts().length > 0  -->
+        <div id="foundMoreContainer" class="information-box pie-el">
+            <span>{{ 'landlord.tenant.found_more'|trans }}</span>
+            <!-- ko foreach: { data: agentContracts() } -->
+                <a href="#" data-bind="
+                        attr: {title: name},
+                        text: name,
+                        click: $parent.changeGroup,
+                        clickBubble: false">
+                </a><span data-bind="visible: $index()+1 < $root.agentContracts().length && $root.agentContracts().length > 1">, </span><!-- /ko -->
+        </div>
+        <!-- /ko -->
         <div class="content-box">
             <div class="properties-table-block table-wrap">
         <div class="table-margin">
@@ -793,7 +810,7 @@
                 </td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
                 <td data-bind="text: phone"></td>
-                <td class="property-box ellipsis-box" 
+                <td class="property-box ellipsis-box"
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                 <!-- ko if: amount != '' -->
                 <td data-bind="text: '$'+amount"></td>
@@ -812,10 +829,10 @@
                     <!-- /ko -->
                     <!-- ko if: 'PENDING' == status -->
                     {% if canInvite %}
-                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#" 
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#"
                     data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     {% else %}
-                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#" 
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#"
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
@@ -838,7 +855,6 @@
       </div>
     </div>
   </div>
-  
   <div class="landrord-box without-top clearfix">
     <div class="legeng-box">
       <ul class="legeng">
@@ -866,7 +882,7 @@
                 <span class="clarification credit-card"><i> </i>{{'credit.card'|trans}}</span>
                 <span class="clarification recurring"><i> </i>{{ 'recurring'|trans }}</span>
                 <span class="clarification csm-icon"><i> </i>
-                    {{'credit.service.member'|trans }}<br><small><em>({{'ach.fee'|trans}})</em></small>
+                    {{'credit.service.member'|trans }}
                 </span>
               </li>
               <li>
@@ -894,5 +910,6 @@
     </ul>
     <!-- /ko -->
     </nav>
+
   </div>
 </div>

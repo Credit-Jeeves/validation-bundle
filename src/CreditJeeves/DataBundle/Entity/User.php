@@ -11,6 +11,7 @@ use RentJeeves\CoreBundle\Services\SocialSecurityNumberFormatter;
 use RentJeeves\DataBundle\Entity\Partner;
 use RentJeeves\DataBundle\Entity\PartnerUserMapping;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
@@ -149,13 +150,13 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return Order | null
+     * @return OrderSubmerchant | null
      */
     public function getLastCompleteOrder()
     {
         $return = null;
         $orders = $this->getOrders();
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         foreach ($orders as $order) {
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 $return = $order;
@@ -177,7 +178,7 @@ abstract class User extends BaseUser
     {
         $orders = array_reverse((array) $this->getOrders()->getIterator());
 
-        /** @var Order $order */
+        /** @var OrderSubmerchant $order */
         foreach ($orders as $order) {
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 /** @var Operation $operation */
@@ -460,6 +461,27 @@ abstract class User extends BaseUser
     {
         if ($this->getAciCollectPayProfile()) {
             return $this->getAciCollectPayProfile()->getProfileId();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $vendor
+     * @return Report
+     * @throws \Exception
+     */
+    public function getLastReportByVendor($vendor)
+    {
+        CreditSummaryVendor::throwsInvalid($vendor);
+
+        switch ($vendor) {
+            case CreditSummaryVendor::TRANSUNION:
+                return $this->getReportsTUSnapshot()->last();
+            case CreditSummaryVendor::EXPERIAN:
+                return $this->getReportsPrequal()->last();
+            default:
+                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $vendor));
         }
     }
 }

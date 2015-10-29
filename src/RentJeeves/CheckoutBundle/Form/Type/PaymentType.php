@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Constraint\DayRange;
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Constraint\StartDateValidator;
 use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorInterface;
 use RentJeeves\CoreBundle\Form\Type\ViewHiddenType;
@@ -13,12 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Callback;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use DateTime;
 
 class PaymentType extends AbstractType
 {
@@ -238,7 +237,9 @@ class PaymentType extends AbstractType
                 'widget'          => 'single_text',
                 'format'          => 'MM/dd/yyyy',
                 'empty_data'      => '',
-                'attr'            => $this->attributes->startDateAttrs(),
+                'attr'            => $this->attributes->startDateAttrs(
+                    StartDateValidator::isPastCutoffTime(new \DateTime(), $this->oneTimeUntilValue)
+                ),
                 'invalid_message' => 'checkout.error.date.valid',
                 'constraints'     => array(
                     new Date(
@@ -369,10 +370,10 @@ class PaymentType extends AbstractType
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
     {
-        $now = new DateTime();
+        $now = new \DateTime();
         $now->setTime(0, 0);
 
-        $payDate = new DateTime($data);
+        $payDate = new \DateTime($data);
         if ($payDate < $now) {
             $validatorContext->addViolationAt('start_date', 'checkout.error.date.is_in_past', array(), null);
         }

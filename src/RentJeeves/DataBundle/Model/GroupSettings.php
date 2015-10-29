@@ -8,6 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TypeDebitFee;
 
 /**
  * @ORM\MappedSuperclass
@@ -137,6 +138,69 @@ abstract class GroupSettings
     protected $closeDate = 31;
 
     /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Serializer\SerializedName("feeCC")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $feeCC;
+
+    /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Serializer\SerializedName("feeACH")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $feeACH;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_passed_ach")
+     *
+     * @Serializer\SerializedName("isPassedACH")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $passedAch = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *     type="boolean",
+     *     name="show_properties_tab",
+     *     options={
+     *         "default":1
+     *      }
+     * )
+     *
+     * @Serializer\Exclude
+     */
+    protected $showPropertiesTab = true;
+
+    /**
+     * @var boolean
+     * @ORM\Column(
+     *     type="boolean",
+     *     name="allow_pay_anything",
+     *     options={
+     *         "default":0
+     *      }
+     * )
+     *
+     * @Serializer\Exclude
+     */
+    protected $allowPayAnything = false;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -155,6 +219,109 @@ abstract class GroupSettings
      * @var DateTime
      */
     protected $updatedAt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="auto_approve_contracts",
+     *      options={
+     *          "default" : 0
+     *      }
+     * )
+     */
+    protected $autoApproveContracts = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="allowed_debit_fee",
+     *      options={
+     *          "default" : 0
+     *      },
+     *     nullable=false
+     * )
+     */
+    protected $allowedDebitFee = false;
+
+    /**
+     * @ORM\Column(
+     *     type="TypeDebitFee",
+     *     options={
+     *         "default"="percentage"
+     *     },
+     *     name="type_debit_fee",
+     *     nullable=false
+     * )
+     * @Serializer\SerializedName("typeFeeDC")
+     * @Serializer\Groups({"payRent"})
+     * @var string
+     */
+    protected $typeDebitFee = TypeDebitFee::PERCENTAGE;
+
+    /**
+     * @ORM\Column(
+     *      name="debit_fee",
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Serializer\SerializedName("feeDC")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $debitFee;
+
+    /**
+     * @param float $feeACH
+     */
+    public function setFeeACH($feeACH)
+    {
+        $this->feeACH = $feeACH;
+    }
+
+    /**
+     * @return double
+     */
+    public function getFeeACH()
+    {
+        return $this->feeACH;
+    }
+
+    /**
+     * @param double $feeCC
+     */
+    public function setFeeCC($feeCC)
+    {
+        $this->feeCC = $feeCC;
+    }
+
+    /**
+     * @return double
+     */
+    public function getFeeCC()
+    {
+        return $this->feeCC;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPassedAch()
+    {
+        return $this->passedAch;
+    }
+
+    /**
+     * @param boolean $passedAch
+     */
+    public function setPassedAch($passedAch)
+    {
+        $this->passedAch = $passedAch;
+    }
 
     /**
      * @param boolean $payBalanceOnly
@@ -338,5 +505,101 @@ abstract class GroupSettings
     public function setIsReportingOff($isReportingOff)
     {
         $this->isReportingOff = $isReportingOff;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowPropertiesTab()
+    {
+        return $this->showPropertiesTab;
+    }
+
+    /**
+     * @param boolean $showPropertiesTab
+     */
+    public function setShowPropertiesTab($showPropertiesTab)
+    {
+        $this->showPropertiesTab = $showPropertiesTab;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowPayAnything()
+    {
+        return $this->allowPayAnything;
+    }
+
+    /**
+     * @param boolean $allowPayAnything
+     */
+    public function setAllowPayAnything($allowPayAnything)
+    {
+        $this->allowPayAnything = !!$allowPayAnything;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoApproveContracts()
+    {
+        return $this->autoApproveContracts;
+    }
+
+    /**
+     * @param boolean $isAutoApproveContracts
+     */
+    public function setAutoApproveContracts($isAutoApproveContracts)
+    {
+        $this->autoApproveContracts = $isAutoApproveContracts;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedDebitFee()
+    {
+        return $this->allowedDebitFee;
+    }
+
+    /**
+     * @param boolean $allowedDebitFee
+     */
+    public function setAllowedDebitFee($allowedDebitFee)
+    {
+        $this->allowedDebitFee = $allowedDebitFee;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeDebitFee()
+    {
+        return $this->typeDebitFee;
+    }
+
+    /**
+     * @param string $typeDebitFee
+     */
+    public function setTypeDebitFee($typeDebitFee)
+    {
+        $this->typeDebitFee = $typeDebitFee;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDebitFee()
+    {
+        return $this->debitFee;
+    }
+
+    /**
+     * @param float $debitFee
+     */
+    public function setDebitFee($debitFee)
+    {
+        $this->debitFee = $debitFee;
     }
 }

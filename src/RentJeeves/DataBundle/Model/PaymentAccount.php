@@ -1,8 +1,11 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant as PaymentAccountHpsMerchantEntity;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,6 +14,7 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
+ * @Serializer\XmlRoot("request")
  */
 abstract class PaymentAccount
 {
@@ -80,7 +84,8 @@ abstract class PaymentAccount
      *      message="checkout.error.payment_type.empty",
      *      groups={
      *          "card",
-     *          "bank"
+     *          "bank",
+     *          "debit_card"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
@@ -96,7 +101,9 @@ abstract class PaymentAccount
      * @Assert\NotBlank(
      *      message="checkout.error.account_nickname.empty",
      *      groups={
-     *          "save"
+     *          "card",
+     *          "bank",
+     *          "debit_card"
      *      }
      * )
      * @Serializer\Groups({"basic", "paymentAccounts"});
@@ -105,23 +112,57 @@ abstract class PaymentAccount
 
     /**
      * @ORM\Column(
-     *      name="token",
-     *      type="string",
-     *      length=255
+     *     name="token",
+     *     type="string",
+     *     length=255
      * )
-     * @Serializer\Groups({"basic"});
      */
     protected $token;
 
     /**
      * @ORM\Column(
-     *      name="cc_expiration",
-     *      type="date",
-     *      nullable=true
+     *     name="cc_expiration",
+     *     type="date",
+     *     nullable=true
      * )
-     * @Serializer\Groups({"paymentAccounts"});
+     * @Serializer\Type("DateTime<'Y-m-d'>");
+     * @Serializer\Groups({"basic", "paymentAccounts"});
      */
     protected $ccExpiration;
+
+    /**
+     * @ORM\Column(
+     *     name="last_four",
+     *     type="string",
+     *     length=4,
+     *     nullable=true
+     * )
+     * @Serializer\Type("string");
+     * @Serializer\Groups({"basic", "paymentAccounts"});
+     */
+    protected $lastFour;
+
+    /**
+     * @ORM\Column(
+     *      name="bank_account_type",
+     *      type="BankAccountType",
+     *      nullable=true
+     * )
+     */
+    protected $bankAccountType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *      type="boolean",
+     *      options={
+     *          "default" : 0
+     *      },
+     *     nullable=false
+     * )
+     */
+    protected $registered = false;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -138,7 +179,6 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Groups({"basic"});
      */
     protected $updatedAt;
 
@@ -185,6 +225,16 @@ abstract class PaymentAccount
     protected $depositAccounts;
 
     /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist", "remove", "merge"}
+     * )
+     * @var ArrayCollection
+     */
+    protected $hpsMerchants;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\UserSettings",
      *     mappedBy="creditTrackPaymentAccount",
@@ -209,29 +259,27 @@ abstract class PaymentAccount
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Transaction",
-     *     mappedBy="paymentAccount"
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="paymentAccount",
+     *      cascade={"persist"}
      * )
-     *
      * @var ArrayCollection
      */
-    protected $transactions;
+    protected $orders;
 
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
-        $this->transactions = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
+        $this->hpsMerchants = new ArrayCollection();
     }
 
     /**
-     * Set Tenant
-     *
-     * @param  \RentJeeves\DataBundle\Entity\Tenant $user
-     * @return PaymentAccount
+     * {@inheritdoc}
      */
-    public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -246,40 +294,6 @@ abstract class PaymentAccount
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Add deposit account
-     *
-     * @param  DepositAccount $depositAccount
-     * @return PaymentAccount
-     */
-    public function addDepositAccount(DepositAccount $depositAccount)
-    {
-        $this->depositAccounts->add($depositAccount);
-
-        return $this;
-    }
-
-    /**
-     * Remove deposit account
-     *
-     * @param DepositAccount $depositAccount
-     */
-    public function removeDepositAccount(DepositAccount $depositAccount)
-    {
-        $this->depositAccounts->removeElement($depositAccount);
-    }
-
-    /**
-     * Get deposit accounts
-     *
-     * @Serializer\Type("ArrayCollection<DepositAccount>")
-     * @return ArrayCollection
-     */
-    public function getDepositAccounts()
-    {
-        return $this->depositAccounts;
     }
 
     /**
@@ -418,6 +432,29 @@ abstract class PaymentAccount
     }
 
     /**
+     * Set ACH Type for bank account only
+     *
+     * @param string $bankAccountType
+     * @see BankAccountType
+     * @return PaymentAccount
+     */
+    public function setBankAccountType($bankAccountType)
+    {
+        $this->bankAccountType = $bankAccountType;
+    }
+
+    /**
+     * Get ACH Type for bank account only
+     *
+     * @return string
+     * @see BankAccountType
+     */
+    public function getBankAccountType()
+    {
+        return $this->bankAccountType;
+    }
+
+    /**
      * Set createdAt
      *
      * @param  \DateTime      $createdAt
@@ -507,14 +544,6 @@ abstract class PaymentAccount
     }
 
     /**
-     * @return ArrayCollection
-     */
-    public function getTransactions()
-    {
-        return $this->transactions;
-    }
-
-    /**
      * Get UserSettings
      *
      * @return UserSettings
@@ -538,5 +567,77 @@ abstract class PaymentAccount
     public function getPaymentProcessor()
     {
         return $this->paymentProcessor;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
+    }
+
+    /**
+     * @return ArrayCollection|PaymentAccountHpsMerchantEntity
+     */
+    public function getHpsMerchants()
+    {
+        return $this->hpsMerchants;
+    }
+
+    /**
+     * @param PaymentAccountHpsMerchantEntity $hpsMerchant
+     */
+    public function addHpsMerchant(PaymentAccountHpsMerchantEntity $hpsMerchant)
+    {
+        $this->hpsMerchants[] = $hpsMerchant;
+    }
+
+    /**
+     * @param PaymentAccountHpsMerchantEntity $hpsMerchant
+     */
+    public function removeHpsMerchant(PaymentAccountHpsMerchantEntity $hpsMerchant)
+    {
+        $this->hpsMerchants->removeElement($hpsMerchant);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRegistered()
+    {
+        return $this->registered;
+    }
+
+    /**
+     * @param boolean $registered
+     */
+    public function setRegistered($registered)
+    {
+        $this->registered = $registered;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastFour()
+    {
+        return $this->lastFour;
+    }
+
+    /**
+     * @param string $lastFour
+     */
+    public function setLastFour($lastFour)
+    {
+        $this->lastFour = $lastFour;
     }
 }

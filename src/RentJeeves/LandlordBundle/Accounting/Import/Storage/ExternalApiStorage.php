@@ -58,7 +58,9 @@ class ExternalApiStorage extends StorageCsv
     public function setImportData(FormInterface $form)
     {
         $property = $form['property']->getData();
-        if ($property instanceof Property) {
+        $importType = $form['importType']->getData();
+
+        if ($property instanceof Property && ImportType::SINGLE_PROPERTY === $importType) {
             $this->setImportPropertyId($property->getId());
             $this->setIsMultipleProperty(false);
             $this->setImportType(ImportType::SINGLE_PROPERTY);
@@ -131,7 +133,6 @@ class ExternalApiStorage extends StorageCsv
         $this->setTextDelimiter(self::TEXT_DELIMITER);
         $this->setDateFormat(self::DATE_FORMAT);
         $this->setPropertyId($this->getImportPropertyId());
-        $this->setIsMultipleProperty(false);
         $mapping = array(
             1 => Mapping::KEY_RESIDENT_ID,
             2 => Mapping::KEY_UNIT,
@@ -161,7 +162,6 @@ class ExternalApiStorage extends StorageCsv
         if (empty($filePath)) {
             $newFileName = uniqid() . '.csv';
             $this->setFilePath($newFileName);
-            $filePath = $this->getFileDirectory().$newFileName;
         }
         $out = fopen($this->getFilePath(), 'a');
         fputcsv($out, $array, self::FIELD_DELIMITER, self::TEXT_DELIMITER);
@@ -179,9 +179,6 @@ class ExternalApiStorage extends StorageCsv
 
     public function clearDataBeforeReview()
     {
-        if ($this->getImportLoaded()) {
-            $this->removeFile();
-        }
         $this->session->remove(self::IMPORT_OFFSET_START);
         $this->session->remove(self::IMPORT_FILE_PATH);
         $this->getImportLoaded(false);

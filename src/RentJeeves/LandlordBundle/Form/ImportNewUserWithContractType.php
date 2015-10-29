@@ -2,10 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,11 +27,12 @@ class ImportNewUserWithContractType extends AbstractType
     protected $translator;
 
     protected $isMultipleProperty;
+
     /**
-     * @param Tenant $tenant
      * @param EntityManager $em
-     * @param bool $token
-     * @param bool $operation
+     * @param Translator $translator
+     * @param Import $import
+     * @param bool $isMultipleProperty
      */
     public function __construct(
         EntityManager $em,

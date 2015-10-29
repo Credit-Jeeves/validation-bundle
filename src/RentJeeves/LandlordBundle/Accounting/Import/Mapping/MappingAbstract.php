@@ -80,6 +80,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_UNIT_ID = 'unit_id';
 
+    const KEY_PROPERTY_ID = 'property_id';
+
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
@@ -325,6 +327,25 @@ abstract class MappingAbstract implements MappingInterface
             }
         }
 
+        $mappedData[self::KEY_EMAIL] = $this->getEmailFromRow($mappedData);
+
         return $mappedData;
+    }
+
+    /**
+     * @param array $row
+     * @return string
+     */
+    protected function getEmailFromRow(array $row)
+    {
+        // set any bogus emails to empty string.
+        $bogusEmailDomains = [ '@example.com', '@none.com', 'none@yahoo.com' ];
+        foreach ($bogusEmailDomains as $bogusDomain) {
+            if (false !== strripos($row[self::KEY_EMAIL], $bogusDomain)) {
+                return '';
+            }
+        }
+
+        return $row[self::KEY_EMAIL];
     }
 }

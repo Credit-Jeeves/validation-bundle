@@ -2,6 +2,18 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="application_fee">
+                <source>Application fee</source>
+                <target>Application Fee</target>
+            </trans-unit>
+            <trans-unit id="rent">
+                <source>Rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="security_deposit">
+                <source>Security deposit</source>
+                <target>Security Deposit</target>
+            </trans-unit>
             <trans-unit id="pay_popup.title">
                 <source>pay_popup.title</source>
                 <target>Pay Rent</target>
@@ -50,6 +62,14 @@
                 <source>checkout.amount</source>
                 <target>Rent</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.amount">
+                <source>checkout.pay_anything.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.payFor">
+                <source>checkout.pay_anything.payFor</source>
+                <target>Pay for</target>
+            </trans-unit>
             <trans-unit id="checkout.error.amount.empty">
                 <source>checkout.error.amount.empty</source>
                 <target>Rent amount is required.</target>
@@ -61,6 +81,14 @@
             <trans-unit id="checkout.error.amount.valid">
                 <source>checkout.error.amount.valid</source>
                 <target>Rent amount should be a valid number.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.amount.pay_anything.invalid">
+                <source>checkout.error.amount.pay_anything.invalid</source>
+                <target>Amount should be a valid number.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.error.payFor.invalid">
+                <source>checkout.pay_anything.error.payFor.invalid</source>
+                <target>Pay for is required field.</target>
             </trans-unit>
             <trans-unit id="checkout.date">
                 <source>checkout.date</source>
@@ -77,6 +105,10 @@
             <trans-unit id="checkout.rent_start.title">
                 <source>checkout.rent_start.title</source>
                 <target>Rent starting in %MONTH%</target>
+            </trans-unit>
+            <trans-unit id="checkout.rent_start.title.non_selected_month">
+                <source>checkout.rent_start.title.non_selected_month</source>
+                <target>this month</target>
             </trans-unit>
             <trans-unit id="checkout.rent_starting.text">
                 <source>checkout.rent_starting.text</source>
@@ -156,6 +188,17 @@
             <trans-unit id="checkout.error.type.empty">
                 <source>checkout.error.type.empty</source>
                 <target>Type is required.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.type.disallow">
+                <source>checkout.error.type.disallow</source>
+                <target>Type "%value%" is disable for this contract.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.type.debit_card.invalid">
+                <source>checkout.error.type.debit_card.invalid</source>
+                <target>
+                    We're sorry, but we could not verify that your card is a Debit card.
+                    Please make your rent payment using the "Credit card" option.
+                </target>
             </trans-unit>
             <trans-unit id="checkout.error.type.invalid">
                 <source>checkout.error.type.invalid</source>
@@ -273,6 +316,10 @@
                 <source>checkout.card</source>
                 <target>Credit Card</target>
             </trans-unit>
+            <trans-unit id="checkout.debit_card">
+                <source>checkout.debit_card</source>
+                <target>Debit Card</target>
+            </trans-unit>
             <trans-unit id="checkout.account_nickname">
                 <source>checkout.account_nickname</source>
                 <target>Account Nickname</target>
@@ -300,6 +347,10 @@
             <trans-unit id="checkout.routing_number.tooltip.title">
                 <source>checkout.routing_number.tooltip.title</source>
                 <target>Where to find your banking numbers:</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.tooltip.title">
+                <source>checkout.type.tooltip.title</source>
+                <target>Your debit card must have a MasterCard or Visa logo.</target>
             </trans-unit>
             <trans-unit id="checkout.account_number">
                 <source>checkout.account_number</source>
@@ -341,6 +392,14 @@
                 <source>checkout.payment.save</source>
                 <target>Save this payment information for later</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.payment.cancel">
+                <source>checkout.pay_anything.payment.cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.payment.scheduled.text">
+                <source>checkout.pay_anything.payment.scheduled.text</source>
+                <target>%pay_for% Scheduled for %payment_date%</target>
+            </trans-unit>
             <trans-unit id="checkout.payment.save.help">
                 <source>checkout.payment.save.help</source>
                 <target>checkout.payment.save.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
@@ -360,6 +419,10 @@
             <trans-unit id="checkout.error.csc.empty">
                 <source>checkout.error.csc.empty</source>
                 <target>CSC is required.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.csc.type">
+                <source>checkout.error.csc.type</source>
+                <target>CSC should be only numbers.</target>
             </trans-unit>
             <trans-unit id="checkout.csc.help">
                 <source>checkout.csc.help</source>
@@ -383,7 +446,15 @@
             </trans-unit>
             <trans-unit id="checkout.fee.card.note.help">
                 <source>checkout.fee.card.note.help-%FEE%</source>
-                <target>You will see an additional fee for %FEE% of your rent amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+                <target>You will see an additional fee for %FEE% of your payment amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.debit_card.note">
+                <source>checkout.fee.debit_card.note-%FEE%</source>
+                <target>NOTE: A %FEE% technology platform fee will be added to debit card payments.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.debit_card.note.help">
+                <source>checkout.fee.debit_card.note.help-%FEE%</source>
+                <target>You will see an additional fee for %FEE% of your payment amount when using a debit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.bank.note">
                 <source>checkout.fee.bank.note-%FEE%</source>
@@ -559,9 +630,33 @@
                 <source>checkout.thankyou_message</source>
                 <target>Thank you. Your rent payment is now set up.</target>
             </trans-unit>
+            <trans-unit id="checkout.pay_anything.thankyou_message">
+                <source>checkout.pay_anything.thankyou_message</source>
+                <target>Thank you. Your %PAY_FOR% payment is now set up.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.fullPayTo">
+                <source>checkout.pay_anything.fullPayTo</source>
+                <target>Creating %PAY_FOR% payment for %FULL_PAY_TO%.</target>
+            </trans-unit>
             <trans-unit id="checkout.one_time.info_message">
                 <source>checkout.one_time.info_message</source>
                 <target>Please allow a few hours for the payment to process. We'll send you an email once it is complete.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.choose_payFor.title">
+                <source>checkout.pay_anything.choose_payFor.title</source>
+                <target>Choose Pay For</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.choose_payFor.text">
+                <source>checkout.pay_anything.choose_payFor.text</source>
+                <target>Please select reason of payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.pay_for.tooltip.title">
+                <source>checkout.pay_anything.pay_for.tooltip.title-%PAY_FOR%</source>
+                <target>Paying %PAY_FOR%</target>
+            </trans-unit>
+            <trans-unit id="checkout.pay_anything.pay_for.tooltip.text">
+                <source>checkout.pay_anything.pay_for.tooltip.text-%PAY_FOR%</source>
+                <target>Only include the %PAY_FOR%.</target>
             </trans-unit>
         </body>
     </file>

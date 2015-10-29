@@ -239,7 +239,13 @@ abstract class NetConnect
             $response = $e->getResponse();
         }
         if (200 != $response->getStatusCode()) {
-            throw new CurlException(sprintf('HTTP code not %d but %d', 200, $response->getStatusCode()));
+            throw new CurlException(
+                sprintf(
+                    'HTTP code not 200 but %d with message from server:%s',
+                    $response->getStatusCode(),
+                    $response->getMessage()
+                )
+            );
         }
         $responseString = $response->getBody(true);
         $this->log($responseString, $logPrefix . '-Response');

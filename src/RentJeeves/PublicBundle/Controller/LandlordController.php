@@ -7,21 +7,12 @@ use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
-use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
-use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
 use RentJeeves\PublicBundle\Form\InviteLandlordType;
 use RentJeeves\PublicBundle\Services\ReminderInvite;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
-use RentJeeves\PublicBundle\Form\LandlordType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use CreditJeeves\DataBundle\Enum\Grouptype;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface as UrlGenerator;
-use Exception;
 
 class LandlordController extends Controller
 {
@@ -52,6 +43,7 @@ class LandlordController extends Controller
 
             // Init DepositAccount before redirecting to dashboard
             $depositAccount = new DepositAccount($landlord->getCurrentGroup());
+            $depositAccount->setHolding($depositAccount->getGroup()->getHolding());
             $em = $this->getDoctrine()->getManager();
             $em->persist($depositAccount);
             $em->flush();
@@ -130,7 +122,6 @@ class LandlordController extends Controller
             'form' => $form->createView(),
         );
     }
-
 
     /**
      * @Route("/landlord/invite/resend/{landlordId}", name="landlord_invite_resend")

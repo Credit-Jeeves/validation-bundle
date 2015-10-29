@@ -2,6 +2,9 @@
 
 namespace RentJeeves\CheckoutBundle\Tests\Unit;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use \RuntimeException;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
@@ -20,7 +23,7 @@ class PaymentAccountCase extends BaseTestCase
      *
      * @return Form
      */
-    protected function createForm($type, $data = null, array $options = array())
+    protected function createForm($type, $data = null, array $options = [])
     {
         return $this->getContainer()->get('form.factory')->create($type, $data, $options);
     }
@@ -30,29 +33,25 @@ class PaymentAccountCase extends BaseTestCase
      */
     public function createToken()
     {
-        $payum = $this->getContainer()->get('payum2');
-        $paymentAccount = new PaymentAccountManager();
-        $paymentAccount->setPayum($payum);
-
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $user = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array('email' => 'tenant11@example.com')
+        $em = $this->getEntityManager();
+        $paymentAccountManager = new PaymentAccountManager(
+            $em,
+            $this->getContainer()->get('payum2'),
+            $this->getContainer()->getParameter('rt_group_code')
         );
-        $group = $em->getRepository('DataBundle:Group')->findOneBy(
-            array(
-                'name'  => 'Test Rent Group',
-            )
-        );
+       
+        $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $paymentAccountType = $this->createForm(new PaymentAccountType($user));
         $view = $paymentAccountType->createView();
-        $testData =  array(
+        $testData =  [
             'name'                              => 'Test payment',
             'PayorName'                         => 'Timothy APPLEGATE',
             'RoutingNumber'                     => '062202574',
-            'AccountNumber'                     => array(
+            'AccountNumber'                     => [
                 'AccountNumberAgain' => '123245678',
                 'AccountNumber'      => '123245678'
-            ),
+            ],
             'ACHDepositType_0'                  => true,
             '_token'                            => $view->children['_token']->vars['value'],
 
@@ -65,25 +64,25 @@ class PaymentAccountCase extends BaseTestCase
             'ExpirationYear'                    => '',
             'is_new_address'                    => false,
             'is_new_address_link'               => '',
-            'address'                           => array(
+            'address'                           => [
                 'street' => '',
                 'city'   => '',
                 'area'   => '',
                 'zip'    => '',
-            ),
+            ],
             'save'                              => 1,
             'id'                                => '',
             'groupId'                           => $group->getId(),
-        );
+        ];
 
         $paymentAccountType->submit($testData);
 
         $paymentAccountType = $this->getContainer()->get("payment_account.type.mapper")->map($paymentAccountType);
+        $paymentAccountType->getEntity()->setUser($user);
         try {
-            $token = $paymentAccount->getToken(
+            $paymentAccountManager->registerPaymentToken(
                 $paymentAccountType,
-                $user,
-                $group
+                $group->getDepositAccount(DepositAccountType::RENT, PaymentProcessor::HEARTLAND)->getMerchantName()
             );
         } catch (RuntimeException $e) {
             //if we go into this place, test must be failed and we must show
@@ -91,6 +90,6 @@ class PaymentAccountCase extends BaseTestCase
             $this->assertTrue(false, $e->getMessage()."_".$e->getCode());
         }
 
-        $this->assertNotEmpty($token);
+        $this->assertNotEmpty($paymentAccountType->getEntity()->getToken());
     }
 }

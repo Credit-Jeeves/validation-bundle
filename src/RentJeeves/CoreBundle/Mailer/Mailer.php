@@ -5,11 +5,14 @@ use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class Mailer extends BaseMailer
 {
@@ -27,7 +30,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -47,10 +50,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string   $isImported
+     * @param string $isImported
      *
      * @return bool
      */
@@ -72,7 +75,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -94,7 +97,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -115,10 +118,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
-     * @param Holding  $holding
+     * @param Tenant $tenant
+     * @param Holding $holding
      * @param Contract $contract
-     * @param string   $paymentType
+     * @param string $paymentType
      *
      * @return bool
      */
@@ -136,7 +139,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -154,8 +157,8 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param float    $amount
-     * @param string   $sTemplate
+     * @param float $amount
+     * @param string $sTemplate
      *
      * @return bool
      */
@@ -186,9 +189,9 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
-     * @param string   $diff
+     * @param string $diff
      *
      * @return bool
      */
@@ -205,7 +208,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array    $tenants
+     * @param array $tenants
      *
      * @return bool
      */
@@ -224,13 +227,14 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendRentReceipt(Order $order)
+    public function sendPaymentReceipt(Order $order)
     {
         $tenant = $order->getUser();
         $history = $order->getCompleteTransaction();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
+
         $vars = [
             'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
@@ -241,6 +245,10 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
+            'paymentProcessor' => $order->getPaymentProcessor(),
+            'type' => $order->getPaymentType(),
+            'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
+            'statementDescriptor' => $this->getStatementDescriptor($order),
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -253,7 +261,7 @@ class Mailer extends BaseMailer
      */
     public function sendRentError(Order $order)
     {
-        $tenant = $order->getContract()->getTenant();
+        $tenant = $order->getUser();
         $fee = $order->getFee();
         $amount = $order->getSum();
         $total = $fee + $amount;
@@ -266,17 +274,17 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
             'error' => $order->getErrorMessage(),
-            'transactionId' => $order->getHeartlandTransactionId(),
+            'transactionId' => $order->getTransactionId(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
-            'orderType' => $order->getType(),
+            'orderType' => $order->getPaymentType(),
         ];
 
         return $this->sendBaseLetter('rjOrderError', $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -311,7 +319,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -335,7 +343,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -359,25 +367,25 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord $landlord
-     * @param Group    $group
+     * @param User $user
+     * @param Group $group
      *
      * @return bool
      */
-    public function merchantNameSetuped(Landlord $landlord, Group $group)
+    public function merchantNameSetuped(User $user, Group $group)
     {
         $vars = [
-            'fullNameLandlord' => $landlord->getFullName(),
+            'fullNameLandlord' => $user->getFullName(),
             'groupName' => $group->getName(),
         ];
 
-        return $this->sendBaseLetter('rjMerchantNameSetuped', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjMerchantNameSetuped', $vars, $user->getEmail(), $user->getCulture());
     }
 
     /**
      * @param Contract $contract
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      *
      * @return bool
      */
@@ -465,6 +473,9 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'rentAmount' => $order->getRentAmount(),
             'otherAmount' => $order->getOtherAmount(),
+            'paymentProcessor' => $order->getPaymentProcessor(),
+            'type' => $order->getPaymentType(),
+            'statementDescriptor' => $this->getStatementDescriptor($order),
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -472,7 +483,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param Payment  $payment
+     * @param Payment $payment
      *
      * @return bool
      */
@@ -491,10 +502,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param array     $groups
+     * @param Landlord $landlord
+     * @param array $groups
      * @param \DateTime $date
-     * @param string    $resend
+     * @param string $resend
      *
      * @return bool
      */
@@ -516,10 +527,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord  $landlord
-     * @param Group     $group
+     * @param Landlord $landlord
+     * @param Group $group
      * @param \DateTime $date
-     * @param array     $batches
+     * @param array $batches
      * @param $returns
      * @param $resend
      *
@@ -537,7 +548,7 @@ class Mailer extends BaseMailer
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
             'groupName' => $group->getName(),
-            'accountNumber' => $group->getAccountNumber(),
+            'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
             'batches' => $batches,
             'returns' => $returns,
             'resend' => $resend,
@@ -568,14 +579,17 @@ class Mailer extends BaseMailer
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
                 'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
                     $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
-                'number' => $order->getHeartlandTransactionId(),
+                'number' => $order->getTransactionId(),
+                'paymentProcessor' => $order->getPaymentProcessor(),
+                'type' => $order->getPaymentType(),
+                'statementDescriptor' => $this->getStatementDescriptor($order),
             ]
         );
     }
 
     /**
      * @param Landlord $landlord
-     * @param array    $data
+     * @param array $data
      *
      * @return bool
      */
@@ -628,6 +642,187 @@ class Mailer extends BaseMailer
             ['TenantName' => $tenant->getFullName()],
             $tenant->getEmail(),
             $tenant->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param Contract[] $contracts
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToLandlord(Landlord $landlord, array $contracts, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingLandlord',
+            [
+                'landlordName' => $landlord->getFullName(),
+                'contracts' => $contracts,
+                'month' => $month,
+            ],
+            $landlord->getEmail(),
+            $landlord->getCulture()
+        );
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param string $month
+     *
+     * @return bool
+     */
+    public function sendLateReportingReviewEmailToTenant(Tenant $tenant, $month)
+    {
+        return $this->sendBaseLetter(
+            $template = 'rjLateReportingTenant',
+            [
+                'tenantName' => $tenant->getFullName(),
+                'month' => $month,
+            ],
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderSendingNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+        $group = $order->getContract()->getGroup();
+        $mailingAddress = sprintf(
+            '%s, %s, %s, %s',
+            $group->getStreetAddress1(),
+            $group->getCity(),
+            $group->getState(),
+            $group->getZip()
+        );
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'groupName' => $order->getGroupName(),
+            'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
+            'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
+            'mailingAddress' => $mailingAddress,
+            'mailingAddressName' => $group->getMailingAddressName(),
+        ];
+
+        return $this->sendBaseLetter('rjOrderSending', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderRefundingNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'totalAmount' => $order->getFee() + $order->getSum(),
+            'rentalAddress' => $order->getContract()->getRentAddress(),
+            'paymentAcctName' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getName() : '',
+        ];
+
+        return $this->sendBaseLetter('rjOrderRefunding', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     *
+     * @return bool
+     */
+    public function sendOrderReissuedNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'totalAmount' => $order->getFee() + $order->getSum(),
+            'rentalAddress' => $order->getContract()->getRentAddress(),
+        ];
+
+        return $this->sendBaseLetter('rjOrderReissued', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getStatementDescriptor(Order $order)
+    {
+        $statementDescriptorPrefix = $order->getPaymentProcessor() == PaymentProcessor::HEARTLAND ? 'RENTTRK' : 'ORC';
+        $statementDescriptor = $order->getContract() ? $order->getContract()->getGroup()->getStatementDescriptor() : '';
+
+        return sprintf('%s*%s', $statementDescriptorPrefix, $statementDescriptor);
+    }
+
+    /**
+     * @param Contract $contract
+     *
+     * @return bool
+     */
+    public function sendSecondChanceForContract(Contract $contract)
+    {
+        $params = [
+            'FNAME' => $contract->getTenant()->getFirstName(),
+            'LANDLORDGR' => $contract->getGroup()->getName(),
+            'INVITECODE' => $contract->getTenant()->getInviteCode(),
+            'FEEACH' => $contract->getGroupSettings()->getFeeACH(),
+            'FEECC' => $contract->getGroupSettings()->getFeeCC(),
+        ];
+        if (null !== $contract->getFinishAt()) {
+            $date = new \DateTime();
+            $interval = date_diff($date, $contract->getFinishAt());
+            $params['MONTHSLEFT'] = $interval->format('%y') * 12 + $interval->format('%m');
+        } else {
+            $params['MONTHSLEFT'] = 0;
+        }
+
+        return $this->sendBaseLetter(
+            $template = 'rjSecondChanceForContract',
+            $params,
+            $contract->getTenant()->getEmail(),
+            $contract->getTenant()->getCulture()
+        );
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return bool
+     */
+    public function sendChurnRecaptureForOrder(Order $order)
+    {
+        $isReporting = false;
+        if ($order->getContract()->getReportToExperian() || $order->getContract()->getReportToTransUnion()) {
+            $isReporting = true;
+        }
+
+        $surveyUrl = $this->container->getParameter('mailer.survey_url');
+        $contract = $order->getContract();
+        $leaseEnd = $contract->getFinishAt() === null ? false : $contract->getFinishAt()->format('Y-m-d');
+
+        $params = [
+            'FNAME' => $order->getUser()->getFirstName(),
+            'LAST_PAYMENT_DATE' => $order->getCreatedAt()->format('Y-m-d'),
+            'LAST_PAYMENT_AMOUNT' => $order->getSum(),
+            'LEASE_END' => $leaseEnd,
+            'REPORTING' => $isReporting,
+            'SURVEY_URL' => $surveyUrl,
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjChurnRecapture',
+            $params,
+            $order->getUser()->getEmail(),
+            $order->getUser()->getCulture()
         );
     }
 }

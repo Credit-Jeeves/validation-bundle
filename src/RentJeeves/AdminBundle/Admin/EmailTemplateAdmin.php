@@ -50,23 +50,33 @@ class EmailTemplateAdmin extends BaseAdmin
 
         $formMapper
             ->with('To email (only test)')
-            ->add('translationProxies_testEmailTo', 'email', [
-                'label' => 'Email to',
-                'required' => false,
-                'property_path' => sprintf('translationProxies[%s].testEmailTo', $this->locales[0]),
-            ])
+                ->add('translationProxies_testEmailTo', 'email', [
+                    'label' => 'Email to',
+                    'required' => false,
+                    'property_path' => sprintf('translationProxies[%s].testEmailTo', $this->locales[0]),
+                ])
             ->end()
             ->with('Test variables')
-            ->add('translationProxies_testVariables', 'textarea', [
-                'label' => 'Variables',
-                'required' => false,
-                'property_path' => sprintf('translationProxies[%s].testVariables', $this->locales[0]),
-                'attr' => [
-                    'title' => 'You can use the variables to change design:
-                    logoName, partnerName, partnerAddress, loginUrl, isPoweredBy'
-                ]
-            ])
-            ->end();
+                ->add('translationProxies_testVariables', 'textarea', [
+                    'label' => 'Variables',
+                    'required' => false,
+                    'property_path' => sprintf('translationProxies[%s].testVariables', $this->locales[0]),
+                    'attr' => [
+                        'title' => 'You can use the variables to change design:
+                        logoName, partnerName, partnerAddress, loginUrl, isPoweredBy'
+                    ]
+                ])
+            ->end()
+            ->with('Mandrill Template')
+                ->add('translationProxies_mandrillSlug', 'text', [
+                    'label' => 'Mandrill Slug ',
+                    'required' => false,
+                    'property_path' => sprintf('translationProxies[%s].mandrillSlug', $this->locales[0]),
+                    'attr' => [
+                        'title' => 'Mandrill template name'
+                    ]
+                ])
+        ;
     }
 
     /**

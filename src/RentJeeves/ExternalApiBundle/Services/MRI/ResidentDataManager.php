@@ -2,11 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ExternalApiBundle\Services\MRI\MRIClient;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Bridge\Monolog\Logger;
@@ -29,6 +27,11 @@ class ResidentDataManager
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $nextPageLink;
+
+    /**
      * @InjectParams({
      *     "client" = @Inject("mri.client"),
      *     "logger" = @Inject("logger")
@@ -45,20 +48,106 @@ class ResidentDataManager
      */
     public function setSettings(SettingsInterface $settings)
     {
-        $this->logger->debug(sprintf("Setup MRI settings ID:%s", $settings->getId()));
+        $this->logger->debug(sprintf('Setup MRI settings ID:%s', $settings->getId()));
         $this->settings = $settings;
         $this->client->setSettings($settings);
     }
 
     /**
-     * @param $externalPropertyId
+     * @return string
+     */
+    public function getNextPageLink()
+    {
+        return $this->nextPageLink;
+    }
+
+    /**
+     * @param string $nextPageLink
+     */
+    protected function setNextPageLink($nextPageLink)
+    {
+        $this->nextPageLink = $nextPageLink;
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return array
+     */
+    public function getResidentsByNextPageLink($nextPageLink)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents by page:%s', $nextPageLink));
+        $mriResponse = $this->client->getResidentTransactionsByNextPageLink($nextPageLink);
+
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactionsByNextPageLink');
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $externalPropertyId
      * @return array
      */
     public function getResidents($externalPropertyId)
     {
-        $this->logger->debug(sprintf("Get MRI Residents by external property ID:%s", $externalPropertyId));
+        $this->logger->debug(sprintf('Get MRI Residents by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
 
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactions');
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
         return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $nextPageLink
+     * @return array
+     */
+    public function getResidentsRentRollByNextPageLink($nextPageLink)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents RentRoll by page:%s', $nextPageLink));
+        $mriResponse = $this->client->getResidentialRentRollByNextPageLink($nextPageLink);
+
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRollByNextPageLink');
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @return array
+     */
+    public function getResidentsRentRoll($externalPropertyId)
+    {
+        $this->logger->debug(sprintf('Get MRI Residents RentRoll by external property ID:%s', $externalPropertyId));
+        $mriResponse = $this->client->getResidentialRentRoll($externalPropertyId);
+
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRoll');
+
+        $this->setNextPageLink($mriResponse->getNextPageLink());
+
+        return $mriResponse->getValues();
+    }
+
+    /**
+     *
+     * Throw an exception if the MRI client returns a false (which indicates a failure)
+     *
+     * TODO: this really should be thrown by the client itself and caught at the controller/console-command level
+     *
+     * @param mixed $mriResponse
+     * @param string $externalMethodName name of client method just called
+     *
+     * @throws \RuntimeException if $mriResponse is false which indicates a failure
+     */
+    protected function assertSuccessfulResponse($mriResponse, $externalMethodName)
+    {
+        if ($mriResponse === false) {
+            throw new \RuntimeException(sprintf('MRI Client call failed to %s.', $externalMethodName));
+        }
     }
 }

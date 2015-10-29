@@ -15,9 +15,9 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Exception;
 
 /**
  * @DI\Service("api.contract.processor")
@@ -75,16 +75,31 @@ class ContractProcessor
         $this->propertyProcess = $propertyProcess;
     }
 
+    /**
+     * @param Form $contractForm
+     * @param Tenant $tenant
+     *
+     * @throws \Exception
+     *
+     * @return Contract
+     */
     public function process(Form $contractForm, Tenant $tenant)
     {
         if ($contractForm->has('unit_url') && $unit = $contractForm->get('unit_url')->getData()) {
-            return $this->processWithExistUnit($unit, $tenant, $contractForm->getData());
-
+            $contract = $this->processWithExistUnit($unit, $tenant, $contractForm->getData());
         } elseif ($contractForm->has('new_unit') && $newUnitForm = $contractForm->get('new_unit')) {
-            return $this->processWithNewUnit($newUnitForm, $tenant, $contractForm->getData());
+            $contract = $this->processWithNewUnit($newUnitForm, $tenant, $contractForm->getData());
+        } else {
+            throw new \Exception('Contract can\'t be processed.');
         }
 
-        throw new Exception('Contract can\'t be processed.');
+        if ($contract->getGroupSettings()->isAutoApproveContracts() === true) {
+            $contract->setStatus(ContractStatus::APPROVED);
+
+            $this->em->flush($contract);
+        }
+
+        return $contract;
     }
 
     public function processWithExistUnit(Unit $unit, Tenant $tenant, Contract $contract)
@@ -98,7 +113,7 @@ class ContractProcessor
 
         foreach ($group->getGroupAgents() as $landlord) {
             if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                throw new Exception('Email can\'t be send. Please contact with administrator.');
+                throw new \Exception('Email can\'t be send. Please contact with administrator.');
             }
         }
 
@@ -175,7 +190,7 @@ class ContractProcessor
 
         foreach ($contracts as $contract) {
             if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                throw new Exception('Email can\'t be send. Please contact with administrator.');
+                throw new \Exception('Email can\'t be send. Please contact with administrator.');
             }
         }
 

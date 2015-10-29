@@ -1,6 +1,9 @@
 <?php
 namespace CreditJeeves\DataBundle\Traits;
 
+/**
+ * @TODO: remove
+ */
 trait AddressTrait
 {
     public function getAddress()
@@ -47,6 +50,7 @@ trait AddressTrait
         if ($area = $this->getArea()) {
             $result[] = $area;
         }
+
         return implode(', ', $result).' '.$this->getZip();
     }
 }

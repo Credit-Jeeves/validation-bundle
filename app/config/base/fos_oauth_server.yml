@@ -8,3 +8,4 @@ fos_oauth_server:
         user_provider: user.user_provider
         options:
             enforce_redirect: false
+            refresh_token_lifetime: 946080000 # 30 Years

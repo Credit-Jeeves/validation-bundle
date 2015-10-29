@@ -1,21 +1,30 @@
-# It moved here because #RT-407
+imports:
+    - { resource: address_lookup_services.yml }
 
 parameters:
-    data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
+    data.event_listener.group_settings_listener.class: RentJeeves\DataBundle\EventListener\GroupSettingsListener
     data.event_listener.import_summary.class: RentJeeves\DataBundle\EventListener\ImportSummaryListener
     kernel.listener.command_dispatch.exception.class: RentJeeves\CoreBundle\EventListener\ConsoleExceptionListener
     kernel.listener.command_dispatch.terminate.class: RentJeeves\CoreBundle\EventListener\ConsoleErrorListener
+    rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
-    data.event_listener.order:
-        class: "%data.event_listener.order.class%"
-        tags:
-            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
-            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
+    property.process:
+        class: RentJeeves\CoreBundle\Services\PropertyProcess
         arguments:
-            - "@service_container"
-            - "@logger"
+            - @doctrine.orm.default_entity_manager
+            - @google
+            - @address_lookup_service
+            - @fp_badaboom.exception_catcher
+            - @logger
+
+    data.event_listener.group_settings_listener:
+        class: "%data.event_listener.group_settings_listener.class%"
+        tags:
+            - { name: doctrine.event_listener, event: postLoad, method: postLoad }
+        arguments:
+            - "%payment_card_fee%"
+            - "%payment_bank_fee%"
     data.event_listener.import_summary:
         class: "%data.event_listener.import_summary.class%"
         tags:
@@ -32,3 +41,56 @@ services:
             logger: "@logger"
         tags:
             - { name: kernel.event_listener, event: console.terminate }
+
+    rental_report.factory:
+        class: '%rental_report.factory.class%'
+        arguments:
+            em: "@doctrine.orm.default_entity_manager"
+            logger: "@logger"
+            propertyManagement: "%property_management%"
+            
+    jms_serializer.array_date_time.handler:
+        class: RentJeeves\CoreBundle\Handler\DateHandler
+        tags:
+            - { name: jms_serializer.subscribing_handler }
+            
+    jms_serializer.csv_pipe_serialization_visitor:
+        class: RentJeeves\CoreBundle\Visitor\CsvSerializationVisitor
+        arguments:
+            - '|'
+            - '"'
+        tags:
+            - { name: jms_serializer.serialization_visitor, format: csv_pipe }
+
+    merchant_account.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - RentJeeves\DataBundle\Entity\MerchantAccountMigration
+
+    aci_profiles_mapper:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper
+        public: false
+        arguments:
+            - %aci.collect_pay.business_id%
+            - @merchant_account.repository
+
+    aci_profiles_exporter:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvExporter
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @aci_profiles_mapper
+            - @jms_serializer
+            - @validator
+
+    aci_enrollment_file_deserializer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer
+        public: false
+
+    aci_profiles_importer:
+        class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvImporter
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @aci_enrollment_file_deserializer
+            - @validator

@@ -70,6 +70,7 @@ class DepositAccountCase extends BaseTestCase
         $depositAccount->setMerchantName('My First merchantName');
         $depositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         $depositAccount->setGroup($landord->getCurrentGroup());
+        $depositAccount->setHolding($depositAccount->getGroup()->getHolding());
 
         $em->persist($depositAccount);
         $em->flush();

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\Tests\Traits;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -27,14 +28,17 @@ trait ContractAvailableTrait
             return $em->getRepository('RjDataBundle:Contract')->findOneBy(
                 array(
                     'rent'    => 999999.99,
-                    'balance' => 9999.89
                 )
             );
         }
         $contract = new Contract();
         $contract->setRent(999999.99);
-        $contract->setBalance(9999.89);
         $contract->setStartAt($startAt);
+
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->find(24);
+
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
         $contract->setFinishAt($finishAt);
 
         /** @var $tenant Tenant */
@@ -49,7 +53,8 @@ trait ContractAvailableTrait
         /** @var $unit Unit */
         $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
             [
-                'name'  => '1-a'
+                'name'  => '1-a',
+                'group' => $group
             ]
         );
 

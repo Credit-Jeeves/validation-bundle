@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -28,7 +30,7 @@ class YardiSettingsType extends Base
             'checkbox',
             [
                 'error_bubbling'    => true,
-                'label'             => 'yardi.sync_balance.label',
+                'label'             => 'common.sync_balance.label',
                 'required'          => false,
             ]
         );
@@ -41,6 +43,23 @@ class YardiSettingsType extends Base
                 'required'          => false,
             ]
         );
+
+        $builder->add(
+            'synchronizationStrategy',
+            'choice',
+            [
+                'error_bubbling'    => true,
+                'choices'           => array_map(
+                    'strtoupper',
+                    array_change_key_case(
+                        SynchronizationStrategy::all(),
+                        CASE_LOWER
+                    )
+                ),
+                'label'             => 'yardi.label.synchronization_strategy',
+            ]
+        );
+
         $builder->add(
             'paymentTypeACH',
             'choice',
@@ -89,6 +108,16 @@ class YardiSettingsType extends Base
                 'error_bubbling'    => true,
                 'label'             => 'common.payment_type_cc.notes',
             )
+        );
+
+        $builder->add(
+            'postMonthNode',
+            'choice',
+            [
+                'error_bubbling'    => true,
+                'choices'           => YardiPostMonthOption::cachedTitles(),
+                'label'             => 'yardi.label.post_month_node',
+            ]
         );
     }
 

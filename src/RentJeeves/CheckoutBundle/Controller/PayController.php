@@ -3,8 +3,8 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorMobile;
@@ -17,8 +17,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
-use JMS\Serializer\SerializationContext;
-use Exception;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -28,12 +26,12 @@ class PayController extends Controller
 {
     use FormErrors;
     use Traits\PaymentProcess;
-    use Traits\AccountAssociate;
 
     protected function createPaymentForm(Request $request, $mobile = false)
     {
 
         $contractId = $request->get('contract_id');
+        /** @var Contract $contract */
         $contract = $this->getDoctrine()
             ->getManager()
             ->getRepository('RjDataBundle:Contract')
@@ -74,8 +72,7 @@ class PayController extends Controller
                 $this->getDoctrine()->getManager(),
                 $contract->getGroup()->getGroupSettings()->getOpenDate(),
                 $contract->getGroup()->getGroupSettings()->getCloseDate(),
-                $attributes,
-                $this->get('translator')
+                $attributes
             );
         } else {
             $dueDays = $contract->getSettings()->getDueDays();
@@ -110,90 +107,28 @@ class PayController extends Controller
             return $this->renderErrors($paymentType);
         }
 
+        /** @var Payment $paymentEntity */
+        $paymentEntity = $paymentType->getData();
+
+        $contractId = $request->get('contract_id');
+        /** @var Contract $contract */
+        $contract = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('RjDataBundle:Contract')
+            ->find($contractId);
+
+        if (!$paymentEntity->getId() && $activePayment = $contract->getActiveRentPayment()) {
+            $this->get('logger')->alert('Trying to create duplicate payment for contract #' . $contractId);
+
+            return new JsonResponse([
+                'success' => true,
+                'payment_id' => $activePayment->getId(),
+            ]);
+        }
+
         return new JsonResponse(
             array(
                 'success' => true
-            )
-        );
-    }
-
-    /**
-     * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
-     * @Method({"POST"})
-     */
-    public function sourceExistingAction(Request $request)
-    {
-        $formType = new PaymentAccountType($this->getUser());
-        $formData = $this->getRequest()->get($formType->getName());
-
-        $paymentAccountId = $formData['id'];
-        $groupId = $formData['groupId'];
-
-        $em = $this->getDoctrine()->getManager();
-        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
-        $group = $em->getRepository('DataBundle:Group')->find($groupId);
-
-        // ensure group id is associated with payment account
-        try {
-            $this->ensureAccountAssociation($paymentAccount, $group);
-        } catch (Exception $e) {
-            return new JsonResponse(
-                array(
-                    $formType->getName() => array(
-                        '_globals' => explode('|', $e->getMessage())
-                    )
-                )
-            );
-        }
-
-        return new JsonResponse(
-            array('success' => true)
-        );
-    }
-
-    /**
-     * @Route("/source", name="checkout_pay_source", options={"expose"=true})
-     * @Method({"POST"})
-     */
-    public function sourceAction(Request $request)
-    {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
-        $paymentAccountType->handleRequest($this->get('request'));
-        if (!$paymentAccountType->isValid()) {
-            return $this->renderErrors($paymentAccountType);
-        }
-
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        /** @var Contract $contract */
-        $contract = $em
-            ->getRepository('RjDataBundle:Contract')
-            ->find($paymentAccountType->get('contractId')->getData());
-
-        try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $contract);
-        } catch (Exception $e) {
-            return new JsonResponse(
-                array(
-                    $paymentAccountType->getName() => array(
-                        '_globals' => explode('|', $e->getMessage())
-                    )
-                )
-            );
-        }
-
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'paymentAccount' => $this->get('jms_serializer')->serialize(
-                    $paymentAccountEntity,
-                    'array',
-                    SerializationContext::create()->setGroups(array('basic'))
-                ),
-                'newAddress' => $this->hasNewAddress($paymentAccountType) ?
-                    $this->get('jms_serializer')->serialize(
-                        $paymentAccountEntity->getAddress(),
-                        'array'
-                    ) : null
             )
         );
     }
@@ -229,6 +164,9 @@ class PayController extends Controller
     /**
      * @Route("/exec", name="checkout_pay_exec", options={"expose"=true})
      * @Method({"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ErrorException
      */
     public function execAction(Request $request)
     {

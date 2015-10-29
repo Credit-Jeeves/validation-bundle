@@ -1,9 +1,242 @@
 parameters:
     payment_account.heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager
+    payment_processor.aci.collect_pay.report_loader.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader
+    payment_processor.aci.pay_anyone.report_loader.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReportLoader
+    payment.charge_heartland.class: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ChargeHeartland
+    payment.pay_heartland: RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PayHeartland
+    payment_processor.aci.pay_anyone.check_sender.class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender
 
 services:
+    payment.terminal:
+        class: RentJeeves\CheckoutBundle\Payment\Terminal
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+            - @logger
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
+    payment.pay_rent:
+        class: RentJeeves\CheckoutBundle\Payment\PayRent
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+            - @logger
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
+    payment.pay_credit_track:
+        class: RentJeeves\CheckoutBundle\Payment\PayCreditTrack
+        arguments:
+            - @payment_processor.order_creation_manager
+            - @payment_processor.order_status_manager
+            - @doctrine.orm.default_entity_manager
+            - %credit_summary_vendor%
+        calls:
+            - [setFactory, ["@payment_processor.factory"]]
+
     payment.account.heartland:
         class: "%payment_account.heartland.class%"
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - %rt_group_code%
+
+    payment_processor.report_synchronizer:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Report\ReportSynchronizer
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @payment_processor.order_status_manager
+
+    payment_processor.aci.pgp_decoder:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Encoder\AciPgpDecoder
+        public: false
+        arguments:
+            - %aci.pgp_key_path%
+
+    payment.charge_heartland:
+        class: "%payment.charge_heartland.class%"
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - @payment.heartland.payment_details_mapper
+
+    payment.pay_heartland:
+        class: "%payment.pay_heartland%"
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payum2
+            - @payment.heartland.payment_details_mapper
+
+    # ACI collect pay
+    payment_processor.aci.collect_pay.report_loader:
+        class: %payment_processor.aci.collect_pay.report_loader.class%
+        public: false
+        arguments:
+            - @payment_processor.aci.collect_pay.files_downloader
+            - @payment_processor.aci.pgp_decoder
+            - @payment_processor.aci.collect_pay.report_archiver
+            - @payment_processor.aci.collect_pay.lockbox_parser
+            - @logger
+
+    payment_processor.aci.collect_pay.files_downloader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader
+        public: false
+        arguments:
+            - %aci.collect_pay.sftp.host%
+            - %aci.collect_pay.sftp.port%
+            - %aci.collect_pay.sftp.login%
+            - %aci.collect_pay.sftp.password%
+            - %aci.collect_pay.report_path%
+            - @logger
+            - @sftp_client
+
+    payment_processor.aci.collect_pay.lockbox_parser:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\Report\LockboxParser
+        public: false
+        arguments:
+            - @logger
+
+    payment_processor.aci.collect_pay.report_archiver:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver
+        public: false
+        arguments:
+            - %aci.collect_pay.report_path%
+            - @logger
+
+    payment_processor.aci.collect_pay.billing_account_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
+    payment_processor.aci.collect_pay.enrollment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
         calls:
-            - [setPayum, ["@payum2"]]
-            - [setDefaultMerchantName, ["%rt_merchant_name%"]]
+            - [setDefaultBusinessId, ["%aci.collect_pay.business_id%"]]
+
+    payment_processor.aci.collect_pay.funding_account_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\FundingAccountManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+
+    payment_processor.aci.collect_pay.payment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\PaymentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+        calls:
+            - [setDefaultBusinessId, ["%aci.collect_pay.business_id%"]]
+
+    payment_processor.aci.pay_anyone.payment_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager
+        public: false
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @payum
+            - @logger
+        calls:
+            - [setConfig, ["%aci.pay_anyone.default_achAccount%"]]
+
+    payment_processor.aci.pay_anyone.report_loader:
+        class: %payment_processor.aci.pay_anyone.report_loader.class%
+        public: false
+        arguments:
+            - @payment_processor.aci.pay_anyone.files_downloader
+            - @payment_processor.aci.pgp_decoder
+            - @payment_processor.aci.pay_anyone.report_archiver
+            - @payment_processor.aci.pay_anyone.response_parser
+            - @payment_processor.aci.pay_anyone.adjustment_parser
+            - @logger
+
+    payment_processor.aci.pay_anyone.files_downloader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader
+        public: false
+        arguments:
+            - %aci.pay_anyone.sftp.host%
+            - %aci.pay_anyone.sftp.port%
+            - %aci.pay_anyone.sftp.login%
+            - %aci.pay_anyone.sftp.password%
+            - %aci.pay_anyone.report_path%
+            - @logger
+            - @sftp_client
+
+    payment_processor.aci.pay_anyone.adjustment_parser:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\AdjustmentParser
+        public: false
+        arguments:
+            - @serializer
+            - @logger
+
+    payment_processor.aci.pay_anyone.response_parser:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\Parser\ResponseParser
+        public: false
+        arguments:
+            - @serializer
+            - @logger
+
+    payment_processor.aci.pay_anyone.report_archiver:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\AciReportArchiver
+        public: false
+        arguments:
+            - %aci.pay_anyone.report_path%
+            - @logger
+
+    payment_processor.aci.pay_anyone.check_sender:
+        class: %payment_processor.aci.pay_anyone.check_sender.class%
+        arguments:
+            - @payment_processor.aci_pay_anyone
+            - @logger
+
+    payment_processor.order_status_manager:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManager
+        calls:
+            - [setManagers, ["@payment_processor.order_status_manager.submerchant", "@payment_processor.order_status_manager.pay_direct"]]
+
+    payment_processor.order_status_manager.submerchant:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSubmerchantStatusManager
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @project.mailer
+
+    payment_processor.order_status_manager.pay_direct:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @project.mailer
+            - @payment_processor.aci.pay_anyone.check_sender
+
+
+    payment_processor.order_creation_manager:
+        class: RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderCreationManager\OrderCreationManager
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @checkout.paid_for
+            - %rt_group_code%
+            - %credittrack_payment_per_month%
+
+    payment.amount_limit:
+        class: RentJeeves\CheckoutBundle\Services\PaymentAmountLimit
+        arguments:
+            - %dod_limit_max_payment%
+            - @logger

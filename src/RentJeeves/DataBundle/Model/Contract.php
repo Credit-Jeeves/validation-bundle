@@ -59,7 +59,8 @@ abstract class Contract
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      */
     protected $group;
@@ -174,21 +175,6 @@ abstract class Contract
      * @Gedmo\Versioned
      */
     protected $uncollectedBalance;
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     * @Gedmo\Versioned
-     */
-    protected $balance = 0.00;
 
     /**
      * @ORM\Column(
@@ -391,19 +377,6 @@ abstract class Contract
      * )
      */
     protected $externalLeaseId;
-
-    /**
-     * @var AciCollectPayContractBilling
-     *
-     * @ORM\OneToOne(
-     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayContractBilling",
-     *      mappedBy="contract",
-     *      cascade={"all"},
-     *      orphanRemoval=true,
-     *      fetch="EAGER"
-     * )
-     */
-    protected $aciCollectPayContractBilling;
 
     public function __construct()
     {
@@ -639,22 +612,6 @@ abstract class Contract
     }
 
     /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
      * @param float $integratedBalance
      */
     public function setIntegratedBalance($integratedBalance)
@@ -756,9 +713,6 @@ abstract class Contract
     public function setStartAt($startAt)
     {
         $this->startAt = $startAt;
-        if ($this->getDueDate() == null && ($this->startAt instanceof \DateTime)) {
-            $this->setDueDate($this->startAt->format('j'));
-        }
 
         return $this;
     }
@@ -986,21 +940,5 @@ abstract class Contract
     public function getTransUnionStartAt()
     {
         return $this->transUnionStartAt;
-    }
-
-    /**
-     * @param AciCollectPayContractBilling $aciCollectPayContractBilling
-     */
-    public function setAciCollectPayContractBilling(AciCollectPayContractBilling $aciCollectPayContractBilling)
-    {
-        $this->aciCollectPayContractBilling = $aciCollectPayContractBilling;
-    }
-
-    /**
-     * @return AciCollectPayContractBilling
-     */
-    public function getAciCollectPayContractBilling()
-    {
-        return $this->aciCollectPayContractBilling;
     }
 }

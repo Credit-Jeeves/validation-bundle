@@ -4,16 +4,20 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\AciCollectPaySettings;
+use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
+use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Entity\DepositAccount;
-use RentJeeves\DataBundle\Entity\GroupAccountNumberMapping;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -25,7 +29,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentAccounts", "AdminProperty"});
+     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "LandlordTenants"});
      */
     protected $id;
 
@@ -60,7 +64,8 @@ abstract class Group
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="groups"
+     *     inversedBy="groups",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",
@@ -119,7 +124,9 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string")
-     * @Serializer\Groups({"AdminProperty"});
+     * @Serializer\Groups({"AdminProperty", "LandlordTenants"});
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $name;
 
@@ -160,6 +167,8 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $street_address_1;
 
@@ -170,16 +179,22 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $city;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=7)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string", nullable=true, length=15)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $zip;
 
@@ -334,7 +349,7 @@ abstract class Group
     protected $importSummaries;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"},
@@ -342,9 +357,9 @@ abstract class Group
      *     fetch="EAGER"
      * )
      *
-     * @var DepositAccount
+     * @var ArrayCollection
      */
-    protected $depositAccount;
+    protected $depositAccounts;
 
     /**
      * @ORM\OneToMany(
@@ -371,20 +386,21 @@ abstract class Group
      *     cascade={"persist", "remove", "merge"},
      *     fetch="EAGER"
      * )
+     * @Assert\Valid
      */
     protected $groupSettings;
 
     /**
-     * @var AciCollectPaySettings
+     * @var AciCollectPayGroupProfile
      *
      * @ORM\OneToOne(
-     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPaySettings",
+     *      targetEntity="RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile",
      *      mappedBy="group",
      *      cascade={"all"},
      *      orphanRemoval=true
      * )
      */
-    protected $aciCollectPaySettings;
+    protected $aciCollectPayProfile;
 
     /**
      * @ORM\OneToMany(
@@ -401,25 +417,51 @@ abstract class Group
      *     name="statement_descriptor",
      *     nullable=true
      * )
-    * @Assert\Length(
-     *     max = 14,
-     *     maxMessage="error.statement_descriptor.too_long"
-     * )
      */
     protected $statementDescriptor;
 
     /**
-     * @ORM\OneToOne(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\GroupAccountNumberMapping",
-     *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true,
-     *     fetch="EAGER"
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="mailing_address_name",
+     *      type="string",
+     *      nullable=true
      * )
-     * @Assert\Valid
-     * @var GroupAccountNumberMapping
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
      */
-    protected $accountNumberMapping;
+    protected $mailingAddressName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="order_algorithm",
+     *      type="OrderAlgorithmType",
+     *      nullable=false
+     * )
+     */
+    protected $orderAlgorithm = OrderAlgorithmType::SUBMERCHANT;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\AciImportProfileMap",
+     *     mappedBy="group"
+     * )
+     *
+     * @var AciImportProfileMap
+     */
+    protected $aciImportProfileMap;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", name="external_group_id", nullable=true)
+     *
+     * @Assert\NotBlank(groups={"landlordImport"})
+     */
+    protected $externalGroupId;
 
     public function __construct()
     {
@@ -438,6 +480,43 @@ abstract class Group
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->disableCreditCard = false;
+        $this->depositAccounts = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderAlgorithm()
+    {
+        return $this->orderAlgorithm;
+    }
+
+    /**
+     * @param string $orderAlgorithm
+     */
+    public function setOrderAlgorithm($orderAlgorithm)
+    {
+        if (!OrderAlgorithmType::isValid($orderAlgorithm)) {
+            OrderAlgorithmType::throwsInvalid($orderAlgorithm);
+        }
+
+        $this->orderAlgorithm = $orderAlgorithm;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailingAddressName()
+    {
+        return $this->mailingAddressName;
+    }
+
+    /**
+     * @param string $mailingAddressName
+     */
+    public function setMailingAddressName($mailingAddressName)
+    {
+        $this->mailingAddressName = $mailingAddressName;
     }
 
     /**
@@ -478,22 +557,6 @@ abstract class Group
     public function getGroupSettings()
     {
         return $this->groupSettings;
-    }
-
-    /**
-     * @param AciCollectPaySettings $aciCollectPaySettings
-     */
-    public function setAciCollectPaySettings(AciCollectPaySettings $aciCollectPaySettings)
-    {
-        $this->aciCollectPaySettings = $aciCollectPaySettings;
-    }
-
-    /**
-     * @return AciCollectPaySettings
-     */
-    public function getAciCollectPaySettings()
-    {
-        return $this->aciCollectPaySettings;
     }
 
     /**
@@ -678,7 +741,7 @@ abstract class Group
      * Set description
      *
      * @param  string $description
-     * @return GroupP
+     * @return Group
      */
     public function setDescription($description)
     {
@@ -1182,21 +1245,61 @@ abstract class Group
         return $this->contracts;
     }
 
-    public function setDepositAccount($account)
+    /**
+     * @param $account
+     */
+    public function addDepositAccount($account)
     {
-        $this->depositAccount = $account;
-
-        return $this;
+        $this->depositAccounts->add($account);
     }
 
     /**
-     * Get DepositAccount
-     *
-     * @return DepositAccount
+     * @return DepositAccount|null
      */
-    public function getDepositAccount()
+    public function getRentDepositAccountForCurrentPaymentProcessor()
     {
-        return $this->depositAccount;
+        /** @var DepositAccount $depositAccount */
+        foreach ($this->depositAccounts as $depositAccount) {
+            if ($depositAccount->getType() === DepositAccountType::RENT &&
+                $depositAccount->getPaymentProcessor() === $this->getGroupSettings()->getPaymentProcessor()
+            ) {
+                return $depositAccount;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $type
+     * @param string $paymentProcessor
+     *
+     * @return null|DepositAccount
+     */
+    public function getDepositAccount($type, $paymentProcessor)
+    {
+        if (false === DepositAccountType::isValid($type)) {
+            throw new \LogicException(sprintf('%s is not valid DepositAccountType', $type));
+        }
+        if (false === PaymentProcessor::isValid($paymentProcessor)) {
+            throw new \LogicException(sprintf('%s is not valid PaymentProcessor', $paymentProcessor));
+        }
+        /** @var DepositAccount $depositAccount */
+        foreach ($this->depositAccounts as $depositAccount) {
+            if ($depositAccount->getType() === $type && $depositAccount->getPaymentProcessor() === $paymentProcessor) {
+                return $depositAccount;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return ArrayCollection|DepositAccount[]
+     */
+    public function getDepositAccounts()
+    {
+        return $this->depositAccounts;
     }
 
     /**
@@ -1219,7 +1322,7 @@ abstract class Group
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|BillingAccount[]
      */
     public function getBillingAccounts()
     {
@@ -1280,7 +1383,7 @@ abstract class Group
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Landlord[]
      */
     public function getGroupAgents()
     {
@@ -1320,22 +1423,6 @@ abstract class Group
     }
 
     /**
-     * @return GroupAccountNumberMapping
-     */
-    public function getAccountNumberMapping()
-    {
-        return $this->accountNumberMapping;
-    }
-
-    /**
-     * @param GroupAccountNumberMapping $accountNumberMapping
-     */
-    public function setAccountNumberMapping(GroupAccountNumberMapping $accountNumberMapping)
-    {
-        $this->accountNumberMapping = $accountNumberMapping;
-    }
-
-    /**
      * @return mixed
      */
     public function isDisableCreditCard()
@@ -1349,5 +1436,69 @@ abstract class Group
     public function setDisableCreditCard($disableCreditCard)
     {
         $this->disableCreditCard = $disableCreditCard;
+    }
+
+    /**
+     * @return AciCollectPayGroupProfile
+     */
+    public function getAciCollectPayProfile()
+    {
+        return $this->aciCollectPayProfile;
+    }
+
+    /**
+     * @param AciCollectPayGroupProfile $aciCollectPayProfile
+     */
+    public function setAciCollectPayProfile($aciCollectPayProfile)
+    {
+        $this->aciCollectPayProfile = $aciCollectPayProfile;
+    }
+
+    /**
+     * @return AciImportProfileMap
+     */
+    public function getAciImportProfileMap()
+    {
+        return $this->aciImportProfileMap;
+    }
+
+    /**
+     * @param AciImportProfileMap $aciImportProfileMap
+     */
+    public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
+    {
+        $this->aciImportProfileMap = $aciImportProfileMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalGroupId()
+    {
+        return $this->externalGroupId;
+    }
+
+    /**
+     * @param string $externalGroupId
+     */
+    public function setExternalGroupId($externalGroupId)
+    {
+        $this->externalGroupId = $externalGroupId;
+    }
+
+    /**
+     * @Assert\True(message = "error.group.required_fields_for_paydirect", groups={"holding"})
+     */
+    public function isMailingAddressNotEmptyForPayDirect()
+    {
+        if ($this->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+            (empty($this->mailingAddressName) || empty($this->city) || empty($this->state) || empty($this->zip) ||
+                empty($this->street_address_1)
+            )
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

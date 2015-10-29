@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
 class Value
 {
@@ -135,7 +136,7 @@ class Value
     protected $leaseMonthToMonth;
 
     /**
-     * @Serializer\SerializedName("PayAllowed")
+     * @Serializer\SerializedName("BlockEPayments")
      * @Serializer\Type("string")
      * @Serializer\Groups({"MRI-Response"})
      */
@@ -175,6 +176,75 @@ class Value
      * @Serializer\Groups({"MRI-Response"})
      */
     protected $occupyDate;
+
+    /**
+     * @Serializer\SerializedName("BuildingAddress")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $buildingAddress;
+
+    /**
+     * @Serializer\SerializedName("CurrentCharges")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\CurrentCharges")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $currentCharges;
+
+    /**
+     * @Serializer\SerializedName("Residents")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Model\MRI\Residents")
+     * @Serializer\Groups({"MRI-Response"})
+     */
+    protected $residents;
+
+    /**
+     * @return Residents Residents
+     */
+    public function getResidents()
+    {
+        return $this->residents;
+    }
+
+    /**
+     * @param Residents $residents
+     */
+    public function setResidents(Residents $residents)
+    {
+        $this->residents = $residents;
+    }
+
+    /**
+     * @return CurrentCharges
+     */
+    public function getCurrentCharges()
+    {
+        return $this->currentCharges;
+    }
+
+    /**
+     * @param CurrentCharges $currentCharges
+     */
+    public function setCurrentCharges(CurrentCharges $currentCharges)
+    {
+        $this->currentCharges = $currentCharges;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildingAddress()
+    {
+        return $this->buildingAddress;
+    }
+
+    /**
+     * @param string $buildingAddress
+     */
+    public function setBuildingAddress($buildingAddress)
+    {
+        $this->buildingAddress = $buildingAddress;
+    }
 
     /**
      * @return string
@@ -586,5 +656,32 @@ class Value
     public function setZipCode($zipCode)
     {
         $this->zipCode = $zipCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getPropertyId(),
+            $this->getBuildingId(),
+            $this->getUnitId()
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function getPaymentAccepted()
+    {
+        $payNotAllowed = trim(strtolower($this->getPayAllowed()));
+
+        if ($payNotAllowed === 'y') {
+            return PaymentAccepted::DO_NOT_ACCEPT;
+        }
+
+        return PaymentAccepted::ANY;
     }
 }

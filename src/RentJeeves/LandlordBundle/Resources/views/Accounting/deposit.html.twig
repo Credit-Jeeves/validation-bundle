@@ -1,0 +1,143 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+    <div class="sub-menu">
+        {{ knp_menu_render('LandlordBundle:Builder:accountingMenu', { 'template': '::menu.html.twig' }) }}
+    </div>
+    <div class="container-content">
+
+        <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
+            <div class="title-box clearfix">
+                <h2 data-bind="text: '{{'accounting.menu.batched_deposits'|trans}} (' + $root.total() + ')'"></h2>
+                {% if showFilter %}
+                    <div class="fiter-box">
+                        <div id="depositTypeSelect" class="finder-box">
+                            <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
+                                <option value='' data-bind="click: loadData()">- {{'select.status.all'|trans}} -</option>
+                                <option value='bank' data-bind="click: loadData('bank')">{{'filter.group_by.deposit.echeck'|trans}}</option>
+                                <option value='card' data-bind="click: loadData('card')">{{'filter.group_by.deposit.credit-card'|trans}}</option>
+                            </select>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="content-box">
+                <div class="properties-table-block table-wrap">
+                    <div class="table-margin">
+                        <table class="properties-table">
+                            <thead>
+                                <tr class="properties-th">
+                                    <th class="pie-el column-order-status">
+                                        <span class="sort" id="status">{{ 'filter.status'|trans }}</span>
+                                    </th>
+                                    <th class="pie-el column-order-date">
+                                        <span class="sort" id="date-initiated">{{ 'date.initiated'|trans }}</span>
+                                    </th>
+                                    <th class="pie-el column-order-date">
+                                        <span class="sort" id="batch_transaction">{{ 'deposits.batch_or_transaction'|trans }}</span>
+                                    </th>
+                                    <th class="pie-el column-order-address">
+                                        <span class="sort" id="property">{{ 'deposits.deposit_info'|trans }}</span>
+                                    </th>
+                                    <th class="pie-el column-order-amount">
+                                        <span class="sort" id="sum">{{ 'amount'|trans }}</span>
+                                    </th>
+                                    <th class="pie-el column-order-type">
+                                        <span>{{ 'deposits.deposit_type'|trans }}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="payments-block-tbody" data-bind="foreach: deposits">
+                                <tr data-bind="css: $root.toggledZebraCss(batchNumber(), $index(), true)">
+                                    <td>{{ 'payments.deposit'|trans }}</td>
+                                    <td data-bind="text: depositDate"></td>
+                                    <td data-bind="text: batchNumber"></td>
+                                    <td>
+                                        <span data-bind="text: $root.depositTitle($data)"></span>
+                                        <a data-bind="click: $root.togglePayments">
+                                            <span data-bind="attr: {id: 'title-show-' + batchNumber()}">{{ 'payments.show'|trans }}</span>
+                                            <span data-bind="attr: {id: 'title-hide-' + batchNumber()}" style="display: none;">{{ 'payments.hide'|trans }}</span>
+                                        </a>
+                                    </td>
+                                    <td><span data-bind="text: orderAmount" class="deposit-amount"></span></td>
+                                    <td><span data-bind="text: $root.getTitle(depositType())"></span></td>
+                                </tr>
+
+                                <!-- ko foreach: orders -->
+                                <tr data-bind="css: $root.toggledZebraCss($parent.batchNumber(), $parentContext.$index(), false), visible: false">
+                                    <td data-bind="attr: {'class': 'actions-status '+style()}">
+                                        <span data-bind="text: $root.getOrderStatusText($data), attr: {'title' : errorMessage()}" style="cursor: pointer"></span>
+                                    </td>
+
+                                    <td data-bind="text: $parent.depositDate"></td>
+
+                                    <td data-bind="text: transactionId"></td>
+                                    <td>
+                                        <span data-bind="text: address"></span>
+                                        |
+                                        <span data-bind="text: tenant"></span>
+                                    </td>
+                                    <td data-bind="text: amount"></td>
+                                    <td data-bind="text: depositType"></td>
+                                </tr>
+                                <!-- /ko -->
+
+                            </tbody>
+                        </table>
+                        <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" id="processPayment" class="processPayment" data-bind="visible: isLoading">
+                    </div>
+                </div>
+            </div>
+            <div class="clearboth"></div>
+            <br />
+
+            {% include 'RjCoreBundle::paymentsLegend.html.twig' %}
+
+            <nav class="pagination-box" data-bind="visible: pages().length > 0">
+                <ul data-bind="foreach: pages()[0]">
+                    <li data-bind="visible: $data == $root.current()"><span data-bind="text: $data"></span></li>
+                    <li data-bind="visible: $data != $root.current()"><a href="" data-bind="click: $root.goToPage, text: $data"></a></li>
+                </ul>
+            </nav>
+            <div class="clearboth"></div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var viewModel = new BatchedDepositsViewModel();
+            ko.applyBindings(viewModel);
+
+            $('#depositTypeStatus').linkselect("destroy");
+            $('#depositTypeStatus').linkselect({
+                change: function (li, value, text) {
+                    viewModel.filter(value);
+                    viewModel.loadData();
+                }
+            });
+
+            viewModel.loadData();
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/submenu.css'
+        '@LandlordBundle/Resources/public/css/home.page.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts  '@LandlordBundle/Resources/public/js/BatchedDeposit/BatchedDeposit.js'
+        '@LandlordBundle/Resources/public/js/BatchedDeposit/BatchedDepositsMapping.js'
+        '@LandlordBundle/Resources/public/js/BatchedDeposit/BatchedDepositsViewModel.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

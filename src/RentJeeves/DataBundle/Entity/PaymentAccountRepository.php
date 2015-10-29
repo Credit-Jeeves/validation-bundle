@@ -5,7 +5,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\CoreBundle\Traits\DateCommon;
-use RentJeeves\TenantBundle\Model\CreditTrack;
+use Doctrine\ORM\Query\Expr;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
 class PaymentAccountRepository extends EntityRepository
 {
@@ -53,6 +55,84 @@ class PaymentAccountRepository extends EntityRepository
             $em->persist($jobs[] = $job);
         }
         $em->flush();
+
         return $jobs;
+    }
+
+    /**
+     * @todo: After adding replace this function to $repo->findOneBy(['token' => $token]);
+     *
+     * @param string $token
+     *
+     * @return PaymentAccount|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneOrNullByToken($token)
+    {
+        return $this->createQueryBuilder('pa')
+            ->where('pa.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @return PaymentAccount[]
+     */
+    public function getActivePaymentAccountsForTenant(Tenant $tenant)
+    {
+        return $this->createQueryBuilder('pa')
+            ->innerJoin('pa.user', 'u')
+            ->innerJoin('u.contracts', 'c')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs', Expr\Join::WITH, 'gs.paymentProcessor = pa.paymentProcessor')
+            ->where('pa.user = :tenant')
+            ->andWhere('c.status != :statusDeleted')
+            ->andWhere('c.status != :statusFinished')
+            ->setParameters([
+                'tenant' => $tenant,
+                'statusDeleted' => ContractStatus::DELETED,
+                'statusFinished' => ContractStatus::FINISHED,
+            ])
+            ->groupBy('pa.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @return PaymentAccount[]
+     */
+    public function getPaymentAccountsForTenantByContract(Tenant $tenant, Contract $contract)
+    {
+        $paymentProcessor = $contract->getGroupSettings()->getPaymentProcessor();
+        $isDisabledCreditCard = $contract->getGroup()->isDisableCreditCard();
+        $isAllowDebitCard = $contract->getGroupSettings()->isAllowedDebitFee();
+
+        $query = $this->createQueryBuilder('pa')
+            ->innerJoin('pa.user', 'u')
+            ->where('pa.user = :tenant')
+            ->andWhere('pa.paymentProcessor = :paymentProcessor')
+            ->setParameters([
+                'tenant' => $tenant,
+                'paymentProcessor' => $paymentProcessor
+            ]);
+
+        if ($isDisabledCreditCard) {
+            $query
+                ->andWhere('pa.type != :card')
+                ->andWhere('pa.type != :debit_card')
+                ->setParameter('card', PaymentAccountType::CARD)
+                ->setParameter('debit_card', PaymentAccountType::DEBIT_CARD);
+        } elseif (!$isAllowDebitCard) {
+            $query
+                ->andWhere('pa.type != :debit_card')
+                ->setParameter('debit_card', PaymentAccountType::DEBIT_CARD);
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

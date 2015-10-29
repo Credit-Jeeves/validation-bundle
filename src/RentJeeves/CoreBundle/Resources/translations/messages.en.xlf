@@ -14,6 +14,10 @@
                 <source>email_rj.creditjeeves.team</source>
                 <target>The %partnerName% Team</target>
             </trans-unit>
+            <trans-unit id="error.summary_error.must_be_unique_md5RowContent">
+                <source>error.summary_error.must_be_unique_md5RowContent</source>
+                <target>The "md5RowContent" field should be unique per "importSummary" field.</target>
+            </trans-unit>
             <trans-unit id="rj.footer.title">
                 <source>rj.footer.title</source>
                 <target>RentTrack, at your service.</target>
@@ -21,6 +25,13 @@
             <trans-unit id="import.onlyException">
                 <source>import.onlyException</source>
                 <target><![CDATA[Only Review New Tenants & Exceptions.]]></target>
+            </trans-unit>
+            <trans-unit id="alert.changing_payment_account">
+                <source>alert.changing_payment_account</source>
+                <target>
+                        NOTICE: RentTrack is making improvements!!
+                        Changing payment account details is temporally disabled. We are sorry for the inconvenience.
+                </target>
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
@@ -37,6 +48,14 @@
             <trans-unit id="rj.footer.about_us">
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
+            </trans-unit>
+            <trans-unit id="yardi.label.synchronization_strategy">
+                <source>yardi.label.synchronization_strategy</source>
+                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
+            </trans-unit>
+            <trans-unit id="yardi.label.post_month_node">
+                <source>yardi.label.post_month_node</source>
+                <target>Post Month Node</target>
             </trans-unit>
             <trans-unit id="import.error.empty_group">
                 <source>import.error.empty_group</source>
@@ -281,7 +300,7 @@
             </trans-unit>
             <trans-unit id="verify.email.text2">
                 <source>verify.email.text2</source>
-                <target>We have also invited your landlord to sign up. We'll let you know when they do, and when 
+                <target>We have also invited your landlord to sign up. We'll let you know when they do, and when
                   you can set up your rent payment.</target>
             </trans-unit>
             <trans-unit id="verify.email.text3">
@@ -311,6 +330,10 @@
             <trans-unit id="this.is.my.rental">
                 <source>this.is.my.rental</source>
                 <target>This is My Rental</target>
+            </trans-unit>
+            <trans-unit id="unassigned.unit">
+                <source>unassigned.unit</source>
+                <target>Unassigned</target>
             </trans-unit>
             <trans-unit id="add.new">
                 <source>add.new</source>
@@ -440,7 +463,7 @@
             </trans-unit>
             <trans-unit id="remove.property.description">
                 <source>remove.property.description</source>
-                <target>Are you sure you want to remove this property? Any payments 
+                <target>Are you sure you want to remove this property? Any payments
                     scheduled for this property will be cancelled.
                 </target>
             </trans-unit>
@@ -469,7 +492,7 @@
                 <target><![CDATA[
                         <p>This information is used to help tenants find you in the RentTrack system.</p>
                         <p>If this is a standalone property, please check "This is a Single Property with no Units".</p>
-                        <p> 
+                        <p>
                           You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
                         </p>]]>
                 </target>
@@ -713,12 +736,6 @@
                 <source>credit.service.member</source>
                 <target>
                   Credit Service Member
-                </target>
-            </trans-unit>
-           <trans-unit id="ach.fee">
-                <source>ach.fee</source>
-                <target>
-                  Unit Fee Waived
                 </target>
             </trans-unit>
            <trans-unit id="invite.tenant">
@@ -1013,7 +1030,7 @@
                 <source>payment.account.new</source>
                 <target>New account</target>
             </trans-unit>
-            
+
             <trans-unit id="reporting.start">
                 <source>reporting.start</source>
                 <target>Start Reporting</target>
@@ -1022,7 +1039,7 @@
                 <source>reporting.stop</source>
                 <target>Stop Reporting</target>
             </trans-unit>
-            
+
             <trans-unit id="select.status">
                 <source>select.status</source>
                 <target>Select Status</target>
@@ -1065,7 +1082,11 @@
             </trans-unit>
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
-                <target>Make a Payment</target>
+                <target>Pay Rent</target>
+            </trans-unit>
+            <trans-unit id="contract.pay_anything">
+                <source>contract.pay_anything</source>
+                <target>Pay Something Else</target>
             </trans-unit>
             <trans-unit id="contract.paid.cash">
                 <source>contract.paid.cash</source>
@@ -1085,7 +1106,7 @@
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
-                <target>Edit Payment</target>
+                <target>Edit Rent Payment</target>
             </trans-unit>
             <trans-unit id="contract.pay.source">
                 <source>contract.pay.source</source>
@@ -1271,7 +1292,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack">
                 <source>popup.invite.tenant.credittrack</source>
-                <target>CreditTrack</target>
+                <target>ScoreTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -1284,10 +1305,6 @@
             <trans-unit id="popup.tenant.get.credit.score">
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
-            </trans-unit>
-            <trans-unit id="popup.tenant.view.experian">
-                <source>popup.tenant.view.experian</source>
-                <target>View Your Experian Credit Report</target>
             </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
@@ -1313,6 +1330,10 @@
                 <source>popup.tenant.build.credit.history</source>
                 <target>Build Credit History</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.credit_profile_and_analysis_updates">
+                <source>popup.tenant.credit_profile_and_analysis_updates</source>
+                <target>Credit Profile &amp; Analysis Updates</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
                 <target>Build Credit History</target>
@@ -1324,10 +1345,6 @@
             <trans-unit id="popup.tenant.safeguards">
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
-            </trans-unit>
-            <trans-unit id="popup.tenant.prequalified.offers">
-                <source>popup.tenant.prequalified.offers</source>
-                <target>Pre-Qualified Credit Offers</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>
@@ -1571,7 +1588,7 @@
             </trans-unit>
             <trans-unit id="contract.status.invite.text">
                 <source>contract.status.invite.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
@@ -1591,11 +1608,11 @@
             </trans-unit>
             <trans-unit id="contract.status.current.text">
                 <source>contract.status.current.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved.text">
                 <source>contract.status.approved.text</source>
-                <target>No Payment Scheduled</target>
+                <target>No Rent Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.one_time.text">
                 <source>contract.status.one_time.text</source>
@@ -1693,6 +1710,18 @@
                 <source>order.status.text.pending</source>
                 <target>PROCESSING</target>
             </trans-unit>
+            <trans-unit id="order.status.text.sending">
+                <source>order.status.text.sending</source>
+                <target>SENDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.refunding">
+                <source>order.status.text.refunding</source>
+                <target>REFUNDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.reissued">
+                <source>order.status.text.reissued</source>
+                <target>REISSUED</target>
+            </trans-unit>
             <trans-unit id="current_payment_sources.title">
                 <source>current_payment_sources.title</source>
                 <target>Current Payment Sources</target>
@@ -1704,10 +1733,6 @@
             <trans-unit id="expiration">
                 <source>expiration</source>
                 <target>Expiration</target>
-            </trans-unit>
-            <trans-unit id="payment_account_bank">
-                <source>payment_account_bank</source>
-                <target>Checking</target>
             </trans-unit>
             <trans-unit id="payment_account_card">
                 <source>payment_account_card</source>
@@ -1757,12 +1782,12 @@
                 <source>order.resident</source>
                 <target>Resident</target>
             </trans-unit>
-            <trans-unit id="order.type.heartland_card">
-                <source>order.type.heartland_card</source>
+            <trans-unit id="order.type.card">
+                <source>order.type.card</source>
                 <target>CC</target>
             </trans-unit>
-            <trans-unit id="order.type.heartland_bank">
-                <source>order.type.heartland_bank</source>
+            <trans-unit id="order.type.bank">
+                <source>order.type.bank</source>
                 <target>ACH</target>
             </trans-unit>
             <trans-unit id="order.fee">
@@ -1780,10 +1805,6 @@
             <trans-unit id="order.paid.to">
                 <source>order.paid.to</source>
                 <target>Paid To</target>
-            </trans-unit>
-            <trans-unit id="order.receipt.footer">
-                <source>order.receipt.footer</source>
-                <target>This payment will appear on your statement as RENTTRK or RENTTRACK followed by your property or landlord name.</target>
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
@@ -1966,8 +1987,8 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-            <trans-unit id="property.number.not.exist">
-                <source>property.number.not.exist</source>
+            <trans-unit id="property.address_not_found">
+                <source>property.address_not_found</source>
                 <target>Address not found. Please try again.</target>
             </trans-unit>
             <trans-unit id="direct_deposit.info">
@@ -2245,10 +2266,6 @@
                <source>pidkiq.error.unanswered_questions</source>
                <target>Almost there. Only %COUNT% question(s) left to answer!</target>
             </trans-unit>
-            <trans-unit id="payments.filter.group_by.deposit">
-                <source>payments.filter.group_by.deposit</source>
-                <target>Batch Deposit Report</target>
-            </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
                 <source>filter.group_by.deposit.echeck</source>
                 <target>E-Check</target>
@@ -2261,10 +2278,6 @@
                 <source>payments.deposit</source>
                 <target>DEPOSIT</target>
             </trans-unit>
-            <trans-unit id="payments.batch_deposits">
-                <source>payments.batch_deposits</source>
-                <target>Batch Deposits</target>
-            </trans-unit>
             <trans-unit id="payments.show">
                 <source>payments.show</source>
                 <target>+ Show Payments</target>
@@ -2275,7 +2288,7 @@
             </trans-unit>
             <trans-unit id="payments.batched_amount">
                 <source>payments.batched_amount</source>
-                <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
+                <target>{1}1 payment in Deposit Batch|[2,Inf]%count% payments in Deposit Batch</target>
             </trans-unit>
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
@@ -2320,6 +2333,10 @@
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
             </trans-unit>
+            <trans-unit id="payments.filter.batch_deposit_report.go">
+                <source>payments.filter.batch_deposit_report.go</source>
+                <target>Go to Batch Deposit Report</target>
+            </trans-unit>
             <trans-unit id="is.integrated">
                 <source>is.integrated</source>
                 <target>Is Integrated?</target>
@@ -2334,7 +2351,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.title">
                 <source>credittrack.pay.title</source>
-                <target>Sign up for CreditTrack</target>
+                <target>Sign up for ScoreTrack</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.edit.title">
                 <source>credittrack.pay.edit.title</source>
@@ -2354,7 +2371,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.confirm">
                 <source>credittrack.pay.confirm</source>
-                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
+                <target>Bill me $%amount% each month for ScoreTrack starting today until cancelled.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.amount">
                 <source>credittrack.pay.amount</source>
@@ -2370,7 +2387,7 @@
             </trans-unit>
             <trans-unit id="credittrack.pay.note">
                 <source>credittrack.pay.note</source>
-                <target>We'll get your latest score and credit report when you complete your payment. You'll be leaving your free credit profile, so we'll no longer show you pre-qualified credit offers.</target>
+                <target>We'll show your latest score and credit profile when you complete your payment.</target>
             </trans-unit>
             <trans-unit id="credittrack.pay.save">
                 <source>credittrack.pay.save</source>
@@ -2384,13 +2401,17 @@
                 <source>tab.accounting</source>
                 <target>Accounting</target>
             </trans-unit>
-            <trans-unit id="import">
-                <source>import</source>
+            <trans-unit id="accounting.menu.import">
+                <source>accounting.menu.import</source>
                 <target>Import</target>
             </trans-unit>
-            <trans-unit id="export">
-                <source>export</source>
+            <trans-unit id="accounting.menu.export">
+                <source>accounting.menu.export</source>
                 <target>Export</target>
+            </trans-unit>
+            <trans-unit id="accounting.menu.batched_deposits">
+                <source>accounting.menu.batched_deposits</source>
+                <target>Batched Deposits</target>
             </trans-unit>
             <trans-unit id="accounting.file.import">
                 <source>accounting.file.import</source>
@@ -2752,6 +2773,10 @@
                 <source>yardi.import.error.getResidents</source>
                 <target>Network interruption when connecting to Yardi server. We're sorry, but you'll have to try again.</target>
             </trans-unit>
+            <trans-unit id="yardi.import.error.getPropertyMapping">
+                <source>yardi.import.error.getPropertyMapping</source>
+                <target>Can\'t get mapped properties.</target>
+            </trans-unit>
             <trans-unit id="mri.import.error.getResidents">
                 <source>mri.import.error.getResidents</source>
                 <target>Network interruption when connecting to MRI server. We're sorry, but you'll have to try again.</target>
@@ -2772,9 +2797,13 @@
                 <source>yardi.import.error.external_property_id</source>
                 <target>We have different external property ID for this property.</target>
             </trans-unit>
-            <trans-unit id="yardi.import.message.download.resident">
-                <source>yardi.import.message.download.resident</source>
-                <target>Fetching list of residents from accounting system, please stand by.</target>
+            <trans-unit id="yardi.import.message.download.residents">
+                <source>yardi.import.message.download.residents</source>
+                <target>Fetching list of residents from accounting system for %EXTERNAL_PROPERTY_ID%, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="yardi.import.message.download.property_mapping">
+                <source>yardi.import.message.download.property_mapping</source>
+                <target>Fetching list of mapped properties, please stand by.</target>
             </trans-unit>
             <trans-unit id="csv.import.message.updated_matched_contract">
                 <source>csv.import.message.updated_matched_contract</source>
@@ -2844,13 +2873,17 @@
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
             </trans-unit>
+            <trans-unit id="credit_score.title">
+                <source>credit_score.title</source>
+                <target>Your Vantage Score</target>
+            </trans-unit>
             <trans-unit id="credittrack.teaser.link">
                 <source>credittrack.teaser.link</source>
-                <target>Enroll in &lt;span class="highlight"&gt;CreditTrack&lt;/span&gt; to get monthly updates.</target>
+                <target>Enroll in &lt;span class="highlight"&gt;ScoreTrack&lt;/span&gt;&lt;br /&gt; to get monthly updates.</target>
             </trans-unit>
             <trans-unit id="credittrack.active.message">
                 <source>credittrack.active.message</source>
-                <target>Enrolled in CreditTrack</target>
+                <target>Enrolled in ScoreTrack</target>
             </trans-unit>
             <trans-unit id="tenant.no_balance.alert">
                 <source>tenant.no_balance.alert</source>
@@ -2870,11 +2903,11 @@
             </trans-unit>
             <trans-unit id="settings.plans.comment">
                 <source>settings.plans.comment</source>
-                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in report your payments to earn credit.</target>
+                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in to report your payments to earn credit.</target>
             </trans-unit>
             <trans-unit id="settings.plans.label">
                 <source>settings.plans.label</source>
-                <target>Plan type:</target>
+                <target>Plan:</target>
             </trans-unit>
             <trans-unit id="settings.plans.free">
                 <source>settings.plans.free</source>
@@ -2887,27 +2920,27 @@
             <trans-unit id="settings.plans.paid">
                 <source>settings.plans.paid</source>
                 <target><![CDATA[
-                    Credit Track TM - Track your credit monthly as you build credit history.<br />
+                    ScoreTrack TM - Track your score and credit profile monthly as you build credit history.<br />
                     <span class="bold">Payment Account:</span> "%PAYMENT_ACCOUNT%"
                 ]]></target>
             </trans-unit>
             <trans-unit id="settings.plans.update">
                 <source>settings.plans.update</source>
-                <target>Update plan</target>
+                <target>Update Plan</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.title">
                 <source>settings.plans.cancel.title</source>
-                <target>Cancel CreditTrack</target>
+                <target>Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.text">
                 <source>settings.plans.cancel.text</source>
                 <target>
-                    Are you sure want to cancel monthly updates of your score and credit report?
+                    Are you sure want to cancel monthly updates of your score and credit profile?
                 </target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.yes">
                 <source>settings.plans.cancel.yes</source>
-                <target>Yes, Cancel CreditTrack</target>
+                <target>Yes, Cancel ScoreTrack</target>
             </trans-unit>
             <trans-unit id="settings.plans.cancel.no">
                 <source>settings.plans.cancel.no</source>
@@ -2992,8 +3025,8 @@
                 <source>common.test.setting.successfully</source>
                 <target>Test Successfully</target>
             </trans-unit>
-            <trans-unit id="yardi.sync_balance.label">
-                <source>yardi.sync_balance.label</source>
+            <trans-unit id="common.sync_balance.label">
+                <source>common.sync_balance.label</source>
                 <target>Sync balance?</target>
             </trans-unit>
             <trans-unit id="yardi.post_payments.label">
@@ -3092,7 +3125,11 @@
             </trans-unit>
             <trans-unit id="landlord_dashboard.payment.title">
                 <source>landlord_dashboard.payment.title</source>
-                <target>Created: %created%. Sent: %sent%</target>
+                <target>Charged: %created%. Deposited: %sent%</target>
+            </trans-unit>
+            <trans-unit id="landlord.dashboard.additional_paid_for">
+                <source>landlord.dashboard.additional_paid_for</source>
+                <target>%tenant% (paid for %paid_for%)</target>
             </trans-unit>
             <trans-unit id="landlord.payments_list.show_external_payments">
                 <source>landlord.payments_list.show_external_payments</source>
@@ -3193,6 +3230,39 @@
             <trans-unit id="export.all_properties">
                 <source>export.all_properties</source>
                 <target>(All Properties)</target>
+            </trans-unit>
+            <trans-unit id="admin.error.deposit_account">
+                <source>admin.error.deposit_account</source>
+                <target>You already have deposit account with such type and payment processor.</target>
+            </trans-unit>
+            <trans-unit id="deposits.batch_or_transaction">
+                <source>deposits.batch_or_transaction</source>
+                <target>Batch or Transaction ID</target>
+            </trans-unit>
+            <trans-unit id="deposits.deposit_info">
+                <source>deposits.deposit_info</source>
+                <target>Deposit Information</target>
+            </trans-unit>
+            <trans-unit id="deposits.deposit_type">
+                <source>deposits.deposit_type</source>
+                <target>For</target>
+            </trans-unit>
+            <trans-unit id="pay_anything_popup.title">
+                <source>pay_anything_popup.title</source>
+                <target>Pay Something Else</target>
+            </trans-unit>
+            <trans-unit id="load.report.is_not_allowed.title">
+                <source>load.report.is_not_allowed.title</source>
+                <target>Report loading is not allowed</target>
+            </trans-unit>
+            <trans-unit id="landlord.tenant.found_more">
+                <source>landlord.tenant.found_more</source>
+                <target>Hi There! We found matching tenants in other groups. Go to:</target>
+            </trans-unit>
+            <trans-unit id="load.report.is_not_allowed.message">
+                <source>load.report.is_not_allowed.message-%SUPPORT_EMAIL%</source>
+                <target>Report loading is not allowed.
+                Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
         </body>
     </file>

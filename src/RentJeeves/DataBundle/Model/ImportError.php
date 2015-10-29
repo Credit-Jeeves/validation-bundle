@@ -2,9 +2,15 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\MappedSuperclass
+ * @UniqueEntity(
+ *     fields={"importSummary", "md5RowContent"},
+ *     errorPath="rowContent",
+ *     message="error.summary_error.must_be_unique_md5RowContent"
+ * )
  */
 abstract class ImportError
 {
@@ -43,11 +49,11 @@ abstract class ImportError
     protected $importSummary;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="row_offset", type="integer")
+     * @ORM\Column(name="md5_row_content", type="string", length=32)
      */
-    protected $rowOffset;
+    protected $md5RowContent;
 
     /**
      * @var array
@@ -133,21 +139,30 @@ abstract class ImportError
     public function setRowContent($rowContent)
     {
         $this->rowContent = $rowContent;
+        $this->setMd5RowContent(md5(implode('"', $rowContent)));
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getRowOffset()
+    public function getStringRow()
     {
-        return $this->rowOffset;
+        return implode('"', $this->getRowContent());
     }
 
     /**
-     * @param int $rowOffset
+     * @return string
      */
-    public function setRowOffset($rowOffset)
+    public function getMd5RowContent()
     {
-        $this->rowOffset = $rowOffset;
+        return $this->md5RowContent;
+    }
+
+    /**
+     * @param string $md5RowContent
+     */
+    protected function setMd5RowContent($md5RowContent)
+    {
+        $this->md5RowContent = $md5RowContent;
     }
 }

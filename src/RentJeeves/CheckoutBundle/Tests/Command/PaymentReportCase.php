@@ -4,12 +4,15 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\ReportLoader;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -69,8 +72,8 @@ class PaymentReportCase extends BaseTestCase
         $result = $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(6, $count); // +2 for Monolog Message
-        $this->assertContains('Amount of synchronized payments: 9', $result);
+        $this->assertCount(9, $count); // +2 for Monolog Message
+        $this->assertContains('Amount of synchronized payments: 11', $result);
     }
 
     /**
@@ -84,7 +87,7 @@ class PaymentReportCase extends BaseTestCase
         $this->executeCommand();
 
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(6, $count); // +2 for Monolog Message
+        $this->assertCount(9, $count); // +2 for Monolog Message
 
         // get all report files back to dir
         $this->tearDown();
@@ -119,6 +122,23 @@ class PaymentReportCase extends BaseTestCase
     }
 
     /**
+     * @return array
+     */
+    public function provideReversal()
+    {
+        return [
+            ['369369', OrderStatus::COMPLETE, OrderStatus::RETURNED],
+            ['778899', OrderStatus::COMPLETE, OrderStatus::REFUNDED],
+            ['123123', OrderStatus::COMPLETE, OrderStatus::REFUNDING],
+            ['456456', OrderStatus::COMPLETE, OrderStatus::CANCELLED],
+        ];
+    }
+
+    /**
+     * @param int $transactionId
+     * @param string $firstStatus one of OrderStatus
+     * @param string $secondStatus one of OrderStatus
+     *
      * @test
      * @dataProvider provideReversal
      */
@@ -126,24 +146,16 @@ class PaymentReportCase extends BaseTestCase
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
+        /** @var Transaction $transaction */
         $transaction = $em->getRepository('RjDataBundle:Transaction')->findOneBy(['transactionId' => $transactionId]);
         $order = $transaction->getOrder();
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
         $this->executeCommand();
-
+        /** @var  Order $updatedOrder */
         $this->assertNotNull($updatedOrder = $em->getRepository('DataBundle:Order')->find($order->getId()));
         $this->assertEquals($secondStatus, $updatedOrder->getStatus());
-    }
-
-    public function provideReversal()
-    {
-        return array(
-            array('369369', 'complete', 'returned'),
-            array('123123', 'complete', 'refunded'),
-            array('456456', 'complete', 'cancelled'),
-        );
     }
 
     /**
@@ -217,24 +229,65 @@ class PaymentReportCase extends BaseTestCase
         $this->assertEquals(145176, $resultTransaction->getBatchId(), 'Batch id was not updated');
     }
 
+    /**
+     * @test
+     */
+    public function shouldNotMoveAlreadyReversedOrderToComplete()
+    {
+        $em = $this->getEntityManager();
+        /** @var Order $order */
+        $order = $em->find('DataBundle:Order', 8); // RETURNED order with deposit and reversed transactions
+        $this->assertNotNull($order, 'Order #8 not found');
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus());
+        $this->assertCount(2, $order->getTransactions(), 'Order should have 2 transactions');
+        $this->assertInstanceOf(
+            'RentJeeves\DataBundle\Entity\Transaction',
+            $reversedTransaction = $order->getReversedTransaction()
+        );
+        $this->assertInstanceOf(
+            'RentJeeves\DataBundle\Entity\Transaction',
+            $depositTransaction = $order->getCompleteTransaction()
+        );
+
+        // set depositDate to NULL, then process report and make sure depositDate is set, but orderStatus is not changed
+        $depositTransaction->setDepositDate(null);
+        $em->flush($depositTransaction);
+
+        $this->executeCommand();
+
+        $em->refresh($depositTransaction);
+        $em->refresh($order);
+        $this->assertNotNull($depositTransaction->getDepositDate(), 'Deposit transaction should have deposit date');
+        $this->assertEquals(
+            '2015-08-05',
+            $depositTransaction->getDepositDate()->format('Y-m-d'),
+            'Deposit date should be +1 business day from date in the report'
+        );
+        $this->assertEquals(OrderStatus::RETURNED, $order->getStatus(), 'Order status should remain RETURNED');
+    }
+
     protected function createOrder($transactionId)
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $order = new Order();
+        $order = new OrderSubmerchant();
         $order->setStatus(OrderStatus::PENDING);
-        $order->setType(OrderType::HEARTLAND_BANK);
+        $order->setPaymentType(OrderPaymentType::BANK);
         $order->setSum(999);
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
         $order->setUser($tenant);
+
+        /** @var Contract $contract */
+        $contract = $tenant->getContracts()->last();
+        $order->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
 
         $operation = new Operation();
         $operation->setAmount(999);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
         $operation->setPaidFor(new DateTime('8/1/2014'));
-        $operation->setContract($tenant->getContracts()->last());
+        $operation->setContract($contract);
 
         $transaction = new HeartlandTransaction();
         $transaction->setIsSuccessful(true);

@@ -930,14 +930,12 @@
             <trans-unit id="pidkiq.error.questions">
                <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
                <target><![CDATA[
-                    We found your identity at the credit bureau, so you WILL be able to set up
-                    your payment. However, we were unable to generate versification questions
-                    from your credit profile, so you will not be able to see your credit score or
-                    profile just yet. Please click Next to set up your payment than contact
-                    <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
-                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
-                    target="_blank" class="underline">
-                    to manually verify your identity.</a>
+                   We're sorry, but we were unable to generate an online exam for you.
+                   Please contact
+                   <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                   to
+                   <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
+                   manually verify your identity.</a>
                  ]]>
                </target>
             </trans-unit>
@@ -954,16 +952,15 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.incorrect.answer">
                <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
-               <target><![CDATA[We found your identity at the credit bureau, so you WILL be able
-                to set up your payment. However, some of the answers you provided to the
-                questions are incorrect, so you will not be able to see your credit score or
-                profile just yet. Please click Next to set up your payment, then contact
-                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
-                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
-                 target="_blank" class="underline">
-                 to manually verify your identity.</a>
-                ]]>
-                </target>
+               <target><![CDATA[
+                   We're sorry, but we were unable to generate an online exam for you.
+                   Please contact
+                   <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                   to
+                   <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
+                   manually verify your identity.</a>
+                 ]]>
+               </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
@@ -1298,7 +1295,7 @@
             </trans-unit>
             <trans-unit id="error.fatal.message">
                 <source>error.fatal.message-%SUPPORT_EMAIL%</source>
-                <target>YOops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
+                <target>Oops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
             </trans-unit>
             <!-- Did you know component -->
             <trans-unit id="dyk.subheading.default">
@@ -1475,6 +1472,10 @@
                 <source>admin.action.charge</source>
                 <target>Charge</target>
             </trans-unit>
+            <trans-unit id="admin.action.unlock">
+                <source>admin.action.unlock</source>
+                <target>Unlock</target>
+            </trans-unit>
             <trans-unit id="desired.car">
                 <source>desired.car</source>
                 <target>Desired car</target>
@@ -1554,6 +1555,10 @@
             <trans-unit id="password.error.old_not_match">
                 <source>password.error.old_not_match</source>
                 <target>The old password you supplied is incorrect.</target>
+            </trans-unit>
+            <trans-unit id="error.group.required_fields_for_paydirect">
+                <source>error.group.required_fields_for_paydirect</source>
+                <target>Mailing address name, City, State, Zip, Address 1 should be required if order algorithm is PayDirect.</target>
             </trans-unit>
         </body>
     </file>

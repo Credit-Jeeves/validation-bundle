@@ -21,11 +21,6 @@ class Import
     protected $row = [];
 
     /**
-     * @var integer
-     */
-    protected $offset;
-
-    /**
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      */
@@ -150,22 +145,6 @@ class Import
      * @var HandlerAbstract
      */
     protected $handler;
-
-    /**
-     * @return int
-     */
-    public function getOffset()
-    {
-        return $this->offset;
-    }
-
-    /**
-     * @param int $offset
-     */
-    public function setOffset($offset)
-    {
-        $this->offset = $offset;
-    }
 
     /**
      * @return array
@@ -521,5 +500,34 @@ class Import
     public function getUnitMapping()
     {
         return $this->unitMapping;
+    }
+
+    /**
+     * @Serializer\Type("boolean")
+     * @Serializer\SerializedName("is_need_update_rent")
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"RentJeevesImport"})
+     *
+     * @return boolean
+     */
+    public function isNeedUpdateRent($forceHasContractWaiting = false)
+    {
+        if (!$this->getContract() || !$holding = $this->getContract()->getHolding()) {
+            return true;
+        }
+
+        if (!$holding->getUseRecurringCharges()) {
+            return true;
+        }
+
+        if ($this->getHasContractWaiting() || $forceHasContractWaiting) {
+            return false;
+        }
+
+        if ($this->getContract()->getId()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -624,14 +624,14 @@ fixtures:
     translatable: email_24
     locale: %locale%
     property: subject
-    value: Rent Payment Receipt
+    value: RentTrack Payment Receipt
   translation_24_body:
     translatable: email_24
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Your Rent is Paid{% endblock %}
+      {% block h1 %}Your Payment is Complete{% endblock %}
       {% block email %}
       {% if nameTenant %}
         Hi {{ nameTenant }}! <br /><br />
@@ -639,7 +639,7 @@ fixtures:
         Hello!  <br /><br />
       {% endif %}
 
-      Your rent payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
+      Your {{ depositType | trans }} payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
 
       The details:
 
@@ -678,7 +678,11 @@ fixtures:
       </br>
       </br>
       </br>
-      {{ 'order.receipt.footer' | trans }}
+      {% if type == 'bank' %}
+      This payment will appear on your bank statement as RENTTRACK.
+      {% elseif type == 'card' %}
+      This payment will appear on your bank statement as {{ statementDescriptor }}.
+      {% endif %}
       {% endblock %}
 
 # rjOrderError.html
@@ -1090,7 +1094,11 @@ fixtures:
       </br>
       </br>
       </br>
-      {{ 'order.receipt.footer' | trans }}
+      {% if type == 'bank' %}
+      This payment will appear on your bank statement as RENTTRACK.
+      {% elseif type == 'card' %}
+      This payment will appear on your bank statement as {{ statementDescriptor }}.
+      {% endif %}
       {% endblock %}
 
 # rjContractAmountChanged.html
@@ -1122,7 +1130,6 @@ fixtures:
         </br>
         </br>
         </br>
-        {{ 'order.receipt.footer' | trans }}
       {% endblock %}
 
 # rjBatchDepositReportLandlord.html
@@ -1142,12 +1149,15 @@ fixtures:
       {% block email %}
       Dear {{ landlordFirstName }}, <br />
       Your batch deposit report for <b>{{ date | date("m/d/Y") }}</b> for group <b>{{ groupName }}</b>
-      {% if accountNumber %}(Account #{{ accountNumber }}){% endif %} is below:<br />
       <br />
       {% if batches %}
         {% for batch in batches %}
+        For: {{ batch.depositAccountType | trans }}
+        {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
         Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
-        Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+        {% if groupPaymentProcessor == 'heartland' %}
+            Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+        {% endif %}
         <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
           <thead>
             <tr>
@@ -1242,8 +1252,12 @@ fixtures:
       <br />
         {% if group.batches %}
           {% for batch in group.batches %}
+          For: {{ batch.depositAccountType | trans }}
+          {% if batch.accountNumber %}(Account #{{ batch.accountNumber }}){% endif %}<br />
           Batch ID: <b class="batch-id">{{ batch.batchId }}</b><br />
-          Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+          {% if group.groupPaymentProcessor == 'heartland' %}
+              Payment Type: <b>{{ ('order.type.' ~ batch.paymentType) | trans }}</b><br />
+          {% endif %}
           <table width="100%" style="border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;">
             <thead>
               <tr>
@@ -1343,7 +1357,11 @@ fixtures:
         <br />
         </br>
         </br>
-        {{ 'order.receipt.footer' | trans }}
+        {% if type == 'bank' %}
+        This payment will appear on your bank statement as RENTTRACK.
+        {% elseif type == 'card' %}
+        This payment will appear on your bank statement as {{ statementDescriptor }}.
+        {% endif %}
       {% endblock %}
 
 
@@ -1446,4 +1464,205 @@ fixtures:
         Dear {{ TenantName }},
         Your property manager has disabled online payments. Any unprocessed payments you had scheduled
         through RentTrack have been cancelled. Contact your property manager immediately for more information.
+      {% endblock %}
+
+# rjLateReportingLandlord.html
+  translation_44_subject:
+    translatable: email_44
+    locale: %locale%
+    property: subject
+    value: Action Required for Rent Reporting
+
+  translation_44_body:
+    translatable: email_44
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ landlordName }},
+        As part of our regular audit of rent payments we plan to report to the bureaus, we noticed that:
+        {% for contract in contracts %}
+
+        {{ contract.tenant.fullname }}{% if contract.tenant.getResidentForHolding(contract.holding) %}, {{ contract.tenant.getResidentForHolding(contract.holding).getResidentId() }}{% endif %}
+        does not have a payment on record for {{ month }}, and will be reported as delinquent.
+
+        {% endfor %}
+
+        If this person has paid outside of RentTrack, please log in and resolve the late alert you will see on your dashboard by entering an external/cash payment:
+        <a href="http://help.renttrack.com/knowledgebase/articles/289089-how-do-i-resolve-a-late-payment">http://help.renttrack.com/knowledgebase/articles/289089-how-do-i-resolve-a-late-payment</a>.
+
+        Alternatively, you can end her contract with an outstanding balance if she is truly delinquent:
+        <a href="http://help.renttrack.com/knowledgebase/articles/323277-how-do-i-update-or-end-a-tenant-contract">http://help.renttrack.com/knowledgebase/articles/323277-how-do-i-update-or-end-a-tenant-contract</a>
+        Or let us know by replying to this email.
+
+        Thank you so much for helping us ensure that the data we report is accurate.
+      {% endblock %}
+
+# rjLateReportingTenant.html
+  translation_45_subject:
+    translatable: email_45
+    locale: %locale%
+    property: subject
+    value: Action Required for Rent Reporting
+
+  translation_45_body:
+    translatable: email_45
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ tenantName }},
+
+        As part of our regular audit of rent payments we plan to report to the bureaus, we noticed that you are missing a payment for {{ month }}, and may be reported as delinquent.
+
+        Please make a rent payment as soon as possible.
+        If you have paid outside of RentTrack, or if your lease has ended, please contact your property manager and have them update your record in RentTrack.
+        We need them to verify that you have made a payment before we can report it to the bureaus.
+        To learn more, please visit: <help URL to be filled in later>
+        Thank you so much for helping us ensure that the data we report is accurate. If you have any questions, please contact <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
+
+      {% endblock %}
+
+  translation_46_subject:
+    translatable: email_46
+    locale: en
+    property: subject
+    value: Build Credit When You Pay Rent
+
+  translation_46_body:
+    translatable: email_46
+    locale: en
+    property: body
+    value:  |
+        <H1>Pay Rent Smarter</H1>
+        <H2>Set up your first payment in minutes</H2>
+        {{ FNAME }} - we noticed you still haven't set up an online rent payment with {{ LANDLORDGR }}. Credit follows you for your whole life - it's good to start off on the right track. RentTrack is the only company that can report your rent payments to major credit bureaus so you can build credit history without taking on additional debt.
+        <BR><BR>
+        Building good credit history means you can put yourself in the best position when you buy a car, get a loan, mortgage, apply for insurance, for a job and more*.
+        {% if MONTHSLEFT %}
+            With {{ MONTHSLEFT }} months left in your lease, you have a great opportunity for improvement - most tenants see a score increase within two months.
+        {% else %}
+            This is a great opportunity for improvement - most tenants see a score increase within two months.
+        {% endif %}
+        <BR><BR>
+        Your property manager is offering you this benefit for only {{ FEEACH }} per e-Check or {{ FEECC }} for Credit Card Payments.
+        <BR><BR>
+        {% if INVITECODE %}
+          <a href="https://my.renttrack.com/tenant/invite/{{ INVITECODE }}">Pay Rent Online Today</a>
+        {% else %}
+          <a href="https://my.renttrack.com/">Pay Rent Online Today</a>
+        {% endif %}
+
+  translation_46_mandrillSlug:
+    translatable: email_46
+    locale: en
+    property: mandrillSlug
+    value: paying-rent-online-impacts-credit-score
+
+# rjOrderSending.html
+  translation_47_subject:
+    translatable: email_47
+    locale: %locale%
+    property: subject
+    value: Your Rent Check is in the Mail!
+
+  translation_47_body:
+    translatable: email_47
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Hi {{ firstName }},
+
+        Your rent check to {{ groupName }} in the amount of {{ checkAmount }} was mailed on {{ sendDate }} and
+        should arrive within 1-3 business days via USPS first-class mail. The check was mailed to {{ mailingAddress }}.
+        If there is anything incorrect in your order, please contact us immediately at help@renttrack.com.
+        Thank you for choosing to pay rent with RentTrack!
+      {% endblock %}
+
+# rjOrderRefunding.html
+  translation_48_subject:
+    translatable: email_48
+    locale: %locale%
+    property: subject
+    value: Your Rent Payment is being Refunded
+
+  translation_48_body:
+    translatable: email_48
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Hi {{ firstName }},
+
+        Your rent payment of {{ totalAmount }} for your rental at {{ rentalAddress }} has been cancelled
+        and any corresponding check sent in the mail has been stopped.  Your payment should be refunded
+        to your original payment source, "{{ paymentAcctName }}", within 1-3 business days.
+
+        If you did not request a refund or a stop on your rent check, please contact help@renttrack.com
+      {% endblock %}
+
+# rjOrderReissued.html
+  translation_49_subject:
+    translatable: email_49
+    locale: %locale%
+    property: subject
+    value: Your Rent Check has been Reissued!
+
+  translation_49_body:
+    translatable: email_49
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Hi {{ firstName }},
+
+        Your rent check of {{ totalAmount }} for your rental at {{ rentalAddress }} has been reissued.
+        A check is reissued when the mailing address is changed.
+
+        If you did not request that your rent check be sent to a different mailing address, please contact help@renttrack.com immediately.
+      {% endblock %}
+
+# rjChurnRecapture.html
+  translation_50_subject:
+    translatable: email_50
+    locale: %locale%
+    property: subject
+    value: Did you miss a rent payment?
+
+  translation_50_body:
+    translatable: email_50
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        <H1>Missed a Payment?</H1>
+        <H2>We've missed you!</H2>
+        Hi {{ FNAME }}!
+
+        We noticed you haven't made a rent payment in a while. Your last payment was on {{ LAST_PAYMENT_DATE }} for the amount of {{ LAST_PAYMENT_AMOUNT }}.
+        {% if LEASE_END %}
+          Your lease is currently scheduled to end on {{ LEASE_END }}.
+        {% else %}
+          Your lease is currently month-to-month and has not ended yet.
+        {% endif %}
+
+        {% if REPORTING %}
+          We also noticed that you are reporting your rent payments to the bureaus. In order to build good credit history, you'll need to make consistent rent payments each month. Restarting now will keep you "current."
+        {% endif %}
+
+        To set up a new payment, just log back in to RentTrack by visiting <a href="https://my.renttrack.com/">my.renttrack.com</a>.
+
+        {% if SURVEY_URL %}
+          If you've decided to no longer use RentTrack - please tell us why by taking this brief survey: {{ SURVEY_URL }}  We're working hard to make the best rent payment service out there, and your feedback will help.
+        {% endif %}
+
+        Thank you,
+        The RentTrack Team
       {% endblock %}
