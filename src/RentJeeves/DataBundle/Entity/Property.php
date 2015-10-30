@@ -119,7 +119,7 @@ class Property extends Base
             }
         }
 
-        return $merchantExist;
+        return $erchantExist;
     }
 
     public function hasUnits()
@@ -153,7 +153,7 @@ class Property extends Base
                 throw new \LogicException(
                     sprintf(
                         'Standalone property "%s" with id "%s" has no unit.',
-                        $this->getAddress(),
+                        $this->getPropertyAddress()->getAddress(),
                         $this->getId()
                     )
                 );
@@ -202,9 +202,12 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->getFullAddress();
+        return $this->getPropertyAddress()->getFullAddress();
     }
 
     /**
@@ -214,7 +217,7 @@ class Property extends Base
      */
     public function getFullAddress()
     {
-        return $this->fullAddress();
+        return $this->getPropertyAddress()->getFullAddress();
     }
 
     /**
@@ -226,6 +229,16 @@ class Property extends Base
         return !!$this->getPropertyGroups()->filter(function (Group $entity) use ($group) {
             return $entity->getId() === $group->getId();
         });
+    }
+
+    /**
+     * @deprecated pls use `->getPropertyAddress()->getAddress()`
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getPropertyAddress()->getAddress();
     }
 
     /**
