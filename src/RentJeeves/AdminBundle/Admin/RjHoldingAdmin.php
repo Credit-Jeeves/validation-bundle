@@ -51,6 +51,14 @@ class RjHoldingAdmin extends Admin
                     'label' => 'admin.holding.payments_enabled',
                 ]
             )
+            ->add(
+                'exportTenantId',
+                null,
+                [
+                    'required' => false,
+                    'label' => 'admin.holding.export_tenant_id',
+                ]
+            )
             ->with('Accounting Settings')
                 ->add(
                     'apiIntegrationType',
