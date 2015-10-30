@@ -6,7 +6,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
 use CreditJeeves\CoreBundle\Controller\BaseController;
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\AddressRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\UserBundle\Form\Type\UserAddressType;
@@ -154,7 +154,7 @@ class SettingsController extends BaseController
         /** @var User $User */
         $User = $this->getUser();
         /** @var AddressRepository $repository */
-        $repository = $this->getDoctrine()->getRepository('DataBundle:Address');
+        $repository = $this->getDoctrine()->getRepository('DataBundle:MailingAddress');
         $addresses = $repository->createQueryBuilder('addr')
             ->where('addr.user = :user')
             ->setParameter('user', $User->getId())
@@ -178,7 +178,7 @@ class SettingsController extends BaseController
         $user = $this->getUser();
 
         if ('new' != $id) {
-            $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy(
+            $address = $this->getDoctrine()->getRepository('DataBundle:MailingAddress')->findOneBy(
                 [
                     'id' => $id,
                     'user' => $user->getId(),
@@ -205,7 +205,7 @@ class SettingsController extends BaseController
             if ($form->isValid()) {
                 if ($address->getIsDefault()) {
                     $this->getDoctrine()
-                        ->getRepository('DataBundle:Address')
+                        ->getRepository('DataBundle:MailingAddress')
                         ->resetDefaults($user->getId());
                 }
 

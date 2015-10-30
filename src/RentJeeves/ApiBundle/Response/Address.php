@@ -5,7 +5,7 @@ namespace RentJeeves\ApiBundle\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
-use CreditJeeves\DataBundle\Entity\Address as Entity;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Entity;
 
 /**
  * @DI\Service("response_resource.address")

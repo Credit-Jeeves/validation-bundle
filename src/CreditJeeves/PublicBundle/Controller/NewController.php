@@ -2,8 +2,7 @@
 
 namespace CreditJeeves\PublicBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Address;
-use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -15,9 +14,7 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Utility\VehicleUtility;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class NewController extends Controller
 {
@@ -144,6 +141,7 @@ class NewController extends Controller
                                         'error.user.absent.text'
                                     )
                                 );
+
                             return $this->redirect($this->generateUrl('public_message_flash'));
                         }
                     } else {
@@ -161,6 +159,7 @@ class NewController extends Controller
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
                     $this->get('core.session.applicant')->setUser($User);
                     $this->get('project.mailer')->sendCheckEmail($User);
+
                     return $this->redirect($this->generateUrl('applicant_new_send'));
 
                 } else {
@@ -175,6 +174,7 @@ class NewController extends Controller
                 }
             }
         }
+
         return array(
             'form' => $form->createView(),
             'type' => $Group->getType(),

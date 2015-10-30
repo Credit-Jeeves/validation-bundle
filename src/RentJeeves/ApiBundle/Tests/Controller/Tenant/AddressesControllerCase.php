@@ -2,12 +2,12 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 
 class AddressesControllerCase extends BaseApiTestCase
 {
-    const WORK_ENTITY = 'DataBundle:Address';
+    const WORK_ENTITY = 'DataBundle:MailingAddress';
 
     const REQUEST_URL = 'addresses';
 

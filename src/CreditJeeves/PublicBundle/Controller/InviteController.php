@@ -2,7 +2,7 @@
 
 namespace CreditJeeves\PublicBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -43,13 +43,14 @@ class InviteController extends Controller
             $i18n = $this->get('translator');
             $this->get('session')->getFlashBag()->add('message_title', $i18n->trans('error.user.absent.title'));
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
+
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
 
         $date = $User->getDateOfBirth();
         /** @var Group $group */
         $group = $User->getActiveLead()->getGroup();
-        $type = ($group)? $group->getType() : null;
+        $type = ($group) ? $group->getType() : null;
         $sCurrentDob = null;
         if (!empty($date)) {
             $sCurrentDob = $date->format("Y-m-d");
@@ -114,10 +115,10 @@ class InviteController extends Controller
 
                 $em->persist($User);
                 $em->flush();
+
                 return $this->login($User);
             }
         }
-
 
         return array(
             'code'       => $code,
@@ -137,12 +138,13 @@ class InviteController extends Controller
             $applicant,
             $response
         );
-    
+
         $this->container->get('user.service.login_success_handler')
         ->onAuthenticationSuccess(
             $this->container->get('request'),
             $this->container->get('security.context')->getToken()
         );
+
         return $response;
     }
 }

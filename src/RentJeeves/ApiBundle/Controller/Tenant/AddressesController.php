@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Controller\Tenant;
 
-use CreditJeeves\DataBundle\Entity\Address as AddressEntity;
+use CreditJeeves\DataBundle\Entity\MailingAddress as AddressEntity;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -76,7 +76,7 @@ class AddressesController extends Controller
     {
         $address = $this
             ->getDoctrine()
-            ->getRepository('DataBundle:Address')
+            ->getRepository('DataBundle:MailingAddress')
             ->findOneBy(['user' => $this->getUser(), 'id' => $id]);
 
         if ($address) {
@@ -222,7 +222,7 @@ class AddressesController extends Controller
      */
     public function editAddressAction($id, Request $request)
     {
-        $repo = $this->getDoctrine()->getRepository('DataBundle:Address');
+        $repo = $this->getDoctrine()->getRepository('DataBundle:MailingAddress');
         $address = $repo->findOneBy(['user' => $this->getUser(), 'id' => $id]);
 
         if ($address) {

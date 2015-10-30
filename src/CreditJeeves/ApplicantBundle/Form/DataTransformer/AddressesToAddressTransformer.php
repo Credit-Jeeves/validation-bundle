@@ -1,10 +1,9 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Form\DataTransformer;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class AddressesToAddressTransformer implements DataTransformerInterface
 {
@@ -24,6 +23,7 @@ class AddressesToAddressTransformer implements DataTransformerInterface
         if (null == $address) {
             $address =  new Address();
         }
+
         return $address;
     }
 
