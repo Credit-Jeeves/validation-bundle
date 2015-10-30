@@ -40,6 +40,11 @@ abstract class AbstractContractSynchronizer
     protected $residentDataManager;
 
     /**
+     * @var bool
+     */
+    protected $isInitialized = false;
+
+    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      */
@@ -57,23 +62,30 @@ abstract class AbstractContractSynchronizer
         $this->residentDataManager = $residentDataManager;
     }
 
+    protected function init()
+    {
+        if (!$this->isInitialized) {
+            gc_enable();
+            $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+            $this->isInitialized = true;
+            $this->logMessage('Initialized');
+        }
+    }
+
     /**
      * Execute synchronization balance
      */
     public function syncBalance()
     {
+        $this->init();
+        $this->logMessage('[SyncBalance]Started');
         try {
-            $holdings = $this->getHoldingsForUpdatingBalance();
-            if (empty($holdings)) {
-                $this->logMessage('[SyncBalance]No data to update');
-
-                return;
-            }
-
-            foreach ($holdings as $holding) {
+            $iterableResult = $this->getHoldingsForUpdatingBalance();
+            $counter = 0;
+            /** @var Holding $holding */
+            while ((list($holding) = $iterableResult->next()) !== false) {
+                $counter++;
                 $this->setExternalSettings($holding);
-                $holdingId = $holding->getId();
-                $this->em->clear($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncBalance]Processing holding "%s" #%d',
@@ -81,7 +93,10 @@ abstract class AbstractContractSynchronizer
                         $holding->getId()
                     )
                 );
-                $this->updateBalancesForHolding($holdingId);
+                $this->updateBalancesForHolding($holding);
+            }
+            if ($counter === 0) {
+                $this->logMessage('[SyncBalance]No data to update');
             }
         } catch (\Exception $e) {
             $this->logMessage(
@@ -94,6 +109,8 @@ abstract class AbstractContractSynchronizer
                 LogLevel::ALERT
             );
         }
+        gc_collect_cycles();
+        $this->logMessage('[SyncBalance]Finished');
     }
 
     /**
@@ -101,18 +118,15 @@ abstract class AbstractContractSynchronizer
      */
     public function syncRent()
     {
+        $this->init();
+        $this->logMessage('[SyncRent]Started');
         try {
-            $holdings = $this->getHoldingsForUpdatingRent();
-            if (empty($holdings)) {
-                $this->logMessage('[SyncRent]No data to update.');
-
-                return;
-            }
-
-            foreach ($holdings as $holding) {
+            $iterableResult = $this->getHoldingsForUpdatingRent();
+            $counter = 0;
+            /** @var Holding $holding */
+            while ((list($holding) = $iterableResult->next()) !== false) {
+                $counter++;
                 $this->setExternalSettings($holding);
-                $holdingId = $holding->getId();
-                $this->em->clear($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Processing holding "%s" #%d',
@@ -120,7 +134,10 @@ abstract class AbstractContractSynchronizer
                         $holding->getId()
                     )
                 );
-                $this->updateContractsRentForHolding($holdingId);
+                $this->updateContractsRentForHolding($holding);
+            }
+            if ($counter === 0) {
+                $this->logMessage('[SyncRent]No data to update');
             }
         } catch (\Exception $e) {
             $this->logMessage(
@@ -133,6 +150,8 @@ abstract class AbstractContractSynchronizer
                 LogLevel::ALERT
             );
         }
+        gc_collect_cycles();
+        $this->logMessage('[SyncRent]Finished');
     }
 
     /**
@@ -162,204 +181,112 @@ abstract class AbstractContractSynchronizer
 
     /**
      * @param Holding $holding
-     */
-    abstract protected function setExternalSettings(Holding $holding);
-
-    /**
-     * @return Holding[]
-     */
-    abstract protected function getHoldingsForUpdatingBalance();
-
-    /**
-     * @param int $holdingId
      * @throws \RuntimeException
      */
-    protected function updateBalancesForHolding($holdingId)
+    protected function updateBalancesForHolding($holding)
     {
-        $repo = $this->getPropertyRepository();
-        $propertySets = ceil($repo->countContractPropertiesByHolding($holdingId) / static::COUNT_PROPERTIES_PER_SET);
-        $this->logMessage(sprintf('[SyncBalance]Found %d pages of property for processing.', $propertySets));
-
-        for ($offset = 1; $offset <= $propertySets; $offset++) {
-            $this->logMessage(sprintf('[SyncBalance]Start processing page %d of property.', $offset));
-            $properties = $repo->findContractPropertiesByHolding($holdingId, $offset, static::COUNT_PROPERTIES_PER_SET);
-            foreach ($properties as $property) {
-                try {
-                    $propertyMapping = $property->getPropertyMappingByHoldingId($holdingId);
-                    if (empty($propertyMapping)) {
-                        throw new \RuntimeException(
-                            sprintf(
-                                'PropertyID "%d" doesn\'t have external property ID',
-                                $property->getId()
-                            )
-                        );
-                    }
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncBalance]Try processing property #%d with external id "%s"',
-                            $property->getId(),
-                            $propertyMapping->getExternalPropertyId()
-                        )
-                    );
-
-                    $residentTransactions = $this->residentDataManager->getResidentTransactions(
+        $iterableResult = $this->getPropertyMappingRepository()->findUniqueByHolding($holding);
+        /** @var PropertyMapping $propertyMapping */
+        while ((list($propertyMapping) = $iterableResult->next()) !== false) {
+            try {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]Try processing property #%d with external id "%s"',
+                        $propertyMapping->getProperty()->getId(),
                         $propertyMapping->getExternalPropertyId()
-                    );
-                    if (empty($residentTransactions) && !$propertyMapping->getProperty()->isSingle()) {
-                        // multi-unit properties not are likely to be vacant -- send alert
-                        throw new \LogicException(
-                            sprintf(
-                                'Could not load resident transactions for property %s of holding %s',
-                                $propertyMapping->getExternalPropertyId(),
-                                $propertyMapping->getHolding()->getName()
-                            )
-                        );
-                    }
-                    $this->logMessage(
+                    )
+                );
+                $residentTransactions = $this->residentDataManager->getResidentTransactions(
+                    $propertyMapping->getExternalPropertyId()
+                );
+                if (empty($residentTransactions) && !$propertyMapping->getProperty()->isSingle()) {
+                    // multi-unit properties not are likely to be vacant -- send alert
+                    throw new \LogicException(
                         sprintf(
-                            '[SyncBalance]Find %d resident transactions for processing by property %s of holding %s',
-                            count($residentTransactions),
-                            $property->getId(),
-                            $propertyMapping->getExternalPropertyId()
+                            'Could not load resident transactions for property %s of holding %s',
+                            $propertyMapping->getExternalPropertyId(),
+                            $propertyMapping->getHolding()->getName()
                         )
-                    );
-
-                    foreach ($residentTransactions as $resident) {
-                        $this->updateContractBalanceForResidentTransaction($resident, $propertyMapping);
-                        $this->em->flush();
-                    }
-                } catch (\Exception $e) {
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncBalance]ERROR: %s on %s:%d',
-                            $e->getMessage(),
-                            $e->getFile(),
-                            $e->getLine()
-                        ),
-                        LogLevel::ALERT
                     );
                 }
-            }
-            /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
-            $this->em->clear();
-        }
-    }
-
-    /**
-     * @param mixed $resident
-     * @param PropertyMapping $propertyMapping
-     */
-    abstract protected function updateContractBalanceForResidentTransaction(
-        $resident,
-        PropertyMapping $propertyMapping
-    );
-
-    /**
-     * @return Holding[]
-     */
-    abstract protected function getHoldingsForUpdatingRent();
-
-    /**
-     * @param int $holdingId
-     */
-    protected function updateContractsRentForHolding($holdingId)
-    {
-        $propertyMappingRepository = $this->getPropertyMappingRepository();
-        $countPropertyMappingSets = ceil(
-            $propertyMappingRepository->getCountUniqueByHolding($holdingId) / self::COUNT_PROPERTIES_PER_SET
-        );
-        $this->logMessage(
-            sprintf(
-                '[SyncRent]Found %d pages of property mapping for processing.',
-                $countPropertyMappingSets
-            )
-        );
-
-        for ($offset = 1; $offset <= $countPropertyMappingSets; $offset++) {
-            $this->logMessage(sprintf('[SyncRent]Start processing page %d of property mapping.', $offset));
-            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
-                $holdingId,
-                $offset,
-                static::COUNT_PROPERTIES_PER_SET
-            );
-
-            foreach ($propertyMappings as $propertyMapping) {
-                try {
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncRent]Try processing property mapping #%d with external id "%s"',
-                            $propertyMapping->getId(),
-                            $propertyMapping->getExternalPropertyId()
-                        )
-                    );
-                    $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
-                        $propertyMapping->getExternalPropertyId()
-                    );
-                    foreach ($residentTransactions as $resident) {
-                        $this->updateContractRentForResidentTransaction($resident, $propertyMapping);
-                        $this->em->flush();
-                    }
-
-                } catch (\Exception $e) {
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncRent]ERROR: %s on %s:%d',
-                            $e->getMessage(),
-                            $e->getFile(),
-                            $e->getLine()
-                        ),
-                        LogLevel::ALERT
-                    );
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]Find %d resident transactions for processing by property %d of holding %s #%d',
+                        count($residentTransactions),
+                        $propertyMapping->getProperty()->getId(),
+                        $holding->getName(),
+                        $holding->getId()
+                    )
+                );
+                foreach ($residentTransactions as $resident) {
+                    $this->updateContractBalanceForResidentTransaction($resident, $propertyMapping);
+                    $this->em->flush();
                 }
+                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                $this->em->clear();
+                gc_collect_cycles();
+            } catch (\Exception $e) {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
             }
         }
     }
 
     /**
-     * @param mixed $resident
-     * @param PropertyMapping $propertyMapping
+     * @param Holding $holding
      */
-    abstract protected function updateContractRentForResidentTransaction(
-        $resident,
-        PropertyMapping $propertyMapping
-    );
-
-    /**
-     *
-     * @param \DateTime|null $startDate
-     * @param \DateTime|null $endDate
-     * @return boolean
-     */
-    protected function checkDateFallsBetweenDates(\DateTime $startDate = null, \DateTime $endDate = null)
+    protected function updateContractsRentForHolding($holding)
     {
-        $today = new \DateTime();
-        $todayStr = (int) $today->format('Ymd');
-        //both parameter provider
-        if (($startDate instanceof \DateTime && $endDate instanceof \DateTime) &&
-            (int) $startDate->format('Ymd') <= $todayStr && (int) $endDate->format('Ymd') >= $todayStr
-        ) {
-            return true;
-        }
+        $iterableResult = $this->getPropertyMappingRepository()->findUniqueByHolding($holding);
+        /** @var PropertyMapping $propertyMapping */
+        while ((list($propertyMapping) = $iterableResult->next()) !== false) {
+            try {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncRent]Try processing property mapping #%d with external id "%s"',
+                        $propertyMapping->getId(),
+                        $propertyMapping->getExternalPropertyId()
+                    )
+                );
+                $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
+                    $propertyMapping->getExternalPropertyId()
+                );
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]Find %d resident transactions for processing by property %d of holding %s #%d',
+                        count($residentTransactions),
+                        $propertyMapping->getProperty()->getId(),
+                        $holding->getName(),
+                        $holding->getId()
+                    )
+                );
+                foreach ($residentTransactions as $resident) {
+                    $this->updateContractRentForResidentTransaction($resident, $propertyMapping);
+                    $this->em->flush();
+                }
+                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                $this->em->clear();
+                gc_collect_cycles();
 
-        //only startDate parameter provider
-        if (($startDate instanceof \DateTime && !($endDate instanceof \DateTime)) &&
-            (int) $startDate->format('Ymd') <= $todayStr
-        ) {
-            return true;
+            } catch (\Exception $e) {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncRent]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
+            }
         }
-
-        //only endDate parameter provider
-        if ((!($startDate instanceof \DateTime) && $endDate instanceof \DateTime) &&
-            (int) $endDate->format('Ymd') >= $todayStr
-        ) {
-            return true;
-        }
-
-        if (empty($startDate) && empty($endDate)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -401,4 +328,37 @@ abstract class AbstractContractSynchronizer
     {
         return $this->em->getRepository('RjDataBundle:ContractWaiting');
     }
+
+    /**
+     * @param Holding $holding
+     */
+    abstract protected function setExternalSettings(Holding $holding);
+
+    /**
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
+    abstract protected function getHoldingsForUpdatingBalance();
+
+    /**
+     * @param mixed $resident
+     * @param PropertyMapping $propertyMapping
+     */
+    abstract protected function updateContractBalanceForResidentTransaction(
+        $resident,
+        PropertyMapping $propertyMapping
+    );
+
+    /**
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
+    abstract protected function getHoldingsForUpdatingRent();
+
+    /**
+     * @param mixed $resident
+     * @param PropertyMapping $propertyMapping
+     */
+    abstract protected function updateContractRentForResidentTransaction(
+        $resident,
+        PropertyMapping $propertyMapping
+    );
 }

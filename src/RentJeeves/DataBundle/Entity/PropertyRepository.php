@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyRepository extends EntityRepository
 {
@@ -338,50 +337,6 @@ EOT;
             ->addOrderBy('propertyAddress.number', 'ASC');
 
         return $query;
-    }
-
-    /**
-     * @param int $holdingId
-     * @param int $page
-     * @param int $limit
-     *
-     * @return Property[]
-     */
-    public function findContractPropertiesByHolding($holdingId, $page, $limit = 20)
-    {
-        $offset = ($page - 1) * $limit;
-
-        return $this->createQueryBuilder('p')
-            ->innerJoin('p.contracts', 'c')
-            ->innerJoin('p.propertyMapping', 'pm')
-            ->where('c.status in (:statuses)')
-            ->andWhere('pm.holding = :holdingId')
-            ->groupBy('p.id')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('holdingId', $holdingId)
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->execute();
-    }
-
-    /**
-     * @param int $holdingId
-     *
-     * @return int
-     */
-    public function countContractPropertiesByHolding($holdingId)
-    {
-        return $this->createQueryBuilder('p')
-            ->select('count(distinct p.id)')
-            ->innerJoin('p.contracts', 'c')
-            ->innerJoin('p.propertyMapping', 'pm')
-            ->where('c.status in (:statuses)')
-            ->andWhere('pm.holding = :holdingId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('holdingId', $holdingId)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
     /**

@@ -187,7 +187,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      */
     protected function getHoldingsForUpdatingRent()
     {
-        return $this->getHoldingRepository()->findHoldingsForAMSISyncRecurringCharges();
+        return $this->getHoldingRepository()->findHoldingsForUpdatingRentAMSI();
     }
 
     /**

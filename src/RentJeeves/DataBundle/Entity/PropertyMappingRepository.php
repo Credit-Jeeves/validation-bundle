@@ -4,58 +4,32 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyMappingRepository extends EntityRepository
 {
     /**
-     * @param int $holdingId
-     * @param int $page
-     * @param int $limit
-     * @return PropertyMapping[]
+     * Iterate can't work with join
+     * @see http://www.doctrine-project.org/jira/browse/DDC-176
+     * @param Holding $holding
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
-    public function findUniqueByHolding($holdingId, $page = 1, $limit = 20)
-    {
-        $offset = ($page - 1) * $limit;
-
-        $query = $this->getUniqueByHoldingQuery($holdingId);
-        $query->groupBy('pm.externalPropertyId');
-
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-
-        return $query->getQuery()->execute();
-    }
-
-    /**
-     * @param int $holdingId
-     * @return int
-     */
-    public function getCountUniqueByHolding($holdingId)
-    {
-        $query = $this->getUniqueByHoldingQuery($holdingId);
-        $query->select('count(distinct pm.externalPropertyId)');
-
-        return $query->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @param int $holdingId
-     * @return \Doctrine\ORM\QueryBuilder
-     */
-    protected function getUniqueByHoldingQuery($holdingId)
+    public function findUniqueByHolding(Holding $holding)
     {
         $query = $this->createQueryBuilder('pm');
-        $query->innerJoin('pm.property', 'p');
-        $query->innerJoin('p.contracts', 'c');
-
-        $query->where('c.status in (:statuses)');
-        $query->andWhere('pm.holding = :holdingId');
-
+        $query->select('pm');
+        $query->add('from', new Expr\From('RjDataBundle:Property', 'p'), true);
+        $query->add('from', new Expr\From('RjDataBundle:Contract', 'c'), true);
+        $query->where('pm.holding = :holding');
+        $query->andWhere('p.id = pm.property');
+        $query->andWhere('p.id = c.property');
+        $query->andWhere('c.status IN (:statuses)');
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('holdingId', $holdingId);
+        $query->setParameter('holding', $holding);
+        $query->groupBy('pm.externalPropertyId');
 
-        return $query;
+        return $query->getQuery()->iterate();
     }
 
     /**

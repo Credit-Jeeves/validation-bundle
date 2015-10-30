@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Psr\Log\LogLevel;
+use RentJeeves\ComponentBundle\Helper\DateCheckerHelper;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -307,7 +308,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      */
     protected function getHoldingsForUpdatingRent()
     {
-        return $this->getHoldingRepository()->findHoldingsForSyncRecurringChargesYardi();
+        return $this->getHoldingRepository()->findHoldingsForUpdatingRentYardi();
     }
 
     /**
@@ -338,7 +339,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
             $fromDate = $charge->getDetail()->getServiceFromDateObject();
             $toDate = $charge->getDetail()->getServiceToDateObject();
-            if (!$this->checkDateFallsBetweenDates($fromDate, $toDate)) {
+            if (!DateCheckerHelper::checkDateFallsBetweenDates($fromDate, $toDate)) {
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',

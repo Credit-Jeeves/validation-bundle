@@ -32,43 +32,78 @@ class HoldingRepository extends EntityRepository
     }
 
     /**
-     * @return Holding[]
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
+    public function findHoldingsForUpdatingBalanceYardi()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.yardiSettings', 'ys')
+            ->where('ys.syncBalance = 1')
+            ->andWhere('h.apiIntegrationType = :yardi')
+            ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER)
+            ->getQuery()
+            ->iterate();
+    }
+
+    /**
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
     public function findHoldingsForUpdatingBalanceMRI()
     {
-        return $this->getQueryForHoldingsWithMriSettings()->getQuery()->execute();
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.mriSettings', 'mriSettings')
+            ->where('holding.apiIntegrationType = :mri')
+            ->setParameter('mri', ApiIntegrationType::MRI)
+            ->getQuery()
+            ->iterate();
     }
 
     /**
-     * @return Holding[]
-     */
-    public function findHoldingsForUpdatingRentMRI()
-    {
-        $query = $this->getQueryForHoldingsWithMriSettings();
-
-        return $query->andWhere('holding.useRecurringCharges = 1')->getQuery()->execute();
-    }
-
-    /**
-     * @return Holding[]
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
     public function findHoldingsForUpdatingBalanceAMSI()
     {
-        $query = $this->createQueryBuilder('h');
-        $query->innerJoin('h.amsiSettings', 's');
-        $query->where('h.apiIntegrationType = :amsi');
-        $query->andWhere('s.syncBalance = 1');
-        $query->setParameter('amsi', ApiIntegrationType::AMSI);
-
-        $query = $query->getQuery();
-
-        return $query->execute();
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.amsiSettings', 's')
+            ->where('h.apiIntegrationType = :amsi')
+            ->andWhere('s.syncBalance = 1')
+            ->setParameter('amsi', ApiIntegrationType::AMSI)
+            ->getQuery()
+            ->iterate();
     }
 
     /**
-     * @return Holding[]
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
-    public function findHoldingsForAMSISyncRecurringCharges()
+    public function findHoldingsForUpdatingBalanceResMan()
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.resManSettings', 's')
+            ->where('h.apiIntegrationType = :resman')
+            ->andWhere('s.syncBalance = 1')
+            ->setParameter('resman', ApiIntegrationType::RESMAN)
+            ->getQuery()
+            ->iterate();
+    }
+
+    /**
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
+    public function findHoldingsForUpdatingRentMRI()
+    {
+        return $this->createQueryBuilder('holding')
+            ->innerJoin('holding.mriSettings', 'mriSettings')
+            ->where('holding.apiIntegrationType = :mri')
+            ->andWhere('holding.useRecurringCharges = 1')
+            ->setParameter('mri', ApiIntegrationType::MRI)
+            ->getQuery()
+            ->iterate();
+    }
+
+    /**
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
+    public function findHoldingsForUpdatingRentAMSI()
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.amsiSettings', 's')
@@ -76,13 +111,13 @@ class HoldingRepository extends EntityRepository
             ->andWhere('h.useRecurringCharges = 1')
             ->setParameter('amsi', ApiIntegrationType::AMSI)
             ->getQuery()
-            ->execute();
+            ->iterate();
     }
 
     /**
-     * @return Holding[]
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
-    public function findHoldingsForSyncRecurringChargesYardi()
+    public function findHoldingsForUpdatingRentYardi()
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.yardiSettings', 'ys')
@@ -90,13 +125,13 @@ class HoldingRepository extends EntityRepository
             ->andWhere('h.apiIntegrationType = :yardi')
             ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER)
             ->getQuery()
-            ->execute();
+            ->iterate();
     }
 
     /**
-     * @return Holding[]
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
-    public function findHoldingsForResmanSyncRecurringCharges()
+    public function findHoldingsForUpdatingRentResMan()
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.resManSettings', 's')
@@ -104,23 +139,7 @@ class HoldingRepository extends EntityRepository
             ->andWhere('h.useRecurringCharges = 1')
             ->setParameter('resman', ApiIntegrationType::RESMAN)
             ->getQuery()
-            ->execute();
-    }
-
-    /**
-     * @return Holding[]
-     */
-    public function findHoldingsForUpdatingBalanceYardi()
-    {
-        $query = $this->createQueryBuilder('h');
-        $query->innerJoin('h.yardiSettings', 'ys');
-        $query->where('ys.syncBalance = 1');
-        $query->andWhere('h.apiIntegrationType = :yardi');
-        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
-
-        $query = $query->getQuery();
-
-        return $query->execute();
+            ->iterate();
     }
 
     /**
@@ -165,21 +184,6 @@ class HoldingRepository extends EntityRepository
             ->setParameter('apiIntegrationType', $apiIntegrationType)
             ->getQuery()
             ->execute();
-    }
-
-    /**
-     * @return Holding[]
-     */
-    public function findHoldingsForUpdatingBalanceResMan()
-    {
-        $query = $this->createQueryBuilder('h');
-        $query->innerJoin('h.resManSettings', 's');
-        $query->where('h.apiIntegrationType = :resman');
-        $query->andWhere('s.syncBalance = 1');
-        $query->setParameter('resman', ApiIntegrationType::RESMAN);
-        $query = $query->getQuery();
-
-        return $query->execute();
     }
 
     /**

@@ -161,7 +161,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      */
     public function getHoldingsForUpdatingRent()
     {
-        return $this->getHoldingRepository()->findHoldingsForResmanSyncRecurringCharges();
+        return $this->getHoldingRepository()->findHoldingsForUpdatingRentResMan();
     }
 
     /**

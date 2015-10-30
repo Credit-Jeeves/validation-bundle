@@ -102,10 +102,6 @@ class ResidentDataManager implements ResidentDataManagerInterface
             }
         );
 
-        $this->logger->debug(
-            '[Yardi Resident Manager]Residents was filtered by statuses "Current" and "Notice".'
-        );
-
         return $currentResidents;
     }
 
