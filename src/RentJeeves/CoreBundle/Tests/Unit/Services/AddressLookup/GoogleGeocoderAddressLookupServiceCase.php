@@ -3,11 +3,13 @@ namespace RentJeeves\CoreBundle\Tests\Unit\Services;
 
 use Geocoder\Result\Geocoded;
 use RentJeeves\CoreBundle\Services\AddressLookup\GoogleGeocoderAddressLookupService;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 
-class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
+class GoogleGeocoderAddressLookupServiceCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
     use WriteAttributeExtensionTrait;
@@ -68,9 +70,17 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->returnValue($response));
 
+        $constraintViolationList = new ConstraintViolationList();
+        $constraintViolationList->add(new ConstraintViolation('test','',[],'','',''));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue($constraintViolationList));
+
         $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
-            $this->getValidator(),
+            $validator,
             $this->getLoggerMock()
         );
         $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
@@ -97,9 +107,14 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
             ->with($this->equalTo('test, test, test test'))
             ->will($this->returnValue($response));
 
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(new ConstraintViolationList()));
+
         $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
             $geocoder,
-            $this->getValidator(),
+            $validator,
             $this->getLoggerMock()
         );
         $address = $googleGeocoderAddressLookupService->lookup('test', 'test', 'test', 'test');
@@ -108,19 +123,41 @@ class GoogleGeocoderAddressLookupServiceCase extends BaseTestCase
     }
 
     /**
-     * @return \Geocoder\Geocoder
+     * @test
      */
-    protected function getGeocoder()
+    public function shouldReturnAddressIfLookupAddressByFreeForm()
     {
-        return $this->getContainer()->get('bazinga_geocoder.geocoder');
-    }
+        $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI 48823, United States';
 
-    /**
-     * @return \Symfony\Component\Validator\Validator
-     */
-    protected function getValidator()
-    {
-        return $this->getContainer()->get('validator');
+        $response = new Geocoded();
+        $this->writeAttribute($response, 'latitude', 'test_latitude');
+        $this->writeAttribute($response, 'longitude', 'test_longitude');
+        $this->writeAttribute($response, 'streetNumber', 'test_streetNumber');
+        $this->writeAttribute($response, 'streetName', 'test_streetName');
+        $this->writeAttribute($response, 'city', 'test_city');
+        $this->writeAttribute($response, 'zipcode', 'test_zipcode');
+        $this->writeAttribute($response, 'countryCode', 'test_country');
+        $this->writeAttribute($response, 'regionCode', 'test_regionCode');
+
+        $geocoder = $this->getGeocoderMock();
+        $geocoder->expects($this->once())
+            ->method('geocode')
+            ->with($this->equalTo($freeFormAddress))
+            ->will($this->returnValue($response));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(new ConstraintViolationList()));
+
+        $googleGeocoderAddressLookupService = new GoogleGeocoderAddressLookupService(
+            $geocoder,
+            $validator,
+            $this->getLoggerMock()
+        );
+        $address = $googleGeocoderAddressLookupService->lookupFreeform($freeFormAddress);
+
+        $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
     }
 
     /**

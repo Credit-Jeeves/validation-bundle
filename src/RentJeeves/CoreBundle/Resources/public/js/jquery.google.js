@@ -1,9 +1,9 @@
 /**
  * Author:  Alexandr Sharamko
  */
-(function ( $, google ) {
+(function ($, google) {
 
-    $.fn.google = function( options ) {
+    $.fn.google = function (options) {
 
         var self = this;
         self.isValid = false;
@@ -18,10 +18,14 @@
             loadingSpinnerClass: 'loadingSpinner',
             autoHideLoadingSpinner: false,
             linkAddProperty: Routing.generate('landlord_property_add'),
-            addPropertyCallback: function(data, textStatus, jqXHR){},
-            addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus){},
-            clearSearchCallback: function(isEmpty){},
-            changeSearch: function(){},
+            addPropertyCallback: function (data, textStatus, jqXHR) {
+            },
+            addPropertyCallbackNotValid: function (jqXHR, errorThrown, textStatus) {
+            },
+            clearSearchCallback: function (isEmpty) {
+            },
+            changeSearch: function () {
+            },
             markers: false,
             divIdError: false,
             classError: false,
@@ -30,18 +34,18 @@
             clearSearchId: null,
             clearSearchClass: null,
             moveToLocationClass: 'moveToLocation'
-        }, options );
+        }, options);
 
 
         if (settings.clearSearchId != null || settings.clearSearchClass) {
 
             if (settings.clearSearchId != null) {
-                var close = $('#'+settings.clearSearchId);
+                var close = $('#' + settings.clearSearchId);
             } else {
-                var close = $('#'+settings.findInputId).parent().parent().find('.'+settings.clearSearchClass);
+                var close = $('#' + settings.findInputId).parent().parent().find('.' + settings.clearSearchClass);
             }
 
-            $('#'+settings.findInputId).keyup(function(){
+            $('#' + settings.findInputId).keyup(function () {
                 if ($(this).val().length > 0) {
                     settings.clearSearchCallback(false);
                     close.show();
@@ -51,14 +55,14 @@
                 }
             });
 
-            close.click(function() {
-                $('#'+settings.findInputId).val(' ');
+            close.click(function () {
+                $('#' + settings.findInputId).val(' ');
                 settings.clearSearchCallback(true);
                 close.hide();
                 return false;
             });
 
-            if ($('#'+settings.findInputId).val().length > 0) {
+            if ($('#' + settings.findInputId).val().length > 0) {
                 settings.clearSearchCallback(false);
                 close.show();
             } else {
@@ -67,8 +71,7 @@
             }
         }
 
-        this.deleteOverlays = function()
-        {
+        this.deleteOverlays = function () {
             if (self.markersArray) {
                 for (i in self.markersArray) {
                     self.markersArray[i].setMap(null);
@@ -76,8 +79,7 @@
             }
         }
 
-        this.getHtmlPopap = function(title, content)
-        {
+        this.getHtmlPopap = function (title, content) {
             var templateBody = [
                 {
                     'title': title,
@@ -85,7 +87,7 @@
                 }
             ];
             var html = $('#htmlPopap').tmpl(templateBody).html();
-            return  html;
+            return html;
         }
 
 
@@ -93,32 +95,31 @@
         self.markersArray = [];
 
         this.rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
-            new google.maps.Size(38,54),
-            new google.maps.Point(0,0),
+            new google.maps.Size(38, 54),
+            new google.maps.Point(0, 0),
             new google.maps.Point(19, 41)
         );
 
-        self.showError = function(message)
-        {
+        self.showError = function (message) {
             self.isValid = false;
             if (settings.divIdError === false && settings.classError === false) {
                 alert(message);
             } else {
                 if (settings.divIdError) {
-                    $('#'+settings.divIdError).show();
-                    $('#'+settings.divIdError).html(message);
+                    $('#' + settings.divIdError).show();
+                    $('#' + settings.divIdError).html(message);
                 } else {
-                    $('.'+settings.classError).show();
-                    $('.'+settings.classError).html(message);
+                    $('.' + settings.classError).show();
+                    $('.' + settings.classError).html(message);
                 }
             }
 
             if (settings.loadingSpinner) {
-                $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
+                $('#' + settings.findButtonId).parent().find('.' + settings.loadingSpinnerClass).hide();
             }
 
-            $('#'+settings.findButtonId).removeClass('grey');
-            $('#'+settings.findButtonId).removeClass('disabled');
+            $('#' + settings.findButtonId).removeClass('grey');
+            $('#' + settings.findButtonId).removeClass('disabled');
         }
 
         function initialize() {
@@ -129,11 +130,11 @@
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
             } else {
-                 var mapOptions = {
+                var mapOptions = {
                     center: new google.maps.LatLng(39, -97),
                     zoom: 4,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
-                 };
+                };
             }
             self.map = new google.maps.Map(
                 document.getElementById(settings.mapCanvasId),
@@ -145,16 +146,16 @@
             self.infowindow = new google.maps.InfoWindow();
             //setup markers
             if (settings.markers) {
-                $.each($('.addressText'), function(index, value) {
+                $.each($('.addressText'), function () {
                     var lat = $(this).find('.lat').val();
                     var lng = $(this).find('.lng').val();
                     var addressSelect = $(this).find('.addressSelect').val();
                     var number = $(this).attr('number');
-                    var myLatlng = new google.maps.LatLng(lat,lng);
-                    var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_'+number+'.png',
-                        new google.maps.Size(26,42),
-                        new google.maps.Point(0,0),
-                        new google.maps.Point(13,42)
+                    var myLatlng = new google.maps.LatLng(lat, lng);
+                    var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_' + number + '.png',
+                        new google.maps.Size(26, 42),
+                        new google.maps.Point(0, 0),
+                        new google.maps.Point(13, 42)
                     );
 
                     var contentString = self.getHtmlPopap(
@@ -176,32 +177,32 @@
 
                     self.markersArray[number] = marker;
 
-                    google.maps.event.addListener(marker, 'click', function() {
+                    google.maps.event.addListener(marker, 'click', function () {
                         infowindow.open(self.map, self.markersArray[number]);
                     });
 
                 });
 
-                $('.'+settings.moveToLocationClass).click(function(){
-                    number =  $(this).attr('rel');
+                $('.' + settings.moveToLocationClass).click(function () {
+                    number = $(this).attr('rel');
                     contentString = self.getHtmlPopap(
-                                 $(this).parent().find('.titleAddress').html(),
-                                  $(this).parent().find('.contentAddress').html()
-                              );
+                        $(this).parent().find('.titleAddress').html(),
+                        $(this).parent().find('.contentAddress').html()
+                    );
                     var infowindow = new google.maps.InfoWindow({
-                         content: contentString
+                        content: contentString
                     });
 
                     infowindow.open(self.map, self.markersArray[number]);
-                         return false;
-                    });
+                    return false;
+                });
             }
             //end setup markers
             var marker = new google.maps.Marker({
                 map: self.map
             });
 
-            function validateAddress(){
+            function validateAddress() {
                 self.infowindow.close();
                 marker.setVisible(false);
                 input.className = '';
@@ -242,20 +243,19 @@
                 initialCheck();
             }
 
-            $('#'+settings.findInputId).change(function(){
+            $('#' + settings.findInputId).change(function () {
                 $(this).addClass('notfound');
                 settings.changeSearch();
             });
 
-            function afterAddProperty()
-            {
+            function afterAddProperty() {
                 if (settings.autoHideLoadingSpinner === false) {
                     return;
                 }
-                $('#'+settings.findButtonId).removeClass('grey');
-                $('#'+settings.findButtonId).removeClass('disabled');
+                $('#' + settings.findButtonId).removeClass('grey');
+                $('#' + settings.findButtonId).removeClass('disabled');
                 if (settings.loadingSpinner) {
-                    $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
+                    $('#' + settings.findButtonId).parent().find('.' + settings.loadingSpinnerClass).hide();
                 }
 
                 if (!settings.divIdError && !settings.classError) {
@@ -263,14 +263,13 @@
                 }
 
                 if (settings.divIdError) {
-                    $('#'+settings.divIdError).hide();
+                    $('#' + settings.divIdError).hide();
                 } else {
-                    $('.'+settings.classError).hide();
+                    $('.' + settings.classError).hide();
                 }
             }
 
-            function executeSearch(data)
-            {
+            function executeSearch(data) {
                 if (typeof data == 'undefined') {
                     self.showError(Translator.trans('select.from.drop.down.list'));
                     return false;
@@ -282,21 +281,23 @@
                 }
 
                 if (settings.loadingSpinner) {
-                    $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).show();
+                    $('#' + settings.findButtonId).parent().find('.' + settings.loadingSpinnerClass).show();
                 }
 
                 jQuery.ajax({
                     url: settings.linkAddProperty,
                     type: 'POST',
                     dataType: 'json',
-                    data: {'data': JSON.stringify(data, null)},
-                    error: function(jqXHR, errorThrown, textStatus) {
+                    data: {
+                        'stringAddress': data.stringAddress
+                    },
+                    error: function (jqXHR, errorThrown, textStatus) {
                         afterAddProperty();
                         self.showError(Translator.trans('fill.full.address'));
                         settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
                         return false;
                     },
-                    success: function(data, textStatus, jqXHR) {
+                    success: function (data, textStatus, jqXHR) {
                         if (data.status == "OK") {
                             settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
                             afterAddProperty();
@@ -310,20 +311,20 @@
 
             function initialCheck() {
                 if (settings.divIdError !== false) {
-                    $('#'+settings.divIdError).hide();
+                    $('#' + settings.divIdError).hide();
                 }
 
                 if (settings.classError !== false) {
-                    $('.'+settings.classError).hide();
+                    $('.' + settings.classError).hide();
                 }
 
-                if($('#'+settings.findButtonId).hasClass('grey')) {
+                if ($('#' + settings.findButtonId).hasClass('grey')) {
                     return false;
                 }
 
-                $('#'+settings.findButtonId).addClass('disabled grey');
+                $('#' + settings.findButtonId).addClass('disabled grey');
 
-                if ('' == $('#'+settings.findInputId).val()) {
+                if ('' == $('#' + settings.findInputId).val()) {
                     self.showError(Translator.trans('error.property.empty'));
                     return false;
                 }
@@ -333,15 +334,18 @@
                 }
 
                 self.place = self.autocomplete.getPlace();
+                var stringAddress = $('#' + settings.findInputId).val();
                 if (typeof self.place != 'undefined' && typeof self.place.address_components != 'undefined') {
-                    self.data = {'address': self.place.address_components, 'geometry': self.place.geometry};
+                    self.data = {
+                        'stringAddress': stringAddress,
+                        'address': self.place.address_components,
+                        'geometry': self.place.geometry
+                    };
                     executeSearch(self.data);
                 } else {
                     self.infowindow.close();
-                    var addressText = $('#'+settings.findInputId).val();
-                    //var addressText = $(".pac-container .pac-item:first").text();
                     var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({"address":addressText }, function(results, status) {
+                    geocoder.geocode({"address": stringAddress}, function (results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
                             var lat = results[0].geometry.location.lat(),
                                 lng = results[0].geometry.location.lng(),
@@ -355,8 +359,12 @@
                             self.infowindow.setContent(htmlPopup);
                             self.infowindow.open(self.map, marker);
 
-                            $("#"+settings.findInputId).val(addressText);
-                            self.data = {'address': results[0].address_components, 'geometry':results[0].geometry};
+                            $("#" + settings.findInputId).val(stringAddress);
+                            self.data = {
+                                'stringAddress': stringAddress,
+                                'address': results[0].address_components,
+                                'geometry': results[0].geometry
+                            };
                             executeSearch(self.data);
                         } else {
                             self.showError(Translator.trans('select.from.drop.down.list'));
@@ -365,13 +373,13 @@
                 }
             }
 
-            $('#'+settings.findInputId).keypress(function(e) {
-                if(e.which == 13) {
+            $('#' + settings.findInputId).keypress(function (e) {
+                if (e.which == 13) {
                     initialCheck();
                 }
             });
 
-            $('#'+settings.findButtonId).click(function(){
+            $('#' + settings.findButtonId).click(function () {
                 initialCheck();
             });
 
@@ -379,15 +387,14 @@
         }
 
 
-
         google.maps.event.addDomListener(window, 'load', initialize);
 
         if (settings.formId) {
-            $(document).delegate('#'+settings.formId,"submit",function(){
+            $(document).delegate('#' + settings.formId, "submit", function () {
                 return false;
             });
         }
         return self;
     };
 
-}( jQuery, google ));
+}(jQuery, google));
