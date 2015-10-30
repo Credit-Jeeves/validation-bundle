@@ -142,11 +142,12 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     {
         $contract->setPaymentAccepted($customer->getPaymentAccepted());
         $contract->setIntegratedBalance($customer->getLeaseBalance());
-        $$this->logMessage(
+        $this->logMessage(
             sprintf(
                 '[SyncBalance]Payment accepted set to %s and balance to %s. For %s #%d',
                 $contract->getPaymentAccepted(),
                 $contract->getIntegratedBalance(),
+                (new \ReflectionObject($contract))->getShortName(),
                 $contract->getId()
             )
         );
@@ -187,7 +188,15 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $this->doUpdateRent($customer, $contract);
                 }
             } catch (\Exception $e) {
-                $this->logMessage('[SyncRent]ERROR:' . $e->getMessage(), LogLevel::ALERT);
+                $this->logMessage(
+                    sprintf(
+                        '[SyncRent]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
             }
         }
     }
@@ -225,6 +234,13 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             $endDate = $charge->getDateTimeEndDate();
 
             if (!$this->checkDateFallsBetweenDates($effectiveDate, $endDate)) {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',
+                        $effectiveDate ? $effectiveDate->format('Y-m-d') : '',
+                        $endDate ? $endDate->format('Y-m-d') : ''
+                    )
+                );
                 continue;
             }
 

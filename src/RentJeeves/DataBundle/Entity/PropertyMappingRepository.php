@@ -9,16 +9,16 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 class PropertyMappingRepository extends EntityRepository
 {
     /**
-     * @param Holding $holding
+     * @param int $holdingId
      * @param int $page
      * @param int $limit
      * @return PropertyMapping[]
      */
-    public function findUniqueByHolding(Holding $holding, $page = 1, $limit = 20)
+    public function findUniqueByHolding($holdingId, $page = 1, $limit = 20)
     {
         $offset = ($page - 1) * $limit;
 
-        $query = $this->getUniqueByHoldingQuery($holding);
+        $query = $this->getUniqueByHoldingQuery($holdingId);
         $query->groupBy('pm.externalPropertyId');
 
         $query->setFirstResult($offset);
@@ -28,22 +28,22 @@ class PropertyMappingRepository extends EntityRepository
     }
 
     /**
-     * @param Holding $holding
+     * @param int $holdingId
      * @return int
      */
-    public function getCountUniqueByHolding(Holding $holding)
+    public function getCountUniqueByHolding($holdingId)
     {
-        $query = $this->getUniqueByHoldingQuery($holding);
+        $query = $this->getUniqueByHoldingQuery($holdingId);
         $query->select('count(distinct pm.externalPropertyId)');
 
         return $query->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * @param Holding $holding
+     * @param int $holdingId
      * @return \Doctrine\ORM\QueryBuilder
      */
-    protected function getUniqueByHoldingQuery(Holding $holding)
+    protected function getUniqueByHoldingQuery($holdingId)
     {
         $query = $this->createQueryBuilder('pm');
         $query->innerJoin('pm.property', 'p');
@@ -53,7 +53,7 @@ class PropertyMappingRepository extends EntityRepository
         $query->andWhere('pm.holding = :holdingId');
 
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('holdingId', $holding->getId());
+        $query->setParameter('holdingId', $holdingId);
 
         return $query;
     }

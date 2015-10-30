@@ -72,6 +72,8 @@ abstract class AbstractContractSynchronizer
 
             foreach ($holdings as $holding) {
                 $this->setExternalSettings($holding);
+                $holdingId = $holding->getId();
+                $this->em->clear($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncBalance]Processing holding "%s" #%d',
@@ -79,10 +81,18 @@ abstract class AbstractContractSynchronizer
                         $holding->getId()
                     )
                 );
-                $this->updateBalancesForHolding($holding);
+                $this->updateBalancesForHolding($holdingId);
             }
         } catch (\Exception $e) {
-            $this->logMessage(sprintf('[SyncBalance]ERROR: %s', $e->getMessage()), LogLevel::ALERT);
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]ERROR: %s on %s:%d',
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                ),
+                LogLevel::ALERT
+            );
         }
     }
 
@@ -95,10 +105,14 @@ abstract class AbstractContractSynchronizer
             $holdings = $this->getHoldingsForUpdatingRent();
             if (empty($holdings)) {
                 $this->logMessage('[SyncRent]No data to update.');
+
+                return;
             }
 
             foreach ($holdings as $holding) {
                 $this->setExternalSettings($holding);
+                $holdingId = $holding->getId();
+                $this->em->clear($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Processing holding "%s" #%d',
@@ -106,10 +120,18 @@ abstract class AbstractContractSynchronizer
                         $holding->getId()
                     )
                 );
-                $this->updateContractsRentForHolding($holding);
+                $this->updateContractsRentForHolding($holdingId);
             }
         } catch (\Exception $e) {
-            $this->logMessage(sprintf('[SyncRent]ERROR: %s', $e->getMessage()), LogLevel::ALERT);
+            $this->logMessage(
+                sprintf(
+                    '[SyncRent]ERROR: %s on %s:%d',
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                ),
+                LogLevel::ALERT
+            );
         }
     }
 
@@ -149,21 +171,21 @@ abstract class AbstractContractSynchronizer
     abstract protected function getHoldingsForUpdatingBalance();
 
     /**
-     * @param Holding $holding
+     * @param int $holdingId
      * @throws \RuntimeException
      */
-    protected function updateBalancesForHolding(Holding $holding)
+    protected function updateBalancesForHolding($holdingId)
     {
         $repo = $this->getPropertyRepository();
-        $propertySets = ceil($repo->countContractPropertiesByHolding($holding) / static::COUNT_PROPERTIES_PER_SET);
+        $propertySets = ceil($repo->countContractPropertiesByHolding($holdingId) / static::COUNT_PROPERTIES_PER_SET);
         $this->logMessage(sprintf('[SyncBalance]Found %d pages of property for processing.', $propertySets));
 
         for ($offset = 1; $offset <= $propertySets; $offset++) {
             $this->logMessage(sprintf('[SyncBalance]Start processing page %d of property.', $offset));
-            $properties = $repo->findContractPropertiesByHolding($holding, $offset, static::COUNT_PROPERTIES_PER_SET);
+            $properties = $repo->findContractPropertiesByHolding($holdingId, $offset, static::COUNT_PROPERTIES_PER_SET);
             foreach ($properties as $property) {
                 try {
-                    $propertyMapping = $property->getPropertyMappingByHolding($holding);
+                    $propertyMapping = $property->getPropertyMappingByHoldingId($holdingId);
                     if (empty($propertyMapping)) {
                         throw new \RuntimeException(
                             sprintf(
@@ -207,9 +229,19 @@ abstract class AbstractContractSynchronizer
                         $this->em->flush();
                     }
                 } catch (\Exception $e) {
-                    $this->logMessage('[SyncBalance]ERROR:' . $e->getMessage(), LogLevel::ALERT);
+                    $this->logMessage(
+                        sprintf(
+                            '[SyncBalance]ERROR: %s on %s:%d',
+                            $e->getMessage(),
+                            $e->getFile(),
+                            $e->getLine()
+                        ),
+                        LogLevel::ALERT
+                    );
                 }
             }
+            /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+            $this->em->clear();
         }
     }
 
@@ -228,13 +260,13 @@ abstract class AbstractContractSynchronizer
     abstract protected function getHoldingsForUpdatingRent();
 
     /**
-     * @param Holding $holding
+     * @param int $holdingId
      */
-    protected function updateContractsRentForHolding(Holding $holding)
+    protected function updateContractsRentForHolding($holdingId)
     {
         $propertyMappingRepository = $this->getPropertyMappingRepository();
         $countPropertyMappingSets = ceil(
-            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
+            $propertyMappingRepository->getCountUniqueByHolding($holdingId) / self::COUNT_PROPERTIES_PER_SET
         );
         $this->logMessage(
             sprintf(
@@ -246,7 +278,7 @@ abstract class AbstractContractSynchronizer
         for ($offset = 1; $offset <= $countPropertyMappingSets; $offset++) {
             $this->logMessage(sprintf('[SyncRent]Start processing page %d of property mapping.', $offset));
             $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
-                $holding,
+                $holdingId,
                 $offset,
                 static::COUNT_PROPERTIES_PER_SET
             );
@@ -269,7 +301,15 @@ abstract class AbstractContractSynchronizer
                     }
 
                 } catch (\Exception $e) {
-                    $this->logMessage('[SyncRent]ERROR:' . $e->getMessage(), LogLevel::ALERT);
+                    $this->logMessage(
+                        sprintf(
+                            '[SyncRent]ERROR: %s on %s:%d',
+                            $e->getMessage(),
+                            $e->getFile(),
+                            $e->getLine()
+                        ),
+                        LogLevel::ALERT
+                    );
                 }
             }
         }

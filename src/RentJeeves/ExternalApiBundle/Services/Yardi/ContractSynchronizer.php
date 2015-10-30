@@ -336,19 +336,14 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 continue;
             }
 
-            if (!$this->checkDateFallsBetweenDates(
-                $charge->getDetail()->getServiceFromDateObject(),
-                $charge->getDetail()->getServiceToDateObject()
-            )) {
+            $fromDate = $charge->getDetail()->getServiceFromDateObject();
+            $toDate = $charge->getDetail()->getServiceToDateObject();
+            if (!$this->checkDateFallsBetweenDates($fromDate, $toDate)) {
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',
-                        $charge->getDetail()->getServiceFromDateObject() ?
-                            $charge->getDetail()->getServiceFromDateObject()->format('Y-m-d') :
-                                '',
-                        $charge->getDetail()->getServiceToDateObject() ?
-                            $charge->getDetail()->getServiceToDateObject()->format('Y-m-d') :
-                                ''
+                        $fromDate ? $fromDate->format('Y-m-d') : '',
+                        $toDate ? $toDate->format('Y-m-d') : ''
                     )
                 );
                 continue;

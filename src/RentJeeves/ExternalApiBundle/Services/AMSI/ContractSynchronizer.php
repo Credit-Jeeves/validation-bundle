@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Psr\Log\LogLevel;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -57,7 +58,15 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $this->doUpdateBalanceAndPaymentAccepted($lease, $contract);
                 }
             } catch (\Exception $e) {
-                $this->logMessage('[SyncBalance]ERROR:' . $e->getMessage());
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
             }
         }
     }
@@ -223,7 +232,15 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     );
                 }
             } catch (\Exception $e) {
-                $this->logMessage('[SyncRent]ERROR:' . $e->getMessage());
+                $this->logMessage(
+                    sprintf(
+                        '[SyncRent]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
             }
         }
     }
