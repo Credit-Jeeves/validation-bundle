@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 
 /**
  * @ORM\MappedSuperclass
@@ -93,7 +94,7 @@ class PropertyAddress
     protected $updatedAt;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
@@ -101,7 +102,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getState()
     {
@@ -109,7 +110,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $state
+     * @param string $state
      */
     public function setState($state)
     {
@@ -117,7 +118,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCity()
     {
@@ -125,7 +126,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $city
+     * @param string $city
      */
     public function setCity($city)
     {
@@ -133,7 +134,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStreet()
     {
@@ -141,7 +142,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $street
+     * @param string $street
      */
     public function setStreet($street)
     {
@@ -149,7 +150,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -157,7 +158,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $number
+     * @param string $number
      */
     public function setNumber($number)
     {
@@ -165,7 +166,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getZip()
     {
@@ -173,7 +174,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $zip
+     * @param string $zip
      */
     public function setZip($zip)
     {
@@ -181,7 +182,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getGoogleReference()
     {
@@ -189,7 +190,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $googleReference
+     * @param string $googleReference
      */
     public function setGoogleReference($googleReference)
     {
@@ -197,7 +198,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getJb()
     {
@@ -205,7 +206,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $jb
+     * @param string $jb
      */
     public function setJb($jb)
     {
@@ -213,7 +214,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getKb()
     {
@@ -221,7 +222,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $kb
+     * @param string $kb
      */
     public function setKb($kb)
     {
@@ -229,15 +230,18 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
-    public function getIsSingle()
+    public function isSingle()
     {
         return $this->isSingle;
     }
 
     /**
-     * @param mixed $isSingle
+     * @deprecated Not deprecated,
+     * but should set this using "property.manager"->setupSingleProperty() instead.
+     *
+     * @param boolean $isSingle
      */
     public function setIsSingle($isSingle)
     {
@@ -245,7 +249,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLat()
     {
@@ -253,7 +257,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $lat
+     * @param string $lat
      */
     public function setLat($lat)
     {
@@ -261,7 +265,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLong()
     {
@@ -269,7 +273,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $long
+     * @param string $long
      */
     public function setLong($long)
     {
@@ -277,7 +281,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getIndex()
     {
@@ -285,7 +289,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $index
+     * @param string $index
      */
     public function setIndex($index)
     {
@@ -293,7 +297,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -301,7 +305,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $createdAt
+     * @param \DateTime $createdAt
      */
     public function setCreatedAt($createdAt)
     {
@@ -309,7 +313,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -317,7 +321,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $updatedAt
+     * @param \DateTime $updatedAt
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -338,5 +342,25 @@ class PropertyAddress
     public function getFullAddress()
     {
         return sprintf('%s, %s, %s %s', $this->getAddress(), $this->city, $this->state, $this->zip);
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddressFields(Address $address)
+    {
+        $this->setState($address->getState());
+        $this->setCity($address->getCity());
+        $this->setStreet($address->getStreet());
+        $this->setNumber($address->getNumber());
+        $this->setZip($address->getZip());
+        if ($this->getJb() === null && $this->getKb() === null && $address->getJb() && $address->getKb()) {
+            $this->setJb($address->getJb());
+            $this->setKb($address->getKb());
+        } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
+            $this->setLat($address->getLatitude());
+            $this->setLong($address->getLongitude());
+            $this->setIndex($address->getIndex());
+        }
     }
 }

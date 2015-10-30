@@ -7,6 +7,7 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -314,9 +315,15 @@ class PublicController extends Controller
             $propertyList = $holdingPropertyList;
         }
 
+        if (false === isset($property) || false == $property) {
+            $property = new Property();
+            $propertyAddress = new PropertyAddress();
+            $property->setPropertyAddress($propertyAddress);
+        }
+
         $parameters = [
             'form' => $form->createView(),
-            'property' => (isset($property) && $property) ? $property : new Property(),
+            'property' => $property,
             'propertyList' => $propertyList,
             'countPropery' => count($propertyList),
             'id' => $id,
@@ -360,9 +367,13 @@ class PublicController extends Controller
 
         $propertyList = $em->getRepository('RjDataBundle:Property')->findByHoldingOrderedByAddress($holding);
 
+        $property = new Property();
+        $propertyAddress = new PropertyAddress();
+        $property->setPropertyAddress($propertyAddress);
+
         return $this->render('RjPublicBundle:Public:new.html.twig', [
             'form' => $form->createView(),
-            'property' => new Property(),
+            'property' => $property,
             'propertyList' => $propertyList,
             'countPropery' => count($propertyList),
             'id' => $id,
@@ -397,9 +408,13 @@ class PublicController extends Controller
 
         $propertyList = $em->getRepository('RjDataBundle:Property')->getAllPropertiesInGroupOrderedByAddress($group);
 
+        $property = new Property();
+        $propertyAddress = new PropertyAddress();
+        $property->setPropertyAddress($propertyAddress);
+
         return $this->render('RjPublicBundle:Public:new.html.twig', [
             'form' => $form->createView(),
-            'property' => new Property(),
+            'property' => $property,
             'propertyList' => $propertyList,
             'countPropery' => count($propertyList),
             'id' => $id,

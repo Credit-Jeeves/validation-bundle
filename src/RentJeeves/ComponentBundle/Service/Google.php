@@ -2,9 +2,9 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ComponentBundle\Service\Google\GooglePlaces as Place;
-use Doctrine\ORM\EntityManager;
 
 /**
  * Service name "google"
@@ -173,12 +173,13 @@ class Google
      */
     protected function getLocationData(Property $property, $toString = true)
     {
-        if ($property->getJb() && $property->getKb()) {
-            $locationData['latitude'] = $property->getJb();
-            $locationData['longitude'] = $property->getKb();
-        } elseif ($property->getLat() && $property->getLong()) {
-            $locationData['latitude'] = $property->getLat();
-            $locationData['longitude'] = $property->getLong();
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->getJb() && $propertyAddress->getKb()) {
+            $locationData['latitude'] = $propertyAddress->getJb();
+            $locationData['longitude'] = $propertyAddress->getKb();
+        } elseif ($propertyAddress->getLat() && $propertyAddress->getLong()) {
+            $locationData['latitude'] = $propertyAddress->getLat();
+            $locationData['longitude'] = $propertyAddress->getLong();
         } else {
             throw new \InvalidArgumentException(sprintf('Property doesn\'t have neither jb/kb nor lat/long'));
         }

@@ -275,7 +275,7 @@ abstract class Property
     /**
      * @var PropertyAddress
      *
-     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress")
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
      * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=true)
      * @TODO: ORM\JoinColumn(name="property_address_id", referencedColumnName="id") after migration
      */
@@ -364,6 +364,8 @@ abstract class Property
     }
 
     /**
+     * @deprecated
+     *
      * Set country
      *
      * @param string $country
@@ -377,6 +379,8 @@ abstract class Property
     }
 
     /**
+     *
+     * @deprecated
      * Get country
      *
      * @return string
@@ -767,38 +771,6 @@ abstract class Property
     public function getGoogleReference()
     {
         return $this->google_reference;
-    }
-
-    /**
-     * @deprecated use setJb
-     */
-    public function setLatitude($data)
-    {
-        return $this->setJb($data);
-    }
-
-    /**
-     * @deprecated use setKb
-     */
-    public function setLongitude($data)
-    {
-        return $this->setKb($data);
-    }
-
-    /**
-     * @deprecated use getJb
-     */
-    public function getLatitude()
-    {
-        return $this->getJb();
-    }
-
-    /**
-     * @deprecated use getKb
-     */
-    public function getLongitude()
-    {
-        return $this->getKb();
     }
 
     /**

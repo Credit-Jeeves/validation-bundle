@@ -134,11 +134,12 @@ class UnitMapperCase extends AbstractMapperCase
         $this->assertEquals($unitName, $unit->getName());
 
         $this->assertInstanceOf('\RentJeeves\DataBundle\Entity\Property', $property = $unit->getProperty());
-        $this->assertEquals('Brooklyn', $property->getCity());
-        $this->assertContains('Orange St', $property->getStreet());
-        $this->assertEquals('50', $property->getNumber());
-        $this->assertEquals('11201', $property->getZip());
-        $this->assertEquals('US', $property->getCountry());
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals('Brooklyn', $propertyAddress->getCity());
+        $this->assertContains('Orange St', $propertyAddress->getStreet());
+        $this->assertEquals('50', $propertyAddress->getNumber());
+        $this->assertEquals('11201', $propertyAddress->getZip());
         $this->assertTrue($group->getGroupProperties()->contains($property));
 
         $this->assertEquals('testUnitID', $unit->getUnitMapping()->getExternalUnitId());

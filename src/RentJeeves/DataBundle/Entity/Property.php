@@ -119,7 +119,7 @@ class Property extends Base
             }
         }
 
-        return $erchantExist;
+        return $merchantExist;
     }
 
     public function hasUnits()
@@ -258,27 +258,5 @@ class Property extends Base
         }
 
         return null;
-    }
-
-    /**
-     * @param Address $address
-     */
-    public function setAddressFields(Address $address)
-    {
-        $this->setCountry($address->getCountry());
-        $this->setArea($address->getState());
-        $this->setCity($address->getCity());
-        $this->setDistrict($address->getDistrict());
-        $this->setStreet($address->getStreet());
-        $this->setNumber($address->getNumber());
-        $this->setZip($address->getZip());
-        if ($this->getJb() === null && $this->getKb() === null && $address->getJb() && $address->getKb()) {
-            $this->setJb($address->getJb());
-            $this->setKb($address->getKb());
-        } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
-            $this->setLat($address->getLatitude());
-            $this->setLong($address->getLongitude());
-            $this->setIndex($address->getIndex());
-        }
     }
 }

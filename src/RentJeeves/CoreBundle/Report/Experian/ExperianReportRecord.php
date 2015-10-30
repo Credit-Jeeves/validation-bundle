@@ -237,11 +237,12 @@ class ExperianReportRecord
         return 'NO';
     }
 
+    /**
+     * @return string
+     */
     public function getTenantAddress1()
     {
-        $property = $this->contract->getProperty();
-
-        return sprintf('%s %s', $property->getNumber(), $property->getStreet());
+        return $this->contract->getProperty()->getPropertyAddress()->getAddress();
     }
 
     public function getTenantAddress2()

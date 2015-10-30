@@ -1791,7 +1791,7 @@ class ImportCase extends ImportBaseAbstract
         $this->load(true);
         $em = $this->getEntityManager();
         /** @var Property $property   */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
                 'street' => 'Broadway',
                 'number' => '785',
@@ -1807,7 +1807,10 @@ class ImportCase extends ImportBaseAbstract
             $em->remove($unit);
         }
         $em->flush();
-        $property->setIsSingle(true);
+
+        $propertyAddress = $property->getPropertyAddress();
+        $propertyAddress->setIsSingle(true);
+
         $em->persist($property);
         $em->flush();
 

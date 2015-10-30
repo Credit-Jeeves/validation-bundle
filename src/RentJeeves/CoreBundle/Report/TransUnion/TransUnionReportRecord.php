@@ -394,10 +394,12 @@ class TransUnionReportRecord
         return str_repeat(' ', 10);
     }
 
+    /**
+     * @return string
+     */
     public function getFirstLineOfAddress()
     {
-        $property = $this->contract->getProperty();
-        $addressLine = sprintf('%s %s', $property->getNumber(), $property->getStreet());
+        $addressLine = $this->contract->getProperty()->getPropertyAddress()->getAddress();
 
         return str_pad($addressLine, 32);
     }

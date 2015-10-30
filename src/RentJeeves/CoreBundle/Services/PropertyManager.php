@@ -11,6 +11,7 @@ use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
 
 /**
@@ -122,7 +123,8 @@ class PropertyManager
             $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
             $property->addUnit($unit);
 
-            $property->setIsSingle(true);
+            $propertyAddress = $property->getPropertyAddress();
+            $propertyAddress->setIsSingle(true);
 
             $this->em->persist($unit);
 
@@ -150,86 +152,55 @@ class PropertyManager
     }
 
     /**
-     * @deprecated Don`t use it PLS
-     *
-     * @param array $params
-     *
-     * @return null|object
-     */
-    public function getPropertyFromDB(array $params)
-    {
-        foreach ($params as $key => $param) {
-            if (empty($param)) {
-                unset($params[$key]);
-            }
-        }
-
-        if (array_key_exists('ss_index', $params)) {
-            $minimum_args = 1;
-        } else {
-            $minimum_args = 3;
-        }
-
-        if (count($params) < $minimum_args) {
-            return null;
-        }
-
-        return $this->em->getRepository(
-            'RjDataBundle:Property'
-        )->findOneBy($params);
-    }
-
-    /**
      * @param Property $property
+     *
      * @return null|Property
      */
     public function checkByMinimalArgs(Property $property)
     {
-        $params = [];
+        $propertyAddress = $property->getPropertyAddress();
 
-        if ($property->getIndex() !== null) {
-            $params[] = [
-                'ss_index' => $property->getIndex()
-            ];
-        } elseif ($property->getJb() !== null && $property->getKb() !== null) {
-            $params[] = [
-                'jb' => $property->getJb(),
-                'kb' => $property->getKb(),
-                'number' => $property->getNumber(),
-            ];
+        if ($propertyAddress->getIndex() !== null) {
+            $params['index'] = $propertyAddress->getIndex();
+        } elseif ($propertyAddress->getJb() !== null && $propertyAddress->getKb() !== null) {
+            $params['jb'] = $propertyAddress->getJb();
+            $params['kb'] = $propertyAddress->getKb();
+            $params['number'] = $propertyAddress->getNumber();
         } else {
             throw new \LogicException('Property doesn`t have data about location');
         }
 
-        return $this->getPropertyFromDB($params);
+        return $this->getPropertyRepository()->findOneByPropertyAddressFields($params);
     }
 
     /**
      * @param Property $property
+     *
      * @return null|Property
      */
     public function checkByAllArgs(Property $property)
     {
-        $params = array(
-            'number' => $property->getNumber(),
-            'city' => $property->getCity(),
-            'state' => $property->getArea(),
-            'street' => $property->getStreet(),
-        );
+        $propertyAddress = $property->getPropertyAddress();
+        $params = [
+            'number' => $propertyAddress->getNumber(),
+            'city' => $propertyAddress->getCity(),
+            'state' => $propertyAddress->getState(),
+            'street' => $propertyAddress->getStreet(),
+        ];
 
-        return $this->getPropertyFromDB($params);
+        return $this->getPropertyRepository()->findOneByPropertyAddressFields($params);
     }
 
     /**
+     * @deprecated pls don`t use it
+     *
      * @param Property $property
      * @param bool $saveToGoogle
      *
      * @return null|Property
      */
-    public function checkPropertyDuplicate(
-        Property $property,
-        $saveToGoogle = false
-    ) {
+    public function checkPropertyDuplicate(Property $property, $saveToGoogle = false)
+    {
         // verify and standardize address
         if (!$this->isValidProperty($property)) {
             return null;
@@ -282,15 +253,16 @@ class PropertyManager
             }
         }
 
+        $propertyAddress = $property->getPropertyAddress();
         $address = $this->lookupAddress(
-            $property->getAddress1(),
-            $property->getCity(),
-            $property->getArea(),
-            $property->getZip()
+            $propertyAddress->getAddress(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
         );
 
         if ($address instanceof Address) {
-            $property->setAddressFields($address);
+            $propertyAddress->setAddressFields($address);
             $this->validProperties[] = $property;
 
             return true;
@@ -310,9 +282,11 @@ class PropertyManager
     public function getPropertyByAddress($street, $city, $state, $zipCode)
     {
         $property = new Property();
+        $propertyAddress = new PropertyAddress();
+        $property->setPropertyAddress($propertyAddress);
 
         if (null !== $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
-            $property->setAddressFields($address);
+            $propertyAddress->setAddressFields($address);
             if ($propertyDB = $this->checkByMinimalArgs($property) or
                 $propertyDB = $this->checkByAllArgs($property)
             ) {
@@ -350,6 +324,7 @@ class PropertyManager
      *   - Second step go to Geocode Service for normalized address and try to find it in DB again
      *
      * @param Property $property
+     *
      * @return Property|false
      */
     public function getPropertyFromDBIn2steps(Property $property)
@@ -357,13 +332,15 @@ class PropertyManager
         if ($propertyDB = $this->checkByAllArgs($property)) {
             return $propertyDB;
         }
+        $propertyAddress = $property->getPropertyAddress();
 
         $propertyDB = $this->getPropertyByAddress(
-            $property->getAddress1(),
-            $property->getCity(),
-            $property->getArea(),
-            $property->getZip()
+            $propertyAddress->getAddress(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
         );
+
         if (null !== $propertyDB && $propertyDB->getId()) {
             return $propertyDB;
         }
