@@ -5,7 +5,6 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Inject;
-use RentJeeves\DataBundle\Entity\ImportMappingByProperty;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
@@ -53,33 +52,18 @@ class StorageMRI extends ExternalApiStorage
      */
     protected function getMappingFromDB()
     {
-        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+        $importApiMapping = $this->em->getRepository('RjDataBundle:ImportApiMapping')->findOneBy(
             [
                 'externalPropertyId' => $this->getImportExternalPropertyId(),
                 'holding' => $this->getLandlord()->getHolding()
             ]
         );
 
-        if (empty($propertyMapping)) {
-            return false;
-        }
-        /** @var ImportMappingByProperty $importMappingByProperty */
-        $importMappingByProperty = $this->em->getRepository('RjDataBundle:ImportMappingByProperty')
-            ->findOneByProperty(
-                $propertyMapping->getProperty()
-            );
-
-        if (empty($importMappingByProperty)) {
+        if (empty($importApiMapping)) {
             return false;
         }
 
-        $mappingData = $importMappingByProperty->getMappingData();
-
-        if (empty($mappingData)) {
-            return false;
-        }
-
-        return $mappingData;
+        return $importApiMapping->getMappingData();
     }
 
     /**
