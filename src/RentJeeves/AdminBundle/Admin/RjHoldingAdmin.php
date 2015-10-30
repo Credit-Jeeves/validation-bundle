@@ -51,14 +51,6 @@ class RjHoldingAdmin extends Admin
                     'label' => 'admin.holding.payments_enabled',
                 ]
             )
-            ->add(
-                'exportTenantId',
-                null,
-                [
-                    'required' => false,
-                    'label' => 'admin.holding.export_tenant_id',
-                ]
-            )
             ->with('Accounting Settings')
                 ->add(
                     'apiIntegrationType',
@@ -138,6 +130,15 @@ class RjHoldingAdmin extends Admin
                     'sortable'  => 'position',
                 )
             )
+            ->with('Promas Settings')
+                ->add(
+                    'exportTenantId',
+                    null,
+                    [
+                        'required' => false,
+                        'label' => 'admin.holding.export_tenant_id',
+                    ]
+                )
             ->end();
     }
 
