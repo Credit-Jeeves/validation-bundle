@@ -9,20 +9,24 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyRepository extends EntityRepository
 {
+    /**
+     * @return mixed
+     */
     public function getDuplicateProperties()
     {
-        $query = $this->createQueryBuilder('property')
+        return $this->createQueryBuilder('property')
             ->select(
                 '
                     property.id,
-                    property.zip,
-                    property.number,
-                    property.street,
-                    COUNT(property.street) AS street_c,
-                    COUNT(property.number) AS number_c,
-                    COUNT(property.zip) AS zip_c
+                    propertyAddress.zip,
+                    propertyAddress.number,
+                    propertyAddress.street,
+                    COUNT(propertyAddress.street) AS street_c,
+                    COUNT(propertyAddress.number) AS number_c,
+                    COUNT(propertyAddress.zip) AS zip_c
                     '
             )
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->groupBy(
                 'property.street',
                 'property.number',
@@ -32,25 +36,27 @@ class PropertyRepository extends EntityRepository
                 'street_c > 1
                     AND number_c > 1
                     AND zip_c > 1'
-            );
-
-        $query = $query->getQuery();
-
-        return $query->execute();
+            )
+            ->getQuery()
+            ->execute();
     }
 
+    /**
+     * @return array
+     */
     public function getDublicatePropertiesWithContract()
     {
         $sql = <<< EOT
 SELECT (
 COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
-property.id AS property_id, property.zip AS zip, property.number AS number,
-property.street AS street, contract.id AS contract_id,
-COUNT( contract.id ) AS count_contract, COUNT( property.zip ) AS count_zip,
-COUNT( property.number ) AS count_number, COUNT( property.street ) AS count_street
+property.id AS property_id, propertyAddress.zip AS zip, propertyAddress.number AS number,
+propertyAddress.street AS street, contract.id AS contract_id,
+COUNT( contract.id ) AS count_contract, COUNT( propertyAddress.zip ) AS count_zip,
+COUNT( propertyAddress.number ) AS count_number, COUNT( propertyAddress.street ) AS count_street
 FROM rj_property as property
 INNER JOIN rj_contract as contract ON property.id = contract.property_id
-GROUP BY property.street, property.number, property.zip
+INNER JOIN rj_property_address as propertyAddress ON property.property_address_id = propertyAddress.id
+GROUP BY propertyAddress.street, propertyAddress.number, propertyAddress.zip
 HAVING count_street > 1
 AND count_number > 1
 AND count_zip > 1
@@ -67,6 +73,7 @@ EOT;
 
     /**
      * @param Group $group
+     *
      * @return Property[]
      */
     public function getAllPropertiesInGroup(Group $group)
@@ -82,26 +89,28 @@ EOT;
 
     /**
      * @param Group $group
+     *
      * @return Property[]
      */
     public function getAllPropertiesInGroupOrderedByAddress(Group $group)
     {
-        $query = $this->createQueryBuilder('p')
-            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+        return $this->createQueryBuilder('p')
+            ->addSelect('CONCAT(propertyAddress.number, propertyAddress.street) AS HIDDEN sortField')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->innerJoin('p.property_groups', 'g')
             ->where('g.id = :group_id')
             ->setParameter('group_id', $group->getId())
             ->orderBy('sortField')
-            ->getQuery();
-
-        return $query->execute();
+            ->getQuery()
+            ->execute();
     }
 
     /**
-     *
-     * @param unknown_type $group
+     * @param Group $group
      * @param string $searchBy
      * @param string $search
+     *
+     * @return mixed
      */
     public function countProperties($group, $searchBy = 'street', $search = '')
     {
@@ -132,7 +141,8 @@ EOT;
         $search = ''
     ) {
         $offset = ($page - 1) * $limit;
-        $query = $this->createQueryBuilder('p');
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->innerJoin('p.property_groups', 'g');
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
@@ -158,17 +168,18 @@ EOT;
     }
 
     /**
+     * @param string $searchBy
      *
-     * @param unknown_type $searchBy
+     * @return string $searchBy
      */
     private function applySearchField($searchBy)
     {
         switch ($searchBy) {
             case 'street':
-                $searchBy = 'CONCAT(p.street, p.number)';
+                $searchBy = 'CONCAT(propertyAddress.street, propertyAddress.number)';
                 break;
             default:
-                $searchBy = 'p.' . $searchBy;
+                $searchBy = 'propertyAddress.' . $searchBy;
         }
 
         return $searchBy;
@@ -176,40 +187,48 @@ EOT;
 
     /**
      * @param string $search
+     *
      * @return array
      */
     private function prepareSearch($search)
     {
         $search = preg_replace('/\s+/', ' ', trim($search));
-        $search = explode(' ', $search);
 
-        return $search;
+        return explode(' ', $search);
     }
 
+    /**
+     * @param int $propertyId
+     *
+     * @return int
+     */
     public function countGroup($propertyId)
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->select('count(g.id)')
+        return $this->createQueryBuilder('p')
+            ->select('count(g.id)')
             ->innerJoin('p.property_groups', 'g')
             ->where('p.id = :propertyId')
-            ->setParameter('propertyId', $propertyId);
-
-        $count = $qb->getQuery()->getSingleScalarResult();
-
-        return $count;
+            ->setParameter('propertyId', $propertyId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
+    /**
+     * @param int $propertyId
+     *
+     * @return mixed
+     */
     public function findOneWithUnitAndAlphaNumericSort($propertyId)
     {
-        $query = $this->createQueryBuilder('p')
-            ->select('LENGTH(unit.name) as co,p,unit');
-        $query->leftJoin('p.units', 'unit');
-        $query->where('p.id = :propertyId');
-        $query->setParameter('propertyId', $propertyId);
-        $query->addOrderBy('co', 'ASC');
-        $query->addOrderBy('unit.name', 'ASC');
-        $query = $query->getQuery();
-        $result = $query->getResult();
+        $result = $this->createQueryBuilder('p')
+            ->select('LENGTH(unit.name) as co,p,unit')
+            ->leftJoin('p.units', 'unit')
+            ->where('p.id = :propertyId')
+            ->setParameter('propertyId', $propertyId)
+            ->addOrderBy('co', 'ASC')
+            ->addOrderBy('unit.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         if (isset($result[0][0])) {
             return $result[0][0];
@@ -218,19 +237,26 @@ EOT;
         return null;
     }
 
+    /**
+     * @param string $jb
+     * @param string $kb
+     *
+     * @return mixed
+     */
     public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
     {
-        $query = $this->createQueryBuilder('p')
-            ->select('LENGTH(u.name) as co,p,u');
-        $query->leftJoin('p.units', 'u');
-        $query->where('p.jb = :jb');
-        $query->andWhere('p.kb = :kb');
-        $query->setParameter('jb', $jb);
-        $query->setParameter('kb', $kb);
-        $query->addOrderBy('co', 'ASC');
-        $query->addOrderBy('u.name', 'ASC');
-        $query = $query->getQuery();
-        $result = $query->getResult();
+        $result = $this->createQueryBuilder('p')
+            ->select('LENGTH(u.name) as co,p,u')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->leftJoin('p.units', 'u')
+            ->where('propertyAddress.jb = :jb')
+            ->andWhere('propertyAddress.kb = :kb')
+            ->setParameter('jb', $jb)
+            ->setParameter('kb', $kb)
+            ->addOrderBy('co', 'ASC')
+            ->addOrderBy('u.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         if (isset($result[0][0])) {
             return $result[0][0];
@@ -239,20 +265,26 @@ EOT;
         return null;
     }
 
+    /**
+     * @param Holding $holding
+     *
+     * @return array
+     */
     public function findByHoldingAndAlphaNumericSort(Holding $holding)
     {
-        $query = $this->createQueryBuilder('p')
-            ->select('LENGTH(unit.name) as co,p,unit');
-        $query->innerJoin('p.property_groups', 'p_group');
-        $query->leftJoin('p.units', 'unit');
-        $query->where('p_group.holding_id = :holdingId');
-        $query->andWhere('unit.holding = :holdingId');
-        $query->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL');
-        $query->setParameter('holdingId', $holding->getId());
-        $query->addOrderBy('co', 'ASC');
-        $query->addOrderBy('unit.name', 'ASC');
-        $query = $query->getQuery();
-        $result = $query->getResult();
+        $result = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->select('LENGTH(unit.name) as co,p,unit')
+            ->innerJoin('p.property_groups', 'p_group')
+            ->leftJoin('p.units', 'unit')
+            ->where('p_group.holding_id = :holdingId')
+            ->andWhere('unit.holding = :holdingId')
+            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
+            ->setParameter('holdingId', $holding->getId())
+            ->addOrderBy('co', 'ASC')
+            ->addOrderBy('unit.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         if (!empty($result)) {
             $result = array_map('current', $result);
@@ -263,35 +295,45 @@ EOT;
 
     /**
      * @param Holding $holding
+     *
      * @return Property[]
      */
     public function findByHoldingOrderedByAddress(Holding $holding)
     {
-        $query = $this->createQueryBuilder('p')
-            ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->addSelect('CONCAT(propertyAddress.number, propertyAddress.street) AS HIDDEN sortField')
             ->innerJoin('p.property_groups', 'p_group')
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
             ->andWhere('unit.holding = :holdingId')
-            ->andWhere('p.jb IS NOT NULL AND p.kb IS NOT NULL')
+            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
             ->orderBy('sortField')
-            ->getQuery();
-
-        return $query->execute();
+            ->getQuery()
+            ->execute();
     }
 
+    /**
+     * @param Holding $holding
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function findByHolding(Holding $holding = null)
     {
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.property_groups', 'p_group');
-        $query->where('p.jb IS NOT NULL AND p.kb IS NOT NULL');
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->innerJoin('p.property_groups', 'p_group')
+            ->where('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL');
         if ($holding) {
-            $query->andWhere('p_group.holding_id = :holdingId');
-            $query->setParameter('holdingId', $holding->getId());
+            $query
+                ->andWhere('p_group.holding_id = :holdingId')
+                ->setParameter('holdingId', $holding->getId());
         }
-        $query->addOrderBy('p.street', 'ASC');
-        $query->addOrderBy('p.number', 'ASC');
+
+        $query
+            ->addOrderBy('propertyAddress.street', 'ASC')
+            ->addOrderBy('propertyAddress.number', 'ASC');
 
         return $query;
     }
@@ -300,72 +342,62 @@ EOT;
      * @param Holding $holding
      * @param int $page
      * @param int $limit
+     *
      * @return Property[]
      */
     public function findContractPropertiesByHolding(Holding $holding, $page, $limit = 20)
     {
         $offset = ($page - 1) * $limit;
 
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.contracts', 'c');
-        $query->innerJoin('p.propertyMapping', 'pm');
-
-        $query->where('c.status in (:statuses)');
-        $query->andWhere('pm.holding = :holdingId');
-
-        $query->groupBy('p.id');
-
-        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('holdingId', $holding->getId());
-
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-
-        $query = $query->getQuery();
-
-        return $query->execute();
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.contracts', 'c')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.holding = :holdingId')
+            ->groupBy('p.id')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('holdingId', $holding->getId())
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->execute();
     }
 
     /**
      * @param Holding $holding
+     *
      * @return int
      */
     public function countContractPropertiesByHolding(Holding $holding)
     {
-        $query = $this->createQueryBuilder('p');
-        $query->select('count(distinct p.id)');
-        $query->innerJoin('p.contracts', 'c');
-        $query->innerJoin('p.propertyMapping', 'pm');
-
-        $query->where('c.status in (:statuses)');
-        $query->andWhere('pm.holding = :holdingId');
-
-        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('holdingId', $holding->getId());
-        $query = $query->getQuery();
-
-        return $query->getSingleScalarResult();
+        return $this->createQueryBuilder('p')
+            ->select('count(distinct p.id)')
+            ->innerJoin('p.contracts', 'c')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.holding = :holdingId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('holdingId', $holding->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
      * @param Holding $holding
+     * @param string $externalPropertyId
      *
-     * @return Property
-     *
-     * @throws NonUniqueResultException
+     * @return Property|null
      */
     public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
     {
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.propertyMapping', 'pm');
-
-        $query->where('pm.holding = :holdingId');
-        $query->andWhere('pm.externalPropertyId = :externalPropertyId');
-
-        $query->setParameter('holdingId', $holding->getId());
-        $query->setParameter('externalPropertyId', $externalPropertyId);
-
-        return $query->getQuery()->getOneOrNullResult();
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('pm.holding = :holdingId')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -375,14 +407,15 @@ EOT;
      */
     public function findOneByAddress(Address $address)
     {
-        $query = $this->createQueryBuilder('p');
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress');
         if ($address->getIndex() !== null) {
             $query
-                ->where('p.index = :index')
+                ->where('propertyAddress.index = :index')
                 ->setParameter('index', $address->getIndex());
         } elseif ($address->getJb() !== null && $address->getKb() !== null) {
             $query
-                ->where('p.jb = :jb AND p.kb = :kb')
+                ->where('propertyAddress.jb = :jb AND propertyAddress.kb = :kb')
                 ->setParameter('jb', $address->getJb())
                 ->setParameter('kb', $address->getKb());
         } else {
@@ -390,10 +423,30 @@ EOT;
         }
 
         return $query
-            ->andWhere('p.number = :number')
+            ->andWhere('propertyAddress.number = :number')
             ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param array $criteria
+     *
+     * @return Property|null
+     */
+    public function findOneByPropertyAddressFields(array $criteria)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress');
+
+        foreach ($criteria as $field => $value) {
+            $query
+                ->andWhere(sprintf('propertyAddress.%s = :%s', $field, $field))
+                ->setParameter($field, $value);
+        }
+        /** @TODO: need more information about result */
+
+        return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 }

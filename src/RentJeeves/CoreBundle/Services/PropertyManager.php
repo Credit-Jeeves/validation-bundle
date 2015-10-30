@@ -104,9 +104,9 @@ class PropertyManager
             if ($groupCount < 1) {
                 throw new \RuntimeException("ERROR: Cannot create a standalone unit for a property without a group");
             } elseif ($groupCount > 1) {
-                $groupIds = "";
+                $groupIds = '';
                 foreach ($groups as $group) {
-                    $groupIds = $groupIds . " " . $group->getId();
+                    $groupIds .= ' ' . $group->getId();
                 }
                 throw new \RuntimeException(
                     "ERROR: Cannot create a standalone unit for a property with multiple groups. Ids: " . $groupIds
@@ -124,7 +124,6 @@ class PropertyManager
 
             $property->setIsSingle(true);
 
-            $this->em->persist($property);
             $this->em->persist($unit);
 
             if ($options['doFlush']) {
@@ -214,10 +213,8 @@ class PropertyManager
         $params = array(
             'number' => $property->getNumber(),
             'city' => $property->getCity(),
-            'district' => $property->getDistrict(),
-            'area' => $property->getArea(),
+            'state' => $property->getArea(),
             'street' => $property->getStreet(),
-            'country' => $property->getCountry(),
         );
 
         return $this->getPropertyFromDB($params);
@@ -408,12 +405,12 @@ class PropertyManager
         $params = [
             'number' => $number,
             'city' => $city,
-            'area' => $state,
+            'state' => $state,
             'street' => $street,
             'zip' => $zipCode,
         ];
         $params = array_filter($params); // remove empty values
-        if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+        if (null !== $property = $this->getPropertyRepository()->findOneByPropertyAddressFields($params)) {
             $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
 
             return $property;
@@ -433,12 +430,12 @@ class PropertyManager
         $params = [
             'number' => $address->getNumber(),
             'city' => $address->getCity(),
-            'area' => $address->getState(),
+            'state' => $address->getState(),
             'street' => $address->getStreet(),
             'country' => $address->getCountry(),
         ];
         $params = array_filter($params); // remove empty values
-        if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
+        if (null !== $property = $this->getPropertyRepository()->findOneByPropertyAddressFields($params)) {
             $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
 
             return $property;

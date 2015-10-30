@@ -6,9 +6,8 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use CreditJeeves\DataBundle\Entity\Group;
-use RuntimeException;
 
-class PropertyProcessCase extends BaseTestCase
+class PropertyManagerCase extends BaseTestCase
 {
     public function getContainer()
     {
@@ -100,7 +99,7 @@ class PropertyProcessCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      * @expectedExceptionMessageRegExp /without a group/
      */
     public function shouldRequireGroupForNewSingleUnit()
@@ -117,7 +116,7 @@ class PropertyProcessCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      * @expectedExceptionMessageRegExp /multiple groups/
      */
     public function shouldFailIfMultipleGroupsForNewSingleUnit()
