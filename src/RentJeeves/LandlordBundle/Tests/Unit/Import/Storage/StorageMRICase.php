@@ -2,7 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Tests\Unit\Import\Storage;
 
-use RentJeeves\DataBundle\Entity\ImportMappingByProperty;
+use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\ExternalApiBundle\Tests\Services\MRI\MRIClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -49,24 +49,17 @@ class StorageMRICase extends BaseTestCase
         $this->assertFalse($getMappingFromDBMethod->invoke($storageMriMock));
 
         $this->writeAttribute($storageMriMock, 'sessionLandlordManager', $landlordSessionMock);
-        $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findOneBy(
-            [
-                'street' => 'Broadway',
-                'number' => '770',
-                'zip'    => '10003'
-            ]
-        );
-        $propertyMapping = $property->getPropertyMappingByHolding($landlord->getHolding());
-        $propertyMapping->setExternalPropertyId(uniqid());
-        $importMappingByPropertyChoice = new ImportMappingByProperty();
-        $importMappingByPropertyChoice->setMappingData([1, 2]);
-        $importMappingByPropertyChoice->setProperty($property);
-        $this->getEntityManager()->persist($importMappingByPropertyChoice);
+
+        $importApiMapping = new ImportApiMapping();
+        $importApiMapping->setMappingData([1, 2]);
+        $importApiMapping->setExternalPropertyId(uniqid());
+        $importApiMapping->setHolding($landlord->getHolding());
+        $this->getEntityManager()->persist($importApiMapping);
         $this->getEntityManager()->flush();
 
         $this->assertFalse($getMappingFromDBMethod->invoke($storageMriMock));
 
-        $importMappingByPropertyChoice->setMappingData([]);
+        $importApiMapping->setMappingData([]);
         $this->getEntityManager()->flush();
 
         $this->assertFalse($getMappingFromDBMethod->invoke($storageMriMock));
@@ -93,10 +86,11 @@ class StorageMRICase extends BaseTestCase
         $propertyMapping = $property->getPropertyMappingByHolding($landlord->getHolding());
         $this->assertNotEmpty($propertyMapping);
         $propertyMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
-        $importMappingByPropertyChoice = new ImportMappingByProperty();
-        $importMappingByPropertyChoice->setMappingData([1, 2]);
-        $importMappingByPropertyChoice->setProperty($property);
-        $this->getEntityManager()->persist($importMappingByPropertyChoice);
+        $importApiMapping = new ImportApiMapping();
+        $importApiMapping->setMappingData([1, 2]);
+        $importApiMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
+        $importApiMapping->setHolding($landlord->getHolding());
+        $this->getEntityManager()->persist($importApiMapping);
         $this->getEntityManager()->flush();
 
         $storageMriMock = $this->getMockBuilder('RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI')
