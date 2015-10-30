@@ -17,8 +17,6 @@ abstract class AbstractContractSynchronizer
 {
     const COUNT_PROPERTIES_PER_SET = 20;
 
-    const COUNT_CONTRACTS_FOR_FLUSH = 20;
-
     const LOGGER_PREFIX = '';
 
     /**
@@ -206,13 +204,12 @@ abstract class AbstractContractSynchronizer
 
                     foreach ($residentTransactions as $resident) {
                         $this->updateContractBalanceForResidentTransaction($resident, $propertyMapping);
+                        $this->em->flush();
                     }
                 } catch (\Exception $e) {
                     $this->logMessage('[SyncBalance]ERROR:' . $e->getMessage(), LogLevel::ALERT);
                 }
             }
-            $this->em->flush();
-            $this->em->clear();
         }
     }
 
@@ -254,7 +251,6 @@ abstract class AbstractContractSynchronizer
                 static::COUNT_PROPERTIES_PER_SET
             );
 
-            $counter = 0;
             foreach ($propertyMappings as $propertyMapping) {
                 try {
                     $this->logMessage(
@@ -269,20 +265,13 @@ abstract class AbstractContractSynchronizer
                     );
                     foreach ($residentTransactions as $resident) {
                         $this->updateContractRentForResidentTransaction($resident, $propertyMapping);
+                        $this->em->flush();
                     }
 
                 } catch (\Exception $e) {
                     $this->logMessage('[SyncRent]ERROR:' . $e->getMessage(), LogLevel::ALERT);
                 }
-
-                if (++$counter === self::COUNT_CONTRACTS_FOR_FLUSH) {
-                    $this->em->flush();
-                    $counter = 0;
-                }
             }
-
-            $this->em->flush();
-            $this->em->clear();
         }
     }
 
