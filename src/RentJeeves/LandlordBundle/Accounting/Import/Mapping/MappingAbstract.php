@@ -214,7 +214,7 @@ abstract class MappingAbstract implements MappingInterface
         } else {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Fields for map address should specified, we have only: %s',
+                    'Fields for address mapping should be specified, we have only: %s',
                     implode(',', array_keys($row))
                 )
             );

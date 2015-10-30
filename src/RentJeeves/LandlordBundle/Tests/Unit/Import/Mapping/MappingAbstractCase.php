@@ -199,10 +199,10 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Fields for map address should specified, we have only: city,zip,state
+     * @expectedExceptionMessage Fields for address mapping should be specified, we have only: city,zip,state
      * @test
      */
-    public function shouldGetExceptionWhenCreateProperty()
+    public function shouldGetExceptionWhenCreatePropertyWithoutAnyStreetData()
     {
         $data = [
             MappingTest::KEY_CITY => 'Yii',
