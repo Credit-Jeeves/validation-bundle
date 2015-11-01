@@ -223,7 +223,7 @@ class ContractSynchronizer
             return;
         }
 
-        $contracts = $this->getContracts($propertyMapping, $residentId, $unitName);
+        $contracts = $this->getContractsByLeaseId($propertyMapping, $residentId, $unitName);
 
         if (empty($contracts)) {
             $this->logger->info('Yardi sync Recurring Charge: empty contract.');
@@ -235,15 +235,15 @@ class ContractSynchronizer
             if ($amount === 0) {
                 $this->logger->error(
                     sprintf(
-                        'Yardi sync Recurring Charge: ERROR: sum of RecurringCharges for contract#%s = 0',
+                        'Yardi sync Recurring Charge: ERROR: sum of RecurringCharges for contract #%s = 0',
                         $contract->getId()
                     )
                 );
                 continue;
             }
-            $this->logger->error(
+            $this->logger->info(
                 sprintf(
-                    'Yardi sync Recurring Charge: set new rent %s for contract#%s = 0',
+                    'Yardi sync Recurring Charge: set new rent %s for contract #%s',
                     $amount,
                     $contract->getId()
                 )
@@ -321,7 +321,7 @@ class ContractSynchronizer
      * @return Contract[]
      * @throws Exception
      */
-    protected function getContracts(PropertyMapping $propertyMapping, $residentId, $unitName)
+    protected function getContractsByResidentId(PropertyMapping $propertyMapping, $residentId, $unitName)
     {
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
         $holding = $propertyMapping->getHolding();
@@ -349,6 +349,50 @@ class ContractSynchronizer
 
         $contractsWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
             ->findByHoldingPropertyResident($holding, $property, $residentId);
+        $contractsWaiting = $this->processContracts($contractsWaiting, $unitName);
+
+        if ($contractsWaiting) {
+            return $contractsWaiting;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     * @param string $externalLeaseId
+     * @param string $unitName
+     * @return Contract[]
+     * @throws Exception
+     */
+    protected function getContractsByLeaseId(PropertyMapping $propertyMapping, $externalLeaseId, $unitName)
+    {
+        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+        $holding = $propertyMapping->getHolding();
+        $property = $propertyMapping->getProperty();
+        $this->logger->info(
+            sprintf(
+                'Start Search contract by externalLeaseId:%s, property:%s, holding:%s, unitName:%s',
+                $externalLeaseId,
+                $property->getId(),
+                $holding->getId(),
+                $unitName
+            )
+        );
+
+        $contracts = $contractRepo->findContractByHoldingPropertyLeaseId(
+            $holding,
+            $property,
+            $externalLeaseId
+        );
+
+        $contracts = $this->processContracts($contracts, $unitName);
+        if ($contracts) {
+            return $contracts;
+        }
+
+        $contractsWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
+            ->findByHoldingPropertyUnitExternalLeaseId($holding, $property, $unitName, $externalLeaseId);
         $contractsWaiting = $this->processContracts($contractsWaiting, $unitName);
 
         if ($contractsWaiting) {
@@ -409,42 +453,51 @@ class ContractSynchronizer
     ) {
         $residents = $residentTransactions->getProperty()->getCustomers();
         foreach ($residents as $resident) {
-            $residentId = $resident->getCustomerId();
-            $unitName = $resident->getUnit()->getUnitId();
-            $contracts = $this->getContracts($propertyMapping, $residentId, $unitName);
-            if (!$contracts) {
-                continue;
-            }
+            $this->logger->info(
+                sprintf(
+                    'YardiBalanceSync: Working with external lease id %s',
+                    $resident->getCustomerId()
+                )
+            );
+            $roommates = $resident->getCustomers()->getCustomer();
+            foreach($roommates as $roommate) {
+                $residentId = $roommate->getCustomerId();
+                $unitName = $resident->getUnit()->getUnitId();
+                $contracts = $this->getContractsByResidentId($propertyMapping, $residentId, $unitName);
+                if (!$contracts) {
+                    continue;
+                }
 
-            foreach ($contracts as $contract) {
-                $balance = $this->calcResidentBalance($resident);
-                $contract->setPaymentAccepted($resident->getPaymentAccepted());
-                $this->logger->info(
-                    sprintf(
-                        'YardiBalanceSync: Setup payment accepted to %s, for residentId %s',
-                        $resident->getPaymentAccepted(),
-                        $resident->getCustomerId()
-                    )
-                );
-                $contract->setIntegratedBalance($balance);
-                $externalLeaseId = $contract->getExternalLeaseId();
-                if (empty($externalLeaseId)) {
-                    $contract->setExternalLeaseId($resident->getLeaseId());
+                foreach ($contracts as $contract) {
+                    $balance = $this->calcResidentBalance($resident);
+                    $contract->setPaymentAccepted($resident->getPaymentAccepted());
                     $this->logger->info(
                         sprintf(
-                            'Contract #%s externalLeaseId has been updated. ExternalLeaseId #%s',
+                            'YardiBalanceSync: Setup payment accepted to %s, for residentId %s',
+                            $resident->getPaymentAccepted(),
+                            $resident->getCustomerId()
+                        )
+                    );
+                    $contract->setIntegratedBalance($balance);
+                    $externalLeaseId = $contract->getExternalLeaseId();
+                    if (empty($externalLeaseId)) {
+                        $contract->setExternalLeaseId($resident->getLeaseId());
+                        $this->logger->info(
+                            sprintf(
+                                'Contract #%s externalLeaseId has been updated. ExternalLeaseId #%s',
+                                $contract->getId(),
+                                $resident->getLeaseId()
+                            )
+                        );
+                    }
+                    $this->logger->info(
+                        sprintf(
+                            'Contract #%s has been updated. Now the balance is $%s',
                             $contract->getId(),
-                            $resident->getLeaseId()
+                            $balance
                         )
                     );
                 }
-                $this->logger->info(
-                    sprintf(
-                        'Contract #%s has been updated. Now the balance is $%s',
-                        $contract->getId(),
-                        $balance
-                    )
-                );
             }
         }
     }

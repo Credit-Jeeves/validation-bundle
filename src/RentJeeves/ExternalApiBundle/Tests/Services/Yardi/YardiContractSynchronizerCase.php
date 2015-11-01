@@ -105,7 +105,9 @@ class YardiContractSynchronizerCase extends Base
         $residentMapping = $tenant->getResidentForHolding($holding = $contract->getHolding());
         $this->assertNotEmpty($residentMapping, 'Wrong fixtures, resident mapping didn\'t find');
         $residentMapping->setResidentId('t0012027');
+        $contract->setExternalLeaseId('t0012027');
         $em->persist($residentMapping);
+        $em->persist($contract);
         $unit = $contract->getUnit();
         $unit->setName('101');
 
@@ -144,6 +146,7 @@ class YardiContractSynchronizerCase extends Base
         $contractWaiting->setUnit($contract->getUnit());
         $contractWaiting->setRent($contract->getRent());
         $contractWaiting->setResidentId('t0012027');
+        $contractWaiting->setExternalLeaseId('t0012027');
         $contractWaiting->setStartAt($today);
         $contractWaiting->setFinishAt($today);
         $contractWaiting->setFirstName('Papa');
