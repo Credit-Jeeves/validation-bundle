@@ -162,7 +162,13 @@ class PropertyProcess
             }
         }
 
-        if (count($params) < 1) {
+        if (array_key_exists('ss_index', $params)) {
+            $minimum_args = 1;
+        } else {
+            $minimum_args = 3;
+        }
+
+        if (count($params) < $minimum_args) {
             return null;
         }
 
