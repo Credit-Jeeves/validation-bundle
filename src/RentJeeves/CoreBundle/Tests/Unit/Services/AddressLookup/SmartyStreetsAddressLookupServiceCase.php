@@ -54,7 +54,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
             ->will($this->returnValue($response));
 
         $constraintViolationList = new ConstraintViolationList();
-        $constraintViolationList->add(new ConstraintViolation('test','',[],'','',''));
+        $constraintViolationList->add(new ConstraintViolation('test', '', [], '', '', ''));
 
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())

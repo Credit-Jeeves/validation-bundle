@@ -325,12 +325,14 @@ class Order extends Base
      * @Serializer\Groups({"promasReport"})
      * @Serializer\Type("string")
      *
-     * @return string
+     * @return string|null
      */
     public function getTenantExternalId()
     {
         $holding = $this->getContract()->getHolding();
-        if ($residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)) {
+        if ($holding->isExportTenantId() &&
+            $residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)
+        ) {
             return $residentMapping->getResidentId();
         }
 

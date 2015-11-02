@@ -130,6 +130,15 @@ class RjHoldingAdmin extends Admin
                     'sortable'  => 'position',
                 )
             )
+            ->with('Promas Settings')
+                ->add(
+                    'exportTenantId',
+                    null,
+                    [
+                        'required' => false,
+                        'label' => 'admin.holding.export_tenant_id',
+                    ]
+                )
             ->end();
     }
 

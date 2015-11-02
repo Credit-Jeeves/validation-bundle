@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -440,6 +441,45 @@ class ExportCase extends BaseTestCase
         $this->assertEquals(1250, $columns[2], 'Amount should be 1250');
         $this->assertContains('Batch #555000', $columns[3]);
         $this->assertEquals('t0011981', $columns[4], 'Resident id should be t0011981');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotIncludeTenantIdIfHoldingSettingIsOff()
+    {
+        $this->load(true);
+        $this->createPayment();
+        $em = $this->getEntityManager();
+        /** @var Holding $holding */
+        $this->assertNotNull($holding = $em->find('DataBundle:Holding', 5), 'Holding id#5 should exist');
+        $holding->setExportTenantId(false);
+        $em->flush($holding);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('accounting.menu.export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
+        $type->selectOption('promas');
+        $this->selectExportBy('payments');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+
+        $this->assertCount(16, $csvArr, 'Actual row count should equal to expected.');
+
+        // check file with unit id
+        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[0]), 'Row should exist');
+        $this->assertEquals('', $csvArrRow[4], 'Resident id should be empty');
     }
 
     /**
