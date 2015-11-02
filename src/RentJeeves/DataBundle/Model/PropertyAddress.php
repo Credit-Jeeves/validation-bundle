@@ -5,6 +5,7 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -21,26 +22,36 @@ class PropertyAddress
 
     /**
      * @ORM\Column(type="string",length=255)
+     *
+     * @Assert\NotBlank(message="api.errors.property.state.empty", groups={"new_unit"})
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string",length=255)
+     *
+     * @Assert\NotBlank(message="api.errors.property.city.empty", groups={"new_unit"})
      */
     protected $city;
 
     /**
      * @ORM\Column(type="string",length=255)
+     *
+     * @Assert\NotBlank(message="api.errors.property.street.empty", groups={"new_unit"})
      */
     protected $street;
 
     /**
      * @ORM\Column(type="string",length=255)
+     *
+     * @Assert\NotBlank(message="api.errors.property.number.empty", groups={"new_unit"})
      */
     protected $number;
 
     /**
      * @ORM\Column(type="string",length=15)
+     *
+     * @Assert\NotBlank(message="api.errors.property.zip.empty", groups={"new_unit"})
      */
     protected $zip;
 

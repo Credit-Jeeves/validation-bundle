@@ -116,6 +116,8 @@ class UnitRepository extends EntityRepository
     }
 
     /**
+     * @deprecated
+     *
      * Return Units belongs to this Property with mapped Groups
      *
      * @param Property $property

@@ -10,10 +10,13 @@ use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-class PropertyAddressType extends AbstractType
+class PropertyAddressForNewUnitType extends AbstractType
 {
+    const NAME = '';
+
     /**
      * {@inheritdoc}
      */
@@ -23,17 +26,58 @@ class PropertyAddressType extends AbstractType
             'mapped' => false,
             'constraints' => [
                 new NotNull([
-                    'message' => 'api.errors.property.unit_name.specify'
+                    'message'   => 'api.errors.property.unit_name.specify',
+                    'groups'    => ['new_unit']
                 ])
             ],
             'empty_data' => null
         ])->addViewTransformer(new UnitNameTransformer()));
 
-        $builder->add('street', 'text');
-        $builder->add('number', 'text');
-        $builder->add('state', 'text');
-        $builder->add('city', 'text');
-        $builder->add('zip', 'text');
+        $builder->add('street', 'text', [
+            'constraints'   => [
+                new NotBlank([
+                    'message'   => 'api.errors.property.street.empty',
+                    'groups'    => ['new_unit']
+                ])
+            ]
+        ]);
+
+        $builder->add('number', 'text', [
+            'constraints'   => [
+                new NotBlank([
+                    'message'   => 'api.errors.property.number.empty',
+                    'groups'    => ['new_unit']
+                ])
+            ]
+        ]);
+
+        $builder->add('state', 'text', [
+            'property_path' => 'state',
+            'constraints'   => [
+                new NotBlank([
+                    'message'   => 'api.errors.property.state.empty',
+                    'groups'    => ['new_unit']
+                ])
+            ]
+        ]);
+
+        $builder->add('city', 'text', [
+            'constraints'   => [
+                new NotBlank([
+                    'message'   => 'api.errors.property.city.empty',
+                    'groups'    => ['new_unit']
+                ])
+            ]
+        ]);
+
+        $builder->add('zip', 'text', [
+            'constraints'   => [
+                new NotBlank([
+                    'message'   => 'api.errors.property.zip.empty',
+                    'groups'    => ['new_unit']
+                ])
+            ]
+        ]);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
@@ -44,6 +88,7 @@ class PropertyAddressType extends AbstractType
 
             $event->setData($submittedData);
         });
+
         $builder->addEventSubscriber(new StreetTransformerListener());
     }
 
@@ -56,7 +101,6 @@ class PropertyAddressType extends AbstractType
             'csrf_protection' => false,
             'data_class' => 'RentJeeves\DataBundle\Entity\PropertyAddress',
             'cascade_validation' => true,
-            'validation_groups' => ['new_unit'],
         ]);
     }
 
@@ -65,6 +109,6 @@ class PropertyAddressType extends AbstractType
      */
     public function getName()
     {
-        return 'property_address';
+        return self::NAME;
     }
 }
