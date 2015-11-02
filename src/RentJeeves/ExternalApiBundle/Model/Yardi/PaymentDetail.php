@@ -9,6 +9,7 @@ use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiNsfPostMonthOption;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 
 class PaymentDetail
@@ -56,7 +57,7 @@ class PaymentDetail
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TransactionDate")
-     * @Serializer\Groups({"baseRequest", "withPostMonth", "reversedPayment"})
+     * @Serializer\Groups({"baseRequest", "withPostMonth"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -65,6 +66,33 @@ class PaymentDetail
     public function getTransactionDate()
     {
         return $this->order->getCreatedAt()->format('Y-m-d');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TransactionDate")
+     * @Serializer\Groups({"reversedPayment"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getReturnTransactionDate()
+    {
+        $transactionDate = $this->order->getCreatedAt();
+
+        $postMonthOption = $this->order->getContract()->getHolding()->getYardiSettings()->getNsfPostMonthNode();
+        if (YardiNsfPostMonthOption::RETURN_TRANSACTION_DATE == $postMonthOption) {
+            if (false != $this->order->getReversedTransaction()) {
+                $depositDate = $this->order->getReversedTransaction()->getDepositDate();
+                // If no deposit date in reversed transaction, use order created_at date.
+                $transactionDate = $depositDate ?: $transactionDate;
+            } else {
+                throw new \LogicException('Order does not have reversal transaction');
+            }
+        }
+
+        return $transactionDate->format('Y-m-d');
     }
 
     /**

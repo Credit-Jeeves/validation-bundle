@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\PaymentTypeACH;
 use RentJeeves\DataBundle\Enum\PaymentTypeCC;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiNsfPostMonthOption;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -190,6 +191,19 @@ abstract class YardiSettings
      * @var string
      */
     protected $postMonthNode = YardiPostMonthOption::NONE;
+
+    /**
+     * @ORM\Column(
+     *      type="YardiNsfPostMonthOption",
+     *      name="nsf_post_month_node",
+     *      options={
+     *          "default":"original_transaction_date"
+     *      }
+     * )
+     *
+     * @var string
+     */
+    protected $nsfPostMonthNode = YardiNsfPostMonthOption::ORIGINAL_TRANSACTION_DATE;
 
     /**
      * @return string
@@ -437,5 +451,21 @@ abstract class YardiSettings
     public function setPostMonthNode($postMonthNode)
     {
         $this->postMonthNode = $postMonthNode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNsfPostMonthNode()
+    {
+        return $this->nsfPostMonthNode;
+    }
+
+    /**
+     * @param string $nsfPostMonthNode
+     */
+    public function setNsfPostMonthNode($nsfPostMonthNode)
+    {
+        $this->nsfPostMonthNode = $nsfPostMonthNode;
     }
 }

@@ -270,6 +270,18 @@
                 <source>admin.holding.export_tenant_id</source>
                 <target>Export Tenant ID for Promas Lock Box file?</target>
             </trans-unit>
+            <trans-unit id="admin.yardi.label.synchronization_strategy">
+                <source>admin.yardi.label.synchronization_strategy</source>
+                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
+            </trans-unit>
+            <trans-unit id="admin.yardi.label.post_month_node">
+                <source>admin.yardi.label.post_month_node</source>
+                <target>Post Month Node</target>
+            </trans-unit>
+            <trans-unit id="admin.yardi.label.nsf_post_month_node">
+                <source>admin.yardi.label.nsf_post_month_node</source>
+                <target>NSF Post Month</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
