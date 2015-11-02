@@ -74,3 +74,9 @@ services:
             - @credit_summary.transunion.report_builder
             - @credit_summary.experian.report_builder
             - %credit_summary_vendor%
+
+    google:
+        class: RentJeeves\ComponentBundle\Service\Google
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - %google_maps_key%
