@@ -9,7 +9,6 @@ use RentJeeves\CoreBundle\DateTime;
 class OrdersControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'DataBundle:Order';
-
     const REQUEST_URL = 'orders';
 
     /**
