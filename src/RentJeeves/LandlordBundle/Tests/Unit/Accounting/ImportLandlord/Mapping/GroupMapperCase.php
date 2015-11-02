@@ -7,9 +7,13 @@ use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper;
+use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class GroupMapperCase extends AbstractMapperCase
+class GroupMapperCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      *
@@ -20,7 +24,7 @@ class GroupMapperCase extends AbstractMapperCase
     {
         $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
-        $mapper->setEntityManager($this->getEmMock());
+        $mapper->setEntityManager($this->getEntityManagerMock());
 
         $mapper->map([]);
     }

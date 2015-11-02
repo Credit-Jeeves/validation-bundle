@@ -240,7 +240,7 @@ class PropertyManager
     }
 
     /**
-     * @deprecated use `isValidPropertyAddress`
+     * @deprecated
      *
      * @param Property $property
      *
@@ -272,38 +272,6 @@ class PropertyManager
         return false;
     }
 
-    /**
-     * @param string $street
-     * @param string $city
-     * @param string $state
-     * @param string $zipCode
-     *
-     * @return null|Property
-     */
-    public function getPropertyByAddress($street, $city, $state, $zipCode)
-    {
-        $property = new Property();
-        $propertyAddress = new PropertyAddress();
-        $property->setPropertyAddress($propertyAddress);
-
-        if (null !== $address = $this->lookupAddress($street, $city, $state, $zipCode)) {
-            $propertyAddress->setAddressFields($address);
-            if ($propertyDB = $this->checkByMinimalArgs($property) or
-                $propertyDB = $this->checkByAllArgs($property)
-            ) {
-                /** Property */
-
-                return $propertyDB;
-            }
-            /** Empty Property */
-
-            return $property;
-        }
-        /** Error Address not found */
-
-        return null;
-    }
-
     private function getPropertyIdentifier(Property $property)
     {
         $identifier = self::NEW_PROPERTY;
@@ -315,6 +283,36 @@ class PropertyManager
         }
 
         return $identifier;
+    }
+
+    /**
+     * @param string $number
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     *
+     * @return null|Property
+     */
+    public function getOrCreatePropertyByAddress($number, $street, $city, $state, $zipCode)
+    {
+        $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
+        if (null !== $property) {
+            return $property;
+        }
+
+        if (null === $address = $this->lookupAddress($number . $street, $city, $state, $zipCode)) {
+            return null;
+        }
+
+        $newProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
     }
 
     /**

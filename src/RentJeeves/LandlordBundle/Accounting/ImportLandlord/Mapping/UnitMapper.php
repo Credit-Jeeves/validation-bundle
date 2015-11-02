@@ -18,14 +18,14 @@ class UnitMapper extends AbstractMapper
     /**
      * @var PropertyManager
      */
-    protected $propertyProcess;
+    protected $propertyManager;
 
     /**
-     * @param PropertyManager $propertyProcess
+     * @param PropertyManager $propertyManager
      */
-    public function __construct(PropertyManager $propertyProcess)
+    public function __construct(PropertyManager $propertyManager)
     {
-        $this->propertyProcess = $propertyProcess;
+        $this->propertyManager = $propertyManager;
     }
 
     /**
@@ -107,7 +107,7 @@ class UnitMapper extends AbstractMapper
         $property->addPropertyGroup($this->getGroup()); // for correct work propertyProcess
 
         try {
-            $newUnit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            $newUnit = $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
         } catch (\RuntimeException $e) {
             throw new MappingException(sprintf('[Mapping] : %s', $e->getMessage()));
         }
@@ -136,12 +136,14 @@ class UnitMapper extends AbstractMapper
      */
     protected function getOrCreateProperty()
     {
-        $property = $this->propertyProcess->getPropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+            '',
             $this->get('streetaddress'),
             $this->get('city_name'),
             $this->get('state_name'),
             $this->get('zipcode')
         );
+
         if ($property === null) {
             throw new MappingException(
                 sprintf(
