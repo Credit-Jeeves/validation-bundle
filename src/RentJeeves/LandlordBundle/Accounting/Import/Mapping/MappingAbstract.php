@@ -94,6 +94,10 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_TENANT_STATUS = 'tenant_status';
 
+    const KEY_STREET_NUMBER = 'street_number';
+
+    const KEY_STREET_NAME = 'street_name';
+
     /**
      * @var array
      */
@@ -198,11 +202,23 @@ abstract class MappingAbstract implements MappingInterface
      *
      * @return Property
      */
-    public function createProperty($row)
+    public function createProperty(array $row)
     {
         $property = new Property();
         $property->setCity($row[self::KEY_CITY]);
-        $property->setStreet($row[self::KEY_STREET]);
+        if (isset($row[self::KEY_STREET_NAME]) && isset($row[self::KEY_STREET_NUMBER])) {
+            $property->setNumber($row[self::KEY_STREET_NUMBER]);
+            $property->setStreet($row[self::KEY_STREET_NAME]);
+        } elseif (isset($row[self::KEY_STREET])) {
+            $property->setStreet($row[self::KEY_STREET]);
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Fields for address mapping should be specified, we have only: %s',
+                    implode(',', array_keys($row))
+                )
+            );
+        }
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
 

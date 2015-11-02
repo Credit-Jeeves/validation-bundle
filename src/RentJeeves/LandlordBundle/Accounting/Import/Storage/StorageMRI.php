@@ -95,7 +95,9 @@ class StorageMRI extends ExternalApiStorage
                 16 => Mapping::KEY_STREET,
                 17 => Mapping::KEY_ZIP,
                 18 => Mapping::KEY_STATE,
-                19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
+                19 => Mapping::KEY_EXTERNAL_PROPERTY_ID,
+                20 => 'OnlyForCustomMapping-BuildingAddress',
+                21 => 'OnlyForCustomMapping-Address'
             ];
         }
 
@@ -165,7 +167,8 @@ class StorageMRI extends ExternalApiStorage
                 $customer->getZipCode(),
                 $customer->getState(),
                 $this->getImportExternalPropertyId(),
-                $customer->getBuildingAddress()
+                $customer->getBuildingAddress(),
+                $customer->getAddress()
             ];
 
             $this->writeCsvToFile($data);

@@ -153,4 +153,64 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
         $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
         $this->assertEmpty($resultRow);
     }
+
+    /**
+     * @test
+     */
+    public function shouldUseStreetNameAndStreetNumberWhenCreateProperty()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_STREET_NAME => 'Yii street',
+            MappingTest::KEY_STREET_NUMBER => 1234,
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+
+        ];
+        $mapping = new MappingTest();
+        $property = $mapping->createProperty($data);
+        $this->assertEquals($data[MappingTest::KEY_CITY], $property->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NAME], $property->getStreet());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NUMBER], $property->getNumber());
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $property->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $property->getArea());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUseStreetWhenCreateProperty()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_STREET => 'Yii street',
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+
+        ];
+        $mapping = new MappingTest();
+        $property = $mapping->createProperty($data);
+        $this->assertEquals($data[MappingTest::KEY_CITY], $property->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET], $property->getStreet());
+        $this->assertEmpty($property->getNumber(), 'Number not empty, but should');
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $property->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $property->getArea());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Fields for address mapping should be specified, we have only: city,zip,state
+     * @test
+     */
+    public function shouldGetExceptionWhenCreatePropertyWithoutAnyStreetData()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+
+        ];
+        $mapping = new MappingTest();
+        $mapping->createProperty($data);
+    }
 }
