@@ -15,8 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class AbstractContractSynchronizer
 {
-    const COUNT_PROPERTIES_PER_SET = 20;
-
     const LOGGER_PREFIX = '';
 
     /**
@@ -40,11 +38,6 @@ abstract class AbstractContractSynchronizer
     protected $residentDataManager;
 
     /**
-     * @var bool
-     */
-    protected $isInitialized = false;
-
-    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      */
@@ -62,22 +55,11 @@ abstract class AbstractContractSynchronizer
         $this->residentDataManager = $residentDataManager;
     }
 
-    protected function init()
-    {
-        if (!$this->isInitialized) {
-            gc_enable();
-            $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
-            $this->isInitialized = true;
-            $this->logMessage('Initialized');
-        }
-    }
-
     /**
      * Execute synchronization balance
      */
     public function syncBalance()
     {
-        $this->init();
         $this->logMessage('[SyncBalance]Started');
         try {
             $iterableResult = $this->getHoldingsForUpdatingBalance();
@@ -109,7 +91,6 @@ abstract class AbstractContractSynchronizer
                 LogLevel::ALERT
             );
         }
-        gc_collect_cycles();
         $this->logMessage('[SyncBalance]Finished');
     }
 
@@ -118,7 +99,6 @@ abstract class AbstractContractSynchronizer
      */
     public function syncRent()
     {
-        $this->init();
         $this->logMessage('[SyncRent]Started');
         try {
             $iterableResult = $this->getHoldingsForUpdatingRent();
@@ -150,7 +130,6 @@ abstract class AbstractContractSynchronizer
                 LogLevel::ALERT
             );
         }
-        gc_collect_cycles();
         $this->logMessage('[SyncRent]Finished');
     }
 
@@ -224,7 +203,6 @@ abstract class AbstractContractSynchronizer
                 }
                 /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                 $this->em->clear();
-                gc_collect_cycles();
             } catch (\Exception $e) {
                 $this->logMessage(
                     sprintf(
@@ -273,8 +251,6 @@ abstract class AbstractContractSynchronizer
                 }
                 /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                 $this->em->clear();
-                gc_collect_cycles();
-
             } catch (\Exception $e) {
                 $this->logMessage(
                     sprintf(
