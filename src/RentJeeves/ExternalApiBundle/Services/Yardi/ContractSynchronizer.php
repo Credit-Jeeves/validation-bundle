@@ -460,7 +460,7 @@ class ContractSynchronizer
                 )
             );
             $roommates = $resident->getCustomers()->getCustomer();
-            foreach($roommates as $roommate) {
+            foreach ($roommates as $roommate) {
                 $residentId = $roommate->getCustomerId();
                 $unitName = $resident->getUnit()->getUnitId();
                 $contracts = $this->getContractsByResidentId($propertyMapping, $residentId, $unitName);
