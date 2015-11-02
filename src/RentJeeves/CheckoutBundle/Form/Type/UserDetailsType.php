@@ -64,10 +64,28 @@ class UserDetailsType extends AbstractType
         );
         $builder->add(
             'ssn',
-            new SsnType(),
-            array(
-                'label' => 'common.ssn',
-            )
+            'repeated',
+            [
+                'first_name' => 'ssn',
+                'second_name' => 'ssn_again',
+                'first_options'  => [
+                    'label' => 'common.ssn',
+                    'attr' => [
+                        'class' => 'ssn_box',
+                    ],
+                ],
+                'second_options' => [
+                    'label' => 'common.ssn.again',
+                    'attr' => [
+                        'class' => 'ssn_box'
+                    ],
+                ],
+                'invalid_message' => 'error.user.ssn.match',
+                'type' => new SsnType(),
+                'attr' => [
+                    'force_row' => true,
+                ],
+            ]
         );
 
         $builder->add(

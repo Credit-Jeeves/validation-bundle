@@ -3789,7 +3789,6 @@ table.ui-datepicker-calendar tbody tr td a {
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_endMonth_box,
 #rentjeeves_checkoutbundle_paymenttype_endYear_box,
-#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_amount_box,
 #rentjeeves_checkoutbundle_paymenttype_paidFor_label,
 #rentjeeves_checkoutbundle_paymenttype_paidFor_box {
@@ -3805,18 +3804,8 @@ table.ui-datepicker-calendar tbody tr td a {
     line-height: 25px;
 }
 
-#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1_row,
 #rentjeeves_checkoutbundle_userdetailstype_new_address_row {
     padding-left: 0px;
-}
-
-#rentjeeves_checkoutbundle_userdetailstype_ssn_box {
-    padding-top: 0px;
-    margin-left: -20px;
-}
-
-#rentjeeves_checkoutbundle_userdetailstype_ssn input {
-    width: 30px;
 }
 
 #rentjeeves_checkoutbundle_userdetailstype_first_name input {
@@ -3869,4 +3858,21 @@ form label {
 .form-row.type-repeated {
     margin: 0;
     padding: 0 !important;
+}
+
+.form-row.type-ssn ul.error_list {
+    padding-top: 10px;
+}
+
+.ssn_box .fields-box {
+    width: auto;
+    padding-top: 0;
+}
+
+.ssn_box input {
+  width: 30px !important;
+}
+
+.ssn_box .ssn_row {
+  padding-left: 0 !important;
 }
