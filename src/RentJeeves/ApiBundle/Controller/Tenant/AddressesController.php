@@ -8,7 +8,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Forms\UserAddressType;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
-use RentJeeves\ApiBundle\Response\Address as ResponseEntity;
+use RentJeeves\ApiBundle\Response\MailingAddress as ResponseEntity;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\DataBundle\Entity\Tenant;

@@ -13,7 +13,7 @@ use CreditJeeves\DataBundle\Entity\MailingAddress as Entity;
  *      actionName = "get_address"
  * )
  */
-class Address extends ResponseResource
+class MailingAddress extends ResponseResource
 {
     /**
      * @var Entity
