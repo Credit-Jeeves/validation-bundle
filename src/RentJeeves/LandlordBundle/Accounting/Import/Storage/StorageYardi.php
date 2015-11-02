@@ -45,21 +45,23 @@ class StorageYardi extends ExternalApiStorage
         $this->setDateFormat(self::DATE_FORMAT);
         $this->setPropertyId($this->getImportPropertyId());
 
-        $mapping = [
-            1 => Mapping::KEY_RESIDENT_ID,
-            2 => Mapping::KEY_UNIT,
-            3 => Mapping::KEY_MOVE_IN,
-            4 => Mapping::KEY_LEASE_END,
-            5 => Mapping::KEY_RENT,
-            6 => Mapping::FIRST_NAME_TENANT,
-            7 => Mapping::LAST_NAME_TENANT,
-            8 => Mapping::KEY_EMAIL,
-            9 => Mapping::KEY_MOVE_OUT,
-            10 => Mapping::KEY_BALANCE,
-            11 => Mapping::KEY_MONTH_TO_MONTH,
-            12 => Mapping::KEY_PAYMENT_ACCEPTED,
-            13 => Mapping::KEY_EXTERNAL_LEASE_ID
-        ];
+        if (!$mapping = $this->getMappingFromDB()) {
+            $mapping = [
+                1 => Mapping::KEY_RESIDENT_ID,
+                2 => Mapping::KEY_UNIT,
+                3 => Mapping::KEY_MOVE_IN,
+                4 => Mapping::KEY_LEASE_END,
+                5 => Mapping::KEY_RENT,
+                6 => Mapping::FIRST_NAME_TENANT,
+                7 => Mapping::LAST_NAME_TENANT,
+                8 => Mapping::KEY_EMAIL,
+                9 => Mapping::KEY_MOVE_OUT,
+                10 => Mapping::KEY_BALANCE,
+                11 => Mapping::KEY_MONTH_TO_MONTH,
+                12 => Mapping::KEY_PAYMENT_ACCEPTED,
+                13 => Mapping::KEY_EXTERNAL_LEASE_ID
+            ];
+        }
 
         if ($this->isMultiplePropertyMapping()) {
             $mapping[14] = Mapping::KEY_PROPERTY_ID;

@@ -22,6 +22,39 @@ class ExternalApiStorage extends StorageCsv
 
     const TEXT_DELIMITER = '"';
 
+    /**
+     * @Inject("doctrine.orm.entity_manager", required = false)
+     *
+     * @var EntityManager
+     */
+    public $em;
+
+    /**
+     * @Inject("core.session.landlord", required = false)
+     *
+     * @var SessionLandlord
+     */
+    public $sessionLandlordManager;
+
+    /**
+     * @return array|bool
+     */
+    protected function getMappingFromDB()
+    {
+        $importApiMapping = $this->em->getRepository('RjDataBundle:ImportApiMapping')->findOneBy(
+            [
+                'externalPropertyId' => $this->getImportExternalPropertyId(),
+                'holding' => $this->getLandlord()->getHolding()
+            ]
+        );
+
+        if (empty($importApiMapping)) {
+            return false;
+        }
+
+        return $importApiMapping->getMappingData();
+    }
+
     public function setImportPropertyId($propertyId)
     {
         $this->session->set(self::IMPORT_PROPERTY_ID, $propertyId);
