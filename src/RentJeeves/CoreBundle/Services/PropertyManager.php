@@ -129,8 +129,7 @@ class PropertyManager
             $this->em->persist($unit);
 
             if ($options['doFlush']) {
-                $this->em->flush($property);
-                $this->em->flush($unit);
+                $this->em->flush();
             }
 
         } elseif ($unitCount === 1) {
@@ -241,6 +240,8 @@ class PropertyManager
     }
 
     /**
+     * @deprecated use `isValidPropertyAddress`
+     *
      * @param Property $property
      *
      * @return bool
@@ -317,38 +318,6 @@ class PropertyManager
     }
 
     /**
-     * @deprecated use findPropertyByAddressInDb
-     *
-     * This method try to find Property in DB in 2 steps:
-     *   - First step try to find it in DB using address parameters
-     *   - Second step go to Geocode Service for normalized address and try to find it in DB again
-     *
-     * @param Property $property
-     *
-     * @return Property|false
-     */
-    public function getPropertyFromDBIn2steps(Property $property)
-    {
-        if ($propertyDB = $this->checkByAllArgs($property)) {
-            return $propertyDB;
-        }
-        $propertyAddress = $property->getPropertyAddress();
-
-        $propertyDB = $this->getPropertyByAddress(
-            $propertyAddress->getAddress(),
-            $propertyAddress->getCity(),
-            $propertyAddress->getState(),
-            $propertyAddress->getZip()
-        );
-
-        if (null !== $propertyDB && $propertyDB->getId()) {
-            return $propertyDB;
-        }
-
-        return false;
-    }
-
-    /**
      * @param string $street
      * @param string $city
      * @param string $state
@@ -409,7 +378,6 @@ class PropertyManager
             'city' => $address->getCity(),
             'state' => $address->getState(),
             'street' => $address->getStreet(),
-            'country' => $address->getCountry(),
         ];
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneByPropertyAddressFields($params)) {

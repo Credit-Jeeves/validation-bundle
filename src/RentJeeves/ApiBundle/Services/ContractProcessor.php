@@ -13,6 +13,7 @@ use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -44,7 +45,7 @@ class ContractProcessor
     /**
      * @var PropertyManager
      */
-    protected $propertyProcess;
+    protected $propertyManager;
 
     /**
      * @param EntityManager $em
@@ -72,7 +73,7 @@ class ContractProcessor
         $this->mailer = $mailer;
         $this->locale = $locale;
         $this->contractProcess = $contractProcess;
-        $this->propertyProcess = $propertyProcess;
+        $this->propertyManager = $propertyProcess;
     }
 
     /**
@@ -122,16 +123,11 @@ class ContractProcessor
 
     public function processWithNewUnit(Form $newUnitForm, Tenant $tenant, Contract $contract)
     {
-        /** @var Property $property */
-        $property = $newUnitForm->get('address')->getData();
-
+        /** @var PropertyAddress $propertyAddress */
+        $propertyAddress = $newUnitForm->get('address')->getData();
         $unitName = $newUnitForm->get('address')->get('unit_name')->getData();
 
-        $property = $this->propertyProcess->checkPropertyDuplicate($property);
-
-        if (!$property) {
-            throw new BadRequestHttpException('api.errors.contracts.property.invalid');
-        }
+        $property = $this->findPropertyOrCreateNewAndMapAddressFields($propertyAddress);
 
         /** @var Landlord $landlord */
         $landlord = $newUnitForm->get('landlord')->getData();
@@ -168,9 +164,9 @@ class ContractProcessor
         $property->addPropertyGroup($group);
 
         if (!$property->getId() && !$unitName) {
-            $unit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            $unit = $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
             $this->em->persist($unit);
-        } elseif ($property->getId() && !$property->getIsSingle() && !$unitName) {
+        } elseif ($property->getId() && !$propertyAddress->isSingle() && !$unitName) {
             throw new BadRequestHttpException('api.errors.contracts.property.not_standalone');
         }
 
@@ -196,5 +192,45 @@ class ContractProcessor
 
         //TODO return last need understand how it will be fix
         return $contract;
+    }
+
+    /**
+     * @param PropertyAddress $propertyAddress
+     *
+     * @throws BadRequestHttpException if address is not valid
+     *
+     * @return Property
+     */
+    protected function findPropertyOrCreateNewAndMapAddressFields(PropertyAddress $propertyAddress)
+    {
+        $property = $this->propertyManager->findPropertyByAddressInDb(
+            $propertyAddress->getNumber(),
+            $propertyAddress->getStreet(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
+        );
+
+        if (null !== $property) {
+            return $property;
+        }
+
+        $address = $this->propertyManager->lookupAddress(
+            $propertyAddress->getAddress(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
+        );
+
+        if (null === $address) {
+            throw new BadRequestHttpException('api.errors.contracts.property.invalid');
+        }
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty = new Property();
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
     }
 }

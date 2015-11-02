@@ -58,26 +58,28 @@ class UnitsController extends Controller
     public function getUnitsAction(Request $request)
     {
         $form = $this->createForm(new PropertyType(), null, ['method' => 'GET']);
-
         $form->handleRequest($request);
-
         if ($form->isValid()) {
-            /** @var Property $property */
-            $property = $form->getData();
+            /** @var Property $data */
+            $data = $form->getData();
+            $propertyAddress = $data->getPropertyAddress();
 
-            if ($property = $this->get('property.manager')->getPropertyFromDBIn2steps($property)) {
+            $property = $this->getPropertyManager()->findPropertyByAddressInDb(
+                $propertyAddress->getNumber(),
+                $propertyAddress->getState(),
+                $propertyAddress->getCity(),
+                $propertyAddress->getState(),
+                $propertyAddress->getZip()
+            );
 
-                $result = $this
-                    ->getDoctrine()
-                    ->getRepository('RjDataBundle:Unit')
-                    ->getUnitsByPropertyWithGroup($property);
-
-                if (count($result) > 0) {
-                    return new ResponseCollection($result);
-                }
+            if (null === $property) {
+                return null;
             }
 
-            return null;
+            $result = $this->getUnitRepository()->getUnitsByPropertyWithGroup($property);
+            if (count($result) > 0) {
+                return new ResponseCollection($result);
+            }
         }
 
         return $form;
@@ -119,5 +121,21 @@ class UnitsController extends Controller
         }
 
         throw new NotFoundHttpException('Unit not found');
+    }
+
+    /**
+     * @return \RentJeeves\CoreBundle\Services\PropertyManager
+     */
+    protected function getPropertyManager()
+    {
+        return $this->get('property.manager');
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\UnitRepository
+     */
+    protected function getUnitRepository()
+    {
+        return $this->getDoctrine()->getRepository('RjDataBundle:Unit');
     }
 }

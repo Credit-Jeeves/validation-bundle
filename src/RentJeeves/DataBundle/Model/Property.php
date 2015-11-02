@@ -26,11 +26,12 @@ abstract class Property
      * @ORM\Column(
      *     name="country",
      *     type="string",
-     *     length=3
+     *     length=3,
+     *     nullable=true
      * )
      * @Serializer\Groups({"payRent"})
      */
-    protected $country;
+    protected $country = 'US';
 
     /**
      * @ORM\Column(
@@ -47,7 +48,8 @@ abstract class Property
      * @ORM\Column(
      *     name="city",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
      * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})

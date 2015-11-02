@@ -362,7 +362,6 @@ class ContractsControllerCase extends BaseApiTestCase
     public function createContract($requestParams, $statusCode = 201)
     {
         $response = $this->postRequest($requestParams);
-
         $this->assertResponse($response, $statusCode);
 
         $answer = $this->parseContent($response->getContent());
@@ -370,7 +369,6 @@ class ContractsControllerCase extends BaseApiTestCase
         $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-
         $this->assertNotNull(
             $contract = $repo->findOneBy(
                 [
