@@ -120,7 +120,7 @@ class UserAddressType extends AbstractType
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 'cascade_validation' => true,
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'data_class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
                 'validation_groups' => array('user_address_new'),
             )
         );

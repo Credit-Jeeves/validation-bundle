@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AddressType extends AbstractType
 {
@@ -41,14 +40,14 @@ class AddressType extends AbstractType
                 'required'  => true,
             )
         );
-        
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'data_class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
                 'validation_groups' => array(
                     'user_address_new',
                 ),
@@ -119,7 +118,7 @@ class AddressType extends AbstractType
             'WI'=>'WI',
             'WY'=>'WY',
         );
-        
+
         return $stateList;
     }
 }

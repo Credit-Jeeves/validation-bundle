@@ -84,7 +84,7 @@ class UserAddressType extends AbstractType
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'data_class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
                 'validation_groups' => array('user_address_new'),
             )
         );

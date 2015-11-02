@@ -74,7 +74,7 @@ class UserDetailsType extends AbstractType
             'address_choice',
             'entity',
             array(
-                'class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
                 'mapped' => false,
                 'label' => 'address.on_credit_file',
                 'expanded' => true,
