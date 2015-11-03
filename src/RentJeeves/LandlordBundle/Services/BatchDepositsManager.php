@@ -26,9 +26,9 @@ class BatchDepositsManager
      * @param string $filter
      * @return int
      */
-    public function getCountDeposits(Group $group, $filter)
+    public function getCountDeposits(Group $group, $filter, $search)
     {
-        return $this->getTransactionRepository()->getCountDeposits($group, $filter);
+        return $this->getTransactionRepository()->getCountDeposits($group, $this->getFilter($filter), $search);
     }
 
     /**
@@ -38,9 +38,11 @@ class BatchDepositsManager
      * @param int $limit
      * @return array
      */
-    public function getDeposits(Group $group, $filter, $page = 1, $limit = 10)
+    public function getDeposits(Group $group, $filter, $search, $page = 1, $limit = 10)
     {
-        $deposits = $this->getTransactionRepository()->getBatchedDeposits($group, $filter, $page, $limit);
+        $deposits = $this
+            ->getTransactionRepository()
+            ->getBatchedDeposits($group, $this->getFilter($filter), $search, $page, $limit);
 
         foreach ($deposits as $key => $deposit) {
             $depositDate = new \DateTime($deposit['depositDate']);
@@ -49,6 +51,7 @@ class BatchDepositsManager
             $orders = $this->getOrderRepository()->getDepositedOrders(
                 $group,
                 $filter,
+                $search,
                 $deposit['batchNumber'],
                 $deposit['depositDate']
             );
@@ -57,6 +60,21 @@ class BatchDepositsManager
         }
 
         return $deposits;
+    }
+
+    /**
+     * Check filter value before requesting to DB.
+     *
+     * @param string $givenFilter
+     * @return string
+     */
+    protected function getFilter($givenFilter)
+    {
+        if ('transactionId' === $givenFilter || 'batchId' === $givenFilter) {
+            return $givenFilter;
+        }
+
+        return '';
     }
 
     /**

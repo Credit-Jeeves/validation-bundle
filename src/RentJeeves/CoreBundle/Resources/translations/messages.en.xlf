@@ -2266,13 +2266,13 @@
                <source>pidkiq.error.unanswered_questions</source>
                <target>Almost there. Only %COUNT% question(s) left to answer!</target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit.echeck">
-                <source>filter.group_by.deposit.echeck</source>
-                <target>E-Check</target>
+            <trans-unit id="filter.group_by.deposit.transactionId">
+                <source>filter.group_by.deposit.transactionId</source>
+                <target>Transaction ID</target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit.credit-card">
-                <source>filter.group_by.deposit.credit-card</source>
-                <target>Credit Card</target>
+            <trans-unit id="filter.group_by.deposit.batchId">
+                <source>filter.group_by.deposit.batchId</source>
+                <target>BatchId</target>
             </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>

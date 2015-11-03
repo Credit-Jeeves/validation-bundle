@@ -1060,11 +1060,12 @@ class AjaxController extends Controller
         $page = $request->request->get('page');
         $limit = $request->request->get('limit');
         $filter = $request->request->get('filter');
+        $search = $request->request->get('searchText');
 
         /** @var BatchDepositsManager $batchDepositsManager */
         $batchDepositsManager = $this->get('landlord.batch_deposits.manager');
-        $total = $batchDepositsManager->getCountDeposits($this->getCurrentGroup(), $filter);
-        $deposits = $batchDepositsManager->getDeposits($this->getCurrentGroup(), $filter, $page, $limit);
+        $total = $batchDepositsManager->getCountDeposits($this->getCurrentGroup(), $filter, $search);
+        $deposits = $batchDepositsManager->getDeposits($this->getCurrentGroup(), $filter, $search, $page, $limit);
 
         $result = [
             'deposits' => $deposits,
