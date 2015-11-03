@@ -16,32 +16,36 @@ class PropertiesCase extends BaseTestCase
     /**
      * @test
      */
-    public function sorting()
+    public function shouldSortPropertyListByCity()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
-        $zipCollum->click();
+        $this->assertNotNull($zipColumn = $this->page->find('css', '#city'));
+        $zipColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('50 18th Ave', $firstTd->getText(), 'Wrong notice');
-        $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
-        $zipCollum->click();
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
+        $this->assertEquals('Seattle', $firstTd->getText(), 'Wrong notice1'. $firstTd->getText());
+        $this->assertNotNull($zipColumn = $this->page->find('css', '#city'));
+        $zipColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
+        $this->assertEquals('Billings', $firstTd->getText(), 'Wrong notice2');
         $this->logout();
     }
 
     /**
      * @test
      */
-    public function search()
+    public function shouldShowPropertyIfSearchPopertiesByCity()
     {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -66,7 +70,6 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
-        $this->logout();
     }
 
     /**

@@ -181,7 +181,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 123123', (string) $checkNumber);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
+        $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
 
     /**
@@ -224,7 +224,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
+        $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
 
     public function exportByRealPageCsv()
@@ -281,7 +281,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
         $this->assertEquals(123123, $csvArr[7]);
-        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
+        $this->assertEquals('770 Broadway New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
     }
 
     /**
@@ -328,7 +328,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals(88, $columns[0]);
         $this->assertEquals('2-a', $columns[1]);
         $this->assertEquals(1800, $columns[3]);
-        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 325698', $columns[8]);
+        $this->assertEquals('770 Broadway New York NY 10003 #2-a BATCH# 325698', $columns[8]);
     }
 
     public function exportByPromasCsv()
@@ -531,7 +531,7 @@ class ExportCase extends BaseTestCase
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
+        $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
 
     public function exportByRentTrackCsv()
@@ -581,7 +581,7 @@ class ExportCase extends BaseTestCase
         $this->assertCount($countRows, $csvFullArr);
         /** check Last */
         $this->assertNotNull($csvArr = str_getcsv($csvFullArr[9]));
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[1]);
+        $this->assertEquals('770 Broadway, New York, NY 10003', $csvArr[1]);
         $this->assertEquals('AAABBB-7', $csvArr[2]);
         $this->assertEquals('456456', $csvArr[7]);
         $this->assertEquals('325698', $csvArr[8]);
@@ -630,7 +630,7 @@ class ExportCase extends BaseTestCase
         $rows = explode("\n", trim($file));
         $this->assertEquals(3, count($rows));
         $columns = str_getcsv($rows[1]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $columns[1]);
+        $this->assertEquals('770 Broadway, New York, NY 10003', $columns[1]);
         $this->assertEquals('15235678', $columns[13]);
     }
 
@@ -686,7 +686,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('123123', $csvArr[1]);
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
-        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 125478', $csvArr[5]);
     }
 
     public function exportByYardiGenesisV2Csv()
@@ -742,7 +742,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('123123', $csvArr[1]);
         $this->assertEquals('1500', $csvArr[3]);
         // $this->assertEquals('08/14/2014', $csvArr[4]);   // The Date seems to change with each build each day
-        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 125478', $csvArr[5]);
         $this->assertEquals('', $csvArr[6]);
         $this->assertEquals('', $csvArr[7]);
         $this->assertEquals('', $csvArr[8]);
@@ -794,7 +794,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('456456', $csvArr[1]);
         $this->assertEquals('1800', $csvArr[3]);
         // $this->assertEquals('08/24/2014', $csvArr[4]); // the Date seems to change with each build each day
-        $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 325698', $csvArr[5]);
     }
 
     /**
@@ -842,7 +842,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('456456', $csvArr[1]);
         $this->assertEquals('1800', $csvArr[3]);
         // $this->assertEquals('08/24/2014', $csvArr[4]); // the Date seems to change with each build each day
-        $this->assertEquals('770 Broadway, Manhattan #2-a 325698', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 325698', $csvArr[5]);
         $this->assertEquals('', $csvArr[6]);
         $this->assertEquals('', $csvArr[7]);
         $this->assertEquals('', $csvArr[8]);
@@ -887,7 +887,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('123123', $csvArr[1]);
         $this->assertEquals('1500', $csvArr[3]);
-        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 125478', $csvArr[5]);
         $this->assertEquals('', $csvArr[6]);
         $this->assertEquals('', $csvArr[7]);
         $this->assertEquals('', $csvArr[8]);
@@ -932,7 +932,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('R', $csvArr[0]);
         $this->assertEquals('123123', $csvArr[1]);
         $this->assertEquals('1500', $csvArr[3]);
-        $this->assertEquals('770 Broadway, Manhattan #2-a 125478', $csvArr[5]);
+        $this->assertEquals('770 Broadway #2-a 125478', $csvArr[5]);
     }
 
     /**
@@ -979,7 +979,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
         $this->assertEquals(123123, $csvArr[7]);
-        $this->assertEquals('770 Broadway Manhattan New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
+        $this->assertEquals('770 Broadway New York NY 10003 #2-a BATCH# 125478', $csvArr[8]);
     }
 
     /**
@@ -1021,6 +1021,6 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456456', (string) $checkNumber);
         $this->assertEquals('t0013534', (string) $personId);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string) $notes);
+        $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
 }

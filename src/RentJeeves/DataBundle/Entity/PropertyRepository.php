@@ -114,10 +114,11 @@ EOT;
      */
     public function countProperties($group, $searchBy = 'street', $search = '')
     {
-        $query = $this->createQueryBuilder('p');
-        $query->innerJoin('p.property_groups', 'g');
-        $query->where('g.id = :group_id');
-        $query->setParameter('group_id', $group->getId());
+        $query = $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group_id')
+            ->setParameter('group_id', $group->getId());
         if (!empty($search)) {
             $searchBy = $this->applySearchField($searchBy);
             $search = $this->prepareSearch($search);
@@ -159,7 +160,7 @@ EOT;
         } else {
             $order = 'DESC';
         }
-        $query->orderBy('p.' . $sort, $order);
+        $query->orderBy('propertyAddress.' . $sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();

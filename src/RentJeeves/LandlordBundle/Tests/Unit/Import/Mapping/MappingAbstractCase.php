@@ -38,7 +38,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function checkDateFormat($dateStringForParse, $dateStringForCheck, $format)
     {
         static::$countDateFormat++;
-        $date = DateTime::createFromFormat($dateStringForParse, $format);
+        DateTime::createFromFormat($dateStringForParse, $format);
     }
 
     /**
@@ -165,15 +165,17 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             MappingTest::KEY_STREET_NUMBER => 1234,
             MappingTest::KEY_ZIP => 'zip',
             MappingTest::KEY_STATE => 'state'
-
         ];
+
         $mapping = new MappingTest();
         $property = $mapping->createProperty($data);
-        $this->assertEquals($data[MappingTest::KEY_CITY], $property->getCity());
-        $this->assertEquals($data[MappingTest::KEY_STREET_NAME], $property->getStreet());
-        $this->assertEquals($data[MappingTest::KEY_STREET_NUMBER], $property->getNumber());
-        $this->assertEquals($data[MappingTest::KEY_ZIP], $property->getZip());
-        $this->assertEquals($data[MappingTest::KEY_STATE], $property->getArea());
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals($data[MappingTest::KEY_CITY], $propertyAddress->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NAME], $propertyAddress->getStreet());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NUMBER], $propertyAddress->getNumber());
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $propertyAddress->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $propertyAddress->getState());
     }
 
     /**
@@ -190,11 +192,13 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
         ];
         $mapping = new MappingTest();
         $property = $mapping->createProperty($data);
-        $this->assertEquals($data[MappingTest::KEY_CITY], $property->getCity());
-        $this->assertEquals($data[MappingTest::KEY_STREET], $property->getStreet());
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals($data[MappingTest::KEY_CITY], $propertyAddress->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET], $propertyAddress->getStreet());
         $this->assertEmpty($property->getNumber(), 'Number not empty, but should');
-        $this->assertEquals($data[MappingTest::KEY_ZIP], $property->getZip());
-        $this->assertEquals($data[MappingTest::KEY_STATE], $property->getArea());
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $propertyAddress->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $propertyAddress->getState());
     }
 
     /**

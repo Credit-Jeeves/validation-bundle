@@ -542,9 +542,8 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $property = $this->currentImportModel->getContract()->getProperty();
-        $propertyAddress = $property->getPropertyAddress();
 
-        if ((!$property || !$propertyAddress->getNumber()) && !$this->storage->isMultipleProperty()) {
+        if ((!$property || !$property->getPropertyAddress()->getNumber()) && !$this->storage->isMultipleProperty()) {
             $this->logger->warning("Property ID already in use!");
             $keyFieldInUI = 'import_new_user_with_contract_contract_unit_name';
             $this->currentImportModel->getContract()->setProperty(null);

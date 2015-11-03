@@ -29,16 +29,25 @@ class Property extends Base
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress(), $length);
     }
 
+    /**
+     * @deprecated PLS DONT USE IT
+     *
+     * @todo NEED REMOVE
+     * @return array
+     */
     public function getItem($group = null)
     {
-        $item = array();
+        if ($this->getPropertyAddress() === null) {
+            throw new \LogicException('U can use this function only for exist property');
+        }
+
         $item['id'] = $this->getId();
-        $item['zip'] = $this->getZip();
-        $item['country'] = $this->getCountry();
-        $item['area'] = $this->getArea();
-        $item['city'] = $this->getCity();
-        $item['address'] = $this->getAddress();
-        $item['isSingle'] = $this->isSingle();
+        $item['zip'] = $this->getPropertyAddress()->getZip();
+        $item['country'] = '';
+        $item['area'] = $this->getPropertyAddress()->getState();
+        $item['city'] = $this->getPropertyAddress()->getCity();
+        $item['address'] = $this->getPropertyAddress()->getAddress();
+        $item['isSingle'] = $this->getPropertyAddress()->isSingle();
         if ($group) {
             $item['units'] = $this->countUnitsByGroup($group);
         } else {
@@ -140,14 +149,22 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @deprecated pls use `$property->getPropertyAddress()->isSingle()`
+     *
+     * @return bool
+     */
     public function isSingle()
     {
-        return $this->getIsSingle() == true;
+        return $this->getPropertyAddress()->isSingle();
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getExistingSingleUnit()
     {
-        if ($this->isSingle()) {
+        if ($this->getPropertyAddress()->isSingle() === true) {
             $unit = $this->getUnits()->first();
             if (!$unit) {
                 throw new \LogicException(

@@ -123,8 +123,8 @@ fixtures:
     PropertyAddress_13:
         state:          Havana
         city:           Havana
-        street:         10 de Octubre
-        number:         1
+        street:         de Octubre
+        number:         10
         zip:            60661
         jb:             23.1094238
         kb:             -82.3658518
