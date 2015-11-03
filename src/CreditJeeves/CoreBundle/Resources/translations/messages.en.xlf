@@ -1075,7 +1075,7 @@
             </trans-unit>
             <trans-unit id="error.user.ssn.match">
                 <source>error.user.ssn.match</source>
-                <target>The SSN fields must match.</target>
+                <target>The SSN fields do not match.</target>
             </trans-unit>
             <trans-unit id="error.user.ssn.exact">
                 <source>error.user.ssn.exact</source>

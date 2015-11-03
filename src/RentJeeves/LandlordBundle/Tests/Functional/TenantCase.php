@@ -677,7 +677,10 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#action_plan_page form").length');
 
         $this->assertNotEmpty(
-            $errors = $this->page->findAll('css','#rentjeeves_checkoutbundle_userdetailstype_ssn_row ul.error_list li'),
+            $errors = $this->page->findAll(
+                'css',
+                '#rentjeeves_checkoutbundle_userdetailstype_ssn_row ul.error_list li'
+            ),
             'Should displayed error that ssn does\'t match.'
         );
         $this->assertCount(1, $errors, 'Should be displayed just one error');

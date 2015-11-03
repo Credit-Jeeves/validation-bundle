@@ -3862,6 +3862,7 @@ form label {
 
 .form-row.type-ssn ul.error_list {
     padding-top: 10px;
+    margin-left: 10px;
 }
 
 .ssn_box .fields-box {
@@ -3870,9 +3871,9 @@ form label {
 }
 
 .ssn_box input {
-  width: 30px !important;
+    width: 30px !important;
 }
 
 .ssn_box .ssn_row {
-  padding-left: 0 !important;
+    padding-left: 0 !important;
 }
