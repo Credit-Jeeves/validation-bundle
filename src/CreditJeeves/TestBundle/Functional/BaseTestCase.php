@@ -291,4 +291,38 @@ abstract class BaseTestCase extends Base
         $this->assertNotNull($li, sprintf('Option with value "%s" not found', $value));
         $li->click();
     }
+
+    /**
+     * @param string $cssSelector
+     * @param string $failMessage
+     *
+     * @return \Behat\Mink\Element\NodeElement
+     */
+    protected function getDomElement($cssSelector, $failMessage = '')
+    {
+        $element = $this->page->find('css', $cssSelector);
+
+        $message = $failMessage ?: sprintf('Element with css selector "%s" cannot be found.', $cssSelector);
+
+        $this->assertNotNull($element, $message);
+
+        return $element;
+    }
+
+    /**
+     * @param string $cssSelector
+     * @param string $failMessage
+     *
+     * @return \Behat\Mink\Element\NodeElement[]
+     */
+    public function getDomElements($cssSelector, $failMessage = '')
+    {
+        $elements = $this->page->findAll('css', $cssSelector);
+
+        $message = $failMessage ?: $sprintf('Elements with css selector "%s" cannot be found.', $cssSelector);
+
+        $this->assertNotEmpty($elements, $message);
+
+        return $elements;
+    }
 }

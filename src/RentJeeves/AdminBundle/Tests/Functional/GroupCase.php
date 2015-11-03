@@ -4,11 +4,10 @@ namespace RentJeeves\AdminBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-/**
- * @TODO need refactoring - (if we will add field - all tests will fail), we need more specific selectors
- */
 class GroupCase extends BaseTestCase
 {
+    use UniqueIdGetter;
+
     /**
      * @test
      */
@@ -17,124 +16,113 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         /** @var Group $group */
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Generic group');
-        $this->assertNotEmpty($group);
-        $this->assertCount(0, $group->getBillingAccounts());
+        $this->assertNotNull($group, 'Check fixtures, group with name "Generic group" should exist');
+        $this->assertCount(
+            0,
+            $group->getDepositAccounts(),
+            'Check fixtures, group with name "Generic group" should not have deposit accounts'
+        );
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
 
-        $tableBlock->clickLink('link_list');
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
+        $editLink = $this->getDomElement('a:contains("Generic group")', 'Edit link doesn\'t find for group');
+        $editLink->click();
+        $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Deposit Accounts")');
+        $tabLink->click();
 
-        $this->assertNotNull($edit = $this->page->findAll('css', 'a.edit_link'));
-        $edit[0]->click();
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[1]->click();
-        $this->assertNotNull($buttonsAction = $this->page->findAll('css', '.sonata-ba-action'));
-        $this->count(4, $buttonsAction);
-        $buttonsAction[2]->click(); //add new Deposit Account
+        $uniqueId = $this->getUniqueId();
+
+        $addAction = $this->getDomElement(
+            '#field_actions_' . $uniqueId . '_depositAccounts>a',
+            'Should be displayed add deposit account action button'
+        );
+        $addAction->click(); //add new Deposit Account
         $this->session->wait(
-            10000,
+            $this->timeout,
             "$('.sonata-ba-tbody').children().length > 0"
         );
-        $this->assertNotNull($inputText = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(15, $inputText);
-        $inputText[8]->setValue('MerchantName');
-        $buttonsAction[2]->click(); //add new Deposit Account
+        $inputMerchant = $this->getDomElement('#' . $uniqueId . '_depositAccounts_0_merchantName');
+        $inputMerchant->setValue('MerchantName');
+        $addAction->click(); //add new Deposit Account again
         $this->session->wait(
-            10000,
-            "$('input[type=text]').length > 15"
+            $this->timeout,
+            '$("#field_widget_' . $uniqueId . '_depositAccounts tbody>tr").length == 2'
         );
-        $this->assertNotNull($inputText = $this->page->findAll('css', 'input[type=text]'));
-        $this->assertCount(17, $inputText);
-        $inputText[10]->setValue('MerchantName1');
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
+        $inputMerchant = $this->getDomElement('#' . $uniqueId . '_depositAccounts_1_merchantName');
+        $inputMerchant->setValue('MerchantName1');
+        $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
         $submit->click();
-        $this->assertNotNull($this->page->find('css', '.sonata-ba-form-error'));
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[1]->click();
-        $this->assertNotNull($select = $this->page->findAll('css', 'select'));
-        $this->assertCount(14, $select);
-        $select[3]->selectOption('aci');
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
+        $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $tabLink->click();
+
+        $select = $this->getDomElement('#' . $uniqueId . '_depositAccounts_1_paymentProcessor');
+        $select->selectOption('aci');
+        $submit->click();
+        // changed uniqueId
+        $uniqueId = $this->getUniqueId();
+        $this->getEntityManager()->refresh($group);
+        $this->assertCount(2, $group->getDepositAccounts(), 'Should be added 2 new deposit accounts');
+        $tabLink->click();
+
+        $removeActionCheckbox = $this->getDomElement('#' . $uniqueId . '_depositAccounts_0__delete');
+        $removeActionCheckbox->check(); //remove one deposit account
         $submit->click();
         $this->getEntityManager()->refresh($group);
-        $this->assertCount(2, $group->getDepositAccounts());
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[1]->click();
-        $this->assertNotNull($checkbox = $this->page->findAll('css', 'input[type=checkbox]'));
-        $this->assertCount(11, $checkbox);
-        $checkbox[0]->check(); //remove one deposit account
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
-        $submit->click();
-        $this->getEntityManager()->refresh($group);
-        $this->assertCount(1, $group->getDepositAccounts());
+        $this->assertCount(1, $group->getDepositAccounts(), 'Should be removed 1 deposit account');
     }
 
     /**
+     * Try to set pay balance only and change type of group to integrated
      * @test
      */
     public function settingFirst()
     {
         $this->load(true);
-        $this->setDefaultSession('selenium2');
         /** @var Group $group */
-        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => '700Credit']);
-
-        $this->assertNotEmpty($group, 'Check fixtures group with name 700Credit not found');
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('700Credit');
+        $this->assertNotNull($group, 'Check fixtures, group with name "700Credit" not found');
         $groupSettings = $group->getGroupSettings();
-
         $this->assertFalse(
             $groupSettings->getIsIntegrated(),
-            sprintf('Check fixtures group #%d should not be integrated', $group->getId())
+            sprintf('Check fixtures, group #%d should not be integrated', $group->getId())
         );
         $this->assertFalse(
             $groupSettings->getPayBalanceOnly(),
-            sprintf('Check fixtures group #%d should not have pay balance setting', $group->getId())
+            sprintf('Check fixtures, group #%d should not have pay balance setting', $group->getId())
         );
 
+        $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
-
-        $tableBlock->clickLink('link_list');
-
-        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("700Credit")'));
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
+        $editLink = $this->getDomElement('a:contains("700Credit")', 'Edit link doesn\'t find for group');
         $editLink->click();
 
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click(); // go to settings tag
+        $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Settings")');
+        $tabLink->click();
 
-        $this->assertNotNull(
-            $payBalanceOnlyCheckBox = $this->page->find(
-                'css',
-                'input[type=checkbox][id*="_groupSettings_payBalanceOnly"]'
-            ),
+        $uniqueId = $this->getUniqueId();
+
+        $payBalanceOnlyCheckBox = $this->getDomElement(
+            '#' . $uniqueId . '_groupSettings_payBalanceOnly',
             'Pay Balance Only settings not found'
         );
         $payBalanceOnlyCheckBox->check();
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
+        $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
         $submit->click();
-
-        $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
-        $this->assertEquals('pay.balance.only.error', $error->getText());
-
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click();
-
-        $this->assertNotNull(
-            $isIntegratedCheckBox = $this->page->find(
-                'css',
-                'input[type=checkbox][id*="_groupSettings_isIntegrated"]'
-            ),
+        $error = $this->getDomElement('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertEquals('pay.balance.only.error', $error->getText(), 'Incorrect error message');
+        $tabLink->click();
+        $isIntegratedCheckBox = $this->getDomElement(
+            '#' . $uniqueId . '_groupSettings_isIntegrated',
             'Integrated settings not found'
         );
-
         $payBalanceOnlyCheckBox->check();
         $isIntegratedCheckBox->check();
-
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
         $submit->click();
-
-        $this->assertNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
+        $this->assertNull($error = $this->page->find('css', '.sonata-ba-form-error li'), 'Should have no errors');
 
         $this->getEntityManager()->refresh($group);
         $groupSettings = $group->getGroupSettings();
@@ -149,53 +137,49 @@ class GroupCase extends BaseTestCase
     }
 
     /**
+     * Try to set pay balance only to integrated group that have recurring payments
+     *
      * @test
      */
     public function settingSecond()
     {
         $this->load(true);
-        $this->setDefaultSession('selenium2');
         /** @var Group $group */
-        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => 'Test Rent Group']);
-
-        $this->assertNotEmpty($group, 'Check fixtures group with name Test Rent Group not found');
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotNull($group, 'Check fixtures, group with name "Test Rent Group" not found');
         $groupSettings = $group->getGroupSettings();
-
         $this->assertTrue(
             $groupSettings->getIsIntegrated(),
-            sprintf('Check fixtures group #%d should be integrated', $group->getId())
+            sprintf('Check fixtures, group #%d should be integrated', $group->getId())
         );
         $this->assertFalse(
             $groupSettings->getPayBalanceOnly(),
-            sprintf('Check fixtures group #%d should not have pay balance setting', $group->getId())
+            sprintf('Check fixtures, group #%d should not have pay balance setting', $group->getId())
         );
 
+        $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_groups'));
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
 
-        $tableBlock->clickLink('link_list');
-
-        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("Test Rent Group")'));
+        $editLink = $this->getDomElement('a:contains("Test Rent Group")', 'Edit link doesn\'t find for group');
         $editLink->click();
 
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click(); // go to settings tag
+        $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Settings")');
+        $tabLink->click();
 
-        $this->assertNotNull(
-            $payBalanceOnlyCheckBox = $this->page->find(
-                'css',
-                'input[type=checkbox][id*="_groupSettings_payBalanceOnly"]'
-            ),
+        $uniqueId = $this->getUniqueId();
+
+        $payBalanceOnlyCheckBox = $this->getDomElement(
+            '#' . $uniqueId . '_groupSettings_payBalanceOnly',
             'Pay Balance Only settings not found'
         );
+        $payBalanceOnlyCheckBox->check();
 
-        $payBalanceOnlyCheckBox->click();
-
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'));
+        $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
         $submit->click();
-
-        $this->assertNotNull($error = $this->page->find('css', '.sonata-ba-form-error li'));
-        $this->assertEquals('pay.balance.only.reccuring_error', $error->getText());
+        $error = $this->getDomElement('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertEquals('pay.balance.only.reccuring_error', $error->getText(), 'Incorrect error message');
     }
 
     /**
@@ -217,35 +201,29 @@ class GroupCase extends BaseTestCase
         );
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull(
-            $tableBlock = $this->page->find('css', '#id_block_groups'),
-            'We should see main block'
-        );
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
 
-        $tableBlock->clickLink('link_list');
-        $this->assertNotNull($editLink = $this->page->find('css', 'a:contains("Test Rent Group")'));
+        $editLink = $this->getDomElement('a:contains("Test Rent Group")', 'Edit link doesn\'t find for group');
         $editLink->click();
-        $this->assertNotNull($menu = $this->page->findAll('css', '.nav-tabs li>a'));
-        $menu[4]->click(); //Click settings tab
+        $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Settings")');
+        $tabLink->click();
 
-        $this->assertNotNull($form = $this->page->find('css', 'form'));
-        $action = $form->getAttribute('action');
-        $uniqueId = substr($action, strpos($action, '=') + 1);
+        $uniqueId = $this->getUniqueId();
+        $form = $this->getDomElement('form', 'Form should be present');
+
         $this->fillForm(
             $form,
             [
                 $uniqueId.'_groupSettings_allowedDebitFee' => 1
             ]
         );
-        $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'), 'Submit button should exist');
+        $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
         $submit->click();
+        $error = $this->getDomElement('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertEquals('admin.error.debit_payment_processor', $error->getText(), 'Incorrect error message');
 
-        $this->assertNotEmpty(
-            $error = $this->page->find('css', '.sonata-ba-form-error>ul>li'),
-            'We should get error'
-        );
-        $this->assertEquals('admin.error.debit_payment_processor', $error->getText());
-        $menu[4]->click(); //Click settings tab
+        $tabLink->click();
         $this->fillForm(
             $form,
             [
@@ -254,12 +232,10 @@ class GroupCase extends BaseTestCase
             ]
         );
         $submit->click();
-        $this->assertNotEmpty(
-            $error = $this->page->find('css', '.sonata-ba-form-error>ul>li'),
-            'We should get error'
-        );
-        $this->assertEquals('admin.error.debit_fee_should_be_filled', $error->getText());
-        $menu[4]->click(); //Click settings tab
+        $error = $this->getDomElement('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertEquals('admin.error.debit_fee_should_be_filled', $error->getText(), 'Incorrect error message');
+
+        $tabLink->click();
         $this->fillForm(
             $form,
             [
@@ -269,15 +245,13 @@ class GroupCase extends BaseTestCase
             ]
         );
         $submit->click();
-        $this->assertNotEmpty(
-            $this->page->find('css', '.alert-success'),
-            'We should get success'
-        );
+        $this->getDomElement('.alert-success', 'We should get success');
+
         $this->getEntityManager()->refresh($group);
         $this->assertTrue(
             $group->getGroupSettings()->isAllowedDebitFee(),
             'Allowed debit fee should be updated '
         );
-        $this->assertEquals(20, $group->getGroupSettings()->getDebitFee());
+        $this->assertEquals(20, $group->getGroupSettings()->getDebitFee(), 'Debit fee should be set to 20');
     }
 }
