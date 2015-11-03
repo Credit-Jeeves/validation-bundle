@@ -580,6 +580,7 @@ class Order extends Base
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $depositDate = $this->getDepositDate();
         $result['depositDate'] = $depositDate ? $depositDate->format('m/d/Y') : 'N/A';
+        $result['paymentCreated'] = $this->getPayment() ? $this->getPayment()->getCreatedAt()->format('m/d/Y') : 'N/A';
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderPaymentTypes();

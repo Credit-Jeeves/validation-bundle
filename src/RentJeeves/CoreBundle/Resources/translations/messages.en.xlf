@@ -3117,7 +3117,7 @@
             </trans-unit>
             <trans-unit id="landlord_dashboard.payment.title">
                 <source>landlord_dashboard.payment.title</source>
-                <target>Charged: %created%. Deposited: %sent%</target>
+                <target>Created: %created%. Charged: %charged%</target>
             </trans-unit>
             <trans-unit id="landlord.dashboard.additional_paid_for">
                 <source>landlord.dashboard.additional_paid_for</source>
