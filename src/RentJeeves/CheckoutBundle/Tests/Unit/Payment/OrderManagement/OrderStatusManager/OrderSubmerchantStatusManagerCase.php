@@ -750,8 +750,8 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $statusManager->setCancelled($order);
 
         $this->assertEquals(
-            $paidFor->modify($shiftedOn),
-            $order->getContract()->getPayments()->last()->getPaidFor(),
+            $paidFor->modify($shiftedOn)->format('Y-m-d'),
+            $order->getContract()->getPayments()->last()->getPaidFor()->format('Y-m-d'),
             sprintf('PaidFor date of %s payment should be unshifted on %s', $paymentStatus, $shiftedOn)
         );
     }
@@ -1127,8 +1127,8 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
         $statusManager->setRefunded($order);
 
         $this->assertEquals(
-            $paidFor->modify($shiftedOn),
-            $order->getContract()->getPayments()->last()->getPaidFor(),
+            $paidFor->modify($shiftedOn)->format('Y-m-d'),
+            $order->getContract()->getPayments()->last()->getPaidFor()->format('Y-m-d'),
             sprintf('PaidFor date of %s payment should be unshifted on %s', $paymentStatus, $shiftedOn)
         );
     }
