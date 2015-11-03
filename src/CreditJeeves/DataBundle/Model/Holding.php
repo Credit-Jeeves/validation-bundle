@@ -260,6 +260,19 @@ abstract class Holding
      */
     protected $paymentsEnabled = true;
 
+    /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="export_tenant_id",
+     *      options={
+     *          "default":1
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $exportTenantId = true;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -760,5 +773,21 @@ abstract class Holding
     public function setUseRecurringCharges($useRecurringCharges)
     {
         $this->useRecurringCharges = $useRecurringCharges;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExportTenantId()
+    {
+        return $this->exportTenantId;
+    }
+
+    /**
+     * @param boolean $exportTenantId
+     */
+    public function setExportTenantId($exportTenantId)
+    {
+        $this->exportTenantId = $exportTenantId;
     }
 }

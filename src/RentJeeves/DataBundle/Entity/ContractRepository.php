@@ -1220,6 +1220,36 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * @param Holding $holding
+     * @param Property $property
+     * @param string $residentId
+     * @return Contract[]
+     */
+    public function findContractByHoldingPropertyLeaseId(
+        Holding $holding,
+        Property $property,
+        $externalLeaseId
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->where('c.status in (:statuses)')
+            ->andWhere('c.property = :propertyId')
+            ->andWhere('c.holding = :holdingId')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('c.externalLeaseId = :externalLeaseId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('propertyId', $property->getId())
+            ->setParameter('holdingId', $holding->getId())
+            ->setParameter('externalLeaseId', $externalLeaseId);
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
      * @param  Tenant $tenant
      * @param  Unit $unit
      * @return bool

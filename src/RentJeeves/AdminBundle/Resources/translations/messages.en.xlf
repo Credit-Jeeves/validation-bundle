@@ -266,6 +266,10 @@
                 <source>admin.list.order.outbound_transactions</source>
                 <target>Outbound leg</target>
             </trans-unit>
+            <trans-unit id="admin.holding.export_tenant_id">
+                <source>admin.holding.export_tenant_id</source>
+                <target>Export Tenant ID for Promas Lock Box file?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

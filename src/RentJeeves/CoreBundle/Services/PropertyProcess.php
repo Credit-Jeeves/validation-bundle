@@ -162,7 +162,13 @@ class PropertyProcess
             }
         }
 
-        if (count($params) < 3) {
+        if (array_key_exists('ss_index', $params)) {
+            $minimum_args = 1;
+        } else {
+            $minimum_args = 3;
+        }
+
+        if (count($params) < $minimum_args) {
             return null;
         }
 
@@ -406,15 +412,18 @@ class PropertyProcess
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
             $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
+
             return $property;
         }
         if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
             $this->logger->debug('Address not found by external address service');
+
             return null;
         }
 
         if (null !== $property = $this->getPropertyRepository()->findOneByAddress($address)) {
             $this->logger->debug(sprintf('Found property(%s) by standardized address index!', $property->getId()));
+
             return $property;
         }
 
@@ -428,6 +437,7 @@ class PropertyProcess
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneBy($params)) {
             $this->logger->debug(sprintf('Found property(%s) by non-standardized address fields', $property->getId()));
+
             return $property;
         }
 
