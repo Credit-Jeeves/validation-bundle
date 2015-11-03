@@ -49,14 +49,6 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
-            <trans-unit id="yardi.label.synchronization_strategy">
-                <source>yardi.label.synchronization_strategy</source>
-                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
-            </trans-unit>
-            <trans-unit id="yardi.label.post_month_node">
-                <source>yardi.label.post_month_node</source>
-                <target>Post Month Node</target>
-            </trans-unit>
             <trans-unit id="import.error.empty_group">
                 <source>import.error.empty_group</source>
                 <target>Group not found.</target>
