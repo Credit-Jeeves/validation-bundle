@@ -85,8 +85,8 @@ class PaymentDetail
         if (YardiNsfPostMonthOption::RETURN_TRANSACTION_DATE == $postMonthOption) {
             if (false != $this->order->getReversedTransaction()) {
                 $depositDate = $this->order->getReversedTransaction()->getDepositDate();
-                // If no deposit date in reversed transaction, use order created_at date.
-                $transactionDate = $depositDate ?: $transactionDate;
+                // If no deposit date in reversed transaction, use transaction created_at date.
+                $transactionDate = $depositDate ?: $this->order->getReversedTransaction()->getCreatedAt();
             } else {
                 throw new \LogicException('Order does not have reversal transaction');
             }

@@ -53,7 +53,7 @@ class PaymentDetailCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldUseOrderCreatedAtAsReturnTransactionDateIfNsfPostMonthIsReturnTransactionDteAndNoDepositDate()
+    public function shouldUseCreatedAtAsReturnTransactionDateIfNsfPostMonthIsReturnTransactionDteAndNoDepositDate()
     {
         $order = $this->getOrder(YardiNsfPostMonthOption::RETURN_TRANSACTION_DATE);
         $order->setCreatedAt(new \DateTime('2015-12-31'));
@@ -67,7 +67,7 @@ class PaymentDetailCase extends UnitTestBase
 
         $paymentDetail = new PaymentDetail($order);
 
-        $this->assertEquals('2015-12-31', $paymentDetail->getReturnTransactionDate());
+        $this->assertEquals('2017-01-01', $paymentDetail->getReturnTransactionDate());
 
     }
 
