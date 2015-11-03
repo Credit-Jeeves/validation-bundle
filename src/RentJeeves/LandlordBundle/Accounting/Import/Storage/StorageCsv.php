@@ -5,19 +5,11 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Psr\Log\LoggerInterface;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.storage.csv")
- */
 class StorageCsv extends StorageAbstract
 {
     const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
@@ -35,10 +27,8 @@ class StorageCsv extends StorageAbstract
     const IMPORT_DATE_FORMAT = 'importDateFormat';
 
     /**
-     * @InjectParams({
-     *     "session" = @Inject("session"),
-     *     "logger"  = @Inject("monolog.logger.import")
-     * })
+     * @param Session $session
+     * @param LoggerInterface $logger
      */
     public function __construct(Session $session, LoggerInterface $logger)
     {

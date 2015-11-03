@@ -2,11 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
+use \RentJeeves\CoreBundle\Session\Landlord as SessionLandlord;
 
 class ExternalApiStorage extends StorageCsv
 {
@@ -23,18 +25,30 @@ class ExternalApiStorage extends StorageCsv
     const TEXT_DELIMITER = '"';
 
     /**
-     * @Inject("doctrine.orm.entity_manager", required = false)
-     *
      * @var EntityManager
      */
     public $em;
 
     /**
-     * @Inject("core.session.landlord", required = false)
-     *
      * @var SessionLandlord
      */
     public $sessionLandlordManager;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param SessionLandlord $sessionLandlord
+     */
+    public function setSessionLandlord(SessionLandlord $sessionLandlord)
+    {
+        $this->sessionLandlordManager = $sessionLandlord;
+    }
 
     /**
      * @return array|bool

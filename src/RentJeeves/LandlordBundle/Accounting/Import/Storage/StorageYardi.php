@@ -2,17 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.storage.yardi")
- */
 class StorageYardi extends ExternalApiStorage
 {
     /**

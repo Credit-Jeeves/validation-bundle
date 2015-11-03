@@ -2,15 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
-use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-/**
- * @Service("accounting.import.storage.resman")
- */
 class StorageResman extends ExternalApiStorage
 {
     /**

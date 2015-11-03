@@ -2,16 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-/**
- * @Service("accounting.import.storage.amsi")
- */
 class StorageAMSI extends ExternalApiStorage
 {
     /**

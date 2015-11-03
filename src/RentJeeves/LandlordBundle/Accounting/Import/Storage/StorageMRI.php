@@ -2,14 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-/**
- * @Service("accounting.import.storage.mri")
- */
 class StorageMRI extends ExternalApiStorage
 {
     const IS_CURRENT = 'y';

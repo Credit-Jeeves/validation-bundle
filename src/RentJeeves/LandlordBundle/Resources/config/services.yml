@@ -10,6 +10,43 @@ parameters:
     landlord.contract_manager.class: RentJeeves\LandlordBundle\Services\LandlordContractManager
 
 services:
+    accounting.import.storage.mri:
+        class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI
+        arguments:
+            - "@session"
+            - "@monolog.logger.import"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setSessionLandlord, ["@core.session.landlord"]]
+    accounting.import.storage.amsi:
+        class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAMSI
+        arguments:
+            - "@session"
+            - "@monolog.logger.import"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setSessionLandlord, ["@core.session.landlord"]]
+    accounting.import.storage.csv:
+         class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv
+         arguments:
+             - "@session"
+             - "@monolog.logger.import"
+    accounting.import.storage.resman:
+        class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman
+        arguments:
+            - "@session"
+            - "@monolog.logger.import"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setSessionLandlord, ["@core.session.landlord"]]
+    accounting.import.storage.yardi:
+        class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi
+        arguments:
+            - "@session"
+            - "@monolog.logger.import"
+        calls:
+            - [setEntityManager, ["@doctrine.orm.entity_manager"]]
+            - [setSessionLandlord, ["@core.session.landlord"]]
     landlord.contract_manager:
         class: "%landlord.contract_manager.class%"
         arguments:
