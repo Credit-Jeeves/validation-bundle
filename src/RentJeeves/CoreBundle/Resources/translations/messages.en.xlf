@@ -3256,6 +3256,14 @@
                 <target>Report loading is not allowed.
                 Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
+            <trans-unit id="common.charged_at">
+                <source>common.charged_at</source>
+                <target>Charged at</target>
+            </trans-unit>
+            <trans-unit id="common.created_at">
+                <source>common.created_at</source>
+                <target>Created at</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

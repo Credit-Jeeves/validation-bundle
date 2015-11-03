@@ -22,7 +22,7 @@ class Version20151029130701 extends AbstractMigration
   Hello!  <br /><br />
 {% endif %}
 
-Your {{ depositType | trans }} payment to {{ groupName }} is complete*.
+Your {{paymentType | replace({\"_\": \"-\"})}} {{ depositType | trans }} payment to {{ groupName }} is complete*.
 
 The details:
 
@@ -35,7 +35,10 @@ The details:
 >
   <tbody>
     <tr style=\"border: 1px solid #C8C8C8;\">
-      <td style=\"padding:5px;\">{{ \'order.date.time\' | trans }}:</td><td style=\"padding:5px;\">{{ datetime }}</td>
+      <td style=\"padding:5px;\">{{ \'common.created_at\' | trans }}:</td><td style=\"padding:5px;\">{{ paymentCreatedAt }}</td>
+    </tr>
+    <tr style=\"border: 1px solid #C8C8C8;\">
+      <td style=\"padding:5px;\">{{ \'common.charged_at\' | trans }}:</td><td style=\"padding:5px;\">{{ datetime }}</td>
     </tr>
     <tr style=\"border: 1px solid #C8C8C8;\">
       <td style=\"padding:5px;\">{{ \'order.transaction.id\' | trans }}:</td><td style=\"padding:5px;\">{{ transactionID }}</td>
@@ -89,7 +92,7 @@ This payment will appear on your bank statement as {{ statementDescriptor }}.
             {% block email %}
                 Hi {{ tenantName }}! <br /><br />
 
-                Your rent payment to {{ groupName }} was just initiated. Your card or bank account has been charged.
+                Your {{paymentType | replace({\"_\": \"-\"})}} rent payment to {{ groupName }} was just initiated. Your card or bank account has been charged.
                 You will receive your receipt when the payment is deposited into your property manager\'s bank - usually in 2-3 business days.
 
     The details:
@@ -97,7 +100,11 @@ This payment will appear on your bank statement as {{ statementDescriptor }}.
                 <table width=\'100%\' style=\'border: 1px solid #C8C8C8; border-collapse: collapse;\'>
                 <tbody>
                 <tr style=\'border: 1px solid #C8C8C8;\'>
-                    <td style=\'padding:5px;\'>{{ \'order.date.time\' | trans }}:</td>
+                    <td style=\'padding:5px;\'>{{ \'common.created_at\' | trans }}:</td>
+                    <td style=\'padding:5px;\'>{{ paymentCreatedAt }}</td>
+                </tr>
+                <tr style=\'border: 1px solid #C8C8C8;\'>
+                    <td style=\'padding:5px;\'>{{ \'common.charged_at\' | trans }}:</td>
                     <td style=\'padding:5px;\'>{{ orderTime }}</td>
                 </tr>
                 <tr style=\'border: 1px solid #C8C8C8;\'>

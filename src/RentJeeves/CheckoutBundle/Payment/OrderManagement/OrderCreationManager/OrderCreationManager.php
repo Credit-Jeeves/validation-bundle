@@ -71,6 +71,7 @@ class OrderCreationManager
         $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
         $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
+        $order->setPayment($payment);
 
         $this->createRentOperations($payment, $order);
         $this->setFeeAndPaymentTypeIntoOrder($order, $groupSettings, $paymentAccount);
@@ -96,6 +97,7 @@ class OrderCreationManager
         $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
         $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
+        $order->setPayment($payment);
 
         $this->createCustomOperation($payment, $order);
 
