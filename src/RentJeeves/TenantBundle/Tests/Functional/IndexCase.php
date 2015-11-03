@@ -2,6 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
@@ -56,11 +57,23 @@ class IndexCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldVerifiedTenant()
+    public function shouldVerifyTenantIdentity()
     {
         $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be exist');
+        $this->assertEquals(
+            UserIsVerified::NONE,
+            $tenant->getIsVerified(),
+            'Check fixtures, tenant with email "tenant11@example.com" should not be verified.'
+        );
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
+
         $this->page->clickLink('tabs.summary');
         $this->session->wait($this->timeout + 5000, "typeof $ !== undefined");
         $this->assertNotNull(
@@ -153,7 +166,13 @@ class IndexCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.3');
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
-        $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary') === null");
+        $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary')");
+        $this->getEntityManager()->refresh($tenant);
+        $this->assertEquals(
+            UserIsVerified::PASSED,
+            $tenant->getIsVerified(),
+            'Tenant should be verified.'
+        );
     }
 
     /**

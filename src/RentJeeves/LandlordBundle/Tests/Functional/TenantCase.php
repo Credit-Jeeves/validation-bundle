@@ -643,7 +643,8 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('test@email.ru', 'pass');
         $this->assertNotNull(
-            $close = $this->page->find('css', '.ui-dialog-titlebar-close')
+            $this->page->find('css', '#pay-popup'),
+            'Should be displayed payment wizard dialog after login'
         );
     }
 
