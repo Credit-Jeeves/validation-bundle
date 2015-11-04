@@ -2,6 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Model\User;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -706,6 +707,10 @@ class TenantCase extends BaseTestCase
      */
     public function tenantPay()
     {
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('test@email.ru');
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+        $this->getEntityManager()->flush($tenant);
         $this->setDefaultSession('selenium2');
         $this->login('test@email.ru', 'pass');
         $this->assertNotNull($payButton = $this->page->find('css', '.button-contract-pay'));
