@@ -2,19 +2,32 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.storage.yardi")
- */
 class StorageYardi extends ExternalApiStorage
 {
+    /**
+     * @var array
+     */
+    protected $defaultMapping = [
+        1 => Mapping::KEY_RESIDENT_ID,
+        2 => Mapping::KEY_UNIT,
+        3 => Mapping::KEY_MOVE_IN,
+        4 => Mapping::KEY_LEASE_END,
+        5 => Mapping::KEY_RENT,
+        6 => Mapping::FIRST_NAME_TENANT,
+        7 => Mapping::LAST_NAME_TENANT,
+        8 => Mapping::KEY_EMAIL,
+        9 => Mapping::KEY_MOVE_OUT,
+        10 => Mapping::KEY_BALANCE,
+        11 => Mapping::KEY_MONTH_TO_MONTH,
+        12 => Mapping::KEY_PAYMENT_ACCEPTED,
+        13 => Mapping::KEY_EXTERNAL_LEASE_ID
+    ];
+
     /**
      * @param ResidentLeaseFile $residentData
      * @param ResidentsResident $resident
@@ -40,33 +53,10 @@ class StorageYardi extends ExternalApiStorage
      */
     protected function initializeParameters()
     {
-        $this->setFieldDelimiter(self::FIELD_DELIMITER);
-        $this->setTextDelimiter(self::TEXT_DELIMITER);
-        $this->setDateFormat(self::DATE_FORMAT);
-        $this->setPropertyId($this->getImportPropertyId());
-
-        $mapping = [
-            1 => Mapping::KEY_RESIDENT_ID,
-            2 => Mapping::KEY_UNIT,
-            3 => Mapping::KEY_MOVE_IN,
-            4 => Mapping::KEY_LEASE_END,
-            5 => Mapping::KEY_RENT,
-            6 => Mapping::FIRST_NAME_TENANT,
-            7 => Mapping::LAST_NAME_TENANT,
-            8 => Mapping::KEY_EMAIL,
-            9 => Mapping::KEY_MOVE_OUT,
-            10 => Mapping::KEY_BALANCE,
-            11 => Mapping::KEY_MONTH_TO_MONTH,
-            12 => Mapping::KEY_PAYMENT_ACCEPTED,
-            13 => Mapping::KEY_EXTERNAL_LEASE_ID
-        ];
-
         if ($this->isMultiplePropertyMapping()) {
-            $mapping[14] = Mapping::KEY_PROPERTY_ID;
+            $this->defaultMapping[14] = Mapping::KEY_PROPERTY_ID;
         }
-
-        $this->writeCsvToFile($mapping);
-        $this->setMapping($mapping);
+        parent::initializeParameters();
     }
 
     /**

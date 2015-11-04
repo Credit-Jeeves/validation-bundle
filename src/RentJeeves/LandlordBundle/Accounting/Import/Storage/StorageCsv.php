@@ -2,22 +2,16 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Session\Landlord as SessionLandlord;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.storage.csv")
- */
 class StorageCsv extends StorageAbstract
 {
     const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
@@ -35,15 +29,37 @@ class StorageCsv extends StorageAbstract
     const IMPORT_DATE_FORMAT = 'importDateFormat';
 
     /**
-     * @InjectParams({
-     *     "session" = @Inject("session"),
-     *     "logger"  = @Inject("monolog.logger.import")
-     * })
+     * @var EntityManager
      */
-    public function __construct(Session $session, LoggerInterface $logger)
-    {
+    public $em;
+
+    /**
+     * @var SessionLandlord
+     */
+    public $sessionLandlordManager;
+
+    /**
+     * @param Session $session
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        Session $session,
+        LoggerInterface $logger,
+        EntityManager $em,
+        SessionLandlord $sessionLandlord
+    ) {
         $this->session = $session;
         $this->logger = $logger;
+        $this->em = $em;
+        $this->sessionLandlordManager = $sessionLandlord;
+    }
+
+    /**
+     * @return Landlord
+     */
+    protected function getLandlord()
+    {
+        return $this->sessionLandlordManager->getUser();
     }
 
     public function setDateFormat($format)

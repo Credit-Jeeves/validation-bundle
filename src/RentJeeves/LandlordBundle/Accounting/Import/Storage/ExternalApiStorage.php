@@ -10,6 +10,25 @@ use Symfony\Component\Form\FormInterface;
 
 class ExternalApiStorage extends StorageCsv
 {
+    /**
+     * @var array
+     */
+    protected $defaultMapping = [
+        1 => Mapping::KEY_RESIDENT_ID,
+        2 => Mapping::KEY_UNIT,
+        3 => Mapping::KEY_MOVE_IN,
+        4 => Mapping::KEY_LEASE_END,
+        5 => Mapping::KEY_RENT,
+        6 => Mapping::FIRST_NAME_TENANT,
+        7 => Mapping::LAST_NAME_TENANT,
+        8 => Mapping::KEY_EMAIL,
+        9 => Mapping::KEY_MOVE_OUT,
+        10 => Mapping::KEY_BALANCE,
+        11 => Mapping::KEY_MONTH_TO_MONTH,
+        12 => Mapping::KEY_PAYMENT_ACCEPTED,
+        13 => Mapping::KEY_EXTERNAL_LEASE_ID
+    ];
+
     const IMPORT_PROPERTY_ID = 'importPropertyId';
 
     const IMPORT_EXTERNAL_PROPERTY_ID = 'importExternalPropertyId';
@@ -21,6 +40,25 @@ class ExternalApiStorage extends StorageCsv
     const FIELD_DELIMITER = ',';
 
     const TEXT_DELIMITER = '"';
+
+    /**
+     * @return array|bool
+     */
+    protected function getMappingFromDB()
+    {
+        $importApiMapping = $this->em->getRepository('RjDataBundle:ImportApiMapping')->findOneBy(
+            [
+                'externalPropertyId' => $this->getImportExternalPropertyId(),
+                'holding' => $this->getLandlord()->getHolding()
+            ]
+        );
+
+        if (empty($importApiMapping)) {
+            return false;
+        }
+
+        return $importApiMapping->getMappingData();
+    }
 
     public function setImportPropertyId($propertyId)
     {
@@ -123,37 +161,6 @@ class ExternalApiStorage extends StorageCsv
     }
 
     /**
-     * Create and write header into CSV file
-     *
-     * @throws ImportStorageException
-     */
-    protected function initializeParameters()
-    {
-        $this->setFieldDelimiter(self::FIELD_DELIMITER);
-        $this->setTextDelimiter(self::TEXT_DELIMITER);
-        $this->setDateFormat(self::DATE_FORMAT);
-        $this->setPropertyId($this->getImportPropertyId());
-        $mapping = array(
-            1 => Mapping::KEY_RESIDENT_ID,
-            2 => Mapping::KEY_UNIT,
-            3 => Mapping::KEY_MOVE_IN,
-            4 => Mapping::KEY_LEASE_END,
-            5 => Mapping::KEY_RENT,
-            6 => Mapping::FIRST_NAME_TENANT,
-            7 => Mapping::LAST_NAME_TENANT,
-            8 => Mapping::KEY_EMAIL,
-            9 => Mapping::KEY_MOVE_OUT,
-            10 => Mapping::KEY_BALANCE,
-            11 => Mapping::KEY_MONTH_TO_MONTH,
-            12 => Mapping::KEY_PAYMENT_ACCEPTED,
-            13 => Mapping::KEY_EXTERNAL_LEASE_ID
-        );
-
-        $this->writeCsvToFile($mapping);
-        $this->setMapping($mapping);
-    }
-
-    /**
      * @param array $array
      */
     protected function writeCsvToFile(array $array)
@@ -196,5 +203,48 @@ class ExternalApiStorage extends StorageCsv
         }
 
         return $date;
+    }
+    /**
+     * @{inheritdoc}
+     */
+    protected function initializeParameters()
+    {
+        $this->setFieldDelimiter(self::FIELD_DELIMITER);
+        $this->setTextDelimiter(self::TEXT_DELIMITER);
+        $this->setDateFormat(self::DATE_FORMAT);
+
+        if (!$mappingFromDb = $this->getMappingFromDB()) {
+            $this->writeCsvToFile($this->defaultMapping);
+            $this->setMapping($this->defaultMapping);
+
+            return;
+        }
+
+        $this->assertMapping($this->defaultMapping, $mappingFromDb, get_class($this));
+
+        $this->writeCsvToFile($mappingFromDb);
+        $this->setMapping($mappingFromDb);
+    }
+
+    /**
+     * @param array $defaultMapping
+     * @param array $dbMapping
+     * @param string $system
+     */
+    public function assertMapping(array $defaultMapping, array $dbMapping, $system)
+    {
+        $countDefault = count($defaultMapping);
+        $countDB = count($dbMapping);
+
+        if ($countDB !== $countDefault) {
+            throw new \LogicException(
+                sprintf(
+                    'Mapping which we specify on DB wrong for %s. Count of elements should be equals. %s != %s',
+                    $system,
+                    $countDefault,
+                    $countDB
+                )
+            );
+        }
     }
 }
