@@ -250,7 +250,8 @@ class PropertyAddress
 
     /**
      * @deprecated Not deprecated,
-     * but should set this using "property.manager"->setupSingleProperty() instead.
+     * but should set this with using
+     * "property.manager"->setupSingleProperty() or "property.manager"->setupNotSingleProperty().
      *
      * @param boolean $isSingle
      */

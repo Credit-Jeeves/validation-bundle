@@ -11,6 +11,7 @@ use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
@@ -312,15 +313,15 @@ class AjaxController extends Controller
 
             $this->getEntityManager()->persist($property);
         }
-
-        if (false === $this->getPropertyProcess()->isValidProperty($property)) {
-            return new JsonResponse(
-                [
-                    'status' => 'ERROR',
-                    'message' => $this->get('translator')->trans('fill.full.address')
-                ]
-            );
-        }
+//
+//        if (false === $this->getPropertyProcess()->isValidProperty($property)) {
+//            return new JsonResponse(
+//                [
+//                    'status' => 'ERROR',
+//                    'message' => $this->get('translator')->trans('fill.full.address')
+//                ]
+//            );
+//        }
 
         $isLogin = $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY');
         $isLandlord = false;
@@ -335,6 +336,8 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
             if ('true' === $request->request->get('isSingle', false)) {
                 $this->getPropertyProcess()->setupSingleProperty($property, ['doFlush' => false]);
+            } else {
+                $this->getPropertyProcess()->setupNotSingleProperty($property);
             }
 
             $this->getEntityManager()->persist($group);

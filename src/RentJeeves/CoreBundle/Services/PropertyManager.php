@@ -152,6 +152,14 @@ class PropertyManager
 
     /**
      * @param Property $property
+     */
+    public function setupNotSingleProperty(Property $property)
+    {
+        $property->getPropertyAddress()->setIsSingle(false);
+    }
+
+    /**
+     * @param Property $property
      *
      * @return null|Property
      */
