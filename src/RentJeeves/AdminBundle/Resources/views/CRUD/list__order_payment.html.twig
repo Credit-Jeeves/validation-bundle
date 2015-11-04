@@ -1,0 +1,7 @@
+{% if object.payment %}
+    <a href="{{ path('admin_rentjeeves_data_payment_list', { "order_id": object.id}) }}"
+       class="btn btn-small">
+        <i class="icon-list"></i>
+        {{ 'admin.list.order.payment_action'|trans }}
+    </a>
+{% endif %}

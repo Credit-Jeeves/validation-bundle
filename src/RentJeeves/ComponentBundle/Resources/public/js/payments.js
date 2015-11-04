@@ -133,7 +133,7 @@ function Payments() {
 
   this.orderStatusTitle = function(order) {
       if (this.isSuccessfulStatus(order.status)) {
-          return Translator.trans('landlord_dashboard.payment.title', {"created": order.start, "sent": order.depositDate});
+          return Translator.trans('landlord_dashboard.payment.title', {"created": order.paymentCreated, "charged": order.start});
       }
 
       return order.errorMessage;

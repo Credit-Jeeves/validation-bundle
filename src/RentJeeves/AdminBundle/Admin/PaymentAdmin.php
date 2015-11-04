@@ -27,6 +27,25 @@ class PaymentAdmin extends Admin
         $collection->add('run', $this->getRouterIdParameter().'/run');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $orderId = $this->getRequest()->get('order_id', $this->getRequest()->get('order_id', null));
+
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+
+        if (!empty($orderId)) {
+            $query->innerJoin($alias.'.orders', $alias.'_o');
+            $query->andWhere($alias.'_o.id = :order_id');
+            $query->setParameter('order_id', $orderId);
+        }
+
+        return $query;
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -43,13 +62,12 @@ class PaymentAdmin extends Admin
             ->add(
                 '_action',
                 'actions',
-                array(
-                    'actions' => array(
-                        'jobs' => array(
-                            'template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig',
-                        )
-                    )
-                )
+                [
+                    'actions' => [
+                        'jobs' => ['template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'],
+                        'orders' => ['template' => 'AdminBundle:CRUD:list__payment_orders.html.twig'],
+                    ]
+                ]
             );
     }
 
@@ -57,39 +75,35 @@ class PaymentAdmin extends Admin
     {
         $return = parent::getFilterParameters();
 
-        if (!isset($return['startDate']['value']['month']) &&
-            !isset($return['startDate']['value']['day']) &&
-            !isset($return['startDate']['value']['year'])
-        ) {
-            $return['startDate'] = array(
-                'value' => array(
-                    'month' => date('n'),
-                    'day' => date('j'),
-                    'year' => date('Y'),
-                ),
-            );
-        } else {
-            $date = new DateTime();
-            $date->setTime(0, 0, 0);
-            $date->setDate(
-                @$return['startDate']['value']['year'],
-                @$return['startDate']['value']['month'],
-                @$return['startDate']['value']['day']
-            );
-            $return['startDate']['value']['year'] = $date->format('Y');
-            $return['startDate']['value']['month'] = $date->format('n');
-            $return['startDate']['value']['day'] = $date->format('j');
-        }
+        if (null == $this->getRequest()->get('order_id', null)) {
+            if (!isset($return['startDate']['value']['month']) &&
+                !isset($return['startDate']['value']['day']) &&
+                !isset($return['startDate']['value']['year'])
+            ) {
+                $return['startDate'] = array(
+                    'value' => array(
+                        'month' => date('n'),
+                        'day' => date('j'),
+                        'year' => date('Y'),
+                    ),
+                );
+            } else {
+                $date = new DateTime();
+                $date->setTime(0, 0, 0);
+                $date->setDate(
+                    @$return['startDate']['value']['year'],
+                    @$return['startDate']['value']['month'],
+                    @$return['startDate']['value']['day']
+                );
+                $return['startDate']['value']['year'] = $date->format('Y');
+                $return['startDate']['value']['month'] = $date->format('n');
+                $return['startDate']['value']['day'] = $date->format('j');
+            }
 
-        if (!isset($return['status']['value'])) {
-            $return['status']['type'] = '3';
-            $return['status']['value'] = PaymentStatus::ACTIVE;
-        }
-
-
-        if (!isset($return['type']['value'])) {
-            $return['type']['type'] = '2';
-            $return['type']['value'] = PaymentType::IMMEDIATE;
+            if (!isset($return['status']['value'])) {
+                $return['status']['type'] = '3';
+                $return['status']['value'] = PaymentStatus::ACTIVE;
+            }
         }
 
         return $return;
