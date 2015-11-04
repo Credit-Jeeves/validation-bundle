@@ -480,6 +480,10 @@
                 <source>checkout.rent_amount</source>
                 <target>Rent Amount</target>
             </trans-unit>
+            <trans-unit id="rent.not_shown">
+                <source>rent.not_shown</source>
+                <target>(Not Shown)</target>
+            </trans-unit>
             <trans-unit id="checkout.other_amount">
                 <source>checkout.other_amount</source>
                 <target>Other Amount</target>

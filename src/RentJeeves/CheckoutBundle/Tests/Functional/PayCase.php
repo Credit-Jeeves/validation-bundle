@@ -6,6 +6,7 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -1216,5 +1217,95 @@ class PayCase extends BaseTestCase
         $em->refresh($payments->first());
 
         $this->assertEquals(2001, $payments->first()->getAmount(), 'Active Payment should be updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHideRentOnDashboard()
+    {
+        $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
+        $activeContracts = $tenant->getContracts()->filter(function (Contract $contract) {
+            return !in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING]);
+        });
+        $this->assertNotEmpty($activeContracts, 'Check fixtures, tenant should have at list one active contract');
+        $contract = $activeContracts->first();
+        $contract->getGroupSettings()->setShowRentOnDashboard(false);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $btnSelector = sprintf('button[data-bind="click: openPayPopup.bind($data, %d)"]', $contract->getId());
+        $rentColumn = $this->getDomElement($btnSelector)
+            ->getParent() // div
+            ->getParent() // td
+            ->getParent() // tr - row
+            ->find('css', 'td:contains("rent.not_shown")');
+
+        $this->assertNotNull($rentColumn, 'Rent column should contains "rent.not_shown"');
+
+        $contract->getGroupSettings()->setShowRentOnDashboard(true);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+        $this->session->reload();
+        $rentColumn = $this->getDomElement($btnSelector)
+            ->getParent() // div
+            ->getParent() // td
+            ->getParent() // tr - row
+            ->find('css', sprintf('td:contains("$%s")', $contract->getRent()));
+
+        $this->assertNotNull($rentColumn, 'Rent column should contains rent');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHideRentOnWizard()
+    {
+        $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
+        // get active contracts without active payment
+        $activeContracts = $tenant->getContracts()->filter(function (Contract $contract) {
+            return !in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING]) &&
+                !$contract->getActiveRentPayment();
+        });
+        $this->assertNotEmpty($activeContracts, 'Check fixtures, tenant should have at list one active contract');
+        $contract = $activeContracts->first();
+        $contract->getGroupSettings()->setShowRentOnWizard(false);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $btnSelector = sprintf('button[data-bind="click: openPayPopup.bind($data, %d)"]', $contract->getId());
+        $payBtn = $this->getDomElement($btnSelector);
+        $payBtn->click();
+        $amountField = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_amount');
+
+        $this->assertEmpty($amountField->getValue(), 'Rent field should be empty');
+
+        $contract->getGroupSettings()->setShowRentOnWizard(true);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+        $this->session->reload();
+        $payBtn->click();
+
+        $amountField = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_amount');
+
+        $this->assertEquals(
+            $contract->getRent(),
+            $amountField->getValue(),
+            'Rent field should equals rent from contract'
+        );
     }
 }

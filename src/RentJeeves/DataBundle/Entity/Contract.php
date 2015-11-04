@@ -647,6 +647,7 @@ class Contract extends Base
         $result['group_id'] = $this->getGroup()->getId();
         $groupSettings = $this->getGroup()->getGroupSettings();
         $isIntegrated = $groupSettings->getIsIntegrated();
+        $result['is_shown_rent'] = $groupSettings->isShowRentOnDashboard();
         $result['is_integrated'] = $isIntegrated;
         $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['is_allowed_to_pay'] =

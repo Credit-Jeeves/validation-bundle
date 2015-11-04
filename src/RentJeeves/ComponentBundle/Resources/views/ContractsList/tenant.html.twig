@@ -63,7 +63,13 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' %}
                         <tr class="contracts static">
-                            <td class="font-helvetica">{{ contract.rent }}</td>
+                            <td class="font-helvetica">
+                                {% if contract.is_shown_rent %}
+                                    {{ contract.rent }}
+                                {% else %}
+                                    {{ 'rent.not_shown' | trans }}
+                                {% endif %}
+                            </td>
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>
                             {% endif %}
