@@ -1,11 +1,11 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests\Helper;
+namespace RentJeeves\CoreBundle\Tests\Unit\Helpers;
 
-use RentJeeves\ComponentBundle\Helper\DateCheckerHelper;
-use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\CoreBundle\Helpers\DateChecker;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class DateCheckerHelperCase extends BaseTestCase
+class DateCheckerHelperCase extends UnitTestBase
 {
     /**
      * @return array
@@ -29,7 +29,7 @@ class DateCheckerHelperCase extends BaseTestCase
      */
     public function shouldCheckDateFallsBetweenDates($startDate, $endDate, $result)
     {
-        $resultExecute = DateCheckerHelper::checkDateFallsBetweenDates($startDate, $endDate);
+        $resultExecute = DateChecker::nowFallsBetweenDates($startDate, $endDate);
 
         $this->assertEquals($result, $resultExecute);
     }

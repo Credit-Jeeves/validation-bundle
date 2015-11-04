@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Psr\Log\LogLevel;
-use RentJeeves\ComponentBundle\Helper\DateCheckerHelper;
+use RentJeeves\CoreBundle\Helpers\DateChecker;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -234,7 +234,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             $effectiveDate = $charge->getDateTimeEffectiveDate();
             $endDate = $charge->getDateTimeEndDate();
 
-            if (!DateCheckerHelper::checkDateFallsBetweenDates($effectiveDate, $endDate)) {
+            if (!DateChecker::nowFallsBetweenDates($effectiveDate, $endDate)) {
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',

@@ -170,29 +170,19 @@ abstract class AbstractContractSynchronizer
             try {
                 $this->logMessage(
                     sprintf(
-                        '[SyncBalance]Try processing property #%d with external id "%s"',
-                        $propertyMapping->getProperty()->getId(),
+                        '[SyncBalance]Try processing external property with id "%s"',
                         $propertyMapping->getExternalPropertyId()
                     )
                 );
                 $residentTransactions = $this->residentDataManager->getResidentTransactions(
                     $propertyMapping->getExternalPropertyId()
                 );
-                if (empty($residentTransactions) && !$propertyMapping->getProperty()->isSingle()) {
-                    // multi-unit properties not are likely to be vacant -- send alert
-                    throw new \LogicException(
-                        sprintf(
-                            'Could not load resident transactions for property %s of holding %s',
-                            $propertyMapping->getExternalPropertyId(),
-                            $propertyMapping->getHolding()->getName()
-                        )
-                    );
-                }
                 $this->logMessage(
                     sprintf(
-                        '[SyncBalance]Find %d resident transactions for processing by property %d of holding %s #%d',
+                        '[SyncBalance]Find %d resident transactions for processing' .
+                        ' by external property "%s" of holding "%s" #%d',
                         count($residentTransactions),
-                        $propertyMapping->getProperty()->getId(),
+                        $propertyMapping->getExternalPropertyId(),
                         $holding->getName(),
                         $holding->getId()
                     )

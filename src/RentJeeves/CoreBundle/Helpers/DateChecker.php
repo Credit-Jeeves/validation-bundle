@@ -1,8 +1,8 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Helper;
+namespace RentJeeves\CoreBundle\Helpers;
 
-class DateCheckerHelper
+class DateChecker
 {
     /**
      *
@@ -10,25 +10,25 @@ class DateCheckerHelper
      * @param \DateTime|null $endDate
      * @return boolean
      */
-    public static function checkDateFallsBetweenDates(\DateTime $startDate = null, \DateTime $endDate = null)
+    public static function nowFallsBetweenDates(\DateTime $startDate = null, \DateTime $endDate = null)
     {
         $today = new \DateTime();
         $todayStr = (int) $today->format('Ymd');
-        //both parameter provider
+        //both parameter provided
         if (($startDate instanceof \DateTime && $endDate instanceof \DateTime) &&
             (int) $startDate->format('Ymd') <= $todayStr && (int) $endDate->format('Ymd') >= $todayStr
         ) {
             return true;
         }
 
-        //only startDate parameter provider
+        //only startDate parameter provided
         if (($startDate instanceof \DateTime && !($endDate instanceof \DateTime)) &&
             (int) $startDate->format('Ymd') <= $todayStr
         ) {
             return true;
         }
 
-        //only endDate parameter provider
+        //only endDate parameter provided
         if ((!($startDate instanceof \DateTime) && $endDate instanceof \DateTime) &&
             (int) $endDate->format('Ymd') >= $todayStr
         ) {
