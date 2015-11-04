@@ -81,6 +81,14 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'ACIPayCollectV4';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function registerPaymentAccount(
         AccountData $accountData,
         DepositAccount $depositAccount
@@ -162,6 +170,16 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     public function loadReport()
     {
         return $this->reportLoader->loadReport();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReversedBatchId(Order $order)
+    {
+        $today = new \DateTime();
+
+        return sprintf('%sR%s', $order->getDepositAccount()->getId(), $today->format('Ymd'));
     }
 
     /**

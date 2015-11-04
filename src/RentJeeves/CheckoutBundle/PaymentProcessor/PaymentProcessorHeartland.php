@@ -62,6 +62,14 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'HPS';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function registerPaymentAccount(
         AccountData $accountData,
         DepositAccount $depositAccount
@@ -133,6 +141,15 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     public function loadReport()
     {
         return $this->reportLoader->loadReport();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReversedBatchId(Order $order)
+    {
+        // will be implemented later
+        return null;
     }
 
     /**

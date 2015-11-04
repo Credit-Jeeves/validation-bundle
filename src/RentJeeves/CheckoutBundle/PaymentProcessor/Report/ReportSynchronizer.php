@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
@@ -42,6 +43,11 @@ class ReportSynchronizer
     protected $logger;
 
     /**
+     * @var SubmerchantProcessorInterface
+     */
+    protected $paymentProcessor;
+
+    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param OrderStatusManagerInterface $orderStatusManager
@@ -60,15 +66,22 @@ class ReportSynchronizer
      * Synchronizes payment processor report's data.
      *
      * @param  PaymentProcessorReport $report
-     * @param  string $reportName - the name of the report to be used in log statements
+     * @param  SubmerchantProcessorInterface $paymentProcessor
      * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
-    public function synchronize(PaymentProcessorReport $report, $reportName = "", $alertIfEmpty = true)
-    {
+    public function synchronize(
+        PaymentProcessorReport $report,
+        SubmerchantProcessorInterface $paymentProcessor,
+        $alertIfEmpty = true
+    ) {
+        $this->paymentProcessor = $paymentProcessor;
         if (!$report->getTransactions()) {
-            $message = sprintf('%s Report synchronizer: No transactions in payment processor report', $reportName);
+            $message = sprintf(
+                '%s Report synchronizer: No transactions in payment processor report',
+                $paymentProcessor->getName()
+            );
             if ($alertIfEmpty) {
                 $this->logger->alert($message);
             } else {
@@ -236,7 +249,6 @@ class ReportSynchronizer
 
         $order = $originalTransaction->getOrder();
         $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
-        $reversalTransaction->setBatchId($reportTransaction->getBatchId());
         $originalDepositDate = $originalTransaction->getDepositDate();
         // if original deposit date exists, set reversal deposit date
         if ($originalDepositDate) {
@@ -244,6 +256,7 @@ class ReportSynchronizer
                 $reportTransaction->getTransactionDate()
             );
             $reversalTransaction->setDepositDate($reversalDepositDate);
+            // ??? why we set it to NULL ???
             $reversalTransaction->setBatchId(null);
         }
 
@@ -288,16 +301,17 @@ class ReportSynchronizer
         }
 
         $order = $originalTransaction->getOrder();
-        $voidedTransaction = $this->createReversalTransaction($order, $reportTransaction);
+        $reversalTransaction = $this->createReversalTransaction($order, $reportTransaction);
         // For reversal, from Heartland:
         // "The funds would be removed from the merchant’s account on the next business day.
         // If processed on a Saturday, it would be deducted on Monday."
         // TODO: may be moved down to payment processor layer if this is different
         $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportTransaction->getTransactionDate());
-        $voidedTransaction->setDepositDate($depositDate);
-        $voidedTransaction->setBatchId(null);
+        $reversalTransaction->setDepositDate($depositDate);
+        // ??? why we set it to NULL ???
+        $reversalTransaction->setBatchId(null);
 
-        $this->em->persist($voidedTransaction);
+        $this->em->persist($reversalTransaction);
         $this->em->flush();
 
         // this needs to run after the voidedTransaction is persisted
@@ -408,10 +422,8 @@ class ReportSynchronizer
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages($reportTransaction->getReversalDescription());
-
-        if ($batchId = $reportTransaction->getBatchId()) {
-            $transaction->setBatchId($batchId);
-        }
+        // this will work for RETURNED, REFUNDED, CANCELLED
+        $transaction->setBatchId($this->paymentProcessor->generateReversedBatchId($order));
 
         return $transaction;
     }
