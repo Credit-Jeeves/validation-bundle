@@ -2,13 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
-use \RentJeeves\CoreBundle\Session\Landlord as SessionLandlord;
 
 class ExternalApiStorage extends StorageCsv
 {
@@ -42,40 +40,6 @@ class ExternalApiStorage extends StorageCsv
     const FIELD_DELIMITER = ',';
 
     const TEXT_DELIMITER = '"';
-
-    /**
-     * @var EntityManager
-     */
-    public $em;
-
-    /**
-     * @var SessionLandlord
-     */
-    public $sessionLandlordManager;
-
-    /**
-     * @param EntityManager $em
-     */
-    public function setEntityManager(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
-     * @param SessionLandlord $sessionLandlord
-     */
-    public function setSessionLandlord(SessionLandlord $sessionLandlord)
-    {
-        $this->sessionLandlordManager = $sessionLandlord;
-    }
-
-    /**
-     * @return Landlord
-     */
-    protected function getLandlord()
-    {
-        return $this->sessionLandlordManager->getUser();
-    }
 
     /**
      * @return array|bool
@@ -269,7 +233,10 @@ class ExternalApiStorage extends StorageCsv
      */
     public function assertMapping(array $defaultMapping, array $dbMapping, $system)
     {
-        if ($countDefault = count($defaultMapping) !== $countDB = count($dbMapping)) {
+        $countDefault = count($defaultMapping);
+        $countDB = count($dbMapping);
+
+        if ($countDB !== $countDefault) {
             throw new \LogicException(
                 sprintf(
                     'Mapping which we specify on DB wrong for %s. Count of elements should be equals. %s != %s',

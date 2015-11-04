@@ -53,26 +53,10 @@ class StorageYardi extends ExternalApiStorage
      */
     protected function initializeParameters()
     {
-        $this->setFieldDelimiter(self::FIELD_DELIMITER);
-        $this->setTextDelimiter(self::TEXT_DELIMITER);
-        $this->setDateFormat(self::DATE_FORMAT);
-        $this->setPropertyId($this->getImportPropertyId());
-
         if ($this->isMultiplePropertyMapping()) {
             $this->defaultMapping[14] = Mapping::KEY_PROPERTY_ID;
         }
-
-        if (!$mappingFromDb = $this->getMappingFromDB()) {
-            $this->writeCsvToFile($this->defaultMapping);
-            $this->setMapping($this->defaultMapping);
-
-            return;
-        }
-
-        $this->assertMapping($this->defaultMapping, $mappingFromDb, get_class($this));
-
-        $this->writeCsvToFile($mappingFromDb);
-        $this->setMapping($mappingFromDb);
+        parent::initializeParameters();
     }
 
     /**
