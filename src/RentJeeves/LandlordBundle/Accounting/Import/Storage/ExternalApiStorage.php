@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
+use RentJeeves\DataBundle\Entity\ImportApiMapping;
 
 class ExternalApiStorage extends StorageCsv
 {
@@ -42,22 +43,36 @@ class ExternalApiStorage extends StorageCsv
     const TEXT_DELIMITER = '"';
 
     /**
-     * @return array|bool
+     * @return ImportApiMapping
      */
-    protected function getMappingFromDB()
+    protected function getImportApiMapping()
     {
-        $importApiMapping = $this->em->getRepository('RjDataBundle:ImportApiMapping')->findOneBy(
+        return $this->em->getRepository('RjDataBundle:ImportApiMapping')->findOneBy(
             [
                 'externalPropertyId' => $this->getImportExternalPropertyId(),
                 'holding' => $this->getLandlord()->getHolding()
             ]
         );
+    }
+
+    /**
+     * @return array|bool
+     */
+    protected function getMappingFromDB()
+    {
+        $importApiMapping = $this->getImportApiMapping();
 
         if (empty($importApiMapping)) {
             return false;
         }
 
-        return $importApiMapping->getMappingData();
+        $data = $importApiMapping->getMappingData();
+
+        if (empty($data)) {
+            return false;
+        }
+
+        return $data;
     }
 
     public function setImportPropertyId($propertyId)
@@ -165,6 +180,7 @@ class ExternalApiStorage extends StorageCsv
      */
     protected function writeCsvToFile(array $array)
     {
+        $array = $this->overrideValuesByImportApiMapping($array);
         $filePath = $this->getFilePath(true);
         if (empty($filePath)) {
             $newFileName = uniqid() . '.csv';
@@ -204,6 +220,65 @@ class ExternalApiStorage extends StorageCsv
 
         return $date;
     }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function overrideValuesByImportApiMapping(array $data)
+    {
+        $mappingApiMapping = $this->getImportApiMapping();
+
+        if (!$mappingApiMapping) {
+            return $data;
+        }
+
+        $currentMapping = $this->getCurrentMapping();
+
+        foreach ($currentMapping as $number => $value) {
+            $number -= 1;
+            $this->overrideValueInArray($value, Mapping::KEY_CITY, $number, $mappingApiMapping->getCity(), $data);
+            $this->overrideValueInArray($value, Mapping::KEY_ZIP, $number, $mappingApiMapping->getZip(), $data);
+            $this->overrideValueInArray($value, Mapping::KEY_STATE, $number, $mappingApiMapping->getState(), $data);
+            $this->overrideValueInArray($value, Mapping::KEY_STREET, $number, $mappingApiMapping->getStreet(), $data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string $currentKey
+     * @param string $checkedKey
+     * @param string $keyOfMainData
+     * @param string $newValue
+     * @param array $data
+     */
+    protected function overrideValueInArray($currentKey, $checkedKey, $keyOfMainData, $newValue, &$data)
+    {
+        if (empty($newValue)) {
+            return;
+        }
+
+        if ($currentKey == $checkedKey) {
+            $data[$keyOfMainData] = $newValue;
+        }
+    }
+
+    /**
+     * @return array
+     * @throws ImportStorageException
+     */
+    protected function getCurrentMapping()
+    {
+        if (!$mappingFromDb = $this->getMappingFromDB()) {
+            return $this->defaultMapping;
+        }
+
+        $this->assertMapping($this->defaultMapping, $mappingFromDb, get_class($this));
+
+        return $mappingFromDb;
+    }
+
     /**
      * @{inheritdoc}
      */
@@ -213,17 +288,9 @@ class ExternalApiStorage extends StorageCsv
         $this->setTextDelimiter(self::TEXT_DELIMITER);
         $this->setDateFormat(self::DATE_FORMAT);
 
-        if (!$mappingFromDb = $this->getMappingFromDB()) {
-            $this->writeCsvToFile($this->defaultMapping);
-            $this->setMapping($this->defaultMapping);
-
-            return;
-        }
-
-        $this->assertMapping($this->defaultMapping, $mappingFromDb, get_class($this));
-
-        $this->writeCsvToFile($mappingFromDb);
-        $this->setMapping($mappingFromDb);
+        $mapping = $this->getCurrentMapping();
+        $this->writeCsvToFile($mapping);
+        $this->setMapping($mapping);
     }
 
     /**
