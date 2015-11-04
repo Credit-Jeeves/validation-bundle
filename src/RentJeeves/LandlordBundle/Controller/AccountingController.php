@@ -739,13 +739,6 @@ class AccountingController extends Controller
      */
     public function batchDepositsAction()
     {
-        return $this->render(
-            'LandlordBundle:Accounting:deposit.html.twig',
-            [
-                'nGroups' => $this->getGroups()->count(),
-                'showFilter' =>
-                    $this->getCurrentGroup()->getGroupSettings()->getPaymentProcessor() == PaymentProcessor::HEARTLAND
-            ]
-        );
+        return $this->render('LandlordBundle:Accounting:deposit.html.twig', ['nGroups' => $this->getGroups()->count()]);
     }
 }
