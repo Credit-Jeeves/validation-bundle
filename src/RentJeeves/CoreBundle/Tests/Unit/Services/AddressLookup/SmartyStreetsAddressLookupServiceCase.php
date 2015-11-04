@@ -114,7 +114,8 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
      */
     public function shouldReturnAddressIfLookupFreeForm()
     {
-        $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI 48823, United States';
+        $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI, United States';
+        $freeFormAddressReturn = '3839 Hunsaker Dr, East Lansing, MI';
 
         $response = new SmartyStreetsAddress();
         $metadata = new Metadata();
@@ -133,7 +134,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
             ->method('getAddress')
-            ->with($freeFormAddress, '', '', '')
+            ->with($freeFormAddressReturn, '', '', '')
             ->will($this->returnValue($response));
 
         $validator = $this->getValidatorMock();
