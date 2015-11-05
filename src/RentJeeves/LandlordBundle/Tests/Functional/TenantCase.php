@@ -2,6 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Model\User;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -639,50 +640,13 @@ class TenantCase extends BaseTestCase
         $this->assertNull($contract->getTransUnionStartAt());
         $this->assertFalse($contract->getReportToTransUnion());
         $this->logout();
-        //Test identification
+
         $this->setDefaultSession('selenium2');
         $this->login('test@email.ru', 'pass');
         $this->assertNotNull(
-            $close = $this->page->find('css', '.ui-dialog-titlebar-close')
+            $this->page->find('css', '#pay-popup'),
+            'Should be displayed payment wizard dialog after login'
         );
-        $close->click();
-
-        $this->page->clickLink('tabs.summary');
-        $this->session->wait($this->timeout + 5000, "typeof $ !== undefined");
-        $this->assertNotNull(
-            $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
-        );
-        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1').val('666')");
-        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2').val('30')");
-        $this->session->evaluateScript("$('#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn3').val('9041')");
-
-        $this->fillForm(
-            $form,
-            array(
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_street' => 'Street',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_city' => 'City',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_area' => 'CA',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip' => '90210',
-            )
-        );
-        $this->page->pressButton('pay_popup.step.next');
-        $this->assertNotNull($form = $this->page->find('css', '#questions'));
-        //Fill correct answer
-        $this->fillForm(
-            $form,
-            array(
-                'questions_OutWalletAnswer1_0' => true,
-                'questions_OutWalletAnswer2_1' => true,
-                'questions_OutWalletAnswer3_2' => true,
-                'questions_OutWalletAnswer4_3' => true,
-            )
-        );
-        $this->page->pressButton('pay_popup.step.3');
-        $this->assertNotNull($loading = $this->page->find('css', '.loading'));
-        $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary') === null");
-        $em->refresh($contract);
-        $this->assertNotNull($contract->getTransUnionStartAt());
-        $this->assertTrue($contract->getReportToTransUnion());
     }
 
     /**
@@ -743,6 +707,10 @@ class TenantCase extends BaseTestCase
      */
     public function tenantPay()
     {
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('test@email.ru');
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+        $this->getEntityManager()->flush($tenant);
         $this->setDefaultSession('selenium2');
         $this->login('test@email.ru', 'pass');
         $this->assertNotNull($payButton = $this->page->find('css', '.button-contract-pay'));
