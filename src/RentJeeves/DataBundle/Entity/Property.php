@@ -30,7 +30,7 @@ class Property extends Base
     }
 
     /**
-     * @deprecated PLS DONT USE IT
+     * @deprecated PLS DONT USE IT, Use normalizer or something like normalizer
      *
      * @todo NEED REMOVE
      * @return array

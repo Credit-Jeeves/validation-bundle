@@ -127,7 +127,7 @@ class ContractProcessor
         $propertyAddress = $newUnitForm->get('address')->getData();
         $unitName = $newUnitForm->get('address')->get('unit_name')->getData();
 
-        $property = $this->findPropertyOrCreateNewAndMapAddressFields($propertyAddress);
+        $property = $this->findPropertyOrCreateNew($propertyAddress);
 
         /** @var Landlord $landlord */
         $landlord = $newUnitForm->get('landlord')->getData();
@@ -201,7 +201,7 @@ class ContractProcessor
      *
      * @return Property
      */
-    protected function findPropertyOrCreateNewAndMapAddressFields(PropertyAddress $propertyAddress)
+    protected function findPropertyOrCreateNew(PropertyAddress $propertyAddress)
     {
         $property = $this->propertyManager->findPropertyByAddressInDb(
             $propertyAddress->getNumber(),

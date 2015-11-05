@@ -1875,7 +1875,7 @@ abstract class User extends BaseUser
     /**
      * Add address
      *
-     * @param  \CreditJeeves\DataBundle\Entity\MailingAddress $pidkiqs
+     * @param  \CreditJeeves\DataBundle\Entity\MailingAddress $address
      * @return User
      */
     public function addAddress(\CreditJeeves\DataBundle\Entity\MailingAddress $address)

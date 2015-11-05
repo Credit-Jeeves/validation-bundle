@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
-use CreditJeeves\DataBundle\Model\Address as Base;
+use CreditJeeves\DataBundle\Model\MailingAddress as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 

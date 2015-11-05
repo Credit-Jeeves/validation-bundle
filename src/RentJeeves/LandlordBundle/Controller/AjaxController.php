@@ -313,15 +313,6 @@ class AjaxController extends Controller
 
             $this->getEntityManager()->persist($property);
         }
-//
-//        if (false === $this->getPropertyProcess()->isValidProperty($property)) {
-//            return new JsonResponse(
-//                [
-//                    'status' => 'ERROR',
-//                    'message' => $this->get('translator')->trans('fill.full.address')
-//                ]
-//            );
-//        }
 
         $isLogin = $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY');
         $isLandlord = false;
@@ -337,7 +328,7 @@ class AjaxController extends Controller
             if ('true' === $request->request->get('isSingle', false)) {
                 $this->getPropertyProcess()->setupSingleProperty($property, ['doFlush' => false]);
             } else {
-                $this->getPropertyProcess()->setupNotSingleProperty($property);
+                $this->getPropertyProcess()->setupMultiUnitProperty($property);
             }
 
             $this->getEntityManager()->persist($group);

@@ -25,13 +25,13 @@ class PropertiesCase extends BaseTestCase
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($zipColumn = $this->page->find('css', '#city'));
-        $zipColumn->click();
+        $this->assertNotNull($cityColumn = $this->page->find('css', '#city'));
+        $cityColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
         $this->assertEquals('Seattle', $firstTd->getText(), 'Wrong notice1'. $firstTd->getText());
-        $this->assertNotNull($zipColumn = $this->page->find('css', '#city'));
-        $zipColumn->click();
+        $this->assertNotNull($cityColumn = $this->page->find('css', '#city'));
+        $cityColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
         $this->assertEquals('Billings', $firstTd->getText(), 'Wrong notice2');

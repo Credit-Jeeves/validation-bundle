@@ -26,11 +26,11 @@ class PropertyRepository extends EntityRepository
                     COUNT(propertyAddress.zip) AS zip_c
                     '
             )
-            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->innerJoin('property.propertyAddress', 'propertyAddress')
             ->groupBy(
-                'property.street',
-                'property.number',
-                'property.zip'
+                'propertyAddress.street',
+                'propertyAddress.number',
+                'propertyAddress.zip'
             )
             ->having(
                 'street_c > 1

@@ -76,12 +76,12 @@ class PropertyAddress
     protected $isSingle;
 
     /**
-     * @ORM\Column(name="ss_lat", type="string", length=255, nullable=true)
+     * @ORM\Column(name="ss_lat", type="float", nullable=true)
      */
     protected $lat;
 
     /**
-     * @ORM\Column(name="ss_long", type="string", length=255, nullable=true)
+     * @ORM\Column(name="ss_long", type="float", nullable=true)
      */
     protected $long;
 

@@ -153,7 +153,7 @@ class PropertyManager
     /**
      * @param Property $property
      */
-    public function setupNotSingleProperty(Property $property)
+    public function setupMultiUnitProperty(Property $property)
     {
         $property->getPropertyAddress()->setIsSingle(false);
     }
@@ -309,7 +309,7 @@ class PropertyManager
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . $street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($number . ' '. $street, $city, $state, $zipCode)) {
             return null;
         }
 
