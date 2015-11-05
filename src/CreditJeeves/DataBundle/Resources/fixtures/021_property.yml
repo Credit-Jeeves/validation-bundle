@@ -5,15 +5,6 @@ fixtures:
             - RentGroup_1
             - RentGroup_2
             - RentGroup_6
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Broadway
-        number:         770
-        zip:            10003
-        jb:             40.7308364
-        kb:             -73.991567
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_1
@@ -21,210 +12,84 @@ fixtures:
         property_groups:
             - RentGroup_1
             - RentGroup_2
-        country:        US
-        area:           CA
-        city:           Santa Barbara
-        district:       null
-        street:         Andante Rd
-        number:         960
-        zip:            93105
-        jb:             34.44943
-        kb:             -119.709369
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_2
     Property_3:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           CA
-        city:           Mission Canyon
-        district:       null
-        street:         Andante Rd
-        number:         750
-        zip:            93105
-        jb:             34.44987
-        kb:             -119.7096921
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_3
     Property_4:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Broadway
-        number:         560
-        zip:            10012
-        jb:             40.723851
-        kb:             -73.997487
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_4
     Property_5:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           NY
-        city:           Jamaica
-        district:       Queens
-        street:         Broadway
-        number:         1
-        zip:            11414
-        jb:             40.6584069
-        kb:             -73.830445
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_5
     Property_6:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           MA
-        city:           Boston
-        district:       null
-        street:         Washington St
-        number:         10
-        zip:            02132
-        jb:             42.2574449
-        kb:             -71.1616868
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_6
     Property_7:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           CA
-        city:           Palos Verdes Estates
-        district:       null
-        street:         Vía Fernandez
-        number:         null
-        zip:            90274
-        jb:             33.7880762
-        kb:             -118.3960347
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_7
     Property_8:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           WA
-        city:           Seattle
-        district:       null
-        street:         18th Ave
-        number:         50
-        zip:            98122
-        jb:             47.6016982
-        kb:             -122.3089461
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_8
     Property_9:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           MO
-        city:           Kansas City
-        district:       null
-        street:         W 48th St
-        number:         121
-        zip:            64112
-        jb:             39.038827
-        kb:             -94.588826
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_9
     Property_10:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           TX
-        city:           Houston
-        district:       null
-        street:         Crosstimbers St
-        number:         1201
-        zip:            77022
-        jb:             29.8287445
-        kb:             -95.3856651
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_10
     Property_11:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           Mt
-        city:           Billings
-        district:       null
-        street:         Overland Ave
-        number:         2026
-        zip:            59102
-        jb:             45.753246
-        kb:             -108.565361
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_11
     Property_12:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           AZ
-        city:           Scottsdale
-        district:       null
-        street:         N Palo Cristi Rd
-        number:         5532
-        zip:            85253
-        jb:             33.518351
-        kb:             -112.0041753
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_12
     Property_13:
         property_groups:
             - RentGroup_1
-        country:        CU
-        area:           Havana
-        city:           Havana
-        district:       null
-        street:         10 de Octubre
-        number:         null
-        zip:            null
-        jb:             23.1094238
-        kb:             -82.3658518
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_13
     Property_14:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           IL
-        city:           Chicago
-        district:       null
-        street:         W Madison St
-        number:         733
-        zip:            60661
-        jb:             41.8810911
-        kb:             -87.6468986
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_14
     Property_15:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           AR
-        city:           Little Rock
-        district:       null
-        street:         S Broadway St
-        number:         617
-        zip:            72201
-        jb:             34.7434652
-        kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_15
@@ -232,15 +97,6 @@ fixtures:
         property_groups:
             - RentGroup_1
             - RentGroup_2
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Broadway
-        number:         776
-        zip:            10003
-        jb:             40.7312396
-        kb:             -73.9918488
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_16
@@ -248,15 +104,6 @@ fixtures:
         property_groups:
             - RentGroup_1
             - RentGroup_2
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Broadway
-        number:         745
-        zip:            10003
-        jb:             40.7302448
-        kb:             -73.9927101
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_17
@@ -264,43 +111,16 @@ fixtures:
         property_groups:
             - RentGroup_1
             - RentGroup_2
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Broadway
-        number:         785
-        zip:            10003
-        jb:             40.7316721
-        kb:             -73.9917422
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_18
     Property_19:
         property_groups:
             - RentGroup_3
-        country:        US
-        area:           NY
-        city:           New York
-        district:       Manhattan
-        street:         Lexington Avenue
-        number:         116
-        zip:            10016
-        jb:             40.7426129
-        kb:             -73.9828048
-        is_single:      1
         createdAt:     '-1 day'
         updatedAt:     '-1 day'
         propertyAddress: PropertyAddress_19
     Property_Normalized:
         property_groups:
             - RentGroup_1
-        country:        US
-        area:           CA
-        city:           Los Angeles
-        street:         West 36th Place
-        number:         1156
-        zip:            90007
-        jb:             34.021764
-        kb:             -118.293358
         propertyAddress: PropertyAddress_Normalized

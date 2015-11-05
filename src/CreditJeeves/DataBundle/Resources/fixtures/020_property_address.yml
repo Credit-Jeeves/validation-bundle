@@ -10,6 +10,7 @@ fixtures:
         kb:             -73.991567
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          770BroadwayNewYorkNY
     PropertyAddress_2:
         state:          CA
         city:           Santa Barbara
@@ -20,6 +21,7 @@ fixtures:
         kb:             -119.709369
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          960AndanteRdSantaBarbaraCA
     PropertyAddress_3:
         state:          CA
         city:           Mission Canyon
@@ -40,6 +42,7 @@ fixtures:
         kb:             -73.997487
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          560BroadwayNewYorkNY
     PropertyAddress_5:
         state:          NY
         city:           Jamaica
@@ -50,6 +53,7 @@ fixtures:
         kb:             -73.830445
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          1BroadwayJamaicaNY
     PropertyAddress_6:
         state:          MA
         city:           Boston
@@ -81,7 +85,7 @@ fixtures:
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
     PropertyAddress_9:
-        state:           MO
+        state:          MO
         city:           Kansas City
         street:         W 48th St
         number:         121
@@ -90,6 +94,7 @@ fixtures:
         kb:             -94.588826
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          121W48thStKansasCityMO
     PropertyAddress_10:
         state:          TX
         city:           Houston
@@ -100,6 +105,7 @@ fixtures:
         kb:             -95.3856651
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          1201CrosstimbersStHoustonTX
     PropertyAddress_11:
         state:          Mt
         city:           Billings
@@ -110,6 +116,7 @@ fixtures:
         kb:             -108.565361
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          2026OverlandAveBillingsMT
     PropertyAddress_12:
         state:          AZ
         city:           Scottsdale
@@ -120,6 +127,7 @@ fixtures:
         kb:             -112.0041753
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          5532NPaloCristiRdScottsdaleAZ
     PropertyAddress_13:
         state:          Havana
         city:           Havana
@@ -140,6 +148,7 @@ fixtures:
         kb:             -87.6468986
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          733WMadisonStChicagoIL
     PropertyAddress_15:
         state:          AR
         city:           Little Rock
@@ -150,6 +159,7 @@ fixtures:
         kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          617BroadwayStLittleRockAR
     PropertyAddress_16:
         state:          NY
         city:           New York
@@ -170,6 +180,7 @@ fixtures:
         kb:             -73.9927101
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          745BroadwayNewYorkNY
     PropertyAddress_18:
         state:          NY
         city:           New York
@@ -180,6 +191,7 @@ fixtures:
         kb:             -73.9917422
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          785BroadwayNewYorkNY
     PropertyAddress_19:
         state:          NY
         city:           New York
@@ -191,6 +203,7 @@ fixtures:
         is_single:      1
         createdAt:     '-1 day'
         updatedAt:     '-1 day'
+        index:          116LexingtonAveNewYorkNY
     PropertyAddress_Normalized:
         state:          CA
         city:           Los Angeles
@@ -199,3 +212,4 @@ fixtures:
         zip:            90007
         jb:             34.021764
         kb:             -118.293358
+        index:          1156W36thPlLosAngelesCA
