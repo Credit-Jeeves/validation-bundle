@@ -53,7 +53,7 @@ class StorageResman extends ExternalApiStorage
         ini_set('max_execution_time', '120');
         /** @var $customerBase RtCustomer  */
         foreach ($customers as $customerBase) {
-            if ($customerBase->getCustomers()->getCustomer()->count() === 0) {
+            if (count($customerBase->getCustomers()->getCustomer()) === 0) {
                 continue;
             }
 

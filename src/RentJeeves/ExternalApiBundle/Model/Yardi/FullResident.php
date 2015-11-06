@@ -28,7 +28,7 @@ class FullResident
     /**
      * @param ResidentLeaseFile $residentData
      */
-    public function setResidentData($residentData)
+    public function setResidentData(ResidentLeaseFile $residentData)
     {
         $this->residentData = $residentData;
     }
@@ -44,7 +44,7 @@ class FullResident
     /**
      * @param ResidentsResident $resident
      */
-    public function setResident($resident)
+    public function setResident(ResidentsResident $resident)
     {
         $this->resident = $resident;
     }
