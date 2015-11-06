@@ -256,8 +256,6 @@ class ReportSynchronizer
                 $reportTransaction->getTransactionDate()
             );
             $reversalTransaction->setDepositDate($reversalDepositDate);
-            // ??? why we set it to NULL ???
-            $reversalTransaction->setBatchId(null);
         }
 
         $this->em->persist($reversalTransaction);
@@ -308,8 +306,6 @@ class ReportSynchronizer
         // TODO: may be moved down to payment processor layer if this is different
         $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportTransaction->getTransactionDate());
         $reversalTransaction->setDepositDate($depositDate);
-        // ??? why we set it to NULL ???
-        $reversalTransaction->setBatchId(null);
 
         $this->em->persist($reversalTransaction);
         $this->em->flush();
@@ -422,7 +418,6 @@ class ReportSynchronizer
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages($reportTransaction->getReversalDescription());
-        // this will work for RETURNED, REFUNDED, CANCELLED
         $transaction->setBatchId($this->paymentProcessor->generateReversedBatchId($order));
 
         return $transaction;
