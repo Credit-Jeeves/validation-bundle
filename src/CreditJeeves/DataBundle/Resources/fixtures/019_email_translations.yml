@@ -1210,7 +1210,7 @@ fixtures:
       {% endfor %}
       {% endif %}
       {% if returns %}
-      Reversals (Each will be Debited Separately)
+      Reversals {% if group.groupPaymentProcessor == \'heartland\' %}(Each will be Debited Separately){% endif %}
       <table width=\"100%\" style=\"border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;\">
         <thead>
           <tr>
@@ -1313,7 +1313,7 @@ fixtures:
         {% endfor %}
       {% endif %}
       {% if group.returns %}
-        Reversals (Each will be Debited Separately)
+        Reversals {% if group.groupPaymentProcessor == \'heartland\' %}(Each will be Debited Separately){% endif %}
         <table width=\"100%\" style=\"border: 1px solid #4E4E4E; border-collapse: collapse;font-size: 12px;\">
           <thead>
             <tr>
