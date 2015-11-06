@@ -12,3 +12,7 @@ fixtures:
         tenant: Tenant_2
         holding: rjHolding_1
         residentId: t0011981
+    ResidentMapping_4:
+        tenant: Tenant_12
+        holding: rjHolding_1
+        residentId: 'e0278ce2-a4c5-4c61-af79-d3c0689d92e9'

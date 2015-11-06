@@ -31,6 +31,8 @@ class ResManClientCase extends Base
 
     const RESMAN_UNIT_ID = '1108';
 
+    const RESMAN_RESIDENT_UNIT_ID = '1102';
+
     /**
      * @test
      */

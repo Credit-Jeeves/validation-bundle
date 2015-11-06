@@ -6,6 +6,8 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface as ResidentDataManager;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -164,35 +166,81 @@ abstract class AbstractContractSynchronizer
      */
     protected function updateBalancesForHolding($holding)
     {
-        $iterableResult = $this->getPropertyMappingRepository()->findUniqueByHolding($holding);
-        /** @var PropertyMapping $propertyMapping */
-        while ((list($propertyMapping) = $iterableResult->next()) !== false) {
+        $externalPropertyRows = $this->getPropertyMappingRepository()->findUniqueExternalPropertyIdsByHolding($holding);
+        foreach ($externalPropertyRows as $externalPropertyRow) {
+            list($externalPropertyId) = array_values($externalPropertyRow);
             try {
                 $this->logMessage(
                     sprintf(
                         '[SyncBalance]Try processing external property with id "%s"',
-                        $propertyMapping->getExternalPropertyId()
+                        $externalPropertyId
                     )
                 );
                 $residentTransactions = $this->residentDataManager->getResidentTransactions(
-                    $propertyMapping->getExternalPropertyId()
+                    $externalPropertyId
                 );
                 $this->logMessage(
                     sprintf(
                         '[SyncBalance]Find %d resident transactions for processing' .
                         ' by external property "%s" of holding "%s" #%d',
                         count($residentTransactions),
-                        $propertyMapping->getExternalPropertyId(),
+                        $externalPropertyId,
                         $holding->getName(),
                         $holding->getId()
                     )
                 );
                 foreach ($residentTransactions as $resident) {
-                    $this->updateContractBalanceForResidentTransaction($resident, $propertyMapping);
-                    $this->em->flush();
+                    try {
+                        $this->processingResidentForUpdateBalance($holding, $resident, $externalPropertyId);
+                    } catch (\Exception $e) {
+                        $this->logMessage(
+                            sprintf(
+                                '[SyncBalance]ERROR: %s on %s:%d',
+                                $e->getMessage(),
+                                $e->getFile(),
+                                $e->getLine()
+                            ),
+                            LogLevel::ALERT
+                        );
+                    }
+                    /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                    $this->em->clear();
                 }
-                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
-                $this->em->clear();
+            } catch (\Exception $e) {
+                $this->logMessage(
+                    sprintf(
+                        '[SyncBalance]ERROR: %s on %s:%d',
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ),
+                    LogLevel::ALERT
+                );
+            }
+        }
+    }
+
+    /**
+     * Method for processing resident, get contracts for it and updated balances for each
+     *
+     * @param Holding $holding
+     * @param mixed $resident
+     * @param string $externalPropertyId
+     */
+    protected function processingResidentForUpdateBalance(Holding $holding, $resident, $externalPropertyId)
+    {
+        $contracts = $this->getContractsForUpdatingBalance($holding, $resident, $externalPropertyId);
+        foreach ($contracts as $contract) {
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]Processing %s #%d.',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId()
+                )
+            );
+            try {
+                $this->updateContractBalanceForResidentTransaction($contract, $resident);
+                $this->em->flush();
             } catch (\Exception $e) {
                 $this->logMessage(
                     sprintf(
@@ -212,35 +260,46 @@ abstract class AbstractContractSynchronizer
      */
     protected function updateContractsRentForHolding($holding)
     {
-        $iterableResult = $this->getPropertyMappingRepository()->findUniqueByHolding($holding);
-        /** @var PropertyMapping $propertyMapping */
-        while ((list($propertyMapping) = $iterableResult->next()) !== false) {
+        $externalPropertyRows = $this->getPropertyMappingRepository()->findUniqueExternalPropertyIdsByHolding($holding);
+        foreach ($externalPropertyRows as $externalPropertyRow) {
+            list($externalPropertyId) = array_values($externalPropertyRow);
             try {
                 $this->logMessage(
                     sprintf(
-                        '[SyncRent]Try processing property mapping #%d with external id "%s"',
-                        $propertyMapping->getId(),
-                        $propertyMapping->getExternalPropertyId()
+                        '[SyncRent]Try processing external property with id "%s"',
+                        $externalPropertyId
                     )
                 );
                 $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
-                    $propertyMapping->getExternalPropertyId()
+                    $externalPropertyId
                 );
                 $this->logMessage(
                     sprintf(
-                        '[SyncBalance]Find %d resident transactions for processing by property %d of holding %s #%d',
+                        '[SyncRent]Find %d resident transactions for processing' .
+                        ' by external property "%s" of holding "%s" #%d',
                         count($residentTransactions),
-                        $propertyMapping->getProperty()->getId(),
+                        $externalPropertyId,
                         $holding->getName(),
                         $holding->getId()
                     )
                 );
                 foreach ($residentTransactions as $resident) {
-                    $this->updateContractRentForResidentTransaction($resident, $propertyMapping);
-                    $this->em->flush();
+                    try {
+                        $this->processingResidentForUpdateRent($holding, $resident, $externalPropertyId);
+                    } catch (\Exception $e) {
+                        $this->logMessage(
+                            sprintf(
+                                '[SyncRent]ERROR: %s on %s:%d',
+                                $e->getMessage(),
+                                $e->getFile(),
+                                $e->getLine()
+                            ),
+                            LogLevel::ALERT
+                        );
+                    }
+                    /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                    $this->em->clear();
                 }
-                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
-                $this->em->clear();
             } catch (\Exception $e) {
                 $this->logMessage(
                     sprintf(
@@ -306,13 +365,22 @@ abstract class AbstractContractSynchronizer
     abstract protected function getHoldingsForUpdatingBalance();
 
     /**
+     * @param Holding $holding
      * @param mixed $resident
-     * @param PropertyMapping $propertyMapping
+     * @param string $externalPropertyId
+     * @return Contract[]|ContractWaiting[]
      */
-    abstract protected function updateContractBalanceForResidentTransaction(
+    abstract protected function getContractsForUpdatingBalance(
+        Holding $holding,
         $resident,
-        PropertyMapping $propertyMapping
+        $externalPropertyId
     );
+
+    /**
+     * @param Contract|ContractWaiting $contract
+     * @param mixed $resident
+     */
+    abstract protected function updateContractBalanceForResidentTransaction($contract, $resident);
 
     /**
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult
@@ -320,11 +388,13 @@ abstract class AbstractContractSynchronizer
     abstract protected function getHoldingsForUpdatingRent();
 
     /**
+     * @param Holding $holding
      * @param mixed $resident
-     * @param PropertyMapping $propertyMapping
+     * @param string $externalPropertyId
      */
-    abstract protected function updateContractRentForResidentTransaction(
+    abstract protected function processingResidentForUpdateRent(
+        Holding $holding,
         $resident,
-        PropertyMapping $propertyMapping
+        $externalPropertyId
     );
 }

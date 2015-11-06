@@ -635,11 +635,11 @@ abstract class Property
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isSingle()
     {
-        return !!$this->isSingle;
+        return $this->isSingle;
     }
 
     /**

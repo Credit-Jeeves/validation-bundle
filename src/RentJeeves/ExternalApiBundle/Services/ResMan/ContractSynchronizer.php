@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Detail;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtServiceTransactions;
@@ -36,122 +36,106 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     }
 
     /**
+     * @param Holding $holding
      * @param RtCustomer $resident
-     * @param PropertyMapping $propertyMapping
+     * @param string $externalPropertyId
+     * @return Contract[]|ContractWaiting[]
      */
-    protected function updateContractBalanceForResidentTransaction(
+    protected function getContractsForUpdatingBalance(
+        Holding $holding,
         $resident,
-        PropertyMapping $propertyMapping
+        $externalPropertyId
     ) {
-        if ($resident->getCustomers()->getCustomer()->isEmpty()) {
+        $roommates = $resident->getCustomers()->getCustomer();
+        if ($roommates->isEmpty()) {
             $this->logMessage(
                 sprintf(
                     '[SyncBalance]Skip RtCustomer(%s) with empty customer collection for external property "%s".',
                     $resident->getCustomerId(),
-                    $propertyMapping->getExternalPropertyId()
+                    $externalPropertyId
                 )
             );
 
-            return;
-        }
-        if (null === $contracts = $this->getContractsForUpdateBalance($resident, $propertyMapping)) {
-            return;
+            return [];
         }
 
-        foreach ($contracts as $contract) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncBalance]Processing %s #%d.',
-                    (new \ReflectionObject($contract))->getShortName(),
-                    $contract->getId()
-                )
-            );
-            $this->doUpdateBalanceAndPaymentAccepted($resident, $contract);
-        }
-    }
+        $allContracts = [];
+        /** @var Customer $roommate */
+        foreach ($roommates as $roommate) {
+            $residentId = $roommate->getCustomerId();
+            $unitName = $resident->getRtUnit()->getUnitId();
+            $contracts = $this
+                ->getContractRepository()
+                ->findContractsByHoldingExternalPropertyResidentUnit(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $unitName
+                );
+            empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
-    /**
-     * @param RtCustomer $customerBase
-     * @param PropertyMapping $propertyMapping
-     * @return null|Contract[]|ContractWaiting[]
-     */
-    protected function getContractsForUpdateBalance(RtCustomer $customerBase, PropertyMapping $propertyMapping)
-    {
-        $externalLeaseId = $customerBase->getCustomerId();
-        $unitName = $customerBase->getRtUnit()->getUnitId();
-        $contracts = $this
-            ->getContractRepository()
-            ->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
-                $propertyMapping->getHolding(),
-                $propertyMapping->getProperty(),
-                $externalLeaseId,
-                $unitName
-            );
+            $contractsWaiting = $this
+                ->getContractWaitingRepository()
+                ->findContractsByHoldingExternalPropertyResidentUnit(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $unitName
+                );
 
-        if (!empty($contracts)) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncBalance]Found %d contracts with propertyId %s, unitName %s, $externalLeaseId %s',
-                    count($contracts),
-                    $propertyMapping->getProperty()->getId(),
-                    $unitName,
-                    $externalLeaseId
-                )
-            );
-
-            return $contracts;
+            empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
         }
 
-        $contractsWaiting = $this
-            ->getContractWaitingRepository()
-            ->findByHoldingPropertyUnitExternalLeaseId(
-                $propertyMapping->getHolding(),
-                $propertyMapping->getProperty(),
-                $unitName,
-                $externalLeaseId
-            );
-
-        if (!empty($contractsWaiting)) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncBalance]Found %s contractsWaiting with propertyId %s, unitName %s, $externalLeaseId %s',
-                    count($contractsWaiting),
-                    $propertyMapping->getProperty()->getId(),
-                    $unitName,
-                    $externalLeaseId
-                )
-            );
-
-            return $contractsWaiting;
-        }
-
+        $count = count($allContracts);
         $this->logMessage(
             sprintf(
-                '[SyncBalance]Could not find any contract with external property %s, unitName %s, externalLeaseId %s',
-                $propertyMapping->getExternalPropertyId(),
-                $unitName,
-                $externalLeaseId
+                '[SyncBalance]%s contracts for processing' .
+                ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
+                $count ? 'Found ' . $count : 'Not found any',
+                $externalPropertyId,
+                $holding->getName(),
+                $holding->getId(),
+                $resident->getCustomerId()
             )
         );
 
-        return null;
+        return $allContracts;
     }
 
     /**
-     * @param RtCustomer $baseCustomer
      * @param Contract|ContractWaiting $contract
+     * @param RtCustomer $baseCustomer
+     *
      */
-    protected function doUpdateBalanceAndPaymentAccepted(RtCustomer $baseCustomer, $contract)
+    protected function updateContractBalanceForResidentTransaction($contract, $baseCustomer)
     {
         $contract->setPaymentAccepted($baseCustomer->getRentTrackPaymentAccepted());
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Setup payment accepted to %s, for residentId %s',
+                $contract->getPaymentAccepted(),
+                $baseCustomer->getCustomerId()
+            )
+        );
+        $externalLeaseId = $contract->getExternalLeaseId();
+        if (empty($externalLeaseId)) {
+            $contract->setExternalLeaseId($baseCustomer->getCustomerId());
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId(),
+                    $baseCustomer->getCustomerId()
+                )
+            );
+        }
         $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
         $this->logMessage(
             sprintf(
-                '[SyncBalance]Payment accepted set to %s and balance to %s. For %s #%d',
-                $contract->getPaymentAccepted(),
-                $contract->getIntegratedBalance(),
+                '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
+                (new \ReflectionObject($contract))->getShortName(),
                 $contract->getId(),
-                (new \ReflectionObject($contract))->getShortName()
+                $baseCustomer->getRentTrackBalance()
             )
         );
     }
@@ -159,54 +143,75 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     /**
      * {@inheritdoc}
      */
-    public function getHoldingsForUpdatingRent()
+    protected function getHoldingsForUpdatingRent()
     {
         return $this->getHoldingRepository()->findHoldingsForUpdatingRentResMan();
     }
 
     /**
+     * @param Holding $holding
      * @param RtServiceTransactions $resident
-     * @param PropertyMapping $propertyMapping
-     *
+     * @param string $externalPropertyId
      */
-    protected function updateContractRentForResidentTransaction(
+    protected function processingResidentForUpdateRent(
+        Holding $holding,
         $resident,
-        PropertyMapping $propertyMapping
+        $externalPropertyId
     ) {
-        if (null === $contracts = $this->getContractsForUpdateRent($resident, $propertyMapping)) {
-            return;
-        }
-
-        foreach ($contracts as $contract) {
-            $this->logMessage(
+        $recurringCodes = $holding->getRecurringCodesArray();
+        $sumRecurringCharges = $this->getSumRecurringCharges($resident, $recurringCodes);
+        $firstDetails = $this->getFirstDetailForRTServiceTransaction($resident);
+        if (!$firstDetails) {
+            throw new \LogicException(
                 sprintf(
-                    '[SyncRent]Processing %s #%d.',
-                    (new \ReflectionObject($contract))->getShortName(),
-                    $contract->getId()
+                    '[SyncRent]Can not get',
+                    $holding->getName(),
+                    $holding->getId(),
+                    $firstDetails ? $firstDetails->getCustomerId() : '',
+                    $sumRecurringCharges
                 )
             );
-            $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
-            $sumRecurringCharges = $this->getSumRecurringCharges($resident, $recurringCodes);
+        }
+        if ($sumRecurringCharges <= 0) {
+            throw new \LogicException(
+                sprintf(
+                    '[SyncRent]Sum of RecurringCharges for %s #%d  and lease Id "%s" = %d',
+                    $holding->getName(),
+                    $holding->getId(),
+                    $firstDetails ? $firstDetails->getCustomerId() : '',
+                    $sumRecurringCharges
+                )
+            );
+        }
 
-            if ($sumRecurringCharges <= 0) {
-                throw new \LogicException(
-                    sprintf(
-                        'Sum of RecurringCharges for %s #%d = %d',
-                        (new \ReflectionObject($contract))->getShortName(),
-                        $contract->getId(),
-                        $sumRecurringCharges
-                    )
-                );
-            }
+        $leaseId = $firstDetails->getCustomerId();
+
+        $allContracts = [];
+
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+
+        empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
+
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
+            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+
+        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
+
+        /** @var Contract|ContractWaiting $contract */
+        foreach ($allContracts as $contract) {
             $contract->setRent($sumRecurringCharges);
             $this->logMessage(
                 sprintf(
                     '[SyncRent]Rent for %s #%d updated to %s',
                     (new \ReflectionObject($contract))->getShortName(),
                     $contract->getId(),
-                    $sumRecurringCharges
+                    $contract->getRent()
                 )
             );
+            $this->em->flush();
         }
     }
 
@@ -241,119 +246,22 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     }
 
     /**
-     * @param PropertyMapping $propertyMapping
-     *
-     * @return null|Contract[]|ContractWaiting[]
-     */
-    protected function getContractsForUpdateRent(
-        RtServiceTransactions $rtServiceTransaction,
-        PropertyMapping $propertyMapping
-    ) {
-        if (null === $firstDetail = $this->getFirstDetailForRTServiceTransaction($rtServiceTransaction)) {
-            throw new \InvalidArgumentException(
-                'rtServiceTransaction does not have details.'
-            );
-        }
-        $contracts = $this
-            ->getContractRepository()
-            ->findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
-                $propertyMapping->getHolding(),
-                $propertyMapping->getProperty(),
-                $firstDetail->getCustomerId(),
-                $firstDetail->getUnitID()
-            );
-
-        if (!empty($contracts)) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncRent]Found %d contracts with propertyId %s, externalLeaseId %s and unitName "%s"',
-                    count($contracts),
-                    $propertyMapping->getProperty()->getId(),
-                    $firstDetail->getCustomerId(),
-                    $firstDetail->getUnitID()
-                )
-            );
-
-            return $contracts;
-        }
-
-        $contractsWaiting = $this
-            ->getContractWaitingRepository()
-            ->findByHoldingPropertyUnitExternalLeaseId(
-                $propertyMapping->getHolding(),
-                $propertyMapping->getProperty(),
-                $firstDetail->getUnitID(),
-                $firstDetail->getCustomerId()
-            );
-
-        if (!empty($contractsWaiting)) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncRent]Found %d contractsWaiting with propertyId %s, externalLeaseId %s and unitName "%s"',
-                    count($contractsWaiting),
-                    $propertyMapping->getProperty()->getId(),
-                    $firstDetail->getCustomerId(),
-                    $firstDetail->getUnitID()
-                )
-            );
-
-            return $contractsWaiting;
-        }
-
-        $this->logMessage(
-            sprintf(
-                '[SyncBalance]Could not find any contract with external property %s, unitName %s, externalLeaseId %s',
-                $propertyMapping->getExternalPropertyId(),
-                $firstDetail->getUnitID(),
-                $firstDetail->getCustomerId()
-            )
-        );
-
-        return null;
-    }
-
-    /**
      * @param RtServiceTransactions $rtServiceTransaction
      *
      * @return null|Detail
      */
     protected function getFirstDetailForRTServiceTransaction(RtServiceTransactions $rtServiceTransaction)
     {
-        /** @var Transactions $firstTransaction */
-        $firstTransaction = $rtServiceTransaction->getTransactions()[0];
-        if (null !== $firstTransaction->getCharge()) {
-            return $firstTransaction->getCharge()->getDetail();
-        } elseif (null !== $firstTransaction->getConcession()) {
-            return $firstTransaction->getConcession()->getDetail();
-        }
-
-        return null;
-    }
-
-    /**
-     * @param RtServiceTransactions $rtServiceTransaction
-     * @param array $recurringCodes
-     *
-     * @return float
-     */
-    protected function getSumRecurringCharges(RtServiceTransactions $rtServiceTransaction, array $recurringCodes)
-    {
-        $sumRecurringCharges = 0;
-        /** @var Transactions $transaction */
-        foreach ($rtServiceTransaction->getTransactions() as $transaction) {
-            if ($transaction->getCharge() !== null) {
-                $details = $transaction->getCharge()->getDetail();
-                if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
-                    $sumRecurringCharges += $details->getAmount();
-                }
-            } elseif ($transaction->getConcession() !== null) {
-                $details = $transaction->getConcession()->getDetail();
-                if (empty($recurringCodes) || true === in_array($details->getChargeCode(), $recurringCodes)) {
-                    $sumRecurringCharges -= $details->getAmount();
-                }
+        if (count($rtServiceTransaction->getTransactions()) > 0) {
+            /** @var Transactions $firstTransaction */
+            $firstTransaction = $rtServiceTransaction->getTransactions()[0];
+            if (null !== $firstTransaction->getCharge()) {
+                return $firstTransaction->getCharge()->getDetail();
+            } elseif (null !== $firstTransaction->getConcession()) {
+                return $firstTransaction->getConcession()->getDetail();
             }
         }
 
-        return $sumRecurringCharges;
+        return null;
     }
 }

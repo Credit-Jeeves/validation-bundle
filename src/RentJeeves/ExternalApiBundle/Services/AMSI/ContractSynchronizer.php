@@ -3,10 +3,8 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use Psr\Log\LogLevel;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
@@ -37,147 +35,103 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     }
 
     /**
+     * @param Holding $holding
      * @param Lease $lease
-     * @param PropertyMapping $propertyMapping
+     * @param string $externalPropertyId
+     * @return Contract[]|ContractWaiting[]
+     */
+    protected function getContractsForUpdatingBalance(
+        Holding $holding,
+        $lease,
+        $externalPropertyId
+    ) {
+        $occupants = $lease->getOccupants();
+        $externalUnitId = $lease->getExternalUnitId();
+        $allContracts = [];
+        /** @var Occupant $occupant */
+        foreach ($occupants as $occupant) {
+            $residentId =  $occupant->getOccuSeqNo();
+            $contracts = $this
+                ->getContractRepository()
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $externalUnitId
+                );
+            empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
+
+            $contractsWaiting = $this
+                ->getContractWaitingRepository()
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $externalUnitId
+                );
+
+            empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
+        }
+
+        $count = count($allContracts);
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]%s contracts for processing' .
+                ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
+                $count ? 'Found ' . $count : 'Not found any',
+                $externalPropertyId,
+                $holding->getName(),
+                $holding->getId(),
+                $occupant->getResiId()
+            )
+        );
+
+        return $allContracts;
+    }
+
+    /**
+     * @param Contract|ContractWaiting $contract
+     * @param Lease $lease
      * @throws \Exception
      */
     protected function updateContractBalanceForResidentTransaction(
-        $lease,
-        PropertyMapping $propertyMapping
+        $contract,
+        $lease
     ) {
-        foreach ($lease->getOccupants() as $occupant) {
-            try {
-                if (null !== $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncBalance]Processing %s #%d.',
-                            (new \ReflectionObject($contract))->getShortName(),
-                            $contract->getId()
-                        )
-                    );
-                    $this->doUpdateBalanceAndPaymentAccepted($lease, $contract);
-                }
-            } catch (\Exception $e) {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]ERROR: %s on %s:%d',
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ),
-                    LogLevel::ALERT
-                );
-            }
-        }
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
-     * @param Lease $lease
-     * @param Occupant $occupant
-     * @return null|Contract|ContractWaiting
-     * @throws \Exception
-     */
-    protected function getContract(PropertyMapping $propertyMapping, Lease $lease, Occupant $occupant)
-    {
-        $residentId = $occupant->getOccuSeqNo();
-
-        $this->logMessage(
-            sprintf(
-                'Getting contract for holding %s, propertyMapping %s, lease %s, residentId %s',
-                $propertyMapping->getHolding()->getId(),
-                $propertyMapping->getExternalPropertyId(),
-                $lease->getExternalUnitId(),
-                $residentId
-            )
-        );
-
-        $contracts = $this
-            ->getContractRepository()
-            ->findContractsByPropertyMappingResidentAndExternalUnitId(
-                $propertyMapping,
-                $residentId,
-                $lease->getExternalUnitId()
-            );
-
-        if (count($contracts) > 1) {
-            throw new \LogicException(
-                sprintf(
-                    'Found more than one contract with property %s, externalUnitId %s, residentId %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $lease->getExternalUnitId(),
-                    $residentId
-                )
-            );
-        }
-
-        if (count($contracts) == 1) {
-            return reset($contracts);
-        }
-
-        $contractWaiting = null;
-        try {
-            $contractWaiting = $this
-                ->getContractWaitingRepository()
-                ->findOneByPropertyMappingExternalUnitIdAndResidentId(
-                    $propertyMapping,
-                    $lease->getExternalUnitId(),
-                    $residentId
-                );
-        } catch (\Doctrine\ORM\NonUniqueResultException $e) {
-            throw new \LogicException(
-                sprintf(
-                    'Duplicate mapping found cannot update balance: property %s, externalUnitId %s, resident %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $lease->getExternalUnitId(),
-                    $residentId
-                )
-            );
-        }
-        if ($contractWaiting) {
-            return $contractWaiting;
-        }
-
-        $this->logMessage(
-            sprintf(
-                'Could not find any contract with external property %s, externalUnitId %s, resident %s',
-                $propertyMapping->getExternalPropertyId(),
-                $lease->getExternalUnitId(),
-                $residentId
-            )
-        );
-
-        return null;
-    }
-
-    /**
-     * @param Lease $lease
-     * @param Contract|ContractWaiting $contract
-     */
-    protected function doUpdateBalanceAndPaymentAccepted(Lease $lease, $contract)
-    {
         $disallow = $lease->getBlockPaymentAccess();
-        $externalLeaseId = $lease->getResiId();
-        $balance = $lease->getEndBalance();
         if (strtolower($disallow) === 'y') {
             $disallow = PaymentAccepted::DO_NOT_ACCEPT;
         } else {
             $disallow = PaymentAccepted::ANY;
         }
+        $balance = $lease->getEndBalance();
         $contract->setPaymentAccepted($disallow);
-        $currentExternalLeaseId = $contract->getExternalLeaseId();
-        if (empty($currentExternalLeaseId)) {
-            $contract->setExternalLeaseId($externalLeaseId);
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Setup payment accepted to %s, for leaseId %s',
+                $disallow,
+                $lease->getResiId()
+            )
+        );
+        $externalLeaseId = $contract->getExternalLeaseId();
+        if (empty($externalLeaseId)) {
+            $contract->setExternalLeaseId($lease->getResiId());
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId(),
+                    $lease->getResiId()
+                )
+            );
         }
         $contract->setIntegratedBalance($balance);
         $this->logMessage(
             sprintf(
-                'Set value to update: payment accepted to %s, external lease to %s, balance to %s. For %s #%d',
-                $disallow,
-                $externalLeaseId,
-                $balance,
+                '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
                 (new \ReflectionObject($contract))->getShortName(),
-                $contract->getId()
+                $contract->getId(),
+                $balance
             )
         );
     }
@@ -191,57 +145,63 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     }
 
     /**
+     * @param Holding $holding
      * @param Lease $lease
-     * @param PropertyMapping $propertyMapping
+     * @param string $externalPropertyId
      */
-    protected function updateContractRentForResidentTransaction($lease, PropertyMapping $propertyMapping)
-    {
-        $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
+    protected function processingResidentForUpdateRent(
+        Holding $holding,
+        $lease,
+        $externalPropertyId
+    ) {
+        $recurringCodes = $holding->getRecurringCodesArray();
         $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
+        $leaseId = $lease->getResiId();
 
         if ($sumRecurringCharges <= 0) {
             throw new \LogicException(
                 sprintf(
-                    'Sum of RecurringCharges for Holding#%d, PropertyMapping#%d, lease#%s = %d',
-                    $propertyMapping->getHolding()->getId(),
-                    $propertyMapping->getExternalPropertyId(),
-                    $lease->getExternalUnitId(),
+                    '[SyncRent]Sum of RecurringCharges for %s #%d  and lease Id "%s" = %d',
+                    $holding->getName(),
+                    $holding->getId(),
+                    $leaseId,
                     $sumRecurringCharges
                 )
             );
         }
-
+        /** @var Occupant $occupant */
         foreach ($lease->getOccupants() as $occupant) {
-            try {
-                if (null !== $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncRent]Processing %s #%d.',
-                            (new \ReflectionObject($contract))->getShortName(),
-                            $contract->getId()
-                        )
-                    );
-                    $contract->setRent($sumRecurringCharges);
-                    $this->logMessage(
-                        sprintf(
-                            '[SyncRent]Rent for %s #%d updated to %s',
-                            (new \ReflectionObject($contract))->getShortName(),
-                            $contract->getId(),
-                            $sumRecurringCharges
-                        )
-                    );
-                }
-            } catch (\Exception $e) {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncRent]ERROR: %s on %s:%d',
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ),
-                    LogLevel::ALERT
-                );
+            if (296455 == $occupant->getOccuSeqNo()) {
+                echo $lease->getResiId();
             }
+        }
+
+        $allContracts = [];
+
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+
+        empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
+
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
+            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+
+        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
+
+        /** @var Contract|ContractWaiting $contract */
+        foreach ($allContracts as $contract) {
+            $contract->setRent($sumRecurringCharges);
+            $this->logMessage(
+                sprintf(
+                    '[SyncRent]Rent for %s #%d updated to %s',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId(),
+                    $contract->getRent()
+                )
+            );
+            $this->em->flush();
         }
     }
 

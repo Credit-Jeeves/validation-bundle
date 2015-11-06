@@ -4,32 +4,28 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyMappingRepository extends EntityRepository
 {
     /**
-     * Iterate can't work with join
-     * @see http://www.doctrine-project.org/jira/browse/DDC-176
      * @param Holding $holding
-     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     * @return array
      */
-    public function findUniqueByHolding(Holding $holding)
+    public function findUniqueExternalPropertyIdsByHolding(Holding $holding)
     {
-        $query = $this->createQueryBuilder('pm');
-        $query->select('pm');
-        $query->add('from', new Expr\From('RjDataBundle:Property', 'p'), true);
-        $query->add('from', new Expr\From('RjDataBundle:Contract', 'c'), true);
-        $query->where('pm.holding = :holding');
-        $query->andWhere('p.id = pm.property');
-        $query->andWhere('p.id = c.property');
-        $query->andWhere('c.status IN (:statuses)');
-        $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
-        $query->setParameter('holding', $holding);
-        $query->groupBy('pm.externalPropertyId');
-
-        return $query->getQuery()->iterate();
+        return $this->createQueryBuilder('pm')
+            ->select('pm.externalPropertyId')
+            ->innerJoin('pm.property', 'p')
+            ->innerJoin('p.contracts', 'c')
+            ->where('pm.holding = :holding')
+            ->andWhere('c.status IN (:statuses)')
+            ->setParameter('holding', $holding)
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->groupBy('pm.externalPropertyId')
+            ->getQuery()
+            ->getArrayResult();
     }
 
     /**

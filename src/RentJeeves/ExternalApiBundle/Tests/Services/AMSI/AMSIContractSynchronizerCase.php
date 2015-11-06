@@ -24,6 +24,7 @@ class AMSIContractSynchronizerCase extends Base
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RENT');
         $contract->setRent(123321); // test value
+        $contract->setExternalLeaseId(17);
 
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
