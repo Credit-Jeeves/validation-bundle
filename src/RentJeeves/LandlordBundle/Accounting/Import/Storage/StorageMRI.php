@@ -45,12 +45,11 @@ class StorageMRI extends ExternalApiStorage
     }
 
     /**
-     * @param  array $customers
-     * @return bool
+     * {@inheritdoc}
      */
-    public function saveToFile(array $customers)
+    public function saveToFile($customers)
     {
-        if (empty($customers)) {
+        if (!parent::saveToFile($customers)) {
             return false;
         }
 
@@ -60,11 +59,6 @@ class StorageMRI extends ExternalApiStorage
 
         /** @var $customer Value  */
         foreach ($customers as $customer) {
-            $filePath = $this->getFilePath(true);
-            if (is_null($filePath)) {
-                $this->initializeParameters();
-            }
-
             if (strtolower($customer->getIsCurrent()) !== strtolower(self::IS_CURRENT)) {
                 continue;
             }

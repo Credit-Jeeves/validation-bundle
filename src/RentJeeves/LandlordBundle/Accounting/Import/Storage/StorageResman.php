@@ -42,23 +42,17 @@ class StorageResman extends ExternalApiStorage
     }
 
     /**
-     * @param  array $customers
-     * @return bool
+     * {@inheritdoc}
      */
-    public function saveToFile(array $customers)
+    public function saveToFile($customers)
     {
-        if (empty($customers)) {
+        if (!parent::saveToFile($customers)) {
             return false;
         }
 
         ini_set('max_execution_time', '120');
         /** @var $customerBase RtCustomer  */
         foreach ($customers as $customerBase) {
-            $filePath = $this->getFilePath(true);
-            if (is_null($filePath)) {
-                $this->initializeParameters();
-            }
-
             if ($customerBase->getCustomers()->getCustomer()->count() === 0) {
                 continue;
             }

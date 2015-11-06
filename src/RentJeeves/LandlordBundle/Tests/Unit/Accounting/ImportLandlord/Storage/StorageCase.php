@@ -2,116 +2,40 @@
 
 namespace RentJeeves\LandlordBundle\Tests\Unit\Accounting\ImportLandlord\Storage;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
-use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
+use RentJeeves\ExternalApiBundle\Model\MRI\Value;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 class StorageCase extends UnitTestBase
 {
-    use WriteAttributeExtensionTrait;
+    use CreateSystemMocksExtensionTrait;
 
     /**
      * @test
      */
-    public function shouldReturnMappingFromDBForWhenWeHaveSuchMappingInDB()
+    public function shouldCheckSaveToFileMri()
     {
-        /** @var Landlord $landlord */
-        $externalApiStorageMock = $this->getMock(
-            'RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorage',
-            [],
-            [],
-            '',
-            false
-        );
-        $landlordSessionMock = $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
-        $landlordSessionMock->expects($this->any())
-            ->method('getUser')
-            ->will($this->returnValue(new Landlord()));
+        $customer = new Value();
+        $customer->setIsCurrent(StorageMRI::IS_CURRENT);
+        $customer->setLeaseStart('2010-09-08 12:09:08');
+        $customer->setBuildingAddress('BuildingAddress');
+        $customer->setLeaseEnd('2025-09-08 12:09:08');
+        $customer->setLeaseMonthToMonth('y');
+        $customer->setPropertyId('12');
+        $customer->setBuildingId('33');
+        $customer->setUnitId('22');
+        $customer->setLeaseMonthlyRentAmount(900);
+        $customer->setLeaseBalance(123);
 
-        $entityRepository= $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
-        $entityRepository->expects($this->once())
-            ->method('findOneBy')
-            ->will($this->returnValue(false));
-
-        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($entityRepository));
-
-        $this->writeAttribute($externalApiStorageMock, 'em', $em);
-        $this->writeAttribute($externalApiStorageMock, 'sessionLandlordManager', $landlordSessionMock);
-
-        $externalApiStorageMock->expects($this->any())
-            ->method('getImportExternalPropertyId')
-            ->will($this->returnValue('1234'));
-
-        $externalApiStorageMockReflection = new \ReflectionClass($externalApiStorageMock);
-        $getMappingFromDBMethod = $externalApiStorageMockReflection->getMethod('getMappingFromDB');
-        $getMappingFromDBMethod->setAccessible(true);
-        /** We should not get mapping from */
-        $this->assertFalse($getMappingFromDBMethod->invoke($externalApiStorageMock), 'We got result, but should not');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldNotReturnMappingFromDBForWhenWeDontHaveIt()
-    {
-        /** @var Landlord $landlord */
-        $externalApiStorageMock = $this->getMock(
-            'RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorage',
-            [],
-            [],
-            '',
-            false
-        );
-        $landlordSessionMock = $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
-        $landlordSessionMock->expects($this->any())
-            ->method('getUser')
-            ->will($this->returnValue(new Landlord()));
-
-        $mapping = new ImportApiMapping();
-        $mapping->setMappingData(['hi' => 'hello']);
-
-        $entityRepository= $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
-        $entityRepository->expects($this->once())
-            ->method('findOneBy')
-            ->will($this->returnValue($mapping));
-
-        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($entityRepository));
-
-        $this->writeAttribute($externalApiStorageMock, 'em', $em);
-        $this->writeAttribute($externalApiStorageMock, 'sessionLandlordManager', $landlordSessionMock);
-
-        $externalApiStorageMock->expects($this->any())
-            ->method('getImportExternalPropertyId')
-            ->will($this->returnValue('1234'));
-
-        $externalApiStorageMockReflection = new \ReflectionClass($externalApiStorageMock);
-        $getMappingFromDBMethod = $externalApiStorageMockReflection->getMethod('getMappingFromDB');
-        $getMappingFromDBMethod->setAccessible(true);
-        /** We should not get mapping from */
-        $this->assertArrayHasKey('hi', $getMappingFromDBMethod->invoke($externalApiStorageMock), 'We don\'t have mapping');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldOverrideDataWhenWeHaveForItDefaultValue()
-    {
-        $externalApiStorageMock = $this->getMock(
-            'RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorage',
-            [],
-            [],
-            '',
-            false,
-            true
-        );
+        $customer->setState('State');
+        $customer->setCity('City');
+        $customer->setAddress('Address');
+        $customer->setZipCode('09287');
 
         $mapping = new ImportApiMapping();
         $mapping->setCity('Default City');
@@ -132,55 +56,63 @@ class StorageCase extends UnitTestBase
                 10 => Mapping::KEY_RESIDENT_ID,
                 11 => Mapping::KEY_STREET,
                 12 => Mapping::KEY_RENT,
-                13 => Mapping::KEY_STATE
+                13 => Mapping::KEY_STATE,
+                14 => 'Not Used',
+                15 => 'Not Used',
+                16 => 'Not Used',
+                17 => 'Not Used',
+                18 => 'Not Used',
+                19 => 'Not Used',
+                20 => 'Not Used',
+                21 => 'Not Used',
             ]
         );
 
-        $landlordSessionMock = $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
-        $landlordSessionMock->expects($this->any())
-            ->method('getUser')
-            ->will($this->returnValue(new Landlord()));
-
-        $entityRepository= $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
+        $entityRepository = $this->getEntityRepositoryMock();
         $entityRepository->expects($this->any())
             ->method('findOneBy')
             ->will($this->returnValue($mapping));
-
-        $em = $this->getMock('Doctrine\ORM\EntityManager', [], [], '', false);
+        $em = $this->getEntityManagerMock();
         $em->expects($this->any())
             ->method('getRepository')
             ->will($this->returnValue($entityRepository));
+        $landlord = new Landlord();
+        $landlord->setHolding(new Holding());
+        $sessionLandlordManager = $this->getSessionLandlordMock();
+        $sessionLandlordManager->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue($landlord));
+        $session = $this->getSessionMock();
 
-        $this->writeAttribute($externalApiStorageMock, 'em', $em);
-        $this->writeAttribute($externalApiStorageMock, 'sessionLandlordManager', $landlordSessionMock);
-
-        $externalApiStorageMockReflection = new \ReflectionClass($externalApiStorageMock);
-        $overrideValuesByImportApiMapping = $externalApiStorageMockReflection->getMethod(
-            'overrideValuesByImportApiMapping'
+        /** @var StorageMRI $storageMRI */
+        $storageMRI = new StorageMRI(
+                $session,
+                $this->getLoggerMock(),
+                $em,
+                $sessionLandlordManager
         );
-        $overrideValuesByImportApiMapping->setAccessible(true);
+        $fileName = uniqid() . '.csv';
+        $realPath = $storageMRI->getFileDirectory().$fileName;
 
-        $data = [
-            '5555',
-            'residentId',
-            'unit',
-            'move In',
-            'lease end',
-            'z123p',
-            'tenant name',
-            'tenant name',
-            'email',
-            'move out',
-            '52555',
-            'rent',
-            ''
-        ];
+        $session->expects($this->any())
+            ->method('get')
+            ->will($this->returnCallback(
+                    function ($subject) use ($fileName) {
+                        if ($subject === 'importExternalPropertyId') {
+                            return 'propertyId';
+                        }
+                        if ($subject === 'importFileName') {
+                            return $fileName;
+                        }
+                    }
+                )
+            );
 
-        $result = $overrideValuesByImportApiMapping->invoke($externalApiStorageMock, $data);
-        $revertResult = array_flip($result);
-        $this->assertArrayHasKey($mapping->getCity(), $revertResult, 'City not rewriting');
-        $this->assertArrayHasKey($mapping->getStreet(), $revertResult, 'Street not rewriting');
-        $this->assertArrayHasKey($mapping->getZip(), $revertResult, 'Zip not rewriting');
-        $this->assertArrayHasKey($mapping->getState(), $revertResult, 'State not rewriting');
+        $this->assertTrue($storageMRI->saveToFile([$customer]), 'We should success write to file.');
+        $data = file_get_contents($realPath);
+        $this->assertRegexp(sprintf('/%s/', $mapping->getState()), $data);
+        $this->assertRegexp(sprintf('/%s/', $mapping->getCity()), $data);
+        $this->assertRegexp(sprintf('/%s/', $mapping->getStreet()), $data);
+        $this->assertRegexp(sprintf('/%s/', $mapping->getZip()), $data);
     }
 }

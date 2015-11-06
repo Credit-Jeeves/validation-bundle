@@ -31,12 +31,12 @@ class StorageCsv extends StorageAbstract
     /**
      * @var EntityManager
      */
-    public $em;
+    protected $em;
 
     /**
      * @var SessionLandlord
      */
-    public $sessionLandlordManager;
+    protected $sessionLandlordManager;
 
     /**
      * @param Session $session

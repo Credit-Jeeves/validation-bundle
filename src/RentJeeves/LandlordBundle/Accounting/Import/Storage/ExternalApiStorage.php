@@ -9,8 +9,26 @@ use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use Symfony\Component\Form\FormInterface;
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
 
-class ExternalApiStorage extends StorageCsv
+abstract class ExternalApiStorage extends StorageCsv implements ExternalApiStorageInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function saveToFile($residentData)
+    {
+        if (count($residentData) <= 0) {
+            return false;
+        }
+
+        $filePath = $this->getFilePath(true);
+        if (is_null($filePath)) {
+            $this->initializeParameters();
+            $this->writeMappingToCsv();
+        }
+
+        return true;
+    }
+
     /**
      * @var array
      */
@@ -177,10 +195,13 @@ class ExternalApiStorage extends StorageCsv
 
     /**
      * @param array $array
+     * @param boolean $header
      */
-    protected function writeCsvToFile(array $array)
+    protected function writeCsvToFile(array $array, $header = false)
     {
-        $array = $this->overrideValuesByImportApiMapping($array);
+        if ($header === false) {
+            $array = $this->overrideValuesByImportApiMapping($array);
+        }
         $filePath = $this->getFilePath(true);
         if (empty($filePath)) {
             $newFileName = uniqid() . '.csv';
@@ -227,9 +248,9 @@ class ExternalApiStorage extends StorageCsv
      */
     protected function overrideValuesByImportApiMapping(array $data)
     {
-        $mappingApiMapping = $this->getImportApiMapping();
+        $importApiMapping = $this->getImportApiMapping();
 
-        if (!$mappingApiMapping) {
+        if (!$importApiMapping) {
             return $data;
         }
 
@@ -237,10 +258,39 @@ class ExternalApiStorage extends StorageCsv
 
         foreach ($currentMapping as $number => $value) {
             $number -= 1;
-            $this->overrideValueInArray($value, Mapping::KEY_CITY, $number, $mappingApiMapping->getCity(), $data);
-            $this->overrideValueInArray($value, Mapping::KEY_ZIP, $number, $mappingApiMapping->getZip(), $data);
-            $this->overrideValueInArray($value, Mapping::KEY_STATE, $number, $mappingApiMapping->getState(), $data);
-            $this->overrideValueInArray($value, Mapping::KEY_STREET, $number, $mappingApiMapping->getStreet(), $data);
+            $currentValue = $data[$number];
+            $this->overrideValueInArray(
+                $value,
+                Mapping::KEY_CITY,
+                $importApiMapping->getCity(),
+                $currentValue,
+                $number,
+                $data
+            );
+            $this->overrideValueInArray(
+                $value,
+                Mapping::KEY_ZIP,
+                $importApiMapping->getZip(),
+                $currentValue,
+                $number,
+                $data
+            );
+            $this->overrideValueInArray(
+                $value,
+                Mapping::KEY_STATE,
+                $importApiMapping->getState(),
+                $currentValue,
+                $number,
+                $data
+            );
+            $this->overrideValueInArray(
+                $value,
+                Mapping::KEY_STREET,
+                $importApiMapping->getStreet(),
+                $currentValue,
+                $number,
+                $data
+            );
         }
 
         return $data;
@@ -249,19 +299,22 @@ class ExternalApiStorage extends StorageCsv
     /**
      * @param string $currentKey
      * @param string $checkedKey
-     * @param string $keyOfMainData
      * @param string $newValue
+     * @param string $oldValue
+     * @param integer $number
      * @param array $data
      */
-    protected function overrideValueInArray($currentKey, $checkedKey, $keyOfMainData, $newValue, &$data)
+    protected function overrideValueInArray($currentKey, $checkedKey, $newValue, $oldValue, $number, array &$data)
     {
         if (empty($newValue)) {
             return;
         }
 
         if ($currentKey == $checkedKey) {
-            $data[$keyOfMainData] = $newValue;
+            $data[$number] = $newValue;
         }
+
+        return;
     }
 
     /**
@@ -287,9 +340,12 @@ class ExternalApiStorage extends StorageCsv
         $this->setFieldDelimiter(self::FIELD_DELIMITER);
         $this->setTextDelimiter(self::TEXT_DELIMITER);
         $this->setDateFormat(self::DATE_FORMAT);
+    }
 
+    protected function writeMappingToCsv()
+    {
         $mapping = $this->getCurrentMapping();
-        $this->writeCsvToFile($mapping);
+        $this->writeCsvToFile($mapping, true);
         $this->setMapping($mapping);
     }
 
@@ -298,7 +354,7 @@ class ExternalApiStorage extends StorageCsv
      * @param array $dbMapping
      * @param string $system
      */
-    public function assertMapping(array $defaultMapping, array $dbMapping, $system)
+    protected function assertMapping(array $defaultMapping, array $dbMapping, $system)
     {
         $countDefault = count($defaultMapping);
         $countDB = count($dbMapping);
