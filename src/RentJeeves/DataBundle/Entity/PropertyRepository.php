@@ -446,8 +446,8 @@ EOT;
                 ->andWhere(sprintf('propertyAddress.%s = :%s', $field, $field))
                 ->setParameter($field, $value);
         }
-        /** @TODO: need more information about result */
 
+        /** TODO: change this to oneOrNull once duplicate properties removed from DB */
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 }
