@@ -60,7 +60,7 @@ trait Unit
         }
 
         // existing single property, so simply return it's single unit
-        if ($property->isSingle()) {
+        if ($property->getPropertyAddress()->isSingle() === true) {
             return $property->getExistingSingleUnit();
         }
         // unit name is empty -- treat as a new single property

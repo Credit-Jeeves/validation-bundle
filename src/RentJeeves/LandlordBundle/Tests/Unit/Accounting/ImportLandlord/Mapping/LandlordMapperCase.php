@@ -3,9 +3,13 @@
 namespace RentJeeves\LandlordBundle\Tests\Unit\Accounting\ImportLandlord\Mapping;
 
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\LandlordMapper;
+use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class LandlordMapperCase extends AbstractMapperCase
+class LandlordMapperCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      *
@@ -16,7 +20,7 @@ class LandlordMapperCase extends AbstractMapperCase
     {
         $mapper = new LandlordMapper('en');
         $mapper->setLogger($this->getLoggerMock());
-        $mapper->setEntityManager($this->getEmMock());
+        $mapper->setEntityManager($this->getEntityManagerMock());
 
         $mapper->map([]);
     }

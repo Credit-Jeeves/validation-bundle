@@ -6,9 +6,10 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
@@ -128,10 +129,10 @@ abstract class MappingAbstract implements MappingInterface
         $this->em = $em;
     }
 
-    /** @var  PropertyProcess $propertyProcess */
+    /** @var  PropertyManager $propertyProcess */
     protected $propertyProcess;
 
-    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    public function setPropertyProcess(PropertyManager $propertyProcess)
     {
         $this->propertyProcess = $propertyProcess;
     }
@@ -205,12 +206,13 @@ abstract class MappingAbstract implements MappingInterface
     public function createProperty(array $row)
     {
         $property = new Property();
-        $property->setCity($row[self::KEY_CITY]);
+        $propertyAddress = new PropertyAddress();
+        $propertyAddress->setCity($row[self::KEY_CITY]);
         if (isset($row[self::KEY_STREET_NAME]) && isset($row[self::KEY_STREET_NUMBER])) {
-            $property->setNumber($row[self::KEY_STREET_NUMBER]);
-            $property->setStreet($row[self::KEY_STREET_NAME]);
+            $propertyAddress->setNumber($row[self::KEY_STREET_NUMBER]);
+            $propertyAddress->setStreet($row[self::KEY_STREET_NAME]);
         } elseif (isset($row[self::KEY_STREET])) {
-            $property->setStreet($row[self::KEY_STREET]);
+            $propertyAddress->setStreet($row[self::KEY_STREET]);
         } else {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -219,8 +221,10 @@ abstract class MappingAbstract implements MappingInterface
                 )
             );
         }
-        $property->setZip($row[self::KEY_ZIP]);
-        $property->setArea($row[self::KEY_STATE]);
+        $propertyAddress->setZip($row[self::KEY_ZIP]);
+        $propertyAddress->setState($row[self::KEY_STATE]);
+
+        $property->setPropertyAddress($propertyAddress);
 
         return $property;
     }

@@ -45,7 +45,7 @@ class UserAddressType extends Base
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
-            'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
+            'data_class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
             'cascade_validation' => true,
             'validation_groups' => ['user_address_new'],
         ]);

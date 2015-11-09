@@ -12,8 +12,9 @@ use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
@@ -303,19 +304,14 @@ class AjaxController extends Controller
         );
         if (null === $property) {
             $itsNewProperty = true;
+
             $property = new Property();
-            $property->setAddressFields($address);
+            $propertyAddress = new PropertyAddress();
+            $property->setPropertyAddress($propertyAddress);
+
+            $propertyAddress->setAddressFields($address);
 
             $this->getEntityManager()->persist($property);
-        }
-
-        if (false === $this->getPropertyProcess()->isValidProperty($property)) {
-            return new JsonResponse(
-                [
-                    'status' => 'ERROR',
-                    'message' => $this->get('translator')->trans('fill.full.address')
-                ]
-            );
         }
 
         $isLogin = $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY');
@@ -331,6 +327,8 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
             if ('true' === $request->request->get('isSingle', false)) {
                 $this->getPropertyProcess()->setupSingleProperty($property, ['doFlush' => false]);
+            } else {
+                $this->getPropertyProcess()->setupMultiUnitProperty($property);
             }
 
             $this->getEntityManager()->persist($group);
@@ -361,6 +359,7 @@ class AjaxController extends Controller
             $this->getPropertyProcess()->saveToGoogle($property);
         }
 
+        $propertyAddress = $property->getPropertyAddress();
         // return json for property
         //@TODO refactor - change array to entity JSM serialisation
         $data = [
@@ -370,14 +369,14 @@ class AjaxController extends Controller
             'isLandlord' => $isLandlord,
             'property' => [
                 'id' => $property->getId(),
-                'city' => $property->getCity(),
-                'number' => ($property->getNumber()) ? $property->getNumber() : '',
-                'street' => $property->getStreet(),
-                'area' => $property->getArea(),
-                'zip' => ($property->getZip()) ? $property->getZip() : '',
-                'jb' => $property->getJb(),
-                'kb' => $property->getKb(),
-                'address' => $property->getAddress(),
+                'city' => $propertyAddress->getCity(),
+                'number' => ($propertyAddress->getNumber()) ? $propertyAddress->getNumber() : '',
+                'street' => $propertyAddress->getStreet(),
+                'area' => $propertyAddress->getState(),
+                'zip' => ($propertyAddress->getZip()) ? $propertyAddress->getZip() : '',
+                'jb' => $propertyAddress->getJb(),
+                'kb' => $propertyAddress->getKb(),
+                'address' => $propertyAddress->getAddress(),
             ],
         ];
 
@@ -1265,10 +1264,10 @@ class AjaxController extends Controller
     }
 
     /**
-     * @return PropertyProcess
+     * @return PropertyManager
      */
     protected function getPropertyProcess()
     {
-        return $this->get('property.process');
+        return $this->get('property.manager');
     }
 }

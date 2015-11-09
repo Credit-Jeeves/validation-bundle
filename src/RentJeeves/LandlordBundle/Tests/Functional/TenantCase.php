@@ -170,18 +170,22 @@ class TenantCase extends BaseTestCase
     public function providerEdit()
     {
         return [
-            [$isIntegrated = false],
-            [$isIntegrated = true],
+            [false],
+            [true],
         ];
     }
 
     /**
      * @test
      * @dataProvider providerEdit
+     *
      * @param $isIntegrated
      */
     public function edit($isIntegrated)
     {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->loadTenantTab();
         // Prepare Group for test
         $em = $this->getEntityManager();
@@ -323,7 +327,7 @@ class TenantCase extends BaseTestCase
         $this->assertEquals($start, $editStart->getValue(), 'Wrong start date after edit');
         $this->assertEquals($finish, $editFinish->getValue(), 'Wrong finish date after edit');
         $this->assertEquals(7677.00, $amount->getValue(), 'Wrong amount after edit');
-        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong unit after edit');
+        $this->assertEquals('770 Broadway #2-e', $address->getHtml(), 'Wrong unit after edit');
 
         if ($isIntegrated) {
             $this->assertNotNull($resident = $this->page->find('css', '#residentId'), 'Can not find resident');

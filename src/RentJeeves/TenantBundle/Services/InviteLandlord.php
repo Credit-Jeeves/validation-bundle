@@ -7,7 +7,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Traits\ValidateEntities;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -37,7 +37,7 @@ class InviteLandlord
     protected $locale;
 
     /**
-     * @var PropertyProcess
+     * @var PropertyManager
      */
     protected $propertyProcess;
 
@@ -47,7 +47,7 @@ class InviteLandlord
      *     "mailer"    = @Inject("project.mailer"),
      *     "locale"    = @Inject("%kernel.default_locale%"),
      *     "validator" = @Inject("validator"),
-     *     "propertyProcess" = @Inject("property.process")
+     *     "propertyProcess" = @Inject("property.manager")
      * })
      */
     public function __construct(EntityManager $em, $mailer, $locale, $validator, $propertyProcess)

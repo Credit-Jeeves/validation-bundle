@@ -13,7 +13,6 @@ use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 class ContractsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Contract';
-
     const REQUEST_URL = 'contracts';
 
     /**
@@ -362,7 +361,6 @@ class ContractsControllerCase extends BaseApiTestCase
     public function createContract($requestParams, $statusCode = 201)
     {
         $response = $this->postRequest($requestParams);
-
         $this->assertResponse($response, $statusCode);
 
         $answer = $this->parseContent($response->getContent());
@@ -370,7 +368,6 @@ class ContractsControllerCase extends BaseApiTestCase
         $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
-
         $this->assertNotNull(
             $contract = $repo->findOneBy(
                 [
@@ -559,13 +556,13 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                     [
                         'parameter' => 'new_unit_landlord_email',
+                        'value' => 'test_landlord3gmail.com',
                         'message' => 'This value is not a valid email address.',
-                        'value' => 'test_landlord3gmail.com'
                     ],
                     [
                         'parameter' => 'new_unit_landlord_phone',
+                        'value' => '111111111',
                         'message' => 'error.user.phone.format',
-                        'value' => '111111111'
                     ],
                 ]
             ],

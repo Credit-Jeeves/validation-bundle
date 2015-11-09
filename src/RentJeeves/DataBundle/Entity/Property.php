@@ -6,23 +6,15 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Traits\AddressTrait;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
 /**
- * Property
- *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PropertyRepository")
  * @ORM\Table(name="rj_property")
- *
  */
 class Property extends Base
 {
-    use AddressTrait {
-        getFullAddress as fullAddress;
-    }
-
     /**
      * This method is needed only for SonataAdminBundle, please don't use it.
      * @return bool
@@ -37,16 +29,25 @@ class Property extends Base
         return ShorteningAddressUtility::shrinkAddress($this->getFullAddress(), $length);
     }
 
+    /**
+     * @deprecated PLS DONT USE IT, Use normalizer or something like normalizer
+     *
+     * @todo NEED REMOVE
+     * @return array
+     */
     public function getItem($group = null)
     {
-        $item = array();
+        if ($this->getPropertyAddress() === null) {
+            throw new \LogicException('U can use this function only for exist property');
+        }
+
         $item['id'] = $this->getId();
-        $item['zip'] = $this->getZip();
-        $item['country'] = $this->getCountry();
-        $item['area'] = $this->getArea();
-        $item['city'] = $this->getCity();
-        $item['address'] = $this->getAddress();
-        $item['isSingle'] = $this->isSingle();
+        $item['zip'] = $this->getPropertyAddress()->getZip();
+        $item['country'] = '';
+        $item['area'] = $this->getPropertyAddress()->getState();
+        $item['city'] = $this->getPropertyAddress()->getCity();
+        $item['address'] = $this->getPropertyAddress()->getAddress();
+        $item['isSingle'] = $this->getPropertyAddress()->isSingle();
         if ($group) {
             $item['units'] = $this->countUnitsByGroup($group);
         } else {
@@ -148,20 +149,28 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @deprecated pls use `$property->getPropertyAddress()->isSingle()`
+     *
+     * @return bool
+     */
     public function isSingle()
     {
-        return $this->getIsSingle() == true;
+        return $this->getPropertyAddress()->isSingle();
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getExistingSingleUnit()
     {
-        if ($this->isSingle()) {
+        if ($this->getPropertyAddress()->isSingle() === true) {
             $unit = $this->getUnits()->first();
             if (!$unit) {
                 throw new \LogicException(
                     sprintf(
                         'Standalone property "%s" with id "%s" has no unit.',
-                        $this->getAddress(),
+                        $this->getPropertyAddress()->getAddress(),
                         $this->getId()
                     )
                 );
@@ -210,9 +219,12 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->getFullAddress();
+        return $this->getPropertyAddress()->getFullAddress();
     }
 
     /**
@@ -222,7 +234,7 @@ class Property extends Base
      */
     public function getFullAddress()
     {
-        return $this->fullAddress();
+        return $this->getPropertyAddress()->getFullAddress();
     }
 
     /**
@@ -234,6 +246,16 @@ class Property extends Base
         return !!$this->getPropertyGroups()->filter(function (Group $entity) use ($group) {
             return $entity->getId() === $group->getId();
         });
+    }
+
+    /**
+     * @deprecated pls use `->getPropertyAddress()->getAddress()`
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->getPropertyAddress()->getAddress();
     }
 
     /**
@@ -253,27 +275,5 @@ class Property extends Base
         }
 
         return null;
-    }
-
-    /**
-     * @param Address $address
-     */
-    public function setAddressFields(Address $address)
-    {
-        $this->setCountry($address->getCountry());
-        $this->setArea($address->getState());
-        $this->setCity($address->getCity());
-        $this->setDistrict($address->getDistrict());
-        $this->setStreet($address->getStreet());
-        $this->setNumber($address->getNumber());
-        $this->setZip($address->getZip());
-        if ($this->getJb() === null && $this->getKb() === null && $address->getJb() && $address->getKb()) {
-            $this->setJb($address->getJb());
-            $this->setKb($address->getKb());
-        } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
-            $this->setLat($address->getLatitude());
-            $this->setLong($address->getLongitude());
-            $this->setIndex($address->getIndex());
-        }
     }
 }

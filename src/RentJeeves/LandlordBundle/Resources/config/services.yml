@@ -38,7 +38,7 @@ services:
         class: "%import.mapping.csv.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-            - [setPropertyProcess, ["@property.process"]]
+            - [setPropertyProcess, ["@property.manager"]]
         arguments:
             - "@accounting.import.storage.csv"
             - "@import.reader.csv"
@@ -46,7 +46,7 @@ services:
         class: "%import.mapping.resman.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-            - [setPropertyProcess, ["@property.process"]]
+            - [setPropertyProcess, ["@property.manager"]]
         arguments:
             - "@accounting.import.storage.resman"
             - "@import.reader.csv"
@@ -56,7 +56,7 @@ services:
         class: "%import.mapping.amsi.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-            - [setPropertyProcess, ["@property.process"]]
+            - [setPropertyProcess, ["@property.manager"]]
         arguments:
             - "@accounting.import.storage.amsi"
             - "@import.reader.csv"
@@ -66,7 +66,7 @@ services:
         class: "%import.mapping.mri.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-            - [setPropertyProcess, ["@property.process"]]
+            - [setPropertyProcess, ["@property.manager"]]
         arguments:
             - "@accounting.import.storage.mri"
             - "@import.reader.csv"
@@ -76,7 +76,7 @@ services:
         class: "%import.mapping.yardi.class%"
         calls:
             - [setEntityManager, ["@doctrine.orm.entity_manager"]]
-            - [setPropertyProcess, ["@property.process"]]
+            - [setPropertyProcess, ["@property.manager"]]
         arguments:
             - "@accounting.import.storage.yardi"
             - "@import.reader.csv"
@@ -134,7 +134,7 @@ services:
         class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\UnitMapper
         parent: accounting.landlord_import.abstract_mapper
         arguments:
-            - @property.process
+            - @property.manager
 
     landlord.batch_deposits.manager:
         class: RentJeeves\LandlordBundle\Services\BatchDepositsManager

@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,11 +26,12 @@ abstract class Property
      * @ORM\Column(
      *     name="country",
      *     type="string",
-     *     length=3
+     *     length=3,
+     *     nullable=true
      * )
      * @Serializer\Groups({"payRent"})
      */
-    protected $country;
+    protected $country = 'US';
 
     /**
      * @ORM\Column(
@@ -46,7 +48,8 @@ abstract class Property
      * @ORM\Column(
      *     name="city",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
      * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
@@ -272,6 +275,15 @@ abstract class Property
     protected $importMappingByProperty;
 
     /**
+     * @var PropertyAddress
+     *
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
+     * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=true)
+     * @TODO: ORM\JoinColumn(name="property_address_id", referencedColumnName="id") after migration
+     */
+    protected $propertyAddress;
+
+    /**
      * @return ImportMappingByProperty
      */
     public function getImportMappingByProperty()
@@ -354,6 +366,8 @@ abstract class Property
     }
 
     /**
+     * @deprecated
+     *
      * Set country
      *
      * @param string $country
@@ -367,6 +381,8 @@ abstract class Property
     }
 
     /**
+     *
+     * @deprecated
      * Get country
      *
      * @return string
@@ -607,8 +623,7 @@ abstract class Property
     }
 
     /**
-     *
-     * You should set this using "property.process"->setupSingleProperty() instead.
+     * You should set this using "property.manager"->setupSingleProperty() instead.
      *
      * @param boolean $isSingle
      *
@@ -761,38 +776,6 @@ abstract class Property
     }
 
     /**
-     * @deprecated use setJb
-     */
-    public function setLatitude($data)
-    {
-        return $this->setJb($data);
-    }
-
-    /**
-     * @deprecated use setKb
-     */
-    public function setLongitude($data)
-    {
-        return $this->setKb($data);
-    }
-
-    /**
-     * @deprecated use getJb
-     */
-    public function getLatitude()
-    {
-        return $this->getJb();
-    }
-
-    /**
-     * @deprecated use getKb
-     */
-    public function getLongitude()
-    {
-        return $this->getKb();
-    }
-
-    /**
      * @return string
      */
     public function getLat()
@@ -846,5 +829,21 @@ abstract class Property
     public function getAddress1()
     {
         return sprintf('%s %s', $this->number, $this->street);
+    }
+
+    /**
+     * @return PropertyAddressEntity
+     */
+    public function getPropertyAddress()
+    {
+        return $this->propertyAddress;
+    }
+
+    /**
+     * @param PropertyAddressEntity $propertyAddress
+     */
+    public function setPropertyAddress(PropertyAddressEntity $propertyAddress)
+    {
+        $this->propertyAddress = $propertyAddress;
     }
 }

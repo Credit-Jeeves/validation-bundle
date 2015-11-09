@@ -34,7 +34,7 @@ class UserDetailsTypeProcessor
     public function save($userType, $user)
     {
         /** @var Address $address */
-        $this->em->getRepository('DataBundle:Address')->resetDefaults($user->getId());
+        $this->em->getRepository('DataBundle:MailingAddress')->resetDefaults($user->getId());
         /** @var Address $addressChoice */
         /** @var Address $newAddress */
         if ($addressChoice = $userType->get('address_choice')->getData()) {

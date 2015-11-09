@@ -866,7 +866,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertEquals(193, $waitingContract->getIntegratedBalance());
         $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2025-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
-        $this->assertTrue($unit->getProperty()->isSingle());
+        $this->assertTrue($unit->getProperty()->getPropertyAddress()->isSingle());
 
         $this->assertEquals(21, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
     }
@@ -1786,19 +1786,18 @@ class ImportCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function shouldGetException()
+    public function shouldThrowExceptionForImportSinglePropertyWithoutUnit()
     {
         $this->load(true);
         $em = $this->getEntityManager();
         /** @var Property $property   */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
                 'street' => 'Broadway',
                 'number' => '785',
                 'zip'    => '10003'
             ]
         );
-
         /*
          * Create a property with no units
          */
@@ -1807,7 +1806,10 @@ class ImportCase extends ImportBaseAbstract
             $em->remove($unit);
         }
         $em->flush();
-        $property->setIsSingle(true);
+
+        $propertyAddress = $property->getPropertyAddress();
+        $propertyAddress->setIsSingle(true);
+
         $em->persist($property);
         $em->flush();
 

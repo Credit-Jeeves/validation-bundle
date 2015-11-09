@@ -5,12 +5,13 @@ namespace RentJeeves\ApiBundle\Controller\Tenant;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use RentJeeves\ApiBundle\Forms\PropertyType;
+use RentJeeves\ApiBundle\Forms\PropertyAddressType;
 use RentJeeves\ApiBundle\Request\Annotation\QueryParam;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\ApiBundle\Response\Unit as ResponseEntity;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -57,27 +58,28 @@ class UnitsController extends Controller
      */
     public function getUnitsAction(Request $request)
     {
-        $form = $this->createForm(new PropertyType(), null, ['method' => 'GET']);
-
+        $form = $this->getFormFactory()->createNamed('', new PropertyAddressType(), null, ['method' => 'GET']);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
-            /** @var Property $property */
-            $property = $form->getData();
+            /** @var PropertyAddress $propertyAddress */
+            $propertyAddress = $form->getData();
 
-            if ($property = $this->get('property.process')->getPropertyFromDBIn2steps($property)) {
+            $property = $this->getPropertyManager()->findPropertyByAddressInDb(
+                $propertyAddress->getNumber(),
+                $propertyAddress->getStreet(),
+                $propertyAddress->getCity(),
+                $propertyAddress->getState(),
+                $propertyAddress->getZip()
+            );
 
-                $result = $this
-                    ->getDoctrine()
-                    ->getRepository('RjDataBundle:Unit')
-                    ->getUnitsByPropertyWithGroup($property);
-
-                if (count($result) > 0) {
-                    return new ResponseCollection($result);
-                }
+            if (null === $property) {
+                return null;
             }
-
-            return null;
+            /** @TODO: need remove this functions and use `$property->getUnits()` */
+            $result = $this->getUnitRepository()->getUnitsByPropertyWithGroup($property);
+            if (count($result) > 0) {
+                return new ResponseCollection($result);
+            }
         }
 
         return $form;
@@ -119,5 +121,29 @@ class UnitsController extends Controller
         }
 
         throw new NotFoundHttpException('Unit not found');
+    }
+
+    /**
+     * @return \RentJeeves\CoreBundle\Services\PropertyManager
+     */
+    protected function getPropertyManager()
+    {
+        return $this->get('property.manager');
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\UnitRepository
+     */
+    protected function getUnitRepository()
+    {
+        return $this->getDoctrine()->getRepository('RjDataBundle:Unit');
+    }
+
+    /**
+     * @return \Symfony\Component\Form\FormFactory
+     */
+    protected function getFormFactory()
+    {
+        return $this->container->get('form.factory');
     }
 }

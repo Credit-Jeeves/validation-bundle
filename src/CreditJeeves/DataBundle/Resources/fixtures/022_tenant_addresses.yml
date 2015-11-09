@@ -1,4 +1,4 @@
-model: CreditJeeves\DataBundle\Entity\Address
+model: CreditJeeves\DataBundle\Entity\MailingAddress
 fixtures:
     TenantAddres_1:
         user: Tenant_1

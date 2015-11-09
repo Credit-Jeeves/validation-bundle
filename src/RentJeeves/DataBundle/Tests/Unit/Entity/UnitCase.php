@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Tests\Unit\Entity;
 
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -42,6 +43,8 @@ class UnitCase extends BaseTestCase
     {
         $unit = new Unit();
         $property = new Property();
+        $propertyAddress = new PropertyAddress();
+        $property->setPropertyAddress($propertyAddress);
         $property->setIsMultipleBuildings($isMultipleBildings);
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $unit->setGroup($group);

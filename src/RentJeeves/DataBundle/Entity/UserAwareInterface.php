@@ -3,7 +3,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 
 interface UserAwareInterface
 {
