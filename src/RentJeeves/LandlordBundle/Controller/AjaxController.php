@@ -615,7 +615,7 @@ class AjaxController extends Controller
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('LandlordTenants');
+        $context->setGroups(['ContractList', 'Contract']);
         $serializer = $this->get('jms_serializer');
 
         $total = $repo->countContracts(
@@ -642,7 +642,7 @@ class AjaxController extends Controller
             return new Response($serializer->serialize($data, 'json', $context));
         }
 
-        $data['contracts'] = $this->get('landlord.contract_manager')->convertContractsToArray(
+        $data['contracts'] = $this->get('landlord.contract_manager')->mapContracts(
             $repo->getContractsPage(
                 $this->getCurrentGroup(),
                 $dataRequest['page'],
@@ -651,9 +651,7 @@ class AjaxController extends Controller
                 $order,
                 $dataRequest['searchCollum'],
                 $dataRequest['searchText']
-            ),
-            $this->getCurrentGroup(),
-            $this->getUser()
+            )
         );
 
         return new Response($serializer->serialize($data, 'json', $context));
@@ -673,27 +671,13 @@ class AjaxController extends Controller
     {
         /** @var $contract Contract */
         $contract = $this->getContract($contractId);
-        /** @var $resident ResidentManager */
-        $resident = $this->get('resident_manager');
-        /* @var $translator Translator */
-        $translator = $this->get('translator');
+        $contractList = $this->get('landlord.contract_manager')->mapContract($contract);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups(['ContractList', 'Contract']);
+        $serializer = $this->get('jms_serializer');
 
-        $item = $contract->getItem();
-        if ($contract->getStatus() === ContractStatus::INVITE) {
-            $hasMultipleContracts = $resident->hasMultipleContracts(
-                $contract->getTenant(),
-                $this->getUser()->getHolding()
-            );
-            $count = ($hasMultipleContracts) ? 1 : 0;
-            $item['revoke_message'] = $translator->transChoice(
-                'notice.revoke.residentId.multiple_contracts',
-                $count
-            );
-        } else {
-            $item['revoke_message'] = $this->get('translator')->trans('revoke.inv.ask');
-        }
-
-        return new JsonResponse($item);
+        return new Response($serializer->serialize($contractList, 'json', $context));
     }
 
     /**
@@ -711,7 +695,6 @@ class AjaxController extends Controller
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
-        $items = array();
         $page = $request->request->all();
         $data = $page['data'];
 
@@ -722,7 +705,7 @@ class AjaxController extends Controller
 
         $sortType = ($isSortAsc == 'true') ? "ASC" : "DESC";
 
-        $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
+        $result = ['actions' => [], 'total' => 0, 'pagination' => []];
         $group = $this->getCurrentGroup();
         /** @var ContractRepository $repo */
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
@@ -735,26 +718,22 @@ class AjaxController extends Controller
             $searchField,
             $searchText
         );
+
         $contracts = $query->getQuery()->execute();
-        $paidForArr = array();
-        /** @var Contract $contract */
-        foreach ($contracts as $contract) {
-            $contract->setStatusShowLateForce(true);
-            $item = $contract->getItem();
-            $item['paidForArr'] = $this->get('checkout.paid_for')->getArray($contract);
-            $items[] = $item;
-        }
-        $total = $query->select('count(c)')
+        $contractsMapped = $this->get('landlord.contract_manager')->mapContracts($contracts);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups(['ContractPaidFor', 'Contract']);
+        $serializer = $this->get('jms_serializer');
+        $result['actions'] = $contractsMapped;
+        $result['total'] = $query->select('count(c)')
             ->setMaxResults(null)
             ->setFirstResult(null)
             ->getQuery()
             ->getSingleScalarResult();
-        $result['actions'] = $items;
-        $result['total'] = $total;
-        $result['paidForArr'] = $paidForArr;
-        $result['pagination'] = $this->datagridPagination($total, $data['limit']);
+        $result['pagination'] = $this->datagridPagination($result['total'], $data['limit']);
 
-        return new JsonResponse($result);
+        return new Response($serializer->serialize($result, 'json', $context));
     }
 
     /**
