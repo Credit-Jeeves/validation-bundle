@@ -266,7 +266,7 @@ class ExperianReportRecord
 
     public function getTenantCity()
     {
-        return $this->contract->getProperty()->getCity();
+        return $this->contract->getProperty()->getPropertyAddress()->getCity();
     }
 
     public function getTenantDOB()
@@ -300,7 +300,7 @@ class ExperianReportRecord
 
     public function getTenantState()
     {
-        return $this->contract->getProperty()->getArea();
+        return $this->contract->getProperty()->getPropertyAddress()->getState();
     }
 
     public function getTenantUniqueIdentifier()
@@ -310,7 +310,7 @@ class ExperianReportRecord
 
     public function getTenantZip()
     {
-        return $this->contract->getProperty()->getZip();
+        return $this->contract->getProperty()->getPropertyAddress()->getZip();
     }
 
     public function getAmountPaid()
