@@ -222,13 +222,23 @@ class RjGroupAdmin extends Admin
                 ->add(
                     'groupSettings',
                     $container->get('form.group_settings'),
-                    array(
-                    ),
-                    array(
+                    [],
+                    [
                         'edit'      => 'inline',
                         'inline'    => 'table',
                         'sortable'  => 'position',
-                    )
+                    ]
+                )
+            ->with('Import Defaults')
+                ->add(
+                    'importSettings',
+                    $container->get('form.import_group_settings'),
+                    [],
+                    [
+                        'edit'      => 'inline',
+                        'inline'    => 'table',
+                        'sortable'  => 'position',
+                    ]
                 )
             ->end();
     }
