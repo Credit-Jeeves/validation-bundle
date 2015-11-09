@@ -6,7 +6,6 @@ use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -1222,7 +1221,7 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldHideRentOnDashboard()
+    public function shouldHideAndShowRentOnDashboardWhenChangeGroupSettingsOption()
     {
         $this->load(true);
         /** @var Tenant $tenant */
@@ -1231,42 +1230,51 @@ class PayCase extends BaseTestCase
             ->getRepository('RjDataBundle:Tenant')
             ->findOneByEmail('tenant11@example.com');
         $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
-        $activeContracts = $tenant->getContracts()->filter(function (Contract $contract) {
-            return !in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING]);
-        });
-        $this->assertNotEmpty($activeContracts, 'Check fixtures, tenant should have at list one active contract');
-        $contract = $activeContracts->first();
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 2);
+        $this->assertNotNull($contract, 'Check fixtures, contract with id 2 should be present');
+        $this->assertEquals(
+            $contract->getTenant()->getId(),
+            $tenant->getId(),
+            'Check fixtures, contract with id 2 should belong to tenant with email "tenant11@example.com"'
+        );
         $contract->getGroupSettings()->setShowRentOnDashboard(false);
         $this->getEntityManager()->flush($contract->getGroupSettings());
 
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
 
-        $btnSelector = sprintf('button[data-bind="click: openPayPopup.bind($data, %d)"]', $contract->getId());
-        $rentColumn = $this->getDomElement($btnSelector)
-            ->getParent() // div
-            ->getParent() // td
-            ->getParent() // tr - row
-            ->find('css', 'td:contains("rent.not_shown")');
-
-        $this->assertNotNull($rentColumn, 'Rent column should contains "rent.not_shown"');
+        $rowsSelector = '#current-payments table.properties-table>tbody>tr';
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $this->assertNotNull(
+            $rentColumn = $tableRows[1]->find('css', 'td'),
+            'Second row should contains at list 1 column'
+        );
+        $this->assertEquals('rent.not_shown', $rentColumn->getText(), 'Rent column should contains "rent.not_shown"');
 
         $contract->getGroupSettings()->setShowRentOnDashboard(true);
         $this->getEntityManager()->flush($contract->getGroupSettings());
         $this->session->reload();
-        $rentColumn = $this->getDomElement($btnSelector)
-            ->getParent() // div
-            ->getParent() // td
-            ->getParent() // tr - row
-            ->find('css', sprintf('td:contains("$%s")', $contract->getRent()));
 
-        $this->assertNotNull($rentColumn, 'Rent column should contains rent');
+        $rowsSelector = '#current-payments table.properties-table>tbody>tr';
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $this->assertNotNull(
+            $rentColumn = $tableRows[1]->find('css', 'td'),
+            'Second row should contains at list 1 column'
+        );
+        $this->assertEquals(
+            '$' . $contract->getRent(),
+            $rentColumn->getText(),
+            'Rent column should contains rent'
+        );
     }
 
     /**
      * @test
      */
-    public function shouldHideRentOnWizard()
+    public function shouldHideAndShowRentOnWizardWhenChangeGroupSettingsOption()
     {
         $this->load(true);
         /** @var Tenant $tenant */
@@ -1275,13 +1283,9 @@ class PayCase extends BaseTestCase
             ->getRepository('RjDataBundle:Tenant')
             ->findOneByEmail('tenant11@example.com');
         $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
-        // get active contracts without active payment
-        $activeContracts = $tenant->getContracts()->filter(function (Contract $contract) {
-            return !in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING]) &&
-                !$contract->getActiveRentPayment();
-        });
-        $this->assertNotEmpty($activeContracts, 'Check fixtures, tenant should have at list one active contract');
-        $contract = $activeContracts->first();
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 9);
+        $this->assertNotNull($contract, 'Check fixtures, contract with id 9 should be present');
         $contract->getGroupSettings()->setShowRentOnWizard(false);
         $this->getEntityManager()->flush($contract->getGroupSettings());
 

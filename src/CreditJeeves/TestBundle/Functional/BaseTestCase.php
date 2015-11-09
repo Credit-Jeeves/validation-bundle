@@ -319,7 +319,7 @@ abstract class BaseTestCase extends Base
     {
         $elements = $this->page->findAll('css', $cssSelector);
 
-        $message = $failMessage ?: $sprintf('Elements with css selector "%s" cannot be found.', $cssSelector);
+        $message = $failMessage ?: sprintf('Elements with css selector "%s" cannot be found.', $cssSelector);
 
         $this->assertNotEmpty($elements, $message);
 
