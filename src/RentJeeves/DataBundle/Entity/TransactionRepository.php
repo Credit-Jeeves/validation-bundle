@@ -159,6 +159,7 @@ class TransactionRepository extends EntityRepository
         $query = $this->createQueryBuilder('h');
         $query->select(
             "h.transactionId,
+            h.batchId,
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,

@@ -15,6 +15,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use DateTime;
 
+/**
+ * @TODO: need refactoring
+ */
 class EmailBatchDepositReportCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -87,7 +90,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                     'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
                     'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
                     'batches' => $this->prepareBatchReportData($batchData),
-                    'returns' => $reversalData,
+                    'returns' => $this->prepareReversalTransactions($reversalData),
                 ];
                 if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
                     if ($groupid) {  // if groupid option specified, only send for that group
@@ -123,9 +126,10 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                             $group,
                             $date,
                             $this->prepareBatchReportData($batchData),
-                            $reversalData,
+                            $this->prepareReversalTransactions($reversalData),
                             $resend
-                        )) {
+                        )
+                        ) {
                             $output->writeln('Sending email is failed. Check template.');
                         }
                         $output->write('.');
@@ -148,7 +152,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             $transactions[] = $data[$i];
 
             /** Need check that next.batch_id != current.batch_id, also check that next exists */
-            if (($i+1) == $count || $data[$i]['batchId'] != $data[$i+1]['batchId']) {
+            if (($i + 1) == $count || $data[$i]['batchId'] != $data[$i + 1]['batchId']) {
                 $preparedData[] = [
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
@@ -163,5 +167,25 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         }
 
         return $preparedData;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareReversalTransactions(array $data)
+    {
+        $batches = [];
+        foreach ($data as $reversalTransaction) {
+            $batches[$reversalTransaction['batchId']]['transactions'][] = $reversalTransaction;
+            if (true === isset($batches[$reversalTransaction['batchId']]['paymentTotal'])) {
+                $batches[$reversalTransaction['batchId']]['paymentTotal'] += $reversalTransaction['amount'];
+            } else {
+                $batches[$reversalTransaction['batchId']]['paymentTotal'] = $reversalTransaction['amount'];
+            }
+        }
+
+        return $batches;
     }
 }
