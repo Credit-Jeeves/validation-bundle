@@ -1436,14 +1436,17 @@ class ContractRepository extends EntityRepository
      * @param Holding $holding
      * @param string $externalPropertyId
      * @param string $externalLeaseId
+     * @param string $unitName
      * @return Contract[]
      */
-    public function findContractsByHoldingExternalPropertyLease(
+    public function findContractsByHoldingExternalPropertyLeaseUnit(
         Holding $holding,
         $externalPropertyId,
-        $externalLeaseId
+        $externalLeaseId,
+        $unitName
     ) {
         return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
@@ -1453,12 +1456,51 @@ class ContractRepository extends EntityRepository
             ->andWhere('pm.holding = :holding')
             ->andWhere('c.holding = :holding')
             ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND p.isSingle = 1))')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
+            ->setParameter('unitName', $unitName)
+            ->setParameter('singleUnitName', UNIT::SINGLE_PROPERTY_UNIT_NAME)
             ->setParameter('externalLeaseId', $externalLeaseId)
             ->getQuery()
             ->execute();
     }
+    /**
+     * @param Holding $holding
+     * @param string $externalPropertyId
+     * @param string $externalLeaseId
+     * @param string $externalUnitId
+     * @return Contract[]
+     */
+    public function findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+        Holding $holding,
+        $externalPropertyId,
+        $externalLeaseId,
+        $externalUnitId
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pm.holding = :holding')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->andWhere('c.externalLeaseId = :externalLeaseId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('holding', $holding)
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('externalLeaseId', $externalLeaseId)
+            ->getQuery()
+            ->execute();
+    }
+
 }

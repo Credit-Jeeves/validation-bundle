@@ -63,24 +63,24 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         /** @var Customer $roommate */
         foreach ($roommates as $roommate) {
             $residentId = $roommate->getCustomerId();
-            $unitName = $resident->getRtUnit()->getUnitId();
+            $externalUnitId = $roommate->getExternalUnitId($resident);
             $contracts = $this
                 ->getContractRepository()
-                ->findContractsByHoldingExternalPropertyResidentUnit(
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
                     $holding,
                     $externalPropertyId,
                     $residentId,
-                    $unitName
+                    $externalUnitId
                 );
             empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
             $contractsWaiting = $this
                 ->getContractWaitingRepository()
-                ->findContractsByHoldingExternalPropertyResidentUnit(
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
                     $holding,
                     $externalPropertyId,
                     $residentId,
-                    $unitName
+                    $externalUnitId
                 );
 
             empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
@@ -185,18 +185,19 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $leaseId = $firstDetails->getCustomerId();
+        $unitName = $firstDetails->getUnitID();
 
         $allContracts = [];
 
         $contracts = $this
             ->getContractRepository()
-            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+            ->findContractsByHoldingExternalPropertyLeaseUnit($holding, $externalPropertyId, $leaseId, $unitName);
 
         empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
         $contractsWaiting = $this
             ->getContractWaitingRepository()
-            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+            ->findContractsByHoldingExternalPropertyLeaseUnit($holding, $externalPropertyId, $leaseId, $unitName);
 
         empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
 

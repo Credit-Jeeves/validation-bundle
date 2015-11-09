@@ -157,6 +157,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $recurringCodes = $holding->getRecurringCodesArray();
         $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
         $leaseId = $lease->getResiId();
+        $externalUnitId = $lease->getExternalUnitId();
 
         if ($sumRecurringCharges <= 0) {
             throw new \LogicException(
@@ -169,24 +170,28 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 )
             );
         }
-        /** @var Occupant $occupant */
-        foreach ($lease->getOccupants() as $occupant) {
-            if (296455 == $occupant->getOccuSeqNo()) {
-                echo $lease->getResiId();
-            }
-        }
 
         $allContracts = [];
 
         $contracts = $this
             ->getContractRepository()
-            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
+            );
 
         empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
         $contractsWaiting = $this
             ->getContractWaitingRepository()
-            ->findContractsByHoldingExternalPropertyLease($holding, $externalPropertyId, $leaseId);
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
+            );
 
         empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
 

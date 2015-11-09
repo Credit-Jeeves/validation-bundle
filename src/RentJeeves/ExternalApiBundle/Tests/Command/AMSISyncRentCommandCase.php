@@ -27,6 +27,7 @@ class AMSISyncRentCommandCase extends BaseTestCase
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RENT');
+        $contract->setExternalLeaseId(17);
         $contract->setRent(123321); // test value
 
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
