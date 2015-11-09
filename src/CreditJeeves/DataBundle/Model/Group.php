@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -391,6 +392,17 @@ abstract class Group
     protected $groupSettings;
 
     /**
+     * @var ImportGroupSettings
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportGroupSettings",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $importSettings;
+
+    /**
      * @var AciCollectPayGroupProfile
      *
      * @ORM\OneToOne(
@@ -557,6 +569,22 @@ abstract class Group
     public function getGroupSettings()
     {
         return $this->groupSettings;
+    }
+
+    /**
+     * @return ImportGroupSettings|null
+     */
+    public function getImportSettings()
+    {
+        return $this->importSettings;
+    }
+
+    /**
+     * @param ImportGroupSettings $importSettings
+     */
+    public function setImportSettings(ImportGroupSettings $importSettings)
+    {
+        $this->importSettings = $importSettings;
     }
 
     /**
