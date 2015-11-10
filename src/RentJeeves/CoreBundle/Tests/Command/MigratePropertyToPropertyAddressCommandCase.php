@@ -20,7 +20,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $this->load(true);
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findOneById(1);
         $property->setIndex('test');
-        $this->writeAttribute($property,'propertyAddress', null);
+        $this->writeAttribute($property, 'propertyAddress', null);
 
         $this->getEntityManager()->flush();
 
@@ -55,7 +55,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $property->setCity('test');
         $property->setArea('test');
         $property->setZip('test');
-        $this->writeAttribute($property,'propertyAddress', null);
+        $this->writeAttribute($property, 'propertyAddress', null);
 
         $this->getEntityManager()->flush();
 
@@ -91,7 +91,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findOneById(1);
         $propertyAddress = $property->getPropertyAddress();
         $property->setIndex($propertyAddress->getIndex());
-        $this->writeAttribute($property,'propertyAddress', null);
+        $this->writeAttribute($property, 'propertyAddress', null);
 
         $this->getEntityManager()->flush();
 

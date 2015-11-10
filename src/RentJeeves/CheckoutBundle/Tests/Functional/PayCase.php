@@ -859,7 +859,7 @@ class PayCase extends BaseTestCase
                 '#rentjeeves_checkoutbundle_paymenttype_property_address'
             )
         );
-        $this->assertEquals('770 Broadway, Manhattan, #2-a New York, NY 10003 *required', $propertyAddress->getText());
+        $this->assertEquals('770 Broadway, #2-a New York, NY 10003 *required', $propertyAddress->getText());
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
     }
 
