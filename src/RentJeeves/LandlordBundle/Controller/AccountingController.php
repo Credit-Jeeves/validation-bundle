@@ -5,9 +5,8 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\ImportType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -40,6 +39,7 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Monolog\Logger;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property as YardiProperty;
 
 /**
  * @Route("/accounting")
@@ -456,26 +456,29 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
+        $residentTransactionClient = $this->get('soap.client.factory')->getClient(
+            $this->getCurrentGroup()->getHolding()->getYardiSettings(),
+            SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
+        );
 
-        $mappedProperties = [];
+        $properties = [];
+        $externalPropertiesId = [];
+        if ($storage->getImportLoaded() === false &&
+            $externalProperties = $residentTransactionClient->getPropertyConfigurations()
+        ) {
+            $externalPropertyId = '*';
+            $storage->setIsMultipleProperty(true);
 
-        if ($storage->getImportLoaded() === false) {
-            /** @var $propertyMappingManager PropertyMappingManager */
-            $propertyMappingManager = $this->get('property_mapping.manager');
-
-            if (ImportType::SINGLE_PROPERTY === $storage->getImportType()) {
-                /** @var PropertyMapping[] $mappedProperties */
-                $mappedProperties[] = $propertyMappingManager->createPropertyMapping(
-                    $storage->getImportPropertyId(),
-                    $storage->getImportExternalPropertyId()
-                );
-            } else {
-                $mappedProperties = $propertyMappingManager->getMappedProperties();
+            /** @var YardiProperty $property */
+            foreach ($externalProperties->getProperty() as $property) {
+                if ($externalPropertyId === '*' || strpos($externalPropertyId, $property->getCode()) !== false) {
+                    $properties[] = $property;
+                    $externalPropertiesId[] = $property->getCode();
+                }
             }
-
         }
 
-        $response = new Response($this->get('jms_serializer')->serialize($mappedProperties, 'json'));
+        $response = new Response($this->get('jms_serializer')->serialize($properties, 'json'));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -485,14 +488,14 @@ class AccountingController extends Controller
      * @param int $propertyMappingId
      *
      * @Route(
-     *     "/import/residents/yardi/{propertyMappingId}",
+     *     "/import/residents/yardi/{externalPropertyId}",
      *     name="accounting_import_residents_yardi",
      *     options={"expose"=true}
      * )
      *
      * @return Response
      */
-    public function getResidentsYardi($propertyMappingId)
+    public function getResidentsYardi($externalPropertyId)
     {
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -506,23 +509,15 @@ class AccountingController extends Controller
             $mapping = $importFactory->getMapping();
             /** @var Holding $holding */
             $holding = $this->getUser()->getHolding();
-            /** @var $propertyMapping PropertyMapping */
-            $propertyMapping = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
-                'id' => $propertyMappingId,
-                'holding' => $holding->getId()
-            ]);
-            if ($propertyMapping) {
-                $residents = array_merge(
-                    $mapping->getResidents($holding, $propertyMapping->getProperty()),
-                    $residents
-                );
-            }
+            $residents = $mapping->getResidents($holding, $externalPropertyId);
         }
+
         $em = $this->getEntityManager();
         if (!$em->getConnection()->isConnected()) {
             $em->getConnection()->close();
             $em->getConnection()->connect();
         }
+
         $handler = $importFactory->getHandler();
         $handler->getReport()->setTotal(count($residents));
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
@@ -622,7 +617,7 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/resident/yardi/{propertyMappingId}/{isLast}",
+     *     "/import/resident/yardi/{isLast}",
      *     name="accounting_import_resident_data_yardi",
      *     options={"expose"=true}
      * )
@@ -632,11 +627,12 @@ class AccountingController extends Controller
      * @return Response
      * @throws Exception
      */
-    public function getResidentData($propertyMappingId, $isLast = 0)
+    public function getResidentData($isLast = 0)
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
         $residentPostData = $request->request->get('resident');
+        $propertyPostData = $request->request->get('property');
         /** @var Serializer $serializer */
         $serializer = $this->get('jms_serializer');
         $classResident = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident';
@@ -650,6 +646,16 @@ class AccountingController extends Controller
         if (!$resident instanceof ResidentsResident) {
             throw new Exception("Invalid post data, can't be converted to {$classResident}");
         }
+        $classProperty = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property';
+        $property = $serializer->deserialize(
+            $propertyPostData,
+            $classProperty,
+            'array'
+        );
+
+        if (!$property instanceof YardiProperty) {
+            throw new \Exception("Invalid post data, can't be converted to {$classProperty}");
+        }
 
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -660,31 +666,18 @@ class AccountingController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         try {
-            /*
-             * Search PropertyMapping by id with holding
-             * for be sure that we can work only with property belongs to our holding
-             */
-            /** @var PropertyMapping $propertyMapping */
-            $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
-                'id' => $propertyMappingId,
-                'holding' => $holding->getId()
-            ]);
-            if (!$propertyMapping) {
-                throw new \RuntimeException('PropertyMapping is not defined.');
-            }
 
-            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
-            $storage->setImportPropertyId($propertyMapping->getProperty()->getId());
-            $storage->saveToFile($residentLeaseFile, $resident);
+            $residentLeaseFile = $mapping->getContractData($holding, $resident, $property->getCode());
+            $storage->saveToFile($residentLeaseFile, $resident, $property);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $responseData = array('result' => false);
+                $responseData = ['result' => false];
             } else {
-                $responseData = array('result' => true);
+                $responseData = ['result' => true];
             }
         } catch (Exception $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
-            $responseData = array('result' => false);
+            $responseData = ['result' => false];
         }
 
         if ($isLast) {

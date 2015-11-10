@@ -143,6 +143,7 @@ class ExternalApiStorage extends StorageCsv
      */
     public function isValid()
     {
+        return true;
         if ($this->getImportLoaded()) {
             return parent::isValid();
         }
