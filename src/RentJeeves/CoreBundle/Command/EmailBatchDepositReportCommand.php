@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use DateTime;
 
 /**
- * @TODO: need refactoring
+ * @TODO: need refactoring - split for 2 function (for Landlord and Holding) and groom new function
  */
 class EmailBatchDepositReportCommand extends ContainerAwareCommand
 {

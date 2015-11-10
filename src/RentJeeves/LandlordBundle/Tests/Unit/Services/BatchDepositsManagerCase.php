@@ -31,9 +31,9 @@ class BatchDepositsManagerCase extends BaseTestCase
         $group = $this->em->find('DataBundle:Group', 24);
 
         $this->assertEquals(
-            5,
+            7,
             $this->depositManager->getCountDeposits($group, '', ''),
-            'Group #24 should have 5 deposits'
+            'Group #24 should have 7 deposits'
         );
     }
 
@@ -107,17 +107,17 @@ class BatchDepositsManagerCase extends BaseTestCase
         $group = $this->em->find('DataBundle:Group', 24);
 
         $deposits = $this->depositManager->getDeposits($group, '', '');
-        $this->assertCount(5, $deposits, 'Expected 5 deposits for Group #24');
+        $this->assertCount(7, $deposits, 'Expected 5 deposits for Group #24');
 
-        $this->assertArrayHasKey('batchNumber', $deposits[0], 'BatchNumber not found in deposit');
-        $this->assertEquals('325698', $deposits[0]['batchNumber'], 'Unexpected batchNumber');
-        $this->assertArrayHasKey('depositDate', $deposits[0], 'DepositDate not found in deposit');
-        $this->assertArrayHasKey('depositType', $deposits[0], 'DepositType not found in deposit');
-        $this->assertEquals('Rent', $deposits[0]['depositType'], 'Unexpected depositType');
-        $this->assertArrayHasKey('orderAmount', $deposits[0], 'OrderAmount not found in deposit');
-        $this->assertEquals(1800, $deposits[0]['orderAmount'], 'Unexpected orderAmount');
-        $this->assertArrayHasKey('orders', $deposits[0], 'Orders not found in deposit');
-        $this->assertCount(2, $deposits[0]['orders'], 'Expected 2 orders in first deposit');
+        $this->assertArrayHasKey('batchNumber', $deposits[2], 'BatchNumber not found in deposit');
+        $this->assertEquals('325698', $deposits[2]['batchNumber'], 'Unexpected batchNumber');
+        $this->assertArrayHasKey('depositDate', $deposits[2], 'DepositDate not found in deposit');
+        $this->assertArrayHasKey('depositType', $deposits[2], 'DepositType not found in deposit');
+        $this->assertEquals('Rent', $deposits[2]['depositType'], 'Unexpected depositType');
+        $this->assertArrayHasKey('orderAmount', $deposits[2], 'OrderAmount not found in deposit');
+        $this->assertEquals(1800, $deposits[2]['orderAmount'], 'Unexpected orderAmount');
+        $this->assertArrayHasKey('orders', $deposits[2], 'Orders not found in deposit');
+        $this->assertCount(4, $deposits[2]['orders'], 'Expected 4 orders in deposit');
     }
 
     /**
@@ -131,6 +131,6 @@ class BatchDepositsManagerCase extends BaseTestCase
         $this->assertCount(2, $deposits, 'Expected 2 deposits for first page');
 
         $deposits = $this->depositManager->getDeposits($group, '', '', 3, 2);
-        $this->assertCount(1, $deposits, 'Expected 41 deposits for third page');
+        $this->assertCount(2, $deposits, 'Expected 41 deposits for third page');
     }
 }

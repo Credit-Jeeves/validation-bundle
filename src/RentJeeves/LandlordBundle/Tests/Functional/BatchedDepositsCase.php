@@ -23,15 +23,15 @@ class BatchedDepositsCase extends BaseTestCase
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'), 'Title not found');
         $this->assertEquals(
-            'accounting.menu.batched_deposits (5)',
+            'accounting.menu.batched_deposits (7)',
             $title->getHtml(),
-            'Batched Deposits should have 5 items'
+            'Batched Deposits should have 7 items'
         );
         $this->assertNotNull(
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
         );
-        $this->assertCount(14, $rows, 'Table should contain 14 rows');
+        $this->assertCount(22, $rows, 'Table should contain 22 rows');
 
         $this->assertNotNull(
             $filter = $this->page->find('css', '#depositTypeStatus_link'),
@@ -89,6 +89,7 @@ class BatchedDepositsCase extends BaseTestCase
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
         );
-        $this->assertCount(2, $rows, 'Table should contain 2 rows for \'transaction ID\' filter');
+        // 4 for transactions and 1 for batch
+        $this->assertCount(5, $rows, 'Table should contain 2 rows for \'transaction ID\' filter');
     }
 }

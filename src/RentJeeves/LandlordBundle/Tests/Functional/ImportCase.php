@@ -1297,8 +1297,8 @@ class ImportCase extends ImportBaseAbstract
      */
     public function yardiBaseImport()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         $em = $this->getEntityManager();
 

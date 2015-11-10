@@ -1019,8 +1019,8 @@ class PayCase extends BaseTestCase
      */
     public function shouldDisableTodayOnDatepickerAfterCutoffTime()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         $this->login('tenant11@example.com', 'pass');
 
