@@ -20,7 +20,6 @@ use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 class MRIClientCase extends Base
 {
     const PROPERTY_ID = '500';
-
     const RESIDENT_ID = '0000000001';
 
     /**
