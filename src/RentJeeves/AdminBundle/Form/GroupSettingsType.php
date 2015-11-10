@@ -166,13 +166,13 @@ class GroupSettingsType extends Base
         $builder->add(
             'showRentOnDashboard',
             'checkbox',
-            ['label' => 'Show Rent on Dashboard', 'required' => false]
+            ['label' => 'admin.group_settings.label.show_rent_dashboard', 'required' => false]
         );
 
         $builder->add(
             'showRentOnWizard',
             'checkbox',
-            ['label' => 'Fill Rent on Wizard', 'required' => false]
+            ['label' => 'admin.group_settings.label.show_rent_wizard', 'required' => false]
         );
 
         $builder->add(

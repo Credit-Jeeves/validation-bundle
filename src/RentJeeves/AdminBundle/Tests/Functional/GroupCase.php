@@ -6,7 +6,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class GroupCase extends BaseTestCase
 {
-    use UniqueIdGetter;
+    use AdminFormUniqueIdGetter;
 
     /**
      * @test
