@@ -164,6 +164,18 @@ class GroupSettingsType extends Base
         );
 
         $builder->add(
+            'showRentOnDashboard',
+            'checkbox',
+            ['label' => 'admin.group_settings.label.show_rent_dashboard', 'required' => false]
+        );
+
+        $builder->add(
+            'showRentOnWizard',
+            'checkbox',
+            ['label' => 'admin.group_settings.label.show_rent_wizard', 'required' => false]
+        );
+
+        $builder->add(
             'allowedDebitFee',
             'checkbox',
             ['label' => 'Is Allowed Debit Fee?', 'required' => false]

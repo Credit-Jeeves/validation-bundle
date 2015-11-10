@@ -276,6 +276,36 @@ abstract class GroupSettings
     protected $debitFee;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *     name="show_rent_dashboard",
+     *     type="boolean",
+     *     options={
+     *         "default" : 1
+     *     },
+     *     nullable=false
+     * )
+     */
+    protected $showRentOnDashboard = true;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *     name="show_rent_wizard",
+     *     type="boolean",
+     *     options={
+     *         "default" : 1
+     *     },
+     *     nullable=false
+     * )
+     * @Serializer\SerializedName("showRent")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $showRentOnWizard = true;
+
+    /**
      * @param float $feeACH
      */
     public function setFeeACH($feeACH)
@@ -601,5 +631,37 @@ abstract class GroupSettings
     public function setDebitFee($debitFee)
     {
         $this->debitFee = $debitFee;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowRentOnDashboard()
+    {
+        return $this->showRentOnDashboard;
+    }
+
+    /**
+     * @param boolean $showRentOnDashboard
+     */
+    public function setShowRentOnDashboard($showRentOnDashboard)
+    {
+        $this->showRentOnDashboard = $showRentOnDashboard;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowRentOnWizard()
+    {
+        return $this->showRentOnWizard;
+    }
+
+    /**
+     * @param boolean $showRentOnWizard
+     */
+    public function setShowRentOnWizard($showRentOnWizard)
+    {
+        $this->showRentOnWizard = $showRentOnWizard;
     }
 }

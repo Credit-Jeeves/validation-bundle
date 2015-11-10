@@ -370,7 +370,7 @@ function Pay(parent, contract) {
 
         var paymentData = {
             'contractId' : contract.id,
-            'amount' : contract.rent,
+            'amount' : contract.groupSetting.showRent ? contract.rent : null,
             'endMonth' : finishDate.getMonth() + 1,
             'endYear' : finishDate.getYear(),
             'paidForOptions' : associativeArrayToOptions(ko.unwrap(self.paidForArr), ''),

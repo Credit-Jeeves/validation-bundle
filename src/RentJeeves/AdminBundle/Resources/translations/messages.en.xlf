@@ -290,6 +290,14 @@
                 <source>admin.list.payment.orders_action</source>
                 <target>Orders</target>
             </trans-unit>
+            <trans-unit id="admin.group_settings.label.show_rent_dashboard">
+                <source>admin.group_settings.label.show_rent_dashboard</source>
+                <target>Show Rent on Dashboard</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.show_rent_wizard">
+                <source>admin.group_settings.label.show_rent_wizard</source>
+                <target>Fill Rent on Wizard</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
