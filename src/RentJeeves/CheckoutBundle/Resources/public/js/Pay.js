@@ -323,7 +323,7 @@ function Pay(parent, contract) {
     self.propertyAddress = ko.computed(function() {
         var propertyFullAddress = new Address(self, self.addresses);
 
-        ko.mapping.fromJS(self.contract().property, {}, propertyFullAddress);
+        ko.mapping.fromJS(self.contract().property.propertyAddress, {}, propertyFullAddress);
         propertyFullAddress.unit(self.contract().unit.name);
 
         return propertyFullAddress;

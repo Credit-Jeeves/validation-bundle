@@ -37,11 +37,13 @@ class ExportCase extends BaseTestCase
     protected function selectFirstProperty()
     {
         $em = $this->getEntityManager();
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy([
-            'street' => 'Broadway',
-            'number' => '770',
-            'zip'    => '10003'
-        ]);
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
+                'street' => 'Broadway',
+                'number' => '770',
+                'zip' => '10003'
+            ]
+        );
         $this->assertNotNull($property);
         $this->assertNotNull($propertyInputSelect = $this->page->find('css', '#base_order_report_type_property'));
         $propertyInputSelect->selectOption($property->getId());
@@ -59,12 +61,14 @@ class ExportCase extends BaseTestCase
             'name' => 'Test Rent Group'
         ]);
 
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy([
-            'zip' => '10003',
-            'number' => '770',
-            'jb' => '40.7308364',
-            'kb' => '-73.991567'
-        ]);
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
+                'zip' => '10003',
+                'number' => '770',
+                'jb' => '40.7308364',
+                'kb' => '-73.991567'
+            ]
+        );
         /** @var DepositAccount $depositAccount */
         $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
             [
@@ -96,7 +100,7 @@ class ExportCase extends BaseTestCase
             [
                 'tenant' => $tenant,
                 'group' => $group,
-                'unit'  => $unitMapping->getUnit()
+                'unit' => $unitMapping->getUnit()
             ]
         );
 
