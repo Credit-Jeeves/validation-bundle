@@ -13,6 +13,7 @@ class ApiIntegrationType extends Enum
     const AMSI = 'amsi';
 
     public static $importMapping = [
+        self::NONE          => 'csv',
         self::YARDI_VOYAGER => 'yardi',
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',

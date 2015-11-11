@@ -2,15 +2,17 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use Symfony\Component\Form\FormInterface;
 
 interface StorageInterface
 {
     /**
+     * @param ImportGroupSettings $importGroupSettings
      * @param FormInterface $form
      * @return void
      */
-    public function setImportData(FormInterface $form);
+    public function setImportData(ImportGroupSettings $importGroupSettings, FormInterface $form = null);
 
     public function getImportData();
 

@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
-use RentJeeves\DataBundle\Enum\ImportType;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
@@ -143,43 +143,42 @@ class AccountingController extends Controller
      * )
      * @Template()
      */
-    public function importFileAction(Request $request)
+    public function importFileAction()
     {
         $this->getImportLogger()->debug("Enter: importFileAction");
 
         $this->checkAccessToAccounting();
-        $form = $this->createForm(
-            new ImportFileAccountingType(
-                $this->getUser()->getIsSuperAdmin(),
-                $this->getCurrentGroup(),
-                $this->getDoctrine()->getManager()
-            )
-        );
+        $form = $this->createForm(new ImportFileAccountingType($this->getCurrentGroup()));
 
         $form->handleRequest($this->get('request'));
         /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
-        $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
+        $integrationType =
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
             return [
                 'form'            => $form->createView(),
                 'nGroups'         => $this->getGroups()->count(),
-                'source'          => $form->get('fileType')->getData(),
-                'importType'      => $form->get('importType')->getData(),
-                'integrationType' => $integrationType
+                'integrationType' => $integrationType,
+                'source'          => $source
             ];
         }
 
-        $this->getImportLogger()->debug("Import requested. Type: " + $form['fileType']->getData());
+        $this->getImportLogger()->debug(sprintf('Import requested. Type: %s', $source));
+        $serviceKey = ApiIntegrationType::$importMapping[
+            $this->getCurrentGroup()->getHolding()->getApiIntegrationType()
+        ];
 
-        $importStorage = $importFactory->getStorage($form['fileType']->getData());
-        $importStorage->setImportData($form);
-        $importStorage->setStorageType(
-            $importFactory->getImportType($form['fileType']->getData())
+        $importStorage = $importFactory->getStorage($serviceKey);
+        $importStorage->setImportData(
+            $this->getCurrentGroup()->getImportSettings(),
+            $form
         );
+
+        $importStorage->setStorageType($serviceKey);
 
         return $this->redirect(
             $this->generateUrl('accounting_match_file')
@@ -243,8 +242,10 @@ class AccountingController extends Controller
         }
 
         $form = $form->createView();
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return [
+            'source'       => $source,
             'error'        => false,
             'data'         => $dataView,
             'form'         => $form
@@ -264,9 +265,11 @@ class AccountingController extends Controller
      */
     public function summaryReportAction(ImportSummary $importSummary)
     {
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
+
         return $this->render(
             'LandlordBundle:Accounting:summaryReport.html.twig',
-            ['report' => $importSummary]
+            ['report' => $importSummary, 'source' => $source]
         );
     }
 
@@ -301,6 +304,7 @@ class AccountingController extends Controller
         $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm();
         $formContract = $handler->getContractForm();
         $formContractFinish = $handler->getContractFinishForm();
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
@@ -308,6 +312,7 @@ class AccountingController extends Controller
             'formContractFinish'      => $formContractFinish->createView(),
             'importStorage'           => $storage,
             'importMapping'           => $mapping,
+            'source'                  => $source,
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty()) ? "true" : "false",
             'importOnlyException'     => ($storage->isOnlyException()) ? "true" : "false",
@@ -466,9 +471,7 @@ class AccountingController extends Controller
         if ($storage->getImportLoaded() === false &&
             $externalProperties = $residentTransactionClient->getPropertyConfigurations()
         ) {
-            $externalPropertyId = '*';
-            $storage->setIsMultipleProperty(true);
-
+            $externalPropertyId = $storage->getImportExternalPropertyId();
             /** @var YardiProperty $property */
             foreach ($externalProperties->getProperty() as $property) {
                 if ($externalPropertyId === '*' || strpos($externalPropertyId, $property->getCode()) !== false) {

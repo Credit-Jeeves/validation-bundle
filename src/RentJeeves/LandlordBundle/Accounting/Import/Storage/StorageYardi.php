@@ -27,12 +27,13 @@ class StorageYardi extends ExternalApiStorage
         11 => Mapping::KEY_MONTH_TO_MONTH,
         12 => Mapping::KEY_PAYMENT_ACCEPTED,
         13 => Mapping::KEY_EXTERNAL_LEASE_ID,
-        14 => Mapping::KEY_CITY,
-        15 => Mapping::KEY_STATE,
-        16 => Mapping::KEY_ZIP,
-        16 => Mapping::KEY_STREET,
-        17 => 'Not used',
-        18 => 'Not used'
+        14 => Mapping::KEY_EXTERNAL_PROPERTY_ID,
+        15 => Mapping::KEY_CITY,
+        16 => Mapping::KEY_STATE,
+        17 => Mapping::KEY_ZIP,
+        18 => Mapping::KEY_STREET,
+        19 => 'Not used',
+        20 => 'Not used2',
     ];
 
     /**
@@ -51,19 +52,6 @@ class StorageYardi extends ExternalApiStorage
         }
 
         return $this->saveToFileCustomer($residentData, $resident, $property);
-    }
-
-    /**
-     * Create and write header into CSV file
-     *
-     * @throws ImportStorageException
-     */
-    protected function initializeParameters()
-    {
-        if ($this->isMultiplePropertyMapping()) {
-            $this->defaultMapping[14] = Mapping::KEY_PROPERTY_ID;
-        }
-        parent::initializeParameters();
     }
 
     /**
@@ -108,12 +96,14 @@ class StorageYardi extends ExternalApiStorage
             $monthToMonth,
             $paymentAccepted,
             $leaseId,
+            $property->getCode(),
             $property->getCity(),
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
+
         ];
 
         if ($this->isMultiplePropertyMapping()) {
@@ -155,6 +145,7 @@ class StorageYardi extends ExternalApiStorage
             $monthToMonth,
             $paymentAccepted,
             $leaseId,
+            $property->getCode(),
             $property->getCity(),
             $property->getState(),
             $property->getPostalCode(),
@@ -191,7 +182,7 @@ class StorageYardi extends ExternalApiStorage
      */
     public function isMultipleProperty()
     {
-        return false;
+        return true;
     }
 
     /**

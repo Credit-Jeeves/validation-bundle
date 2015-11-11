@@ -2,7 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
@@ -91,26 +91,15 @@ class ExternalApiStorage extends StorageCsv
     }
 
     /**
-     * @param FormInterface $form
+     * {@inheritdoc}
      */
-    public function setImportData(FormInterface $form)
+    public function setImportData(ImportGroupSettings $importGroupSettings, FormInterface $form = null)
     {
-        $property = $form['property']->getData();
-        $importType = $form['importType']->getData();
-
-        if ($property instanceof Property && ImportType::SINGLE_PROPERTY === $importType) {
-            $this->setImportPropertyId($property->getId());
-            $this->setIsMultipleProperty(false);
-            $this->setImportType(ImportType::SINGLE_PROPERTY);
-        } else {
-            $this->setIsMultipleProperty(true);
-            $this->setImportType(ImportType::MULTI_PROPERTIES);
-        }
-        $this->setImportExternalPropertyId($form['propertyId']->getData());
+        $this->setIsMultipleProperty(true);
+        $this->setImportType(ImportType::MULTI_PROPERTIES);
         $this->setOnlyException($form['onlyException']->getData());
         $this->setImportLoaded(false);
-        $this->setMapping($this->getImportData());
-
+        $this->setImportExternalPropertyId($importGroupSettings->getApiPropertyIds());
     }
 
     /**
@@ -119,11 +108,10 @@ class ExternalApiStorage extends StorageCsv
      */
     public function getImportData()
     {
-        $externalApiData = array(
-            self::IMPORT_PROPERTY_ID => $this->getImportPropertyId(),
+        $externalApiData = [
             self::IMPORT_EXTERNAL_PROPERTY_ID => $this->getImportExternalPropertyId(),
             self::IMPORT_ONLY_EXCEPTION => $this->isOnlyException(),
-        );
+        ];
 
         if ($this->getImportLoaded()) {
             $csvData = parent::getImportData();
@@ -133,17 +121,11 @@ class ExternalApiStorage extends StorageCsv
         return $externalApiData;
     }
 
-    public function isMultipleProperty()
-    {
-        return false;
-    }
-
     /**
      * @return bool
      */
     public function isValid()
     {
-        return true;
         if ($this->getImportLoaded()) {
             return parent::isValid();
         }

@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\ImportGroupSettings
+fixtures:
+    ImportGroupSettings_1:
+        group: RentGroup_1
+        source: integrated_api

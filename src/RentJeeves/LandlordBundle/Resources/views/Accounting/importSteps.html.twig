@@ -7,11 +7,13 @@
             <span>{{ 'import.file'|trans }}</span>
         </span>
     </li>
-    <li data-bind='visible: ($root.source() === "csv")? true : false' class="step2 {{ step == 'step2' ? 'active' }}">
-        <span class="step">
-            <span>{{ 'match.fields'|trans }}</span>
-        </span>
-    </li>
+    {% if source == 'csv' %}
+        <li class="step2 {{ step == 'step2' ? 'active' }}">
+            <span class="step">
+                <span>{{ 'match.fields'|trans }}</span>
+            </span>
+        </li>
+    {% endif %}
     <li class="step3 {{ step == 'step3' ? 'active' }}">
         <span class="step">
             <span>{{ 'review.and.post'|trans }}</span>

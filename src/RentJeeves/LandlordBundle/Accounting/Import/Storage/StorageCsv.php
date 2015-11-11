@@ -3,7 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use RentJeeves\DataBundle\Enum\ImportType;
@@ -144,42 +144,31 @@ class StorageCsv extends StorageAbstract
     }
 
     /**
-     * @param FormInterface $form
+     * {@inheritdoc}
      */
-    public function setImportData(FormInterface $form)
+    public function setImportData(ImportGroupSettings $importGroupSettings, FormInterface $form = null)
     {
-        $file = $form['attachment']->getData();
-        $property = $form['property']->getData();
-        $importType = $form['importType']->getData();
-        $textDelimiter = $form['textDelimiter']->getData();
-        $fieldDelimiter = $form['fieldDelimiter']->getData();
-        $dateFormat = $form['dateFormat']->getData();
+        if (ImportType::MULTI_GROUPS == $importGroupSettings->getImportType()) {
+            $this->setIsMultipleGroup(true);
+        } elseif (ImportType::SINGLE_PROPERTY == $importGroupSettings->getImportType()) {
+            $this->setPropertyId($importGroupSettings->getApiPropertyIds());
+            $this->setIsMultipleProperty(false);
+        } else {
+            $this->setPropertyId($importGroupSettings->getApiPropertyIds());
+            $this->setIsMultipleProperty(true);
+        }
+        $this->setFieldDelimiter($importGroupSettings->getCsvFieldDelimiter());
+        $this->setTextDelimiter($importGroupSettings->getCsvTextDelimiter());
+        $this->setDateFormat($importGroupSettings->getCsvDateFormat());
+
         $onlyException = $form['onlyException']->getData();
+        $this->setOnlyException($onlyException);
+
+        $file = $form['attachment']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid() . '.csv';
         $file->move($tmpDir, $newFileName);
-
-        $this->setFieldDelimiter($fieldDelimiter);
-        $this->setTextDelimiter($textDelimiter);
         $this->setFilePath($newFileName);
-
-        $this->setIsMultipleGroup(false);
-        $this->setIsMultipleProperty(true);
-        $this->setImportType($importType);
-
-        if (ImportType::MULTI_GROUPS == $importType) {
-            $this->setIsMultipleGroup(true);
-        } elseif ($property instanceof Property) {
-            $this->setPropertyId($property->getId());
-            $this->setIsMultipleProperty(false);
-        } else {
-            $this->setIsMultipleProperty(true);
-        }
-
-        $this->setOnlyException($onlyException);
-        $this->setDateFormat($dateFormat);
-
-        $this->logger->debug(sprintf('Setup import of type: %s', $importType));
     }
 
     /**
