@@ -367,22 +367,6 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param User $user
-     * @param Group $group
-     *
-     * @return bool
-     */
-    public function merchantNameSetuped(User $user, Group $group)
-    {
-        $vars = [
-            'fullNameLandlord' => $user->getFullName(),
-            'groupName' => $group->getName(),
-        ];
-
-        return $this->sendBaseLetter('rjMerchantNameSetuped', $vars, $user->getEmail(), $user->getCulture());
-    }
-
-    /**
      * @param Contract $contract
      * @param Landlord $landlord
      * @param Tenant $tenant
