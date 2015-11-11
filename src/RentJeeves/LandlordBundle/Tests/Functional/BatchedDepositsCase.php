@@ -27,6 +27,18 @@ class BatchedDepositsCase extends BaseTestCase
             $title->getHtml(),
             'Batched Deposits should have 7 items'
         );
+
+        $this->assertNotNull(
+            $this->page->find('css', 'td:contains(\'1R20151010\')'),
+            'Table should has row with reversal batch'
+        );
+
+        $this->assertCount(
+            2,
+            $this->page->findAll('css', 'tr.toggled-1R20151010'),
+            'Table should has 2 rows with reversal transactions'
+        );
+
         $this->assertNotNull(
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
