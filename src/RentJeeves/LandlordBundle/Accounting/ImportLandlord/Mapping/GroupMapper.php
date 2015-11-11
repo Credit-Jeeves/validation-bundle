@@ -38,10 +38,10 @@ class GroupMapper extends AbstractMapper
     protected $defaultFeeACH;
 
     /**
-     * @see parameter aci.collect_pay.business_id
+     * @see parameter aci.collect_pay.pay_direct_escrow_account
      * @var string
      */
-    protected $defaultDivisionId;
+    protected $defaultPayDirectInboundMerchantAccount;
 
     /**
      * @param AddressLookupInterface $addressLookupService
@@ -53,7 +53,8 @@ class GroupMapper extends AbstractMapper
 
         $this->defaultFeeCC = isset($defaultParams['fee_cc']) ? $defaultParams['fee_cc'] : 0.0;
         $this->defaultFeeACH = isset($defaultParams['fee_ach']) ? $defaultParams['fee_ach'] : 0.0;
-        $this->defaultDivisionId = isset($defaultParams['division_id']) ? $defaultParams['division_id'] : null;
+        $this->defaultPayDirectInboundMerchantAccount =
+            isset($defaultParams['division_id']) ? $defaultParams['division_id'] : null;
     }
 
     /**
@@ -150,8 +151,8 @@ class GroupMapper extends AbstractMapper
     {
         $newDepositAccount = new DepositAccount($group);
         $newDepositAccount->setType(DepositAccountType::RENT);
-        $newDepositAccount->setMerchantName($this->defaultDivisionId);
-        if ($this->defaultDivisionId) {
+        $newDepositAccount->setMerchantName($this->defaultPayDirectInboundMerchantAccount);
+        if ($this->defaultPayDirectInboundMerchantAccount) {
             $newDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         }
         $newDepositAccount->setPaymentProcessor(PaymentProcessor::ACI);
