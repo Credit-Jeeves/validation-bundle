@@ -399,6 +399,7 @@ abstract class Group
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"}
      * )
+     * @Assert\Valid
      */
     protected $importSettings;
 

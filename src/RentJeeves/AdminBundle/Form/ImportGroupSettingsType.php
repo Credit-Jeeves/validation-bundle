@@ -43,6 +43,7 @@ class ImportGroupSettingsType extends Base
             'choice',
             [
                 'error_bubbling' => true,
+                'label' => 'admin.import_group_settings.label.source',
                 'choices' => ImportSource::cachedTitles(),
                 'required' => true,
                 'expanded' => true,
@@ -54,7 +55,12 @@ class ImportGroupSettingsType extends Base
             'choice',
             [
                 'error_bubbling' => true,
-                'choices' => ImportType::cachedTitles(),
+                'label' => 'admin.import_group_settings.label.import_type',
+                'choices' => [
+                    ImportType::SINGLE_PROPERTY => 'import.type.single_property',
+                    ImportType::MULTI_PROPERTIES => 'import.type.multi_property',
+                    ImportType::MULTI_GROUPS => 'import.type.multi_groups'
+                ],
                 'required' => true,
             ]
         );
@@ -64,6 +70,7 @@ class ImportGroupSettingsType extends Base
             'text',
             [
                 'error_bubbling' => true,
+                'label' => 'admin.import_group_settings.label.csv_field_delimiter',
                 'data' => ',',
                 'required' => false,
             ]
@@ -74,6 +81,7 @@ class ImportGroupSettingsType extends Base
             'text',
             [
                 'error_bubbling' => true,
+                'label' => 'admin.import_group_settings.label.csv_text_delimiter',
                 'data' => '"',
                 'required' => false,
             ]
@@ -84,6 +92,7 @@ class ImportGroupSettingsType extends Base
             'choice',
             [
                 'error_bubbling' => true,
+                'label' => 'admin.import_group_settings.label.csv_date_format',
                 'choices' => ImportMapping::$mappingDates,
                 'required' => false,
             ]
@@ -94,6 +103,7 @@ class ImportGroupSettingsType extends Base
             'text',
             [
                 'error_bubbling' => true,
+                'label' => 'admin.import_group_settings.label.api_property_ids',
                 'required' => false,
             ]
         );

@@ -22,7 +22,7 @@ class RjGroupAdmin extends Admin
     const TYPE = 'group';
 
     protected $formOptions = [
-        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee']
+        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee', 'import_settings']
     ];
 
     /**
