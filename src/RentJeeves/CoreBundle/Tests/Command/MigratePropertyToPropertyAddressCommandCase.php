@@ -30,7 +30,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new MigratePropertyToPropertyAddressCommand());
 
-        $command = $application->find('property:migrate_to_property_address');
+        $command = $application->find('property:migrate-to-property-address');
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
@@ -65,7 +65,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new MigratePropertyToPropertyAddressCommand());
 
-        $command = $application->find('property:migrate_to_property_address');
+        $command = $application->find('property:migrate-to-property-address');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             [
@@ -101,7 +101,7 @@ class MigratePropertyToPropertyAddressCommandCase extends BaseTestCase
         $application = new Application($this->getKernel());
         $application->add(new MigratePropertyToPropertyAddressCommand());
 
-        $command = $application->find('property:migrate_to_property_address');
+        $command = $application->find('property:migrate-to-property-address');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
             [
