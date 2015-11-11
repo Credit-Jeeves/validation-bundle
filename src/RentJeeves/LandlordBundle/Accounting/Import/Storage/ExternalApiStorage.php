@@ -16,7 +16,7 @@ abstract class ExternalApiStorage extends StorageCsv implements ExternalApiStora
      */
     public function saveToFile($residentData)
     {
-        if (count($residentData) <= 0) {
+        if (count($residentData) < 0) {
             return false;
         }
 

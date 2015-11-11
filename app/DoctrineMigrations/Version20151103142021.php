@@ -16,10 +16,10 @@ class Version20151103142021 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_import_api_mapping
-                ADD street VARCHAR(255) NOT NULL,
-                ADD city VARCHAR(255) NOT NULL,
-                ADD state VARCHAR(255) NOT NULL,
-                ADD zip VARCHAR(15) NOT NULL"
+                ADD street VARCHAR(255) DEFAULT NULL,
+                ADD city VARCHAR(255)  DEFAULT NULL,
+                ADD state VARCHAR(255)  DEFAULT NULL,
+                ADD zip VARCHAR(15)  DEFAULT NULL"
         );
     }
 

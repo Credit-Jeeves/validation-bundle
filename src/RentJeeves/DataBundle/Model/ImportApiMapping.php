@@ -44,7 +44,8 @@ abstract class ImportApiMapping
     /**
      * @ORM\Column(
      *     name="street",
-     *     type="string"
+     *     type="string",
+     *     nullable=true
      * )
      *
      * @var string
@@ -54,7 +55,8 @@ abstract class ImportApiMapping
     /**
      * @ORM\Column(
      *     name="city",
-     *     type="string"
+     *     type="string",
+     *     nullable=true
      * )
      *
      * @var string
@@ -64,7 +66,8 @@ abstract class ImportApiMapping
     /**
      * @ORM\Column(
      *     name="state",
-     *     type="string"
+     *     type="string",
+     *     nullable=true
      * )
      *
      * @var string
@@ -75,7 +78,8 @@ abstract class ImportApiMapping
      * @ORM\Column(
      *     name="zip",
      *     type="string",
-     *     length=15
+     *     length=15,
+     *     nullable=true
      * )
      *
      * @var string
@@ -85,7 +89,8 @@ abstract class ImportApiMapping
     /**
     * @ORM\Column(
     *     name="mapping_data",
-    *     type="array"
+    *     type="array",
+    *     nullable=false
     * )
      *
     * @var array
