@@ -168,6 +168,110 @@ class ContractsControllerCase extends BaseApiTestCase
     }
 
     /**
+     * @test
+     */
+    public function getContracts()
+    {
+        $response = $this->getRequest();
+
+        $this->assertResponse($response);
+
+        $answer = $this->parseContent($response->getContent());
+
+        $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Tenant', $this->getUser(), 'User should be "Tenant"');
+        $this->assertCount(
+            $this->getUser()->getContracts()->count(),
+            $answer,
+            'Count contracts should be the same from DB and api'
+        );
+
+        // check first and last element
+        /** @var Contract $contract1 */
+        $contract1 = $this->getUser()->getContracts()->first();
+        /** @var Contract $contract2 */
+        $contract2 = $this->getUser()->getContracts()->last();
+
+        $this->assertEquals(
+            $contract1->getId(),
+            $this->getIdEncoder()->decode($answer[0]['id']),
+            'First contract has incorrect id'
+        );
+        $this->assertEquals(
+            $contract2->getId(),
+            $this->getIdEncoder()->decode($answer[count($answer)-1]['id']),
+            'Last contract has incorrect id'
+        );
+
+        $this->assertEquals(
+            $contract1->getId(),
+            $this->getUrlEncoder()->decode($answer[0]['url']),
+            'First contract has incorrect self url'
+        );
+        $this->assertEquals(
+            $contract2->getId(),
+            $this->getUrlEncoder()->decode($answer[count($answer)-1]['url']),
+            'Last contract has incorrect self url'
+        );
+
+        $this->assertEquals(
+            $contract1->getUnit()->getId(),
+            $this->getUrlEncoder()->decode($answer[0]['unit_url']),
+            'First contract has incorrect unit_url'
+        );
+        $this->assertEquals(
+            $contract2->getUnit()->getId(),
+            $this->getUrlEncoder()->decode($answer[count($answer)-1]['unit_url']),
+            'Last contract has incorrect unit_url'
+        );
+
+        $this->assertEquals(
+            $contract1->getStatus(),
+            $answer[0]['status'],
+            'First contract has incorrect status, should be ' . $contract1->getStatus()
+        );
+        $this->assertEquals(
+            $contract2->getStatus(),
+            $answer[count($answer)-1]['status'],
+            'Last contract has incorrect status, should be ' . $contract2->getStatus()
+        );
+
+        $this->assertEquals(
+            number_format($contract1->getRent(), 2, '.', ''),
+            $answer[0]['rent'],
+            'First contract has incorrect rent, should be ' . number_format($contract1->getRent(), 2, '.', '')
+        );
+        $this->assertEquals(
+            number_format($contract2->getRent(), 2, '.', ''),
+            $answer[count($answer)-1]['rent'],
+            'Last contract has incorrect rent, should be ' . number_format($contract2->getRent(), 2, '.', '')
+        );
+
+        $this->assertEquals(
+            $contract1->getDueDate(),
+            $answer[0]['due_date'],
+            'First contract has incorrect due date, should be ' . $contract1->getDueDate()
+        );
+        $this->assertEquals(
+            $contract2->getDueDate(),
+            $answer[count($answer)-1]['due_date'],
+            'Last contract has incorrect due date, should be ' . $contract2->getDueDate()
+        );
+
+        $this->assertEquals(
+            number_format($contract1->getIntegratedBalance(), 2, '.', ''),
+            $answer[0]['balance'],
+            'First contract has incorrect balance, should be ' .
+            number_format($contract1->getIntegratedBalance(), 2, '.', '')
+        );
+        $this->assertEquals(
+            number_format($contract2->getIntegratedBalance(), 2, '.', ''),
+            $answer[count($answer)-1]['balance'],
+            'Last contract has incorrect balance, should be ' .
+            number_format($contract2->getIntegratedBalance(), 2, '.', '')
+        );
+    }
+
+    /**
      * @return array
      */
     public static function contractsDataProvider()
