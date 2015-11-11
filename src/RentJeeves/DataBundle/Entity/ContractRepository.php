@@ -1502,5 +1502,4 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
-
 }
