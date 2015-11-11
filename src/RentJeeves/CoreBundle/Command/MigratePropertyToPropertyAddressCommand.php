@@ -19,7 +19,7 @@ class MigratePropertyToPropertyAddressCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('property:migrate_to_property_address')
+            ->setName('property:migrate-to-property-address')
             ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'ID of job')
             ->addOption('page', null, InputOption::VALUE_OPTIONAL, 'Number of page')
             ->setDescription('Migrate Property`s address fields to PropertyAddress.');
