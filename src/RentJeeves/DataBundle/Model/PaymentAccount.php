@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant as PaymentAccountHpsMerchantEntity;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -536,7 +537,7 @@ abstract class PaymentAccount
     /**
      * Get Payments
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PaymentEntity[]
      */
     public function getPayments()
     {

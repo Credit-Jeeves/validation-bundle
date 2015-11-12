@@ -6,7 +6,10 @@ parameters:
     aci.collect_pay.sftp.login: 'rntrtest'
     aci.collect_pay.sftp.password: 'r7QebTAa'
     aci.collect_pay.report_path: '/var/renttrack/aci/collect_pay'
-    aci.collect_pay.business_id: 563376
+
+    aci.collect_pay.renttrack_application_business_id: 563375
+    aci.collect_pay.renttrack_virtual_terminal_account: 567040
+    aci.collect_pay.pay_direct_escrow_account: 563376
 
     aci.pay_anyone.sftp.host: transfer.princetonecom.com
     aci.pay_anyone.sftp.port: 10022
