@@ -38,12 +38,12 @@ class MRIClientCase extends Base
         );
         $this->assertNotEmpty($tenant);
         /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'street' => 'Broadway',
                 'number' => '770',
                 'zip'    => '10003'
-            )
+            ]
         );
         $this->assertNotEmpty($property);
         /** @var Contract $contract */

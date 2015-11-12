@@ -25,11 +25,11 @@ class ImportCase extends ImportBaseAbstract
         '4' => ImportMapping::KEY_RESIDENT_ID,
         '5' => ImportMapping::KEY_TENANT_NAME,
         '7' => ImportMapping::KEY_RENT,
-        '10'=> ImportMapping::KEY_MOVE_IN,
-        '11'=> ImportMapping::KEY_LEASE_END,
-        '12'=> ImportMapping::KEY_MOVE_OUT,
-        '13'=> ImportMapping::KEY_BALANCE,
-        '14'=> ImportMapping::KEY_EMAIL,
+        '10' => ImportMapping::KEY_MOVE_IN,
+        '11' => ImportMapping::KEY_LEASE_END,
+        '12' => ImportMapping::KEY_MOVE_OUT,
+        '13' => ImportMapping::KEY_BALANCE,
+        '14' => ImportMapping::KEY_EMAIL,
     );
 
     protected $mapMultiplePropertyFile = [
@@ -41,13 +41,13 @@ class ImportCase extends ImportBaseAbstract
         '6' => ImportMapping::KEY_STREET,
         '8' => ImportMapping::KEY_UNIT,
         '9' => ImportMapping::KEY_CITY,
-        '10'=> ImportMapping::KEY_STATE,
-        '11'=> ImportMapping::KEY_ZIP,
-        '13'=> ImportMapping::KEY_MOVE_IN,
-        '14'=> ImportMapping::KEY_LEASE_END,
-        '15'=> ImportMapping::KEY_MOVE_OUT,
-        '16'=> ImportMapping::KEY_MONTH_TO_MONTH,
-        '17'=> ImportMapping::KEY_EMAIL,
+        '10' => ImportMapping::KEY_STATE,
+        '11' => ImportMapping::KEY_ZIP,
+        '13' => ImportMapping::KEY_MOVE_IN,
+        '14' => ImportMapping::KEY_LEASE_END,
+        '15' => ImportMapping::KEY_MOVE_OUT,
+        '16' => ImportMapping::KEY_MONTH_TO_MONTH,
+        '17' => ImportMapping::KEY_EMAIL,
     ];
 
     protected $mapMultipleGroupFile = [
@@ -60,19 +60,19 @@ class ImportCase extends ImportBaseAbstract
         '7' => ImportMapping::KEY_STREET,
         '9' => ImportMapping::KEY_UNIT,
         '10' => ImportMapping::KEY_CITY,
-        '11'=> ImportMapping::KEY_STATE,
-        '12'=> ImportMapping::KEY_ZIP,
-        '14'=> ImportMapping::KEY_MOVE_IN,
-        '15'=> ImportMapping::KEY_LEASE_END,
-        '16'=> ImportMapping::KEY_MOVE_OUT,
-        '18'=> ImportMapping::KEY_EMAIL,
+        '11' => ImportMapping::KEY_STATE,
+        '12' => ImportMapping::KEY_ZIP,
+        '14' => ImportMapping::KEY_MOVE_IN,
+        '15' => ImportMapping::KEY_LEASE_END,
+        '16' => ImportMapping::KEY_MOVE_OUT,
+        '18' => ImportMapping::KEY_EMAIL,
     ];
 
     protected function getFilePathByName($fileName)
     {
         $sep = DIRECTORY_SEPARATOR;
         $filePath = getcwd();
-        $filePath .= $sep.'data'.$sep.'fixtures'.$sep.$fileName;
+        $filePath .= $sep . 'data' . $sep . 'fixtures' . $sep . $fileName;
 
         return $filePath;
     }
@@ -155,6 +155,7 @@ class ImportCase extends ImportBaseAbstract
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         //First Step
@@ -469,7 +470,7 @@ class ImportCase extends ImportBaseAbstract
             $this->assertNotNull($table = $this->page->find('css', 'table'));
 
             for ($i = 1; $i <= 14; $i++) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column' . $i));
                 if (isset($this->mapFile[$i])) {
                     $choice->selectOption($this->mapFile[$i]);
                 }
@@ -487,12 +488,12 @@ class ImportCase extends ImportBaseAbstract
             $this->assertEquals(
                 count($trs['import.status.waiting']),
                 1,
-                "Waiting contract on first page is wrong number ".$i
+                "Waiting contract on first page is wrong number " . $i
             );
             $this->assertEquals(
                 1,
                 count($trs['import.status.skip']),
-                "Skip contract on first page is wrong number ".$i
+                "Skip contract on first page is wrong number " . $i
             );
 
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
@@ -518,28 +519,28 @@ class ImportCase extends ImportBaseAbstract
         /**
          * @var $property Property
          */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'jb' => '40.7308364',
                 'kb' => '-73.991567',
-            )
+            ]
         );
 
         $this->assertNotNull($property);
 
-        $this->session->visit($this->getUrl() . 'user/new/'.$property->getId());
+        $this->session->visit($this->getUrl() . 'user/new/' . $property->getId());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
         $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_first_name'                => $contractWaiting->getFirstName().'Wr',
-                'rentjeeves_publicbundle_tenanttype_last_name'                 => $contractWaiting->getLastName(),
-                'rentjeeves_publicbundle_tenanttype_email'                     => 'hi@mail.com',
-                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
-                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
-                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+                'rentjeeves_publicbundle_tenanttype_first_name' => $contractWaiting->getFirstName() . 'Wr',
+                'rentjeeves_publicbundle_tenanttype_last_name' => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_email' => 'hi@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => true,
             )
         );
 
@@ -555,12 +556,12 @@ class ImportCase extends ImportBaseAbstract
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_first_name'                => $contractWaiting->getFirstName(),
-                'rentjeeves_publicbundle_tenanttype_last_name'                 => $contractWaiting->getLastName(),
-                'rentjeeves_publicbundle_tenanttype_email'                     => 'hi@mail.com',
-                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
-                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
-                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+                'rentjeeves_publicbundle_tenanttype_first_name' => $contractWaiting->getFirstName(),
+                'rentjeeves_publicbundle_tenanttype_last_name' => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_email' => 'hi@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => true,
             )
         );
 
@@ -727,12 +728,12 @@ class ImportCase extends ImportBaseAbstract
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'street' => 'Broadway',
                 'number' => '770',
-                'zip'    => '10003'
-            )
+                'zip' => '10003'
+            ]
         );
         $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
         $propertySelector->selectOption($property->getId());
@@ -742,12 +743,12 @@ class ImportCase extends ImportBaseAbstract
     {
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'street' => 'Broadway',
                 'number' => '785',
-                'zip'    => '10003'
-            )
+                'zip' => '10003'
+            ]
         );
         $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
         $propertySelector->selectOption($property->getId());
@@ -854,11 +855,11 @@ class ImportCase extends ImportBaseAbstract
         /** @var ContractWaiting $waitingContract */
         $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
             array(
-                'residentId'    => 'ABBOTT,MIT',
-                'firstName'     => 'Logan',
-                'lastName'      => 'Cooper',
-                'property'      => $unit->getProperty()->getId(),
-                'unit'          => $unit->getId(),
+                'residentId' => 'ABBOTT,MIT',
+                'firstName' => 'Logan',
+                'lastName' => 'Cooper',
+                'property' => $unit->getProperty()->getId(),
+                'unit' => $unit->getId(),
             )
         );
         $this->assertNotNull($waitingContract);
@@ -913,6 +914,7 @@ class ImportCase extends ImportBaseAbstract
                 'property-search' => $address,
             )
         );
+
         $propertySearch->click();
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");
@@ -921,12 +923,12 @@ class ImportCase extends ImportBaseAbstract
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_first_name'                => "Daniel",
-                'rentjeeves_publicbundle_tenanttype_last_name'                 => "Price",
-                'rentjeeves_publicbundle_tenanttype_email'                     => 'dan.price@mail.com',
-                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
-                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
-                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+                'rentjeeves_publicbundle_tenanttype_first_name' => "Daniel",
+                'rentjeeves_publicbundle_tenanttype_last_name' => "Price",
+                'rentjeeves_publicbundle_tenanttype_email' => 'dan.price@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => true,
             )
         );
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
@@ -1009,8 +1011,8 @@ class ImportCase extends ImportBaseAbstract
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             array(
-                'rent'               => 777666.00,
-                'integratedBalance'  => 1277.00
+                'rent' => 777666.00,
+                'integratedBalance' => 1277.00
             )
         );
 
@@ -1083,10 +1085,10 @@ class ImportCase extends ImportBaseAbstract
             '7' => ImportMapping::KEY_CITY,
             '8' => ImportMapping::KEY_STATE,
             '9' => ImportMapping::KEY_ZIP,
-            '10'=> ImportMapping::KEY_MOVE_IN,
-            '11'=> ImportMapping::KEY_LEASE_END,
-            '12'=> ImportMapping::KEY_MOVE_OUT,
-            '14'=> ImportMapping::KEY_EMAIL,
+            '10' => ImportMapping::KEY_MOVE_IN,
+            '11' => ImportMapping::KEY_LEASE_END,
+            '12' => ImportMapping::KEY_MOVE_OUT,
+            '14' => ImportMapping::KEY_EMAIL,
         );
         $this->fillCsvMapping($mapFile, 15);
 
@@ -1336,7 +1338,7 @@ class ImportCase extends ImportBaseAbstract
             }
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
-            $this->waitReviewAndPost($i<4);
+            $this->waitReviewAndPost($i < 4);
         }
 
         $this->waitRedirectToSummaryPage();
@@ -1400,8 +1402,8 @@ class ImportCase extends ImportBaseAbstract
      * @param integer $secondCount
      * @param string $status
      * @param boolean $isNeedLoadFixtures
-     * @param integer $countCountractsCashEquivalent,
-     * @param integer $countCountractsDontAcceptEquivalent,
+     * @param integer $countCountractsCashEquivalent ,
+     * @param integer $countCountractsDontAcceptEquivalent ,
      * @param integer $countCountractsExternalLeaseId
      * @param integer $residentMappingCount
      *
@@ -1587,10 +1589,10 @@ class ImportCase extends ImportBaseAbstract
             '7' => ImportMapping::KEY_CITY,
             '8' => ImportMapping::KEY_STATE,
             '9' => ImportMapping::KEY_ZIP,
-            '10'=> ImportMapping::KEY_MOVE_IN,
-            '11'=> ImportMapping::KEY_LEASE_END,
-            '12'=> ImportMapping::KEY_MOVE_OUT,
-            '14'=> ImportMapping::KEY_EMAIL,
+            '10' => ImportMapping::KEY_MOVE_IN,
+            '11' => ImportMapping::KEY_LEASE_END,
+            '12' => ImportMapping::KEY_MOVE_OUT,
+            '14' => ImportMapping::KEY_EMAIL,
         );
         $this->fillCsvMapping($mapFile, 15);
 
@@ -1632,7 +1634,7 @@ class ImportCase extends ImportBaseAbstract
         // Choose mapping fields
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column' . $i));
             $this->assertEquals('empty_value', $choice->getValue());
             if (isset($this->mapFile[$i])) {
                 $choice->selectOption($this->mapFile[$i]);
@@ -1689,7 +1691,7 @@ class ImportCase extends ImportBaseAbstract
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         foreach ($this->mapMultipleGroupFile as $i => $choiceOption) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column' . $i));
             $choice->selectOption($choiceOption);
         }
 
@@ -1790,12 +1792,12 @@ class ImportCase extends ImportBaseAbstract
     {
         $this->load(true);
         $em = $this->getEntityManager();
-        /** @var Property $property   */
+        /** @var Property $property */
         $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
                 'street' => 'Broadway',
                 'number' => '785',
-                'zip'    => '10003'
+                'zip' => '10003'
             ]
         );
         /*
@@ -1888,9 +1890,9 @@ class ImportCase extends ImportBaseAbstract
             '7' => ImportMapping::KEY_LEASE_END,
             '8' => ImportMapping::KEY_MOVE_OUT,
             '9' => ImportMapping::KEY_EMAIL,
-            '10'=> ImportMapping::KEY_USER_PHONE,
-            '11'=> ImportMapping::KEY_CREDITS,
-            '13'=> ImportMapping::KEY_PAYMENT_ACCEPTED,
+            '10' => ImportMapping::KEY_USER_PHONE,
+            '11' => ImportMapping::KEY_CREDITS,
+            '13' => ImportMapping::KEY_PAYMENT_ACCEPTED,
         ];
 
         $this->fillCsvMapping($mapFile, 13);
@@ -1993,8 +1995,8 @@ class ImportCase extends ImportBaseAbstract
         $afterWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $afterContracts = $em->getRepository('RjDataBundle:Contract')->findAll();
 
-        $this->assertCount(count($beforeWaiting) -1, $afterWaiting);
-        $this->assertCount(count($beforeContracts)+1, $afterContracts);
+        $this->assertCount(count($beforeWaiting) - 1, $afterWaiting);
+        $this->assertCount(count($beforeContracts) + 1, $afterContracts);
     }
 
     /**

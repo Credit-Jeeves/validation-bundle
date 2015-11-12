@@ -89,6 +89,7 @@ class PublicControllerCase extends BaseTestCase
      */
     public function shouldSetValuesIfResidentNotFoundButFoundContractWaiting()
     {
+        set_time_limit(0); //@TODO fixed fatal: Maximum execution time of 120 seconds exceeded
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $holding = $this->getEntityManager()

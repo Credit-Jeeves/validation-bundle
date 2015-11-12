@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
@@ -37,21 +38,21 @@ class StorageYardi extends ExternalApiStorage
     ];
 
     /**
-     * @param ResidentLeaseFile $residentData
-     * @param ResidentsResident $resident
+     * {@inheritdoc}
      */
-    public function saveToFile(ResidentLeaseFile $residentData, ResidentsResident $resident, Property $property)
+    public function saveToFile($fullResident)
     {
-        $filePath = $this->getFilePath(true);
-        if (is_null($filePath)) {
-            $this->initializeParameters();
+        if (!parent::saveToFile($fullResident)) {
+            return false;
         }
+        $resident = $fullResident->getResident();
+        $residentData = $fullResident->getResidentData();
 
         if ($resident->isRoommate()) {
-            return $this->saveToFileRoommate($residentData, $resident, $property);
+            return $this->saveToFileRoommate($residentData, $resident);
         }
 
-        return $this->saveToFileCustomer($residentData, $resident, $property);
+        return $this->saveToFileCustomer($residentData, $resident);
     }
 
     /**

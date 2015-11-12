@@ -155,7 +155,7 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
-        $integrationType =
+        $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
@@ -479,6 +479,7 @@ class AccountingController extends Controller
                     $externalPropertiesId[] = $property->getCode();
                 }
             }
+
         }
 
         $response = new Response($this->get('jms_serializer')->serialize($properties, 'json'));

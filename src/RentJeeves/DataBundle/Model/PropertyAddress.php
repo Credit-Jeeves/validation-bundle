@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,6 +25,9 @@ class PropertyAddress
      * @ORM\Column(type="string",length=255)
      *
      * @Assert\NotBlank(message="api.errors.property.state.empty", groups={"new_unit"})
+     *
+     * @Serializer\Groups({"payRent"})
+     * @Serializer\SerializedName("area")
      */
     protected $state;
 
@@ -31,6 +35,8 @@ class PropertyAddress
      * @ORM\Column(type="string",length=255)
      *
      * @Assert\NotBlank(message="api.errors.property.city.empty", groups={"new_unit"})
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $city;
 
@@ -38,6 +44,8 @@ class PropertyAddress
      * @ORM\Column(type="string",length=255)
      *
      * @Assert\NotBlank(message="api.errors.property.street.empty", groups={"new_unit"})
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $street;
 
@@ -45,6 +53,8 @@ class PropertyAddress
      * @ORM\Column(type="string",length=255)
      *
      * @Assert\NotBlank(message="api.errors.property.number.empty", groups={"new_unit"})
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $number;
 
@@ -52,11 +62,15 @@ class PropertyAddress
      * @ORM\Column(type="string",length=15)
      *
      * @Assert\NotBlank(message="api.errors.property.zip.empty", groups={"new_unit"})
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $zip;
 
     /**
      * @ORM\Column(name="google_reference", type="string", length=255, nullable=true)
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $googleReference;
 
@@ -72,6 +86,8 @@ class PropertyAddress
 
     /**
      * @ORM\Column(name="is_single", type="boolean", nullable=true)
+     *
+     * @Serializer\Groups({"payRent"})
      */
     protected $isSingle;
 

@@ -280,6 +280,9 @@ abstract class Property
      * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
      * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=true)
      * @TODO: ORM\JoinColumn(name="property_address_id", referencedColumnName="id") after migration
+     *
+     * @Serializer\SerializedName("propertyAddress")
+     * @Serializer\Groups({"payRent"})
      */
     protected $propertyAddress;
 

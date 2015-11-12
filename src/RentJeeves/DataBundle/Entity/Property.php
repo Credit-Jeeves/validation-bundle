@@ -160,6 +160,16 @@ class Property extends Base
     }
 
     /**
+     * @deprecated this function need for migrate
+     *
+     * @return bool
+     */
+    public function isSingleFromProperty()
+    {
+        return $this->isSingle;
+    }
+
+    /**
      * @return mixed|null
      */
     public function getExistingSingleUnit()
