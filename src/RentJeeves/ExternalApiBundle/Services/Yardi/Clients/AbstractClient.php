@@ -184,6 +184,7 @@ abstract class AbstractClient implements ClientInterface
         $path = $this->kernel->locateResource(
             '@ExternalApiBundle/Resources/files/'.$this->license
         );
+
         return file_get_contents($path);
     }
 
@@ -197,6 +198,7 @@ abstract class AbstractClient implements ClientInterface
 
         if (isset($this->errorMapping[$response])) {
             $this->setErrorMessage($this->errorMapping[$response]);
+
             return true;
         }
 
@@ -239,7 +241,7 @@ abstract class AbstractClient implements ClientInterface
      */
     public function isError()
     {
-        if ($this->messages) {
+        if ($this->messages && $this->messages->getMessage()) {
             return true;
         }
 
@@ -251,7 +253,7 @@ abstract class AbstractClient implements ClientInterface
      */
     public function getErrorMessage()
     {
-        if ($this->messages) {
+        if ($this->messages && $this->messages->getMessage()) {
             return $this->messages->getMessage()->getMessage();
         }
 
@@ -308,22 +310,26 @@ abstract class AbstractClient implements ClientInterface
             $resultXmlResponse = $this->processXmlResponse($response, $function);
             if ($resultXmlResponse) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
+
                 return $resultXmlResponse;
             }
 
             if ($this->isError()) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
+
                 return null;
             }
 
             $resultNumericResponse = $this->processNumericResponse($response, $function);
             if ($resultNumericResponse) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
+
                 return $resultNumericResponse;
             }
 
             if ($this->isError()) {
                 $this->numberOfRetriesTheSameSoapCall = self::DEFAULT_NUMBER_OF_RETRIES;
+
                 return null;
             }
 

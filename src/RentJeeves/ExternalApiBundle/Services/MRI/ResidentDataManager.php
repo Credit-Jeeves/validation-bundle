@@ -5,6 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\ExternalApiBundle\Model\MRI\Value;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Bridge\Monolog\Logger;
@@ -12,7 +14,7 @@ use Symfony\Bridge\Monolog\Logger;
 /**
  * @Service("mri.resident_data")
  */
-class ResidentDataManager
+class ResidentDataManager implements ResidentDataManagerInterface
 {
     use SettingsTrait;
 
@@ -71,7 +73,7 @@ class ResidentDataManager
 
     /**
      * @param string $nextPageLink
-     * @return array
+     * @return Value[]
      */
     public function getResidentsByNextPageLink($nextPageLink)
     {
@@ -87,9 +89,9 @@ class ResidentDataManager
 
     /**
      * @param string $externalPropertyId
-     * @return array
+     * @return Value[]
      */
-    public function getResidents($externalPropertyId)
+    public function getResidentsFirstPage($externalPropertyId)
     {
         $this->logger->debug(sprintf('Get MRI Residents by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
@@ -102,8 +104,25 @@ class ResidentDataManager
     }
 
     /**
+     * @param string $externalPropertyId
+     * @return Value[]
+     */
+    public function getResidentTransactions($externalPropertyId)
+    {
+        $residentTransactions = $this->getResidentsFirstPage($externalPropertyId);
+        while ($nextPageLink = $this->getNextPageLink()) {
+            $residentTransactionsByNextPageLink = $this->getResidentsByNextPageLink(
+                $nextPageLink
+            );
+            $residentTransactions = array_merge($residentTransactions, $residentTransactionsByNextPageLink);
+        }
+
+        return $residentTransactions;
+    }
+
+    /**
      * @param string $nextPageLink
-     * @return array
+     * @return Value[]
      */
     public function getResidentsRentRollByNextPageLink($nextPageLink)
     {
@@ -119,9 +138,9 @@ class ResidentDataManager
 
     /**
      * @param string $externalPropertyId
-     * @return array
+     * @return Value[]
      */
-    public function getResidentsRentRoll($externalPropertyId)
+    public function getResidentsRentRollFirstPage($externalPropertyId)
     {
         $this->logger->debug(sprintf('Get MRI Residents RentRoll by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentialRentRoll($externalPropertyId);
@@ -131,6 +150,24 @@ class ResidentDataManager
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
         return $mriResponse->getValues();
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @return Value[]
+     */
+    public function getResidentsWithRecurringCharges($externalPropertyId)
+    {
+        $residentTransactions = $this->getResidentsRentRollFirstPage($externalPropertyId);
+        while ($nextPageLink = $this->getNextPageLink()) {
+            $this->logger->info(sprintf('MRIRentSync: get residents RentRoll by next page link %s', $nextPageLink));
+            $residentTransactionsByNextPageLink = $this->getResidentsRentRollByNextPageLink(
+                $nextPageLink
+            );
+            $residentTransactions = array_merge($residentTransactions, $residentTransactionsByNextPageLink);
+        }
+
+        return $residentTransactions;
     }
 
     /**

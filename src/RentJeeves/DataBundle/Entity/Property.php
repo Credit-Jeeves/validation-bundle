@@ -275,9 +275,7 @@ class Property extends Base
      */
     public function getPropertyMappingByHolding(Holding $holding)
     {
-        /**
-         * @var $propertyMapping PropertyMapping
-         */
+        /** @var $propertyMapping PropertyMapping */
         foreach ($this->getPropertyMapping() as $propertyMapping) {
             if ($propertyMapping->getHolding()->getId() === $holding->getId()) {
                 return $propertyMapping;

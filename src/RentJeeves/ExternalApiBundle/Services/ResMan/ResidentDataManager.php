@@ -2,20 +2,18 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customers;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use Symfony\Bridge\Monolog\Logger;
 
 /**
- * @Service("resman.resident_data")
+ * DI\Service("resman.resident_data")
  */
-class ResidentDataManager
+class ResidentDataManager implements ResidentDataManagerInterface
 {
     use SettingsTrait;
 
@@ -30,10 +28,8 @@ class ResidentDataManager
     protected $logger;
 
     /**
-     * @InjectParams({
-     *     "client" = @Inject("resman.client"),
-     *     "logger" = @Inject("logger")
-     * })
+     * @param ResManClient $client
+     * @param Logger $logger
      */
     public function __construct(ResManClient $client, Logger $logger)
     {
@@ -54,20 +50,31 @@ class ResidentDataManager
      * @param $externalPropertyId
      * @return RtCustomer[]
      */
-    public function getResidents($externalPropertyId)
+    public function getResidentTransactions($externalPropertyId)
     {
-        $residents = $this->client->getResidentTransactions($externalPropertyId);
+        $this->logger->debug(
+            '[ResMan Resident Manager]Try to get transaction residents for external property id #' . $externalPropertyId
+        );
+        try {
+            $residents = $this->client->getResidentTransactions($externalPropertyId);
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                '[ResMan Resident Manager]ERROR:' . $e->getMessage()
+            );
+
+            return [];
+        }
+
+        /** @var $customers RtCustomer[]  */
         $customers = $residents->getProperty()->getRtCustomers();
-        $self = $this;
 
-        /** @var $customer RtCustomer  */
-
-        return array_filter($customers, function (RtCustomer $customer) use ($self) {
+        return array_filter($customers, function (RtCustomer $customer) {
             $customers = $customer->getCustomers();
-
             if (($customers instanceof Customers) === false) {
                 $customer = print_r($customer, true);
-                $this->logger->warning(sprintf("Skipping entry from resman with no tenants: %s", $customer));
+                $this->logger->alert(
+                    sprintf("[ResMan Resident Manager]Skipping entry from resman with no tenants:\n%s", $customer)
+                );
 
                 return false;
             }
@@ -79,15 +86,27 @@ class ResidentDataManager
     /**
      * @param $externalPropertyId
      *
-     * @return array
+     * @return Transactions[]
      */
-    public function getRTServiceTransactionsWithRecurringCharges($externalPropertyId)
+    public function getResidentsWithRecurringCharges($externalPropertyId)
     {
-        $residents = $this->client->getTransactionsForRecurringCharges($externalPropertyId, new \DateTime());
+        $this->logger->debug(
+            '[ResMan Resident Manager]Try to get transaction residents with recurring charges' .
+            ' for external property id #' . $externalPropertyId
+        );
+        try {
+            $residents = $this->client->getTransactionsForRecurringCharges($externalPropertyId, new \DateTime());
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                '[ResMan Resident Manager]ERROR:' . $e->getMessage()
+            );
+
+            return [];
+        }
+        /** @var RtCustomer[] $customers */
         $customers = $residents->getProperty()->getRtCustomers();
 
         $result = [];
-        /** @var RtCustomer $customer */
         foreach ($customers as $customer) {
             if (null === $rtTransactions = $customer->getRtServiceTransactions()) {
                 continue;
