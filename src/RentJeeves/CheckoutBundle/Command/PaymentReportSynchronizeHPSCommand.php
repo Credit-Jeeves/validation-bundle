@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PaymentReportCommand extends ContainerAwareCommand
+class PaymentReportSynchronizeHPSCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -25,7 +25,8 @@ class PaymentReportCommand extends ContainerAwareCommand
     {
         $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
         $report = $paymentProcessor->loadReport();
-        $result = $this->getContainer()->get('payment_processor.report_synchronizer')->synchronize($report, "HPS");
+        $result = $this->getContainer()->get('payment_processor.report_synchronizer')
+            ->synchronize($report, $paymentProcessor);
         $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 }

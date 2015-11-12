@@ -61,7 +61,8 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
 
         $this->getEntityManager()->refresh($outboundTransaction);
         $this->getEntityManager()->refresh($outboundTransaction->getOrder());
@@ -92,7 +93,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $loggerMock,
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
     }
 
     /**
@@ -125,7 +127,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $loggerMock,
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
     }
 
     /**
@@ -157,7 +160,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $loggerMock,
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
     }
 
     /**
@@ -186,7 +190,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $loggerMock,
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
     }
 
     /**
@@ -215,7 +220,8 @@ class ReportSynchronizerCase extends BaseTestCase
 
         $report->addTransaction($transaction);
 
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
 
         $this->getEntityManager()->refresh($outboundTransaction);
 
@@ -254,7 +260,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $loggerMock,
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
     }
 
     /**
@@ -290,7 +297,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $this->getLoggerMock(),
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
 
         $this->getEntityManager()->refresh($order);
         $this->assertEquals(OrderStatus::REFUNDING, $order->getStatus());
@@ -338,7 +346,8 @@ class ReportSynchronizerCase extends BaseTestCase
             $this->getLoggerMock(),
             $this->getOrderStatusManager()
         );
-        $synchronizer->synchronize($report);
+        $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
+        $synchronizer->synchronize($report, $paymentProcessor);
 
         $this->getEntityManager()->refresh($order);
         $this->assertEquals(OrderStatus::REISSUED, $order->getStatus());
