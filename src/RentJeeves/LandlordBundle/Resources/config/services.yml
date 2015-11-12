@@ -103,7 +103,7 @@ services:
         parent: accounting.landlord_import.abstract_mapper
         arguments:
             - @address_lookup_service
-            - { fee_cc: %paydirect_fee_cc%, fee_ach: %paydirect_fee_ach%, division_id: %aci.collect_pay.business_id% }
+            - { fee_cc: %paydirect_fee_cc%, fee_ach: %paydirect_fee_ach%, division_id: %aci.collect_pay.pay_direct_escrow_account% }
 
     accounting.landlord_import.landlord_mapper:
         class: RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\LandlordMapper

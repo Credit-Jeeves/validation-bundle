@@ -239,7 +239,7 @@ fixtures:
         {% if nameLandlord %}
             Hi {{ nameLandlord }}! <br />  <br />
         {% else %}
-            Hello!  <br /> <br /> 
+            Hello!  <br /> <br />
         {% endif %}
         Your tenant, {{ fullNameTenant }}, would like to use RentTrack to pay rent on your property at
         {{ address }} {{ unitName }}. RentTrack allows {{ nameTenant }} to build credit history by
@@ -483,7 +483,7 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
       {% block email %}
-      <table 
+      <table
         width="100%"
         style="
           border: 1px solid #C8C8C8;
@@ -585,7 +585,7 @@ fixtures:
       {% block h1 %}Hello {{ nameLandlord }},{% endblock %}
       {% block email %}
       The following tenants have not submitted on-time payments:
-      <table 
+      <table
         width="100%"
         style="
           border: 1px solid #C8C8C8;
@@ -672,7 +672,7 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          
+
         </tbody>
       </table>
       </br>
@@ -732,7 +732,7 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          
+
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.id' | trans }}:</td><td style="padding:5px;">{{ orderId }}</td>
           </tr>
@@ -745,7 +745,7 @@ fixtures:
       </table>
       {{ 'order.contact.us' | trans }}
       {% endblock %}
-      
+
 # rjTenantInviteReminder.html email
   translation_26_subject:
     translatable: email_26
@@ -902,30 +902,6 @@ fixtures:
         Your tenant, {{ fullNameTenant }}, removed the contract on RentTrack for:<br />
         {{ address }} {{ unitName }}.
       If this is an error, please contact your tenant.
-      {% endblock %}
-
-  #rjMerchantNameSetuped.html
-  translation_31_subject:
-    translatable: email_31
-    locale: %locale%
-    property: subject
-    value: Your RentTrack Merchant Account is Ready!
-  translation_31_body:
-    translatable: email_31
-    locale: %locale%
-    property: body
-    value: |
-      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ fullNameLandlord }},{% endblock %}
-      {% block email %}
-        Your merchant account for "{{ groupName }}" is approved and ready!
-        <br /><br />
-
-        You can now accept rent payments online, and funds will be deposited into the account
-        you specified in your application. Begin by
-        <a href="http://renttrack.uservoice.com/knowledgebase/articles/285491-how-do-i-add-or-invite-a-tenant-">inviting your tenants</a>, or
-        <a href="http://renttrack.uservoice.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent-">approving any pending tenants</a>
-        that invited you.
       {% endblock %}
 
 # rj_resetting.html email

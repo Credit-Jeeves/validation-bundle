@@ -79,6 +79,9 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
      */
     public function lookupFreeform($address)
     {
+        // First, we have to remove ', United States' from the freeform address in case user chose Google Autocomplete
+        $address = str_replace(', United States', '', $address);
+
         $this->logger->debug(sprintf('[SmartyStreetsAddressLookupService] Searching freeForm address (%s)', $address));
         try {
             $result = $this->smartyStreetsClient->getAddress($address, '', '', '');

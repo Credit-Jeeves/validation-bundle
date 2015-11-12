@@ -39,7 +39,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
@@ -131,7 +131,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
@@ -173,7 +173,7 @@ class AciProfileMapperCase extends BaseTestCase
         $profile = new AciImportProfileMap();
         $profile->setUser($user);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(4, count($result));
@@ -210,7 +210,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertCount(
@@ -250,7 +250,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(3, count($result));
@@ -285,7 +285,7 @@ class AciProfileMapperCase extends BaseTestCase
             $accountRecord->getBillingAccountNumber(),
             'Group billing account number is incorrect'
         );
-        $this->assertEquals('testBusinessId', $accountRecord->getDivisionId());
+        $this->assertEquals('virtualTerminalDivisionId', $accountRecord->getDivisionId());
         $this->assertEquals($group->getName(), $accountRecord->getNameOnBillingAccount());
         $this->assertEquals($group->getStreetAddress1(), $accountRecord->getAddress1());
         $this->assertEquals($group->getCity(), $accountRecord->getCity());
@@ -327,7 +327,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(1, count($result));
@@ -360,7 +360,7 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->writeIdAttribute($profile, 1);
 
-        $mapper = new AciProfileMapper('testBusinessId', $this->getMerchantAccountRepository());
+        $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
         $this->assertEquals(2, count($result));
@@ -384,7 +384,7 @@ class AciProfileMapperCase extends BaseTestCase
         $aciProfileMapper = $this->getMock(
             '\RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper',
             ['getContractForUser'],
-            ['testBusinessId', $this->getMerchantAccountRepository()]
+            ['testBusinessId', 'virtualTerminalDivisionId', $this->getMerchantAccountRepository()]
         );
 
         $aciProfileMapper->expects($this->once())
@@ -413,5 +413,14 @@ class AciProfileMapperCase extends BaseTestCase
     protected function getMerchantAccountRepository()
     {
         return $this->getContainer()->get('merchant_account.repository');
+    }
+
+    protected function createAciProfileMapper()
+    {
+        return new AciProfileMapper(
+            'testBusinessId',
+            'virtualTerminalDivisionId',
+            $this->getMerchantAccountRepository()
+        );
     }
 }

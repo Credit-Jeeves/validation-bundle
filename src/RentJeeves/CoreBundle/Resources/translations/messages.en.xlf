@@ -3264,6 +3264,13 @@
                 <target>Report loading is not allowed.
                 Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
+            <trans-unit id="payment_source.remove.error">
+                <source>payment_source.remove.error</source>
+                <target>
+                    Whoops! You cannot delete a payment source that is needed for your pending payment.
+                    Please try again after the payment has completed.
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

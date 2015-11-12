@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CoreBundle\DateTime;
@@ -8,6 +9,7 @@ use RentJeeves\CoreBundle\Traits\DateCommon;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class PaymentAccountRepository extends EntityRepository
 {
@@ -134,5 +136,31 @@ class PaymentAccountRepository extends EntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     *
+     * @return bool
+     */
+    public function isValidForDelete(PaymentAccount $paymentAccount)
+    {
+        $result = $this->createQueryBuilder('pa')
+            ->leftJoin('pa.payments', 'p')
+            ->leftJoin('pa.orders', 'o')
+            ->where('pa.id = :id')
+            ->andWhere('o.status = :orderPendingStatus OR p.status = :paymentActiveStatus')
+            ->setParameter('id', $paymentAccount->getId())
+            ->setParameter('paymentActiveStatus', PaymentStatus::ACTIVE)
+            ->setParameter('orderPendingStatus', OrderStatus::PENDING)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->execute();
+
+        if (empty($result)) {
+            return true;
+        }
+
+        return false;
     }
 }
