@@ -28,6 +28,9 @@
             <directory suffix="Case.php">src/*/Bundle/*Bundle/Tests/*</directory>
             <directory suffix="Case.php">vendor/credit-jeeves/arf-bundle/CreditJeeves/*/Tests</directory>
             <directory suffix="Case.php">vendor/credit-jeeves/core-bundle/CreditJeeves/*/Tests</directory>
+            <exclude>
+                <file>src/RentJeeves/ApiBundle/Tests/BaseApiTestCase.php</file>
+            </exclude>
             <!--directory suffix="Case.php">vendor/credit-jeeves/*/CreditJeeves/*/Tests/Functional</directory-->
         </testsuite>
 
