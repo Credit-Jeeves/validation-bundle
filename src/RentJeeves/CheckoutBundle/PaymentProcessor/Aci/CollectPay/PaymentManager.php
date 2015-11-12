@@ -120,7 +120,7 @@ class PaymentManager extends AbstractManager
         if ($paymentAccount instanceof GroupAwareInterface && $paymentType === PaymentGroundType::CHARGE) {
             $groupProfile = $paymentAccount->getGroup()->getAciCollectPayProfile();
             $payment->setProfileId($groupProfile->getProfileId());
-            $payment->setDivisionBusinessId($this->defaultBusinessId);
+            $payment->setDivisionBusinessId($this->virtualTerminalBusinessId);
             $payment->setBillingAccountNumber($groupProfile->getBillingAccountNumber());
         } elseif ($paymentAccount instanceof UserAwareInterface &&
             ($paymentType === PaymentGroundType::RENT || $paymentType === PaymentGroundType::REPORT)

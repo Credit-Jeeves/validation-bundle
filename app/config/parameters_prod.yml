@@ -29,7 +29,6 @@ parameters:
 
     # aci.collect_pay.sftp.login: 'donotcheckin'      # this is set locally on server
     # aci.collect_pay.sftp.password: 'donotcheckin'   # this is set locally on server
-    # aci.collect_pay.business_id: donotcheckin       # this is set locally on server
     # aci.pay_anyone.sftp.login: 'donotcheckin'       # this is set locally on server
     # aci.pay_anyone.sftp.password: 'donotcheckin'    # this is set locally on server
 
