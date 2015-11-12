@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Model\Yardi;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property as YardiProperty;
 
 class FullResident
 {
@@ -16,6 +17,27 @@ class FullResident
      * @var ResidentsResident
      */
     protected $resident;
+
+    /**
+     * @var YardiProperty
+     */
+    protected $property;
+
+    /**
+     * @return YardiProperty
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param YardiProperty $property
+     */
+    public function setProperty(YardiProperty $property)
+    {
+        $this->property = $property;
+    }
 
     /**
      * @return ResidentLeaseFile

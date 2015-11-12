@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
@@ -670,9 +671,14 @@ class AccountingController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         try {
-
             $residentLeaseFile = $mapping->getContractData($holding, $resident, $property->getCode());
-            $storage->saveToFile($residentLeaseFile, $resident, $property);
+
+            $fullResident = new FullResident();
+            $fullResident->setProperty($property);
+            $fullResident->setResidentData($residentLeaseFile);
+            $fullResident->setResident($resident);
+
+            $storage->saveToFile($fullResident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = ['result' => false];

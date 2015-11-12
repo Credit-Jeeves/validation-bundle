@@ -33,8 +33,9 @@ class StorageYardi extends ExternalApiStorage
         16 => Mapping::KEY_STATE,
         17 => Mapping::KEY_ZIP,
         18 => Mapping::KEY_STREET,
-        19 => 'Not used',
-        20 => 'Not used2',
+        19 => Mapping::KEY_UNIT_ID,
+        20 => 'Not used',
+        21 => 'Not used2',
     ];
 
     /**
@@ -47,12 +48,13 @@ class StorageYardi extends ExternalApiStorage
         }
         $resident = $fullResident->getResident();
         $residentData = $fullResident->getResidentData();
+        $property = $fullResident->getProperty();
 
         if ($resident->isRoommate()) {
-            return $this->saveToFileRoommate($residentData, $resident);
+            return $this->saveToFileRoommate($residentData, $resident, $property);
         }
 
-        return $this->saveToFileCustomer($residentData, $resident);
+        return $this->saveToFileCustomer($residentData, $resident, $property);
     }
 
     /**
@@ -82,10 +84,11 @@ class StorageYardi extends ExternalApiStorage
         $today = new \DateTime();
         $leaseEnd = $residentData->getLeaseEnd(true);
         $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
+        $unitName = $residentData->getUnit()->getIdentification()->getUnitName();
 
         $data = [
             $residentId,
-            $residentData->getUnit()->getIdentification()->getUnitName(),
+            $unitName,
             $startAt,
             $finishAt,
             $residentData->getMonthlyRentAmount(),
@@ -102,9 +105,9 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
+            sprintf('%s||%s', $property->getCode(), $unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
-
         ];
 
         if ($this->isMultiplePropertyMapping()) {
