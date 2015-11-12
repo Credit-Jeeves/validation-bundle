@@ -9,12 +9,12 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
-use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use Symfony\Component\Config\FileLocator;
 
@@ -450,6 +450,84 @@ class SourcesCase extends BaseTestCase
         $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorIfTryDeleteSourceWithPendingOrder()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('rent.sources');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Card\')'),
+            'Should be displayed row with name Card'
+        );
+        $rows = $this->page->findAll('css', '#payment-account-table tbody tr');
+        $this->assertEquals(3, count($rows), 'Should be show 3 rows with payment account');
+        $rows[0]->clickLink('delete');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#payment-account-table').length"
+        );
+
+        $this->assertNotNull(
+            $message = $this->page->find('css', 'h3.error_message'),
+            'Error message not showing'
+        );
+        $this->assertEquals('payment_source.remove.error', $message->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorIfTryDeleteSourceWithActivePayment()
+    {
+        $this->load(true);
+
+        $paymentAccount = $this->getEntityManager()
+            ->getRepository('RjDataBundle:PaymentAccount')->findOneBy(['name' => 'Bank']);
+        $payment = $paymentAccount->getPayments()->first();
+        $payment->setStatus(PaymentStatus::ACTIVE);
+
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('rent.sources');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Bank\')'),
+            'Should be displayed row with name Bank'
+        );
+        $rows = $this->page->findAll('css', '#payment-account-table tbody tr');
+        $this->assertEquals(3, count($rows), 'Should be show 3 rows with payment account');
+        $rows[1]->clickLink('delete');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#payment-account-table').length"
+        );
+
+        $this->assertNotNull(
+            $message = $this->page->find('css', 'h3.error_message'),
+            'Error message not showing'
+        );
+        $this->assertEquals('payment_source.remove.error', $message->getHtml());
     }
 
     protected function tearDown()

@@ -258,8 +258,10 @@ class EnrollmentManager extends AbstractManager
     {
         $billingAccount = new RequestModel\SubModel\BillingAccount();
 
-        $billingAccount->setAccountNumber($this->getGroupBillingAccountNumber($group, $this->defaultBusinessId));
-        $billingAccount->setBusinessId($this->defaultBusinessId);
+        $billingAccount->setAccountNumber(
+            $this->getGroupBillingAccountNumber($group, $this->virtualTerminalBusinessId)
+        );
+        $billingAccount->setBusinessId($this->virtualTerminalBusinessId);
         $billingAccount->setHoldername($group->getName());
         $billingAccount->setNickname($group->getName());
 
