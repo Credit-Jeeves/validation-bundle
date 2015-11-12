@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Enum\ImportType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
@@ -675,7 +675,12 @@ class AccountingController extends Controller
 
             $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
             $storage->setImportPropertyId($propertyMapping->getProperty()->getId());
-            $storage->saveToFile($residentLeaseFile, $resident);
+
+            $fullResident = new FullResident();
+            $fullResident->setResidentData($residentLeaseFile);
+            $fullResident->setResident($resident);
+
+            $storage->saveToFile($fullResident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
                 $responseData = array('result' => false);

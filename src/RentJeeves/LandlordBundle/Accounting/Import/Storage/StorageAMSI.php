@@ -44,18 +44,12 @@ class StorageAMSI extends ExternalApiStorage
     }
 
     /**
-     * @param  array   $residentLeases
-     * @return boolean
+     * {@inheritdoc}
      */
-    public function saveToFile(array $residentLeases)
+    public function saveToFile($residentLeases)
     {
-        if (count($residentLeases) <= 0) {
+        if (!parent::saveToFile($residentLeases)) {
             return false;
-        }
-
-        $filePath = $this->getFilePath(true);
-        if (is_null($filePath)) {
-            $this->initializeParameters();
         }
 
         /** @var Lease $lease */

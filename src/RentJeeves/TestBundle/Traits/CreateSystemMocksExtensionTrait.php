@@ -10,6 +10,29 @@ namespace RentJeeves\TestBundle\Traits;
 trait CreateSystemMocksExtensionTrait
 {
     /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|Doctrine\ORM\EntityRepository
+     */
+    public function getEntityRepositoryMock()
+    {
+        return $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
+    }
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|RentJeeves\CoreBundle\Session\Landlord
+     */
+    public function getSessionLandlordMock()
+    {
+        return $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|Symfony\Component\HttpFoundation\Session\Session
+     */
+    public function getSessionMock()
+    {
+        return $this->getMock('Symfony\Component\HttpFoundation\Session\Session', [], [], '', false);
+    }
+
+    /**
      * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Mailer\Mailer
      */
     public function getMailerMock()

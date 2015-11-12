@@ -42,9 +42,55 @@ abstract class ImportApiMapping
     protected $externalPropertyId;
 
     /**
+     * @ORM\Column(
+     *     name="street",
+     *     type="string",
+     *     nullable=true
+     * )
+     *
+     * @var string
+     */
+    protected $street;
+
+    /**
+     * @ORM\Column(
+     *     name="city",
+     *     type="string",
+     *     nullable=true
+     * )
+     *
+     * @var string
+     */
+    protected $city;
+
+    /**
+     * @ORM\Column(
+     *     name="state",
+     *     type="string",
+     *     nullable=true
+     * )
+     *
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @ORM\Column(
+     *     name="zip",
+     *     type="string",
+     *     length=15,
+     *     nullable=true
+     * )
+     *
+     * @var string
+     */
+    protected $zip;
+
+    /**
     * @ORM\Column(
     *     name="mapping_data",
-    *     type="array"
+    *     type="array",
+    *     nullable=false
     * )
      *
     * @var array
@@ -105,5 +151,69 @@ abstract class ImportApiMapping
     public function setExternalPropertyId($externalPropertyId)
     {
         $this->externalPropertyId = $externalPropertyId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * @param string $street
+     */
+    public function setStreet($street)
+    {
+        $this->street = $street;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    /**
+     * @param string $zip
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
     }
 }
