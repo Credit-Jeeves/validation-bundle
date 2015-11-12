@@ -191,81 +191,106 @@ class ContractsControllerCase extends BaseApiTestCase
         /** @var Contract $contract2 */
         $contract2 = $this->getUser()->getContracts()->last();
 
+        $this->assertArrayHasKey(
+            0,
+            $answer,
+            'Answer from api should be array with numeric keys and has element with key 0'
+        );
+        $this->assertArrayHasKey(
+            count($answer) - 1,
+            $answer,
+            'Answer from api should be array with numeric keys and has element with key ' . count($answer) - 1
+        );
+        $firstAnswer = $answer[0];
+        $lastAnswer = $answer[count($answer) - 1];
+
+        $shortContractStructure = [
+            'id',
+            'url',
+            'unit_url',
+            'status',
+            'balance',
+            'due_date',
+            'rent'
+        ];
+        $this->assertArrayStructure($firstAnswer, $shortContractStructure);
+        $this->assertArrayStructure($lastAnswer, $shortContractStructure);
+
         $this->assertEquals(
             $contract1->getId(),
-            $this->getIdEncoder()->decode($answer[0]['id']),
+            $this->getIdEncoder()->decode($firstAnswer['id']),
             'First contract has incorrect id'
         );
         $this->assertEquals(
             $contract2->getId(),
-            $this->getIdEncoder()->decode($answer[count($answer)-1]['id']),
+            $this->getIdEncoder()->decode($lastAnswer['id']),
             'Last contract has incorrect id'
         );
 
         $this->assertEquals(
             $contract1->getId(),
-            $this->getUrlEncoder()->decode($answer[0]['url']),
+            $this->getUrlEncoder()->decode($firstAnswer['url']),
             'First contract has incorrect self url'
         );
         $this->assertEquals(
             $contract2->getId(),
-            $this->getUrlEncoder()->decode($answer[count($answer)-1]['url']),
+            $this->getUrlEncoder()->decode($lastAnswer['url']),
             'Last contract has incorrect self url'
         );
 
         $this->assertEquals(
             $contract1->getUnit()->getId(),
-            $this->getUrlEncoder()->decode($answer[0]['unit_url']),
+            $this->getUrlEncoder()->decode($firstAnswer['unit_url']),
             'First contract has incorrect unit_url'
         );
         $this->assertEquals(
             $contract2->getUnit()->getId(),
-            $this->getUrlEncoder()->decode($answer[count($answer)-1]['unit_url']),
+            $this->getUrlEncoder()->decode($lastAnswer['unit_url']),
             'Last contract has incorrect unit_url'
         );
 
         $this->assertEquals(
             $contract1->getStatus(),
-            $answer[0]['status'],
+            $firstAnswer['status'],
             'First contract has incorrect status, should be ' . $contract1->getStatus()
         );
         $this->assertEquals(
             $contract2->getStatus(),
-            $answer[count($answer)-1]['status'],
+            $lastAnswer['status'],
             'Last contract has incorrect status, should be ' . $contract2->getStatus()
         );
 
         $this->assertEquals(
             number_format($contract1->getRent(), 2, '.', ''),
-            $answer[0]['rent'],
+            $firstAnswer['rent'],
             'First contract has incorrect rent, should be ' . number_format($contract1->getRent(), 2, '.', '')
         );
         $this->assertEquals(
             number_format($contract2->getRent(), 2, '.', ''),
-            $answer[count($answer)-1]['rent'],
+            $lastAnswer['rent'],
             'Last contract has incorrect rent, should be ' . number_format($contract2->getRent(), 2, '.', '')
         );
 
         $this->assertEquals(
             $contract1->getDueDate(),
-            $answer[0]['due_date'],
+            $firstAnswer['due_date'],
             'First contract has incorrect due date, should be ' . $contract1->getDueDate()
         );
         $this->assertEquals(
             $contract2->getDueDate(),
-            $answer[count($answer)-1]['due_date'],
+            $lastAnswer['due_date'],
             'Last contract has incorrect due date, should be ' . $contract2->getDueDate()
         );
 
         $this->assertEquals(
             number_format($contract1->getIntegratedBalance(), 2, '.', ''),
-            $answer[0]['balance'],
+            $firstAnswer['balance'],
             'First contract has incorrect balance, should be ' .
             number_format($contract1->getIntegratedBalance(), 2, '.', '')
         );
         $this->assertEquals(
             number_format($contract2->getIntegratedBalance(), 2, '.', ''),
-            $answer[count($answer)-1]['balance'],
+            $lastAnswer['balance'],
             'Last contract has incorrect balance, should be ' .
             number_format($contract2->getIntegratedBalance(), 2, '.', '')
         );
