@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
+use RentJeeves\LandlordBundle\Accounting\Import\EntityManager\Tenant;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
 class StorageResman extends ExternalApiStorage
@@ -30,7 +31,8 @@ class StorageResman extends ExternalApiStorage
         16 => Mapping::KEY_STREET,
         17 => Mapping::KEY_ZIP,
         18 => Mapping::KEY_STATE,
-        19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
+        19 => Mapping::KEY_EXTERNAL_PROPERTY_ID,
+        20 => Mapping::KEY_TENANT_STATUS
     ];
 
     /**
@@ -100,7 +102,8 @@ class StorageResman extends ExternalApiStorage
                     $address->getAddress1(),
                     $address->getPostalCode(),
                     $address->getState(),
-                    $this->getImportExternalPropertyId()
+                    $this->getImportExternalPropertyId(),
+                    Tenant::$tenantStatusCurrent
                 ];
 
                 $this->writeCsvToFile($data);
