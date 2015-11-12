@@ -240,7 +240,8 @@ class TransactionRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
         $query->select(
-            'h.batchId batchNumber, sum(p.amount) orderAmount, h.depositDate, da.type depositType, h.status');
+            'h.batchId batchNumber, sum(p.amount) orderAmount, h.depositDate, da.type depositType, h.status'
+        );
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');
