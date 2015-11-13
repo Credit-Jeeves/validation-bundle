@@ -151,12 +151,13 @@ class StorageCsv extends StorageAbstract
         if (ImportType::MULTI_GROUPS == $importGroupSettings->getImportType()) {
             $this->setIsMultipleGroup(true);
         } elseif (ImportType::SINGLE_PROPERTY == $importGroupSettings->getImportType()) {
-            $this->setPropertyId($importGroupSettings->getApiPropertyIds());
+            $this->setPropertyId($form['property']->getData());
             $this->setIsMultipleProperty(false);
         } else {
             $this->setPropertyId($importGroupSettings->getApiPropertyIds());
             $this->setIsMultipleProperty(true);
         }
+        $this->setImportType($importGroupSettings->getImportType());
         $this->setFieldDelimiter($importGroupSettings->getCsvFieldDelimiter());
         $this->setTextDelimiter($importGroupSettings->getCsvTextDelimiter());
         $this->setDateFormat($importGroupSettings->getCsvDateFormat());

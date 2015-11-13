@@ -60,13 +60,12 @@ class ImportFileAccountingType extends AbstractType
                 'entity',
                 [
                     'empty_value' => 'import.property.empty_value',
-                    'error_bubbling' => true,
                     'class' => 'RjDataBundle:Property',
                     'attr' => [
                         'force_row' => true,
                         'class' => 'original widthSelect',
                     ],
-                    'required' => false,
+                    'required' => true,
                     'mapped' => false,
                     'query_builder' => function (EntityRepository $er) {
                         $query = $er->createQueryBuilder('p');
@@ -79,6 +78,7 @@ class ImportFileAccountingType extends AbstractType
                     'constraints' => [
                         new NotBlank(
                             [
+                                'groups' => ['import'],
                                 'message' => 'import.errors.single_property_select'
                             ]
                         )
@@ -92,17 +92,19 @@ class ImportFileAccountingType extends AbstractType
                 'attachment',
                 'file',
                 [
-                    'error_bubbling' => true,
-                    'required'       => false,
+                    'required'       => true,
                     'label'          => 'csv.file',
+                    'mapped'         => false,
                     'constraints'    => [
                         new NotBlank(
                             [
+                                'groups' => ['import'],
                                 'message' => 'error.file.empty'
                             ]
                         ),
                         new File(
                             [
+                                'groups' => ['import'],
                                 'maxSize' => '2M',
                                 'mimeTypes' => [
                                     'text/csv',
@@ -123,6 +125,7 @@ class ImportFileAccountingType extends AbstractType
                 [
                     'label' => 'import.onlyException',
                     'required' => false,
+                    'mapped' => false,
                     'attr' => [
                         'class' => 'half-width original',
                     ]
@@ -137,6 +140,7 @@ class ImportFileAccountingType extends AbstractType
             [
                 'csrf_protection'    => true,
                 'cascade_validation' => true,
+                'validation_groups'  => ['import']
             ]
         );
     }

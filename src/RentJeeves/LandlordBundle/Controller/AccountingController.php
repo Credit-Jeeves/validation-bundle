@@ -150,7 +150,6 @@ class AccountingController extends Controller
 
         $this->checkAccessToAccounting();
         $form = $this->createForm(new ImportFileAccountingType($this->getCurrentGroup()));
-
         $form->handleRequest($this->get('request'));
         /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -181,9 +180,7 @@ class AccountingController extends Controller
 
         $importStorage->setStorageType($serviceKey);
 
-        return $this->redirect(
-            $this->generateUrl('accounting_match_file')
-        );
+        return $this->redirect($this->generateUrl('accounting_match_file'));
     }
 
     /**
@@ -216,7 +213,8 @@ class AccountingController extends Controller
             return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
             return [
-                'error' => $e->getMessage()
+                'source'      => $this->getCurrentGroup()->getImportSettings()->getSource(),
+                'error'       => $e->getMessage()
             ];
         }
 
@@ -243,10 +241,9 @@ class AccountingController extends Controller
         }
 
         $form = $form->createView();
-        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return [
-            'source'       => $source,
+            'source'       => $this->getCurrentGroup()->getImportSettings()->getSource(),
             'error'        => false,
             'data'         => $dataView,
             'form'         => $form
@@ -468,7 +465,7 @@ class AccountingController extends Controller
         );
 
         $properties = [];
-        $externalPropertiesId = [];
+
         if ($storage->getImportLoaded() === false &&
             $externalProperties = $residentTransactionClient->getPropertyConfigurations()
         ) {
@@ -477,7 +474,6 @@ class AccountingController extends Controller
             foreach ($externalProperties->getProperty() as $property) {
                 if ($externalPropertyId === '*' || strpos($externalPropertyId, $property->getCode()) !== false) {
                     $properties[] = $property;
-                    $externalPropertiesId[] = $property->getCode();
                 }
             }
 

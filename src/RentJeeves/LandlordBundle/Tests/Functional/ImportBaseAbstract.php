@@ -2,9 +2,85 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 
 class ImportBaseAbstract extends BaseTestCase
 {
+    protected $mapFile = [
+        '1' => ImportMapping::KEY_UNIT,
+        '4' => ImportMapping::KEY_RESIDENT_ID,
+        '5' => ImportMapping::KEY_TENANT_NAME,
+        '7' => ImportMapping::KEY_RENT,
+        '10' => ImportMapping::KEY_MOVE_IN,
+        '11' => ImportMapping::KEY_LEASE_END,
+        '12' => ImportMapping::KEY_MOVE_OUT,
+        '13' => ImportMapping::KEY_BALANCE,
+        '14' => ImportMapping::KEY_EMAIL,
+    ];
+
+    protected $mapMultiplePropertyFile = [
+        '1' => ImportMapping::KEY_RESIDENT_ID,
+        '2' => ImportMapping::KEY_TENANT_NAME,
+        '3' => ImportMapping::KEY_RENT,
+        '4' => ImportMapping::KEY_BALANCE,
+        '5' => ImportMapping::KEY_UNIT_ID,
+        '6' => ImportMapping::KEY_STREET,
+        '8' => ImportMapping::KEY_UNIT,
+        '9' => ImportMapping::KEY_CITY,
+        '10' => ImportMapping::KEY_STATE,
+        '11' => ImportMapping::KEY_ZIP,
+        '13' => ImportMapping::KEY_MOVE_IN,
+        '14' => ImportMapping::KEY_LEASE_END,
+        '15' => ImportMapping::KEY_MOVE_OUT,
+        '16' => ImportMapping::KEY_MONTH_TO_MONTH,
+        '17' => ImportMapping::KEY_EMAIL,
+    ];
+
+    protected $mapMultipleGroupFile = [
+        '1' => ImportMapping::KEY_GROUP_ACCOUNT_NUMBER,
+        '2' => ImportMapping::KEY_RESIDENT_ID,
+        '3' => ImportMapping::KEY_TENANT_NAME,
+        '4' => ImportMapping::KEY_RENT,
+        '5' => ImportMapping::KEY_BALANCE,
+        '6' => ImportMapping::KEY_UNIT_ID,
+        '7' => ImportMapping::KEY_STREET,
+        '9' => ImportMapping::KEY_UNIT,
+        '10' => ImportMapping::KEY_CITY,
+        '11' => ImportMapping::KEY_STATE,
+        '12' => ImportMapping::KEY_ZIP,
+        '14' => ImportMapping::KEY_MOVE_IN,
+        '15' => ImportMapping::KEY_LEASE_END,
+        '16' => ImportMapping::KEY_MOVE_OUT,
+        '18' => ImportMapping::KEY_EMAIL,
+    ];
+
+    /**
+     * @param string $fileName
+     * @return string
+     */
+    protected function getFilePathByName($fileName)
+    {
+        $sep = DIRECTORY_SEPARATOR;
+        $filePath = getcwd();
+        $filePath .= $sep . 'data' . $sep . 'fixtures' . $sep . $fileName;
+
+        return $filePath;
+    }
+
+    protected function setPropertyFirst()
+    {
+        $em = $this->getEntityManager();
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
+                'street' => 'Broadway',
+                'number' => '770',
+                'zip' => '10003'
+            ]
+        );
+        $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
+        $propertySelector->selectOption($property->getId());
+    }
+
     /**
      * @return array
      */

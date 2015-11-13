@@ -20,7 +20,7 @@
             }}
             <br />
             <br />
-            <form action="{{ path('accounting_import_file')}}" method="post" {{ form_enctype(form) }} id="importFile" >
+            <form action="{{ path('accounting_import_file')}}" method="post" {{ form_enctype(form) }} >
                 {{ form_widget(form) }}
                 <button type="submit" class="button small submitImportFile">
                     <span>
