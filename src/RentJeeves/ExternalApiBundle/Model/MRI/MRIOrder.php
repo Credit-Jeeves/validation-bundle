@@ -185,7 +185,7 @@ class MRIOrder
     public function getMriDescription()
     {
         return sprintf(
-            'RT Payment T#%d B#%s',
+            'RT Payment T#%s B#%s',
             $this->order->getCompleteTransaction()->getBatchId(),
             $this->order->getCompleteTransaction()->getId()
         );
