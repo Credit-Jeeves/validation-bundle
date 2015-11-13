@@ -13,12 +13,13 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorageInterface;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
-use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
@@ -527,22 +528,45 @@ class AccountingController extends Controller
         return $response;
     }
 
-    protected function getBaseResidents()
+    /**
+     * @Route(
+     *     "/import/external_property_ids/resman",
+     *     name="accounting_import_load_resman_external_property_ids",
+     *     options={"expose"=true}
+     * )
+     * @return JsonResponse
+     */
+    public function getExternalPropertyIdsAction()
     {
+        /** @var $importFactory ImportFactory */
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageResman $storage */
+        $storage = $importFactory->getStorage();
+
+        return new JsonResponse(
+            $this->getExternalPropertyIds(
+                $storage->getImportExternalPropertyId()
+            )
+        );
+    }
+
+    protected function getExternalPropertyIds($string)
+    {
+        return array_map('trim', explode(',', $string));
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @return JsonResponse
+     */
+    protected function getBaseResidents($externalPropertyId)
+    {
+        /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $mapping = $importFactory->getMapping();
-        /** @var StorageAbstract $storage */
+        /** @var ExternalApiStorageInterface|StorageAbstract $storage */
         $storage = $importFactory->getStorage();
-        $propertyMappingManager = $this->get('property_mapping.manager');
-
-        if (!$storage->isMultipleProperty()) {
-            $propertyMappingManager->createPropertyMapping(
-                $storage->getImportPropertyId(),
-                $storage->getImportExternalPropertyId()
-            );
-        }
-
-        $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
+        $residents = $mapping->getResidents($externalPropertyId);
         $result = $storage->saveToFile($residents);
 
         if ($storage->isOnlyException()) {
@@ -551,21 +575,24 @@ class AccountingController extends Controller
         }
 
         $response = new JsonResponse();
-        $response->setStatusCode(($result) ? 200 : 400);
+        $response->setStatusCode(($result) ? 201 : 400);
 
         return $response;
     }
 
     /**
      * @Route(
-     *     "/import/residents/resman",
+     *     "/import/residents/resman/{externalPropertyId}",
      *     name="accounting_import_residents_resman",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsResMan()
+    public function getResidentsResMan($externalPropertyId)
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**
@@ -613,7 +640,7 @@ class AccountingController extends Controller
      */
     public function getResidentsAmsi()
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents('');
     }
 
     /**
