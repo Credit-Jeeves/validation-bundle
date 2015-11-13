@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(
- *      name="rj_import_group_settings"
+ *      name="rj_group_import_settings"
  * )
  * @ORM\Entity()
  */

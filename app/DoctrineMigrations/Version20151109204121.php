@@ -15,7 +15,7 @@ class Version20151109204121 extends AbstractMigration
         );
 
         $this->addSql(
-            "CREATE TABLE rj_import_group_settings (id BIGINT AUTO_INCREMENT NOT NULL,
+            "CREATE TABLE rj_group_import_settings (id BIGINT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT NOT NULL,
                 source ENUM('csv','integrated_api')
                     COMMENT '(DC2Type:ImportSource)' DEFAULT 'csv' NOT NULL,
@@ -29,7 +29,7 @@ class Version20151109204121 extends AbstractMigration
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-            "ALTER TABLE rj_import_group_settings
+            "ALTER TABLE rj_group_import_settings
                 ADD CONSTRAINT FK_FD9643FBFE54D947
                 FOREIGN KEY (group_id)
                 REFERENCES rj_group (id)"
@@ -44,7 +44,7 @@ class Version20151109204121 extends AbstractMigration
         );
 
         $this->addSql(
-            "DROP TABLE rj_import_group_settings"
+            "DROP TABLE rj_group_import_settings"
         );
     }
 }
