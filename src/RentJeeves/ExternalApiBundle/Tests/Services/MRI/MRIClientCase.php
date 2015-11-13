@@ -110,7 +110,7 @@ class MRIClientCase extends Base
         );
 
         /** @var Value $value */
-        $value = $mriResponse->getValues()[3];
+        $value = $mriResponse->getValues()[1];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());
