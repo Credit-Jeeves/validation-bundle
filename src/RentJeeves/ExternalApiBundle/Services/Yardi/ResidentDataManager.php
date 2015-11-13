@@ -80,9 +80,9 @@ class ResidentDataManager implements ResidentDataManagerInterface
      * @return ResidentsResident[]
      * @throws \Exception
      */
-    public function getCurrentAndNoticesResidents(Holding $holding, $externalPropertyId)
+    public function getCurrentAndNoticesResidents($externalPropertyId)
     {
-        $residents = $this->getResidents($holding, $externalPropertyId);
+        $residents = $this->getResidents($externalPropertyId);
 
         $currentResidents = array_filter(
             $residents,
@@ -104,7 +104,8 @@ class ResidentDataManager implements ResidentDataManagerInterface
      */
     public function getResidentData(Holding $holding, $residentId, $externalPropertyId)
     {
-        $residentClient = $this->getApiClient($holding);
+        $this->setSettings($holding->getExternalSettings());
+        $residentClient = $this->getApiClient();
         $resident = $residentClient->getResidentData($externalPropertyId, $residentId);
 
         if (empty($resident) || !$resident->getLeaseFiles()) {

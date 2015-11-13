@@ -3263,6 +3263,7 @@
             <trans-unit id="common.created_at">
                 <source>common.created_at</source>
                 <target>Created at</target>
+            </trans-unit>
             <trans-unit id="payment_source.remove.error">
                 <source>payment_source.remove.error</source>
                 <target>

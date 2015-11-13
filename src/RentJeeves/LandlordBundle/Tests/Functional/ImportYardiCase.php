@@ -167,6 +167,13 @@ class ImportYardiCase extends ImportBaseAbstract
      */
     public function yardiBaseImportOnlyException()
     {
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy([
+            'externalLeaseId' => 't0012020',
+        ]);
+        $this->assertCount(3, $contracts);
+        $this->arrayHasKey(0, $contracts, 'Contracts should have key.');
+        $contracts[0]->setRent(1);
+        $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
         /** @var Landlord $landlord */
         $this->login('landlord1@example.com', 'pass');
@@ -180,5 +187,13 @@ class ImportYardiCase extends ImportBaseAbstract
         $submitImport->click();
 
         $this->waitRedirectToSummaryPage();
+
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy([
+            'externalLeaseId' => 't0012020',
+        ]);
+        $this->assertCount(3, $contracts);
+        $this->arrayHasKey(0, $contracts, 'Contracts should have key.');
+        $this->assertNotEquals(1, $contracts[0]->getRent(), 'Should be update');
+        $this->getEntityManager()->flush();
     }
 }
