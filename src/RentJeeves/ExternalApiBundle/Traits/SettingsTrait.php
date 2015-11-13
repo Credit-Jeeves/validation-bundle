@@ -24,6 +24,10 @@ trait SettingsTrait
      */
     public function getSettings()
     {
+        if (!$this->settings instanceof SettingsInterface) {
+            throw new \LogicException('Should set settings at first');
+        }
+
         return $this->settings;
     }
 }

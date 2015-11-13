@@ -1275,6 +1275,7 @@ class ImportCase extends ImportBaseAbstract
         );
         $this->assertEquals(1, count($contracts));
         $this->logout();
+
     }
 
     /**

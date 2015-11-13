@@ -15,7 +15,7 @@ class RtServiceTransactions
     protected $transactions = [];
 
     /**
-     * @return Transactions
+     * @return Transactions[]
      */
     public function getTransactions()
     {

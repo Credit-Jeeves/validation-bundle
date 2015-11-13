@@ -10,6 +10,7 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupants;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
+use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 
 class MappingYardi extends MappingCsv
 {
@@ -50,10 +51,25 @@ class MappingYardi extends MappingCsv
      */
     public function getResidents(Holding $holding, $externalPropertyId)
     {
-        $transactionData = $this->residentData->getResidentTransactions($holding, $externalPropertyId);
-        $residentsTransaction = $transactionData->getProperty()->getCustomers();
+        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            array('holding' => $holding->getId(), 'property'=> $property->getId())
+        );
 
-        $residents = $this->residentData->getCurrentAndNoticesResidents($holding, $externalPropertyId);
+        if (empty($propertyMapping)) {
+            throw new ImportMappingException(
+                sprintf(
+                    "Don't have external property id for property: %s and holding: %s",
+                    $property->getId(),
+                    $holding->getId()
+                )
+            );
+        }
+
+        $externalPropertyId = $propertyMapping->getExternalPropertyId();
+        $this->residentData->setSettings($holding->getYardiSettings());
+        $residentsTransaction = $this->residentData->getResidentTransactions($externalPropertyId);
+
+        $residents = $this->residentData->getCurrentAndNoticesResidents($holding, $property);
         $roommates = [];
         /** @var $resident ResidentsResident */
         foreach ($residents as $key => $resident) {

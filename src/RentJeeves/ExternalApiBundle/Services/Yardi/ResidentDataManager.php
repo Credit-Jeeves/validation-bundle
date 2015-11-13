@@ -3,23 +3,28 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
-use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface as Logger;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
+use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 
 /**
- * @DI\Service("yardi.resident_data")
+ * DI\Service("yardi.resident_data")
  */
-class ResidentDataManager
+class ResidentDataManager implements ResidentDataManagerInterface
 {
     const CURRENT_RESIDENT = 'Current';
 
     const NOTICE_RESIDENT = 'Notice';
+
+    use SettingsTrait;
 
     /**
      * @var SoapClientFactory
@@ -27,32 +32,44 @@ class ResidentDataManager
     protected $clientFactory;
 
     /**
-     * @var ExceptionCatcher
+     * @var Logger
      */
-    protected $exceptionCatcher;
+    protected $logger;
 
     /**
-     * @DI\InjectParams({
-     *     "clientFactory" = @DI\Inject("soap.client.factory"),
-     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher")
-     * })
+     * @param SoapClientFactory $clientFactory
+     * @param Logger $logger
      */
-    public function __construct(SoapClientFactory $clientFactory, ExceptionCatcher $exceptionCatcher)
+    public function __construct(SoapClientFactory $clientFactory, Logger $logger)
     {
         $this->clientFactory = $clientFactory;
-        $this->exceptionCatcher = $exceptionCatcher;
+        $this->logger = $logger;
     }
 
     /**
-     * @param Holding $holding
      * @param string $externalPropertyId
-     * @return array
+     * @return ResidentsResident[]
      * @throws \Exception
      */
-    public function getResidents(Holding $holding, $externalPropertyId)
+    public function getResidents($externalPropertyId)
     {
-        $residentClient = $this->getApiClient($holding);
+        $this->logger->debug(
+            '[Yardi Resident Manager]Try to get resident for external property id - ' . $externalPropertyId
+        );
+        $residentClient = $this->getApiClient();
         $residents = $residentClient->getResidents($externalPropertyId);
+
+        if ($residentClient->isError()) {
+            $this->logger->alert('[Yardi Resident Manager]Get error from yardi: ' . $residentClient->getErrorMessage());
+
+            return [];
+        }
+
+        if (empty($residents) || !$residents->getPropertyResidents()) {
+            $this->logger->alert('[Yardi Resident Manager]Can\'t get residents from yardi.');
+
+            return [];
+        }
 
         return $residents->getPropertyResidents()->getResidents()->getResidents();
     }
@@ -60,7 +77,7 @@ class ResidentDataManager
     /**
      * @param Holding $holding
      * @param string $externalPropertyId
-     * @return array
+     * @return ResidentsResident[]
      * @throws \Exception
      */
     public function getCurrentAndNoticesResidents(Holding $holding, $externalPropertyId)
@@ -69,7 +86,7 @@ class ResidentDataManager
 
         $currentResidents = array_filter(
             $residents,
-            function ($resident) {
+            function (ResidentsResident $resident) {
                 return $resident->getStatus() == self::CURRENT_RESIDENT ||
                 $resident->getStatus() == self::NOTICE_RESIDENT;
             }
@@ -104,27 +121,74 @@ class ResidentDataManager
     }
 
     /**
-     * @param Holding $holding
      * @param $externalPropertyId
      *
-     * @return GetResidentTransactionsLoginResponse
+     * @return ResidentTransactionPropertyCustomer[]
      */
-    public function getResidentTransactions(Holding $holding, $externalPropertyId)
+    public function getResidentTransactions($externalPropertyId)
     {
-        $client = $this->getApiClient($holding, SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS);
+        $this->logger->debug(
+            '[Yardi Resident Manager]Try to get transaction residents for external property id #' . $externalPropertyId
+        );
+        $client = $this->getApiClient(SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS);
 
-        return $client->getResidentTransactions($externalPropertyId);
+        $transactionData = $client->getResidentTransactions($externalPropertyId);
+
+        if ($client->isError()) {
+            $this->logger->alert('[Yardi Resident Manager]ERROR:' . $client->getErrorMessage());
+
+            return [];
+        }
+
+        if (empty($transactionData) || !$transactionData->getProperty()) {
+            $this->logger->alert('[Yardi Resident Manager]Can\'t get transaction residents from yardi.');
+
+            return [];
+        }
+
+        return $transactionData->getProperty()->getCustomers();
     }
 
     /**
-     * @param Holding $holding
-     * @return ResidentDataClient
+     * @param $externalPropertyId
+     *
+     * @return ResidentTransactionPropertyCustomer[]
      */
-    protected function getApiClient(Holding $holding, $client = SoapClientEnum::YARDI_RESIDENT_DATA)
+    public function getResidentsWithRecurringCharges($externalPropertyId)
+    {
+        $this->logger->debug(
+            '[Yardi Resident Manager]Try to get transaction residents with recurring charges' .
+            ' for external property id #' . $externalPropertyId
+        );
+        $client = $this->getApiClient(SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS);
+
+        $transactionData = $client->getResidentLeaseCharges($externalPropertyId);
+
+        if ($client->isError()) {
+            $this->logger->alert('[Yardi Resident Manager]ERROR:' . $client->getErrorMessage());
+
+            return [];
+        }
+
+        if (empty($transactionData) || !$transactionData->getProperty()) {
+            $this->logger->alert('[Yardi Resident Manager]Can\'t get transaction residents from yardi.');
+
+            return [];
+        }
+
+        return $transactionData->getProperty()->getCustomers();
+    }
+
+    /**
+     * @param string $clientType
+     * @return ResidentDataClient|ResidentTransactionsClient
+     * @throws \Exception
+     */
+    protected function getApiClient($clientType = SoapClientEnum::YARDI_RESIDENT_DATA)
     {
         return $this->clientFactory->getClient(
-            $holding->getYardiSettings(),
-            $client
+            $this->getSettings(),
+            $clientType
         );
     }
 }

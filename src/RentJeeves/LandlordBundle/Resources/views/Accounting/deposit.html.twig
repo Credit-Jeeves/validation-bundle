@@ -76,9 +76,10 @@
                                 <tr data-bind="css: $root.toggledZebraCss($parent.batchNumber(), $parentContext.$index(), false), visible: false">
                                     <td data-bind="attr: {'class': 'actions-status '+style()}">
                                         <span data-bind="text: $root.getOrderStatusText($data), attr: {'title' : errorMessage()}" style="cursor: pointer"></span>
+                                        {#<span data-bind="text: $root.getOrderStatusText($data)" style="cursor: pointer"></span>#}
                                     </td>
 
-                                    <td data-bind="text: $parent.depositDate"></td>
+                                    <td data-bind="text: depositDate"></td>
 
                                     <td data-bind="text: transactionId"></td>
                                     <td>

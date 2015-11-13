@@ -41,7 +41,7 @@ class ResManSyncRentCommandCase extends BaseTestCase
         ]);
 
         $this->assertContains(
-            'ResMan sync Recurring Charge: Rent for Contract#20 updated',
+            '[ResMan ContractSynchronizer][SyncRent]Rent for Contract #20 updated to ',
             $commandTester->getDisplay(),
             'Rent for Contract#20 not updated'
         );

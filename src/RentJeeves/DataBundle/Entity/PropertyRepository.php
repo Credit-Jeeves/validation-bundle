@@ -4,8 +4,8 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyRepository extends EntityRepository
 {
@@ -341,53 +341,10 @@ EOT;
 
     /**
      * @param Holding $holding
-     * @param int $page
-     * @param int $limit
-     *
-     * @return Property[]
-     */
-    public function findContractPropertiesByHolding(Holding $holding, $page, $limit = 20)
-    {
-        $offset = ($page - 1) * $limit;
-
-        return $this->createQueryBuilder('p')
-            ->innerJoin('p.contracts', 'c')
-            ->innerJoin('p.propertyMapping', 'pm')
-            ->where('c.status in (:statuses)')
-            ->andWhere('pm.holding = :holdingId')
-            ->groupBy('p.id')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('holdingId', $holding->getId())
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->execute();
-    }
-
-    /**
-     * @param Holding $holding
-     *
-     * @return int
-     */
-    public function countContractPropertiesByHolding(Holding $holding)
-    {
-        return $this->createQueryBuilder('p')
-            ->select('count(distinct p.id)')
-            ->innerJoin('p.contracts', 'c')
-            ->innerJoin('p.propertyMapping', 'pm')
-            ->where('c.status in (:statuses)')
-            ->andWhere('pm.holding = :holdingId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('holdingId', $holding->getId())
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @param Holding $holding
      * @param string $externalPropertyId
      *
      * @return Property|null
+     * @throws NonUniqueResultException
      */
     public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
     {
@@ -448,6 +405,7 @@ EOT;
         }
 
         /** TODO: change this to oneOrNull once duplicate properties removed from DB */
+
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 }

@@ -1053,7 +1053,6 @@ class AjaxController extends Controller
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('payment');
 
         $content = $this->get('jms_serializer')->serialize($result, 'json', $context);
 

@@ -57,6 +57,12 @@
         <!-- end Popups -->
 
         <h1>{{ 'current_payment_sources.title' | trans() }}</h1>
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="attention-box pie-el">
+                <h3 class="error_message">{{ flashMessage|trans }}</h3>
+            </div>
+        {% endfor %}
+
         <div class="row-20"></div>
         <div class="properties-table-block table-wrap">
             <div class="table-margin">

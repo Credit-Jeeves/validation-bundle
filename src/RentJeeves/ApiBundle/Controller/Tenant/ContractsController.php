@@ -6,9 +6,11 @@ use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use RentJeeves\ApiBundle\Forms\ContractType;
 use RentJeeves\ApiBundle\Response\Contract as ResponseEntity;
+use RentJeeves\ApiBundle\Response\ResponseCollection;
 use RentJeeves\ApiBundle\Services\ContractProcessor;
 use RentJeeves\DataBundle\Entity\Contract as ContractEntity;
 use RentJeeves\DataBundle\Entity\ContractRepository;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,6 +20,36 @@ use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 
 class ContractsController extends Controller
 {
+    /**
+     * @ApiDoc(
+     *     resource=true,
+     *     section="Contract",
+     *     description="This call allows to get all contracts that belong to the tenant.",
+     *     statusCodes={
+     *         200="Returned when successful",
+     *         204="No content with such parameters",
+     *         500="Internal Server Error"
+     *     }
+     * )
+     * @Rest\Get("/contracts")
+     * @Rest\View(serializerGroups={"Base", "ContractShort"})
+     *
+     * @return ResponseCollection|null
+     */
+    public function getContractsAction()
+    {
+        /** @var Tenant $user */
+        $user = $this->getUser();
+
+        $response = new ResponseCollection($user->getContracts()->toArray());
+
+        if ($response->count() > 0) {
+            return $response;
+        }
+
+        return null;
+    }
+
     /**
      * @param int $id
      *

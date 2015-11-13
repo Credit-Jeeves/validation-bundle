@@ -34,7 +34,7 @@ abstract class AbstractManager
     /**
      * @var string
      */
-    protected $defaultBusinessId;
+    protected $virtualTerminalBusinessId;
 
     /**
      * @param EntityManager      $em
@@ -53,9 +53,9 @@ abstract class AbstractManager
     /**
      * @param string $businessId
      */
-    public function setDefaultBusinessId($businessId)
+    public function setVirtualTerminalBusinessId($businessId)
     {
-        $this->defaultBusinessId = $businessId;
+        $this->virtualTerminalBusinessId = $businessId;
     }
 
     /**
