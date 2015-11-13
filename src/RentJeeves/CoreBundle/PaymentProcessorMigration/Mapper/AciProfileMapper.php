@@ -195,8 +195,8 @@ class AciProfileMapper
             ));
             $accountRecord->setDivisionId($merchantAccountMigration->getAciDivisionId());
             $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName());
-            $accountRecord->setAddress1((string) $address);
-            $accountRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
+            $accountRecord->setAddress1($address ? $address->getStreet() : '');
+            $accountRecord->setCity($address ? $address->getCity() : '');
             $accountRecord->setState($address ? $address->getArea() : '');
             $accountRecord->setZipCode($address ? $address->getZip() : '');
             $accountRecord->setBusinessId($this->rentTrackApplicaitonBusinessId);
