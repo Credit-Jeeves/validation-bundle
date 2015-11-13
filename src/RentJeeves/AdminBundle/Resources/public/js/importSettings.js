@@ -3,7 +3,6 @@ function ImportSettings() {
     var options = [];
     $('select[id*="_importSettings_importType"]>option').each(function (i, el) {
         options.push({"value" :$(el).val(), "text" : $(el).text()});
-
     });
 
     self.init = function () {

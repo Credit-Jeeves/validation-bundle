@@ -232,7 +232,7 @@ class RjGroupAdmin extends Admin
             ->with('Import Defaults')
                 ->add(
                     'importSettings',
-                    $container->get('form.import_group_settings'),
+                    'import_group_settings',
                     [],
                     [
                         'edit'      => 'inline',
