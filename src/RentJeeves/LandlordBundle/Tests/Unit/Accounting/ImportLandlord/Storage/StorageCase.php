@@ -182,6 +182,7 @@ class StorageCase extends UnitTestBase
                 17 => 'Not Used',
                 18 => 'Not Used',
                 19 => 'Not Used',
+                20 => Mapping::KEY_TENANT_STATUS,
             ]
         );
 
