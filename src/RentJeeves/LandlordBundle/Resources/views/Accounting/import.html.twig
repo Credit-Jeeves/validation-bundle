@@ -112,11 +112,11 @@
                     <div class="button-box"  data-bind="visible: $root.isVisibleTable()">
                         {% if importMapping.isNeedManualMapping %}
                             <a href="{{ path("accounting_match_file") }}" class="button small fixed next grey prev">
-                                <span>{{ 'pay_popup.step.previous'|trans }}</span>
+                                <span>{{ 'import.prev'|trans }}</span>
                             </a>
                         {% else %}
                             <a href="{{ path("accounting_import_file") }}" class="button small fixed next grey prev">
-                                <span>{{ 'pay_popup.step.previous'|trans }}</span>
+                                <span>{{ 'import.prev'|trans }}</span>
                             </a>
                         {% endif %}
                         <button type="submit"

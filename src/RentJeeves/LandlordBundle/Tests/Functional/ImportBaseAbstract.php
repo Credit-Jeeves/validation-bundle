@@ -55,6 +55,32 @@ class ImportBaseAbstract extends BaseTestCase
     ];
 
     /**
+     * @return ContractWaiting
+     */
+    protected function getWaitingRoom()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(
+            array(
+                'residentId' => 't0019851',
+            )
+        );
+
+        $this->assertNotNull($contractWaiting);
+        $this->assertEquals(1, count($contractWaiting));
+        /**
+         * @var $contractWaiting ContractWaiting
+         */
+        $contractWaiting = reset($contractWaiting);
+        $this->assertNotNull($contractWaiting);
+
+        return $contractWaiting;
+    }
+
+    /**
      * @param string $fileName
      * @return string
      */
