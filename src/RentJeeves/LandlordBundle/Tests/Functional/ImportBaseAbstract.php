@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 
@@ -53,6 +54,22 @@ class ImportBaseAbstract extends BaseTestCase
         '16' => ImportMapping::KEY_MOVE_OUT,
         '18' => ImportMapping::KEY_EMAIL,
     ];
+
+
+    protected function setPropertySecond()
+    {
+        /** @var $em EntityManager */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
+                'street' => 'Broadway',
+                'number' => '785',
+                'zip' => '10003'
+            ]
+        );
+        $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
+        $propertySelector->selectOption($property->getId());
+    }
 
     /**
      * @return ContractWaiting
@@ -149,5 +166,22 @@ class ImportBaseAbstract extends BaseTestCase
             1500000,
             "$('#summaryList').length > 0"
         );
+    }
+
+    /**
+     * @return ImportGroupSettings
+     */
+    public function getImportGroupSettings()
+    {
+
+        /** @var ImportGroupSettings $importGroupSettings */
+        $importGroupSettings = $this->getEntityManager()->getRepository('RjDataBundle:ImportGroupSettings')->findOneBy(
+            [
+                'source' => 'integrated_api'
+            ]
+        );
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+
+        return $importGroupSettings;
     }
 }
