@@ -22,7 +22,7 @@ class RjGroupAdmin extends Admin
     const TYPE = 'group';
 
     protected $formOptions = [
-        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee']
+        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee', 'import_settings']
     ];
 
     /**
@@ -232,7 +232,7 @@ class RjGroupAdmin extends Admin
             ->with('Import Defaults')
                 ->add(
                     'importSettings',
-                    $container->get('form.import_group_settings'),
+                    'import_group_settings',
                     [],
                     [
                         'edit'      => 'inline',

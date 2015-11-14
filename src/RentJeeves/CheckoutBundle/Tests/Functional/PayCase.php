@@ -963,8 +963,8 @@ class PayCase extends BaseTestCase
      */
     public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage)
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
         $em = $this->getEntityManager();
         /** @var Holding $holding */
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
@@ -1007,10 +1007,8 @@ class PayCase extends BaseTestCase
         $paymentSource = $this->page->find('css', '#rent-menu .last a');
         $this->assertNotEmpty($paymentSource);
         $paymentSource->click();
-        $editSource = $this->page->find('css', '.edit');
         $delSource = $this->page->find('css', '.delete');
 
-        $this->assertEquals($isPaymentProcessorLocked, empty($editSource));
         $this->assertEquals($isPaymentProcessorLocked, empty($delSource));
     }
 

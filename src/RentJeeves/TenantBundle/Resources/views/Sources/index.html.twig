@@ -93,23 +93,15 @@
                             </td>
                             <td class="font-helvetica">
                                 {% if isLocked == false %}
-                                <a title="{{ 'edit' | trans }}"
-                                   class="type-ico pie-el edit"
-                                   href="#"
-                                   data-bind="click: edit.bind($data, {{ paymentAccount.getId }})"
-                                >
-                                    &nbsp;
-                                </a>
-                                <a title="{{ 'delete' | trans }}"
-                                    class="type-ico pie-el delete"
-                                    data-bind="click: delDialog.bind($data, {{ paymentAccount.getId }})"
-                                    href="#"
-                                >
-                                    &nbsp;
-                                </a>
+                                    <a title="{{ 'delete' | trans }}"
+                                        class="type-ico pie-el delete"
+                                        data-bind="click: delDialog.bind($data, {{ paymentAccount.getId }})"
+                                        href="#"
+                                    >
+                                        &nbsp;
+                                    </a>
                                 {% endif %}
                             </td>
-
                         </tr>
                     {% endfor %}
                     </tbody>

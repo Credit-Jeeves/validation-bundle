@@ -190,7 +190,7 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         /** @var Group $group */
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
-        $this->assertNotEmpty($group);
+        $this->assertNotEmpty($group, 'Check fixtures, should be present group with name "Test Rent Group"');
         $this->assertFalse(
             $group->getGroupSettings()->isAllowedDebitFee(),
             'Default value for allowed debit fee should be false'
@@ -253,5 +253,184 @@ class GroupCase extends BaseTestCase
             'Allowed debit fee should be updated '
         );
         $this->assertEquals(20, $group->getGroupSettings()->getDebitFee(), 'Debit fee should be set to 20');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCheckImportSettings()
+    {
+        $this->load(true);
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByName('Generic group');
+        $this->assertNotEmpty($group, 'Check fixtures, should be present group with name "Generic group"');
+        $this->assertFalse(
+            $group->isExistImportSettings(),
+            'Check fixtures, group with name "Generic group" should not have import settings'
+        );
+        $this->setDefaultSession('selenium2');
+
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
+
+        $editLink = $this->getDomElement('a:contains("Generic group")', 'Edit link doesn\'t find for group');
+        $editLink->click();
+        $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Import Defaults")');
+        $tabLink->click();
+
+        $uniqueId = $this->getUniqueId();
+
+        $sourceApi = $this->getDomElement(
+            'input[type="radio"][name="' . $uniqueId . '[importSettings][source]"][value="integrated_api"]',
+            'Radio button for Source "Integrated Api" should be present'
+        );
+        $sourceApi->click();
+        // check that we show just api settings
+        $propertyIdsField = $this->getDomElement('#' . $uniqueId . '_importSettings_apiPropertyIds');
+        $csvFieldDelimiterField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvFieldDelimiter');
+        $csvTextDelimiterField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvTextDelimiter');
+        $csvDateFormatField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvDateFormat');
+
+        $this->assertTrue($propertyIdsField->isVisible(), 'Field "Property Ids" should be displayed');
+
+        $this->assertFalse($csvFieldDelimiterField->isVisible(), 'Field "Field Delimiter" should not be displayed');
+        $this->assertFalse($csvTextDelimiterField->isVisible(), 'Field "Text Delimiter" should not be displayed');
+        $this->assertFalse($csvDateFormatField->isVisible(), 'Field "Date Format" should not be displayed');
+
+        $importTypes = $this->getDomElements('#' . $uniqueId . '_importSettings_importType option');
+        $this->assertCount(1, $importTypes, 'Should be displayed just 1 import type for api source');
+        $this->assertEquals(
+            'multi_properties',
+            $importTypes[0]->getValue(),
+            'Should be displayed "Single Group with Multi Properties"'
+        );
+
+        $propertyIdsField->setValue('');
+
+        $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
+        $submit->click();
+
+        $errors = $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertCount(1, $errors, 'Should be displayed just 1 message');
+        $this->assertEquals('admin.errors.api_property_ids.empty', $errors[0]->getText(), 'Incorrect error message');
+
+        $tabLink->click();
+
+        $propertyIdsField->setValue('*');
+        $submit->click();
+
+        $this->getEntityManager()->refresh($group);
+
+        $this->assertTrue($group->isExistImportSettings(), 'Group should have import settings after save');
+        $this->assertEquals(
+            '*',
+            $group->getImportSettings()->getApiPropertyIds(),
+            'Api property ids should be set to "*"'
+        );
+
+        $uniqueId = $this->getUniqueId(); // should refresh uniqueId after success saving
+        $tabLink->click();
+
+        $sourceApi = $this->getDomElement(
+            'input[type="radio"][name="' . $uniqueId . '[importSettings][source]"][value="integrated_api"]',
+            'Radio button for Source "Integrated Api" should be present'
+        );
+
+        $this->assertTrue($sourceApi->isChecked(), 'Api Source should be checked');
+
+        $sourceCSV = $this->getDomElement(
+            'input[type="radio"][name="' . $uniqueId . '[importSettings][source]"][value="csv"]',
+            'Radio button for Source CSC should be present'
+        );
+        $sourceCSV->click();
+        // check that we can show just csv settings
+        $propertyIdsField = $this->getDomElement('#' . $uniqueId . '_importSettings_apiPropertyIds');
+        $csvFieldDelimiterField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvFieldDelimiter');
+        $csvTextDelimiterField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvTextDelimiter');
+        $csvDateFormatField = $this->getDomElement('#' . $uniqueId . '_importSettings_csvDateFormat');
+
+        $this->assertFalse($propertyIdsField->isVisible(), 'Field "Property Ids" should not be displayed');
+
+        $this->assertTrue($csvFieldDelimiterField->isVisible(), 'Field "Field Delimiter" should be displayed');
+        $this->assertTrue($csvTextDelimiterField->isVisible(), 'Field "Text Delimiter" should be displayed');
+        $this->assertTrue($csvDateFormatField->isVisible(), 'Field "Date Format" should be displayed');
+
+        $importTypes = $this->getDomElements('#' . $uniqueId . '_importSettings_importType option');
+        $this->assertCount(3, $importTypes, 'Should be displayed all import types for csv source');
+
+        $csvFieldDelimiterField->setValue('');
+        $csvDateFormatField->setValue('');
+        $csvTextDelimiterField->setValue('');
+
+        $submit->click();
+
+        $errors = $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertCount(1, $errors, 'Should be displayed just 1 message');
+        $this->assertEquals('admin.errors.csv_settings.empty', $errors[0]->getText(), 'Incorrect error message');
+
+        $tabLink->click();
+
+        $csvFieldDelimiterField->setValue('');
+        $csvDateFormatField->setValue('F d, Y');
+        $csvTextDelimiterField->setValue('"');
+
+        $submit->click();
+
+        $errors = $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertCount(1, $errors, 'Should be displayed just 1 message');
+        $this->assertEquals('admin.errors.csv_settings.empty', $errors[0]->getText(), 'Incorrect error message');
+
+        $tabLink->click();
+
+        $csvFieldDelimiterField->setValue(',');
+        $csvDateFormatField->setValue('');
+        $csvTextDelimiterField->setValue('"');
+
+        $submit->click();
+
+        $errors = $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertCount(1, $errors, 'Should be displayed just 1 message');
+        $this->assertEquals('admin.errors.csv_settings.empty', $errors[0]->getText(), 'Incorrect error message');
+
+        $tabLink->click();
+
+        $csvFieldDelimiterField->setValue(',');
+        $csvDateFormatField->setValue('F d, Y');
+        $csvTextDelimiterField->setValue('');
+
+        $submit->click();
+
+        $errors = $this->getDomElements('.sonata-ba-form-error ul>li', 'Should be displayed error');
+        $this->assertCount(1, $errors, 'Should be displayed just 1 message');
+        $this->assertEquals('admin.errors.csv_settings.empty', $errors[0]->getText(), 'Incorrect error message');
+
+        $tabLink->click();
+
+        $csvFieldDelimiterField->setValue(',');
+        $csvDateFormatField->setValue('F d, Y');
+        $csvTextDelimiterField->setValue('"');
+
+        $submit->click();
+
+        $this->getEntityManager()->refresh($group);
+
+        $this->assertEquals(
+            ',',
+            $group->getImportSettings()->getCsvFieldDelimiter(),
+            'Field Delimiter should be set to ","'
+        );
+
+        $this->assertEquals(
+            '"',
+            $group->getImportSettings()->getCsvTextDelimiter(),
+            'Text Delimiter should be set to \'"\''
+        );
+
+        $this->assertEquals(
+            'F d, Y',
+            $group->getImportSettings()->getCsvDateFormat(),
+            'Date Format should be set to \'"\''
+        );
     }
 }
