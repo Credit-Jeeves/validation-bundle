@@ -171,8 +171,8 @@ class ImportYardiCase extends ImportBaseAbstract
             'externalLeaseId' => 't0012020',
         ]);
         $this->assertCount(3, $contracts);
-        $this->arrayHasKey(0, $contracts, 'Contracts should have key.');
-        $contracts[0]->setRent(1);
+        $this->arrayHasKey(1, $contracts, 'Contracts should have key.');
+        $contracts[1]->setRent(0);
         $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
         /** @var Landlord $landlord */
@@ -187,13 +187,9 @@ class ImportYardiCase extends ImportBaseAbstract
         $submitImport->click();
 
         $this->waitRedirectToSummaryPage();
-
-        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy([
-            'externalLeaseId' => 't0012020',
-        ]);
-        $this->assertCount(3, $contracts);
-        $this->arrayHasKey(0, $contracts, 'Contracts should have key.');
-        $this->assertNotEquals(1, $contracts[0]->getRent(), 'Should be update');
+        $this->getEntityManager()->refresh($contracts[1]);
+        $rent = $contracts[1]->getRent();
+        $this->assertGreaterThan(1, $rent, sprintf('Should be update, but got %s', $rent));
         $this->getEntityManager()->flush();
     }
 }

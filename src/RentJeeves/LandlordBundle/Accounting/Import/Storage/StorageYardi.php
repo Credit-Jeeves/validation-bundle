@@ -105,7 +105,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
-            sprintf('%s||%s', $property->getCode(), $unitName),
+            $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
         ];
@@ -154,6 +154,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
+            $property->getExternalUnitId(),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
         ];
