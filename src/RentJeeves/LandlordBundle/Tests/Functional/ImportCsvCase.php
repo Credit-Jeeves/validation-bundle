@@ -1559,4 +1559,56 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
         $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
     }
+
+    /**
+     * @test
+     */
+    public function duplicateResidentIdShouldBeSkippedWithError()
+    {
+        $this->load(true);
+        $importGroupSettings = $this->getImportGroupSettings();
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
+        $importGroupSettings->setCsvDateFormat('m/d/Y');
+        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_two_user.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setPropertyFirst();
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        $this->fillCsvMapping($this->mapFile, 14);
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.errorField').length > 0"
+        );
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(1, count($errorFields));
+        $this->assertEquals($errorFields[0]->getHtml(), '15test@mail.com');
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+        $em = $this->getEntityManager();
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'rent' => 777666,
+            )
+        );
+        $this->assertEquals(1, count($contracts));
+        $this->logout();
+    }
 }

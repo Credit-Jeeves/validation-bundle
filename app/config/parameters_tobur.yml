@@ -3,8 +3,8 @@ imports:
 
 parameters:
     database_name: credit_jeeves2
-    database_user: credit_jeeves2
-    database_password: 'passw0rd'
+    database_user: root
+    database_password: '123456'
 
     experian.logging: false
 
