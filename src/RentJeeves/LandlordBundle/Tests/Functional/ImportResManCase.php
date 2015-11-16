@@ -90,20 +90,7 @@ class ImportResManCase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->assertNotNull(
-            $submitImport = $this->page->find('css', '.submitImportFile'),
-            'Submit button should exist'
-        );
-        $this->assertNotNull(
-            $source = $this->page->findAll('css', '#import_file_type_fileType_box>.radio'),
-            'Source radio button should exist'
-        );
-        $source[1]->click();
-        $this->assertNotNull(
-            $propertyId = $this->page->find('css', '#import_file_type_propertyId'),
-            'Property ID input should exist'
-        );
-        $propertyId->setValue(ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');
         $submitImport->click();
 
         $this->session->wait(
@@ -111,14 +98,7 @@ class ImportResManCase extends ImportBaseAbstract
             "$('table').is(':visible')"
         );
         //First page
-        $this->assertNotNull(
-            $submitImportFile = $this->page->find('css', '.submitImportFile>span'),
-            'Submit import button should exist'
-        );
-        $this->assertNotNull(
-            $rentNotEditable = $this->page->findAll('css', '.rentNotEditable'),
-            'We should show element span with rent'
-        );
+        $rentNotEditable = $this->getDomElements('.rentNotEditable', 'We should show element span with rent');
         $this->assertCount(9, $rentNotEditable, 'All contracts should be mathced, so all rent not editable');
         //Reverse check
         $holding = $landlord->getHolding();
@@ -130,10 +110,8 @@ class ImportResManCase extends ImportBaseAbstract
             "$('table').is(':visible')"
         );
         //First page
-        $this->assertNotNull(
-            $submitImportFile = $this->page->find('css', '.submitImportFile>span'),
-            'Next button should exist'
-        );
+        $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');
+        $submitImport->click();
         $this->waitReviewAndPost();
         $this->assertNull(
             $this->page->find('css', '.rentNotEditable'),
