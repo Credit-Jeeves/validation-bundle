@@ -6,7 +6,6 @@ function accountingImportResman() {
     this.classLoadDataMessage = ko.observable('');
 
     this.currentProperty = null;
-    this.loadedResidents = [];
     this.externalPropertyIds = [];
 
     this.doFinish = function()
@@ -38,7 +37,8 @@ function accountingImportResman() {
                 type: 'POST',
                 dataType: 'json',
                 error: function() {
-                    console.error('Error when try to save contracts for external property id ' + self.currentProperty);
+                    console.info('Error when try to save contracts for external property id ' + self.currentProperty);
+                    console.info(response.status + ':' + response.responseText);
                     i++;
                     self.saveContractData(i, length);
                 },
@@ -55,14 +55,14 @@ function accountingImportResman() {
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);
-            self.loadDataMessage(Translator.trans('resman.import.message.load.external_property_ids'));
+            self.loadDataMessage(Translator.trans('import.message.load.external_property_ids'));
             console.info('Get External Property List');
             jQuery.ajax({
-                url: Routing.generate('accounting_import_load_resman_external_property_ids'),
+                url: Routing.generate('accounting_import_load_external_property_ids'),
                 type: 'GET',
                 dataType: 'json',
                 error: function() {
-                    self.loadDataMessage(Translator.trans('resman.import.error.loadExternalPropertyIds'));
+                    self.loadDataMessage(Translator.trans('import.error.load.external_property_ids'));
                     self.classLoadDataMessage('errorMessage');
                     self.showSpinner(false);
                 },

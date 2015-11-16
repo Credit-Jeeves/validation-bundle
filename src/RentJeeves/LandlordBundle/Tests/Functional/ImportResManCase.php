@@ -57,12 +57,10 @@ class ImportResManCase extends ImportBaseAbstract
             "$('table').is(':visible')"
         );
         //First page
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-        $submitImportFile->click();
+        $submitImport->click();
         $this->waitReviewAndPost();
         //Second page
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-        $submitImportFile->click();
+        $submitImport->click();
         $this->waitReviewAndPost();
 
         // We must make sure the data saved into DB, so we count before import and after

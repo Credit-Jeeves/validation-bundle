@@ -530,10 +530,11 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/external_property_ids/resman",
-     *     name="accounting_import_load_resman_external_property_ids",
+     *     "/import/external_property_ids/list",
+     *     name="accounting_import_load_external_property_ids",
      *     options={"expose"=true}
      * )
+     *
      * @return JsonResponse
      */
     public function getExternalPropertyIdsAction()
@@ -550,9 +551,13 @@ class AccountingController extends Controller
         );
     }
 
-    protected function getExternalPropertyIds($string)
+    /**
+     * @param string $commaSeparatedExternalPropertyIds
+     * @return array
+     */
+    protected function getExternalPropertyIds($commaSeparatedExternalPropertyIds)
     {
-        return array_map('trim', explode(',', $string));
+        return array_map('trim', explode(',', $commaSeparatedExternalPropertyIds));
     }
 
     /**
@@ -561,21 +566,29 @@ class AccountingController extends Controller
      */
     protected function getBaseResidents($externalPropertyId)
     {
-        /** @var ImportFactory $importFactory */
-        $importFactory = $this->get('accounting.import.factory');
-        $mapping = $importFactory->getMapping();
-        /** @var ExternalApiStorageInterface|StorageAbstract $storage */
-        $storage = $importFactory->getStorage();
-        $residents = $mapping->getResidents($externalPropertyId);
-        $result = $storage->saveToFile($residents);
-
-        if ($storage->isOnlyException()) {
-            $handler = $importFactory->getHandler();
-            $handler->updateMatchedContracts();
-        }
-
         $response = new JsonResponse();
-        $response->setStatusCode(($result) ? 201 : 400);
+
+        try {
+            /** @var ImportFactory $importFactory */
+            $importFactory = $this->get('accounting.import.factory');
+            $mapping = $importFactory->getMapping();
+            /** @var ExternalApiStorageInterface|StorageAbstract $storage */
+            $storage = $importFactory->getStorage();
+            $residents = $mapping->getResidents($externalPropertyId);
+
+            $result = $storage->saveToFile($residents);
+
+            if ($storage->isOnlyException()) {
+                $handler = $importFactory->getHandler();
+                $handler->updateMatchedContracts();
+            }
+
+            $response->setStatusCode(($result) ? 201 : 400);
+
+        } catch (\Exception $e) {
+            $response->setStatusCode(400);
+            $response->setData($e->getMessage());
+        }
 
         return $response;
     }
@@ -633,14 +646,17 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/amsi",
+     *     "/import/residents/amsi/{externalPropertyId}",
      *     name="accounting_import_residents_amsi",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsAmsi()
+    public function getResidentsAmsi($externalPropertyId)
     {
-        return $this->getBaseResidents('');
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**
