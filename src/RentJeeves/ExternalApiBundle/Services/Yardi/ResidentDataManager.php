@@ -76,23 +76,13 @@ class ResidentDataManager implements ResidentDataManagerInterface
 
     /**
      * @param Holding $holding
-     * @param Property $property
+     * @param string $externalPropertyId
      * @return ResidentsResident[]
      * @throws \Exception
      */
-    public function getCurrentAndNoticesResidents(Holding $holding, Property $property)
+    public function getCurrentAndNoticesResidents($externalPropertyId)
     {
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
-        if (empty($propertyMapping)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "PropertyID '%s', doesn't have external ID",
-                    $property->getId()
-                )
-            );
-        }
-        $this->setSettings($holding->getYardiSettings());
-        $residents = $this->getResidents($propertyMapping->getExternalPropertyId());
+        $residents = $this->getResidents($externalPropertyId);
 
         $currentResidents = array_filter(
             $residents,
@@ -107,32 +97,23 @@ class ResidentDataManager implements ResidentDataManagerInterface
 
     /**
      * @param Holding $holding
-     * @param Property $property
-     * @param $residentId
+     * @param string $residentId
+     * @param string $externalPropertyId
      * @return ResidentLeaseFile
      * @throws \Exception
      */
-    public function getResidentData(Holding $holding, Property $property, $residentId)
+    public function getResidentData(Holding $holding, $residentId, $externalPropertyId)
     {
-        $propertyMapping = $property->getPropertyMappingByHolding($holding);
-        if (empty($propertyMapping)) {
-            throw new \Exception(
-                sprintf(
-                    "PropertyID '%s', don't have external ID",
-                    $property->getId()
-                )
-            );
-        }
-        $this->setSettings($holding->getYardiSettings());
+        $this->setSettings($holding->getExternalSettings());
         $residentClient = $this->getApiClient();
-        $resident = $residentClient->getResidentData($propertyMapping->getExternalPropertyId(), $residentId);
+        $resident = $residentClient->getResidentData($externalPropertyId, $residentId);
 
         if (empty($resident) || !$resident->getLeaseFiles()) {
             throw new \Exception(
                 sprintf(
-                    "Can't get resident data by resident ID '%s' and property ID '%s'",
+                    "Can't get resident data by resident ID '%s' and external property ID '%s'",
                     $residentId,
-                    $property->getId()
+                    $externalPropertyId
                 )
             );
         }

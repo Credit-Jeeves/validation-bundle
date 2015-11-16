@@ -46,6 +46,10 @@
                 <source>pay_popup.step.previous</source>
                 <target>Previous</target>
             </trans-unit>
+            <trans-unit id="import.prev">
+                <source>import.prev</source>
+                <target>Previous</target>
+            </trans-unit>
             <trans-unit id="pay_popup.step.next">
                 <source>pay_popup.step.next</source>
                 <target>Next</target>

@@ -405,6 +405,7 @@ EOT;
         }
 
         /** TODO: change this to oneOrNull once duplicate properties removed from DB */
+
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 }

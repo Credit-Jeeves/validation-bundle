@@ -4,14 +4,12 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
-use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\OtherOccupants;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
-use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 
 class MappingYardi extends MappingCsv
 {
@@ -45,27 +43,17 @@ class MappingYardi extends MappingCsv
         return false;
     }
 
-    public function getResidents(Holding $holding, EntityProperty $property)
+    /**
+     * @param Holding $holding
+     * @param string $externalPropertyId
+     * @return array
+     */
+    public function getResidents(Holding $holding, $externalPropertyId)
     {
-        $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
-            array('holding' => $holding->getId(), 'property'=> $property->getId())
-        );
-
-        if (empty($propertyMapping)) {
-            throw new ImportMappingException(
-                sprintf(
-                    "Don't have external property id for property: %s and holding: %s",
-                    $property->getId(),
-                    $holding->getId()
-                )
-            );
-        }
-
-        $externalPropertyId = $propertyMapping->getExternalPropertyId();
         $this->residentData->setSettings($holding->getYardiSettings());
         $residentsTransaction = $this->residentData->getResidentTransactions($externalPropertyId);
+        $residents = $this->residentData->getCurrentAndNoticesResidents($externalPropertyId);
 
-        $residents = $this->residentData->getCurrentAndNoticesResidents($holding, $property);
         $roommates = [];
         /** @var $resident ResidentsResident */
         foreach ($residents as $key => $resident) {
@@ -112,7 +100,14 @@ class MappingYardi extends MappingCsv
         return array_merge($residents, $roommates);
     }
 
-    public function getContractData(Holding $holding, EntityProperty $property, ResidentsResident $resident)
+    /**
+     * @param Holding $holding
+     * @param ResidentsResident $resident
+     * @param string $externalPropertyId
+     * @return ResidentLeaseFile
+     * @throws \Exception
+     */
+    public function getContractData(Holding $holding, ResidentsResident $resident, $externalPropertyId)
     {
         if ($resident->isRoommate()) {
             $residentId = $resident->getLeaseId();
@@ -120,6 +115,6 @@ class MappingYardi extends MappingCsv
             $residentId = $resident->getResidentId();
         }
 
-        return $this->residentData->getResidentData($holding, $property, $residentId);
+        return $this->residentData->getResidentData($holding, $residentId, $externalPropertyId);
     }
 }
