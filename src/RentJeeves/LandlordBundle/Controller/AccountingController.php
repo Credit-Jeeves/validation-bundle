@@ -570,12 +570,28 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/mri",
+     *     "/import/externalPropertyIds/mri",
+     *     name="accounting_external_property_ids_mri",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getExternalPropertyIdsMri()
+    {
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageMRI $storage */
+        $storage = $importFactory->getStorage();
+
+        return new JsonResponse(explode(',', $storage->getImportExternalPropertyId()));
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/mri/{externalPropertyId}",
      *     name="accounting_import_residents_mri",
      *     options={"expose"=true}
      * )
      */
-    public function getResidentsMri()
+    public function getResidentsMri($externalPropertyId)
     {
         $importFactory = $this->get('accounting.import.factory');
         /** @var MappingMRI $mapping */
@@ -585,12 +601,12 @@ class AccountingController extends Controller
         $nextPageLink = $this->get('request')->request->get('nextPageLink');
 
         if (empty($nextPageLink)) {
-            $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
+            $residents = $mapping->getResidents($externalPropertyId);
         } else {
             $residents = $mapping->getResidentsByNextPageLink($nextPageLink);
         }
 
-        $result = $storage->saveToFile($residents);
+        $result = $storage->saveToFile($residents, $externalPropertyId);
         $newNextPageLink = $mapping->getNextPageLink();
         //We need update matched contracts only after download all of them, that's why check var newNextPageLink
         if ($storage->isOnlyException() && empty($newNextPageLink)) {

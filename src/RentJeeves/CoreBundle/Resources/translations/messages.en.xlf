@@ -3271,6 +3271,18 @@
                     Please try again after the payment has completed.
                 </target>
             </trans-unit>
+            <trans-unit id="mri.import.message.download.external_property_id">
+                <source>mri.import.message.download.external_property_id</source>
+                <target>Fetching list of properties id, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="mri.import.error.getExternalPropertyIds">
+                <source>mri.import.error.getExternalPropertyIds</source>
+                <target>Error fetching list of properties id, please contact to support.</target>
+            </trans-unit>
+            <trans-unit id="mri.import.error.empty.externalPropertyIds">
+                <source>mri.import.error.empty.externalPropertyIds</source>
+                <target>Empty list of properties id, please contact to support.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

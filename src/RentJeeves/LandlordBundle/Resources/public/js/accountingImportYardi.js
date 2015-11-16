@@ -21,7 +21,6 @@ function accountingImportYardi() {
 
     this.saveContractData = function (step, countResidents, i, length) {
         if (length > i) {
-            console.info('Save Contracts');
             self.loadDataMessage(
                 Translator.trans(
                     'yardi.import.message.download.contracts',
@@ -100,7 +99,6 @@ function accountingImportYardi() {
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);
             self.loadDataMessage(Translator.trans('yardi.import.message.download.property_mapping'));
-            console.info('Get Properties');
             jQuery.ajax({
                 url: Routing.generate('accounting_import_property_mapping_yardi'),
                 type: 'POST',
