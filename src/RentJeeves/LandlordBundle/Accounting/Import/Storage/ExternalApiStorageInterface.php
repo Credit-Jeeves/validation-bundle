@@ -6,7 +6,8 @@ interface ExternalApiStorageInterface extends StorageInterface
 {
     /**
      * @param array|object $residentData
+     * @param string $externalPropertyId
      * @return bool
      */
-    public function saveToFile($residentData);
+    public function saveToFile($residentData, $externalPropertyId = null);
 }

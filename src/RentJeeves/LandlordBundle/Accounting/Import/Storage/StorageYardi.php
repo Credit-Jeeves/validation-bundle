@@ -41,7 +41,7 @@ class StorageYardi extends ExternalApiStorage
     /**
      * {@inheritdoc}
      */
-    public function saveToFile($fullResident)
+    public function saveToFile($fullResident, $externalPropertyId = null)
     {
         if (!parent::saveToFile($fullResident)) {
             return false;
