@@ -46,7 +46,7 @@ class StorageResman extends ExternalApiStorage
     /**
      * {@inheritdoc}
      */
-    public function saveToFile($customers)
+    public function saveToFile($customers, $externalPropertyId = null)
     {
         if (!parent::saveToFile($customers)) {
             return false;
@@ -102,7 +102,7 @@ class StorageResman extends ExternalApiStorage
                     $address->getAddress1(),
                     $address->getPostalCode(),
                     $address->getState(),
-                    $this->getImportExternalPropertyId(),
+                    $externalPropertyId,
                     Tenant::$tenantStatusCurrent
                 ];
 

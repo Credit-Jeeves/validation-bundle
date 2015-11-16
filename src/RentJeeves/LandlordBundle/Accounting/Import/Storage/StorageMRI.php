@@ -47,7 +47,7 @@ class StorageMRI extends ExternalApiStorage
     /**
      * {@inheritdoc}
      */
-    public function saveToFile($customers)
+    public function saveToFile($customers, $externalPropertyId = null)
     {
         if (!parent::saveToFile($customers)) {
             return false;
@@ -99,7 +99,7 @@ class StorageMRI extends ExternalApiStorage
                 $address,
                 $customer->getZipCode(),
                 $customer->getState(),
-                $this->getImportExternalPropertyId(),
+                $externalPropertyId,
                 $customer->getBuildingAddress(),
                 $customer->getAddress()
             ];
