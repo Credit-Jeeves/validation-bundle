@@ -576,7 +576,7 @@ class AccountingController extends Controller
             $storage = $importFactory->getStorage();
             $residents = $mapping->getResidents($externalPropertyId);
 
-            $result = $storage->saveToFile($residents);
+            $result = $storage->saveToFile($residents, $externalPropertyId);
 
             if ($storage->isOnlyException()) {
                 $handler = $importFactory->getHandler();
