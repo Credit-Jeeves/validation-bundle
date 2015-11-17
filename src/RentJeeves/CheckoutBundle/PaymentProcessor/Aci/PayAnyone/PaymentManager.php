@@ -27,6 +27,7 @@ use RentJeeves\DataBundle\Enum\OutboundTransactionType;
 
 class PaymentManager
 {
+    const COUNTRY = 'US';
     const PAYMENT_ACCOUNT_MAX_LENGTH = 45;
     /**
      * @var EntityManager
@@ -240,10 +241,10 @@ class PaymentManager
 
         $payerAddress = new Address();
         $payerAddress->setAddress1($contract->getTenantRentAddress());
-        $payerAddress->setCity($contract->getProperty()->getCity());
-        $payerAddress->setState($contract->getProperty()->getArea());
-        $payerAddress->setPostalCode($contract->getProperty()->getZip());
-        $payerAddress->setCountryCode($contract->getProperty()->getCountry());
+        $payerAddress->setCity($contract->getProperty()->getPropertyAddress()->getCity());
+        $payerAddress->setState($contract->getProperty()->getPropertyAddress()->getState());
+        $payerAddress->setPostalCode($contract->getProperty()->getPropertyAddress()->getZip());
+        $payerAddress->setCountryCode(self::COUNTRY);
 
         $payer->setPayerId($contract->getId());
         $payer->setFullName($contract->getTenantFullName());

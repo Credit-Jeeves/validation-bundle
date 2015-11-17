@@ -167,4 +167,24 @@ class OperationRepository extends EntityRepository
 
         return null;
     }
+
+    /**
+     * @param Contract $contract
+     * @return Operation
+     */
+    public function getLastOperation(Contract $contract)
+    {
+        return $this->createQueryBuilder('operation')
+            ->innerJoin("operation.order", "ord", Expr\Join::WITH, 'ord.status = :completeStatus')
+            ->innerJoin('operation.contract', 'contract')
+            ->where('operation.contract = :contract')
+            ->andWhere("operation.type = :rent")
+            ->orderBy('ord.created_at', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('contract', $contract)
+            ->setParameter('completeStatus', OrderStatus::COMPLETE)
+            ->setParameter('rent', OperationType::RENT)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

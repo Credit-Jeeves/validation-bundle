@@ -11,6 +11,7 @@ function BatchedDepositsViewModel()
     this.current = ko.observable(1);
     this.isLoading = ko.observable(false);
     this.filter = ko.observable('');
+    this.searchText = ko.observable('');
 
     this.loadData = function() {
         self.deposits([]);
@@ -23,7 +24,8 @@ function BatchedDepositsViewModel()
             data: {
                 'page' : self.current(),
                 'limit' : limit,
-                'filter': self.filter()
+                'filter': self.filter(),
+                'searchText' : self.searchText()
             },
             success: function(data) {
                 ko.mapping.fromJS(data, mapping, self);
@@ -95,5 +97,11 @@ function BatchedDepositsViewModel()
     this.getTitle = function(title)
     {
         return title.charAt(0).toUpperCase() + title.slice(1);
-    }
+    };
+
+    this.clearSearch = function() {
+        self.searchText('');
+        self.current(1);
+        self.loadData();
+    };
 }

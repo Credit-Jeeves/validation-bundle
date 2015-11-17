@@ -610,7 +610,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
+     *      targetEntity="CreditJeeves\DataBundle\Entity\MailingAddress",
      *      mappedBy="user",
      *      cascade={"persist", "remove", "merge"}
      * )
@@ -1875,10 +1875,10 @@ abstract class User extends BaseUser
     /**
      * Add address
      *
-     * @param  \CreditJeeves\DataBundle\Entity\Address $pidkiqs
+     * @param  \CreditJeeves\DataBundle\Entity\MailingAddress $address
      * @return User
      */
-    public function addAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    public function addAddress(\CreditJeeves\DataBundle\Entity\MailingAddress $address)
     {
         $this->addresses[] = $address;
 
@@ -1888,9 +1888,9 @@ abstract class User extends BaseUser
     /**
      * Remove Address
      *
-     * @param \CreditJeeves\DataBundle\Entity\Address $address
+     * @param \CreditJeeves\DataBundle\Entity\MailingAddress $address
      */
-    public function removeAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    public function removeAddress(\CreditJeeves\DataBundle\Entity\MailingAddress $address)
     {
         $this->addresses->removeElement($address);
     }

@@ -3,9 +3,13 @@
 namespace RentJeeves\LandlordBundle\Tests\Unit\Accounting\ImportLandlord\Mapping;
 
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\UnitMapper;
+use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class UnitMapperCase extends AbstractMapperCase
+class UnitMapperCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      *
@@ -16,7 +20,7 @@ class UnitMapperCase extends AbstractMapperCase
     {
         $mapper = new UnitMapper($this->getPropertyProcess());
         $mapper->setLogger($this->getLoggerMock());
-        $mapper->setEntityManager($this->getEmMock());
+        $mapper->setEntityManager($this->getEntityManagerMock());
 
         $mapper->map([]);
     }
@@ -42,7 +46,7 @@ class UnitMapperCase extends AbstractMapperCase
      * @test
      *
      * @expectedException \RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingException
-     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by PropertyProcess
+     * @expectedExceptionMessage [Mapping] : Address (test , test, test, test) is not found by PropertyManager
      */
     public function shouldThrowExceptionIfAddressIsNotValid()
     {
@@ -134,21 +138,22 @@ class UnitMapperCase extends AbstractMapperCase
         $this->assertEquals($unitName, $unit->getName());
 
         $this->assertInstanceOf('\RentJeeves\DataBundle\Entity\Property', $property = $unit->getProperty());
-        $this->assertEquals('Brooklyn', $property->getCity());
-        $this->assertContains('Orange St', $property->getStreet());
-        $this->assertEquals('50', $property->getNumber());
-        $this->assertEquals('11201', $property->getZip());
-        $this->assertEquals('US', $property->getCountry());
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals('Brooklyn', $propertyAddress->getCity());
+        $this->assertContains('Orange St', $propertyAddress->getStreet());
+        $this->assertEquals('50', $propertyAddress->getNumber());
+        $this->assertEquals('11201', $propertyAddress->getZip());
         $this->assertTrue($group->getGroupProperties()->contains($property));
 
         $this->assertEquals('testUnitID', $unit->getUnitMapping()->getExternalUnitId());
     }
 
     /**
-     * @return \RentJeeves\CoreBundle\Services\PropertyProcess
+     * @return \RentJeeves\CoreBundle\Services\PropertyManager
      */
     protected function getPropertyProcess()
     {
-        return $this->getContainer()->get('property.process');
+        return $this->getContainer()->get('property.manager');
     }
 }

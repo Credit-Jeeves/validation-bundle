@@ -46,6 +46,10 @@
                 <source>pay_popup.step.previous</source>
                 <target>Previous</target>
             </trans-unit>
+            <trans-unit id="import.prev">
+                <source>import.prev</source>
+                <target>Previous</target>
+            </trans-unit>
             <trans-unit id="pay_popup.step.next">
                 <source>pay_popup.step.next</source>
                 <target>Next</target>
@@ -479,6 +483,10 @@
             <trans-unit id="checkout.rent_amount">
                 <source>checkout.rent_amount</source>
                 <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="rent.not_shown">
+                <source>rent.not_shown</source>
+                <target>(Not Shown)</target>
             </trans-unit>
             <trans-unit id="checkout.other_amount">
                 <source>checkout.other_amount</source>

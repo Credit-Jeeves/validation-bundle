@@ -130,10 +130,12 @@ class AciProfileMapper
                 throw new CsvMapException();
             }
             $property = $contract->getProperty();
-            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($property->getAddress(), 64));
-            $consumerRecord->setCity(substr($property->getCity(), 0, 12));
-            $consumerRecord->setState($property->getArea());
-            $consumerRecord->setZipCode($property->getZip());
+            $propertyAddress = $property->getPropertyAddress();
+
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($propertyAddress->getAddress(), 64));
+            $consumerRecord->setCity(substr($propertyAddress->getCity(), 0, 12));
+            $consumerRecord->setState($propertyAddress->getState());
+            $consumerRecord->setZipCode($propertyAddress->getZip());
         }
 
         return $consumerRecord;
@@ -193,7 +195,7 @@ class AciProfileMapper
             ));
             $accountRecord->setDivisionId($merchantAccountMigration->getAciDivisionId());
             $accountRecord->setNameOnBillingAccount($user->getFirstName() . ' ' . $user->getLastName());
-            $accountRecord->setAddress1((string)$address);
+            $accountRecord->setAddress1((string) $address);
             $accountRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
             $accountRecord->setState($address ? $address->getArea() : '');
             $accountRecord->setZipCode($address ? $address->getZip() : '');

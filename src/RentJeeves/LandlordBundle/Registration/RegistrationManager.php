@@ -2,16 +2,15 @@
 
 namespace RentJeeves\LandlordBundle\Registration;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use Symfony\Component\Form\Form;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -26,7 +25,7 @@ class RegistrationManager
     protected $defaultLocale;
 
     /**
-     * @var PropertyProcess
+     * @var PropertyManager
      */
     protected $propertyProcess;
 
@@ -35,10 +34,10 @@ class RegistrationManager
      *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
      *     "passwordEncoder" = @DI\Inject("user.security.encoder.digest"),
      *     "locale" = @DI\Inject("%kernel.default_locale%"),
-     *     "propertyProcess" = @DI\Inject("property.process")
+     *     "propertyProcess" = @DI\Inject("property.manager")
      * })
      */
-    public function __construct($em, $passwordEncoder, $locale, PropertyProcess $propertyProcess)
+    public function __construct($em, $passwordEncoder, $locale, PropertyManager $propertyProcess)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
@@ -81,7 +80,7 @@ class RegistrationManager
                 $unit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
                 $this->em->persist($unit);
             } else {
-                $units = (isset($formData['property']['units']))? $formData['property']['units'] : array();
+                $units = (isset($formData['property']['units'])) ? $formData['property']['units'] : array();
 
                 if (!empty($units)) {
                     foreach ($units as $name) {

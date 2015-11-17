@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\HasLifecycleCallbacks()
  * @Serializer\ExclusionPolicy("all")
  */
-abstract class Address
+abstract class MailingAddress
 {
     /**
      * @var integer

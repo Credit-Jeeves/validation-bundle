@@ -85,7 +85,8 @@ abstract class BaseTestCase extends Base
     protected function setDefaultSession($name)
     {
         $this->getMink()->setDefaultSessionName($name);
-        $this->setUp();
+        $this->session = $this->getMink()->getSession();
+        $this->page = $this->session->getPage();
     }
 
     /**
@@ -289,5 +290,39 @@ abstract class BaseTestCase extends Base
         $li = $this->page->find('css', sprintf('[id^=%s_li][data-value=%s]', $selectId, $value));
         $this->assertNotNull($li, sprintf('Option with value "%s" not found', $value));
         $li->click();
+    }
+
+    /**
+     * @param string $cssSelector
+     * @param string $failMessage
+     *
+     * @return \Behat\Mink\Element\NodeElement
+     */
+    protected function getDomElement($cssSelector, $failMessage = '')
+    {
+        $element = $this->page->find('css', $cssSelector);
+
+        $message = $failMessage ?: sprintf('Element with css selector "%s" cannot be found.', $cssSelector);
+
+        $this->assertNotNull($element, $message);
+
+        return $element;
+    }
+
+    /**
+     * @param string $cssSelector
+     * @param string $failMessage
+     *
+     * @return \Behat\Mink\Element\NodeElement[]
+     */
+    public function getDomElements($cssSelector, $failMessage = '')
+    {
+        $elements = $this->page->findAll('css', $cssSelector);
+
+        $message = $failMessage ?: sprintf('Elements with css selector "%s" cannot be found.', $cssSelector);
+
+        $this->assertNotEmpty($elements, $message);
+
+        return $elements;
     }
 }

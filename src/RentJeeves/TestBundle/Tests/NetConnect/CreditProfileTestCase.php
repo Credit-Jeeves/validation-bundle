@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\TestBundle\Tests\NetConnect;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\Tests\NetConnect\CreditProfileTestCase as Base;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -26,6 +26,7 @@ class CreditProfileTestCase extends Base
         $address = new Address();
         $address->setIsDefault(true);
         $tenant->addAddress($address);
+
         return $tenant;
     }
 

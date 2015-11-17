@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -114,6 +115,19 @@ abstract class Holding
      * )
      */
     protected $contracts;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportApiMapping",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     }
+     * )
+     */
+    protected $importApiMapping;
 
     /**
      * @ORM\OneToMany(
@@ -269,6 +283,7 @@ abstract class Holding
         $this->residentsMapping = new ArrayCollection();
         $this->apiIntegrationType = ApiIntegrationType::NONE;
         $this->depositAccounts = new ArrayCollection();
+        $this->importApiMapping = new ArrayCollection();
     }
 
     /**
@@ -635,6 +650,30 @@ abstract class Holding
     public function getUnits()
     {
         return $this->units;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImportApiMapping()
+    {
+        return $this->importApiMapping;
+    }
+
+    /**
+     * @param ImportApiMapping $importApiMapping
+     */
+    public function addImportApiMapping(ImportApiMapping $importApiMapping)
+    {
+        $this->importApiMapping->add($importApiMapping);
+    }
+
+    /**
+     * @param \RentJeeves\DataBundle\Entity\ImportApiMapping
+     */
+    public function removeImportApiMapping(ImportApiMapping $contract)
+    {
+        $this->contracts->removeElement($contract);
     }
 
     /**

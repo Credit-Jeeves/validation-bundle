@@ -8,6 +8,7 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\Unit;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILeasingClient;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
+use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -16,7 +17,7 @@ use Symfony\Bridge\Monolog\Logger;
 /**
  * @DI\Service("amsi.resident_data")
  */
-class ResidentDataManager
+class ResidentDataManager implements ResidentDataManagerInterface
 {
     use SettingsTrait;
 
@@ -116,6 +117,16 @@ class ResidentDataManager
         $this->logger->debug('Unit mapping complete.');
 
         return $leases;
+    }
+
+    /**
+     * @param string $externalPropertyId
+     *
+     * @return Lease[]
+     */
+    public function getResidentTransactions($externalPropertyId)
+    {
+        return $this->getResidents($externalPropertyId);
     }
 
     /**

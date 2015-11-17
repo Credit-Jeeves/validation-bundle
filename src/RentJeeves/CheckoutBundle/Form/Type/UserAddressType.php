@@ -1,10 +1,8 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use CreditJeeves\ApplicantBundle\Form\Type\UserAddressType as Base;
-use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UserAddressType extends Base
@@ -34,7 +32,7 @@ class UserAddressType extends Base
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Address'
+                'data_class' => 'CreditJeeves\DataBundle\Entity\MailingAddress'
             )
         );
     }

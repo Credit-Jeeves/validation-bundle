@@ -323,9 +323,10 @@
                 <source>common.ssn</source>
                 <target>SSN</target>
             </trans-unit>
-
-
-
+            <trans-unit id="common.ssn.again">
+                <source>common.ssn.again</source>
+                <target>SSN (Again)</target>
+            </trans-unit>
             <trans-unit id="loan.type.balance">
                 <source>loan.type.balance</source>
                 <target>Balance for Loan Type</target>
@@ -1071,6 +1072,10 @@
             <trans-unit id="error.user.ssn.empty">
                 <source>error.user.ssn.empty</source>
                 <target>SSN is required.</target>
+            </trans-unit>
+            <trans-unit id="error.user.ssn.match">
+                <source>error.user.ssn.match</source>
+                <target>The SSN fields do not match.</target>
             </trans-unit>
             <trans-unit id="error.user.ssn.exact">
                 <source>error.user.ssn.exact</source>

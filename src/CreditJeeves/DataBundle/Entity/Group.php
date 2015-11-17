@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -200,6 +201,27 @@ class Group extends BaseGroup
     public function isExistGroupSettings()
     {
         return empty($this->groupSettings) ? false : true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExistImportSettings()
+    {
+        return !empty($this->importSettings);
+    }
+
+    /**
+     * @return ImportGroupSettings
+     */
+    public function getImportSettings()
+    {
+        if (empty($this->importSettings)) {
+            $this->importSettings = new ImportGroupSettings();
+            $this->importSettings->setGroup($this);
+        }
+
+        return $this->importSettings;
     }
 
     /**

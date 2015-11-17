@@ -396,7 +396,7 @@ class PaymentAccountType extends AbstractType
             'address_choice',
             'entity',
             [
-                'class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
                 'mapped' => true,
                 'property_path' => 'address',
                 'label' => 'checkout.billing_address',

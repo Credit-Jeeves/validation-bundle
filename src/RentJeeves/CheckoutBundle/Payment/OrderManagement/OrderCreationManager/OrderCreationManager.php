@@ -71,6 +71,7 @@ class OrderCreationManager
         $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
         $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
+        $order->setPayment($payment);
 
         $this->createRentOperations($payment, $order);
         $this->setFeeAndPaymentTypeIntoOrder($order, $groupSettings, $paymentAccount);
@@ -96,6 +97,7 @@ class OrderCreationManager
         $order->setPaymentAccount($paymentAccount);
         $order->setDepositAccount($payment->getDepositAccount());
         $order->setDescriptor($contract->getGroup()->getStatementDescriptor());
+        $order->setPayment($payment);
 
         $this->createCustomOperation($payment, $order);
 
@@ -264,20 +266,20 @@ class OrderCreationManager
     {
         $contract = $payment->getContract();
 
-        if ($amount = $payment->getAmount()) {
+        if ($payment->getAmount() > 0) {
             $operation = new Operation();
             $operation->setOrder($order);
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
-            $operation->setAmount($amount);
+            $operation->setAmount($payment->getAmount());
             $operation->setPaidFor($payment->getPaidFor());
         }
-        if ($amount = $payment->getOther()) {
+        if ($payment->getOther() > 0) {
             $operation = new Operation();
             $operation->setOrder($order);
             $operation->setType(OperationType::OTHER);
             $operation->setContract($contract);
-            $operation->setAmount($amount);
+            $operation->setAmount($payment->getOther());
             $operation->setPaidFor($payment->getPaidFor());
         }
     }

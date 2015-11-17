@@ -56,9 +56,10 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
 
         $repo = $this->getContainer()->get('doctrine')->getManager()->getRepository('RjDataBundle:Property');
+        /** @var Property $property */
         $this->assertNotNull($property = $repo->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb));
-        $this->assertEquals($city, $property->getCity());
-        $this->assertEquals($district, $property->getDistrict());
+        $propertyAddress = $property->getPropertyAddress();
+        $this->assertEquals($city, $propertyAddress->getCity());
     }
 
     /**

@@ -1,15 +1,34 @@
 <?php
-namespace CreditJeeves\DataBundle\Traits;
+namespace CreditJeeves\DataBundle\Entity;
+
+use CreditJeeves\DataBundle\Model\MailingAddress as Base;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @TODO: remove
+ * Address
+ *
+ * @ORM\Table(name="cj_address")
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\AddressRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-trait AddressTrait
+class MailingAddress extends Base
 {
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getFullAddress();
+    }
+
+    /**
+     * @return string
+     */
     public function getAddress()
     {
-        $address = array();
-        $result = array();
+        $address = [];
+        $result = [];
         if ($number = $this->getNumber()) {
             $address[] = $number;
         }
@@ -28,10 +47,13 @@ trait AddressTrait
         return implode(', ', $result);
     }
 
+    /**
+     * @return string
+     */
     public function getFullAddress()
     {
-        $address = array();
-        $result = array();
+        $address = [];
+        $result = [];
         if ($number = $this->getNumber()) {
             $address[] = $number;
         }
@@ -51,6 +73,6 @@ trait AddressTrait
             $result[] = $area;
         }
 
-        return implode(', ', $result).' '.$this->getZip();
+        return implode(', ', $result) . ' ' . $this->getZip();
     }
 }

@@ -2,14 +2,13 @@
 
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingResponseRecord;
-use RentJeeves\DataBundle\Entity\AciCollectPayContractBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
@@ -19,7 +18,6 @@ use RentJeeves\DataBundle\Entity\BillingAccountMigration;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccountMigration;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\ConstraintViolation;

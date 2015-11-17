@@ -17,3 +17,5 @@
 /.*
 /phpunit.xml
 /bin/php-cs-fixer
+phpunit*.phar
+

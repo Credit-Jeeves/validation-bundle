@@ -17,7 +17,7 @@ use RentJeeves\DataBundle\Enum\TransactionStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
+use RentJeeves\CheckoutBundle\Command\PaymentReportSynchronizeHPSCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\DataBundle\Entity\Transaction as HeartlandTransaction;
 
@@ -48,7 +48,7 @@ class PaymentReportCase extends BaseTestCase
     protected function executeCommand()
     {
         $application = new Application($this->getKernel());
-        $application->add(new PaymentReportCommand());
+        $application->add(new PaymentReportSynchronizeHPSCommand());
 
         $command = $application->find('payment:report:synchronize');
         $commandTester = new CommandTester($command);

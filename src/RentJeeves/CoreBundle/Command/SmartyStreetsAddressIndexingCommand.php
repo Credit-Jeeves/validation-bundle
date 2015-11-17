@@ -70,12 +70,13 @@ class SmartyStreetsAddressIndexingCommand extends BaseCommand
      */
     protected function indexProperty(Property $property)
     {
+        $propertyAddress = $property->getPropertyAddress();
         try {
             $address = $this->getSSLookupService()->lookup(
-                $property->getAddress1(),
-                $property->getCity(),
-                $property->getArea(),
-                $property->getZip()
+                $propertyAddress->getAddress(),
+                $propertyAddress->getCity(),
+                $propertyAddress->getState(),
+                $propertyAddress->getZip()
             );
         } catch (AddressLookupException $e) {
             $this->getLogger()->error(
@@ -89,9 +90,9 @@ class SmartyStreetsAddressIndexingCommand extends BaseCommand
             return;
         }
 
-        $property->setLat($address->getLatitude());
-        $property->setLong($address->getLongitude());
-        $property->setIndex($address->getIndex());
+        $propertyAddress->setLat($address->getLatitude());
+        $propertyAddress->setLong($address->getLongitude());
+        $propertyAddress->setIndex($address->getIndex());
     }
 
     /**

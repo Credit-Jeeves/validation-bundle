@@ -323,7 +323,7 @@ function Pay(parent, contract) {
     self.propertyAddress = ko.computed(function() {
         var propertyFullAddress = new Address(self, self.addresses);
 
-        ko.mapping.fromJS(self.contract().property, {}, propertyFullAddress);
+        ko.mapping.fromJS(self.contract().property.propertyAddress, {}, propertyFullAddress);
         propertyFullAddress.unit(self.contract().unit.name);
 
         return propertyFullAddress;
@@ -370,7 +370,7 @@ function Pay(parent, contract) {
 
         var paymentData = {
             'contractId' : contract.id,
-            'amount' : contract.rent,
+            'amount' : contract.groupSetting.showRent ? contract.rent : null,
             'endMonth' : finishDate.getMonth() + 1,
             'endYear' : finishDate.getYear(),
             'paidForOptions' : associativeArrayToOptions(ko.unwrap(self.paidForArr), ''),

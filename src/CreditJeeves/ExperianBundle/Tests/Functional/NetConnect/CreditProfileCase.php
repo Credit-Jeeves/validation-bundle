@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional\NetConnect;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\CreditProfile;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\BaseTestCase;
@@ -52,6 +52,7 @@ abstract class CreditProfileCase extends BaseTestCase
             $this->getContainer()->getParameter('net_connect.credit_profile.dbhost'),
             $this->getContainer()->getParameter('net_connect.credit_profile.sub_code')
         );
+
         return $creditProfile;
     }
 
@@ -83,6 +84,7 @@ abstract class CreditProfileCase extends BaseTestCase
             try {
                 try {
                     $netConnect = $this->getNetConnect();
+
                     return $netConnect->getResponseOnUserData($aplicant);
                 } catch (Exception $e) {
                     if (4000 != $e->getCode()) {

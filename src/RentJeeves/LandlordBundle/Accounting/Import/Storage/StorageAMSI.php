@@ -2,18 +2,39 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 
-/**
- * @Service("accounting.import.storage.amsi")
- */
 class StorageAMSI extends ExternalApiStorage
 {
+    /**
+     * @var array
+     */
+    protected $defaultMapping = [
+        1 => Mapping::KEY_RESIDENT_ID,
+        2 => Mapping::KEY_UNIT,
+        3 => Mapping::KEY_MOVE_IN,
+        4 => Mapping::KEY_LEASE_END,
+        5 => Mapping::KEY_RENT,
+        6 => Mapping::FIRST_NAME_TENANT,
+        7 => Mapping::LAST_NAME_TENANT,
+        8 => Mapping::KEY_EMAIL,
+        9 => Mapping::KEY_MOVE_OUT,
+        10 => Mapping::KEY_BALANCE,
+        11 => Mapping::KEY_MONTH_TO_MONTH,
+        12 => Mapping::KEY_PAYMENT_ACCEPTED,
+        13 => Mapping::KEY_EXTERNAL_LEASE_ID,
+        14 => Mapping::KEY_UNIT_ID,
+        15 => Mapping::KEY_CITY,
+        16 => Mapping::KEY_STREET,
+        17 => Mapping::KEY_ZIP,
+        18 => Mapping::KEY_STATE,
+        19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
+    ];
+
     /**
      * @return bool
      */
@@ -23,53 +44,12 @@ class StorageAMSI extends ExternalApiStorage
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
-    protected function initializeParameters()
+    public function saveToFile($residentLeases, $externalPropertyId = null)
     {
-        $this->setFieldDelimiter(self::FIELD_DELIMITER);
-        $this->setTextDelimiter(self::TEXT_DELIMITER);
-        $this->setDateFormat(self::DATE_FORMAT);
-
-        $mapping = [
-            1 => Mapping::KEY_RESIDENT_ID,
-            2 => Mapping::KEY_UNIT,
-            3 => Mapping::KEY_MOVE_IN,
-            4 => Mapping::KEY_LEASE_END,
-            5 => Mapping::KEY_RENT,
-            6 => Mapping::FIRST_NAME_TENANT,
-            7 => Mapping::LAST_NAME_TENANT,
-            8 => Mapping::KEY_EMAIL,
-            9 => Mapping::KEY_MOVE_OUT,
-            10 => Mapping::KEY_BALANCE,
-            11 => Mapping::KEY_MONTH_TO_MONTH,
-            12 => Mapping::KEY_PAYMENT_ACCEPTED,
-            13 => Mapping::KEY_EXTERNAL_LEASE_ID,
-            14 => Mapping::KEY_UNIT_ID,
-            15 => Mapping::KEY_CITY,
-            16 => Mapping::KEY_STREET,
-            17 => Mapping::KEY_ZIP,
-            18 => Mapping::KEY_STATE,
-            19 => Mapping::KEY_EXTERNAL_PROPERTY_ID
-        ];
-
-        $this->writeCsvToFile($mapping);
-        $this->setMapping($mapping);
-    }
-
-    /**
-     * @param  array   $residentLeases
-     * @return boolean
-     */
-    public function saveToFile(array $residentLeases)
-    {
-        if (count($residentLeases) <= 0) {
+        if (!parent::saveToFile($residentLeases)) {
             return false;
-        }
-
-        $filePath = $this->getFilePath(true);
-        if (is_null($filePath)) {
-            $this->initializeParameters();
         }
 
         /** @var Lease $lease */
@@ -132,7 +112,7 @@ class StorageAMSI extends ExternalApiStorage
                     $street,
                     $zip,
                     $state,
-                    $this->getImportExternalPropertyId()
+                    $externalPropertyId
                 ];
 
                 $this->writeCsvToFile($data);

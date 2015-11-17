@@ -9,8 +9,8 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
-    property.process:
-        class: RentJeeves\CoreBundle\Services\PropertyProcess
+    property.manager:
+        class: RentJeeves\CoreBundle\Services\PropertyManager
         arguments:
             - @doctrine.orm.default_entity_manager
             - @google
