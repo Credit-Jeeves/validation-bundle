@@ -15,3 +15,8 @@ services:
             - @validator
             - @logger
 
+    smarty_streets.cache:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\Cache\SmartyStreetsCacheService
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
