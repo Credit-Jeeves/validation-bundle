@@ -12,7 +12,6 @@ use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -30,6 +29,9 @@ class ContractProcessor
      */
     protected $em;
 
+    /**
+     * @var string
+     */
     protected $locale;
 
     /**
@@ -103,6 +105,15 @@ class ContractProcessor
         return $contract;
     }
 
+    /**
+     * @param Unit $unit
+     * @param Tenant $tenant
+     * @param Contract $contract
+     *
+     * @return Contract|void
+     *
+     * @throws \Exception
+     */
     public function processWithExistUnit(Unit $unit, Tenant $tenant, Contract $contract)
     {
         $contract = $this
@@ -121,21 +132,38 @@ class ContractProcessor
         return $contract;
     }
 
+    /**
+     * @param Form $newUnitForm
+     * @param Tenant $tenant
+     * @param Contract $contract
+     *
+     * @throws \Exception Error sending message
+     * @throws BadRequestHttpException Error creating or editing Property
+     *
+     * @return Contract
+     */
     public function processWithNewUnit(Form $newUnitForm, Tenant $tenant, Contract $contract)
     {
         /** @var PropertyAddress $propertyAddress */
         $propertyAddress = $newUnitForm->get('address')->getData();
         $unitName = $newUnitForm->get('address')->get('unit_name')->getData();
 
-        $property = $this->findPropertyOrCreateNew($propertyAddress);
+        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+            $propertyAddress->getNumber(),
+            $propertyAddress->getStreet(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
+        );
+        if (null === $property) {
+            throw new BadRequestHttpException('api.errors.contracts.property.invalid');
+        }
 
         /** @var Landlord $landlord */
         $landlord = $newUnitForm->get('landlord')->getData();
 
         /** @var Landlord $landlordInDb */
-        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy([
-            'email' => $landlord->getEmail(),
-        ]);
+        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => $landlord->getEmail()]);
 
         if ($landlordInDb) {
             $landlord = $landlordInDb;
@@ -172,7 +200,6 @@ class ContractProcessor
 
         $this->em->persist($property);
         $this->em->persist($group);
-
         $this->em->flush();
 
         $contracts = $this
@@ -192,45 +219,5 @@ class ContractProcessor
 
         //TODO return last need understand how it will be fix
         return $contract;
-    }
-
-    /**
-     * @param PropertyAddress $propertyAddress
-     *
-     * @throws BadRequestHttpException if address is not valid
-     *
-     * @return Property
-     */
-    protected function findPropertyOrCreateNew(PropertyAddress $propertyAddress)
-    {
-        $property = $this->propertyManager->findPropertyByAddressInDb(
-            $propertyAddress->getNumber(),
-            $propertyAddress->getStreet(),
-            $propertyAddress->getCity(),
-            $propertyAddress->getState(),
-            $propertyAddress->getZip()
-        );
-
-        if (null !== $property) {
-            return $property;
-        }
-
-        $address = $this->propertyManager->lookupAddress(
-            $propertyAddress->getAddress(),
-            $propertyAddress->getCity(),
-            $propertyAddress->getState(),
-            $propertyAddress->getZip()
-        );
-
-        if (null === $address) {
-            throw new BadRequestHttpException('api.errors.contracts.property.invalid');
-        }
-
-        $propertyAddress->setAddressFields($address);
-
-        $newProperty = new Property();
-        $newProperty->setPropertyAddress($propertyAddress);
-
-        return $newProperty;
     }
 }
