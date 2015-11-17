@@ -13,12 +13,13 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorageInterface;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
-use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
@@ -527,45 +528,84 @@ class AccountingController extends Controller
         return $response;
     }
 
-    protected function getBaseResidents()
+    /**
+     * @Route(
+     *     "/import/external_property_ids/list",
+     *     name="accounting_import_load_external_property_ids",
+     *     options={"expose"=true}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function getExternalPropertyIdsAction()
     {
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
-        $mapping = $importFactory->getMapping();
-        /** @var StorageAbstract $storage */
+        /** @var StorageResman $storage */
         $storage = $importFactory->getStorage();
-        $propertyMappingManager = $this->get('property_mapping.manager');
 
-        if (!$storage->isMultipleProperty()) {
-            $propertyMappingManager->createPropertyMapping(
-                $storage->getImportPropertyId(),
+        return new JsonResponse(
+            $this->getExternalPropertyIds(
                 $storage->getImportExternalPropertyId()
-            );
-        }
+            )
+        );
+    }
 
-        $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
-        $result = $storage->saveToFile($residents);
+    /**
+     * @param string $commaSeparatedExternalPropertyIds
+     * @return array
+     */
+    protected function getExternalPropertyIds($commaSeparatedExternalPropertyIds)
+    {
+        return array_map('trim', explode(',', $commaSeparatedExternalPropertyIds));
+    }
 
-        if ($storage->isOnlyException()) {
-            $handler = $importFactory->getHandler();
-            $handler->updateMatchedContracts();
-        }
-
+    /**
+     * @param string $externalPropertyId
+     * @return JsonResponse
+     */
+    protected function getBaseResidents($externalPropertyId)
+    {
         $response = new JsonResponse();
-        $response->setStatusCode(($result) ? 200 : 400);
+
+        try {
+            /** @var ImportFactory $importFactory */
+            $importFactory = $this->get('accounting.import.factory');
+            $mapping = $importFactory->getMapping();
+            /** @var ExternalApiStorageInterface|StorageAbstract $storage */
+            $storage = $importFactory->getStorage();
+            $residents = $mapping->getResidents($externalPropertyId);
+
+            $result = $storage->saveToFile($residents, $externalPropertyId);
+
+            if ($storage->isOnlyException()) {
+                $handler = $importFactory->getHandler();
+                $handler->updateMatchedContracts();
+            }
+
+            $response->setStatusCode(($result) ? 201 : 400);
+
+        } catch (\Exception $e) {
+            $response->setStatusCode(400);
+            $response->setData($e->getMessage());
+        }
 
         return $response;
     }
 
     /**
      * @Route(
-     *     "/import/residents/resman",
+     *     "/import/residents/resman/{externalPropertyId}",
      *     name="accounting_import_residents_resman",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsResMan()
+    public function getResidentsResMan($externalPropertyId)
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**
@@ -606,14 +646,17 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/amsi",
+     *     "/import/residents/amsi/{externalPropertyId}",
      *     name="accounting_import_residents_amsi",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsAmsi()
+    public function getResidentsAmsi($externalPropertyId)
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**

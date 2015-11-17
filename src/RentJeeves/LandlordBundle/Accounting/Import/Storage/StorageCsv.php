@@ -163,7 +163,7 @@ class StorageCsv extends StorageAbstract
         $this->setTextDelimiter($importGroupSettings->getCsvTextDelimiter());
         $this->setDateFormat($importGroupSettings->getCsvDateFormat());
 
-        $onlyException = $form['onlyException']->getData();
+        $onlyException = isset($form['onlyException']) ? $form['onlyException']->getData() : false;
         $this->setOnlyException($onlyException);
 
         $file = $form['attachment']->getData();

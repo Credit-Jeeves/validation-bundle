@@ -46,7 +46,7 @@ class StorageAMSI extends ExternalApiStorage
     /**
      * {@inheritdoc}
      */
-    public function saveToFile($residentLeases)
+    public function saveToFile($residentLeases, $externalPropertyId = null)
     {
         if (!parent::saveToFile($residentLeases)) {
             return false;
@@ -112,7 +112,7 @@ class StorageAMSI extends ExternalApiStorage
                     $street,
                     $zip,
                     $state,
-                    $this->getImportExternalPropertyId()
+                    $externalPropertyId
                 ];
 
                 $this->writeCsvToFile($data);

@@ -14,7 +14,7 @@ abstract class ExternalApiStorage extends StorageCsv implements ExternalApiStora
     /**
      * {@inheritdoc}
      */
-    public function saveToFile($residentData)
+    public function saveToFile($residentData, $externalPropertyId = null)
     {
         if (count($residentData) < 0) {
             return false;
@@ -130,7 +130,8 @@ abstract class ExternalApiStorage extends StorageCsv implements ExternalApiStora
     {
         $this->setIsMultipleProperty(true);
         $this->setImportType(ImportType::MULTI_PROPERTIES);
-        $this->setOnlyException($form['onlyException']->getData());
+        $onlyException = isset($form['onlyException']) ? $form['onlyException']->getData() : false;
+        $this->setOnlyException($onlyException);
         $this->setImportLoaded(false);
         $this->setImportExternalPropertyId($importGroupSettings->getApiPropertyIds());
     }
