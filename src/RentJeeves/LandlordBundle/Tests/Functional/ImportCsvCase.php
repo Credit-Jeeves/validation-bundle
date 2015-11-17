@@ -1679,5 +1679,4 @@ class ImportCsvCase extends ImportBaseAbstract
         $countNew = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
         $this->assertEquals($countNew, $count + 2);
     }
-
 }

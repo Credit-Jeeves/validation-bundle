@@ -120,10 +120,14 @@ class StorageYardi extends ExternalApiStorage
     /**
      * @param ResidentLeaseFile $residentData
      * @param ResidentsResident $resident
+     * @param Property $property
      * @throws ImportStorageException
      */
-    protected function saveToFileCustomer(ResidentLeaseFile $residentData, ResidentsResident $resident, Property $property)
-    {
+    protected function saveToFileCustomer(
+        ResidentLeaseFile $residentData,
+        ResidentsResident $resident,
+        Property $property
+    ) {
         $residentId = $resident->getResidentId();
         $moveOutDate = $resident->getMoveOutDate(true);
         $moveOutDate = $moveOutDate instanceof DateTime ? $moveOutDate->format($this->getDateFormat()) : '';
