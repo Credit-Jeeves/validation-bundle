@@ -55,7 +55,7 @@ class ImportMRICase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
+        $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');
         $submitImport->click();
 
         $this->session->wait(
@@ -65,11 +65,11 @@ class ImportMRICase extends ImportBaseAbstract
         $this->waitReviewAndPost();
 
         //First page
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile = $this->getDomElement('.submitImportFile>span', 'Can not find submit button');
         $submitImportFile->click();
         $this->waitReviewAndPost();
         //Second page
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile = $this->getDomElement('.submitImportFile>span', 'Can not find submit button');
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
