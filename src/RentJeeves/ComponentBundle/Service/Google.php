@@ -2,33 +2,26 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ComponentBundle\Service\Google\GooglePlaces as Place;
-use Doctrine\ORM\EntityManager;
 
 /**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
+ * Service name "google"
  *
- * @DI\Service("google")
+ * @todo Rename this pls
  */
 class Google
 {
     const DEFAULT_NAME = 'property';
-
     const DEFAULT_TYPES = 'lodging';
-
     const DEFAULT_LANGUAGE = 'en';
-
-    const DEFAULT_ACCURANCY = 50;
-
+    const DEFAULT_ACCURACY = 50;
     const DEFAULT_RADIUS = 1000;
-
     const DEFAULT_LIMIT = 19;
 
     /**
-     * @var GooglePlaces
+     * @var Place
      */
     protected $place;
 
@@ -38,26 +31,25 @@ class Google
     protected $em;
 
     /**
-     * Constructor.
-     *
-     * @param parameter from config     $google_maps_key
-     *
-     * @DI\InjectParams({
-     *     "google_maps_key"    = @DI\Inject("%google_maps_key%"),
-     *     "em"                 = @DI\Inject("doctrine.orm.entity_manager"),
-     * })
-     *
-     * @access public
+     * @param EntityManager $em
+     * @param string $google_maps_key
      */
-    public function __construct($google_maps_key, EntityManager $em)
+    public function __construct(EntityManager $em, $google_maps_key)
     {
-        $this->place = new Place($google_maps_key);
         $this->em = $em;
+        $this->place = new Place($google_maps_key);
     }
 
     /**
-    * Save property to google
-    */
+     * Save property to google
+     *
+     * @param Property $property
+     * @param string $name
+     *
+     * @return bool
+     *
+     * @throws \Exception
+     */
     public function savePlace(Property $property, $name = self::DEFAULT_NAME)
     {
         $groups = $property->getPropertyGroups();
@@ -67,14 +59,12 @@ class Google
             return false;
         }
 
-        //Call this for remove dublicates
+        //Call this for remove duplicates
         $this->clearPlace($property);
 
-        $latitude   = $property->getJb();
-        $longitude = $property->getKb();
-        $this->place->setLocation($latitude . ',' . $longitude);
+        $this->place->setLocation($this->getLocationData($property));
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
-        $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
+        $this->place->setAccuracy(self::DEFAULT_ACCURACY);
         $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
@@ -96,27 +86,27 @@ class Google
                 print_r($result, true)
             )
         );
-
     }
 
+    /**
+     * @param Property $property
+     * @param string $reference
+     * @param string $name
+     *
+     * @return bool
+     */
     public function deletePlace(Property $property, $reference, $name = self::DEFAULT_NAME)
     {
-        $latitude   = $property->getJb();
-        $longitude = $property->getKb();
-        $this->place->setLocation($latitude . ',' . $longitude);
+        $this->place->setLocation($this->getLocationData($property));
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
-        $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
+        $this->place->setAccuracy(self::DEFAULT_ACCURACY);
         $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
         $this->place->setReference($reference);
         $results = $this->place->delete();
 
-        if (!is_object($results) || !property_exists($results, 'status')) {
-            return false;
-        }
-
-        if ($results->status != Place::OK_STATUS) {
+        if (!is_object($results) || !property_exists($results, 'status') || $results->status != Place::OK_STATUS) {
             return false;
         }
 
@@ -124,18 +114,20 @@ class Google
     }
 
     /**
-    * Save property to google
-    *
-    * @return array
-    */
+     * @param Property $property
+     * @param string $name
+     * @param int $radius
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function searchPlace(Property $property, $name = self::DEFAULT_NAME, $radius = self::DEFAULT_RADIUS)
     {
-        $latitude   = $property->getJb();
-        $longitude = $property->getKb();
-        $this->place->setLocation($latitude . ',' . $longitude);
+        $this->place->setLocation($this->getLocationData($property));
         $this->place->setRadius($radius);
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
-        $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
+        $this->place->setAccuracy(self::DEFAULT_ACCURACY);
         $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
@@ -146,24 +138,52 @@ class Google
             return $results['result'];
         }
 
-        throw new \Exception("Error processing(searchPlace) google request for Property ID =".$property->getId(), 1);
+        throw new \Exception('Error processing(searchPlace) google request for Property ID#' . $property->getId(), 1);
     }
 
+    /**
+     * @param Property $property
+     */
     protected function clearPlace(Property $property)
     {
-
         $searchResult = $this->searchPlace($property, self::DEFAULT_NAME, 50);
 
         if (empty($searchResult)) {
-            return true;
+            return;
         }
+
+        $locationData = $this->getLocationData($property, false);
 
         foreach ($searchResult as $value) {
             $lat = $value['geometry']['location']['lat'];
             $lng = $value['geometry']['location']['lng'];
-            if ($lat == $property->getJb() && $property->getKb() == $lng) {
+            if ($lat == $locationData['latitude'] && $lng == $locationData['longitude']) {
                 $this->deletePlace($property, $value['reference']);
             }
         }
+    }
+
+    /**
+     * @param Property $property
+     * @param boolean $toString
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException when Property doesn\'t have location data
+     */
+    protected function getLocationData(Property $property, $toString = true)
+    {
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->getJb() && $propertyAddress->getKb()) {
+            $locationData['latitude'] = $propertyAddress->getJb();
+            $locationData['longitude'] = $propertyAddress->getKb();
+        } elseif ($propertyAddress->getLat() && $propertyAddress->getLong()) {
+            $locationData['latitude'] = $propertyAddress->getLat();
+            $locationData['longitude'] = $propertyAddress->getLong();
+        } else {
+            throw new \InvalidArgumentException(sprintf('Property doesn\'t have neither jb/kb nor lat/long'));
+        }
+
+        return $toString ? $locationData['latitude'] . ',' . $locationData['longitude'] : $locationData;
     }
 }

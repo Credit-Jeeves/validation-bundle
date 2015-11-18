@@ -105,7 +105,9 @@ class YardiContractSynchronizerCase extends Base
         $residentMapping = $tenant->getResidentForHolding($holding = $contract->getHolding());
         $this->assertNotEmpty($residentMapping, 'Wrong fixtures, resident mapping didn\'t find');
         $residentMapping->setResidentId('t0012027');
+        $contract->setExternalLeaseId('t0012027');
         $em->persist($residentMapping);
+        $em->persist($contract);
         $unit = $contract->getUnit();
         $unit->setName('101');
 
@@ -115,7 +117,7 @@ class YardiContractSynchronizerCase extends Base
         $em->flush();
 
         $contractSynchronizer = $this->getContainer()->get('yardi.contract_sync');
-        $contractSynchronizer->syncRecurringCharge();
+        $contractSynchronizer->syncRent();
         /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Did not find contract which should be updated');
@@ -144,6 +146,7 @@ class YardiContractSynchronizerCase extends Base
         $contractWaiting->setUnit($contract->getUnit());
         $contractWaiting->setRent($contract->getRent());
         $contractWaiting->setResidentId('t0012027');
+        $contractWaiting->setExternalLeaseId('t0012027');
         $contractWaiting->setStartAt($today);
         $contractWaiting->setFinishAt($today);
         $contractWaiting->setFirstName('Papa');
@@ -164,51 +167,12 @@ class YardiContractSynchronizerCase extends Base
         $em->flush();
 
         $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
-        $contractSyncronizer->syncRecurringCharge();
+        $contractSyncronizer->syncRent();
         /** @var Contract $contract */
         $this->assertEquals(
             900.00,
             $contractWaiting->getRent(),
             'Rent contract waiting didn\'t update'
         );
-    }
-
-    /**
-     * @return array
-     */
-    public function dateProvider()
-    {
-        return [
-            [$startDate = new \DateTime('-1 day'), $endDate = new \DateTime(), true],
-            [$startDate = new \DateTime('+1 day'), $endDate = new \DateTime(), false],
-            [$startDate = new \DateTime('-1 day'), null, true],
-            [null, $endDate = new \DateTime('-1 day'), false],
-            [null, $endDate = new \DateTime('+1 day'), true],
-            [$startDate = new \DateTime('+1 day'), $endDate = new \DateTime('-1 day'), false],
-            [$startDate = new \DateTime('-1 year'), null, true]
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider dateProvider
-     */
-    public function shouldCheckDateFallsBetweenDates($startDate, $endDate, $result)
-    {
-        $contractSync = $this->getContainer()->get('yardi.contract_sync');
-        $contractSyncReflectionClass = new \ReflectionClass($contractSync);
-
-        $doesDateFallBetweenDateMethod = $contractSyncReflectionClass->getMethod('checkDateFallsBetweenDates');
-        $doesDateFallBetweenDateMethod->setAccessible(true);
-
-        $resultExecute = $doesDateFallBetweenDateMethod->invokeArgs(
-            $contractSync,
-            [
-                $startDate,
-                $endDate
-            ]
-        );
-
-        $this->assertEquals($result, $resultExecute);
     }
 }

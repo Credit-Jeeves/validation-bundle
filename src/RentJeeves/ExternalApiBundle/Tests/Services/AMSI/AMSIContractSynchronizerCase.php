@@ -24,6 +24,7 @@ class AMSIContractSynchronizerCase extends Base
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RENT');
         $contract->setRent(123321); // test value
+        $contract->setExternalLeaseId(17);
 
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
@@ -39,7 +40,7 @@ class AMSIContractSynchronizerCase extends Base
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
-        $balanceSynchronizer->syncRecurringCharge();
+        $balanceSynchronizer->syncRent();
         $updatedContract = $repo->find($contract->getId());
 
         $this->assertGreaterThan(0, $updatedContract->getRent(), 'Rent should be greater than 0');

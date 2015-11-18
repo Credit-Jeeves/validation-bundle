@@ -9,8 +9,8 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
-    property.process:
-        class: RentJeeves\CoreBundle\Services\PropertyProcess
+    property.manager:
+        class: RentJeeves\CoreBundle\Services\PropertyManager
         arguments:
             - @doctrine.orm.default_entity_manager
             - @google
@@ -48,12 +48,12 @@ services:
             em: "@doctrine.orm.default_entity_manager"
             logger: "@logger"
             propertyManagement: "%property_management%"
-            
+
     jms_serializer.array_date_time.handler:
         class: RentJeeves\CoreBundle\Handler\DateHandler
         tags:
             - { name: jms_serializer.subscribing_handler }
-            
+
     jms_serializer.csv_pipe_serialization_visitor:
         class: RentJeeves\CoreBundle\Visitor\CsvSerializationVisitor
         arguments:
@@ -73,7 +73,8 @@ services:
         class: RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper
         public: false
         arguments:
-            - %aci.collect_pay.business_id%
+            - %aci.collect_pay.renttrack_application_business_id%
+            - %aci.collect_pay.renttrack_virtual_terminal_account%
             - @merchant_account.repository
 
     aci_profiles_exporter:

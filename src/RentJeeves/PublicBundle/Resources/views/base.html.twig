@@ -14,7 +14,7 @@
         {% endstylesheets %}
         <!--[if lt IE 9]>
         {% stylesheets '@RjPublicBundle/Resources/public/css/checked.css'
-                       '@RjPublicBundle/Resources/public/css/ie8.css' 
+                       '@RjPublicBundle/Resources/public/css/ie8.css'
         %}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -30,6 +30,7 @@
         {% block google_analytics %}
             {% include 'RjCoreBundle::google_analytics.html.twig' %}
         {% endblock %}
+        <!-- {{ random() }} -->
     </head>
     <body>
         <div class="wrapper all">
@@ -68,7 +69,7 @@
         </div>
         {% javascripts  '@RjPublicBundle/Resources/public/js/jquery-1.10.2.min.js'
                         '@RjPublicBundle/Resources/public/js/jquery-ui.js'
-                        '@RjPublicBundle/Resources/public/js/jquery.placeholder.min.js' 
+                        '@RjPublicBundle/Resources/public/js/jquery.placeholder.min.js'
         %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}

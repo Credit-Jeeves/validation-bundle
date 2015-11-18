@@ -261,3 +261,8 @@ services:
         class: RentJeeves\AdminBundle\Form\RentalReportType
         tags:
             - { name: form.type, alias: rental_report }
+
+    form.import_group_settings:
+        class: RentJeeves\AdminBundle\Form\ImportGroupSettingsType
+        tags:
+            - { name: form.type, alias: import_group_settings }

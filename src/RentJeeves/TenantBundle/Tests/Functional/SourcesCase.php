@@ -9,12 +9,12 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
-use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use Symfony\Component\Config\FileLocator;
 
@@ -87,117 +87,10 @@ class SourcesCase extends BaseTestCase
     /**
      * @test
      */
-    public function editAci()
-    {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-
-        /** @var Tenant $tenant */
-        $tenant = $this
-            ->getEntityManager()
-            ->getRepository('RjDataBundle:Tenant')
-            ->findOneByEmail('tenant11@example.com');
-
-        $this->assertNotEmpty($tenant, "Check fixtures, tenant with email 'tenant11@example.com' should be exist");
-
-        $bankPaymentAccount = $this->prepareFixturesAciCollectPay($tenant);
-
-        $oldToken = $bankPaymentAccount->getToken();
-
-        $this->login('tenant11@example.com', 'pass');
-        $this->page->clickLink('rent.sources');
-
-        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
-
-        $this->assertNotNull(
-            $this->page->find(
-                'css',
-                sprintf('#payment-account-table td:contains("%s")', $bankPaymentAccount->getName())
-            ),
-            sprintf('Payment account "%s" should be displayed', $bankPaymentAccount->getName())
-        );
-        $this->assertNotNull(
-            $row = $this->page->find('css', '#payment-account-row-1'),
-            'Row with payment account should be displayed on table'
-        );
-
-        $row->clickLink('edit');
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length" .
-            " && jQuery('.overlay-trigger').length <= 0"
-        );
-
-        $this->assertNotEmpty(
-            $choices = $this->page->findAll(
-                'css',
-                '#rentjeeves_checkoutbundle_paymentaccounttype_type_box i'
-            ),
-            'Payment account type radio buttons should be displayed on payment account wizard'
-        );
-        $this->assertCount(3, $choices, 'Should be displayed both payment account types (card and bank)');
-        $choices[1]->click();
-        $this->assertFalse($choices[2]->isVisible(), 'DebitCard type should not be visible');
-
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
-        $this->fillForm(
-            $form,
-            [
-                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New Card',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '902',
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
-            ]
-        );
-
-        $this->assertNotEmpty(
-            $choices = $this->page->findAll(
-                'css',
-                '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box i'
-            ),
-            'Billing Addresses choices should be displayed.'
-        );
-        $this->assertCount(2, $choices, 'Should be displayed 2 billing addresses');
-        $choices[1]->click();
-
-        $this->page->pressButton('payment_account.edit.save');
-
-        $this->session->wait(
-            $this->timeout + 15000,
-            "jQuery.trim(jQuery('#payment-account-row-1 td:first').text()) == 'New Card'"
-        );
-
-        $this->assertNotEmpty(
-            $cols = $this->page->findAll('css', '#payment-account-row-1 td'),
-            'Should be displayed row with our updated payment account'
-        );
-        $this->assertEquals(
-            'New Card',
-            $cols[0]->getText(),
-            'First column should display updated nickname our payment account'
-        );
-
-        $this->getEntityManager()->refresh($bankPaymentAccount);
-
-        $this->assertNotEquals(
-            $oldToken,
-            $bankPaymentAccount->getToken(),
-            'Aci funding_account_id should be refreshed.'
-        );
-
-        $this->logout();
-    }
-
-    /**
-     * @test
-     */
     public function delAci()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         /** @var Tenant $tenant */
         $tenant = $this
@@ -258,137 +151,10 @@ class SourcesCase extends BaseTestCase
     /**
      * @test
      */
-    public function editHeartland()
-    {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')
-            ->findOneByEmail('tenant11@example.com');
-        $this->assertNotEmpty($tenant);
-
-        $this->login('tenant11@example.com', 'pass');
-        $this->page->clickLink('rent.sources');
-
-        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
-        $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-3'));
-        $row->clickLink('edit');
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length" .
-            " && jQuery('.overlay-trigger').length <= 0"
-        );
-
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
-        $this->fillForm(
-            $form,
-            [
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true
-            ]
-        );
-
-        $this->page->pressButton('payment_account.edit.save');
-
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#payment-account-edit .attention-box li').length"
-        );
-        $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
-        $this->assertCount(3, $errors);
-
-        $this->fillForm(
-            $form,
-            [
-                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New Card',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '902',
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
-            ]
-        );
-        $this->assertNotNull(
-            $choices = $this->page->findAll(
-                'css',
-                '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box i'
-            )
-        );
-        $this->assertCount(2, $choices);
-        $choices[1]->click();
-
-        $this->page->pressButton('payment_account.edit.save');
-
-        $this->session->wait(
-            $this->timeout + 15000,
-            "jQuery.trim(jQuery('#payment-account-row-3 td:first').text()) == 'New Card'"
-        );
-
-        $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-3 td'));
-        $this->assertEquals('New Card', $cols[0]->getText());
-
-        $this->logout();
-    }
-
-    /**
-     * @test
-     */
-    public function editTheSame()
-    {
-        $this->setDefaultSession('selenium2');
-        $this->load(false);
-        $this->login('tenant11@example.com', 'pass');
-        $this->page->clickLink('rent.sources');
-
-        $this->session->wait($this->timeout, "jQuery('#payment-account-row-2').length");
-        $this->assertNotNull($row = $this->page->find('css', '#payment-account-row-2'));
-        $row->clickLink('edit');
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length" .
-            " && jQuery('.overlay-trigger').length <= 0"
-        );
-
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
-        $this->fillForm(
-            $form,
-            [
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
-                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Edited',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
-                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
-                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
-            ]
-        );
-        $this->assertNotNull(
-            $choices = $this->page->findAll(
-                'css',
-                '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box i'
-            )
-        );
-        $this->assertCount(2, $choices);
-        $choices[1]->click();
-
-        $this->page->pressButton('payment_account.edit.save');
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery.trim(jQuery('#payment-account-row-2 td:first').text()) == 'Edited'"
-        );
-
-        $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-2 td'));
-        $this->assertEquals('Edited', $cols[0]->getText());
-    }
-
-    /**
-     * @test
-     */
     public function delHeartland()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(false);
+        $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('rent.sources');
 
@@ -405,7 +171,6 @@ class SourcesCase extends BaseTestCase
         $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
         $this->assertCount($rowsCount, $rows);
         $this->logout();
-
     }
 
     /**
@@ -450,6 +215,84 @@ class SourcesCase extends BaseTestCase
         $this->assertTrue($request->getIsSuccessful());
 
         $this->unsetOldProfileId($profileId);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorIfTryDeleteSourceWithPendingOrder()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('rent.sources');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Card\')'),
+            'Should be displayed row with name Card'
+        );
+        $rows = $this->page->findAll('css', '#payment-account-table tbody tr');
+        $this->assertEquals(3, count($rows), 'Should be show 3 rows with payment account');
+        $rows[0]->clickLink('delete');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#payment-account-table').length"
+        );
+
+        $this->assertNotNull(
+            $message = $this->page->find('css', 'h3.error_message'),
+            'Error message not showing'
+        );
+        $this->assertEquals('payment_source.remove.error', $message->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorIfTryDeleteSourceWithActivePayment()
+    {
+        $this->load(true);
+
+        $paymentAccount = $this->getEntityManager()
+            ->getRepository('RjDataBundle:PaymentAccount')->findOneBy(['name' => 'Bank']);
+        $payment = $paymentAccount->getPayments()->first();
+        $payment->setStatus(PaymentStatus::ACTIVE);
+
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->clickLink('rent.sources');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotNull(
+            $row = $this->page->find('css', '#payment-account-table tbody tr td:contains(\'Bank\')'),
+            'Should be displayed row with name Bank'
+        );
+        $rows = $this->page->findAll('css', '#payment-account-table tbody tr');
+        $this->assertEquals(3, count($rows), 'Should be show 3 rows with payment account');
+        $rows[1]->clickLink('delete');
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#payment-account-table').length"
+        );
+
+        $this->assertNotNull(
+            $message = $this->page->find('css', 'h3.error_message'),
+            'Error message not showing'
+        );
+        $this->assertEquals('payment_source.remove.error', $message->getHtml());
     }
 
     protected function tearDown()

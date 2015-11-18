@@ -3,7 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
@@ -16,16 +16,16 @@ use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingExcepti
 class UnitMapper extends AbstractMapper
 {
     /**
-     * @var PropertyProcess
+     * @var PropertyManager
      */
-    protected $propertyProcess;
+    protected $propertyManager;
 
     /**
-     * @param PropertyProcess $propertyProcess
+     * @param PropertyManager $propertyManager
      */
-    public function __construct(PropertyProcess $propertyProcess)
+    public function __construct(PropertyManager $propertyManager)
     {
-        $this->propertyProcess = $propertyProcess;
+        $this->propertyManager = $propertyManager;
     }
 
     /**
@@ -107,7 +107,7 @@ class UnitMapper extends AbstractMapper
         $property->addPropertyGroup($this->getGroup()); // for correct work propertyProcess
 
         try {
-            $newUnit = $this->propertyProcess->setupSingleProperty($property, ['doFlush' => false]);
+            $newUnit = $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
         } catch (\RuntimeException $e) {
             throw new MappingException(sprintf('[Mapping] : %s', $e->getMessage()));
         }
@@ -136,16 +136,18 @@ class UnitMapper extends AbstractMapper
      */
     protected function getOrCreateProperty()
     {
-        $property = $this->propertyProcess->getPropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+            '',
             $this->get('streetaddress'),
             $this->get('city_name'),
             $this->get('state_name'),
             $this->get('zipcode')
         );
+
         if ($property === null) {
             throw new MappingException(
                 sprintf(
-                    '[Mapping] : Address (%s , %s, %s, %s) is not found by PropertyProcess',
+                    '[Mapping] : Address (%s , %s, %s, %s) is not found by PropertyManager',
                     $this->get('streetaddress'),
                     $this->get('city_name'),
                     $this->get('state_name'),

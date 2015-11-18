@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -114,6 +115,19 @@ abstract class Holding
      * )
      */
     protected $contracts;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportApiMapping",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     }
+     * )
+     */
+    protected $importApiMapping;
 
     /**
      * @ORM\OneToMany(
@@ -246,6 +260,19 @@ abstract class Holding
      */
     protected $paymentsEnabled = true;
 
+    /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="export_tenant_id",
+     *      options={
+     *          "default":1
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $exportTenantId = true;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -256,6 +283,7 @@ abstract class Holding
         $this->residentsMapping = new ArrayCollection();
         $this->apiIntegrationType = ApiIntegrationType::NONE;
         $this->depositAccounts = new ArrayCollection();
+        $this->importApiMapping = new ArrayCollection();
     }
 
     /**
@@ -625,6 +653,30 @@ abstract class Holding
     }
 
     /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImportApiMapping()
+    {
+        return $this->importApiMapping;
+    }
+
+    /**
+     * @param ImportApiMapping $importApiMapping
+     */
+    public function addImportApiMapping(ImportApiMapping $importApiMapping)
+    {
+        $this->importApiMapping->add($importApiMapping);
+    }
+
+    /**
+     * @param \RentJeeves\DataBundle\Entity\ImportApiMapping
+     */
+    public function removeImportApiMapping(ImportApiMapping $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
      * Add Contract
      *
      * @param \RentJeeves\DataBundle\Entity\Contract $contract
@@ -721,5 +773,21 @@ abstract class Holding
     public function setUseRecurringCharges($useRecurringCharges)
     {
         $this->useRecurringCharges = $useRecurringCharges;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExportTenantId()
+    {
+        return $this->exportTenantId;
+    }
+
+    /**
+     * @param boolean $exportTenantId
+     */
+    public function setExportTenantId($exportTenantId)
+    {
+        $this->exportTenantId = $exportTenantId;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
@@ -68,6 +68,7 @@ class CreditProfileCase extends BaseTestCase
                             __DIR__ . '/../../Resources/NetConnect/CreditProfile-Request.xml',
                             $xml
                         );
+
                         return true;
                     }
                 )

@@ -51,6 +51,7 @@ fixtures:
     order: rjOrder_3_cancelled
     amount: -1500
     transaction_id: 147742
+    batchId: 1R20151010
     isSuccessful: true
     status: reversed
     createdAt: '-30 days'
@@ -270,6 +271,7 @@ fixtures:
   rjCheckout_9_1_2:
     order:  rjOrder_3_refunded
     amount: -700
+    batchId: 1R20151010
     transaction_id: 65123261
     messages: Payment was refunded
     isSuccessful: true
@@ -289,6 +291,7 @@ fixtures:
 #Returned Transaction for rjOrder_3_returned
   rjCheckout_9_2_2:
     order:  rjOrder_3_returned
+    batchId: 1R20151010
     amount: -750
     transaction_id: 661232602
     isSuccessful: true
@@ -308,6 +311,7 @@ fixtures:
     order:  rjOrder_3_returned_1
     amount: -800
     transaction_id: 671232654
+    batchId: 1R20151010
     isSuccessful: true
     status: reversed
     createdAt: '-29 days'

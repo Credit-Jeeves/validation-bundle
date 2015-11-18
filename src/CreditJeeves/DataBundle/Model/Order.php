@@ -10,6 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -207,6 +208,22 @@ abstract class Order
      * @var DepositAccount
      */
     protected $depositAccount;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *      inversedBy="orders",
+     *      cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="payment_id",
+     *      referencedColumnName="id"
+     * )
+     * @Serializer\Exclude
+     *
+     * @var Payment
+     */
+    protected $payment;
 
     public function __construct()
     {
@@ -582,6 +599,21 @@ abstract class Order
         $this->depositAccount = $depositAccount;
     }
 
+    /**
+     * @return Payment
+     */
+    public function getPayment()
+    {
+        return $this->payment;
+    }
+
+    /**
+     * @param Payment $payment
+     */
+    public function setPayment(Payment $payment)
+    {
+        $this->payment = $payment;
+    }
 
     /**
      * @return string

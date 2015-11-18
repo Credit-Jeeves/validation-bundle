@@ -1,0 +1,42 @@
+function ImportSettings() {
+    var self = this;
+    var options = [];
+    $('select[id*="_importSettings_importType"]>option').each(function (i, el) {
+        options.push({"value" :$(el).val(), "text" : $(el).text()});
+    });
+
+    self.init = function () {
+        $('input[name*="[importSettings][source]"]').change(function () {
+            self.reloadImportType($(this).val());
+            self.hideControls($(this).val());
+        });
+        self.reloadImportType($('input[name*="[importSettings][source]"]:checked').val());
+        self.hideControls($('input[name*="[importSettings][source]"]:checked').val());
+    };
+
+    self.reloadImportType = function (sourceType) {
+        $('select[id$="_importSettings_importType"]>option').remove();
+        $.each(options, function(i, el){
+            if (sourceType == 'csv' || (sourceType == 'integrated_api' && el.value == 'multi_properties')) {
+                $('select[id$="_importSettings_importType"]').append(
+                    '<option value="' + el.value + '">' + el.text + '</option>'
+                );
+            }
+        });
+    };
+
+    self.hideControls = function (sourceType) {
+        if (sourceType == 'csv') {
+            $('[id*="csv"]').parent().parent().show();
+            $('[id*="api"]').parent().parent().hide();
+        } else if (sourceType == 'integrated_api') {
+            $('[id*="csv"]').parent().parent().hide();
+            $('[id*="api"]').parent().parent().show();
+        }
+    }
+}
+
+$( document ).ready(function() {
+    var importSettings = new ImportSettings();
+    importSettings.init();
+});

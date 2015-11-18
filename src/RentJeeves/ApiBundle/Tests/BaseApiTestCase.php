@@ -11,7 +11,7 @@ use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\Serializer;
 
-class BaseApiTestCase extends BaseTestCase
+abstract class BaseApiTestCase extends BaseTestCase
 {
     const URL_PREFIX = '/api/tenant';
 
@@ -48,6 +48,11 @@ class BaseApiTestCase extends BaseTestCase
         $this->prepareClient();
     }
 
+    /**
+     * @param Response $response
+     * @param int $statusCode
+     * @param string $format
+     */
     protected function assertResponse(Response $response, $statusCode = 200, $format = 'json')
     {
         $this->assertEquals(
@@ -72,6 +77,11 @@ class BaseApiTestCase extends BaseTestCase
         }
     }
 
+    /**
+     * @param string $content
+     * @param array|string $result
+     * @param string $format
+     */
     protected function assertResponseContent($content, $result, $format = 'json')
     {
         $data = $this->parseContent($content, $format);
@@ -79,15 +89,37 @@ class BaseApiTestCase extends BaseTestCase
         $this->assertEquals($result, $data, 'Response is incorrect.');
     }
 
+    /**
+     * @param mixed $array  - we check that it's array
+     * @param array $structureKeys
+     * @param string $message
+     */
+    protected function assertArrayStructure($array, array $structureKeys, $message = '')
+    {
+        $message = $message ?:
+            sprintf(
+                "Invalid array structure, should be:\n%s\nExcept:\n%s",
+                print_r(array_flip($structureKeys), true),
+                print_r($array, true)
+            );
+        $this->assertTrue(is_array($array), $message);
+        sort($structureKeys);
+        ksort($array);
+        $this->assertEquals($structureKeys, array_keys($array), $message);
+    }
+
+    /**
+     * @param string $url
+     */
     protected function assertFullUrl($url)
     {
         $urlInfo = parse_url($url);
 
-        $this->assertTrue(isset($urlInfo['scheme']));
+        $this->assertArrayHasKey('scheme', $urlInfo);
 
-        $this->assertTrue(isset($urlInfo['host']));
+        $this->assertArrayHasKey('host', $urlInfo);
 
-        $this->assertTrue(isset($urlInfo['path']));
+        $this->assertArrayHasKey('path', $urlInfo);
     }
 
     /**

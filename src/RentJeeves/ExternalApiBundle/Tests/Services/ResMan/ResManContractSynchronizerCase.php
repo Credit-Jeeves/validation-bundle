@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
@@ -27,16 +28,20 @@ class ResManContractSynchronizerCase extends Base
         $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
-        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
-
         $residentMapping = $contract->getTenant()->getResidentForHolding($contract->getHolding());
         $residentMapping->setResidentId(ResManClientCase::RESIDENT_ID);
 
+        $unitExternalMapping = new UnitMapping();
+        $unitExternalMapping->setExternalUnitId(ResManClientCase::EXTERNAL_UNIT_ID);
+        $unitExternalMapping->setUnit($contract->getUnit());
+        $contract->getUnit()->setUnitMapping($unitExternalMapping);
+
+        $this->getEntityManager()->persist($unitExternalMapping);
         $this->getEntityManager()->flush();
 
         $this->getResManContractSynchronizer()->syncBalance();
 
-        $this->getEntityManager()->clear($contract);
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
 
         $this->assertNotEquals(0, $contract->getIntegratedBalance(), 'Balance should be updated');
     }
@@ -51,7 +56,6 @@ class ResManContractSynchronizerCase extends Base
         $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
-        $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
 
         $settings = $contract->getHolding()->getResManSettings();
         $settings->setSyncBalance(true);
@@ -77,14 +81,22 @@ class ResManContractSynchronizerCase extends Base
         $contractWaiting->setLastName('Karlo');
         $contractWaiting->setIntegratedBalance(0);
 
+        $unitExternalMapping = new UnitMapping();
+        $unitExternalMapping->setExternalUnitId(ResManClientCase::EXTERNAL_UNIT_ID);
+        $unitExternalMapping->setUnit($contract->getUnit());
+        $contract->getUnit()->setUnitMapping($unitExternalMapping);
+
+        $this->getEntityManager()->persist($unitExternalMapping);
         $this->getEntityManager()->persist($contractWaiting);
         $this->getEntityManager()->flush();
 
+        $contractWaitingId = $contractWaiting->getId();
+
         $this->getResManContractSynchronizer()->syncBalance();
 
-        $this->getEntityManager()->clear($contractWaiting);
+        $contractWaiting = $this->getEntityManager()->find('RjDataBundle:ContractWaiting', $contractWaitingId);
 
-        $this->assertNotNull($contractWaiting);
+        $this->assertNotNull($contractWaiting, 'ContractWaiting should exist');
 
         $this->assertNotEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be updated');
     }
@@ -113,9 +125,9 @@ class ResManContractSynchronizerCase extends Base
 
         $this->getEntityManager()->flush();
 
-        $this->getResManContractSynchronizer()->syncRecurringCharge();
+        $this->getResManContractSynchronizer()->syncRent();
 
-        $this->getEntityManager()->clear($contract);
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
         $this->assertNotEquals(123321, $contract->getRent(), 'Rent should be updated');
     }
 

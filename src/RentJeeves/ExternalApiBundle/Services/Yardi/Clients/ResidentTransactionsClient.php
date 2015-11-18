@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 use DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseChargesLoginResponse;
 use SoapVar;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 
@@ -58,7 +59,7 @@ class ResidentTransactionsClient extends AbstractClient
 
     /**
      * @param string $propertyId
-     * @return GetResidentTransactionLoginResponse
+     * @return GetResidentTransactionLoginResponse|null
      */
     public function getResidentTransactions($propertyId)
     {
@@ -133,7 +134,7 @@ class ResidentTransactionsClient extends AbstractClient
     /**
      * @param $externalPropertyId
      * @param DateTime $postMonth
-     * @return mixed
+     * @return ResidentLeaseChargesLoginResponse|null
      * @throws \Exception
      * @throws \SoapFault
      */

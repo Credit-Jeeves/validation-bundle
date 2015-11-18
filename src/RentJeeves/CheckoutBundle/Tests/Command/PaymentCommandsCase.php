@@ -332,7 +332,7 @@ class PaymentCommandsCase extends BaseTestCase
         $contract = $this->getContract($em);
         // Create a payment with negative amount to provoke error
         /** @var Payment $payment */
-        $payment = $this->createPayment($contract, '-888', PaymentType::RECURRING);
+        $payment = $this->createPayment($contract, '888', PaymentType::RECURRING);
         $payment->setPaidFor(new DateTime());
         $paymentAccount = $contract->getTenant()->getPaymentAccounts()->filter(
             function ($paymentAccount) {
@@ -343,6 +343,8 @@ class PaymentCommandsCase extends BaseTestCase
                 return false;
             }
         )->first();
+        // Use wrong token to get fail response
+        $paymentAccount->setToken('sdfsdfsdfsfsf');
         $payment->setPaymentAccount($paymentAccount);
 
         $em->persist($payment);
@@ -357,7 +359,7 @@ class PaymentCommandsCase extends BaseTestCase
         $this->assertCount(2, $plugin->getPreSendMessages());
 
         /** @var OrderSubmerchant $order */
-        $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '-888'));
+        $order = $em->getRepository('DataBundle:Order')->findOneBy(array('sum' => '888'));
         $this->assertNotNull($order);
         $this->assertEquals(OrderStatus::ERROR, $order->getStatus());
         // Reload payment from the DB

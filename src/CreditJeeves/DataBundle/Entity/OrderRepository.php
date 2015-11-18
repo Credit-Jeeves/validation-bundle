@@ -379,12 +379,13 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param Group $group
-     * @param string $accountType
+     * @param string $filter
+     * @param string $search
      * @param string $batchId
      * @param string $depositDate
      * @return Order[]
      */
-    public function getDepositedOrders(Group $group, $accountType, $batchId, $depositDate)
+    public function getDepositedOrders(Group $group, $filter, $search, $batchId, $depositDate)
     {
         $ordersQuery = $this->createQueryBuilder('o')
             ->innerJoin('o.operations', 'p')
@@ -404,10 +405,10 @@ class OrderRepository extends EntityRepository
                 ->setParameter('depositDate', $depositDate);
         }
 
-        if ($accountType) {
+        if (!empty($filter) && !empty($search)) {
             $ordersQuery
-                ->andWhere('o.paymentType = :type')
-                ->setParameter('type', $accountType);
+                ->andWhere('h.' . $filter . ' = :search')
+                ->setParameter('search', $search);
         }
 
         return $ordersQuery->getQuery()->execute();

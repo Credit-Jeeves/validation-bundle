@@ -159,6 +159,7 @@ class TransactionRepository extends EntityRepository
         $query = $this->createQueryBuilder('h');
         $query->select(
             "h.transactionId,
+            h.batchId,
             o.sum as amount,
             date_format(h.createdAt, '%m/%d/%Y') as reversalDate,
             date_format(o.created_at, '%m/%d/%Y') as originDate,
@@ -198,43 +199,49 @@ class TransactionRepository extends EntityRepository
         return $query->getQuery()->execute();
     }
 
-    public function getCountDeposits(Group $group, $accountType)
+    /**
+     * @param Group $group
+     * @param string $filter
+     * @param string $search
+     * @return int
+     */
+    public function getCountDeposits(Group $group, $filter, $search)
     {
-        $query = $this->createQueryBuilder('h');
-        $query->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch');
-        $query->innerJoin('h.order', 'o');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('o.depositAccount', 'da');
-        $query->innerJoin('p.contract', 't');
-        $query->where('t.group = :group');
-        $query->andWhere('h.depositDate IS NOT NULL');
-        $query->andWhere('h.isSuccessful = 1');
+        $query = $this->createQueryBuilder('h')
+            ->select('IF(h.batchId is null, h.depositDate, h.batchId) as batch')
+            ->innerJoin('h.order', 'o')
+            ->innerJoin('o.operations', 'p')
+            ->innerJoin('o.depositAccount', 'da')
+            ->innerJoin('p.contract', 't')
+            ->where('t.group = :group')
+            ->andWhere('h.depositDate IS NOT NULL')
+            ->andWhere('h.isSuccessful = 1')
+            ->setParameter('group', $group)
+            ->groupBy('batch');
 
-        $query->setParameter('group', $group);
-        $query->groupBy('batch');
-
-        if ($accountType) {
-            $query->andWhere('o.paymentType = :type');
-            $query->setParameter('type', $accountType);
+        if (!empty($filter) && !empty($search)) {
+            $query->andWhere('h.' . $filter . ' = :search');
+            $query->setParameter('search', $search);
         }
 
-        $query = $query->getQuery();
-
-        return count($query->getScalarResult());
+        return count($query->getQuery()->getScalarResult());
     }
 
     /**
      * @param Group $group
-     * @param string $accountType
+     * @param string $filter
+     * @param string $search
      * @param int $page
      * @param int $limit
      * @return array
      */
-    public function getBatchedDeposits(Group $group, $accountType, $page = 1, $limit = 100)
+    public function getBatchedDeposits(Group $group, $filter, $search, $page = 1, $limit = 100)
     {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
-        $query->select('h.batchId as batchNumber, sum(p.amount) as orderAmount, h.depositDate, da.type as depositType');
+        $query->select(
+            'h.batchId batchNumber, sum(p.amount) orderAmount, h.depositDate, da.type depositType, h.status'
+        );
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');
@@ -243,9 +250,9 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
-        if ($accountType) {
-            $query->andWhere('o.paymentType = :type');
-            $query->setParameter('type', $accountType);
+        if (!empty($filter) && !empty($search)) {
+            $query->andWhere('h.' . $filter . ' = :search');
+            $query->setParameter('search', $search);
         }
         $query->groupBy('batchNumber');
         $query->setFirstResult($offset);
@@ -254,6 +261,22 @@ class TransactionRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getScalarResult();
+    }
+
+    /**
+     * @param string $batchId
+     * @return mixed
+     */
+    public function getTransactionsForBatch($batchId)
+    {
+        return $this->createQueryBuilder('h')
+            ->innerJoin('h.order', 'o')
+            ->where('h.batchId = :batch')
+            ->andWhere('h.isSuccessful = 1')
+            ->andWhere('h.depositDate IS NOT NULL')
+            ->setParameter('batch', $batchId)
+            ->getQuery()
+            ->execute();
     }
 
     /**

@@ -5,6 +5,9 @@ function accountingImportAmsi() {
     this.isFinishUploadDataToServer =  ko.observable(false);
     this.classLoadDataMessage = ko.observable('');
 
+    this.currentProperty = null;
+    this.externalPropertyIds = [];
+
     this.doFinish = function()
     {
         self.loadDataMessage('');
@@ -12,32 +15,72 @@ function accountingImportAmsi() {
         self.classLoadDataMessage('');
         self.showSpinner(false);
 
-        self.superclass.loadData(false);
-    }
+        return self.superclass.loadData(false);
+    };
 
-    /**
-     * @param boolean next
-     */
+    this.saveContractData = function (i, length) {
+        if (length > i) {
+            self.currentProperty = self.externalPropertyIds[i];
+            self.loadDataMessage(
+                Translator.trans(
+                    'import.message.download.contracts',
+                    {"EXTERNAL_PROPERTY_ID": self.currentProperty}
+                )
+            );
+            console.info('Save contracts for external property id ' + self.currentProperty);
+            jQuery.ajax({
+                url: Routing.generate('accounting_import_residents_amsi',
+                    {
+                        'externalPropertyId': self.currentProperty
+                    }
+                ),
+                type: 'POST',
+                dataType: 'json',
+                error: function(response) {
+                    console.info('Error when try to save contracts for external property id ' + self.currentProperty);
+                    console.info(response.status + ':' + response.responseText);
+                    i++;
+                    self.saveContractData(i, length);
+                },
+                success: function(response) {
+                    i++;
+                    self.saveContractData(i, length);
+                }
+            });
+        } else {
+            self.doFinish();
+        }
+    };
+
     this.loadData = function(next) {
         if (self.isFinishUploadDataToServer() === false) {
             self.showSpinner(true);
-            self.loadDataMessage(Translator.trans('import.message.download.contracts'));
+            self.loadDataMessage(Translator.trans('import.message.load.external_property_ids'));
+            console.info('Get External Property List');
             jQuery.ajax({
-                url: Routing.generate('accounting_import_residents_amsi'),
-                type: 'POST',
+                url: Routing.generate('accounting_import_load_external_property_ids'),
+                type: 'GET',
                 dataType: 'json',
                 error: function() {
-                    self.loadDataMessage(Translator.trans('amsi.import.error.getResidents'));
+                    self.loadDataMessage(Translator.trans('import.error.load.external_property_ids'));
                     self.classLoadDataMessage('errorMessage');
                     self.showSpinner(false);
                 },
-                success: function(response) {
-                    self.doFinish();
+                success: function(externalPropertyIds) {
+                    var countProperties = 0;
+                    $.each(externalPropertyIds, function () { countProperties++ });
+
+                    if (countProperties > 0) {
+                        self.externalPropertyIds = externalPropertyIds;
+                        self.saveContractData(0, countProperties);
+                    } else {
+                        self.doFinish();
+                    }
                 }
             });
         } else {
             return self.doFinish();
         }
-    }
+    };
 }
 

@@ -3,7 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay;
 
 use ACI\Client\CollectPay\Enum\BankAccountType;
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\User;
 use Payum\AciCollectPay\Request\ProfileRequest\AddFunding;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteFunding;

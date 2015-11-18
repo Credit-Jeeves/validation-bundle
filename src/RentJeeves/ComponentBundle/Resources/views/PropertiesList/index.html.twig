@@ -11,7 +11,7 @@
               <option value="country">{{ 'country'|trans }}</option>
       </select>
       <div class="finder-box">
-        <input type="text" id="search" name="searsh-field" 
+        <input type="text" id="search" name="searsh-field"
         data-bind="value: searchText" value="">
         <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
         <button type="submit" id="searchButton" data-bind="click: searchFunction" class="pie-el">{{ 'search'|trans }}</button>
@@ -51,7 +51,7 @@
             <tr>
               <td data-bind="text: address"></td>
               <td data-bind="text: zip"></td>
-              <td data-bind="text: city"></td>
+              <td class="city" data-bind="text: city"></td>
               <td data-bind="text: area"></td>
               <td data-bind="text: country"></td>
               <td data-bind="text: $root.getUnitsText($data)"></td>

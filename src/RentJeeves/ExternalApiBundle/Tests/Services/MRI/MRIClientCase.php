@@ -20,7 +20,6 @@ use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 class MRIClientCase extends Base
 {
     const PROPERTY_ID = '500';
-
     const RESIDENT_ID = '0000000001';
 
     /**
@@ -38,12 +37,12 @@ class MRIClientCase extends Base
         );
         $this->assertNotEmpty($tenant);
         /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'street' => 'Broadway',
                 'number' => '770',
                 'zip'    => '10003'
-            )
+            ]
         );
         $this->assertNotEmpty($property);
         /** @var Contract $contract */
@@ -110,7 +109,7 @@ class MRIClientCase extends Base
         );
 
         /** @var Value $value */
-        $value = $mriResponse->getValues()[3];
+        $value = $mriResponse->getValues()[1];
         $this->assertInstanceOf('RentJeeves\ExternalApiBundle\Model\MRI\Value', $value);
         $this->assertNotEmpty($value->getResidentId());
         $this->assertNotEmpty($value->getUnitId());

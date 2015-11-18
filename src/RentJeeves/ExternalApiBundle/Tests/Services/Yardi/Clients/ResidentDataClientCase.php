@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileTenant;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
@@ -27,8 +26,24 @@ class ResidentDataClientCase extends Base
 
         $result = $residentClient->getResidents('rnttrk01');
 
-        $this->assertTrue($result instanceof GetResidentsResponse);
-        $this->assertTrue(count($result->getPropertyResidents()->getResidents()->getResidents()) > 0);
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse',
+            $result,
+            'Response from Yardi can not be mapped'
+        );
+        $propertyResidents = $result->getPropertyResidents();
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\PropertyResidents',
+            $propertyResidents,
+            'Response from Yardi doesn\'t have property residents'
+        );
+        $residents = $propertyResidents->getResidents();
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Residents',
+            $residents,
+            'Response from Yardi doesn\'t have residents in property residents'
+        );
+        $this->assertTrue(count($residents->getResidents()) > 0);
     }
 
     /**
@@ -43,7 +58,6 @@ class ResidentDataClientCase extends Base
             $this->getYardiSettings(),
             SoapClientEnum::YARDI_RESIDENT_DATA
         );
-        $roommate = 'r0002692';
         $resident = 't0012027';
         $residentClient->setDebug(true);
         $result = $residentClient->getResidentData('rnttrk01', $resident);

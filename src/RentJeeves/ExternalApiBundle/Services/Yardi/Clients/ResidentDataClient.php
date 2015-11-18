@@ -2,8 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
-
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse;
 
 class ResidentDataClient extends AbstractClient
 {
@@ -18,6 +19,11 @@ class ResidentDataClient extends AbstractClient
         ),
     );
 
+    /**
+     * @param $propertyId
+     * @return GetResidentsResponse|null
+     * @throws \SoapFault
+     */
     public function getResidents($propertyId)
     {
         $moveOut1 = new DateTime();
@@ -37,6 +43,12 @@ class ResidentDataClient extends AbstractClient
         );
     }
 
+    /**
+     * @param $propertyId
+     * @param $residentId
+     * @return GetResidentDataResponse|null
+     * @throws \SoapFault
+     */
     public function getResidentData($propertyId, $residentId)
     {
         $parameters = array(

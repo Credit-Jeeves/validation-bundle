@@ -215,6 +215,7 @@ class ReceiptBatchSender
      */
     protected function pushHoldingReceipts($holdings, DateTime $depositDate)
     {
+        /** @var Holding $holding */
         foreach ($holdings as $holding) {
             $this->logger->info(
                 sprintf(

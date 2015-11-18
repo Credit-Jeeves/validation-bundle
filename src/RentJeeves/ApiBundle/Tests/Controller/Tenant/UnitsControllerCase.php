@@ -9,7 +9,6 @@ use RentJeeves\DataBundle\Entity\UnitRepository;
 class UnitsControllerCase extends BaseApiTestCase
 {
     const WORK_ENTITY = 'RjDataBundle:Unit';
-
     const REQUEST_URL = 'units';
 
     /**
@@ -230,22 +229,23 @@ class UnitsControllerCase extends BaseApiTestCase
         $address = $answerFromApi['address'];
 
         $this->assertEquals(
-            $unitInDB->getProperty()->getCity(),
+            $unitInDB->getProperty()->getPropertyAddress()->getCity(),
             $address['city']
         );
 
         $this->assertEquals(
-            $unitInDB->getProperty()->getArea(),
+            $unitInDB->getProperty()->getPropertyAddress()->getState(),
             $address['state']
         );
 
         $this->assertEquals(
-            $unitInDB->getProperty()->getZip(),
+            $unitInDB->getProperty()->getPropertyAddress()->getZip(),
             $address['zip']
         );
 
         $this->assertEquals(
-            $unitInDB->getProperty()->getNumber() . ' ' . $unitInDB->getProperty()->getStreet(),
+            $unitInDB->getProperty()->getPropertyAddress()->getNumber() . ' ' .
+            $unitInDB->getProperty()->getPropertyAddress()->getStreet(),
             $address['street']
         );
     }

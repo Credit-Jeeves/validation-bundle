@@ -27,7 +27,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Groups({"ContractDetails", "ContractShort"})
      * @Serializer\Type("string")
      * @return string
      */
@@ -40,7 +40,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Groups({"ContractDetails", "ContractShort"})
      * @return string
      */
     public function getStatus()
@@ -50,7 +50,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Groups({"ContractDetails", "ContractShort"})
      * @return string
      */
     public function getRent()
@@ -80,7 +80,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Groups({"ContractDetails", "ContractShort"})
      * @return int|string
      */
     public function getDueDate()
@@ -100,7 +100,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Groups({"ContractDetails", "ContractShort"})
      * @return string|null
      */
     public function getBalance()

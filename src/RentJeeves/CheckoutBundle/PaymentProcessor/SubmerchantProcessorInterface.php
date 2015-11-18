@@ -92,4 +92,18 @@ interface SubmerchantProcessorInterface
      */
     public function calculateDepositDate($paymentType, \DateTime $executeDate);
 
+    /**
+     * Returns the name of payment processor.
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Generates reversed batch id for given order.
+     *
+     * @param Order $order
+     * @return string
+     */
+    public function generateReversedBatchId(Order $order);
 }

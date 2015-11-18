@@ -86,7 +86,7 @@ class PaymentAccountType extends AbstractType
         $builder->add('billing_address_url', 'entity', [
             'property_path' => 'address',
             'required' => true,
-            'class' => 'CreditJeeves\DataBundle\Entity\Address',
+            'class' => 'CreditJeeves\DataBundle\Entity\MailingAddress',
             'query_builder' => function (AddressRepository $er) {
                 return $er->createQueryBuilder('a')
                     ->andWhere('a.user = :user')

@@ -9,12 +9,12 @@ class ResidentTransactionCharge
     /**
      * @Serializer\SerializedName("Detail")
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionChargeDetail")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionDetail")
      */
     protected $detail;
 
     /**
-     * @param ResidentTransactionChargeDetail $detail
+     * @param ResidentTransactionDetail $detail
      */
     public function setDetail($detail)
     {
@@ -22,7 +22,7 @@ class ResidentTransactionCharge
     }
 
     /**
-     * @return ResidentTransactionChargeDetail
+     * @return ResidentTransactionDetail
      */
     public function getDetail()
     {

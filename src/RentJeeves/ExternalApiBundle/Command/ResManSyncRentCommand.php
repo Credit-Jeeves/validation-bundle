@@ -28,6 +28,6 @@ class ResManSyncRentCommand extends ContainerAwareCommand
         $this->getContainer()
             ->get('resman.contract_sync')
             ->usingOutput($output)
-            ->syncRecurringCharge();
+            ->syncRent();
     }
 }

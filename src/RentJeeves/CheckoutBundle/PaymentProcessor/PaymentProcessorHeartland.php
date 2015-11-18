@@ -64,6 +64,14 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return 'HPS';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function registerPaymentAccount(
         AccountData $accountData,
         DepositAccount $depositAccount
@@ -147,6 +155,15 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         }
 
         return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReversedBatchId(Order $order)
+    {
+        // will be implemented later
+        return null;
     }
 
     /**

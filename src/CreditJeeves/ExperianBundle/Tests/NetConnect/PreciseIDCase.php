@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
@@ -68,6 +68,7 @@ class PreciseIDCase extends BaseTestCase
                             __DIR__ . '/../../Resources/NetConnect/PreciseID-Request.xml',
                             $xml
                         );
+
                         return true;
                     }
                 )
@@ -163,6 +164,7 @@ class PreciseIDCase extends BaseTestCase
                             __DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Request.xml',
                             $xml
                         );
+
                         return true;
                     }
                 )

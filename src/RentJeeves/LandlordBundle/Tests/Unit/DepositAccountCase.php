@@ -32,11 +32,11 @@ class DepositAccountCase extends BaseTestCase
                 'email' => 'tenant11@example.com',
             )
         );
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
+            [
                 'jb' => '40.7316721',
                 'kb' => '-73.9917422',
-            )
+            ]
         );
         $this->assertTrue($tenant instanceof Tenant);
         $this->assertTrue($property instanceof Property);
