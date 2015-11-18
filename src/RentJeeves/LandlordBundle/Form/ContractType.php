@@ -92,8 +92,9 @@ class ContractType extends AbstractType
                 'error_bubbling' => true,
                 'query_builder' => function (EntityRepository $repository) {
                     return $repository->createQueryBuilder('p')
-                        ->addSelect('CONCAT(p.number, p.street) AS HIDDEN sortField')
+                        ->addSelect('CONCAT(propertyAddress.number, propertyAddress.street) AS HIDDEN sortField')
                         ->innerJoin('p.property_groups', 'g')
+                        ->innerJoin('property.propertyAddress', 'propertyAddress')
                         ->where('g.id = :groupId')
                         ->setParameter('groupId', $this->group->getId())
                         ->orderBy('sortField');

@@ -774,6 +774,9 @@ abstract class Property
         return $this->contracts;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function setGoogleReference($google_reference)
     {
         $this->google_reference = $google_reference;
@@ -781,6 +784,9 @@ abstract class Property
         return $this;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function getGoogleReference()
     {
         return $this->google_reference;

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigratePropertyToPropertyAddressCommand extends BaseCommand
 {
-    const LIMIT = 100;
+    const LIMIT = 900000;
 
     /**
      * {@inheritdoc}

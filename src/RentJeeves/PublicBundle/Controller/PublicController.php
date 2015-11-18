@@ -127,7 +127,8 @@ class PublicController extends Controller
              * @var $propertyProcess PropertyManager
              */
             $propertyProcess = $this->container->get('property.manager');
-            if (!$property->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
+            $propertyAddress = $property->getPropertyAddress();
+            if (!$propertyAddress->getGoogleReference() && $propertyProcess->isValidProperty($property)) {
                 $propertyProcess->saveToGoogle($property);
             }
 

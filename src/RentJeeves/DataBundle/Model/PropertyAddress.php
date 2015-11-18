@@ -102,7 +102,7 @@ class PropertyAddress
     protected $long;
 
     /**
-     * @ORM\Column(name="ss_index", type="string", length=255, nullable=true)
+     * @ORM\Column(name="ss_index", type="string", length=255, unique=true, nullable=true)
      */
     protected $index;
 
