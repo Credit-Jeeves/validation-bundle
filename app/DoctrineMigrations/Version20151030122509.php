@@ -41,7 +41,8 @@ class Version20151030122509 extends AbstractMigration
               rj_import_mapping_by_property.mapping_data
             FROM rj_import_mapping_by_property
             INNER JOIN rj_property_mapping ON
-            rj_import_mapping_by_property.property_id = rj_property_mapping.property_id"
+              rj_import_mapping_by_property.property_id = rj_property_mapping.property_id
+              GROUP BY CONCAT(rj_property_mapping.holding_id, rj_property_mapping.external_property_id)"
         );
     }
 
