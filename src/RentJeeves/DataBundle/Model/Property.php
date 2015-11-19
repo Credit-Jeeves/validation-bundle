@@ -3,7 +3,6 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -51,7 +50,6 @@ abstract class Property
      *     length=255,
      *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $city;
@@ -85,7 +83,6 @@ abstract class Property
      *     length=255,
      *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $number;
@@ -159,7 +156,6 @@ abstract class Property
 
     /**
      * @ORM\Column(
-     *
      *     name="ss_index",
      *     type="string",
      *     nullable=true

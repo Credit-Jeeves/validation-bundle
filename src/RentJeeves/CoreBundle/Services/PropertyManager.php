@@ -199,39 +199,6 @@ class PropertyManager
     }
 
     /**
-     * @deprecated pls don`t use it
-     *
-     * @param Property $property
-     * @param bool $saveToGoogle
-     *
-     * @return null|Property
-     */
-    public function checkPropertyDuplicate(Property $property, $saveToGoogle = false)
-    {
-        // verify and standardize address
-        if (!$this->isValidProperty($property)) {
-            return null;
-        }
-
-        foreach (array('checkByMinimalArgs', 'checkByAllArgs') as $method) {
-            $propertyInDB = $this->$method($property);
-            if ($propertyInDB && $saveToGoogle) {
-                $this->saveToGoogle($propertyInDB);
-
-                return $propertyInDB;
-            } elseif ($propertyInDB) {
-                return $propertyInDB;
-            }
-        }
-
-        if ($saveToGoogle) {
-            $this->saveToGoogle($property);
-        }
-
-        return $property;
-    }
-
-    /**
      * @param Property $property
      * @throws \Exception
      */
