@@ -33,7 +33,7 @@ class PaymentSourceController extends Controller
      * @param string|null $formNameSuffix
      * @return array
      */
-    public function sourceAction($formNameSuffix = null)
+    public function sourceAction($formNameSuffix = null, $mobile = false)
     {
         $paymentAccountType = $this->createForm(
             new PaymentAccountType(
@@ -42,8 +42,12 @@ class PaymentSourceController extends Controller
                 $this->getDoctrine()->getManager()
             )
         );
-
-        return ['paymentAccountType' => $paymentAccountType->createView()];
+        $pageVars = ['paymentAccountType' => $paymentAccountType->createView()];
+        if ($mobile) {
+            return $this->render('RjCheckoutBundle:Component:source.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 
     /**

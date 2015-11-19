@@ -3,9 +3,11 @@
 namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\Tests\Unit\Payment\OrderManagement\OrderStatusManager\OrderSubmerchantStatusManagerCase;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RuntimeException;
 use DateTime;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 
 /**
  * @Route("/ajax")
@@ -163,6 +166,30 @@ class AjaxController extends Controller
         $this->get('soft.deleteable.control')->enable();
 
         return new JsonResponse(array('tenantPayments' => $orders, 'pages' => array($pages)));
+    }
+
+    /**
+     * @Route(
+     *      "/deliveryDate/{contractId}/{executionDate}/{paymentType}",
+     *      name="delivery_date",
+     *      defaults={"_format":"json"},
+     *      requirements={"_format"="json"},
+     *      options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function getDeliveryDate($contractId, $executionDate, $paymentType)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
+        $contract = $repo->find($contractId);
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
+        $paymentProcessor= $this->get('payment_processor.factory')->getPaymentProcessor($contract->getGroup());
+
+//OrderPaymentType $paymentType, \DateTime $executeDate
+        $depositDate = $paymentProcessor->calculateDepositDate($paymentType, new DateTime($executionDate));
+
+        return new JsonResponse($depositDate);
     }
 
     /**

@@ -591,6 +591,10 @@ body{
     font-family: PT Sans Caption;
 }
 
+#payment-account-table td{
+    padding: 15px;
+}
+
 #main .ui-content{
     font-family: PT Sans Caption;
 }
@@ -614,7 +618,14 @@ body{
 
 .paymentHistoryPage .ui-content{
     background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png);
-    background-size: cover;
+    background-size: contain;
+    background-attachment: fixed;
+}
+
+#main .ui-content{
+    background-image: url(/bundles/rjcore/images/mobile/home-bgnd.png);
+    background-size: contain;
+    background-attachment: fixed;
 }
 
 .fa .fa-bars{
@@ -698,4 +709,31 @@ body{
     left: 50%;
     position: relative;
     margin-left: -53px;
+}
+
+
+#payments{
+    margin-top: 100px;
+}
+.paymentBox{
+    border-radius: 4px;
+    margin-top: 50px;
+    background: rgb(230,230,230); padding: 10px 10px 10px 20px; height: 150px; font-size: 10pt; text-align: center;
+}
+
+.addressBox{
+    padding: 5px; font-weight: 700;
+}
+
+.paymentStatusBox{
+    margin-top: 10px; margin-bottom: 10px;height: 40px; position: relative; font-size: 8;
+}
+
+.paymentStatusBox span{
+    position: absolute;
+    text-align: center;
+}
+
+.paymentStatusCont{
+    width: 200px;position: relative;margin-left:  50%;left: -130px;
 }
