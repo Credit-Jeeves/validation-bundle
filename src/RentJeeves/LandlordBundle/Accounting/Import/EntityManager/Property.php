@@ -129,6 +129,7 @@ trait Property
                     $externalPropertyId
                 )
             );
+
             return null;
         }
 
@@ -239,7 +240,6 @@ trait Property
             return $this->propertyList[$key];
         }
 
-
         $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddress(
             $number = $property->getPropertyAddress()->getNumber(),
             $street = $property->getPropertyAddress()->getStreet(),
@@ -249,6 +249,12 @@ trait Property
         );
 
         if ($validDBProperty) {
+            if (null === $validDBProperty->getId()) {
+                $this->em->persist($validDBProperty);
+            }
+
+            $this->em->flush($validDBProperty);
+
             $this->propertyProcess->saveToGoogle($validDBProperty);
             $this->propertyList[$key] = $validDBProperty;
 
