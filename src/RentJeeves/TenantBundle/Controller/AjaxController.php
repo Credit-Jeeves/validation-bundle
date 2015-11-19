@@ -178,7 +178,8 @@ class AjaxController extends Controller
      * )
      * @Method({"GET"})
      */
-    public function getDeliveryDate($contractId, $executionDate, $paymentType){
+    public function getDeliveryDate($contractId, $executionDate, $paymentType)
+    {
         $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Contract');
         /** @var Contract $contract */
         $contract = $repo->find($contractId);
