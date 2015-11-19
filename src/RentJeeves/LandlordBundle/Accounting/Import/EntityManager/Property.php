@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -15,6 +16,7 @@ use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @property Import currentImportModel
+ * @property PropertyManager $propertyProcess
  */
 trait Property
 {
@@ -237,23 +239,23 @@ trait Property
             return $this->propertyList[$key];
         }
 
-        if (!$this->propertyProcess->isValidProperty(
-            $property
-        )) {
-            return null;
-        }
 
-        $property = $this->propertyProcess->checkPropertyDuplicate(
-            $property,
-            $saveToGoogle = true
+        $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddress(
+            $number = $property->getPropertyAddress()->getNumber(),
+            $street = $property->getPropertyAddress()->getStreet(),
+            $city = $property->getPropertyAddress()->getCity(),
+            $state = $property->getPropertyAddress()->getState(),
+            $zipCode = $property->getPropertyAddress()->getZip()
         );
 
-        /** Save valid property to DB */
-        $this->em->flush($property);
+        if ($validDBProperty) {
+            $this->propertyProcess->saveToGoogle($validDBProperty);
+            $this->propertyList[$key] = $validDBProperty;
 
-        $this->propertyList[$key] = $property;
+            return $validDBProperty;
+        }
 
-        return $property;
+        return null;
     }
 
     /**
