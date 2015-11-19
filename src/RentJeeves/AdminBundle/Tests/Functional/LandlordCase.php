@@ -60,6 +60,7 @@ class LandlordCase extends BaseTestCase
     public function observeLandlord()
     {
         $this->load(false);
+        $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
         $tableBlock->clickLink('link_list');
