@@ -32,7 +32,7 @@ class TransactionRepository extends EntityRepository
             d.type as depositAccountType,
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
-            CONCAT_WS(' ', prop.number, prop.street) as property,
+            CONCAT_WS(' ', propertyAddress.number, propertyAddress.street) as property,
             prop.isSingle,
             unit.name as unitName"
         );
@@ -43,6 +43,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('prop.propertyAddress', 'propertyAddress');
         $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');
@@ -168,7 +169,7 @@ class TransactionRepository extends EntityRepository
             h.status as transactionStatus,
             h.messages,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
-            CONCAT_WS(' ', prop.number, prop.street) as property,
+            CONCAT_WS(' ', propertyAddress.number, propertyAddress.street) as property,
             prop.isSingle,
             unit.name as unitName"
         );
@@ -178,6 +179,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('prop.propertyAddress', 'propertyAddress');
         $query->leftJoin('t.unit', 'unit');
 
         $query->where('t.group = :group');

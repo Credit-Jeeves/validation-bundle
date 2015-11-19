@@ -53,9 +53,9 @@ class Google
     public function savePlace(Property $property, $name = self::DEFAULT_NAME)
     {
         $groups = $property->getPropertyGroups();
-
+        $propertyAddress = $property->getPropertyAddress();
         //Save Property to google only if it have landlord or not saved into google before
-        if (empty($groups) || $property->getGoogleReference()) {
+        if (empty($groups) || $propertyAddress->getGoogleReference()) {
             return false;
         }
 
@@ -72,8 +72,8 @@ class Google
         $result = $this->place->add();
 
         if (is_object($result) && property_exists($result, 'reference')) {
-            $property->setGoogleReference($result->reference);
-            $this->em->persist($property);
+            $propertyAddress->setGoogleReference($result->reference);
+            $this->em->persist($propertyAddress);
             $this->em->flush();
 
             return true;
