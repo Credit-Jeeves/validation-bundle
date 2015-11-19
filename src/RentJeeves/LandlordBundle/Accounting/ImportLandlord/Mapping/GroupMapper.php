@@ -20,6 +20,7 @@ use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Exception\MappingExcepti
  */
 class GroupMapper extends AbstractMapper
 {
+    const DEFAULT_STATEMENT_DESCRIPTOR = 'RENTTRK-WSR RENT PAY';
     /**
      * @var AddressLookupInterface
      */
@@ -105,6 +106,7 @@ class GroupMapper extends AbstractMapper
         $newGroup->setZip($this->get('ll_zipcode'));
         $newGroup->setHolding($this->createHolding());
         $newGroup->setType(GroupType::RENT);
+        $newGroup->setStatementDescriptor(self::DEFAULT_STATEMENT_DESCRIPTOR);
         $newGroup->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $newGroup->setExternalGroupId($this->get('login_id'));
 

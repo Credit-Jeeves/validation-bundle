@@ -126,7 +126,15 @@ class GroupMapperCase extends BaseTestCase
             $group->getOrderAlgorithm(),
             'Order Algorithm should be set to ' . OrderAlgorithmType::PAYDIRECT
         );
-        $this->assertEquals(GroupType::RENT, $group->getType(), 'Group type should be set ' . GroupType::RENT);
+        $this->assertEquals(GroupType::RENT, $group->getType(), 'Group type should be set to ' . GroupType::RENT);
+        $this->assertEquals(
+            GroupMapper::DEFAULT_STATEMENT_DESCRIPTOR,
+            $group->getStatementDescriptor(),
+            sprintf(
+                'Group statement descriptor should be set to default value "%s"',
+                GroupMapper::DEFAULT_STATEMENT_DESCRIPTOR
+            )
+        );
         $this->assertEquals('testLoginId', $group->getExternalGroupId(), 'Invalid mapping for external group id');
 
         $this->assertNotNull($holding = $group->getHolding(), 'New holding should be created');
