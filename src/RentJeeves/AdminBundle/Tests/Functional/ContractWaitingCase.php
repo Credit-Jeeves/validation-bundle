@@ -19,7 +19,7 @@ class ContractWaitingCase extends BaseTestCase
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
         $this->assertCount(1, $contractWaiting, 'Should be only one item on the list');
 
-        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_contract_waiting'));
 

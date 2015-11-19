@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<NetConnectResponse xmlns="http://www.experian.com/NetConnectResponse">
+    <CompletionCode>0000</CompletionCode>
+    <ReferenceId>123</ReferenceId>
+    <TransactionId>11655064</TransactionId>
+    <HostResponse><![CDATA[1100040041814172733TKSE0700K11204182014@361004607340007 *****  NO RECORD FOUND  *****@950001600300102@]]></HostResponse>
+</NetConnectResponse>

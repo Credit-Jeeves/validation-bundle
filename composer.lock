@@ -700,18 +700,6 @@
             "time": "2015-12-07 10:04:11"
         },
         {
-            "name": "credit-jeeves/credit-jeeves",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "c903d18fdacee165615574dde0b0d9d7c5dfd5ea"
-            },
-            "type": "library",
-            "description": "Legacy code",
-            "time": "2015-09-26 00:06:06"
-        },
-        {
             "name": "credit-jeeves/simulation-bundle",
             "version": "dev-master",
             "target-dir": "CreditJeeves/SimulationBundle",
@@ -8061,7 +8049,6 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "credit-jeeves/credit-jeeves": 20,
         "credit-jeeves/core-bundle": 20,
         "credit-jeeves/arf-bundle": 20,
         "credit-jeeves/simulation-bundle": 20,
