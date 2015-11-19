@@ -142,7 +142,7 @@ abstract class AbstractManager
                 $depositAccount->getMerchantName()
             );
         } else {
-            return substr($depositAccount->getMerchantName(), 0 , 45);
+            return substr($depositAccount->getMerchantName(), 0, 45);
         }
     }
 

@@ -85,7 +85,7 @@ class EnrollmentManagerCase extends UnitTestBase
 
         $this->assertLessThanOrEqual(45, strlen($billingAccountNickname), 'String should be less or equal 45 symbols');
         $this->assertStringEndsWith(
-            substr($depositAccount->getMerchantName(), 0 ,45),
+            substr($depositAccount->getMerchantName(), 0, 45),
             $billingAccountNickname,
             'Billing account nickname should have division id on the end'
         );
