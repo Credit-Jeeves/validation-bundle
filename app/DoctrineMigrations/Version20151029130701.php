@@ -35,9 +35,6 @@ The details:
 >
   <tbody>
     <tr style=\"border: 1px solid #C8C8C8;\">
-      <td style=\"padding:5px;\">{{ \'common.created_at\' | trans }}:</td><td style=\"padding:5px;\">{{ paymentCreatedAt }}</td>
-    </tr>
-    <tr style=\"border: 1px solid #C8C8C8;\">
       <td style=\"padding:5px;\">{{ \'common.charged_at\' | trans }}:</td><td style=\"padding:5px;\">{{ datetime }}</td>
     </tr>
     <tr style=\"border: 1px solid #C8C8C8;\">
@@ -99,10 +96,6 @@ This payment will appear on your bank statement as {{ statementDescriptor }}.
 
                 <table width=\'100%\' style=\'border: 1px solid #C8C8C8; border-collapse: collapse;\'>
                 <tbody>
-                <tr style=\'border: 1px solid #C8C8C8;\'>
-                    <td style=\'padding:5px;\'>{{ \'common.created_at\' | trans }}:</td>
-                    <td style=\'padding:5px;\'>{{ paymentCreatedAt }}</td>
-                </tr>
                 <tr style=\'border: 1px solid #C8C8C8;\'>
                     <td style=\'padding:5px;\'>{{ \'common.charged_at\' | trans }}:</td>
                     <td style=\'padding:5px;\'>{{ orderTime }}</td>
