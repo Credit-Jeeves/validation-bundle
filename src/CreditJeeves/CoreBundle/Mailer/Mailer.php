@@ -61,7 +61,7 @@ class Mailer extends BaseMailer implements MailerInterface
 
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
-            $message->setFrom([$htmlContent['fromEmail'] => $htmlContent['fromName']]);
+            $message->setFrom([$htmlContent['fromEmail'] => $params['partnerName']]);
             $message->setTo($emailTo);
 
             if (false != $template->getEnTranslation()->getMandrillSlug()) {
