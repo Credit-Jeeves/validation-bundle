@@ -11,8 +11,8 @@ class BatchedDepositsCase extends BaseTestCase
      */
     public function shouldShowBatchedDeposits()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -51,7 +51,7 @@ class BatchedDepositsCase extends BaseTestCase
         );
         $filter->click();
         $this->assertNotNull(
-            $batchFilter = $this->page->find('css', '#depositTypeStatus_li_2'),
+            $batchFilter = $this->page->find('css', '#depositTypeStatus_li_1'),
             'Link for filtering by batch id not found'
         );
         $batchFilter->click();
@@ -82,7 +82,7 @@ class BatchedDepositsCase extends BaseTestCase
 
         $filter->click();
         $this->assertNotNull(
-            $transactionFilter = $this->page->find('css', '#depositTypeStatus_li_1'),
+            $transactionFilter = $this->page->find('css', '#depositTypeStatus_li_0'),
             'Link for filtering by transaction ID not found'
         );
         $transactionFilter->click();
