@@ -253,7 +253,6 @@ function showAddNewAddress(){
 
 
 function showHideBankCardFields(bankVisibility,cardVisibility){
-    if(bankVisibility)
     $.each(bankVisibleFields,function(index,fieldId){
         var id=accountPrefix+fieldId
         //seperate these 2 our incase label doens't exist for input, so we have no jquery error
