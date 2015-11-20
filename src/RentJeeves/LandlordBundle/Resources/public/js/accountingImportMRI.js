@@ -22,7 +22,12 @@ function accountingImportMri() {
         }
 
         var nextPageLink = typeof nextPageLink !== 'undefined' ? nextPageLink : '';
-        self.loadDataMessage(Translator.trans('import.message.download.contracts'));
+        self.loadDataMessage(
+            Translator.trans(
+                'import.message.download.contracts',
+                {"EXTERNAL_PROPERTY_ID": items[i]}
+            )
+        );
         jQuery.ajax({
             url: Routing.generate('accounting_import_residents_mri', {'externalPropertyId': items[i] }),
             type: 'POST',
