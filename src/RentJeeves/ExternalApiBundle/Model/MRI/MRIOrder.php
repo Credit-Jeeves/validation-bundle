@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\MRI;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\Serializer\Annotation as Serializer;
@@ -176,7 +177,7 @@ class MRIOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
-     * @Serializer\Groups({"MRI"})
+     * @Serializer\Groups({"MRI-with-description"})
      * @Serializer\Type("string")
      * @Serializer\XmlElement(cdata=false)
      *
@@ -185,9 +186,20 @@ class MRIOrder
     public function getMriDescription()
     {
         return sprintf(
-            'RT Payment T#%s B#%s',
-            $this->order->getCompleteTransaction()->getBatchId(),
-            $this->order->getCompleteTransaction()->getId()
+            'RT T#%s B#%s',
+            $this->order->getCompleteTransaction()->getTransactionId(),
+            $this->order->getCompleteTransaction()->getBatchId()
         );
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSendDescription()
+    {
+        /** @var Operation $operation */
+        $operation = $this->order->getOperations()->first();
+
+        return $operation->getGroup()->getHolding()->getMriSettings()->isSendDescription();
     }
 }

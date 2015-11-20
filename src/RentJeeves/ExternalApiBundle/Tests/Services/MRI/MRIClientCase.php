@@ -58,6 +58,10 @@ class MRIClientCase extends Base
         /** @var Operation $operation */
         $operation = $operations->first();
         $this->assertNotEmpty($operation);
+
+        $group = $em->getRepository('DataBundle:Group')->find(24);
+        $operation->setGroup($group);
+
         $this->assertNotEmpty($order = $operation->getOrder());
         $this->assertNotEmpty($transaction = $order->getCompleteTransaction());
 
@@ -126,6 +130,7 @@ class MRIClientCase extends Base
      */
     public function shouldPostPayments()
     {
+        $this->load(true);
         $mriClient = $this->getMriClient();
         $order = $this->getOrder();
         $property = $order->getContract()->getProperty();
