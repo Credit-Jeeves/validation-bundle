@@ -133,7 +133,9 @@ abstract class ExternalApiStorage extends StorageCsv implements ExternalApiStora
         $onlyException = isset($form['onlyException']) ? $form['onlyException']->getData() : false;
         $this->setOnlyException($onlyException);
         $this->setImportLoaded(false);
-        $this->setImportExternalPropertyId($importGroupSettings->getApiPropertyIds());
+        $this->setImportExternalPropertyId(
+            strtolower($importGroupSettings->getApiPropertyIds())
+        );
     }
 
     /**
