@@ -422,7 +422,7 @@ function setupPayForm(id) {
 
             $("#"+prefix+"amount").val(contract.rent)
             $("#payTo").html(contract.payToName);
-            $("#contractAddress").html((contract.property.number+" "+contract.property.street+" "+contract.property.district+" "+contract.unit.name).replace("undefined","").replace(/  /g,' '))
+            $("#contractAddress").html((contract.property.propertyAddress.number+" "+contract.property.propertyAddress.street+" "+contract.property.propertyAddress.district).replace("undefined","").replace(/  /g,' '))
 
 
             //get due date
