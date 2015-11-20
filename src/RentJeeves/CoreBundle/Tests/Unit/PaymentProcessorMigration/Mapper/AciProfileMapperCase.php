@@ -84,8 +84,8 @@ class AciProfileMapperCase extends BaseTestCase
             $user->getFirstName() . ' ' . $user->getLastName(),
             $accountRecord->getNameOnBillingAccount()
         );
-        $this->assertEquals((string) $address, $accountRecord->getAddress1());
-        $this->assertEquals('123456789012', $accountRecord->getCity());
+        $this->assertEquals($address->getStreet(), $accountRecord->getAddress1());
+        $this->assertEquals('123456789012345', $accountRecord->getCity());
         $this->assertEquals($address->getArea(), $accountRecord->getState());
         $this->assertEquals($address->getZip(), $accountRecord->getZipCode());
         $this->assertEquals('testBusinessId', $accountRecord->getBusinessId());
