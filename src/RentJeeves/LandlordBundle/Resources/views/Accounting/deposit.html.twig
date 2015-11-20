@@ -116,6 +116,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var viewModel = new BatchedDepositsViewModel();
+            viewModel.filter($('#depositTypeStatus').val());
             ko.applyBindings(viewModel);
 
             $('#depositTypeStatus').linkselect("destroy");
