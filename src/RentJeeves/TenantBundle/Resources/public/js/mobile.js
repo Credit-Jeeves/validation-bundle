@@ -19,8 +19,8 @@ cardVisibleFields=[
     //"CardAccountName",
     "CardAccountNumber",
     "VerificationCode",
-    "ExpirationYear-button",
-    "ExpirationMonth-button",
+    //"ExpirationYear-button",
+    "ExpirationMonth_box",
     "address_choice",
     "is_new_address_link",
     "address",
@@ -253,6 +253,7 @@ function showAddNewAddress(){
 
 
 function showHideBankCardFields(bankVisibility,cardVisibility){
+    if(bankVisibility)
     $.each(bankVisibleFields,function(index,fieldId){
         var id=accountPrefix+fieldId
         //seperate these 2 our incase label doens't exist for input, so we have no jquery error
