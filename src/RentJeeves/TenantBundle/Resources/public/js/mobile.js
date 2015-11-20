@@ -19,8 +19,8 @@ cardVisibleFields=[
     //"CardAccountName",
     "CardAccountNumber",
     "VerificationCode",
-    "ExpirationYear-button",
-    "ExpirationMonth",
+    //"ExpirationYear-button",
+    "ExpirationMonth_box",
     "address_choice",
     "is_new_address_link",
     "address",
@@ -126,32 +126,6 @@ function init(){
 
     }
 
-    $.each(payAccounts, function(index, payAccount){
-        $("#"+prefix+"paymentAccount").append("<option value='"+payAccount.id+"'>"+payAccount.name+"</option>")
-    })
-
-    //add "Add new payment source"
-    $("#"+prefix+"paymentAccount").append("<option value='-1'>Add new payment source</option>")
-    $("#"+prefix+"paymentAccount").bind( "change", function(event, ui) {
-        if($(this).val()==-1){
-            var id=$("#rentjeeves_checkoutbundle_paymenttype_contractId").val()
-            for (i = 0; i < contractsArr.length;i++) {//retrieve our groupId
-                if (contractsArr[i].id == id) {
-                    $("#rentjeeves_checkoutbundle_paymentaccounttype_groupId").val(contractsJson[i].groupId)
-                }
-            }
-            //get contractId
-            $("#rentjeeves_checkoutbundle_paymentaccounttype_contractId").val(id)
-            saving = false;
-            $("#deleteSource").parent().hide()
-            $.mobile.changePage('#addNewPayAccount')
-        }
-    });
-
-    $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").bind("change",function(event,ui){
-        $("#"+accountPrefix+"address").parent().hide()
-    })
-
 
     //fix KO payment card/account
     $("#"+accountPrefix+"PayorName_row")
@@ -233,6 +207,42 @@ function init(){
     $("#rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode_box").show()
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
+}
+
+function renderPayAccounts(contract){
+
+    if(contract.allowDebitCard){
+        $("#rentjeeves_checkoutbundle_paymentaccounttype_type_2").parent().show()
+        $("#rentjeeves_checkoutbundle_paymentaccounttype_type_2").show()
+
+    }else{
+        $("#rentjeeves_checkoutbundle_paymentaccounttype_type_2").parent().hide()
+        $("#rentjeeves_checkoutbundle_paymentaccounttype_type_2").hide()
+    }
+
+    $("#" + prefix + "paymentAccount").html("")
+    $.each(payAccounts, function(index, payAccount){
+        if((payAccount.type=="debit_card" && contract.allowDebitCard) || payAccount.type!="debit_Card") {
+            $("#" + prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>")
+        }
+    })
+
+    //add "Add new payment source"
+    $("#"+prefix+"paymentAccount").append("<option value='-1'>Add new payment source</option>")
+    $("#"+prefix+"paymentAccount").bind( "change", function(event, ui) {
+        if(this.value==-1){
+            $("#rentjeeves_checkoutbundle_paymentaccounttype_groupId").val(contract.groupId)
+            //get contractId
+            $("#rentjeeves_checkoutbundle_paymentaccounttype_contractId").val(contract.id)
+            saving = false;
+            $("#deleteSource").parent().hide()
+            $.mobile.changePage('#addNewPayAccount')
+        }
+    });
+
+    $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").bind("change",function(event,ui){
+        $("#"+accountPrefix+"address").parent().hide()
+    })
 }
 
 function showAddNewAddress(){
@@ -346,6 +356,8 @@ function setupPayForm(id) {
 
             var contract=contractsArr[i]
 
+            renderPayAccounts(contract)
+
             //check that user is verified
 
             if(isVerified!='passed' && contract.isPidVerificationSkipped==false){
@@ -410,7 +422,7 @@ function setupPayForm(id) {
 
             $("#"+prefix+"amount").val(contract.rent)
             $("#payTo").html(contract.payToName);
-            $("#contractAddress").html((contract.property.number+" "+contract.property.street+" "+contract.property.district+" "+contract.unit.name).replace("undefined","").replace(/  /g,' '))
+            $("#contractAddress").html((contract.property.propertyAddress.number+" "+contract.property.propertyAddress.street+" "+contract.property.propertyAddress.district).replace("undefined","").replace(/  /g,' '))
 
 
             //get due date
@@ -432,6 +444,8 @@ function setupPayForm(id) {
             if(contract.payment) {
 
                 //different button text
+
+                $("#rentjeeves_checkoutbundle_paymenttype_id").val(contract.payment.id); //make sure we edit an existing payment
 
                 $("#payRentBttn").html("SAVE CHANGES")
 
@@ -580,10 +594,10 @@ function createReview(){
                 })
 
                 if ('card' == method) {
-                    fee = parseFloat(contract.depositAccount.feeCC) / 100 * total;
+                    fee = parseFloat(2.95) / 100 * total;
                     $("#revTechFeeCont").show()
-                } else if ('bank' == method) {
-                    fee = parseFloat(contract.depositAccount.feeACH);
+                } else {
+                    fee = parseFloat(0);
                     $("#revTechFeeCont").hide()
                 }
 
@@ -919,6 +933,7 @@ function loadOrderTable(tenantPayments,address,contractId){ //HISTORICAL
 
 function loadPaymentTable(){ //CURRENT
     $.each(contractsJson, function (index, entry) {
+        address = entry.property.propertyAddress.number+" "+entry.property.propertyAddress.street
         if(entry.payment){
             payAccountType="card";
             $.each(payAccounts,function(k,v){
@@ -929,7 +944,7 @@ function loadPaymentTable(){ //CURRENT
             //date = entry.payment.startYear+"-"+entry.payment.startMonth+"-"+entry.payment.dueDate
             date = entry.payment.paidDate.split("/")
             date = date[2]+"-"+date[0]+"-"+date[1]
-            orderBox("<b>"+entry.payment.type.capitalizeFirstLetter().replace("_"," ").capitalizeFirstLetter().replace("time","Time")+" Payment Scheduled</b> - $"+entry.payment.total,entry.property.number+" "+entry.property.street,"",date,entry.id, payAccountType)
+            orderBox("<b>"+entry.payment.type.capitalizeFirstLetter().replace("_"," ").capitalizeFirstLetter().replace("time","Time")+" Payment Scheduled</b> - $"+entry.payment.total,address,"",date,entry.id, payAccountType)
             //desc,address,status,date,contractId,paymentType
         }
     })
