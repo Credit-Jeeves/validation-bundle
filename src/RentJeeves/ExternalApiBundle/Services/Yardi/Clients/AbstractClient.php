@@ -348,9 +348,10 @@ abstract class AbstractClient implements ClientInterface
             $this->numberOfRetriesTheSameSoapCall++;
             $this->logger->addWarning(
                 sprintf(
-                    "Yardi send request was failed with message: %s. We try again send request. Number of retries: %s",
+                    'Yardi request failed with message: "%s". Trying again. Retries: %s of %s',
                     $e->getMessage(),
-                    $this->numberOfRetriesTheSameSoapCall
+                    $this->numberOfRetriesTheSameSoapCall,
+                    self::MAX_NUMBER_OF_RETRIES
                 )
             );
             sleep(self::SLEEP_BETWEEN_RETRIES);
