@@ -13,8 +13,12 @@
         <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
             <div data-bind="text: contract.property.full_address"></div>
         </td>
-        <td class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
-            <span data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
+        <td class="errorField"
+            data-bind="
+                if: contract.property === null,
+                visible: (contract.property === null),
+                attr: {title: '{{ 'property.cannot.map'|trans }}'}">
+            <span data-bind="html: address"></span>
         </td>
     {% endif %}
     <td data-bind="
