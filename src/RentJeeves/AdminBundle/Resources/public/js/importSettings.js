@@ -1,6 +1,7 @@
 function ImportSettings() {
     var self = this;
     var options = [];
+    var selected = $('select[id*="_importSettings_importType"]>option:selected').val();
     $('select[id*="_importSettings_importType"]>option').each(function (i, el) {
         options.push({"value" :$(el).val(), "text" : $(el).text()});
     });
@@ -19,7 +20,9 @@ function ImportSettings() {
         $.each(options, function(i, el){
             if (sourceType == 'csv' || (sourceType == 'integrated_api' && el.value == 'multi_properties')) {
                 $('select[id$="_importSettings_importType"]').append(
-                    '<option value="' + el.value + '">' + el.text + '</option>'
+                    '<option value="' + el.value + '"' + (selected == el.value ? ' selected="selected"' : '' ) +'>' +
+                            el.text +
+                    '</option>'
                 );
             }
         });
