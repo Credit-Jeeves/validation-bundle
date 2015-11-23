@@ -47,11 +47,6 @@ class PropertyManager
     protected $logger;
 
     /**
-     * @var array
-     */
-    protected $validProperties = [];
-
-    /**
      * @param EntityManagerInterface $em
      * @param Google $google
      * @param AddressLookupInterface $addressLookupService
@@ -93,24 +88,31 @@ class PropertyManager
      */
     public function setupSingleProperty(Property $property, array $options = ['doFlush' => true])
     {
-        $logPrefix = "Property(" . $this->getPropertyIdentifier($property) . ") ";
-        $this->logger->debug($logPrefix . "Attempting to set as single property...");
+        $propertyIdentifier = $property->getId() ?: ($property->getFullAddress() ?: self::NEW_PROPERTY);
+        $logPrefix = sprintf('Property(%s)', $propertyIdentifier);
+        $this->logger->debug(sprintf('%s Attempting to set as single property.', $logPrefix));
 
         $unitCount = $property->getUnits()->count();
         if ($unitCount === 0) {
-            $this->logger->debug($logPrefix . "Has no units, so creating one...");
+            $this->logger->debug(sprintf('%s Has no units, so creating one.', $logPrefix));
             // create new unit
             $groups = $property->getPropertyGroups();
             $groupCount = $groups->count();
             if ($groupCount < 1) {
-                throw new \RuntimeException("ERROR: Cannot create a standalone unit for a property without a group");
+                throw new \RuntimeException(
+                    sprintf('%s ERROR: Cannot create a standalone unit for a property without a group', $logPrefix)
+                );
             } elseif ($groupCount > 1) {
                 $groupIds = '';
                 foreach ($groups as $group) {
                     $groupIds .= ' ' . $group->getId();
                 }
                 throw new \RuntimeException(
-                    "ERROR: Cannot create a standalone unit for a property with multiple groups. Ids: " . $groupIds
+                    sprintf(
+                        '%s ERROR: Cannot create a standalone unit for a property with multiple groups. Ids: %s',
+                        $logPrefix,
+                        $groupIds
+                    )
                 );
             }
             /** @var Group $group */
@@ -135,14 +137,13 @@ class PropertyManager
         } elseif ($unitCount === 1) {
             $unit = $property->getUnits()->first();
             if ($unit->getActualName() === Unit::SINGLE_PROPERTY_UNIT_NAME) {
-                $this->logger->debug($logPrefix . "Already has single unit -- awesome!");
+                $this->logger->debug(sprintf('%s Already has single unit -- awesome!', $logPrefix));
             } else {
-                $msg = $logPrefix . "Has a unit but wrong name";
-                $this->logger->error($msg);
+                $this->logger->error($msg = sprintf('%s Has a unit but wrong name', $logPrefix));
                 throw new \RuntimeException($msg);
             }
         } else {
-            $msg = $logPrefix . "Already has multiple units -- cannot set as single property";
+            $msg = sprintf('%s Already has multiple units -- cannot set as single property', $logPrefix);
             $this->logger->error($msg);
             throw new \RuntimeException($msg);
         }
@@ -161,103 +162,15 @@ class PropertyManager
     /**
      * @param Property $property
      *
-     * @return null|Property
-     */
-    public function checkByMinimalArgs(Property $property)
-    {
-        $propertyAddress = $property->getPropertyAddress();
-
-        if ($propertyAddress->getIndex() !== null) {
-            $params['index'] = $propertyAddress->getIndex();
-        } elseif ($propertyAddress->getJb() !== null && $propertyAddress->getKb() !== null) {
-            $params['jb'] = $propertyAddress->getJb();
-            $params['kb'] = $propertyAddress->getKb();
-            $params['number'] = $propertyAddress->getNumber();
-        } else {
-            throw new \LogicException('Property doesn`t have data about location');
-        }
-
-        return $this->getPropertyRepository()->findOneByPropertyAddressFields($params);
-    }
-
-    /**
-     * @param Property $property
-     *
-     * @return null|Property
-     */
-    public function checkByAllArgs(Property $property)
-    {
-        $propertyAddress = $property->getPropertyAddress();
-        $params = [
-            'number' => $propertyAddress->getNumber(),
-            'city' => $propertyAddress->getCity(),
-            'state' => $propertyAddress->getState(),
-            'street' => $propertyAddress->getStreet(),
-        ];
-
-        return $this->getPropertyRepository()->findOneByPropertyAddressFields($params);
-    }
-
-    /**
-     * @param Property $property
-     * @throws \Exception
+     * @throws \Exception If property has invalid address
      */
     public function saveToGoogle(Property $property)
     {
-        if (!$this->isValidProperty($property)) {
-            throw new \Exception("Can't save invalid property to google");
-        }
         try {
             $this->google->savePlace($property);
         } catch (\Exception $e) {
             $this->exceptionCatcher->handleException($e);
         }
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param Property $property
-     *
-     * @return bool
-     */
-    public function isValidProperty(Property $property)
-    {
-        foreach ($this->validProperties as $propertyValid) {
-            if ($property === $propertyValid) {
-                return true;
-            }
-        }
-
-        $propertyAddress = $property->getPropertyAddress();
-        $address = $this->lookupAddress(
-            $propertyAddress->getAddress(),
-            $propertyAddress->getCity(),
-            $propertyAddress->getState(),
-            $propertyAddress->getZip()
-        );
-
-        if ($address instanceof Address) {
-            $propertyAddress->setAddressFields($address);
-            $this->validProperties[] = $property;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function getPropertyIdentifier(Property $property)
-    {
-        $identifier = self::NEW_PROPERTY;
-
-        if ($id = $property->getId()) {
-            $identifier = $id;
-        } elseif ($addr = trim($property->getFullAddress())) {
-            $identifier = $addr;
-        }
-
-        return $identifier;
     }
 
     /**
@@ -276,7 +189,7 @@ class PropertyManager
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . ' '. $street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
             return null;
         }
 
