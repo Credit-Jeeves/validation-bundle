@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -1267,6 +1268,35 @@ class PayCase extends BaseTestCase
             $rentColumn->getText(),
             'Rent column should contains rent'
         );
+
+        // Check that column with rent is hide,
+        // when we have contract that belong to group with disable show rent on dashboard
+        $tableRows[0]->findAll('css', 'td');
+        $columnNameSelector = '#current-payments table.properties-table>thead>tr>th';
+        $columnsName = $this->getDomElements($columnNameSelector);
+        $columns = $tableRows[0]->findAll('css', 'td');
+        $this->assertCount(6, $columnsName, 'Should be displayed 6 heads of column');
+        $this->assertCount(6, $columns, 'Should be displayed 6 columns');
+
+        // we know that tenant has contract on 2 groups prepare fixtures
+        /** @var Group $group1 */
+        $group1 = $this->getEntityManager()->find('DataBundle:Group', 24);
+        /** @var Group $group2 */
+        $group2 = $this->getEntityManager()->find('DataBundle:Group', 25);
+        $this->assertNotNull($group1, 'Check fixtures, group with id 24 should be present');
+        $this->assertNotNull($group2, 'Check fixtures, group with id 25 should be present');
+        $group1->getGroupSettings()->setShowRentOnDashboard(false);
+        $group2->getGroupSettings()->setShowRentOnDashboard(false);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $columnsName = $this->getDomElements($columnNameSelector);
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $columns = $tableRows[0]->findAll('css', 'td');
+        $this->assertCount(5, $columnsName, 'Should be displayed just 5 heads of column');
+        $this->assertCount(5, $columns, 'Should be displayed just 5 columns');
     }
 
     /**
