@@ -8,6 +8,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\ImportSource;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -42,6 +44,15 @@ class LandlordPermission
      */
     public function hasAccessToImport()
     {
+        if (!$this->group->isExistImportSettings()) {
+            return false;
+        }
+        $importSettings = $this->group->getImportSettings();
+        $apiIntegrationType = $this->user->getHolding()->getApiIntegrationType();
+
+        $isValidImportSettings = $apiIntegrationType !== ApiIntegrationType::NONE &&
+            $importSettings->getSource() === ImportSource::CSV;
+
         if (empty($this->group)) {
             return false;
         }
@@ -52,7 +63,7 @@ class LandlordPermission
             return false;
         }
 
-        return $setting->getIsIntegrated();
+        return $setting->getIsIntegrated() && $isValidImportSettings;
     }
 
     /**
