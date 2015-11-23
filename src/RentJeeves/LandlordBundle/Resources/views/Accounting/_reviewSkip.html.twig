@@ -10,16 +10,17 @@
 
     </td>
     {% if isMultipleProperty == "true"  %}
-        <td data-bind="if: contract.property !== null, visible: (contract.property !== null)">
+        <!-- ko if: (contract.property != null) -->
+        <td>
             <div data-bind="text: contract.property.full_address"></div>
         </td>
-        <td class="errorField"
-            data-bind="
-                if: contract.property === null,
-                visible: (contract.property === null),
-                attr: {title: '{{ 'property.cannot.map'|trans }}'}">
-            <span data-bind="html: address"></span>
+        <!-- /ko -->
+
+        <!-- ko if: (contract.property == null) -->
+        <td class="errorField" data-bind="attr: {title: '{{ 'property.cannot.map'|trans }}'}">
+            <span data-bind="text: address"></span>
         </td>
+        <!-- /ko -->
     {% endif %}
     <td data-bind="
         text:$root.getUnitName($data),
