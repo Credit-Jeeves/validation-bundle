@@ -768,7 +768,6 @@ abstract class HandlerAbstract implements HandlerInterface
                 $contractFromWaiting->setRent($contract->getRent());
                 $contractFromWaiting->setStartAt($contract->getStartAt());
                 $contractFromWaiting->setFinishAt($contract->getFinishAt());
-                $contractFromWaiting->setPaidToByBalanceDue();
                 $this->flushEntity($contractFromWaiting);
                 $this->sendInviteEmail();
 
@@ -776,7 +775,6 @@ abstract class HandlerAbstract implements HandlerInterface
             }
 
             $this->flushEntity($this->currentImportModel->getTenant());
-            $contract->setPaidToByBalanceDue();
             $this->flushEntity($contract);
             $this->flushEntity($this->currentImportModel->getResidentMapping());
             if ($this->currentImportModel->getOrder() instanceof Order) {
