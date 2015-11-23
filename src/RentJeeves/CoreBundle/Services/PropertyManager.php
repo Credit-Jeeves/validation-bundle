@@ -161,8 +161,6 @@ class PropertyManager
 
     /**
      * @param Property $property
-     *
-     * @throws \Exception If property has invalid address
      */
     public function saveToGoogle(Property $property)
     {
