@@ -164,22 +164,10 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         if (!$firstDetails) {
             throw new \LogicException(
                 sprintf(
-                    '[SyncRent]Can not get',
+                    '[SyncRent] Can not get details for %s #%d external property ID: %s',
                     $holding->getName(),
                     $holding->getId(),
-                    $firstDetails ? $firstDetails->getCustomerId() : '',
-                    $sumRecurringCharges
-                )
-            );
-        }
-        if ($sumRecurringCharges <= 0) {
-            throw new \LogicException(
-                sprintf(
-                    '[SyncRent]Sum of RecurringCharges for %s #%d  and lease Id "%s" = %d',
-                    $holding->getName(),
-                    $holding->getId(),
-                    $firstDetails ? $firstDetails->getCustomerId() : '',
-                    $sumRecurringCharges
+                    $externalPropertyId
                 )
             );
         }
