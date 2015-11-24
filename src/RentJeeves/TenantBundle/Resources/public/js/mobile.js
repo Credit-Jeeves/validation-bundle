@@ -242,10 +242,12 @@ function renderPayAccounts(contract){
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").bind("change",function(event,ui){
         $("#"+accountPrefix+"address").parent().hide()
+        $("#rentjeeves_checkoutbundle_paymentaccounttype_is_new_address").val("false")
     })
 }
 
 function showAddNewAddress(){
+    $("#rentjeeves_checkoutbundle_paymentaccounttype_is_new_address").val("true")
     $("#rentjeeves_checkoutbundle_paymentaccounttype_address").parent().css("display","block")
     //$("#rentjeeves_checkoutbundle_paymentaccounttype_address_choice").parent().css("display","none")
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").prop('checked',false).checkboxradio("refresh")
