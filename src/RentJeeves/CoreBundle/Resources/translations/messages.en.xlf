@@ -391,7 +391,7 @@
             </trans-unit>
             <trans-unit id="property.cannot.map">
                 <source>property.cannot.map</source>
-                <target><![CDATA[We can not map this property]]></target>
+                <target>Invalid US Postal Address. Please verify and try again.</target>
             </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>

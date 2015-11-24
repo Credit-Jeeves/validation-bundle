@@ -768,7 +768,6 @@ abstract class HandlerAbstract implements HandlerInterface
                 $contractFromWaiting->setRent($contract->getRent());
                 $contractFromWaiting->setStartAt($contract->getStartAt());
                 $contractFromWaiting->setFinishAt($contract->getFinishAt());
-                $contractFromWaiting->setPaidToByBalanceDue();
                 $this->flushEntity($contractFromWaiting);
                 $this->sendInviteEmail();
 
