@@ -162,7 +162,10 @@ class ContractsController extends Controller
         $form = $this->createForm(
             new ContractType(),
             $entity,
-            ['method' => $method]
+            [
+                'method' => $method,
+                'unit_repository' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Unit')
+            ]
         );
 
         $form->handleRequest($request);
