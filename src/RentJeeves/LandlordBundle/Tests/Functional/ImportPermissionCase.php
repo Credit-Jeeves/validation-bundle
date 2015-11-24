@@ -42,7 +42,7 @@ class ImportPermissionCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function shouldNotSeeImportWhenHaveCorrectSetting()
+    public function shouldNotSeeImportWhenHaveIncorrectSetting()
     {
         $this->load(true);
         /** @var ImportGroupSettings $importGroupSettings */
