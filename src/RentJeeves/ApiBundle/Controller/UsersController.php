@@ -108,7 +108,10 @@ class UsersController extends Controller
         $form = $this->createForm(
             new TenantType(),
             new Tenant(),
-            ['method' => 'POST']
+            [
+                'method' => 'POST',
+                'holding_repository' => $this->getDoctrine()->getManager()->getRepository('DataBundle:Holding')
+            ]
         );
 
         $form->handleRequest($request);

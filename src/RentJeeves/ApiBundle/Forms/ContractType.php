@@ -4,6 +4,7 @@ namespace RentJeeves\ApiBundle\Forms;
 
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\UnitRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormEvent;
@@ -29,8 +30,11 @@ class ContractType extends AbstractType
      */
     public function buildForm(FormBuilder $builder, array $options)
     {
+        /** @var UnitRepository $unitRepository */
+        $unitRepository = $options['unit_repository'];
         $builder->add('unit_url', 'entity', [
             'class' => 'RentJeeves\DataBundle\Entity\Unit',
+            'query_builder' => $unitRepository->createQueryBuilder('unit'),
             'mapped' => false,
             'constraints' => [
                 new NotBlank([
@@ -100,6 +104,7 @@ class ContractType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
+        $resolver->setRequired(['unit_repository']);
         $resolver->setDefaults([
             'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
             'csrf_protection' => false,

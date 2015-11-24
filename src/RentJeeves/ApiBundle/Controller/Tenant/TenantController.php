@@ -91,7 +91,10 @@ class TenantController extends Controller
         $form = $this->createForm(
             new TenantDetailsType(),
             $this->getUser(),
-            ['method' => 'PUT']
+            [
+                'method' => 'PUT',
+                'holding_repository' => $this->getDoctrine()->getManager()->getRepository('DataBundle:Holding')
+            ]
         );
 
         $form->handleRequest($request);
