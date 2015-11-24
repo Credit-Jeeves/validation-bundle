@@ -134,7 +134,6 @@ class ExportCase extends BaseTestCase
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
 
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -249,7 +248,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $this->selectExportBy($exportBy);
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -296,7 +294,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -355,7 +352,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -398,7 +394,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -461,7 +456,6 @@ class ExportCase extends BaseTestCase
         $em->flush($holding);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -494,7 +488,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -555,7 +548,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $endD = new DateTime();
 
@@ -606,7 +598,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -658,7 +649,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -714,7 +704,6 @@ class ExportCase extends BaseTestCase
         //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -760,7 +749,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -809,7 +797,6 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -861,7 +848,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -906,7 +892,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -948,7 +933,6 @@ class ExportCase extends BaseTestCase
         $this->createPayment();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
         $this->selectExportBy('deposits');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
