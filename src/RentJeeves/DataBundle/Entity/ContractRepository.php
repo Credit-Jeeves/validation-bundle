@@ -1043,8 +1043,8 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.group', 'g');
         $query->leftJoin('g.depositAccounts', 'da');
         $query->leftJoin('c.payments', 'pay');
-        if (!empty($status)) {
-            $query->andWhere('c.status NOT IN :statuses');
+        if (!empty($statuses)) {
+            $query->andWhere('c.status NOT IN (:statuses)');
             $query->setParameter('statuses', $statuses);
         }
         $query->andWhere('c.tenant = :tenantId');
