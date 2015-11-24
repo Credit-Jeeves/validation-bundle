@@ -63,4 +63,3 @@ class ImportPermissionCase extends ImportBaseAbstract
         $this->assertNull($this->page->find('css', '.submitImportFile'), 'Submit button should not exist');
     }
 }
-
