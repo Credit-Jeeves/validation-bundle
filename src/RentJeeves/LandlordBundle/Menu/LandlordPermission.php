@@ -49,9 +49,10 @@ class LandlordPermission
         }
         $importSettings = $this->group->getImportSettings();
         $apiIntegrationType = $this->user->getHolding()->getApiIntegrationType();
-
-        $isValidImportSettings = $apiIntegrationType !== ApiIntegrationType::NONE &&
-            $importSettings->getSource() === ImportSource::CSV;
+        $isValidImportSettings = true;
+        if ($apiIntegrationType !== ApiIntegrationType::NONE && $importSettings->getSource() === ImportSource::CSV) {
+            $isValidImportSettings = false;
+        }
 
         if (empty($this->group)) {
             return false;
