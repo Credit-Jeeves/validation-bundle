@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -15,6 +16,7 @@ use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @property Import currentImportModel
+ * @property PropertyManager $propertyProcess
  */
 trait Property
 {
@@ -36,7 +38,7 @@ trait Property
      */
     protected function catchMatchedExternalPropertyId(PropertyMapping $propertyMapping, $externalPropertyId)
     {
-        if ($propertyMapping->getExternalPropertyId() !== $externalPropertyId) {
+        if (strtolower($propertyMapping->getExternalPropertyId()) !== strtolower($externalPropertyId)) {
             throw new ImportHandlerException(
                 sprintf(
                     'Given external property mapping (%s) does not match the existing one (%s)',
@@ -127,6 +129,7 @@ trait Property
                     $externalPropertyId
                 )
             );
+
             return null;
         }
 
@@ -237,23 +240,28 @@ trait Property
             return $this->propertyList[$key];
         }
 
-        if (!$this->propertyProcess->isValidProperty(
-            $property
-        )) {
-            return null;
-        }
-
-        $property = $this->propertyProcess->checkPropertyDuplicate(
-            $property,
-            $saveToGoogle = true
+        $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddress(
+            $number = $property->getPropertyAddress()->getNumber(),
+            $street = $property->getPropertyAddress()->getStreet(),
+            $city = $property->getPropertyAddress()->getCity(),
+            $state = $property->getPropertyAddress()->getState(),
+            $zipCode = $property->getPropertyAddress()->getZip()
         );
 
-        /** Save valid property to DB */
-        $this->em->flush($property);
+        if ($validDBProperty) {
+            if (null === $validDBProperty->getId()) {
+                $this->em->persist($validDBProperty);
+            }
 
-        $this->propertyList[$key] = $property;
+            $this->em->flush($validDBProperty);
 
-        return $property;
+            $this->propertyProcess->saveToGoogle($validDBProperty);
+            $this->propertyList[$key] = $validDBProperty;
+
+            return $validDBProperty;
+        }
+
+        return null;
     }
 
     /**

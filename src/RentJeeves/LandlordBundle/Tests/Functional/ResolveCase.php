@@ -16,8 +16,9 @@ class ResolveCase extends BaseTestCase
      */
     public function resolveEmail()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
@@ -36,7 +37,6 @@ class ResolveCase extends BaseTestCase
         );
         $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
-        $this->logout();
     }
 
     /**
@@ -44,6 +44,7 @@ class ResolveCase extends BaseTestCase
      */
     public function resolvePaid()
     {
+        $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");

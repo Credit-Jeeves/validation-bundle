@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Form;
 
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
+use RentJeeves\DataBundle\Enum\YardiNsfPostMonthOption;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use Symfony\Component\Form\AbstractType as Base;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -56,7 +57,7 @@ class YardiSettingsType extends Base
                         CASE_LOWER
                     )
                 ),
-                'label'             => 'yardi.label.synchronization_strategy',
+                'label'             => 'admin.yardi.label.synchronization_strategy',
             ]
         );
 
@@ -115,8 +116,18 @@ class YardiSettingsType extends Base
             'choice',
             [
                 'error_bubbling'    => true,
-                'choices'           => YardiPostMonthOption::cachedTitles(),
-                'label'             => 'yardi.label.post_month_node',
+                'choices'           => YardiPostMonthOption::capitalizedCachedTitles(),
+                'label'             => 'admin.yardi.label.post_month_node',
+            ]
+        );
+
+        $builder->add(
+            'nsfPostMonthNode',
+            'choice',
+            [
+                'error_bubbling'    => true,
+                'choices'           => YardiNsfPostMonthOption::capitalizedCachedTitles(),
+                'label'             => 'admin.yardi.label.nsf_post_month_node',
             ]
         );
     }

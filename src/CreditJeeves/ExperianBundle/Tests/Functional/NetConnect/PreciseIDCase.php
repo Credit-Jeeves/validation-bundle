@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional\NetConnect;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID;
 use CreditJeeves\TestBundle\BaseTestCase;
@@ -192,6 +192,7 @@ abstract class PreciseIDCase extends BaseTestCase
             $this->getContainer()->getParameter('net_connect.precise_id.dbhost'),
             $this->getContainer()->getParameter('net_connect.precise_id.sub_code')
         );
+
         return $preciseID;
     }
 
@@ -254,6 +255,7 @@ abstract class PreciseIDCase extends BaseTestCase
             try {
                 $resp = $this->execute($this->users[$i]);
                 $this->assertTrue(is_array($resp));
+
                 return;
             } catch (Exception $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {

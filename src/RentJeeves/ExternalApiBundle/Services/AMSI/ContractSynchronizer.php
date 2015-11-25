@@ -3,529 +3,198 @@
 namespace RentJeeves\ExternalApiBundle\Services\AMSI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
-use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
-use RentJeeves\DataBundle\Entity\PropertyMappingRepository;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 use RentJeeves\ExternalApiBundle\Model\AMSI\RecurringCharge;
-use Symfony\Component\Console\Output\OutputInterface;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
 
-class ContractSynchronizer
+/**
+ * DI\Service("amsi.contract_sync")
+ */
+class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const COUNT_PROPERTIES_PER_SET = 20;
-
-    /*
-     * Run cleanup callback every EM_CLEANUP_PERIOD iterations
-     */
-    const EM_CLEANUP_PERIOD = 100;
+    const LOGGER_PREFIX = '[AMSI ContractSynchronizer]';
 
     /**
-     * @var PeriodicExecutor
+     * {@inheritdoc}
      */
-    protected $periodicExecutor;
-
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var ResidentDataManager
-     */
-    protected $residentDataManager;
-
-    /**
-     * @var ExceptionCatcher
-     */
-    protected $exceptionCatcher;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $outputLogger;
-
-    /**
-     * @param EntityManager $em
-     * @param ResidentDataManager $residentDataManager
-     * @param ExceptionCatcher $exceptionCatcher
-     * @param LoggerInterface $logger
-     */
-    public function __construct(
-        EntityManager $em,
-        ResidentDataManager $residentDataManager,
-        ExceptionCatcher $exceptionCatcher,
-        LoggerInterface $logger
-    ) {
-        $this->em = $em;
-        $this->logger = $logger;
-        $this->residentDataManager = $residentDataManager;
-        $this->exceptionCatcher = $exceptionCatcher;
+    protected function setExternalSettings(Holding $holding)
+    {
+        $this->residentDataManager->setSettings($holding->getAmsiSettings());
     }
 
     /**
-     * Execute synchronization balance
+     * {@inheritdoc}
      */
-    public function syncBalance()
+    protected function getHoldingsForUpdatingBalance()
     {
-        try {
-            $holdings = $this->getHoldings();
-            if (empty($holdings)) {
-                $this->logMessage('AMSI ResidentBalanceSynchronizer: No data to update');
-
-                return;
-            }
-
-            // setup running EM cleanup periodically
-            $this->periodicExecutor =
-                new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
-
-            foreach ($holdings as $holding) {
-                $this->residentDataManager->setSettings($holding->getExternalSettings());
-                $this->logMessage(
-                    sprintf('AMSI ResidentBalanceSynchronizer start work with holding %s', $holding->getId())
-                );
-                $this->updateBalancesForHolding($holding);
-            }
-        } catch (\Exception $e) {
-            $this->exceptionCatcher->handleException($e);
-            $this->logger->alert(
-                sprintf(
-                    '(AMSI ResidentBalanceSynchronizer)Message: %s, File: %s, Line:%s',
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                )
-            );
-
-            $this->logMessage($e->getMessage());
-        }
-    }
-
-    /**
-     * Since this can be a long running batch script, we need to clean up some stuff in the EM periodically
-     * to avoid having doctrine slow WAY down.
-     */
-    public function cleanupDoctrineCallback()
-    {
-        $this->logger->debug('Clearing Entity Manager');
-        $this->em->clear();
-    }
-
-    /**
-     * @param OutputInterface $outputLogger
-     * @return self
-     */
-    public function usingOutput(OutputInterface $outputLogger)
-    {
-        $this->outputLogger = $outputLogger;
-
-        return $this;
+        return $this->getHoldingRepository()->findHoldingsForUpdatingBalanceAMSI();
     }
 
     /**
      * @param Holding $holding
-     * @throws \Exception
+     * @param Lease $lease
+     * @param string $externalPropertyId
+     * @return Contract[]|ContractWaiting[]
      */
-    protected function updateBalancesForHolding(Holding $holding)
-    {
-        /** @var PropertyMappingRepository $propertyMappingRepository */
-        $propertyMappingRepository = $this->em->getRepository('RjDataBundle:PropertyMapping');
-        $propertyMappingSets = ceil(
-            $propertyMappingRepository->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
-        );
-        $this->logMessage(sprintf('Found %d pages of property mappings', $propertyMappingSets));
-        for ($offset = 1; $offset <= $propertyMappingSets; $offset++) {
-            $this->logMessage(sprintf('Open %d page of property mappings', $offset));
-            $propertyMappings = $propertyMappingRepository->findUniqueByHolding(
-                $holding,
-                $offset,
-                self::COUNT_PROPERTIES_PER_SET
-            );
-            foreach ($propertyMappings as $propertyMapping) {
-                $this->updateBalancesForPropertyMapping($propertyMapping);
-            }
-            $this->em->flush();
-            $this->em->clear();
-        }
-    }
+    protected function getContractsForUpdatingBalance(
+        Holding $holding,
+        $lease,
+        $externalPropertyId
+    ) {
+        $occupants = $lease->getOccupants();
+        $externalUnitId = $lease->getExternalUnitId();
+        $allContracts = [];
+        /** @var Occupant $occupant */
+        foreach ($occupants as $occupant) {
+            $residentId =  $occupant->getOccuSeqNo();
+            $contracts = $this
+                ->getContractRepository()
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $externalUnitId
+                );
+            empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
-    /**
-     * @param PropertyMapping $propertyMapping
-     */
-    protected function updateBalancesForPropertyMapping(PropertyMapping $propertyMapping)
-    {
-        $this->logMessage(
-            sprintf(
-                'AMSI ResidentBalanceSynchronizer: start work with propertyMapping \'%s\'',
-                $propertyMapping->getExternalPropertyId()
-            )
-        );
-
-        try {
-            $residentTransactions = $this->residentDataManager->getResidents(
-                $propertyMapping->getExternalPropertyId()
-            );
-
-            if (false == $residentTransactions) {
-                $this->logMessage(
-                    sprintf(
-                        'AMSI ResidentBalanceSynchronizer: Not found transactions for property %s of
-                         holding %s',
-                        $propertyMapping->getExternalPropertyId(),
-                        $propertyMapping->getHolding()->getName()
-                    )
+            $contractsWaiting = $this
+                ->getContractWaitingRepository()
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
+                    $holding,
+                    $externalPropertyId,
+                    $residentId,
+                    $externalUnitId
                 );
 
-                return;
-            }
-
-            $this->logMessage(
-                sprintf(
-                    'AMSI ResidentBalanceSynchronizer: Processing resident transactions for property %s of
-                         holding %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $propertyMapping->getHolding()->getName()
-                )
-            );
-
-            $this->processResidentTransactions($residentTransactions, $propertyMapping);
-        } catch (\Exception $e) {
-            $this->logMessage(
-                sprintf(
-                    'AMSI ResidentBalanceSynchronizer: Error: %s',
-                    $e->getMessage()
-                ),
-                500
-            );
+            empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
         }
-    }
 
-    /**
-     * @return \CreditJeeves\DataBundle\Entity\Holding[]
-     */
-    protected function getHoldings()
-    {
-        return $this->em->getRepository('DataBundle:Holding')->findHoldingsForUpdatingBalanceAMSI();
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
-     * @param Lease $lease
-     * @param Occupant $occupant
-     * @return null|Contract|ContractWaiting
-     * @throws \Exception
-     */
-    protected function getContract(PropertyMapping $propertyMapping, Lease $lease, Occupant $occupant)
-    {
-        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-        $residentId = $occupant->getOccuSeqNo();
-
+        $count = count($allContracts);
         $this->logMessage(
             sprintf(
-                'Getting contract for holding %s, propertyMapping %s, lease %s, residentId %s',
-                $propertyMapping->getHolding()->getId(),
-                $propertyMapping->getExternalPropertyId(),
-                $lease->getExternalUnitId(),
-                $residentId
+                '[SyncBalance]%s contracts for processing' .
+                ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
+                $count ? 'Found ' . $count : 'Not found any',
+                $externalPropertyId,
+                $holding->getName(),
+                $holding->getId(),
+                $occupant->getResiId()
             )
         );
 
-        $contracts = $contractRepo->findContractsByPropertyMappingResidentAndExternalUnitId(
-            $propertyMapping,
-            $residentId,
-            $lease->getExternalUnitId()
-        );
-
-        if (count($contracts) > 1) {
-            $this->logMessage(
-                sprintf(
-                    'Found more than one contract with property %s, externalUnitId %s, residentId %s',
-                    $propertyMapping->getExternalPropertyId(),
-                    $lease->getExternalUnitId(),
-                    $residentId
-                ),
-                550
-            );
-
-            return null;
-        }
-
-        if (count($contracts) == 1) {
-            /** @var Contract $contract */
-            $contract = reset($contracts);
-
-            return $contract;
-        }
-
-        $contractWaiting = $this->em->getRepository('RjDataBundle:ContractWaiting')
-            ->findOneByPropertyMappingExternalUnitIdAndResidentId(
-                $propertyMapping,
-                $lease->getExternalUnitId(),
-                $residentId
-            );
-        if ($contractWaiting) {
-            $this->logMessage(sprintf('Return contract waiting ID: %s', $contractWaiting->getId()));
-
-            return $contractWaiting;
-        }
-
-        $this->logMessage(
-            sprintf(
-                'Could not find contract with property %s, unit %s, resident %s',
-                $propertyMapping->getExternalPropertyId(),
-                $lease->getExternalUnitId(),
-                $residentId
-            )
-        );
-
-        return null;
+        return $allContracts;
     }
 
     /**
-     * @param array $residentTransactions
-     * @param PropertyMapping $propertyMapping
-     * @throws \Exception
-     */
-    protected function processResidentTransactions(
-        array $residentTransactions,
-        PropertyMapping $propertyMapping
-    ) {
-        /** @var Lease $lease */
-        foreach ($residentTransactions as $lease) {
-            foreach ($lease->getOccupants() as $occupant) {
-                if (false != $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                    try {
-                        $this->doUpdate($lease, $occupant, $contract);
-                        $this->em->flush();                   // save every contract
-                        $this->periodicExecutor->increment(); // periodically clear $em
-                    } catch (\Exception $e) {
-                        $this->exceptionCatcher->handleException($e);
-                        $this->logger->alert(
-                            sprintf(
-                                'AMSI ResidentBalanceSynchronizer: Contract %s : Message: %s, File: %s, Line:%s',
-                                $contract->getId(),
-                                $e->getMessage(),
-                                $e->getFile(),
-                                $e->getLine()
-                            )
-                        );
-                        $this->logMessage($e->getMessage());
-                    }
-                }
-            }
-
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * @param Lease $lease
-     * @param Occupant $occupant
      * @param Contract|ContractWaiting $contract
+     * @param Lease $lease
+     * @throws \Exception
      */
-    protected function doUpdate(Lease $lease, Occupant $occupant, $contract)
-    {
-        $residentId = $occupant->getOccuSeqNo();
+    protected function updateContractBalanceForResidentTransaction(
+        $contract,
+        $lease
+    ) {
         $disallow = $lease->getBlockPaymentAccess();
-        $externalLeaseId = $lease->getResiId();
-        $balance = $lease->getEndBalance();
         if (strtolower($disallow) === 'y') {
             $disallow = PaymentAccepted::DO_NOT_ACCEPT;
         } else {
             $disallow = PaymentAccepted::ANY;
         }
+        $balance = $lease->getEndBalance();
         $contract->setPaymentAccepted($disallow);
-        $currentExternalLeaseId = $contract->getExternalLeaseId();
-        if (empty($currentExternalLeaseId)) {
-            $contract->setExternalLeaseId($externalLeaseId);
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Setup payment accepted to %s, for leaseId %s',
+                $disallow,
+                $lease->getResiId()
+            )
+        );
+        $externalLeaseId = $contract->getExternalLeaseId();
+        if (empty($externalLeaseId)) {
+            $contract->setExternalLeaseId($lease->getResiId());
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
+                    (new \ReflectionObject($contract))->getShortName(),
+                    $contract->getId(),
+                    $lease->getResiId()
+                )
+            );
         }
         $contract->setIntegratedBalance($balance);
         $this->logMessage(
             sprintf(
-                'Set value to update: payment accepted to %s, residentId to %s, externalUnitId to %s, leaseId to %s.
-                For ContractID: %s',
-                $disallow,
-                $residentId,
-                $lease->getExternalUnitId(),
-                $externalLeaseId,
-                $contract->getId()
+                '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
+                (new \ReflectionObject($contract))->getShortName(),
+                $contract->getId(),
+                $balance
             )
         );
     }
 
     /**
-     * @param string $message
+     * {@inheritdoc}
      */
-    protected function logMessage($message, $level = 100)
+    protected function getHoldingsForUpdatingRent()
     {
-        $this->logger->log($level, $message);
-        if ($this->outputLogger) {
-            $this->outputLogger->writeln($message);
-        }
-    }
-
-    public function syncRecurringCharge()
-    {
-        $holdings = $this->getHoldingRepository()->findHoldingsForAMSISyncRecurringCharges();
-        if (empty($holdings)) {
-            $this->logMessage('AMSI sync Recurring Charge: No data to update.');
-        }
-
-        // setup running EM cleanup periodically
-        $this->periodicExecutor =
-            new PeriodicExecutor($this, 'cleanupDoctrineCallback', self::EM_CLEANUP_PERIOD, $this->logger);
-
-        foreach ($holdings as $holding) {
-            $this->updateContractsRentForHolding($holding);
-        }
+        return $this->getHoldingRepository()->findHoldingsForUpdatingRentAMSI();
     }
 
     /**
      * @param Holding $holding
-     */
-    protected function updateContractsRentForHolding(Holding $holding)
-    {
-        $this->logMessage(sprintf('AMSI sync Recurring Charge: start work with holding %d', $holding->getId()));
-
-        $this->residentDataManager->setSettings($holding->getExternalSettings());
-        $countPropertyMappingSets = ceil(
-            $this->getPropertyMappingRepository()->getCountUniqueByHolding($holding) / self::COUNT_PROPERTIES_PER_SET
-        );
-
-        $this->logMessage(sprintf('Found %d pages of property mappings', $countPropertyMappingSets));
-
-        for ($offset = 1; $offset <= $countPropertyMappingSets; $offset++) {
-            $this->logMessage(sprintf('Open %d page of property mappings', $offset));
-
-            $propertyMappings = $this->getPropertyMappingRepository()->findUniqueByHolding(
-                $holding,
-                $offset,
-                self::COUNT_PROPERTIES_PER_SET
-            );
-
-            /** @var PropertyMapping $propertyMapping */
-            foreach ($propertyMappings as $propertyMapping) {
-                $this->updateContractsRentForPropertyMapping($propertyMapping);
-            }
-
-            $this->em->flush();
-            $this->em->clear();
-        }
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
-     */
-    protected function updateContractsRentForPropertyMapping(PropertyMapping $propertyMapping)
-    {
-        $this->logMessage(
-            sprintf(
-                'AMSI sync Recurring Charge: start work with propertyMapping \'%s\'',
-                $propertyMapping->getExternalPropertyId()
-            )
-        );
-
-        try {
-            $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
-                $propertyMapping->getExternalPropertyId()
-            );
-        } catch (\Exception $e) {
-            $this->logMessage(
-                sprintf(
-                    'AMSI sync Recurring Charge: \'%s\'',
-                    $e->getMessage()
-                ),
-                500
-            );
-
-            return;
-        }
-
-        if (false == $residentTransactions) {
-            $this->logMessage(
-                sprintf(
-                    'AMSI sync Recurring Charge: ERROR:
-                    Could not load resident transactions for Property %s of Holding#%d',
-                    $propertyMapping->getExternalPropertyId(),
-                    $propertyMapping->getHolding()->getId()
-                ),
-                500
-            );
-
-            return;
-        }
-
-        foreach ($residentTransactions as $residentTransaction) {
-            $this->updateContractsRentForResidentTransaction($propertyMapping, $residentTransaction);
-        }
-    }
-
-    /**
-     * @param PropertyMapping $propertyMapping
      * @param Lease $lease
+     * @param string $externalPropertyId
      */
-    protected function updateContractsRentForResidentTransaction(PropertyMapping $propertyMapping, Lease $lease)
-    {
-        $this->logMessage('AMSI sync Recurring Charge: Searching for contracts.');
-
-        $contractsAndContractWaitings = [];
-        foreach ($lease->getOccupants() as $occupant) {
-            if (null !== $contract = $this->getContract($propertyMapping, $lease, $occupant)) {
-                $contractsAndContractWaitings[] = $contract;
-            }
-        }
-
-        if (count($contractsAndContractWaitings) === 0) {
-            $this->logMessage('AMSI sync Recurring Charge: Contracts or ContractWaitings not found.');
-
-            return;
-        }
-
-        $recurringCodes = $propertyMapping->getHolding()->getRecurringCodesArray();
+    protected function processingResidentForUpdateRent(
+        Holding $holding,
+        $lease,
+        $externalPropertyId
+    ) {
+        $recurringCodes = $holding->getRecurringCodesArray();
         $sumRecurringCharges = $this->getSumRecurringCharges($lease, $recurringCodes);
+        $leaseId = $lease->getResiId();
+        $externalUnitId = $lease->getExternalUnitId();
 
-        if ($sumRecurringCharges <= 0) {
-            $this->logMessage(
-                sprintf(
-                    'AMSI sync Recurring Charge: ERROR:
-                     sum of RecurringCharges for Holding#%d, PropertyMapping#%d, lease#%s = %d',
-                    $propertyMapping->getHolding()->getId(),
-                    $propertyMapping->getExternalPropertyId(),
-                    $lease->getExternalUnitId(),
-                    $sumRecurringCharges
-                ),
-                500
+        $allContracts = [];
+
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
             );
 
-            return;
-        }
-        /** @var ContractWaiting|Contract $contract */
-        foreach ($contractsAndContractWaitings as $contract) {
+        empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
+
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
+            );
+
+        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
+
+        /** @var Contract|ContractWaiting $contract */
+        foreach ($allContracts as $contract) {
             $contract->setRent($sumRecurringCharges);
-
-            $this->em->flush();
-            $this->periodicExecutor->increment();
-
             $this->logMessage(
                 sprintf(
-                    'AMSI sync Recurring Charge: Rent for %s#%d updated ($%s)',
-                    get_class($contract),
+                    '[SyncRent]Rent for %s #%d updated to %s',
+                    (new \ReflectionObject($contract))->getShortName(),
                     $contract->getId(),
-                    $sumRecurringCharges
+                    $contract->getRent()
                 )
             );
+            $this->em->flush();
         }
     }
 
@@ -548,21 +217,5 @@ class ContractSynchronizer
         }
 
         return $sumRecurringCharges;
-    }
-
-    /**
-     * @return \CreditJeeves\DataBundle\Entity\HoldingRepository
-     */
-    protected function getHoldingRepository()
-    {
-        return $this->em->getRepository('DataBundle:Holding');
-    }
-
-    /**
-     * @return PropertyMappingRepository
-     */
-    protected function getPropertyMappingRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:PropertyMapping');
     }
 }

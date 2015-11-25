@@ -2,7 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -40,7 +40,7 @@ class AddressListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $addresses = $em->getRepository('DataBundle:Address')->findBy(
+        $addresses = $em->getRepository('DataBundle:MailingAddress')->findBy(
             ['user' => $entity->getUser(), 'isDefault' => true]
         );
 
@@ -75,6 +75,6 @@ class AddressListener
         }
 
         $em = $eventArgs->getEntityManager();
-        $em->getRepository('DataBundle:Address')->resetDefaults($entity->getUser()->getId());
+        $em->getRepository('DataBundle:MailingAddress')->resetDefaults($entity->getUser()->getId());
     }
 }

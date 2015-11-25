@@ -40,13 +40,13 @@ class Unit extends ResponseResource
      */
     public function getAddress()
     {
-        $property = $this->entity->getProperty();
+        $propertyAddress = $this->entity->getProperty()->getPropertyAddress();
 
         return [
-            'street' => sprintf('%s %s', $property->getNumber(), $property->getStreet()),
-            'city' => $property->getCity(),
-            'state' => $property->getArea(),
-            'zip' => $property->getZip()
+            'street' => sprintf('%s %s', $propertyAddress->getNumber(), $propertyAddress->getStreet()),
+            'city' => $propertyAddress->getCity(),
+            'state' => $propertyAddress->getState(),
+            'zip' => $propertyAddress->getZip()
         ];
     }
 }

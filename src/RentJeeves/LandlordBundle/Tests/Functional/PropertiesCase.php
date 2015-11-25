@@ -16,32 +16,36 @@ class PropertiesCase extends BaseTestCase
     /**
      * @test
      */
-    public function sorting()
+    public function shouldSortPropertyListByCity()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
-        $zipCollum->click();
+        $this->assertNotNull($cityColumn = $this->page->find('css', '#city'));
+        $cityColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('50 18th Ave', $firstTd->getText(), 'Wrong notice');
-        $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
-        $zipCollum->click();
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
+        $this->assertEquals('Seattle', $firstTd->getText(), 'Wrong notice1'. $firstTd->getText());
+        $this->assertNotNull($cityColumn = $this->page->find('css', '#city'));
+        $cityColumn->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
+        $this->assertEquals('Billings', $firstTd->getText(), 'Wrong notice2');
         $this->logout();
     }
 
     /**
      * @test
      */
-    public function search()
+    public function shouldShowPropertyIfSearchPropertiesByCity()
     {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -66,16 +70,16 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
-        $this->logout();
     }
 
     /**
      * @test
      */
-    public function addProperty()
+    public function shouldCreateNotSinglePropertyIfAddSeveralUnits()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -83,7 +87,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
 
         $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
-        $this->assertCount(4, $pages, 'wrong number of collum');
+        $this->assertCount(4, $pages, 'wrong number of column');
         $pages[3]->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
@@ -119,35 +123,33 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
 
         $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
-        $this->assertCount(4, $pages, 'wrong number of collum');
+        $this->assertCount(4, $pages, 'wrong number of column');
         $pages[3]->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(10, $tr, 'wrong number of property');
-        $this->logout();
 
         // check DB to verify that property has been created correctly
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $this->getPropertyRepository()->findOneByPropertyAddressFields(
+            [
                 'street' => 'Greenwich Street',
                 'number' => '13',
-                'zip'    => '10013'
-            )
+                'zip' => '10013'
+            ]
         );
         $this->assertNotNull($property, "Could not find the property that was just created.");
-        $this->assertTrue(!$property->isSingle(), "Created property should not be marked as single");
+        $this->assertFalse($property->getPropertyAddress()->isSingle(), "Created property should not be single");
     }
 
     /**
      * @test
      */
-    public function addSingleProperty()
+    public function shouldCreateSinglePropertyIfSetCheckbox()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord2@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -184,18 +186,15 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
 
-        // check DB to verify that SINGLE_PROPERTY unit has been created correctly
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
-            array(
+        $property = $this->getPropertyRepository()->findOneByPropertyAddressFields(
+            [
                 'street' => 'Greenwich Street',
                 'number' => '13',
-                'zip'    => '10013'
-            )
+                'zip' => '10013'
+            ]
         );
         $this->assertNotNull($property, "Could not find the property that was just created.");
-        $this->assertTrue($property->isSingle(), "Created property should be marked as single");
+        $this->assertTrue($property->getPropertyAddress()->isSingle(), "Created property should be marked as single");
         $this->assertNotNull(1, $property->getUnits());
         $this->assertCount(1, $property->getUnits(), "Single unit property must have exactly one unit");
         /** @var Unit $unit */
@@ -217,16 +216,15 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $tr);
-        $this->logout();
     }
 
     /**
      * @test
      */
-    public function manageUnits()
+    public function shouldCreateSeveralUnitsAndShowCorrectCountInTable()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
@@ -236,21 +234,21 @@ class PropertiesCase extends BaseTestCase
         $propertyEdit->click();
         $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
         $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
-        $propertyEdit->setValue(150);
+        $propertyEdit->setValue(3);
         $this->assertNotNull($propertyAdd = $this->page->find('css', '#addEditUnit'));
         $propertyAdd->click();
         $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-input-edit'));
 
-        for ($i=0; $i < 150; $i++) {
-            $unitNames[$i]->setValue($i+1);
-        }
+        $unitNames[0]->setValue(1);
+        $unitNames[1]->setValue(2);
+        $unitNames[2]->setValue(3);
 
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('150', $td[5]->getText(), 'wrong number of unit');
+        $this->assertEquals(3, $td[4]->getText(), 'wrong number of unit');
 
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
@@ -271,9 +269,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#blockPopupEditProperty').is(':visible')");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
-        $this->assertEquals('150', $td[5]->getText(), 'wrong number of unit');
-
-        $this->logout();
+        $this->assertEquals(3, $td[4]->getText(), 'wrong number of unit');
     }
 
     /**
@@ -282,6 +278,8 @@ class PropertiesCase extends BaseTestCase
     public function removeProperty()
     {
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -293,12 +291,11 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
         $this->assertNotNull($removePropertyConfirm = $this->page->find('css', '.removePropertyConfirm'));
         $removePropertyConfirm->click();
-        $this->assertNotNull($removeProperyLast = $this->page->find('css', '.removeProperyLast'));
-        $removeProperyLast->click();
+        $this->assertNotNull($removePropertyLast = $this->page->find('css', '.removeProperyLast'));
+        $removePropertyLast->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertEquals('18', $all->getText(), 'wrong number of property');
-        $this->logout();
     }
 
     /**
@@ -307,6 +304,8 @@ class PropertiesCase extends BaseTestCase
     public function shouldShowPropertiesTabDependingOnGroupSettingValue()
     {
         $this->load(true);
+        $this->setDefaultSession('selenium2');
+
         $this->login('landlord1@example.com', 'pass');
         $tabs = $this->page->findAll('css', '.header-tabs .top-nav>ul>li');
         $this->assertCount(4, $tabs, 'By default TestRentGroup should have 4 visible tabs.');
@@ -327,5 +326,13 @@ class PropertiesCase extends BaseTestCase
         $this->assertEquals('tabs.dashboard', $tabs[0]->getText(), 'The 1st tab should be "dashboard"');
         $this->assertEquals('tabs.tenants', $tabs[1]->getText(), 'The 2nd tab should be "tenants"');
         $this->assertEquals('tab.accounting', $tabs[2]->getText(), 'The 3d tab should be "accounting"');
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\PropertyRepository
+     */
+    protected function getPropertyRepository()
+    {
+        return $this->getEntityManager()->getRepository('RjDataBundle:Property');
     }
 }

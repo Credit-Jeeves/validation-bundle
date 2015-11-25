@@ -5,20 +5,21 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
-use RentJeeves\DataBundle\Enum\ImportType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerYardi;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingYardi;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\ExternalApiStorageInterface;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
+use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
-use RentJeeves\LandlordBundle\Services\PropertyMappingManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
@@ -40,6 +41,7 @@ use JMS\Serializer\SerializationContext;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Monolog\Logger;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property as YardiProperty;
 
 /**
  * @Route("/accounting")
@@ -143,47 +145,43 @@ class AccountingController extends Controller
      * )
      * @Template()
      */
-    public function importFileAction(Request $request)
+    public function importFileAction()
     {
         $this->getImportLogger()->debug("Enter: importFileAction");
 
         $this->checkAccessToAccounting();
-        $form = $this->createForm(
-            new ImportFileAccountingType(
-                $this->getUser()->getIsSuperAdmin(),
-                $this->getCurrentGroup(),
-                $this->getDoctrine()->getManager()
-            )
-        );
-
+        $form = $this->createForm(new ImportFileAccountingType($this->getCurrentGroup()));
         $form->handleRequest($this->get('request'));
         /** @var ImportFactory $importFactory */
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
         $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
             return [
                 'form'            => $form->createView(),
                 'nGroups'         => $this->getGroups()->count(),
-                'source'          => $form->get('fileType')->getData(),
-                'importType'      => $form->get('importType')->getData(),
-                'integrationType' => $integrationType
+                'integrationType' => $integrationType,
+                'source'          => $source
             ];
         }
 
-        $this->getImportLogger()->debug("Import requested. Type: " + $form['fileType']->getData());
+        $this->getImportLogger()->debug(sprintf('Import requested. Type: %s', $source));
+        $serviceKey = ApiIntegrationType::$importMapping[
+            $this->getCurrentGroup()->getHolding()->getApiIntegrationType()
+        ];
 
-        $importStorage = $importFactory->getStorage($form['fileType']->getData());
-        $importStorage->setImportData($form);
-        $importStorage->setStorageType(
-            $importFactory->getImportType($form['fileType']->getData())
+        $importStorage = $importFactory->getStorage($serviceKey);
+        $importStorage->setImportData(
+            $this->getCurrentGroup()->getImportSettings(),
+            $form
         );
 
-        return $this->redirect(
-            $this->generateUrl('accounting_match_file')
-        );
+        $importStorage->setStorageType($serviceKey);
+
+        return $this->redirect($this->generateUrl('accounting_match_file'));
     }
 
     /**
@@ -216,7 +214,8 @@ class AccountingController extends Controller
             return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
             return [
-                'error' => $e->getMessage()
+                'source'      => $this->getCurrentGroup()->getImportSettings()->getSource(),
+                'error'       => $e->getMessage()
             ];
         }
 
@@ -245,6 +244,7 @@ class AccountingController extends Controller
         $form = $form->createView();
 
         return [
+            'source'       => $this->getCurrentGroup()->getImportSettings()->getSource(),
             'error'        => false,
             'data'         => $dataView,
             'form'         => $form
@@ -264,9 +264,11 @@ class AccountingController extends Controller
      */
     public function summaryReportAction(ImportSummary $importSummary)
     {
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
+
         return $this->render(
             'LandlordBundle:Accounting:summaryReport.html.twig',
-            ['report' => $importSummary]
+            ['report' => $importSummary, 'source' => $source]
         );
     }
 
@@ -301,6 +303,7 @@ class AccountingController extends Controller
         $formNewUserWithContract = $handler->getCreateUserAndCreateContractForm();
         $formContract = $handler->getContractForm();
         $formContractFinish = $handler->getContractFinishForm();
+        $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
@@ -308,6 +311,7 @@ class AccountingController extends Controller
             'formContractFinish'      => $formContractFinish->createView(),
             'importStorage'           => $storage,
             'importMapping'           => $mapping,
+            'source'                  => $source,
             //Make it string because it's var for js and I want boolean
             'isMultipleProperty'      => ($storage->isMultipleProperty()) ? "true" : "false",
             'importOnlyException'     => ($storage->isOnlyException()) ? "true" : "false",
@@ -456,26 +460,27 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         /** @var StorageYardi $storage */
         $storage = $importFactory->getStorage();
+        $residentTransactionClient = $this->get('soap.client.factory')->getClient(
+            $this->getCurrentGroup()->getHolding()->getYardiSettings(),
+            SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS
+        );
 
-        $mappedProperties = [];
+        $properties = [];
 
-        if ($storage->getImportLoaded() === false) {
-            /** @var $propertyMappingManager PropertyMappingManager */
-            $propertyMappingManager = $this->get('property_mapping.manager');
-
-            if (ImportType::SINGLE_PROPERTY === $storage->getImportType()) {
-                /** @var PropertyMapping[] $mappedProperties */
-                $mappedProperties[] = $propertyMappingManager->createPropertyMapping(
-                    $storage->getImportPropertyId(),
-                    $storage->getImportExternalPropertyId()
-                );
-            } else {
-                $mappedProperties = $propertyMappingManager->getMappedProperties();
+        if ($storage->getImportLoaded() === false &&
+            $externalProperties = $residentTransactionClient->getPropertyConfigurations()
+        ) {
+            $externalPropertyId = $storage->getImportExternalPropertyId();
+            /** @var YardiProperty $property */
+            foreach ($externalProperties->getProperty() as $property) {
+                if ($externalPropertyId === '*' || strpos($externalPropertyId, $property->getCode()) !== false) {
+                    $properties[] = $property;
+                }
             }
 
         }
 
-        $response = new Response($this->get('jms_serializer')->serialize($mappedProperties, 'json'));
+        $response = new Response($this->get('jms_serializer')->serialize($properties, 'json'));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -485,14 +490,14 @@ class AccountingController extends Controller
      * @param int $propertyMappingId
      *
      * @Route(
-     *     "/import/residents/yardi/{propertyMappingId}",
+     *     "/import/residents/yardi/{externalPropertyId}",
      *     name="accounting_import_residents_yardi",
      *     options={"expose"=true}
      * )
      *
      * @return Response
      */
-    public function getResidentsYardi($propertyMappingId)
+    public function getResidentsYardi($externalPropertyId)
     {
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -506,23 +511,15 @@ class AccountingController extends Controller
             $mapping = $importFactory->getMapping();
             /** @var Holding $holding */
             $holding = $this->getUser()->getHolding();
-            /** @var $propertyMapping PropertyMapping */
-            $propertyMapping = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
-                'id' => $propertyMappingId,
-                'holding' => $holding->getId()
-            ]);
-            if ($propertyMapping) {
-                $residents = array_merge(
-                    $mapping->getResidents($holding, $propertyMapping->getProperty()),
-                    $residents
-                );
-            }
+            $residents = $mapping->getResidents($holding, $externalPropertyId);
         }
+
         $em = $this->getEntityManager();
         if (!$em->getConnection()->isConnected()) {
             $em->getConnection()->close();
             $em->getConnection()->connect();
         }
+
         $handler = $importFactory->getHandler();
         $handler->getReport()->setTotal(count($residents));
         $response = new Response($this->get('jms_serializer')->serialize($residents, 'json'));
@@ -531,55 +528,110 @@ class AccountingController extends Controller
         return $response;
     }
 
-    protected function getBaseResidents()
+    /**
+     * @Route(
+     *     "/import/external_property_ids/list",
+     *     name="accounting_import_load_external_property_ids",
+     *     options={"expose"=true}
+     * )
+     *
+     * @return JsonResponse
+     */
+    public function getExternalPropertyIdsAction()
     {
+        /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
-        $mapping = $importFactory->getMapping();
-        /** @var StorageAbstract $storage */
+        /** @var StorageResman $storage */
         $storage = $importFactory->getStorage();
-        $propertyMappingManager = $this->get('property_mapping.manager');
 
-        if (!$storage->isMultipleProperty()) {
-            $propertyMappingManager->createPropertyMapping(
-                $storage->getImportPropertyId(),
+        return new JsonResponse(
+            $this->getExternalPropertyIds(
                 $storage->getImportExternalPropertyId()
-            );
-        }
+            )
+        );
+    }
 
-        $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
-        $result = $storage->saveToFile($residents);
+    /**
+     * @param string $commaSeparatedExternalPropertyIds
+     * @return array
+     */
+    protected function getExternalPropertyIds($commaSeparatedExternalPropertyIds)
+    {
+        return array_map('trim', explode(',', $commaSeparatedExternalPropertyIds));
+    }
 
-        if ($storage->isOnlyException()) {
-            $handler = $importFactory->getHandler();
-            $handler->updateMatchedContracts();
-        }
-
+    /**
+     * @param string $externalPropertyId
+     * @return JsonResponse
+     */
+    protected function getBaseResidents($externalPropertyId)
+    {
         $response = new JsonResponse();
-        $response->setStatusCode(($result) ? 200 : 400);
+
+        try {
+            /** @var ImportFactory $importFactory */
+            $importFactory = $this->get('accounting.import.factory');
+            $mapping = $importFactory->getMapping();
+            /** @var ExternalApiStorageInterface|StorageAbstract $storage */
+            $storage = $importFactory->getStorage();
+            $residents = $mapping->getResidents($externalPropertyId);
+
+            $result = $storage->saveToFile($residents, $externalPropertyId);
+
+            if ($storage->isOnlyException()) {
+                $handler = $importFactory->getHandler();
+                $handler->updateMatchedContracts();
+            }
+
+            $response->setStatusCode(($result) ? 201 : 400);
+
+        } catch (\Exception $e) {
+            $response->setStatusCode(400);
+            $response->setData($e->getMessage());
+        }
 
         return $response;
     }
 
     /**
      * @Route(
-     *     "/import/residents/resman",
+     *     "/import/residents/resman/{externalPropertyId}",
      *     name="accounting_import_residents_resman",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsResMan()
+    public function getResidentsResMan($externalPropertyId)
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**
      * @Route(
-     *     "/import/residents/mri",
+     *     "/import/externalPropertyIds/mri",
+     *     name="accounting_external_property_ids_mri",
+     *     options={"expose"=true}
+     * )
+     */
+    public function getExternalPropertyIdsMri()
+    {
+        $importFactory = $this->get('accounting.import.factory');
+        /** @var StorageMRI $storage */
+        $storage = $importFactory->getStorage();
+
+        return new JsonResponse(explode(',', $storage->getImportExternalPropertyId()));
+    }
+
+    /**
+     * @Route(
+     *     "/import/residents/mri/{externalPropertyId}",
      *     name="accounting_import_residents_mri",
      *     options={"expose"=true}
      * )
      */
-    public function getResidentsMri()
+    public function getResidentsMri($externalPropertyId)
     {
         $importFactory = $this->get('accounting.import.factory');
         /** @var MappingMRI $mapping */
@@ -589,12 +641,12 @@ class AccountingController extends Controller
         $nextPageLink = $this->get('request')->request->get('nextPageLink');
 
         if (empty($nextPageLink)) {
-            $residents = $mapping->getResidents($storage->getImportExternalPropertyId());
+            $residents = $mapping->getResidents($externalPropertyId);
         } else {
             $residents = $mapping->getResidentsByNextPageLink($nextPageLink);
         }
 
-        $result = $storage->saveToFile($residents);
+        $result = $storage->saveToFile($residents, $externalPropertyId);
         $newNextPageLink = $mapping->getNextPageLink();
         //We need update matched contracts only after download all of them, that's why check var newNextPageLink
         if ($storage->isOnlyException() && empty($newNextPageLink)) {
@@ -610,19 +662,22 @@ class AccountingController extends Controller
 
     /**
      * @Route(
-     *     "/import/residents/amsi",
+     *     "/import/residents/amsi/{externalPropertyId}",
      *     name="accounting_import_residents_amsi",
      *     options={"expose"=true}
      * )
+     *
+     * @param string $externalPropertyId
+     * @return JsonResponse
      */
-    public function getResidentsAmsi()
+    public function getResidentsAmsi($externalPropertyId)
     {
-        return $this->getBaseResidents();
+        return $this->getBaseResidents($externalPropertyId);
     }
 
     /**
      * @Route(
-     *     "/import/resident/yardi/{propertyMappingId}/{isLast}",
+     *     "/import/resident/yardi/{isLast}",
      *     name="accounting_import_resident_data_yardi",
      *     options={"expose"=true}
      * )
@@ -632,11 +687,12 @@ class AccountingController extends Controller
      * @return Response
      * @throws Exception
      */
-    public function getResidentData($propertyMappingId, $isLast = 0)
+    public function getResidentData($isLast = 0)
     {
         $holding = $this->getUser()->getHolding();
         $request = $this->get('request');
         $residentPostData = $request->request->get('resident');
+        $propertyPostData = $request->request->get('property');
         /** @var Serializer $serializer */
         $serializer = $this->get('jms_serializer');
         $classResident = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident';
@@ -650,6 +706,16 @@ class AccountingController extends Controller
         if (!$resident instanceof ResidentsResident) {
             throw new Exception("Invalid post data, can't be converted to {$classResident}");
         }
+        $classProperty = 'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property';
+        $property = $serializer->deserialize(
+            $propertyPostData,
+            $classProperty,
+            'array'
+        );
+
+        if (!$property instanceof YardiProperty) {
+            throw new \Exception("Invalid post data, can't be converted to {$classProperty}");
+        }
 
         /** @var $importFactory ImportFactory */
         $importFactory = $this->get('accounting.import.factory');
@@ -660,31 +726,23 @@ class AccountingController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         try {
-            /*
-             * Search PropertyMapping by id with holding
-             * for be sure that we can work only with property belongs to our holding
-             */
-            /** @var PropertyMapping $propertyMapping */
-            $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy([
-                'id' => $propertyMappingId,
-                'holding' => $holding->getId()
-            ]);
-            if (!$propertyMapping) {
-                throw new \RuntimeException('PropertyMapping is not defined.');
-            }
+            $residentLeaseFile = $mapping->getContractData($holding, $resident, $property->getCode());
 
-            $residentLeaseFile = $mapping->getContractData($holding, $propertyMapping->getProperty(), $resident);
-            $storage->setImportPropertyId($propertyMapping->getProperty()->getId());
-            $storage->saveToFile($residentLeaseFile, $resident);
+            $fullResident = new FullResident();
+            $fullResident->setProperty($property);
+            $fullResident->setResidentData($residentLeaseFile);
+            $fullResident->setResident($resident);
+
+            $storage->saveToFile($fullResident);
 
             if (!$residentLeaseFile instanceof ResidentLeaseFile) {
-                $responseData = array('result' => false);
+                $responseData = ['result' => false];
             } else {
-                $responseData = array('result' => true);
+                $responseData = ['result' => true];
             }
         } catch (Exception $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
-            $responseData = array('result' => false);
+            $responseData = ['result' => false];
         }
 
         if ($isLast) {
@@ -739,13 +797,6 @@ class AccountingController extends Controller
      */
     public function batchDepositsAction()
     {
-        return $this->render(
-            'LandlordBundle:Accounting:deposit.html.twig',
-            [
-                'nGroups' => $this->getGroups()->count(),
-                'showFilter' =>
-                    $this->getCurrentGroup()->getGroupSettings()->getPaymentProcessor() == PaymentProcessor::HEARTLAND
-            ]
-        );
+        return $this->render('LandlordBundle:Accounting:deposit.html.twig', ['nGroups' => $this->getGroups()->count()]);
     }
 }

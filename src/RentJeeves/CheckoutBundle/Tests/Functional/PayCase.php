@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -859,7 +860,7 @@ class PayCase extends BaseTestCase
                 '#rentjeeves_checkoutbundle_paymenttype_property_address'
             )
         );
-        $this->assertEquals('770 Broadway, Manhattan, #2-a New York, NY 10003 *required', $propertyAddress->getText());
+        $this->assertEquals('770 Broadway, #2-a New York, NY 10003 *required', $propertyAddress->getText());
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
     }
 
@@ -963,8 +964,8 @@ class PayCase extends BaseTestCase
      */
     public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage)
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
         $em = $this->getEntityManager();
         /** @var Holding $holding */
         $holding = $em->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
@@ -1007,10 +1008,8 @@ class PayCase extends BaseTestCase
         $paymentSource = $this->page->find('css', '#rent-menu .last a');
         $this->assertNotEmpty($paymentSource);
         $paymentSource->click();
-        $editSource = $this->page->find('css', '.edit');
         $delSource = $this->page->find('css', '.delete');
 
-        $this->assertEquals($isPaymentProcessorLocked, empty($editSource));
         $this->assertEquals($isPaymentProcessorLocked, empty($delSource));
     }
 
@@ -1019,8 +1018,8 @@ class PayCase extends BaseTestCase
      */
     public function shouldDisableTodayOnDatepickerAfterCutoffTime()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -1216,5 +1215,129 @@ class PayCase extends BaseTestCase
         $em->refresh($payments->first());
 
         $this->assertEquals(2001, $payments->first()->getAmount(), 'Active Payment should be updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHideAndShowRentOnDashboardWhenChangeGroupSettingsOption()
+    {
+        $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 2);
+        $this->assertNotNull($contract, 'Check fixtures, contract with id 2 should be present');
+        $this->assertEquals(
+            $contract->getTenant()->getId(),
+            $tenant->getId(),
+            'Check fixtures, contract with id 2 should belong to tenant with email "tenant11@example.com"'
+        );
+        $contract->getGroupSettings()->setShowRentOnDashboard(false);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $rowsSelector = '#current-payments table.properties-table>tbody>tr';
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $this->assertNotNull(
+            $rentColumn = $tableRows[1]->find('css', 'td'),
+            'Second row should contains at list 1 column'
+        );
+        $this->assertEquals('rent.not_shown', $rentColumn->getText(), 'Rent column should contains "rent.not_shown"');
+
+        $contract->getGroupSettings()->setShowRentOnDashboard(true);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+        $this->session->reload();
+
+        $rowsSelector = '#current-payments table.properties-table>tbody>tr';
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $this->assertNotNull(
+            $rentColumn = $tableRows[1]->find('css', 'td'),
+            'Second row should contains at list 1 column'
+        );
+        $this->assertEquals(
+            '$' . $contract->getRent(),
+            $rentColumn->getText(),
+            'Rent column should contains rent'
+        );
+
+        // Check that column with rent is hide,
+        // when we have contract that belong to group with disable show rent on dashboard
+        $tableRows[0]->findAll('css', 'td');
+        $columnNameSelector = '#current-payments table.properties-table>thead>tr>th';
+        $columnsName = $this->getDomElements($columnNameSelector);
+        $columns = $tableRows[0]->findAll('css', 'td');
+        $this->assertCount(6, $columnsName, 'Should be displayed 6 heads of column');
+        $this->assertCount(6, $columns, 'Should be displayed 6 columns');
+
+        // we know that tenant has contract on 2 groups prepare fixtures
+        /** @var Group $group1 */
+        $group1 = $this->getEntityManager()->find('DataBundle:Group', 24);
+        /** @var Group $group2 */
+        $group2 = $this->getEntityManager()->find('DataBundle:Group', 25);
+        $this->assertNotNull($group1, 'Check fixtures, group with id 24 should be present');
+        $this->assertNotNull($group2, 'Check fixtures, group with id 25 should be present');
+        $group1->getGroupSettings()->setShowRentOnDashboard(false);
+        $group2->getGroupSettings()->setShowRentOnDashboard(false);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $columnsName = $this->getDomElements($columnNameSelector);
+        $tableRows = $this->getDomElements($rowsSelector);
+        $this->assertGreaterThan(1, count($tableRows), 'Table should contains more then 1 contract');
+        $columns = $tableRows[0]->findAll('css', 'td');
+        $this->assertCount(5, $columnsName, 'Should be displayed just 5 heads of column');
+        $this->assertCount(5, $columns, 'Should be displayed just 5 columns');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHideAndShowRentOnWizardWhenChangeGroupSettingsOption()
+    {
+        $this->load(true);
+        /** @var Tenant $tenant */
+        $tenant = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email "tenant11@example.com" should be present');
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 9);
+        $this->assertNotNull($contract, 'Check fixtures, contract with id 9 should be present');
+        $contract->getGroupSettings()->setShowRentOnWizard(false);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $btnSelector = sprintf('button[data-bind="click: openPayPopup.bind($data, %d)"]', $contract->getId());
+        $payBtn = $this->getDomElement($btnSelector);
+        $payBtn->click();
+        $amountField = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_amount');
+
+        $this->assertEmpty($amountField->getValue(), 'Rent field should be empty');
+
+        $contract->getGroupSettings()->setShowRentOnWizard(true);
+        $this->getEntityManager()->flush($contract->getGroupSettings());
+        $this->session->reload();
+        $payBtn->click();
+
+        $amountField = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_amount');
+
+        $this->assertEquals(
+            $contract->getRent(),
+            $amountField->getValue(),
+            'Rent field should equals rent from contract'
+        );
     }
 }

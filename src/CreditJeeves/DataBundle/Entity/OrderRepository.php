@@ -74,7 +74,7 @@ class OrderRepository extends EntityRepository
         $limit = 100,
         $sort = 'o.status',
         $order = 'ASC',
-        $searchBy = 'p.street',
+        $searchBy = 'propertyAddress.street',
         $search = '',
         $showCashPayments = true
     ) {
@@ -84,6 +84,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('prop.propertyAddress', 'propertyAddress');
         $query->leftJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
@@ -108,8 +109,8 @@ class OrderRepository extends EntityRepository
                 $query->orderBy('o.updated_at', $order);
                 break;
             case 'property':
-                $query->orderBy('prop.number', $order);
-                $query->addOrderBy('prop.street', $order);
+                $query->orderBy('propertyAddress.number', $order);
+                $query->addOrderBy('propertyAddress.street', $order);
                 $query->addOrderBy('unit.name', $order);
                 break;
             default:
@@ -139,7 +140,7 @@ class OrderRepository extends EntityRepository
                 $field = 'o.sum';
                 break;
             case 'property':
-                $field = 'CONCAT(prop.street, prop.number)';
+                $field = 'CONCAT(propertyAddress.street, propertyAddress.number)';
                 break;
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
@@ -166,7 +167,7 @@ class OrderRepository extends EntityRepository
                 $field = 'o.updated_at';
                 break;
             case 'property':
-                $field = 'prop.street';
+                $field = 'propertyAddress.street';
                 break;
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
@@ -379,12 +380,13 @@ class OrderRepository extends EntityRepository
 
     /**
      * @param Group $group
-     * @param string $accountType
+     * @param string $filter
+     * @param string $search
      * @param string $batchId
      * @param string $depositDate
      * @return Order[]
      */
-    public function getDepositedOrders(Group $group, $accountType, $batchId, $depositDate)
+    public function getDepositedOrders(Group $group, $filter, $search, $batchId, $depositDate)
     {
         $ordersQuery = $this->createQueryBuilder('o')
             ->innerJoin('o.operations', 'p')
@@ -404,10 +406,10 @@ class OrderRepository extends EntityRepository
                 ->setParameter('depositDate', $depositDate);
         }
 
-        if ($accountType) {
+        if (!empty($filter) && !empty($search)) {
             $ordersQuery
-                ->andWhere('o.paymentType = :type')
-                ->setParameter('type', $accountType);
+                ->andWhere('h.' . $filter . ' = :search')
+                ->setParameter('search', $search);
         }
 
         return $ordersQuery->getQuery()->execute();

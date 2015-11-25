@@ -7,11 +7,10 @@
               <option value="street">{{ 'address'|trans }}</option>
               <option value="city">{{ 'city'|trans }}</option>
               <option value="zip">{{ 'zip'|trans }}</option>
-              <option value="area">{{ 'state'|trans }}</option>
-              <option value="country">{{ 'country'|trans }}</option>
+              <option value="state">{{ 'state'|trans }}</option>
       </select>
       <div class="finder-box">
-        <input type="text" id="search" name="searsh-field" 
+        <input type="text" id="search" name="searsh-field"
         data-bind="value: searchText" value="">
         <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
         <button type="submit" id="searchButton" data-bind="click: searchFunction" class="pie-el">{{ 'search'|trans }}</button>
@@ -37,12 +36,8 @@
                 {{ 'city'|trans }}
               <i></i>
               </span></th>
-              <th class="pie-el" ><span id='area' class="sort" data-bind="click: sortFunction">
+              <th class="pie-el" ><span id='state' class="sort" data-bind="click: sortFunction">
                 {{ 'state'|trans }}<i> </i></span></th>
-              <th class="pie-el" ><span id='country' class="sort" data-bind="click: sortFunction">
-                {{ 'country'|trans }}
-              <i></i>
-              </span></th>
               <th class="pie-el"><span>{{ 'units'|trans }}</span></th>
               <th class="pie-el">&nbsp;</th>
             </tr>
@@ -51,9 +46,8 @@
             <tr>
               <td data-bind="text: address"></td>
               <td data-bind="text: zip"></td>
-              <td data-bind="text: city"></td>
+              <td class="city" data-bind="text: city"></td>
               <td data-bind="text: area"></td>
-              <td data-bind="text: country"></td>
               <td data-bind="text: $root.getUnitsText($data)"></td>
               <td class="type-box" >
                 <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits, visible: !isSingle"></a>

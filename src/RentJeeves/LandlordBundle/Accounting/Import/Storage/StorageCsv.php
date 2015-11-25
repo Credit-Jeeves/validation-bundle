@@ -2,22 +2,16 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Storage;
 
-use RentJeeves\DataBundle\Entity\Property;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as Mapping;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Session\Landlord as SessionLandlord;
 
-/**
- * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
- *
- * @Service("accounting.import.storage.csv")
- */
 class StorageCsv extends StorageAbstract
 {
     const IS_MULTIPLE_PROPERTY = 'is_multiple_property';
@@ -35,15 +29,37 @@ class StorageCsv extends StorageAbstract
     const IMPORT_DATE_FORMAT = 'importDateFormat';
 
     /**
-     * @InjectParams({
-     *     "session" = @Inject("session"),
-     *     "logger"  = @Inject("monolog.logger.import")
-     * })
+     * @var EntityManager
      */
-    public function __construct(Session $session, LoggerInterface $logger)
-    {
+    protected $em;
+
+    /**
+     * @var SessionLandlord
+     */
+    protected $sessionLandlordManager;
+
+    /**
+     * @param Session $session
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        Session $session,
+        LoggerInterface $logger,
+        EntityManager $em,
+        SessionLandlord $sessionLandlord
+    ) {
         $this->session = $session;
         $this->logger = $logger;
+        $this->em = $em;
+        $this->sessionLandlordManager = $sessionLandlord;
+    }
+
+    /**
+     * @return Landlord
+     */
+    protected function getLandlord()
+    {
+        return $this->sessionLandlordManager->getUser();
     }
 
     public function setDateFormat($format)
@@ -128,42 +144,33 @@ class StorageCsv extends StorageAbstract
     }
 
     /**
-     * @param FormInterface $form
+     * {@inheritdoc}
      */
-    public function setImportData(FormInterface $form)
+    public function setImportData(ImportGroupSettings $importGroupSettings, FormInterface $form = null)
     {
+        if (ImportType::MULTI_GROUPS == $importGroupSettings->getImportType()) {
+            $this->setIsMultipleGroup(true);
+            $this->setIsMultipleProperty(true);
+        } elseif (ImportType::SINGLE_PROPERTY == $importGroupSettings->getImportType()) {
+            $this->setPropertyId($form['property']->getData());
+            $this->setIsMultipleProperty(false);
+        } else {
+            $this->setPropertyId($importGroupSettings->getApiPropertyIds());
+            $this->setIsMultipleProperty(true);
+        }
+        $this->setImportType($importGroupSettings->getImportType());
+        $this->setFieldDelimiter($importGroupSettings->getCsvFieldDelimiter());
+        $this->setTextDelimiter($importGroupSettings->getCsvTextDelimiter());
+        $this->setDateFormat($importGroupSettings->getCsvDateFormat());
+
+        $onlyException = isset($form['onlyException']) ? $form['onlyException']->getData() : false;
+        $this->setOnlyException($onlyException);
+
         $file = $form['attachment']->getData();
-        $property = $form['property']->getData();
-        $importType = $form['importType']->getData();
-        $textDelimiter = $form['textDelimiter']->getData();
-        $fieldDelimiter = $form['fieldDelimiter']->getData();
-        $dateFormat = $form['dateFormat']->getData();
-        $onlyException = $form['onlyException']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid() . '.csv';
         $file->move($tmpDir, $newFileName);
-
-        $this->setFieldDelimiter($fieldDelimiter);
-        $this->setTextDelimiter($textDelimiter);
         $this->setFilePath($newFileName);
-
-        $this->setIsMultipleGroup(false);
-        $this->setIsMultipleProperty(true);
-        $this->setImportType($importType);
-
-        if (ImportType::MULTI_GROUPS == $importType) {
-            $this->setIsMultipleGroup(true);
-        } elseif ($property instanceof Property) {
-            $this->setPropertyId($property->getId());
-            $this->setIsMultipleProperty(false);
-        } else {
-            $this->setIsMultipleProperty(true);
-        }
-
-        $this->setOnlyException($onlyException);
-        $this->setDateFormat($dateFormat);
-
-        $this->logger->debug(sprintf('Setup import of type: %s', $importType));
     }
 
     /**

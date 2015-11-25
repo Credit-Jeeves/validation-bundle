@@ -19,6 +19,6 @@ class YardiSyncRentCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('yardi.contract_sync')
-            ->syncRecurringCharge();
+            ->syncRent();
     }
 }

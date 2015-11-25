@@ -67,12 +67,11 @@ class PropertyAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('number')
-            ->add('street')
-            ->add('zip')
-            ->add('city')
-            ->add('area')
-            ->add('country')
+            ->add('propertyAddress.number')
+            ->add('propertyAddress.street')
+            ->add('propertyAddress.zip')
+            ->add('propertyAddress.city')
+            ->add('propertyAddress.state')
             ->add(
                 '_action',
                 'actions',
@@ -89,12 +88,11 @@ class PropertyAdmin extends Admin
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('number')
-            ->add('street')
-            ->add('city')
-            ->add('zip')
-            ->add('area')
-            ->add('country');
+            ->add('propertyAddress.number')
+            ->add('propertyAddress.street')
+            ->add('propertyAddress.zip')
+            ->add('propertyAddress.city')
+            ->add('propertyAddress.state');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
@@ -169,16 +167,14 @@ class PropertyAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('country')
-            ->add('area')
-            ->add('city')
-            ->add('district')
-            ->add('street')
-            ->add('number')
-            ->add('zip')
-            ->add('google_reference')
-            ->add('jb')
-            ->add('kb')
+            ->add('propertyAddress.state')
+            ->add('propertyAddress.city')
+            ->add('propertyAddress.street')
+            ->add('propertyAddress.number')
+            ->add('propertyAddress.zip')
+            ->add('propertyAddress.googleReference')
+            ->add('propertyAddress.jb')
+            ->add('propertyAddress.kb')
             ->add('isMultipleBuildings');
     }
 
@@ -186,16 +182,14 @@ class PropertyAdmin extends Admin
     {
         parent::configureShowField($showMapper);
         $showMapper
-            ->add('country')
-            ->add('area')
-            ->add('city')
-            ->add('district')
-            ->add('street')
-            ->add('number')
-            ->add('zip')
-            ->add('google_reference')
-            ->add('jb')
-            ->add('kb')
+            ->add('propertyAddress.state')
+            ->add('propertyAddress.city')
+            ->add('propertyAddress.street')
+            ->add('propertyAddress.number')
+            ->add('propertyAddress.zip')
+            ->add('propertyAddress.googleReference')
+            ->add('propertyAddress.jb')
+            ->add('propertyAddress.kb')
             ->add('createdAt')
             ->add('updatedAt')
             ->add('units', null, array('route' => array('name' => 'show')))

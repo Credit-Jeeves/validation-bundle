@@ -12,7 +12,7 @@
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
         <a id="backToContract" href="#main" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Edit Payment</h1>
-        <a href="#review" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Next</a>
+        <a href="#" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Next</a>
     </div>
 
     <div class="ui-content" role="main">
@@ -28,9 +28,7 @@
             <input type="hidden" id="contract_id" name="contract_id">
         </form>
 
-        {{ render(controller('RjCheckoutBundle:Component:source',{'mobile':'true'})) }}
-
-        <a href="#review" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">NEXT</button></a>
+        <a href="#" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">NEXT</button></a>
 
         <div style="height: 140px;">
             <p style="color: grey;">
@@ -47,11 +45,13 @@
 
 
     <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;">Back</a>
+        <a href="#pay" data-transition="slide" data-direction="reverse" data-role="none" class="headerButton" style="background: transparent;border: none; color: white; border-right: 1px solid white;" onclick="$('#' + prefix + 'paymentAccount').prop('disabled', false);">Back</a>
         <h1 class="ui-title" role="heading" aria-level="1">Review</h1>
     </div>
 
     <div class="ui-content" role="main" style="background: url(/bundles/rjcore/images/mobile/lightblur-bgnd.png); min-height: 653px;">
+
+
         <b><span id="revRecurring">Single</span> rent payment for <span id="contractAddress"></span></b>
         <hr>
         <h4>Who's getting paid:</h4>
@@ -125,3 +125,14 @@
     </div>
 
 </div>
+
+{% if form_name_suffix is defined %}
+    {{ render(controller('RjCheckoutBundle:PaymentSource:source', {'formNameSuffix' : form_name_suffix, 'mobile':'true'})) }}
+{% else %}
+    {{ render(controller('RjCheckoutBundle:PaymentSource:source',{'mobile':'true'})) }}
+{% endif %}
+
+{#
+
+{{ render(controller('RjCheckoutBundle:PaymentSource:source',{'mobile':'true'})) }}
+#}

@@ -6,9 +6,10 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\CoreBundle\Services\PropertyProcess;
+use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAbstract;
 
 abstract class MappingAbstract implements MappingInterface
@@ -94,6 +95,10 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_TENANT_STATUS = 'tenant_status';
 
+    const KEY_STREET_NUMBER = 'street_number';
+
+    const KEY_STREET_NAME = 'street_name';
+
     /**
      * @var array
      */
@@ -124,10 +129,10 @@ abstract class MappingAbstract implements MappingInterface
         $this->em = $em;
     }
 
-    /** @var  PropertyProcess $propertyProcess */
+    /** @var  PropertyManager $propertyProcess */
     protected $propertyProcess;
 
-    public function setPropertyProcess(PropertyProcess $propertyProcess)
+    public function setPropertyProcess(PropertyManager $propertyProcess)
     {
         $this->propertyProcess = $propertyProcess;
     }
@@ -198,13 +203,28 @@ abstract class MappingAbstract implements MappingInterface
      *
      * @return Property
      */
-    public function createProperty($row)
+    public function createProperty(array $row)
     {
         $property = new Property();
-        $property->setCity($row[self::KEY_CITY]);
-        $property->setStreet($row[self::KEY_STREET]);
-        $property->setZip($row[self::KEY_ZIP]);
-        $property->setArea($row[self::KEY_STATE]);
+        $propertyAddress = new PropertyAddress();
+        $propertyAddress->setCity($row[self::KEY_CITY]);
+        if (isset($row[self::KEY_STREET_NAME]) && isset($row[self::KEY_STREET_NUMBER])) {
+            $propertyAddress->setNumber($row[self::KEY_STREET_NUMBER]);
+            $propertyAddress->setStreet($row[self::KEY_STREET_NAME]);
+        } elseif (isset($row[self::KEY_STREET])) {
+            $propertyAddress->setStreet($row[self::KEY_STREET]);
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Fields for address mapping should be specified, we have only: %s',
+                    implode(',', array_keys($row))
+                )
+            );
+        }
+        $propertyAddress->setZip($row[self::KEY_ZIP]);
+        $propertyAddress->setState($row[self::KEY_STATE]);
+
+        $property->setPropertyAddress($propertyAddress);
 
         return $property;
     }

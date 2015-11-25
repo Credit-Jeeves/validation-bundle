@@ -223,104 +223,7 @@ class Contract extends Base
         return false;
     }
 
-    /**
-     * @TODO move to LandlordContractManager
-     *
-     * @return array
-     */
-    public function getItem()
-    {
-        $result = array();
-        $property = $this->getProperty();
-        $tenant = $this->getTenant();
-        $unit = $this->getUnit();
-        $status = $this->getStatusArray();
-        $result['id'] = $this->getId();
-        $result['dueDate'] = $this->getDueDate();
-        $result['balance'] = $this->getCurrentBalance();
-        $result['status'] = $status['status'];
-        $result['status_name'] = $status['status_name'];
-        $result['status_label'] = $status['status_label'];
-        $result['style'] = $status['class'];
-        $result['address'] = $this->getRentAddress($property, $unit);
-        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
-        $result['property_id'] = $property->getId();
-        $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
-        $result['unit_id'] = null;
-        if ($unit) {
-            $result['unit_id'] = $unit->getId();
-        }
-        $result['isSingleProperty'] = $property->getIsSingle();
-        $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
-        $result['first_name'] = $tenant->getFirstName();
-        $result['last_name'] = $tenant->getLastName();
-        $result['email'] = $tenant->getEmail();
-        $result['phone'] = $tenant->getFormattedPhone();
-        $result['amount'] = '';
-        if ($rent = $this->getRent()) {
-            $result['amount'] = $this->getRent();
-        }
-        $result['late'] = $this->getLateDays();
-        $result['paid_to'] = '';
-        $result['late_date'] = '';
-        $result['last_payment'] = $this->getLastPayment();
-        if ($date = $this->getPaidTo()) {
-            $result['paid_to'] = $date->format('M d, Y');
-            $result['late_date'] = $date->format('n/j/Y');
-        }
-        $result['start'] = '';
-        if ($start = $this->getStartAt()) {
-            $result['start'] = $start->format('m/d/Y');
-        }
-        $result['finish'] = '';
-        if ($finish = $this->getFinishAt()) {
-            $today = new DateTime();
-            if ($today > $finish &&
-                !in_array(
-                    $this->getStatus(),
-                    array(
-                        ContractStatus::FINISHED,
-                        ContractStatus::DELETED,
-                    )
-                )
-            ) {
-                $result['style'] = 'contract-pending';
-                $result['status'] = self::CONTRACT_ENDED;
-                $result['status_label'] = [
-                    'label' => 'contract.statuses.contract_ended',
-                    'choice' => false,
-                    'params' => [
-                        'status' => strtoupper($result['status_name'])
-                    ],
-                ];
-            }
-            $result['finish'] = $finish->format('m/d/Y');
-        }
-        $payments = $this->getPayments();
-        $payment = $payments->first();
-
-        $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE) ? true : false;
-        $result['payment_setup'] = ($payment) ? true : false;
-        $result['search'] = $this->getSearch();
-
-        if ($setting = $tenant->getSettings()) {
-            $result['credit_track_enabled'] = !!$setting->getCreditTrackPaymentAccount();
-        } else {
-            $result['credit_track_enabled'] = false;
-        }
-
-        $residentMapping = $tenant->getResidentForHolding($this->getHolding());
-        $result['residentId'] = $residentMapping ? $residentMapping->getResidentId() : null;
-
-        $result['isIntegrated'] = false;
-        if ($this->getGroup() && $groupSettings = $this->getGroup()->getGroupSettings()) {
-            $result['isIntegrated'] = $groupSettings->getIsIntegrated();
-        }
-
-        return $result;
-    }
-
-    private function getLateDays()
+    public function getLateDays()
     {
         $result = '1 DAY LATE'; //TODO it is wrong because PaidTo==null can't be 1 day late
         if ($date = $this->getPaidTo()) {
@@ -453,7 +356,7 @@ class Contract extends Base
         if (!$unit) {
             $unit = $this->getUnit();
         }
-        $result[] = $property->getAddress();
+        $result[] = $property->getPropertyAddress()->getAddress();
         if (!$property->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
@@ -744,6 +647,7 @@ class Contract extends Base
         $result['group_id'] = $this->getGroup()->getId();
         $groupSettings = $this->getGroup()->getGroupSettings();
         $isIntegrated = $groupSettings->getIsIntegrated();
+        $result['is_shown_rent'] = $groupSettings->isShowRentOnDashboard();
         $result['is_integrated'] = $isIntegrated;
         $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
         $result['is_allowed_to_pay'] =
@@ -1109,31 +1013,5 @@ class Contract extends Base
         }
 
         return false;
-    }
-
-    /**
-     * @link https://credit.atlassian.net/browse/RT-1006
-     *
-     * Setting paidTo logic from contract waiting.
-     * Use this method only when contract created from contract waiting and need set up paidTo.
-     */
-    public function setPaidToByBalanceDue()
-    {
-        $this->getDueDate();
-        $paidTo = new DateTime();
-        $paidTo->setDate(
-            null,
-            null,
-            $this->getDueDate()
-        );
-        //if balance is >0 then balance due, set paidTo to duedate to current month.
-        if ($this->getIntegratedBalance() > 0) {
-            $this->setPaidTo($paidTo);
-
-            return;
-        }
-        $paidTo->modify('+1 month');
-        //if balance is <=0 then no balance due, set paidTo to duedate in month future. (+1)
-        $this->setPaidTo($paidTo);
     }
 }

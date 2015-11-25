@@ -4,12 +4,14 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\FundingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\PaymentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
@@ -76,6 +78,14 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         $this->fundingAccountManager = $fundingAccountManager;
         $this->paymentManager = $paymentManager;
         $this->reportLoader = $reportLoader;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'ACIPayCollectV4';
     }
 
     /**
@@ -162,6 +172,24 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     public function loadReport()
     {
         return $this->reportLoader->loadReport();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate)
+    {
+        return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReversedBatchId(Order $order)
+    {
+        $today = new \DateTime();
+
+        return sprintf('%sR%s', $order->getDepositAccount()->getId(), $today->format('Ymd'));
     }
 
     /**

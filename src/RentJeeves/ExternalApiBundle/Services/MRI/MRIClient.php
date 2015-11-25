@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\DeserializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
+use RentJeeves\ExternalApiBundle\Model\MRI\MRIOrder;
 use RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse;
 use RentJeeves\ExternalApiBundle\Model\MRI\Payment;
 use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
@@ -299,7 +300,8 @@ class MRIClient implements ClientInterface
     public function postPayment(Order $order, $externalPropertyId)
     {
         $payment = new Payment();
-        $payment->setEntryRequest($order);
+        $mriOrder = new MRIOrder($order);
+        $payment->setEntryRequest($mriOrder);
         $paymentString = $this->paymentToStringFormat($payment, 'xml');
 
         $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
@@ -338,7 +340,11 @@ class MRIClient implements ClientInterface
      */
     public function paymentToStringFormat(Payment $payment, $format)
     {
-        $context = SerializerXmlHelper::getSerializerContext($this->serializerGroups, true);
+        $groups = $this->serializerGroups;
+        if ($payment->getEntryRequest()->isSendDescription()) {
+            $groups[] = 'MRI-with-description';
+        }
+        $context = SerializerXmlHelper::getSerializerContext($groups, true);
 
         $paymentXml = $this->serializer->serialize(
             $payment,

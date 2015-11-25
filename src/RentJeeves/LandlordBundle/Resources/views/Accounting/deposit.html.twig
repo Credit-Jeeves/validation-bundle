@@ -9,17 +9,24 @@
         <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
             <div class="title-box clearfix">
                 <h2 data-bind="text: '{{'accounting.menu.batched_deposits'|trans}} (' + $root.total() + ')'"></h2>
-                {% if showFilter %}
-                    <div class="fiter-box">
-                        <div id="depositTypeSelect" class="finder-box">
-                            <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
-                                <option value='' data-bind="click: loadData()">- {{'select.status.all'|trans}} -</option>
-                                <option value='bank' data-bind="click: loadData('bank')">{{'filter.group_by.deposit.echeck'|trans}}</option>
-                                <option value='card' data-bind="click: loadData('card')">{{'filter.group_by.deposit.credit-card'|trans}}</option>
-                            </select>
+                <div class="fiter-box">
+                    <div id="depositTypeSelect" class="finder-box">
+                        <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
+                            <option value='transactionId'>{{'filter.group_by.deposit.transactionId'|trans}}</option>
+                            <option value='batchId'>{{'filter.group_by.deposit.batchId'|trans}}</option>
+                        </select>
+                        <div id="searchInput" class="finder-box">
+                            <input
+                                    type="text"
+                                    id="search-field"
+                                    name="search-field"
+                                    data-bind="value: searchText"
+                                    value="">
+                            <a href="#" id="delete" class="pie-el" data-bind="click: clearSearch">x</a>
                         </div>
+                        <button type="submit" id="search-submit-payments-status" data-bind="click: loadData" class="pie-el">{{ 'search' }}</button>
                     </div>
-                {% endif %}
+                </div>
             </div>
             <div class="content-box">
                 <div class="properties-table-block table-wrap">
@@ -68,9 +75,10 @@
                                 <tr data-bind="css: $root.toggledZebraCss($parent.batchNumber(), $parentContext.$index(), false), visible: false">
                                     <td data-bind="attr: {'class': 'actions-status '+style()}">
                                         <span data-bind="text: $root.getOrderStatusText($data), attr: {'title' : errorMessage()}" style="cursor: pointer"></span>
+                                        {#<span data-bind="text: $root.getOrderStatusText($data)" style="cursor: pointer"></span>#}
                                     </td>
 
-                                    <td data-bind="text: $parent.depositDate"></td>
+                                    <td data-bind="text: depositDate"></td>
 
                                     <td data-bind="text: transactionId"></td>
                                     <td>
@@ -108,13 +116,13 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var viewModel = new BatchedDepositsViewModel();
+            viewModel.filter($('#depositTypeStatus').val());
             ko.applyBindings(viewModel);
 
             $('#depositTypeStatus').linkselect("destroy");
             $('#depositTypeStatus').linkselect({
                 change: function (li, value, text) {
                     viewModel.filter(value);
-                    viewModel.loadData();
                 }
             });
 

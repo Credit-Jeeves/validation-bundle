@@ -237,7 +237,7 @@ class Mailer extends BaseMailer
 
         $vars = [
             'nameTenant' => $tenant->getFullName(),
-            'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'datetime' => $order->getUpdatedAt()->format('Y-m-d'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
             'amount' => $amount,
             'fee' => $fee,
@@ -249,6 +249,8 @@ class Mailer extends BaseMailer
             'type' => $order->getPaymentType(),
             'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
             'statementDescriptor' => $this->getStatementDescriptor($order),
+            'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -449,7 +451,7 @@ class Mailer extends BaseMailer
         $total = $fee + $amount;
         $vars = [
             'tenantName' => $tenant->getFullName(),
-            'orderTime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'orderTime' => $order->getUpdatedAt()->format('Y-m-d'),
             'transactionID' => $transaction ? $transaction->getTransactionId() : 'N/A',
             'amount' => $amount,
             'fee' => $fee,
@@ -460,6 +462,8 @@ class Mailer extends BaseMailer
             'paymentProcessor' => $order->getPaymentProcessor(),
             'type' => $order->getPaymentType(),
             'statementDescriptor' => $this->getStatementDescriptor($order),
+            'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());

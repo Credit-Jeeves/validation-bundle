@@ -57,7 +57,7 @@ abstract class PaymentAccount
 
     /**
      * @ORM\ManyToOne(
-     *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
+     *      targetEntity="CreditJeeves\DataBundle\Entity\MailingAddress",
      *      inversedBy="paymentAccounts",
      *      cascade={"persist"},
      *      fetch="EAGER"
@@ -300,10 +300,10 @@ abstract class PaymentAccount
     /**
      * Set address
      *
-     * @param  \CreditJeeves\DataBundle\Entity\Address $address
+     * @param  \CreditJeeves\DataBundle\Entity\MailingAddress $address
      * @return PaymentAccount
      */
-    public function setAddress(\CreditJeeves\DataBundle\Entity\Address $address = null)
+    public function setAddress(\CreditJeeves\DataBundle\Entity\MailingAddress $address = null)
     {
         $this->address = $address;
 

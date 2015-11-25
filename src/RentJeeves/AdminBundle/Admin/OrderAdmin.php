@@ -69,6 +69,7 @@ class OrderAdmin extends Admin
             ->add('_action', 'actions', [
                 'actions' => [
                     'jobs' => ['template' => 'AdminBundle:CRUD:list__order_jobs.html.twig'],
+                    'payment' => ['template' => 'AdminBundle:CRUD:list__order_payment.html.twig'],
                     'outbound' => ['template' => 'AdminBundle:CRUD:list__order_outbound_transactions.html.twig'],
                 ]
             ]);
@@ -80,6 +81,7 @@ class OrderAdmin extends Admin
             ->add('user.email')
             ->add('paymentType')
             ->add('sum')
+            ->add('payment.id')
             ->add(
                 'transaction_id',
                 'doctrine_orm_callback',

@@ -323,9 +323,10 @@
                 <source>common.ssn</source>
                 <target>SSN</target>
             </trans-unit>
-
-
-
+            <trans-unit id="common.ssn.again">
+                <source>common.ssn.again</source>
+                <target>SSN (Again)</target>
+            </trans-unit>
             <trans-unit id="loan.type.balance">
                 <source>loan.type.balance</source>
                 <target>Balance for Loan Type</target>
@@ -953,14 +954,12 @@
             <trans-unit id="pidkiq.error.incorrect.answer">
                <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
                <target><![CDATA[
-                   We're sorry, but we were unable to generate an online exam for you.
-                   Please contact
-                   <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
-                   to
-                   <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
-                   manually verify your identity.</a>
-                 ]]>
-               </target>
+                We're sorry, but we are unable to verify your identity automatically.
+                Please contact <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+               ]]></target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
@@ -1071,6 +1070,10 @@
             <trans-unit id="error.user.ssn.empty">
                 <source>error.user.ssn.empty</source>
                 <target>SSN is required.</target>
+            </trans-unit>
+            <trans-unit id="error.user.ssn.match">
+                <source>error.user.ssn.match</source>
+                <target>The SSN fields do not match.</target>
             </trans-unit>
             <trans-unit id="error.user.ssn.exact">
                 <source>error.user.ssn.exact</source>

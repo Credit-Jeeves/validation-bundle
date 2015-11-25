@@ -49,14 +49,6 @@
                 <source>rj.footer.about_us</source>
                 <target>About Us</target>
             </trans-unit>
-            <trans-unit id="yardi.label.synchronization_strategy">
-                <source>yardi.label.synchronization_strategy</source>
-                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
-            </trans-unit>
-            <trans-unit id="yardi.label.post_month_node">
-                <source>yardi.label.post_month_node</source>
-                <target>Post Month Node</target>
-            </trans-unit>
             <trans-unit id="import.error.empty_group">
                 <source>import.error.empty_group</source>
                 <target>Group not found.</target>
@@ -399,7 +391,7 @@
             </trans-unit>
             <trans-unit id="property.cannot.map">
                 <source>property.cannot.map</source>
-                <target><![CDATA[We can not map this property]]></target>
+                <target>Invalid US Postal Address. Please verify and try again.</target>
             </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>
@@ -2266,13 +2258,13 @@
                <source>pidkiq.error.unanswered_questions</source>
                <target>Almost there. Only %COUNT% question(s) left to answer!</target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit.echeck">
-                <source>filter.group_by.deposit.echeck</source>
-                <target>E-Check</target>
+            <trans-unit id="filter.group_by.deposit.transactionId">
+                <source>filter.group_by.deposit.transactionId</source>
+                <target>Transaction ID</target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit.credit-card">
-                <source>filter.group_by.deposit.credit-card</source>
-                <target>Credit Card</target>
+            <trans-unit id="filter.group_by.deposit.batchId">
+                <source>filter.group_by.deposit.batchId</source>
+                <target>BatchId</target>
             </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>
@@ -2815,7 +2807,15 @@
             </trans-unit>
             <trans-unit id="import.message.download.contracts">
                 <source>import.message.download.contracts</source>
-                <target>Fetching lease contracts.</target>
+                <target>Fetching lease contracts for external property id "%EXTERNAL_PROPERTY_ID%".</target>
+            </trans-unit>
+            <trans-unit id="import.message.load.external_property_ids">
+                <source>import.message.load.external_property_ids</source>
+                <target>Getting list of external property id.</target>
+            </trans-unit>
+            <trans-unit id="import.error.load.external_property_ids">
+                <source>import.error.load.external_property_ids</source>
+                <target>Got error, while retrieve list of external property id.</target>
             </trans-unit>
             <trans-unit id="landlord.form.import.multiple.property">
                 <source>landlord.form.import.multiple.property</source>
@@ -3125,7 +3125,7 @@
             </trans-unit>
             <trans-unit id="landlord_dashboard.payment.title">
                 <source>landlord_dashboard.payment.title</source>
-                <target>Charged: %created%. Deposited: %sent%</target>
+                <target>Created: %created%. Charged: %charged%</target>
             </trans-unit>
             <trans-unit id="landlord.dashboard.additional_paid_for">
                 <source>landlord.dashboard.additional_paid_for</source>
@@ -3264,12 +3264,32 @@
                 <target>Report loading is not allowed.
                 Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
+            <trans-unit id="common.charged_at">
+                <source>common.charged_at</source>
+                <target>Charged at</target>
+            </trans-unit>
+            <trans-unit id="common.created_at">
+                <source>common.created_at</source>
+                <target>Created at</target>
+            </trans-unit>
             <trans-unit id="payment_source.remove.error">
                 <source>payment_source.remove.error</source>
                 <target>
                     Whoops! You cannot delete a payment source that is needed for your pending payment.
                     Please try again after the payment has completed.
                 </target>
+            </trans-unit>
+            <trans-unit id="mri.import.message.download.external_property_id">
+                <source>mri.import.message.download.external_property_id</source>
+                <target>Fetching list of properties id, please stand by.</target>
+            </trans-unit>
+            <trans-unit id="mri.import.error.getExternalPropertyIds">
+                <source>mri.import.error.getExternalPropertyIds</source>
+                <target>Error fetching list of properties id, please contact to support.</target>
+            </trans-unit>
+            <trans-unit id="mri.import.error.empty.externalPropertyIds">
+                <source>mri.import.error.empty.externalPropertyIds</source>
+                <target>Empty list of properties id, please contact to support.</target>
             </trans-unit>
         </body>
     </file>

@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Controller;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -28,9 +28,9 @@ class ReturnedController extends Controller
             $User->addAddress($address);
         }
         $Lead = new Lead();
-        
+
         $Lead->setUser($User);
-        
+
         $form = $this->createForm(
             new LeadReturnedType(),
             $Lead,
@@ -56,9 +56,11 @@ class ReturnedController extends Controller
                 $em->persist($User);
                 $em->flush();
                 $this->get('core.session.applicant')->setLeadId($Lead->getId());
+
                 return $this->redirect($this->generateUrl('applicant_homepage'));
             }
         }
+
         return array('form' => $form->createView());
     }
 
@@ -70,6 +72,7 @@ class ReturnedController extends Controller
     private function getLeadDealer($Lead)
     {
         $Group = $Lead->getGroup();
+
         return $Group->getGroupDealers()->first();
     }
 }

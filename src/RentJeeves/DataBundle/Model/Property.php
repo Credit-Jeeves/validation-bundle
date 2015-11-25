@@ -2,7 +2,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -25,11 +25,12 @@ abstract class Property
      * @ORM\Column(
      *     name="country",
      *     type="string",
-     *     length=3
+     *     length=3,
+     *     nullable=true
      * )
      * @Serializer\Groups({"payRent"})
      */
-    protected $country;
+    protected $country = 'US';
 
     /**
      * @ORM\Column(
@@ -46,9 +47,9 @@ abstract class Property
      * @ORM\Column(
      *     name="city",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $city;
@@ -82,7 +83,6 @@ abstract class Property
      *     length=255,
      *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $number;
@@ -156,7 +156,6 @@ abstract class Property
 
     /**
      * @ORM\Column(
-     *
      *     name="ss_index",
      *     type="string",
      *     nullable=true
@@ -272,6 +271,17 @@ abstract class Property
     protected $importMappingByProperty;
 
     /**
+     * @var PropertyAddress
+     *
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
+     * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=false)
+     *
+     * @Serializer\SerializedName("propertyAddress")
+     * @Serializer\Groups({"payRent"})
+     */
+    protected $propertyAddress;
+
+    /**
      * @return ImportMappingByProperty
      */
     public function getImportMappingByProperty()
@@ -354,6 +364,8 @@ abstract class Property
     }
 
     /**
+     * @deprecated
+     *
      * Set country
      *
      * @param string $country
@@ -367,6 +379,8 @@ abstract class Property
     }
 
     /**
+     *
+     * @deprecated
      * Get country
      *
      * @return string
@@ -607,8 +621,7 @@ abstract class Property
     }
 
     /**
-     *
-     * You should set this using "property.process"->setupSingleProperty() instead.
+     * You should set this using "property.manager"->setupSingleProperty() instead.
      *
      * @param boolean $isSingle
      *
@@ -620,8 +633,16 @@ abstract class Property
     }
 
     /**
+     * @return bool|null
+     */
+    public function isSingle()
+    {
+        return $this->isSingle;
+    }
+
+    /**
      * @deprecated Please use function on the following line for getting value
-     * @see RentJeeves\DataBundle\Entity\Property::isSingle()
+     * @see RentJeeves\DataBundle\Model\Property::isSingle()
      *
      * @return boolean|null
      */
@@ -748,6 +769,9 @@ abstract class Property
         return $this->contracts;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function setGoogleReference($google_reference)
     {
         $this->google_reference = $google_reference;
@@ -755,41 +779,12 @@ abstract class Property
         return $this;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function getGoogleReference()
     {
         return $this->google_reference;
-    }
-
-    /**
-     * @deprecated use setJb
-     */
-    public function setLatitude($data)
-    {
-        return $this->setJb($data);
-    }
-
-    /**
-     * @deprecated use setKb
-     */
-    public function setLongitude($data)
-    {
-        return $this->setKb($data);
-    }
-
-    /**
-     * @deprecated use getJb
-     */
-    public function getLatitude()
-    {
-        return $this->getJb();
-    }
-
-    /**
-     * @deprecated use getKb
-     */
-    public function getLongitude()
-    {
-        return $this->getKb();
     }
 
     /**
@@ -846,5 +841,21 @@ abstract class Property
     public function getAddress1()
     {
         return sprintf('%s %s', $this->number, $this->street);
+    }
+
+    /**
+     * @return PropertyAddressEntity
+     */
+    public function getPropertyAddress()
+    {
+        return $this->propertyAddress;
+    }
+
+    /**
+     * @param PropertyAddressEntity $propertyAddress
+     */
+    public function setPropertyAddress(PropertyAddressEntity $propertyAddress)
+    {
+        $this->propertyAddress = $propertyAddress;
     }
 }

@@ -2,9 +2,9 @@
 
 namespace RentJeeves\ComponentBundle\Service;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ComponentBundle\Service\Google\GooglePlaces as Place;
-use Doctrine\ORM\EntityManager;
 
 /**
  * Service name "google"
@@ -53,9 +53,9 @@ class Google
     public function savePlace(Property $property, $name = self::DEFAULT_NAME)
     {
         $groups = $property->getPropertyGroups();
-
+        $propertyAddress = $property->getPropertyAddress();
         //Save Property to google only if it have landlord or not saved into google before
-        if (empty($groups) || $property->getGoogleReference()) {
+        if (empty($groups) || $propertyAddress->getGoogleReference()) {
             return false;
         }
 
@@ -72,8 +72,8 @@ class Google
         $result = $this->place->add();
 
         if (is_object($result) && property_exists($result, 'reference')) {
-            $property->setGoogleReference($result->reference);
-            $this->em->persist($property);
+            $propertyAddress->setGoogleReference($result->reference);
+            $this->em->persist($propertyAddress);
             $this->em->flush();
 
             return true;
@@ -173,12 +173,13 @@ class Google
      */
     protected function getLocationData(Property $property, $toString = true)
     {
-        if ($property->getJb() && $property->getKb()) {
-            $locationData['latitude'] = $property->getJb();
-            $locationData['longitude'] = $property->getKb();
-        } elseif ($property->getLat() && $property->getLong()) {
-            $locationData['latitude'] = $property->getLat();
-            $locationData['longitude'] = $property->getLong();
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->getJb() && $propertyAddress->getKb()) {
+            $locationData['latitude'] = $propertyAddress->getJb();
+            $locationData['longitude'] = $propertyAddress->getKb();
+        } elseif ($propertyAddress->getLat() && $propertyAddress->getLong()) {
+            $locationData['latitude'] = $propertyAddress->getLat();
+            $locationData['longitude'] = $propertyAddress->getLong();
         } else {
             throw new \InvalidArgumentException(sprintf('Property doesn\'t have neither jb/kb nor lat/long'));
         }

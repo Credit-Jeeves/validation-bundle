@@ -7,9 +7,13 @@ use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\LandlordBundle\Accounting\ImportLandlord\Mapping\GroupMapper;
+use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class GroupMapperCase extends AbstractMapperCase
+class GroupMapperCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      *
@@ -20,7 +24,7 @@ class GroupMapperCase extends AbstractMapperCase
     {
         $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
-        $mapper->setEntityManager($this->getEmMock());
+        $mapper->setEntityManager($this->getEntityManagerMock());
 
         $mapper->map([]);
     }
@@ -122,7 +126,15 @@ class GroupMapperCase extends AbstractMapperCase
             $group->getOrderAlgorithm(),
             'Order Algorithm should be set to ' . OrderAlgorithmType::PAYDIRECT
         );
-        $this->assertEquals(GroupType::RENT, $group->getType(), 'Group type should be set ' . GroupType::RENT);
+        $this->assertEquals(GroupType::RENT, $group->getType(), 'Group type should be set to ' . GroupType::RENT);
+        $this->assertEquals(
+            GroupMapper::DEFAULT_STATEMENT_DESCRIPTOR,
+            $group->getStatementDescriptor(),
+            sprintf(
+                'Group statement descriptor should be set to default value "%s"',
+                GroupMapper::DEFAULT_STATEMENT_DESCRIPTOR
+            )
+        );
         $this->assertEquals('testLoginId', $group->getExternalGroupId(), 'Invalid mapping for external group id');
 
         $this->assertNotNull($holding = $group->getHolding(), 'New holding should be created');

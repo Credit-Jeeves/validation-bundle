@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -29,7 +30,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "LandlordTenants"});
+     * @Serializer\Groups({"paymentAccounts", "AdminProperty", "ContractList"});
      */
     protected $id;
 
@@ -124,7 +125,7 @@ abstract class Group
 
     /**
      * @ORM\Column(type="string")
-     * @Serializer\Groups({"AdminProperty", "LandlordTenants"});
+     * @Serializer\Groups({"AdminProperty", "ContractList"});
      *
      * @Assert\NotBlank(groups={"landlordImport"})
      */
@@ -391,6 +392,18 @@ abstract class Group
     protected $groupSettings;
 
     /**
+     * @var ImportGroupSettings
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ImportGroupSettings",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     * @Assert\Valid
+     */
+    protected $importSettings;
+
+    /**
      * @var AciCollectPayGroupProfile
      *
      * @ORM\OneToOne(
@@ -557,6 +570,22 @@ abstract class Group
     public function getGroupSettings()
     {
         return $this->groupSettings;
+    }
+
+    /**
+     * @return ImportGroupSettings|null
+     */
+    public function getImportSettings()
+    {
+        return $this->importSettings;
+    }
+
+    /**
+     * @param ImportGroupSettings $importSettings
+     */
+    public function setImportSettings(ImportGroupSettings $importSettings)
+    {
+        $this->importSettings = $importSettings;
     }
 
     /**

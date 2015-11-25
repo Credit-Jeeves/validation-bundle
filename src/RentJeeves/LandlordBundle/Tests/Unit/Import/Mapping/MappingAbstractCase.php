@@ -38,7 +38,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function checkDateFormat($dateStringForParse, $dateStringForCheck, $format)
     {
         static::$countDateFormat++;
-        $date = DateTime::createFromFormat($dateStringForParse, $format);
+        DateTime::createFromFormat($dateStringForParse, $format);
     }
 
     /**
@@ -152,5 +152,69 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
 
         $resultRow = $mappingMethodForCheckEmail->invoke($mapping, $row);
         $this->assertEmpty($resultRow);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUseStreetNameAndStreetNumberWhenCreateProperty()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_STREET_NAME => 'Yii street',
+            MappingTest::KEY_STREET_NUMBER => 1234,
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+        ];
+
+        $mapping = new MappingTest();
+        $property = $mapping->createProperty($data);
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals($data[MappingTest::KEY_CITY], $propertyAddress->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NAME], $propertyAddress->getStreet());
+        $this->assertEquals($data[MappingTest::KEY_STREET_NUMBER], $propertyAddress->getNumber());
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $propertyAddress->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $propertyAddress->getState());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUseStreetWhenCreateProperty()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_STREET => 'Yii street',
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+
+        ];
+        $mapping = new MappingTest();
+        $property = $mapping->createProperty($data);
+        $propertyAddress = $property->getPropertyAddress();
+
+        $this->assertEquals($data[MappingTest::KEY_CITY], $propertyAddress->getCity());
+        $this->assertEquals($data[MappingTest::KEY_STREET], $propertyAddress->getStreet());
+        $this->assertEmpty($property->getNumber(), 'Number not empty, but should');
+        $this->assertEquals($data[MappingTest::KEY_ZIP], $propertyAddress->getZip());
+        $this->assertEquals($data[MappingTest::KEY_STATE], $propertyAddress->getState());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Fields for address mapping should be specified, we have only: city,zip,state
+     * @test
+     */
+    public function shouldGetExceptionWhenCreatePropertyWithoutAnyStreetData()
+    {
+        $data = [
+            MappingTest::KEY_CITY => 'Yii',
+            MappingTest::KEY_ZIP => 'zip',
+            MappingTest::KEY_STATE => 'state'
+
+        ];
+        $mapping = new MappingTest();
+        $mapping->createProperty($data);
     }
 }

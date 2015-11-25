@@ -37,7 +37,7 @@ abstract class Transaction
     protected $order;
 
     /**
-     * @var int
+     * @var string
      *
      * @ORM\Column(
      *     name="batch_id",

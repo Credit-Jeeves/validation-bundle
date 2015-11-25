@@ -270,6 +270,66 @@
                 <source>admin.holding.export_tenant_id</source>
                 <target>Export Tenant ID for Promas Lock Box file?</target>
             </trans-unit>
+            <trans-unit id="admin.yardi.label.synchronization_strategy">
+                <source>admin.yardi.label.synchronization_strategy</source>
+                <target>Synchronization Strategy(Do not change this while there are open batches for the holding.)</target>
+            </trans-unit>
+            <trans-unit id="admin.yardi.label.post_month_node">
+                <source>admin.yardi.label.post_month_node</source>
+                <target>Post Month Node</target>
+            </trans-unit>
+            <trans-unit id="admin.yardi.label.nsf_post_month_node">
+                <source>admin.yardi.label.nsf_post_month_node</source>
+                <target>NSF Post Month</target>
+            </trans-unit>
+            <trans-unit id="admin.list.order.payment_action">
+                <source>admin.list.order.payment_action</source>
+                <target>Payment</target>
+            </trans-unit>
+            <trans-unit id="admin.list.payment.orders_action">
+                <source>admin.list.payment.orders_action</source>
+                <target>Orders</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.show_rent_dashboard">
+                <source>admin.group_settings.label.show_rent_dashboard</source>
+                <target>Show Rent on Dashboard</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.show_rent_wizard">
+                <source>admin.group_settings.label.show_rent_wizard</source>
+                <target>Fill Rent on Wizard</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.source">
+                <source>admin.import_group_settings.label.source</source>
+                <target>Source</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.import_type">
+                <source>admin.import_group_settings.label.import_type</source>
+                <target>Import Type</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.csv_field_delimiter">
+                <source>admin.import_group_settings.label.csv_field_delimiter</source>
+                <target>Field Delimiter</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.csv_text_delimiter">
+                <source>admin.import_group_settings.label.csv_text_delimiter</source>
+                <target>Text Delimiter</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.csv_date_format">
+                <source>admin.import_group_settings.label.csv_date_format</source>
+                <target>Date Format</target>
+            </trans-unit>
+            <trans-unit id="admin.import_group_settings.label.api_property_ids">
+                <source>admin.import_group_settings.label.api_property_ids</source>
+                <target>Property Ids</target>
+            </trans-unit>
+            <trans-unit id="admin.errors.api_property_ids.empty">
+                <source>admin.errors.api_property_ids.empty</source>
+                <target>Property Ids can not be empty for import source "Integrated Api"</target>
+            </trans-unit>
+            <trans-unit id="admin.errors.csv_settings.empty">
+                <source>admin.errors.csv_settings.empty</source>
+                <target>Fill all csv settings (Field Delimiter, Text Delimiter and Date Format).</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

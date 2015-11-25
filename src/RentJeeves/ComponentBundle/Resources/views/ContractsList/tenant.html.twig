@@ -49,7 +49,9 @@
             <table class="properties-table zebra-grid contracts-table layout-auto">
                 <thead>
                     <tr class="contracts">
-                        <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
+                        {% if shouldShowRent %}
+                            <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
+                        {% endif %}
                         {% if hasIntegratedBalance %}
                             <th class="font-helvetica" style="width: 60px">{{ 'common.balance' | trans }}</th>
                         {% endif %}
@@ -63,7 +65,15 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' %}
                         <tr class="contracts static">
-                            <td class="font-helvetica">{{ contract.rent }}</td>
+                            {% if shouldShowRent %}
+                                <td class="font-helvetica">
+                                    {% if contract.is_shown_rent %}
+                                        {{ contract.rent }}
+                                    {% else %}
+                                        {{ 'rent.not_shown' | trans }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                             {% if hasIntegratedBalance %}
                                 <td class="font-helvetica">{{ contract.balance }}</td>
                             {% endif %}

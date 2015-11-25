@@ -2,6 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class CreditTrackCase extends BaseTestCase
@@ -106,6 +107,11 @@ class CreditTrackCase extends BaseTestCase
         $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
         $this->assertCount(2, $rows);
 
+        // for removing PaymentAccount
+        $payment = $this->getEntityManager()->getRepository('RjDataBundle:Payment')->find(5);
+        $payment->setStatus(PaymentStatus::CLOSE);
+        $this->getEntityManager()->flush($payment);
+
         $rows[0]->clickLink('delete');
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
         $this->page->clickLink('payment_account.delete.yes');
@@ -130,7 +136,6 @@ class CreditTrackCase extends BaseTestCase
 
         $this->assertNotNull($flash = $this->page->find('css', '.flash-notice'));
         $this->assertEquals('credittrack.pay.saved', $flash->getText());
-
     }
 
     /**

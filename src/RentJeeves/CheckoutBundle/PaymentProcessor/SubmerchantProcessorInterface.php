@@ -84,4 +84,26 @@ interface SubmerchantProcessorInterface
      * @return PaymentProcessorReport
      */
     public function loadReport();
+
+    /**
+     * @param $paymentType is of type CreditJeeves\DataBundle\Enum\OrderPaymentType
+     * @param $executeDate
+     * @return Date the estimated deposit date
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate);
+
+    /**
+     * Returns the name of payment processor.
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Generates reversed batch id for given order.
+     *
+     * @param Order $order
+     * @return string
+     */
+    public function generateReversedBatchId(Order $order);
 }

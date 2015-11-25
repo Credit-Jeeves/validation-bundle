@@ -53,7 +53,7 @@ class ContractRepository extends EntityRepository
                 case 'address':
                 case 'property':
                     foreach ($search as $item) {
-                        $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
+                        $query->andWhere('CONCAT(propertyAddress.number, propertyAddress.street) LIKE :search');
                         $query->setParameter('search', '%' . $item . '%');
                     }
                     break;
@@ -129,8 +129,8 @@ class ContractRepository extends EntityRepository
                 case 'propertyA':
                 case 'address':
                 case 'property':
-                    $query->orderBy('p.number', $sortOrder);
-                    $query->addOrderBy('p.street', $sortOrder);
+                    $query->orderBy('propertyAddress.number', $sortOrder);
+                    $query->addOrderBy('propertyAddress.street', $sortOrder);
                     break;
                 case 'amountA':
                 case 'amount':
@@ -183,6 +183,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -215,6 +216,7 @@ class ContractRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->innerJoin('c.tenant', 't');
         $query->leftJoin('t.settings', 's');
         $query->where('c.group = :group');
@@ -243,14 +245,15 @@ class ContractRepository extends EntityRepository
         $group,
         $page = 1,
         $limit = 100,
-        $sortField = 'p.street',
+        $sortField = 'propertyAddress.street',
         $sortOrder = 'ASC',
-        $searchField = 'p.street',
+        $searchField = 'propertyAddress.street',
         $searchString = ''
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->innerJoin('c.tenant', 't');
         $query->where(
             '(c.group = :group AND c.status <> :status1 AND c.status <> :status2' .
@@ -687,7 +690,7 @@ class ContractRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('c');
         $query->distinct();
-        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $this->whereReportToExperian($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
@@ -804,7 +807,7 @@ class ContractRepository extends EntityRepository
         $query->select(
             'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
         );
-        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent');
+        $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
         $this->whereReportToTransUnion($query, 'c', clone $startDate);
         $query->andWhere('c.status = :current');
@@ -1040,8 +1043,8 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.group', 'g');
         $query->leftJoin('g.depositAccounts', 'da');
         $query->leftJoin('c.payments', 'pay');
-        if (!empty($status)) {
-            $query->andWhere('c.status NOT IN :statuses');
+        if (!empty($statuses)) {
+            $query->andWhere('c.status NOT IN (:statuses)');
             $query->setParameter('statuses', $statuses);
         }
         $query->andWhere('c.tenant = :tenantId');
@@ -1358,39 +1361,150 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Holding $holding
-     * @param Property $property
+     * @param string $externalPropertyId
+     * @param string $externalResidentId
+     * @param string $externalUnitId
+     * @return Contract[]
+     */
+    public function findContractsByHoldingExternalPropertyResidentExternalUnitId(
+        Holding $holding,
+        $externalPropertyId,
+        $externalResidentId,
+        $externalUnitId
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pm.holding = :holding')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('holding', $holding)
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('residentId', $externalResidentId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $externalPropertyId
+     * @param string $externalResidentId
+     * @param string $unitName
+     * @return Contract[]
+     */
+    public function findContractsByHoldingExternalPropertyResidentUnit(
+        Holding $holding,
+        $externalPropertyId,
+        $externalResidentId,
+        $unitName
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pm.holding = :holding')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('holding', $holding)
+            ->setParameter('unitName', $unitName)
+            ->setParameter('singleUnitName', UNIT::SINGLE_PROPERTY_UNIT_NAME)
+            ->setParameter('residentId', $externalResidentId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $externalPropertyId
      * @param string $externalLeaseId
      * @param string $unitName
      * @return Contract[]
      */
-    public function findContractByHoldingPropertyExternalLeaseIdUnitAndIntegratedGroup(
+    public function findContractsByHoldingExternalPropertyLeaseUnit(
         Holding $holding,
-        Property $property,
+        $externalPropertyId,
         $externalLeaseId,
         $unitName
     ) {
-        $query = $this->createQueryBuilder('c')
-            ->select('c')
+        return $this->createQueryBuilder('c')
             ->innerJoin('c.unit', 'u')
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
-            ->where('c.externalLeaseId = :leaseId')
-            ->andWhere('c.status in (:statuses)')
-            ->andWhere('c.property = :propertyId')
-            ->andWhere('c.holding = :holdingId')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pm.holding = :holding')
+            ->andWhere('c.holding = :holding')
             ->andWhere('gs.isIntegrated = 1')
-            ->andWhere('u.name = :unitName')
-            ->setParameter('leaseId', $externalLeaseId)
+            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
+            ->andWhere('c.externalLeaseId = :externalLeaseId')
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
-            ->setParameter('propertyId', $property->getId())
-            ->setParameter('holdingId', $holding->getId());
-
-        if ($property->isSingle()) {
-            $query->setParameter('unitName', UNIT::SINGLE_PROPERTY_UNIT_NAME);
-        } else {
-            $query->setParameter('unitName', $unitName);
-        }
-
-        return $query->getQuery()->execute();
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('holding', $holding)
+            ->setParameter('unitName', $unitName)
+            ->setParameter('singleUnitName', UNIT::SINGLE_PROPERTY_UNIT_NAME)
+            ->setParameter('externalLeaseId', $externalLeaseId)
+            ->getQuery()
+            ->execute();
+    }
+    /**
+     * @param Holding $holding
+     * @param string $externalPropertyId
+     * @param string $externalLeaseId
+     * @param string $externalUnitId
+     * @return Contract[]
+     */
+    public function findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+        Holding $holding,
+        $externalPropertyId,
+        $externalLeaseId,
+        $externalUnitId
+    ) {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->innerJoin('c.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs')
+            ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyMapping', 'pm')
+            ->where('c.status in (:statuses)')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pm.holding = :holding')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->andWhere('c.externalLeaseId = :externalLeaseId')
+            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('holding', $holding)
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter('externalLeaseId', $externalLeaseId)
+            ->getQuery()
+            ->execute();
     }
 }

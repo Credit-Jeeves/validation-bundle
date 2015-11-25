@@ -226,4 +226,13 @@ class Property
     {
         return $this->state;
     }
+
+    /**
+     * @param string $unitName
+     * @return string
+     */
+    public function getExternalUnitId($unitName)
+    {
+        return sprintf('%s||%s', $this->getCode(), $unitName);
+    }
 }

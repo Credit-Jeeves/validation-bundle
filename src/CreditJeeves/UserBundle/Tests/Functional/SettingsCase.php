@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
-use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 

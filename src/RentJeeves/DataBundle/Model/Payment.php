@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Entity\DepositAccount as DepositAccountEntity;
@@ -244,6 +246,21 @@ class Payment
      * @ORM\Column(name="close_details", type="array", nullable=true)
      */
     protected $closeDetails;
+
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *      mappedBy="payment",
+     *      cascade={"persist"}
+     * )
+     * @var ArrayCollection|Order[]
+     */
+    protected $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -603,5 +620,21 @@ class Payment
     public function setDepositAccount(DepositAccountEntity $depositAccount)
     {
         $this->depositAccount = $depositAccount;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders->add($order);
     }
 }

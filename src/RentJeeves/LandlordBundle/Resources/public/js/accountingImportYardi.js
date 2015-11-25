@@ -5,9 +5,9 @@ function accountingImportYardi() {
     this.isFinishUploadDataToServer =  ko.observable(false);
     this.classLoadDataMessage = ko.observable('');
 
-    this.currentPropertyMappingId = null;
+    this.currentProperty = null;
     this.loadedResidents = [];
-    this.loadedMappedProperty = [];
+    this.loadedProperties = [];
 
     this.doFinish = function()
     {
@@ -30,13 +30,13 @@ function accountingImportYardi() {
             jQuery.ajax({
                 url: Routing.generate('accounting_import_resident_data_yardi',
                     {
-                        'propertyMappingId': self.currentPropertyMappingId,
                         'isLast': (countResidents - 1 === step) && (length - 1 === i) ? 1 : 0
                     }
                 ),
                 type: 'POST',
                 data: {
-                    'resident': self.loadedResidents[i]
+                    'resident': self.loadedResidents[i],
+                    'property': self.currentProperty
                 },
                 dataType: 'json',
                 error: function () {
@@ -57,18 +57,18 @@ function accountingImportYardi() {
 
     this.getResidents = function (i, length) {
         if (length > i) {
-            self.currentPropertyMappingId = self.loadedMappedProperty[i].id;
+            self.currentProperty = self.loadedProperties[i];
             self.loadDataMessage(
                 Translator.trans(
                     'yardi.import.message.download.residents',
-                    {"EXTERNAL_PROPERTY_ID":self.loadedMappedProperty[i].external_property_id}
+                    {"EXTERNAL_PROPERTY_ID": self.currentProperty.Code}
                 )
             );
-
+            console.info('Get Residents');
             jQuery.ajax({
                 url: Routing.generate('accounting_import_residents_yardi',
                     {
-                        'propertyMappingId': self.currentPropertyMappingId
+                        'externalPropertyId': self.currentProperty.Code
                     }
                 ),
                 type: 'GET',
@@ -113,7 +113,7 @@ function accountingImportYardi() {
                     $.each(response, function () { countProperties++ });
 
                     if (countProperties > 0) {
-                        self.loadedMappedProperty = response;
+                        self.loadedProperties = response;
                         self.getResidents(0, countProperties);
                     } else {
                         self.doFinish();

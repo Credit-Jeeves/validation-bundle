@@ -394,10 +394,12 @@ class TransUnionReportRecord
         return str_repeat(' ', 10);
     }
 
+    /**
+     * @return string
+     */
     public function getFirstLineOfAddress()
     {
-        $property = $this->contract->getProperty();
-        $addressLine = sprintf('%s %s', $property->getNumber(), $property->getStreet());
+        $addressLine = $this->contract->getProperty()->getPropertyAddress()->getAddress();
 
         return str_pad($addressLine, 32);
     }
@@ -414,19 +416,19 @@ class TransUnionReportRecord
 
     public function getContractAddressCity()
     {
-        $city = $this->contract->getProperty()->getCity();
+        $city = $this->contract->getProperty()->getPropertyAddress()->getCity();
 
         return str_pad($city, 20);
     }
 
     public function getContractAddressState()
     {
-        return $this->contract->getProperty()->getArea();
+        return $this->contract->getProperty()->getPropertyAddress()->getState();
     }
 
     public function getContractAddressZip()
     {
-        $zip = $this->contract->getProperty()->getZip();
+        $zip = $this->contract->getProperty()->getPropertyAddress()->getZip();
 
         return str_pad($zip, 9, '0');
     }
