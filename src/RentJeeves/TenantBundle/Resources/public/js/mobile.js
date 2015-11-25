@@ -836,14 +836,16 @@ function addNewPaymentSource(formObj){
     }
 }
 
+function unlockPaymentSource(){
+    $('#' + prefix + 'paymentAccount').prop('disabled', false);
+}
+
 function updateLocalPaymentSource(entry){
-    exists = false
-    for(i=0;i<payAccounts.length;i++){
-        payAccounts[i]=entry
+    i=0;
+    while(payAccounts[i]!=undefined && payAccounts[i].id != entry.id){
+        i++;
     }
-    if(!exists){
-        payAccounts.push(entry)
-    }
+    payAccounts[i]=entry;
 }
 
 function submitForm(){
