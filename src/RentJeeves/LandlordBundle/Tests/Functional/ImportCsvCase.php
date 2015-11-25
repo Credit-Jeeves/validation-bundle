@@ -1013,8 +1013,8 @@ class ImportCsvCase extends ImportBaseAbstract
     public function providerForMatchWaitingContractWithMoveContract()
     {
         return [
-            [new DateTime(), 100.01],
-            [new DateTime('+1 month'), -10.02]
+            [100.01],
+            [-10.02]
         ];
     }
 
@@ -1022,7 +1022,7 @@ class ImportCsvCase extends ImportBaseAbstract
      * @test
      * @dataProvider providerForMatchWaitingContractWithMoveContract
      */
-    public function matchWaitingContractWithMoveContract(\DateTime $paidToIn, $balanceIn)
+    public function matchWaitingContractWithMoveContract($balanceIn)
     {
         $this->load(true);
         $importGroupSettings = $this->getImportGroupSettings();
@@ -1120,10 +1120,11 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertEquals(1, count($contracts));
         /** @var Contract $contract */
         $contract = end($contracts);
-        $dueDate = $contract->getGroup()->getGroupSettings()->getDueDate();
-        $this->assertEquals($dueDate, $contract->getDueDate());
-        $paidToIn->setDate(null, null, $contract->getDueDate());
-        $this->assertEquals($paidToIn->format('Y-m-d'), $contract->getPaidTo()->format('Y-m-d'));
+        $reflectionClass = new \ReflectionClass($contract);
+        $reflectionProperty = $reflectionClass->getProperty('paidTo');
+        $reflectionProperty->setAccessible(true);
+        $paidTo = $reflectionProperty->getValue($contract);
+        $this->assertNull($paidTo, 'We should not set paid to, it should be null');
     }
 
 

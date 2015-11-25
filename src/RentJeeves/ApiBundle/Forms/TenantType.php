@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Forms;
 
+use CreditJeeves\DataBundle\Entity\HoldingRepository;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\Form\FormInterface;
@@ -17,9 +18,13 @@ class TenantType extends UserType
     {
         parent::buildForm($builder, $options);
 
+        /** @var HoldingRepository $holdingRepository */
+        $holdingRepository = $options['holding_repository'];
+
         $builder->add('holding_id', 'entity', [
             'class' => 'CreditJeeves\DataBundle\Entity\Holding',
             'mapped' => false,
+            'query_builder' => $holdingRepository->createQueryBuilder('unit'),
             'constraints' => [
                 new NotBlank([
                     'message' => 'api.errors.tenant.holding_id.empty',
@@ -44,6 +49,7 @@ class TenantType extends UserType
      */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
+        $resolver->setRequired(['holding_repository']);
         $resolver->setDefaults([
             'csrf_protection' => false,
             'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',

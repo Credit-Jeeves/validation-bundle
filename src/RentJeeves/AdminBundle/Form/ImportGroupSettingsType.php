@@ -49,7 +49,6 @@ class ImportGroupSettingsType extends AbstractType
             [
                 'error_bubbling' => true,
                 'label' => 'admin.import_group_settings.label.csv_field_delimiter',
-                'data' => ',',
                 'required' => false,
             ]
         );
@@ -60,7 +59,6 @@ class ImportGroupSettingsType extends AbstractType
             [
                 'error_bubbling' => true,
                 'label' => 'admin.import_group_settings.label.csv_text_delimiter',
-                'data' => '"',
                 'required' => false,
             ]
         );

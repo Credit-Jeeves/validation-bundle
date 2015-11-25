@@ -138,7 +138,7 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
             $errors = $this->currentImportModel->getErrors()[$this->currentImportModel->getNumber()];
             $contract = $this->currentImportModel->getContract();
 
-            if (!empty($errors)) {
+            if (!empty($errors) || !$this->currentImportModel->getContract()->getProperty()) {
                 //Must Show User For Review
                 call_user_func($callbackFailed);
 

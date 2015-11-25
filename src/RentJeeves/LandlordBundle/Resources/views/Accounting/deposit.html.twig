@@ -12,7 +12,6 @@
                 <div class="fiter-box">
                     <div id="depositTypeSelect" class="finder-box">
                         <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
-                            <option value=''>- {{'select.status.all'|trans}} -</option>
                             <option value='transactionId'>{{'filter.group_by.deposit.transactionId'|trans}}</option>
                             <option value='batchId'>{{'filter.group_by.deposit.batchId'|trans}}</option>
                         </select>
@@ -117,6 +116,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var viewModel = new BatchedDepositsViewModel();
+            viewModel.filter($('#depositTypeStatus').val());
             ko.applyBindings(viewModel);
 
             $('#depositTypeStatus').linkselect("destroy");

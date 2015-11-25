@@ -38,7 +38,7 @@ trait Property
      */
     protected function catchMatchedExternalPropertyId(PropertyMapping $propertyMapping, $externalPropertyId)
     {
-        if ($propertyMapping->getExternalPropertyId() !== $externalPropertyId) {
+        if (strtolower($propertyMapping->getExternalPropertyId()) !== strtolower($externalPropertyId)) {
             throw new ImportHandlerException(
                 sprintf(
                     'Given external property mapping (%s) does not match the existing one (%s)',

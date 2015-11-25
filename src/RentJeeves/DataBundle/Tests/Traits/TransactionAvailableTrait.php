@@ -83,6 +83,7 @@ trait TransactionAvailableTrait
         $operation->setContract($contract);
         $operation->setAmount(500);
         $operation->setType(OperationType::OTHER);
+        $operation->setGroup($contract->getGroup());
         $paidFor = new DateTime();
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);

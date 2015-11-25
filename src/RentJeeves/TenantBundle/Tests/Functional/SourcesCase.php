@@ -246,7 +246,7 @@ class SourcesCase extends BaseTestCase
         );
 
         $this->assertNotNull(
-            $message = $this->page->find('css', 'h3.error_message'),
+            $message = $this->page->find('css', 'div.error_message'),
             'Error message not showing'
         );
         $this->assertEquals('payment_source.remove.error', $message->getHtml());
@@ -289,7 +289,7 @@ class SourcesCase extends BaseTestCase
         );
 
         $this->assertNotNull(
-            $message = $this->page->find('css', 'h3.error_message'),
+            $message = $this->page->find('css', 'div.error_message'),
             'Error message not showing'
         );
         $this->assertEquals('payment_source.remove.error', $message->getHtml());

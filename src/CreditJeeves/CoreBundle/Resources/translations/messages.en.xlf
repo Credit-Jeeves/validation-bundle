@@ -954,14 +954,12 @@
             <trans-unit id="pidkiq.error.incorrect.answer">
                <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
                <target><![CDATA[
-                   We're sorry, but we were unable to generate an online exam for you.
-                   Please contact
-                   <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
-                   to
-                   <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-" target="_blank" class="underline">
-                   manually verify your identity.</a>
-                 ]]>
-               </target>
+                We're sorry, but we are unable to verify your identity automatically.
+                Please contact <a href="%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+               ]]></target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>

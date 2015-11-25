@@ -61,7 +61,7 @@ class Mailer extends BaseMailer implements MailerInterface
 
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
-            $message->setFrom([$htmlContent['fromEmail'] => $htmlContent['fromName']]);
+            $message->setFrom([$htmlContent['fromEmail'] => $params['partnerName']]);
             $message->setTo($emailTo);
 
             if (false != $template->getEnTranslation()->getMandrillSlug()) {
@@ -75,6 +75,13 @@ class Mailer extends BaseMailer implements MailerInterface
             return true;
         } catch (\Twig_Error_Runtime $e) {
             $this->handleException($e);
+            $this->container->get('logger')->alert(
+                sprintf(
+                    'Error when sending email (%s) : %s',
+                    $templateName,
+                    $e->getMessage()
+                )
+            );
         }
 
         return false;
