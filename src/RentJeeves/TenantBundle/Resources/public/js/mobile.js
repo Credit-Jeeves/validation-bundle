@@ -836,6 +836,10 @@ function addNewPaymentSource(formObj){
     }
 }
 
+function unlockPaymentSource(){
+    $('#' + prefix + 'paymentAccount').prop('disabled', false);
+}
+
 function updateLocalPaymentSource(entry){
     i=0;
     while(payAccounts[i]!=undefined && payAccounts[i].id != entry.id){
