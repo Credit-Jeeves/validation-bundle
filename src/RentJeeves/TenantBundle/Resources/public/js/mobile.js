@@ -837,12 +837,12 @@ function addNewPaymentSource(formObj){
 }
 
 function updateLocalPaymentSource(entry){
-    exists = false
-    for(i=0;i<payAccounts.length;i++){
-        payAccounts[i]=entry
-    }
+    i=0;
     if(!exists){
-        payAccounts.push(entry)
+        while(payAccounts[i]!=undefined && payAccounts[i].id == entry.id){
+            i++;
+        }
+        payAccounts[i]=entry;
     }
 }
 
