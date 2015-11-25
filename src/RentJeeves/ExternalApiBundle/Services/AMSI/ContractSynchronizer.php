@@ -159,18 +159,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $leaseId = $lease->getResiId();
         $externalUnitId = $lease->getExternalUnitId();
 
-        if ($sumRecurringCharges <= 0) {
-            throw new \LogicException(
-                sprintf(
-                    '[SyncRent]Sum of RecurringCharges for %s #%d  and lease Id "%s" = %d',
-                    $holding->getName(),
-                    $holding->getId(),
-                    $leaseId,
-                    $sumRecurringCharges
-                )
-            );
-        }
-
         $allContracts = [];
 
         $contracts = $this

@@ -29,14 +29,22 @@ class SourcesController extends BaseController
      * @Route("/", name="tenant_payment_sources")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($mobile = false)
     {
-        return [
+        $paymentAccounts = $this->getUser()->getPaymentAccounts();
+
+        $pageVars = array(
             'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'needDisplayGroups' => false,
             'isLocked' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')
                 ->isPaymentProcessorLocked($this->getUser())
-        ];
+        );
+
+        if ($mobile) {
+            return $this->render('TenantBundle:Sources:index.mobile.html.twig', $pageVars);
+        } else {
+            return $pageVars;
+        }
     }
 
     /**

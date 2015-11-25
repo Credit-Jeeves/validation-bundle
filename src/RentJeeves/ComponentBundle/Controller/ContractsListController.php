@@ -88,9 +88,9 @@ class ContractsListController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
         $contracts = $em->getRepository('RjDataBundle:Contract')
             ->findByTenantIdInvertedStatusesForPayments($tenant->getId());
-        $contractsArr = array();
-        $activeContracts = array();
-        $paidForArr = array();
+        $contractsArr = [];
+        $activeContracts = [];
+        $paidForArr = [];
         $isNewUser = false;
         $isInPaymentWindow = false;
         $hasIntegratedBalance = false;
@@ -106,15 +106,20 @@ class ContractsListController extends Controller
             );
         }
 
+        $shouldShowRent = false;
+
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $contractsArr[] = $contract->getDatagridRow($em);
-            if (!in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::PENDING))) {
+            if (!in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING])) {
                 $activeContracts[] = $contract;
                 $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
             }
-            if (!$hasIntegratedBalance && $contract->getGroup()->getGroupSettings()->getIsIntegrated() === true) {
+            if (!$hasIntegratedBalance && $contract->getGroupSettings()->getIsIntegrated() === true) {
                 $hasIntegratedBalance = true;
+            }
+            if (!$shouldShowRent && $contract->getGroupSettings()->isShowRentOnDashboard()) {
+                $shouldShowRent = true;
             }
             if (($contract->getStatus() !== ContractStatus::FINISHED) &&
                 end($contractsArr)['is_allowed_to_pay_anything']
@@ -129,19 +134,20 @@ class ContractsListController extends Controller
         $contractsJson = $this->get('jms_serializer')->serialize(
             $activeContracts,
             'json',
-            SerializationContext::create()->setGroups(array('payRent'))
+            SerializationContext::create()->setGroups(['payRent'])
         );
 
-        $pageVars = array(
+        $pageVars = [
             'contractsJson' => $contractsJson,
-            'contracts'     => $contractsArr,
-            'paidForArr'    => $paidForArr,
-            'user'          => $tenant,
-            'isNewUser'     => $isNewUser,
+            'contracts' => $contractsArr,
+            'paidForArr' => $paidForArr,
+            'user' => $tenant,
+            'isNewUser' => $isNewUser,
+            'shouldShowRent' => $shouldShowRent,
             'hasIntegratedBalance' => $hasIntegratedBalance,
             'isInPaymentWindow' => $isInPaymentWindow,
             'allowPayAnything' => $allowPayAnything,
-        );
+        ];
 
         if ($mobile) {
             return $this->render('RjComponentBundle:ContractsList:tenant.mobile.html.twig', $pageVars);

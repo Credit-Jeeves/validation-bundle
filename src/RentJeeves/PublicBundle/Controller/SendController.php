@@ -1,10 +1,10 @@
 <?php
 namespace RentJeeves\PublicBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\DataBundle\Enum\UserType;
 
 class SendController extends Controller
 {
@@ -12,6 +12,7 @@ class SendController extends Controller
      * @Route("/new/send/{userId}", name="user_new_send")
      * @Template()
      *
+     * @param int $userId
      * @return array
      */
     public function indexAction($userId)
@@ -31,15 +32,15 @@ class SendController extends Controller
             $this->get('project.mailer')->sendRjCheckEmail($user);
         }
 
-        if ($user->getType() != UserType::LANDLORD) {
+        if ($user instanceof Tenant) {
             $inviteLandlord = $user->getInvite();
             $landlordLetter = (empty($inviteLandlord)) ? false : true;
         }
-        
-        return array(
+
+        return [
             'userId'         => $userId,
             'active'         => $active,
             'landlordLetter' => $landlordLetter,
-        );
+        ];
     }
 }

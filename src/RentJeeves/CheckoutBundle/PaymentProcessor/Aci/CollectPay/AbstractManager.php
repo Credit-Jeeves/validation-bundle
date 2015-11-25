@@ -132,7 +132,18 @@ abstract class AbstractManager
      */
     protected static function getBillingAccountNickname(DepositAccount $depositAccount)
     {
-        return sprintf('%s-%s', $depositAccount->getGroup()->getName(), $depositAccount->getMerchantName());
+        // 45 limit just for this field not need constant, +1 for dash
+        $truncateLength = 45 - (strlen($depositAccount->getMerchantName()) + 1);
+
+        if ($truncateLength > 0) {
+            return sprintf(
+                '%s-%s',
+                substr($depositAccount->getGroup()->getName(), 0, $truncateLength),
+                $depositAccount->getMerchantName()
+            );
+        } else {
+            return substr($depositAccount->getMerchantName(), 0, 45);
+        }
     }
 
     /**

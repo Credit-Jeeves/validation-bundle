@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Tests\Mailer;
 
+use RentJeeves\DataBundle\Entity\PartnerUser;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class MailerCase extends BaseTestCase
@@ -18,6 +19,39 @@ class MailerCase extends BaseTestCase
         'loginUrl' => 'my.renttrack.com',
         'isPoweredBy' => false
     ];
+
+    /**
+     * @test
+     */
+    public function shouldUsePartnerNameForFrom()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        /** @var PartnerUser $partnerUser */
+        $partnerUser = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:PartnerUser')
+            ->findOneByEmail('anna_lee@example.com');
+
+        $this->assertNotNull($partnerUser, 'Check fixtures, partner with email "anna_lee@example.com" should exist');
+        // prepare fixtures
+        $partnerUser->getPartner()->setPoweredBy(true);
+        $this->getEntityManager()->flush($partnerUser);
+
+        $this->getMailer()->sendRjCheckEmail($partnerUser);
+        $this->assertCount(1, $plugin->getPreSendMessages(), 'Should be send just 1 message for checking email');
+        $message =  $plugin->getPreSendMessage(0);
+
+        $this->assertArrayHasKey('no-reply@renttrack.com', $message->getFrom(), 'Should have from key with email');
+
+        $this->assertEquals(
+            $partnerUser->getPartner()->getName(),
+            $message->getFrom()['no-reply@renttrack.com'],
+            sprintf('From Name on email should be like partner name "%s"', $partnerUser->getPartner()->getName())
+        );
+    }
 
     /**
      * @test

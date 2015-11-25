@@ -185,7 +185,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             if (!DateChecker::nowFallsBetweenDates($fromDate, $toDate)) {
                 $this->logMessage(
                     sprintf(
-                        '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',
+                        '[SyncRent]Today does not fall between "%s" and "%s"',
                         $fromDate ? $fromDate->format('Y-m-d') : '',
                         $toDate ? $toDate->format('Y-m-d') : ''
                     )
@@ -202,16 +202,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 sprintf(
                     '[SyncRent]Lease id and unitName can not be empty for external property "%s"',
                     $externalPropertyId
-                )
-            );
-        }
-
-        if ($amount == 0) {
-            throw new \LogicException(
-                sprintf(
-                    '[SyncRent]Sum of RecurringCharges for external property "%s", lease id "%s"',
-                    $externalPropertyId,
-                    $leaseId
                 )
             );
         }

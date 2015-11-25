@@ -340,7 +340,11 @@ class MRIClient implements ClientInterface
      */
     public function paymentToStringFormat(Payment $payment, $format)
     {
-        $context = SerializerXmlHelper::getSerializerContext($this->serializerGroups, true);
+        $groups = $this->serializerGroups;
+        if ($payment->getEntryRequest()->isSendDescription()) {
+            $groups[] = 'MRI-with-description';
+        }
+        $context = SerializerXmlHelper::getSerializerContext($groups, true);
 
         $paymentXml = $this->serializer->serialize(
             $payment,

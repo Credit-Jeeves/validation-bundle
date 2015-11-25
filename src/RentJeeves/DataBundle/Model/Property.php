@@ -3,7 +3,6 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
@@ -51,7 +50,6 @@ abstract class Property
      *     length=255,
      *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $city;
@@ -85,7 +83,6 @@ abstract class Property
      *     length=255,
      *     nullable=true
      * )
-     * @Assert\NotBlank()
      * @Serializer\Groups({"payRent"})
      */
     protected $number;
@@ -159,7 +156,6 @@ abstract class Property
 
     /**
      * @ORM\Column(
-     *
      *     name="ss_index",
      *     type="string",
      *     nullable=true
@@ -278,8 +274,7 @@ abstract class Property
      * @var PropertyAddress
      *
      * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
-     * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=true)
-     * @TODO: ORM\JoinColumn(name="property_address_id", referencedColumnName="id") after migration
+     * @ORM\JoinColumn(name="property_address_id", referencedColumnName="id", nullable=false)
      *
      * @Serializer\SerializedName("propertyAddress")
      * @Serializer\Groups({"payRent"})
@@ -774,6 +769,9 @@ abstract class Property
         return $this->contracts;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function setGoogleReference($google_reference)
     {
         $this->google_reference = $google_reference;
@@ -781,6 +779,9 @@ abstract class Property
         return $this;
     }
 
+    /**
+     * @deprecated use PropertyAddress
+     */
     public function getGoogleReference()
     {
         return $this->google_reference;

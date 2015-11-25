@@ -1,11 +1,27 @@
-<script type="text/javascript">
+{% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
 
-    window.addressesViewModels = [];
-    window.paymentAccounts = [];
-    var payAccounts = JSON.parse('{{ payAccountsJson|escape('js') }}');
+<div data-role="page" id="addNewPayAccount">
+    <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
+        <a id="backToContract" onclick="$.mobile.back()" data-transition="slide" data-direction="reverse" data-role="none" role="button" class="headerButton" style="color: white;">Back</a>
+        <h1 class="ui-title" role="heading" aria-level="1">New payment source</h1>
+        {#
+        <a href="#" onclick="createReview()" data-role="none" role="button" class="headerButton" style="color: white; border-left: 1px solid white; border-right: 0px; text-shadow: none;">Add</a>
+        #}
+    </div>
 
-    jQuery.each(payAccounts, function(key, val){
-        $("#rentjeeves_checkoutbundle_paymenttype_paymentAccount").append("<option value='"+val.id+"'>"+val.name+"</option>");
-        window.paymentAccounts.push(val);
-    });
-</script>
+    <div class="ui-content" role="main">
+
+        <div id='sourceErrorMsg' style='display: none;background: red; padding: 4px; width: 100%;color: white; text-shadow: none; border-radius: 2px;'>
+        </div>
+
+        <form {{ form_enctype(paymentAccountType) }} novalidate method="post" onsubmit="addNewPaymentSource(this); return false;">
+            {{ form_widget(paymentAccountType) }}
+            {{ JSFV(paymentAccountType) }}
+        </form>
+
+        <div>
+            <input type="button" id="deleteSource" value="Delete Source">
+        </div>
+
+    </div>
+</div>

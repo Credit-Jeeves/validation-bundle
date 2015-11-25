@@ -134,6 +134,11 @@ abstract class MRISettings
     protected $chargeCode;
 
     /**
+     * @ORM\Column(name="send_description", type="boolean")
+     */
+    protected $sendDescription = false;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
      *     inversedBy="mriSettings",
@@ -311,5 +316,21 @@ abstract class MRISettings
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isSendDescription()
+    {
+        return $this->sendDescription;
+    }
+
+    /**
+     * @param mixed $sendDescription
+     */
+    public function setSendDescription($sendDescription)
+    {
+        $this->sendDescription = $sendDescription;
     }
 }

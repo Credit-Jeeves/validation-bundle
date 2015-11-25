@@ -59,7 +59,7 @@
         <h1>{{ 'current_payment_sources.title' | trans() }}</h1>
         {% for flashMessage in app.session.flashbag.get('error') %}
             <div class="attention-box pie-el">
-                <h3 class="error_message">{{ flashMessage|trans }}</h3>
+                <div class="error_message">{{ flashMessage|trans }}</div>
             </div>
         {% endfor %}
 

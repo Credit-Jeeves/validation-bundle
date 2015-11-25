@@ -36,6 +36,7 @@ class StorageYardi extends ExternalApiStorage
         19 => Mapping::KEY_UNIT_ID,
         20 => 'Not used',
         21 => 'Not used2',
+        22 => 'Not used3'
     ];
 
     /**
@@ -108,6 +109,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
+            $property->getMarketingName()
         ];
 
         if ($this->isMultiplePropertyMapping()) {
@@ -161,6 +163,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getExternalUnitId(),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
+            $property->getMarketingName()
         ];
 
         if ($this->isMultiplePropertyMapping()) {

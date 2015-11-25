@@ -53,7 +53,7 @@ class ContractRepository extends EntityRepository
                 case 'address':
                 case 'property':
                     foreach ($search as $item) {
-                        $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
+                        $query->andWhere('CONCAT(propertyAddress.number, propertyAddress.street) LIKE :search');
                         $query->setParameter('search', '%' . $item . '%');
                     }
                     break;
@@ -129,8 +129,8 @@ class ContractRepository extends EntityRepository
                 case 'propertyA':
                 case 'address':
                 case 'property':
-                    $query->orderBy('p.number', $sortOrder);
-                    $query->addOrderBy('p.street', $sortOrder);
+                    $query->orderBy('propertyAddress.number', $sortOrder);
+                    $query->addOrderBy('propertyAddress.street', $sortOrder);
                     break;
                 case 'amountA':
                 case 'amount':
@@ -183,6 +183,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -215,6 +216,7 @@ class ContractRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->innerJoin('c.tenant', 't');
         $query->leftJoin('t.settings', 's');
         $query->where('c.group = :group');
@@ -243,14 +245,15 @@ class ContractRepository extends EntityRepository
         $group,
         $page = 1,
         $limit = 100,
-        $sortField = 'p.street',
+        $sortField = 'propertyAddress.street',
         $sortOrder = 'ASC',
-        $searchField = 'p.street',
+        $searchField = 'propertyAddress.street',
         $searchString = ''
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
+        $query->innerJoin('p.propertyAddress', 'propertyAddress');
         $query->innerJoin('c.tenant', 't');
         $query->where(
             '(c.group = :group AND c.status <> :status1 AND c.status <> :status2' .
@@ -1040,8 +1043,8 @@ class ContractRepository extends EntityRepository
         $query->leftJoin('c.group', 'g');
         $query->leftJoin('g.depositAccounts', 'da');
         $query->leftJoin('c.payments', 'pay');
-        if (!empty($status)) {
-            $query->andWhere('c.status NOT IN :statuses');
+        if (!empty($statuses)) {
+            $query->andWhere('c.status NOT IN (:statuses)');
             $query->setParameter('statuses', $statuses);
         }
         $query->andWhere('c.tenant = :tenantId');
@@ -1412,6 +1415,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->innerJoin('p.propertyMapping', 'pm')
             ->innerJoin('c.tenant', 't')
             ->innerJoin('t.residentsMapping', 'rm')
@@ -1420,7 +1424,7 @@ class ContractRepository extends EntityRepository
             ->andWhere('pm.holding = :holding')
             ->andWhere('c.holding = :holding')
             ->andWhere('gs.isIntegrated = 1')
-            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND p.isSingle = 1))')
+            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
             ->andWhere('rm.residentId = :residentId')
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
             ->setParameter('externalPropertyId', $externalPropertyId)
@@ -1450,13 +1454,14 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->innerJoin('p.propertyMapping', 'pm')
             ->where('c.status in (:statuses)')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
             ->andWhere('c.holding = :holding')
             ->andWhere('gs.isIntegrated = 1')
-            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND p.isSingle = 1))')
+            ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
             ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
             ->setParameter('externalPropertyId', $externalPropertyId)

@@ -162,15 +162,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     ) {
         $sumRecurringCharges = $this->getSumRecurringCharges($customer, $holding->getRecurringCodesArray());
 
-        if ($sumRecurringCharges == 0) {
-            throw new \LogicException(
-                '[SyncRent]Sum of RecurringCharges for %s #%d  and lease Id "%s" = %d',
-                $holding->getName(),
-                $holding->getId(),
-                $customer->getLeaseId(),
-                $sumRecurringCharges
-            );
-        }
         /** @var Resident $resident */
         foreach ($customer->getResidents()->getResidentArray() as $resident) {
             $residentId = $resident->getResidentId();
