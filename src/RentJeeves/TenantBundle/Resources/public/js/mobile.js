@@ -782,7 +782,7 @@ function addNewPaymentSource(formObj){
                     $.mobile.changePage('#pay')
                     $("#" + prefix + "paymentAccount").append("<option value='" + result.paymentAccount.id + "' selected>" + result.paymentAccount.name + "</option>")
                     $("#" + prefix + "paymentAccount").selectmenu("refresh")
-
+                    updateLocalPaymentSource(result.paymentAccount)
 
                 }
             },
@@ -820,6 +820,7 @@ function addNewPaymentSource(formObj){
                 } else {                      //we are successful! display dialog, refresh page to update information
                     // $("#sourceErrorMsg").hide()
                     $.mobile.changePage('#sources')
+                    updateLocalPaymentSource(result.paymentAccount)
                 }
             },
             error: function (request, error) {  //ajax error!
@@ -832,6 +833,16 @@ function addNewPaymentSource(formObj){
         });
 
 
+    }
+}
+
+function updateLocalPaymentSource(entry){
+    exists = false
+    for(i=0;i<payAccounts.length;i++){
+        payAccounts[i]=entry
+    }
+    if(!exists){
+        payAccounts.push(entry)
     }
 }
 
