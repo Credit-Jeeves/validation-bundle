@@ -838,12 +838,10 @@ function addNewPaymentSource(formObj){
 
 function updateLocalPaymentSource(entry){
     i=0;
-    if(!exists){
-        while(payAccounts[i]!=undefined && payAccounts[i].id == entry.id){
-            i++;
-        }
-        payAccounts[i]=entry;
+    while(payAccounts[i]!=undefined && payAccounts[i].id != entry.id){
+        i++;
     }
+    payAccounts[i]=entry;
 }
 
 function submitForm(){
