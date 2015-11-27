@@ -83,15 +83,7 @@ abstract class AbstractContractSynchronizer
                 $this->logMessage('[SyncBalance]No data to update');
             }
         } catch (\Exception $e) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncBalance]ERROR: %s on %s:%d',
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                ),
-                LogLevel::ALERT
-            );
+            $this->handleException($e);
         }
         $this->logMessage('[SyncBalance]Finished');
     }
@@ -122,15 +114,7 @@ abstract class AbstractContractSynchronizer
                 $this->logMessage('[SyncRent]No data to update');
             }
         } catch (\Exception $e) {
-            $this->logMessage(
-                sprintf(
-                    '[SyncRent]ERROR: %s on %s:%d',
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                ),
-                LogLevel::ALERT
-            );
+            $this->handleException($e);
         }
         $this->logMessage('[SyncRent]Finished');
     }
@@ -147,13 +131,61 @@ abstract class AbstractContractSynchronizer
     }
 
     /**
+     * Reconnect to DB connection if it is closed.
+     *
+     * The connection can be closed when an exception the thrown from the DB layer. In these cases,
+     * we need to re-connect the EntityManger to the DB
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
+    protected function reConnectDB()
+    {
+        if (!$this->em->isOpen()) {
+            $this->em = $this->em->create(
+                $this->em->getConnection(),
+                $this->em->getConfiguration()
+            );
+        }
+    }
+
+    /**
+     * @param \Exception $e
+     */
+    protected function handleException(\Exception $e)
+    {
+        $this->logMessage(
+            sprintf(
+                'ERROR: %s on %s:%d',
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ),
+            LogLevel::ALERT
+        );
+        $this->reConnectDB();
+    }
+
+    /**
      * @param string $message
      * @param string $logLevel should be one of LogLevel constant
      * @see LogLevel
      */
     protected function logMessage($message, $logLevel = LogLevel::DEBUG)
     {
-        $this->logger->log($logLevel, static::LOGGER_PREFIX . $message);
+        try {
+            $this->logger->log($logLevel, static::LOGGER_PREFIX . $message);
+        } catch (\Exception $e) {
+            // todo: swift is giving us "fwrite(): send of 108 bytes failed with errno=32 Broken pipe" errors
+            // For reason why, please see https://credit.atlassian.net/browse/RT-1733
+            // For now, we need to keep going to sync all the contracts that we can.
+            $this->logger->error(
+                sprintf(
+                    static::LOGGER_PREFIX . 'ERROR: cannot send alert email:"%s". Exception:%s',
+                    $message,
+                    $e->getMessage()
+                )
+            );
+        }
 
         if ($this->outputLogger instanceof OutputInterface) {
             $this->outputLogger->writeln(static::LOGGER_PREFIX . $message);
@@ -193,29 +225,13 @@ abstract class AbstractContractSynchronizer
                     try {
                         $this->processingResidentForUpdateBalance($holding, $resident, $externalPropertyId);
                     } catch (\Exception $e) {
-                        $this->logMessage(
-                            sprintf(
-                                '[SyncBalance]ERROR: %s on %s:%d',
-                                $e->getMessage(),
-                                $e->getFile(),
-                                $e->getLine()
-                            ),
-                            LogLevel::ALERT
-                        );
+                        $this->handleException($e);
                     }
                     /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                     $this->em->clear();
                 }
             } catch (\Exception $e) {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]ERROR: %s on %s:%d',
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ),
-                    LogLevel::ALERT
-                );
+                $this->handleException($e);
             }
         }
     }
@@ -242,15 +258,7 @@ abstract class AbstractContractSynchronizer
                 $this->updateContractBalanceForResidentTransaction($contract, $resident);
                 $this->em->flush();
             } catch (\Exception $e) {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]ERROR: %s on %s:%d',
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ),
-                    LogLevel::ALERT
-                );
+                $this->handleException($e);
             }
         }
     }
@@ -287,29 +295,13 @@ abstract class AbstractContractSynchronizer
                     try {
                         $this->processingResidentForUpdateRent($holding, $resident, $externalPropertyId);
                     } catch (\Exception $e) {
-                        $this->logMessage(
-                            sprintf(
-                                '[SyncRent]ERROR: %s on %s:%d',
-                                $e->getMessage(),
-                                $e->getFile(),
-                                $e->getLine()
-                            ),
-                            LogLevel::ALERT
-                        );
+                        $this->handleException($e);
                     }
                     /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                     $this->em->clear();
                 }
             } catch (\Exception $e) {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncRent]ERROR: %s on %s:%d',
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ),
-                    LogLevel::ALERT
-                );
+                $this->handleException($e);
             }
         }
     }

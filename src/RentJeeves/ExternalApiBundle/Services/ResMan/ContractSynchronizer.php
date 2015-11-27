@@ -192,6 +192,11 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         /** @var Contract|ContractWaiting $contract */
         foreach ($allContracts as $contract) {
             $contract->setRent($sumRecurringCharges);
+            try {
+                $this->em->flush();
+            } catch (\Exception $e) {
+                $this->handleException($e);
+            }
             $this->logMessage(
                 sprintf(
                     '[SyncRent]Rent for %s #%d updated to %s',
@@ -200,7 +205,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $contract->getRent()
                 )
             );
-            $this->em->flush();
         }
     }
 
