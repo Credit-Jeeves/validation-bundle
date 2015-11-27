@@ -66,7 +66,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
         }
 
         /** @var $customers RtCustomer[]  */
-        $customers = $residents->getProperty()->getRtCustomers();
+        $customers = $residents->getProperty() ? $residents->getProperty()->getRtCustomers() : [];
 
         return array_filter($customers, function (RtCustomer $customer) {
             $customers = $customer->getCustomers();
@@ -104,7 +104,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
             return [];
         }
         /** @var RtCustomer[] $customers */
-        $customers = $residents->getProperty()->getRtCustomers();
+        $customers = $residents->getProperty() ? $residents->getProperty()->getRtCustomers() : [];
 
         $result = [];
         foreach ($customers as $customer) {

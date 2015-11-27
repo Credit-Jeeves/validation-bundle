@@ -200,6 +200,10 @@ class MRIOrder
         /** @var Operation $operation */
         $operation = $this->order->getOperations()->first();
 
-        return $operation->getGroup()->getHolding()->getMriSettings()->isSendDescription();
+        if (!$operation->getContract()) {
+            return false;
+        }
+
+        return $operation->getContract()->getHolding()->getMriSettings()->isSendDescription();
     }
 }

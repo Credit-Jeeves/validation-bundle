@@ -74,7 +74,7 @@ This payment will appear on your bank statement as {{ statementDescriptor }}.
 * Credit card payments deposited next business day.
 </p>
 {% endblock %}"
-            WHERE property = "body" or property = "bodyHtml"
+            WHERE (property = "body" or property = "bodyHtml")
             AND translatable_id = (SELECT id FROM email WHERE name = "rjOrderReceipt.html")'
         );
         /************* rjOrderReceipt **************/
@@ -134,7 +134,7 @@ This payment will appear on your bank statement as RENTTRACK.
 This payment will appear on your bank statement as {{ statementDescriptor }}.
 {% endif %}
 {% endblock %}"
-            WHERE property = "body" or property = "bodyHtml"
+            WHERE (property = "body" or property = "bodyHtml")
             AND translatable_id = (SELECT id FROM email WHERE name = "rjPendingOrder.html")'
         );
     }
