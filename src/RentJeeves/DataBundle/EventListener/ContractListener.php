@@ -4,14 +4,12 @@ namespace RentJeeves\DataBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
-use Exception;
 
 /**
  * @DI\Service("data.event_listener.contract")
@@ -29,25 +27,56 @@ use Exception;
  *         "method"="preUpdate"
  *     }
  * )
- * @DI\Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postUpdate",
- *         "method"="postUpdate"
- *     }
- * )
  */
 class ContractListener
 {
     /**
+     * I can't just inject service which I need because have error
+     *   [Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException]
+     *
      * @DI\Inject("service_container", required = true)
      */
     public $container;
 
-    public function checkContract(Contract $contract)
+    /**
+     * Checks contract to contain unit
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function prePersist(LifecycleEventArgs $eventArgs)
+    {
+        $contract = $eventArgs->getEntity();
+        if (!$contract instanceof Contract) {
+            return;
+        }
+        $this->checkContract($contract);
+        $this->turnOnTUReporting($contract);
+    }
+
+    /**
+     * @param PreUpdateEventArgs $eventArgs
+     */
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $contract = $eventArgs->getEntity();
+        if (!$contract instanceof Contract) {
+            return;
+        }
+        $this->monitoringContractAmount($contract, $eventArgs);
+        $this->checkContract($contract);
+        $this->closePaymentByAccounting($contract, $eventArgs);
+        $this->sendAccountingPaymentEmail($contract, $eventArgs);
+    }
+
+    /**
+     * prePersist
+     * Check that we can create contract and set default values
+     * @param Contract $contract
+     */
+    protected function checkContract(Contract $contract)
     {
         // don't check finished and deleted contracts
-        if (in_array($contract->getStatus(), array(ContractStatus::DELETED, ContractStatus::FINISHED))) {
+        if (in_array($contract->getStatus(), [ContractStatus::DELETED, ContractStatus::FINISHED])) {
             return;
         }
 
@@ -73,32 +102,21 @@ class ContractListener
         throw new LogicException('Invalid contract parameters');
     }
 
+    /**
+     * prePersist
+     * @param Contract $contract
+     */
     protected function turnOnTUReporting(Contract $contract)
     {
-        $tuReporting = $this->container->get('contract.trans_union_reporting');
-        $tuReporting->turnOnTransUnionReporting($contract);
+        $this->container->get('contract.trans_union_reporting')->turnOnTransUnionReporting($contract);
     }
 
     /**
-     * Checks contract to contain unit
-     *
-     * @param LifecycleEventArgs $eventArgs
-     */
-    public function prePersist(LifecycleEventArgs $eventArgs)
-    {
-        $contract = $eventArgs->getEntity();
-        if (!$contract instanceof Contract) {
-            return;
-        }
-        $this->checkContract($contract);
-        $this->turnOnTUReporting($contract);
-    }
-
-    /**
+     * preUpdate
      * @param Contract $contract
      * @param PreUpdateEventArgs $eventArgs
      */
-    public function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
+    protected function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
         if (!$eventArgs->hasChangedField('rent')) {
             return;
@@ -127,6 +145,11 @@ class ContractListener
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
+    /**
+     * preUpdate
+     * @param PreUpdateEventArgs $eventArgs
+     * @return bool
+     */
     protected function isPaymentAcceptedFieldChanged(PreUpdateEventArgs $eventArgs)
     {
         if (!$eventArgs->hasChangedField('paymentAccepted')) {
@@ -139,10 +162,10 @@ class ContractListener
         if ($oldValue === $newValue) {
             return false;
         }
-        $deniedPaymentStatuses = array(
+        $deniedPaymentStatuses = [
             PaymentAccepted::DO_NOT_ACCEPT,
             PaymentAccepted::CASH_EQUIVALENT
-        );
+        ];
 
         if (in_array($newValue, $deniedPaymentStatuses) && in_array($oldValue, $deniedPaymentStatuses)) {
             return false;
@@ -151,7 +174,12 @@ class ContractListener
         return true;
     }
 
-    protected function closePaymentByYardi(Contract $contract, PreUpdateEventArgs $eventArgs)
+    /**
+     * preUpdate
+     * @param Contract $contract
+     * @param PreUpdateEventArgs $eventArgs
+     */
+    protected function closePaymentByAccounting(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
         if ($this->isPaymentAcceptedFieldChanged($eventArgs) === false) {
             return;
@@ -166,7 +194,12 @@ class ContractListener
         $eventArgs->getEntityManager()->flush($payment);
     }
 
-    protected function sendYardiPaymentEmail(Contract $contract, PreUpdateEventArgs $eventArgs)
+    /**
+     * preUpdate
+     * @param Contract $contract
+     * @param PreUpdateEventArgs $eventArgs
+     */
+    protected function sendAccountingPaymentEmail(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
         if ($this->isPaymentAcceptedFieldChanged($eventArgs) === false) {
             return;
@@ -187,34 +220,10 @@ class ContractListener
                 break;
         }
 
-        if ($result !== true) {
-            throw new Exception(
-                sprintf(
-                    "Email(payment yardi permission) don't send for user: %s",
-                    $contract->getTenant()->getEmail()
-                )
+        if (!$result) {
+            $this->container->get('logger')->alert(
+                'Email(payment accounting permission) don\'t send for user: ' . $contract->getTenant()->getEmail()
             );
-        }
-    }
-
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
-    {
-        $contract = $eventArgs->getEntity();
-        if (!$contract instanceof Contract) {
-            return;
-        }
-        $this->monitoringContractAmount($contract, $eventArgs);
-        $this->checkContract($contract);
-        $this->closePaymentByYardi($contract, $eventArgs);
-        $this->sendYardiPaymentEmail($contract, $eventArgs);
-    }
-
-    public function postUpdate(LifecycleEventArgs $eventArgs)
-    {
-        /** @var Contract $entity */
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
-            return;
         }
     }
 }
