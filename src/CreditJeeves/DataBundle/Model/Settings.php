@@ -51,6 +51,13 @@ abstract class Settings
     protected $rights;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="login_message", type="text", nullable=true)
+     */
+    protected $loginMessage;
+
+    /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      */
@@ -194,5 +201,21 @@ abstract class Settings
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginMessage()
+    {
+        return $this->loginMessage;
+    }
+
+    /**
+     * @param string $loginMessage
+     */
+    public function setLoginMessage($loginMessage)
+    {
+        $this->loginMessage = $loginMessage;
     }
 }
