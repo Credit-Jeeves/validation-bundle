@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager;
@@ -37,6 +38,23 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
         $this->paymentManager = $paymentManager;
 
         $this->reportLoader = $reportLoader;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'ACIPayAnyone';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateReversedBatchId(Order $order)
+    {
+        // will be implemented later
+        return null;
     }
 
     /**

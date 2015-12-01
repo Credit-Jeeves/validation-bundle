@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Psr\Log\LoggerInterface;
-use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorInterface;
 use RentJeeves\CoreBundle\Helpers\PeriodicExecutor;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
@@ -43,7 +43,7 @@ class ReportSynchronizer
     protected $logger;
 
     /**
-     * @var SubmerchantProcessorInterface
+     * @var PaymentProcessorInterface
      */
     protected $paymentProcessor;
 
@@ -66,14 +66,14 @@ class ReportSynchronizer
      * Synchronizes payment processor report's data.
      *
      * @param  PaymentProcessorReport $report
-     * @param  SubmerchantProcessorInterface $paymentProcessor
+     * @param  PaymentProcessorInterface $paymentProcessor
      * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
     public function synchronize(
         PaymentProcessorReport $report,
-        SubmerchantProcessorInterface $paymentProcessor,
+        PaymentProcessorInterface $paymentProcessor,
         $alertIfEmpty = true
     ) {
         $this->paymentProcessor = $paymentProcessor;
