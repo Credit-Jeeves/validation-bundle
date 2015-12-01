@@ -40,12 +40,6 @@ abstract class Settings
 
     /**
      *
-     * @ORM\Column(name="contract", type="text")
-     */
-    protected $contract;
-
-    /**
-     *
      * @ORM\Column(name="rights", type="text")
      */
     protected $rights;
@@ -161,26 +155,6 @@ abstract class Settings
     public function getCreditProfileEai()
     {
         return $this->creditProfileEai;
-    }
-
-    /**
-     * @param string $contract
-     *
-     * @return $this
-     */
-    public function setContract($contract)
-    {
-        $this->contract = $contract;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContract()
-    {
-        return $this->contract;
     }
 
     /**

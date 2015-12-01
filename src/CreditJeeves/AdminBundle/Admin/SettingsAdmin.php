@@ -8,10 +8,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class SettingsAdmin extends Admin
 {
-    /**
-     *
-     * @var string
-     */
     const TYPE = 'settings';
 
     /**
@@ -19,7 +15,7 @@ class SettingsAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_'.self::TYPE;
+        return 'admin_' . self::TYPE;
     }
 
     /**
@@ -27,9 +23,12 @@ class SettingsAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/'.self::TYPE;
+        return '/' . self::TYPE;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     public function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('delete');
@@ -38,19 +37,21 @@ class SettingsAdmin extends Admin
         $collection->remove('create');
     }
 
+    /**
+     * @param FormMapper $formMapper
+     */
     public function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
             ->with('Net Connect')
-                ->add('precise_id_user_pwd', 'text')
-                ->add('precise_id_eai', 'text')
-                ->add('credit_profile_user_pwd', 'text')
-                ->add('credit_profile_eai', 'text')
+            ->add('precise_id_user_pwd', 'text')
+            ->add('precise_id_eai', 'text')
+            ->add('credit_profile_user_pwd', 'text')
+            ->add('credit_profile_eai', 'text')
             ->end()
             ->with('Other')
-                ->add('contract')
-                ->add('rights')
-                ->add('loginMessage', 'textarea', ['required' => false])
+            ->add('rights')
+            ->add('loginMessage', 'textarea', ['required' => false])
             ->end();
     }
 }
