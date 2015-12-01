@@ -2,9 +2,8 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 
-interface PayDirectProcessorInterface
+interface PayDirectProcessorInterface extends PaymentProcessorInterface
 {
     /**
      * Executes PayDirect order.
@@ -23,11 +22,4 @@ interface PayDirectProcessorInterface
      * @return bool
      */
     public function cancelOrder(OrderPayDirect $order);
-
-    /**
-     * Loads payment processor report.
-     *
-     * @return PaymentProcessorReport
-     */
-    public function loadReport();
 }

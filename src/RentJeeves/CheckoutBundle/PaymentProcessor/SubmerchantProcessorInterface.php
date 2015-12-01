@@ -3,14 +3,13 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
-use RentJeeves\CheckoutBundle\PaymentProcessor\Report\PaymentProcessorReport;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
-interface SubmerchantProcessorInterface
+interface SubmerchantProcessorInterface extends PaymentProcessorInterface
 {
     /**
      * Register a paymentAccount with the target deposit account for the PaymentProcessor so we can make a payment.
@@ -79,31 +78,9 @@ interface SubmerchantProcessorInterface
     );
 
     /**
-     * Loads payment processor report.
-     *
-     * @return PaymentProcessorReport
-     */
-    public function loadReport();
-
-    /**
      * @param $paymentType is of type CreditJeeves\DataBundle\Enum\OrderPaymentType
      * @param $executeDate
      * @return Date the estimated deposit date
      */
     public function calculateDepositDate($paymentType, \DateTime $executeDate);
-
-    /**
-     * Returns the name of payment processor.
-     *
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * Generates reversed batch id for given order.
-     *
-     * @param Order $order
-     * @return string
-     */
-    public function generateReversedBatchId(Order $order);
 }
