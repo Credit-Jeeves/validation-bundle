@@ -14,7 +14,8 @@ class Version20151201111240 extends AbstractMigration
     {
         $this->addSql(
             "ALTER TABLE cj_settings
-                ADD login_message LONGTEXT DEFAULT NULL"
+                ADD login_message LONGTEXT DEFAULT NULL,
+                DROP contract"
         );
     }
 
@@ -25,7 +26,8 @@ class Version20151201111240 extends AbstractMigration
     {
         $this->addSql(
             "ALTER TABLE cj_settings
-                DROP login_message"
+                DROP login_message,
+                ADD contract LONGTEXT NOT NULL"
         );
     }
 }
