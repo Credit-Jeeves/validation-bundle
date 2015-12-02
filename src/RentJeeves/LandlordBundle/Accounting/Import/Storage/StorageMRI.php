@@ -120,7 +120,9 @@ class StorageMRI extends ExternalApiStorage
         $leaseEnd = $customer->getLeaseEnd();
         if ($leaseEnd instanceof \DateTime) {
             $today = new \DateTime();
-            $isPastFinishDate = $leaseEnd->getTimestamp() <= $today->getTimestamp();
+            $today->setTime('00', '00', '00');
+            $leaseEnd->setTime('00', '00', '00');
+            $isPastFinishDate = $leaseEnd < $today;
         } else {
             $isPastFinishDate = false;
         }
