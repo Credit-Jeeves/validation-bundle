@@ -9,6 +9,13 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
+    rent.is_due.email_sender:
+        class: 'RentJeeves\CoreBundle\Services\Emails\RentIsDueEmailSender'
+        arguments:
+            em: "@doctrine.orm.default_entity_manager"
+            mailer: "@project.mailer"
+            logger: "@monolog.logger.rjDueEmail"
+            softDeleteableControl: "@soft.deleteable.control"
     property.manager:
         class: RentJeeves\CoreBundle\Services\PropertyManager
         arguments:
@@ -17,7 +24,6 @@ services:
             - @address_lookup_service
             - @fp_badaboom.exception_catcher
             - @logger
-
     data.event_listener.group_settings_listener:
         class: "%data.event_listener.group_settings_listener.class%"
         tags:
