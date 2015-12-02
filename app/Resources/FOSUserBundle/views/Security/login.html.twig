@@ -27,6 +27,12 @@
 {% block fos_user_content %}
     <div class="form-login pod-border shadow floatleft{% if 'rj' == application %} login-block"  style="width: 650px"{% else %}"{% endif %}>
         <h1>{{ 'login.title' | trans }}</h1>
+            {% if loginMessage is not null %}
+                <div class="row-20"></div>
+                <div class="flash-notice">
+                   <p id="loginMessage">{{ loginMessage }}</p>
+                </div>
+            {% endif %}
             {% for flashMessage in app.session.flashbag.get('notice') %}
                 <div class="row-20"></div>
                 <div class="flash-notice">
