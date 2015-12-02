@@ -11,16 +11,16 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldAddRawToDbForSave()
+    public function shouldAddRowToDbWhenCallSaveForNewCacheId()
     {
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(0, $allCache, 'Check fixtures');
+        $this->assertCount(0, $allCache, 'Check fixtures: fixtures not should contain data for SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
 
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'Cache with key `test` is not saved');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
         $this->assertCount(1, $allCache, 'Data not saved in db');
@@ -29,23 +29,41 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldRemoveExistRawForDelete()
+    public function shouldReturnFalseWhenCallSaveForExistingCacheId()
     {
         $this->load(true);
 
-        $SSCache = new SmartyStreetsCache();
-        $SSCache->setId('test');
-        $SSCache->setValue('test');
+        $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
+        $this->assertCount(0, $allCache, 'Check fixtures: fixtures not should contain data for SmartyStreetsCache');
 
-        $this->getEntityManager()->persist($SSCache);
-        $this->getEntityManager()->flush($SSCache);
+        $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
+
+        $this->assertTrue($result, 'Cache with key `test` is not saved');
+        // save again
+        $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
+        $this->assertFalse($result, 'Cache should not be saved twice');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldRemoveExistRowForDelete()
+    {
+        $this->load(true);
+
+        $cache = new SmartyStreetsCache();
+        $cache->setId('test');
+        $cache->setValue('test');
+
+        $this->getEntityManager()->persist($cache);
+        $this->getEntityManager()->flush($cache);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
         $this->assertCount(1, $allCache, 'Check creating new object SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->delete('test');
 
-        $this->assertTrue($result);
+        $this->assertTrue($result, 'Cache with key `test` is not deleted');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
         $this->assertCount(0, $allCache, 'Data not removed');
@@ -54,16 +72,16 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldReturnValueIfRawExistForFetch()
+    public function shouldReturnValueIfRowExistForFetch()
     {
         $this->load(true);
 
-        $SSCache = new SmartyStreetsCache();
-        $SSCache->setId('test');
-        $SSCache->setValue('testValue');
+        $cache = new SmartyStreetsCache();
+        $cache->setId('test');
+        $cache->setValue('testValue');
 
-        $this->getEntityManager()->persist($SSCache);
-        $this->getEntityManager()->flush($SSCache);
+        $this->getEntityManager()->persist($cache);
+        $this->getEntityManager()->flush($cache);
 
         $result = $this->getSmartyStreetsCacheService()->fetch('test');
 
@@ -73,7 +91,7 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldReturnFalseIfRawNotExistForFetch()
+    public function shouldReturnFalseIfRowNotExistForFetch()
     {
         $this->load(true);
 
@@ -89,19 +107,19 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     {
         $this->load(true);
 
-        $SSCache = new SmartyStreetsCache();
-        $SSCache->setId('test');
-        $SSCache->setValue('test');
+        $cache = new SmartyStreetsCache();
+        $cache->setId('test');
+        $cache->setValue('test');
 
-        $this->getEntityManager()->persist($SSCache);
-        $this->getEntityManager()->flush($SSCache);
+        $this->getEntityManager()->persist($cache);
+        $this->getEntityManager()->flush($cache);
 
         $result = $this->getSmartyStreetsCacheService()->contains('test');
 
         $this->assertTrue($result, 'Method `contains` returned incorrect result');
 
-        $this->getEntityManager()->remove($SSCache);
-        $this->getEntityManager()->flush($SSCache);
+        $this->getEntityManager()->remove($cache);
+        $this->getEntityManager()->flush($cache);
 
         $result = $this->getSmartyStreetsCacheService()->contains('test');
         $this->assertFalse($result, 'Method `contains` returned incorrect result');

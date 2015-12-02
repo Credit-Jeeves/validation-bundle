@@ -6,6 +6,10 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\SmartyStreetsCache;
 
+/**
+ * This class is used for SmartyStreetsBundle
+ * It saves requests and response in db
+ */
 class SmartyStreetsCacheService implements Cache
 {
     /**
@@ -26,16 +30,16 @@ class SmartyStreetsCacheService implements Cache
      */
     public function save($id, $data, $lifeTime = 0)
     {
-        if (null !== $SSCache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
+        if (null !== $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }
 
-        $SSCache = new SmartyStreetsCache();
-        $SSCache->setId($id);
-        $SSCache->setValue($data);
+        $cache = new SmartyStreetsCache();
+        $cache->setId($id);
+        $cache->setValue($data);
 
-        $this->em->persist($SSCache);
-        $this->em->flush($SSCache);
+        $this->em->persist($cache);
+        $this->em->flush($cache);
 
         return true;
     }
@@ -53,12 +57,12 @@ class SmartyStreetsCacheService implements Cache
      */
     public function delete($id)
     {
-        if (null === $SSCache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
+        if (null === $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }
 
-        $this->em->remove($SSCache);
-        $this->em->flush($SSCache);
+        $this->em->remove($cache);
+        $this->em->flush($cache);
 
         return true;
     }
@@ -68,11 +72,11 @@ class SmartyStreetsCacheService implements Cache
      */
     public function fetch($id)
     {
-        if (null === $SSCache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
+        if (null === $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }
 
-        return $SSCache->getValue();
+        return $cache->getValue();
     }
 
     /**
