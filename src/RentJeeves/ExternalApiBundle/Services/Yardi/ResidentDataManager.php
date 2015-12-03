@@ -65,7 +65,10 @@ class ResidentDataManager implements ResidentDataManagerInterface
             return [];
         }
 
-        if (empty($residents) || !$residents->getPropertyResidents()) {
+        if (empty($residents) ||
+            !$residents->getPropertyResidents() ||
+            !$residents->getPropertyResidents()->getResidents()
+        ) {
             $this->logger->alert('[Yardi Resident Manager]Can\'t get residents from yardi.');
 
             return [];
