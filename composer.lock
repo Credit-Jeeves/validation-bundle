@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "951bfe7789473abbcb557c3a6b836520",
+    "hash": "db172838100331d4a047aacc56a59375",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1114,7 +1114,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/5674222e181c9236abdabed19fc660f35619d82c",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/2f28f691d8bba2aedb3537d12917d92ba3f63cb8",
                 "reference": "5173c05e65668449214373f1bf8997f73848d36c",
                 "shasum": ""
             },
@@ -1196,7 +1196,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/30f0ed4b5681842a2a78b861f54136782fbea963",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9c5a4ebedb583b882062fb8b276b8af5ca9063ac",
                 "reference": "8dc5d88800194304babf30695d231232cf65fedb",
                 "shasum": ""
             },
@@ -1280,7 +1280,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/93ec729e3f2f1bb882904cce9d2c1dde6f139ec8",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/861d3564c03b3867845ffd87d9b19f49dc673c69",
                 "reference": "f7138381aa884c0f679da4de41e369b94ead9cd3",
                 "shasum": ""
             },
@@ -4109,10 +4109,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SmartyStreetsBundle.git",
-                "reference": "6a0191ac749f5a4d7d7801a877d993ee65359760"
+                "reference": "bd8fbc0c716b4c6665b1eeded65b9a0fca3a1c9c"
             },
             "require": {
                 "doctrine/annotations": "*",
+                "doctrine/cache": "*",
                 "doctrine/collections": "*",
                 "guzzle/guzzle": "v3.5.0",
                 "jms/serializer": "dev-master",
@@ -4147,7 +4148,7 @@
                 "lookup",
                 "smarty streets"
             ],
-            "time": "2015-10-09 07:59:01"
+            "time": "2015-12-01 16:29:35"
         },
         {
             "name": "renttrack/transunion-bundle",
@@ -4824,7 +4825,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/7b3144572617b0555f9a443317dbc2f9cf5b524e",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/2ff8473e33e224af87dc00d48a552a35a75115af",
                 "reference": "7370d18f511653d39c33d75c2190caaafdebb492",
                 "shasum": ""
             },
@@ -5046,12 +5047,12 @@
             "target-dir": "Symfony/Bundle/MonologBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/monolog-bundle.git",
+                "url": "https://github.com/symfony/MonologBundle.git",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
+                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "shasum": ""
             },
@@ -6189,7 +6190,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/a02f0e7e2c68cc0237c33cbc8e8605aceb3b481a",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/bd44f6b6e40247b6530bc8abe802e4e4d914976a",
                 "reference": "e847b073c2b5350045edbb40443645ad09a59538",
                 "shasum": ""
             },
