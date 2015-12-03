@@ -52,7 +52,8 @@ class ReportController extends Controller
 
         return [
             'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => $redirect ? $this->generateUrl($redirect) : null
+            'redirect' => $redirect ? $this->generateUrl($redirect) : null,
+            'failedLink' => $this->generateUrl('errorLoadReport')
         ];
     }
 

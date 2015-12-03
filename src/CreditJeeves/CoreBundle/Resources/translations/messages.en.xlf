@@ -1563,6 +1563,13 @@
                 <source>error.group.required_fields_for_paydirect</source>
                 <target>Mailing address name, City, State, Zip, Address 1 should be required if order algorithm is PayDirect.</target>
             </trans-unit>
+            <trans-unit id="error.summary.report">
+                <source>error.summary.report</source>
+                <target><![CDATA[Hmmm... this is taking longer than expected.
+                  Please try again and contact %help-email% if this problem continues.
+                  Sorry for the inconvenience :(]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
