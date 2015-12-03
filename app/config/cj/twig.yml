@@ -1,3 +1,4 @@
 twig:
     globals:
         serverName: '%server_name_cj%'
+        support_email: '%support_email%'

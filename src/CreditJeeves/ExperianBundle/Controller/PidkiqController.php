@@ -120,9 +120,21 @@ class PidkiqController extends Controller
         }
 
         return array(
-            'form'     => $form,
-            'url'      => $this->generateUrl('core_pidkiq'),
+            'form' => $form,
+            'url' => $this->generateUrl('core_pidkiq'),
             'redirect' => null,
+            'failedLink' => $this->generateUrl('errorLoadReport')
         );
+    }
+
+    /**
+     * @Route("/error/load/report", name="errorLoadReport")
+     * @Template()
+     *
+     * @return array
+     */
+    public function errorLoadReportAction()
+    {
+        return [];
     }
 }
