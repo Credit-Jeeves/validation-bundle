@@ -559,7 +559,7 @@
         {
             "name": "braincrafted/validation-bundle",
             "version": "dev-ton",
-            "target-dir": "Braincrafted/Bundle/≤ValidationBundle",
+            "target-dir": "Braincrafted/Bundle/ValidationBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/validation-bundle.git",
