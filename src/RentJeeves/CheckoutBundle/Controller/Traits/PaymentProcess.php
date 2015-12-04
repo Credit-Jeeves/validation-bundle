@@ -156,9 +156,20 @@ trait PaymentProcess
         }
 
         if (null == $paymentEntity->getId()) { // if new payment comes
-            /** Prevent creating duplicated rent payment for one contract*/
+            // Prevent creating duplicated rent payment for one contract
+            /** @var Payment $existingPayment */
             $existingPayment = $em->getRepository('RjDataBundle:Payment')->findActiveRentPaymentForContract($contract);
             if (null !== $existingPayment) {
+                $this->get('logger')->emergency(sprintf(
+                    'ERROR: User %s(id#%s) tries to create %s payment for contract id#%s. ' .
+                    'Existing active payment id#%s, type %s',
+                    $contract->getTenantEmail(),
+                    $contract->getTenant()->getId(),
+                    $paymentEntity->getType(),
+                    $contract->getId(),
+                    $existingPayment->getId(),
+                    $existingPayment->getType()
+                ));
                 throw new \Exception($this->get('translator')->trans(
                     'checkout.duplicate_payment.error',
                     ['%support_email%' => $this->container->getParameter('support_email')]
