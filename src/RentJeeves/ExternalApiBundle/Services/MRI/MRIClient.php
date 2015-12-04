@@ -13,7 +13,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
-use Guzzle\Http\Client as HttpClient;
+use RentJeeves\CoreBundle\Services\HttpClient\ClientInterface as HttpClient;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
@@ -23,6 +23,8 @@ class MRIClient implements ClientInterface
 {
     use Debug;
     use Settings;
+
+    const OPERATION_TIMEOUT = 180;
 
     protected $mappingSerialize = [
         'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
@@ -62,17 +64,21 @@ class MRIClient implements ClientInterface
 
     /**
      * @param ExceptionCatcher $exceptionCatcher
-     * @param Serializer       $serializer
-     * @param Logger           $logger
+     * @param Serializer $serializer
+     * @param HttpClient $httpClient
+     * @param Logger $logger
      */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
+        HttpClient $httpClient,
         Logger $logger
     ) {
         $this->exceptionCatcher = $exceptionCatcher;
         $this->serializer = $serializer;
-        $this->httpClient = new HttpClient();
+        $this->httpClient = $httpClient
+            ->setConfig(['timeout' => self::OPERATION_TIMEOUT])
+            ->setNumberRetries(3);
         $this->logger = $logger;
     }
 
@@ -132,23 +138,19 @@ class MRIClient implements ClientInterface
             );
 
             $this->debugMessage(sprintf("Request to MRI by uri %s", $uri));
-            $request = $this->httpClient->$httpMethod($uri, $headers);
 
             if (!empty($body)) {
                 $this->debugMessage(sprintf("Setup body to MRI: %s", $body));
-                $request->setBody($body);
             }
 
-            return $this->manageResponse($this->httpClient->send($request), $method);
+            return $this->manageResponse($this->httpClient->send($httpMethod, $uri, $headers, $body), $method);
         } catch (Exception $e) {
-            $this->debugMessage(
-                sprintf(
-                    "Error message: %s In file: %s By line: %s",
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                )
-            );
+            $this->errorMessage(sprintf(
+                "Error message: %s In file: %s By line: %s",
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ));
 
             $this->exceptionCatcher->handleException($e);
         }

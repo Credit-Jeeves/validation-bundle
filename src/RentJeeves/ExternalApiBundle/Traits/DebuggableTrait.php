@@ -17,6 +17,7 @@ trait DebuggableTrait
     public function setDebug($debug)
     {
         $this->debug = $debug;
+
         return $this;
     }
 
@@ -31,8 +32,26 @@ trait DebuggableTrait
     public function debugMessage($var)
     {
         if (property_exists(get_class($this), 'logger') && $this->logger instanceof Logger) {
-            $var = (is_object($var))? print_r($var, true) : $var;
+            $var = (!is_scalar($var)) ? print_r($var, true) : $var;
             $this->logger->debug($var);
+        }
+
+        if (!$this->isDebugEnabled()) {
+            return;
+        }
+        echo "\n";
+        print_r($var);
+        echo "\n";
+    }
+
+    /**
+     * @param $var
+     */
+    public function errorMessage($var)
+    {
+        if (property_exists(get_class($this), 'logger') && $this->logger instanceof Logger) {
+            $var = (!is_scalar($var)) ? print_r($var, true) : $var;
+            $this->logger->alert($var);
         }
 
         if (!$this->isDebugEnabled()) {

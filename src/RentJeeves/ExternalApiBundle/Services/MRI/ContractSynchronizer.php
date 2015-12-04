@@ -45,6 +45,13 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $resident,
         $externalPropertyId
     ) {
+        $moveOut = $resident->getLeaseMoveOut();
+        $threeMonthAgo = new \DateTime('-3 month');
+
+        if ($resident->getIsCurrent() != 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+            return [];
+        }
+
         $residentId = $resident->getResidentId();
         $externalUnitId = $resident->getExternalUnitId();
 
