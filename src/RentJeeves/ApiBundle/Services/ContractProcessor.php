@@ -163,7 +163,9 @@ class ContractProcessor
         $landlord = $newUnitForm->get('landlord')->getData();
 
         /** @var Landlord $landlordInDb */
-        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(['email' => $landlord->getEmail()]);
+        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(
+            ['email' => $landlord->getEmail()]
+        );
 
         if ($landlordInDb) {
             $landlord = $landlordInDb;
