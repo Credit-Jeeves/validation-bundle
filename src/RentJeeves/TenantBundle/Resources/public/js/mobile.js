@@ -643,9 +643,9 @@ function createReview(){
 
 
             if ($("#" + prefix + "frequency").val() == "monthly") {
-                $("#revSendOn").html("Day " + $("#" + prefix + "dueDate").val() + " of each month");
+                $("#revSendOn").html("Day " + $("#" + prefix + "dueDate").val() + " of Each Month");
             } else {
-                $("#revSendOn").html("Last day of month");
+                $("#revSendOn").html("Last Day of Each Month");
                 $("#" + prefix + "dueDate").val(31)
             }
 
@@ -653,7 +653,7 @@ function createReview(){
             $("#" + prefix + "start_date").val(d)
 
             if ($("#" + prefix + "ends_0").is( ':checked' )) {
-                $('#revEnds').html(" when cancelled")
+                $('#revEnds').html(" When Cancelled")
             } else {
                 $('#revEnds').html($("#" + prefix + "endMonth").val() + "/" + $("#" + prefix + "endYear").val())
             }
