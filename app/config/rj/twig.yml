@@ -6,3 +6,4 @@ twig:
     globals:
         serverName: '%server_name_rj%'
         external_urls: %external_urls%
+        support_email: '%support_email%'

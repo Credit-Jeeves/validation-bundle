@@ -40,15 +40,16 @@ abstract class Settings
 
     /**
      *
-     * @ORM\Column(name="contract", type="text")
-     */
-    protected $contract;
-
-    /**
-     *
      * @ORM\Column(name="rights", type="text")
      */
     protected $rights;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login_message", type="text", nullable=true)
+     */
+    protected $loginMessage;
 
     /**
      * @Gedmo\Timestampable(on="update")
@@ -157,26 +158,6 @@ abstract class Settings
     }
 
     /**
-     * @param string $contract
-     *
-     * @return $this
-     */
-    public function setContract($contract)
-    {
-        $this->contract = $contract;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContract()
-    {
-        return $this->contract;
-    }
-
-    /**
      * @param \DateTime $updatedAt
      *
      * @return Settings
@@ -194,5 +175,21 @@ abstract class Settings
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginMessage()
+    {
+        return $this->loginMessage;
+    }
+
+    /**
+     * @param string $loginMessage
+     */
+    public function setLoginMessage($loginMessage)
+    {
+        $this->loginMessage = $loginMessage;
     }
 }
