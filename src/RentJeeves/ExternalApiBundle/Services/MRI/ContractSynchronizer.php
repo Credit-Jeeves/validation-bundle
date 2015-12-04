@@ -48,7 +48,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $moveOut = $resident->getLeaseMoveOut();
         $threeMonthAgo = new \DateTime('-3 month');
 
-        if ($resident->getIsCurrent() != 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+        if (strtoupper($resident->getIsCurrent()) !== 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
             return [];
         }
 
@@ -167,6 +167,12 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $customer,
         $externalPropertyId
     ) {
+        $moveOut = $customer->getLeaseMoveOut();
+        $threeMonthAgo = new \DateTime('-3 month');
+
+        if (strtoupper($customer->getIsCurrent()) !== 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+            return;
+        }
         $sumRecurringCharges = $this->getSumRecurringCharges($customer, $holding->getRecurringCodesArray());
 
         /** @var Resident $resident */

@@ -13,7 +13,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\ResidentialRentRoll;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
-use RentJeeves\CoreBundle\Services\HttpClient\ClientInterface as HttpClient;
+use RentJeeves\CoreBundle\HttpClient\HttpClientInterface as HttpClient;
 use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
@@ -146,7 +146,7 @@ class MRIClient implements ClientInterface
             return $this->manageResponse($this->httpClient->send($httpMethod, $uri, $headers, $body), $method);
         } catch (Exception $e) {
             $this->errorMessage(sprintf(
-                "Error message: %s In file: %s By line: %s",
+                'Error message: %s In file: %s By line: %s',
                 $e->getMessage(),
                 $e->getFile(),
                 $e->getLine()

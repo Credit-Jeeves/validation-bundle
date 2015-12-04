@@ -100,7 +100,7 @@ services:
         class: Guzzle\Http\Client
 
     http_client:
-        class: RentJeeves\CoreBundle\Services\HttpClient\Client
+        class: RentJeeves\CoreBundle\HttpClient\HttpClient
         arguments:
             - @guzzle_client
             - @logger

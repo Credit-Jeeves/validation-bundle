@@ -122,4 +122,15 @@ class ResidentTransactionPropertyCustomer
     {
         return $this->unit;
     }
+
+    /**
+     * @param string $externalPropertyId
+     * @return string
+     */
+    public function getExternalUnitId($externalPropertyId)
+    {
+        $unitName = $this->getUnit() ? $this->getUnit()->getUnitId() : '';
+
+        return sprintf('%s||%s', $externalPropertyId, $unitName);
+    }
 }

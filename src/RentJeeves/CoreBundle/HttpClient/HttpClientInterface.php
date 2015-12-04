@@ -1,16 +1,16 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services\HttpClient;
+namespace RentJeeves\CoreBundle\HttpClient;
 
 use Guzzle\Http\Message\Response;
 
-interface ClientInterface
+interface HttpClientInterface
 {
     /**
      * @param $method
      * @param $uri
-     * @param null $headers
-     * @param null $body
+     * @param array $headers
+     * @param mixed $body
      * @param array $options
      * @return Response
      */
@@ -21,20 +21,20 @@ interface ClientInterface
      *
      * @param string $url The base service endpoint URL of the webservice
      *
-     * @return ClientInterface
+     * @return HttpClientInterface
      */
     public function setBaseUrl($url);
 
     /**
      * Set config for client
      * @param array $options
-     * @return ClientInterface
+     * @return HttpClientInterface
      */
     public function setConfig(array $options);
 
     /**
      * @param int $retries
-     * @return ClientInterface
+     * @return HttpClientInterface
      */
     public function setNumberRetries($retries);
 }

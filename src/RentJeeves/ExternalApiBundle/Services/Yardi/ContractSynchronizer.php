@@ -52,8 +52,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         foreach ($roommates as $roommate) {
             $residentId = $roommate->getCustomerId();
-            $unitName = $resident->getUnit()->getUnitId();
-            $externalUnitId = $externalPropertyId . '||' . $unitName;
+            $externalUnitId = $resident->getExternalUnitId($externalPropertyId);
             $contracts = $this
                 ->getContractRepository()
                 ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
@@ -159,6 +158,11 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         return $this->getHoldingRepository()->findHoldingsForUpdatingRentYardi();
     }
 
+    /**
+     * @param Holding $holding
+     * @param ResidentTransactionPropertyCustomer $resident
+     * @param string $externalPropertyId
+     */
     protected function processingResidentForUpdateRent(
         Holding $holding,
         $resident,
@@ -194,11 +198,11 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 continue;
             }
             $leaseId = $charge->getDetail()->getCustomerID();
-            $unitName = $charge->getDetail()->getUnitID();
+            $externalUnitId = $charge->getDetail()->getExternalUnitId($externalPropertyId);
             $amount += $charge->getDetail()->getAmount();
         }
 
-        if (empty($leaseId) || empty($unitName)) {
+        if (empty($leaseId) || empty($externalUnitId)) {
             throw new \LogicException(
                 sprintf(
                     '[SyncRent]Lease id and unitName can not be empty for external property "%s"',
@@ -208,8 +212,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $allContracts = [];
-
-        $externalUnitId = $externalPropertyId . '||' . $unitName;
 
         $contracts = $this
             ->getContractRepository()

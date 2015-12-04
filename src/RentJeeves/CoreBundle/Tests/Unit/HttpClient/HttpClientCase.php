@@ -1,14 +1,14 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Unit\Services\HttpClient;
+namespace RentJeeves\CoreBundle\Tests\Unit\HttpClient;
 
 use Guzzle\Http\Exception\CurlException;
 use Guzzle\Http\Message\Request;
-use RentJeeves\CoreBundle\Services\HttpClient\Client;
+use RentJeeves\CoreBundle\HttpClient\HttpClient;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class ClientCase extends UnitTestBase
+class HttpClientCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
@@ -49,7 +49,7 @@ class ClientCase extends UnitTestBase
             ->method('send')
             ->will($this->throwException($curlException));
 
-        $client = new Client($guzzleClient, $this->getLoggerMock());
+        $client = new HttpClient($guzzleClient, $this->getLoggerMock());
 
         $client->setNumberRetries($numberRetries);
 
@@ -82,7 +82,7 @@ class ClientCase extends UnitTestBase
             ->method('send')
             ->will($this->throwException($curlException));
 
-        $client = new Client($guzzleClient, $this->getLoggerMock());
+        $client = new HttpClient($guzzleClient, $this->getLoggerMock());
 
         $client->setNumberRetries($numberRetries);
 

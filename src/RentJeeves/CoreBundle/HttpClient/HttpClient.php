@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services\HttpClient;
+namespace RentJeeves\CoreBundle\HttpClient;
 
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\CurlException;
@@ -11,9 +11,11 @@ use Psr\Log\LoggerInterface as Logger;
 /**
  * DI\Service("http_client")
  */
-class Client implements ClientInterface
+class HttpClient implements HttpClientInterface
 {
     const LOG_PREFIX = '[HTTP CLIENT]';
+
+    const MAX_DELAY = 60;
     /**
      * @var Logger
      */
@@ -45,12 +47,15 @@ class Client implements ClientInterface
      */
     public function send($method, $uri, $headers = null, $body = null, array $options = [])
     {
-        empty($options) || $this->setConfig($options);
+        if (!empty($options)) {
+            $this->setConfig($options);
+        }
         $request = $this->guzzleClient->createRequest($method, $uri, $headers, $body);
 
         $this->logger->debug(
             sprintf(
-                static::LOG_PREFIX . 'Send request %s',
+                '%sSend request %s',
+                static::LOG_PREFIX,
                 $request
             ),
             $options
@@ -60,7 +65,8 @@ class Client implements ClientInterface
 
         $this->logger->debug(
             sprintf(
-                static::LOG_PREFIX . 'Retrieved response %s',
+                '%sRetrieved response %s',
+                static::LOG_PREFIX,
                 $response
             ),
             $options
@@ -111,20 +117,41 @@ class Client implements ClientInterface
         try {
             return $this->guzzleClient->send($request);
         } catch (CurlException $e) {
-            if (($this->retries > 0) &&
+            if ($this->retries > 0 &&
                 ($e->getErrorNo() === CURLE_OPERATION_TIMEOUTED || $e->getErrorNo() === CURLE_COULDNT_CONNECT)
             ) {
                 if ($retried < $this->retries) {
                     $this->logger->debug(
-                        sprintf(static::LOG_PREFIX . 'Retrying number %d to send request', ++$retried)
+                        sprintf(
+                            '%sSend failed due to %s(%d). Retrying %d of %d',
+                            static::LOG_PREFIX,
+                            $e->getError(),
+                            $e->getErrorNo(),
+                            ++$retried,
+                            $this->retries
+                        )
                     );
+
+                    $delay = (int) exp($retried);
+                    if ($delay > static::MAX_DELAY) {
+                        $delay = static::MAX_DELAY;
+                    }
+                    $this->logger->debug(
+                        sprintf(
+                            '%sDelaying %d before next request',
+                            static::LOG_PREFIX,
+                            $delay
+                        )
+                    );
+                    sleep($delay);
 
                     return $this->sendRequest($request, $retried);
                 }
                 $this->logger->alert(
                     sprintf(
-                        static::LOG_PREFIX . 'Retrying numbers is over to send request %s',
-                        $request
+                        '%sFailed %d attempts to send. Aborting.',
+                        static::LOG_PREFIX,
+                        $retried
                     )
                 );
             }
@@ -132,13 +159,13 @@ class Client implements ClientInterface
         } catch (\Exception $e) {
             $this->logger->alert(
                 sprintf(
-                    static::LOG_PREFIX . 'Error message: %s In file: %s By line: %s',
+                    '%sError message: %s In file: %s By line: %s',
+                    static::LOG_PREFIX,
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine()
                 )
             );
-
             throw $e;
         }
     }
