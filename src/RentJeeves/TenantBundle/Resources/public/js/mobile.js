@@ -652,7 +652,7 @@ function createReview(){
             d = $("#" + prefix + "startMonth").val() + "/" + $("#" + prefix + "dueDate").val() + "/" + $("#" + prefix + "startYear").val();
             $("#" + prefix + "start_date").val(d)
 
-            if ($("#" + prefix + "ends_0").val() != "on") {
+            if ($("#" + prefix + "ends_0").is( ':checked' )) {
                 $('#revEnds').html(" when cancelled")
             } else {
                 $('#revEnds').html($("#" + prefix + "endMonth").val() + "/" + $("#" + prefix + "endYear").val())
