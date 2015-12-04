@@ -669,7 +669,7 @@
             <trans-unit id="checkout.duplicate_payment.error">
                 <source>checkout.duplicate_payment.error</source>
                 <target><![CDATA[
-                    Whoa now!  It looks like there is already an active payment for your lease.
+                    There is already an active payment for your lease.
                     This should not be possible, so we've scrambled our team of robots to investigate the issue.
                     Please try again later or contact %support_email%]]>
                 </target>
