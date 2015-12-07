@@ -98,6 +98,7 @@ class Operation extends Base
     {
         return null;
     }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PaymentType")
@@ -345,10 +346,10 @@ class Operation extends Base
 
         $unit = $contract->getUnit();
         $unitName = '';
-        if ($unit && !$property->isSingle()) {
-            $unitName = ' #'.$unit->getName();
+        if ($unit && !$property->getPropertyAddress()->isSingle()) {
+            $unitName = ' #' . $unit->getName();
         }
-        $address = $property->getFullAddress().$unitName;
+        $address = $property->getFullAddress() . $unitName;
 
         return $address;
     }
@@ -448,7 +449,7 @@ class Operation extends Base
 
         if ($order) {
             if ($original && $trans = $order->getCompleteTransaction()) {
-                return  $trans->getTransactionId();
+                return $trans->getTransactionId();
             }
 
             return $order->getTransactionId();
