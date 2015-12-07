@@ -55,8 +55,8 @@ class UnitListener
         }
 
         $property = $entity->getProperty();
-
-        if ($property->isSingle() && count($property->getUnits()) > 1) {
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->isSingle() && count($property->getUnits()) > 1) {
             throw new LogicException('Standalone property can not have units');
         }
     }
@@ -72,7 +72,8 @@ class UnitListener
             return;
         }
         $property = $entity->getProperty();
-        if ($property->getIsSingle() && $entity->getActualName() !== Unit::SINGLE_PROPERTY_UNIT_NAME) {
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->isSingle() && $entity->getActualName() !== Unit::SINGLE_PROPERTY_UNIT_NAME) {
             $entity->setName(Unit::SINGLE_PROPERTY_UNIT_NAME);
         }
     }

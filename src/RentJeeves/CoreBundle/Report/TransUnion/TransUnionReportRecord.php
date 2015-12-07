@@ -407,7 +407,8 @@ class TransUnionReportRecord
     public function getSecondLineOfAddress()
     {
         $addressLine = '';
-        if (!$this->contract->getProperty()->isSingle()) {
+        $propertyAddress = $this->contract->getProperty()->getPropertyAddress();
+        if (!$propertyAddress->isSingle()) {
             $addressLine = $this->contract->getUnit()->getName();
         }
 

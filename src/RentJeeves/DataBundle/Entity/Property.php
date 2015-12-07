@@ -137,16 +137,6 @@ class Property extends Base
     }
 
     /**
-     * @deprecated pls use `$property->getPropertyAddress()->isSingle()`
-     *
-     * @return bool
-     */
-    public function isSingle()
-    {
-        return $this->getPropertyAddress()->isSingle();
-    }
-
-    /**
      * @return mixed|null
      */
     public function getExistingSingleUnit()

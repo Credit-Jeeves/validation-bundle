@@ -94,8 +94,8 @@ class AjaxController extends Controller
          * @var $property Property
          */
         $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
-
-        if ($property && $property->isSingle()) {
+        $propertyAddress = $property->getPropertyAddress();
+        if ($property && $propertyAddress->isSingle()) {
             /**
              * @var $singleUnit Unit
              */

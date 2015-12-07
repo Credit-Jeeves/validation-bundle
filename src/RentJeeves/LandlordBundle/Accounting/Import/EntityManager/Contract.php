@@ -95,8 +95,8 @@ trait Contract
     }
 
     /**
-     * @param  array               $row
-     * @param  EntityProperty      $property
+     * @param  array $row
+     * @param  EntityProperty $property
      * @return null|EntityContract
      */
     protected function getContractFromDataBase(array $row, EntityProperty $property)
@@ -123,7 +123,8 @@ trait Contract
         if (empty($contract)) {
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                ($property->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
+                ($property->getPropertyAddress()->isSingle()) ?
+                    Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
                 isset($row[Mapping::KEY_UNIT_ID]) ? $row[Mapping::KEY_UNIT_ID] : null,
                 $property->getId(),
                 $group,

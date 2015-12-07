@@ -331,7 +331,9 @@ class Contract
      */
     public function isSingleProperty()
     {
-        return $this->contract->getProperty()->isSingle();
+        $propertyAddress = $this->contract->getProperty()->getPropertyAddress();
+
+        return $propertyAddress->isSingle();
     }
 
     /**

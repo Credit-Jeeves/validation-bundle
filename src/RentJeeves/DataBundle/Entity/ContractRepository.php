@@ -1179,7 +1179,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
         $query->setParameter('propertyId', $property->getId());
         $query->setParameter('holdingId', $holding->getId());
-        if ($property->isSingle()) {
+        if ($property->getPropertyAddress()->isSingle()) {
             $query->setParameter('unitName', UNIT::SINGLE_PROPERTY_UNIT_NAME);
         } else {
             $query->setParameter('unitName', $unitName);

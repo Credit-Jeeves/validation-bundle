@@ -40,6 +40,7 @@ class LandlordAssignment
             }
             $this->em->persist($property);
             $this->em->flush($property);
+
             return true;
         }
 
@@ -66,6 +67,7 @@ class LandlordAssignment
             $this->em->persist($property);
             $this->em->flush($property);
             $this->em->flush($unit);
+
             return true;
         }
 
@@ -92,7 +94,8 @@ class LandlordAssignment
             $this->errors['landlord'] = $this->translator->trans('api.error.landlord.assignment.multi_groups');
         }
 
-        if (!$property->isSingle() && is_null($unit)) {
+        $propertyAddress = $property->getPropertyAddress();
+        if (!$propertyAddress->isSingle() && is_null($unit)) {
             $errors['property'] = $this->translator->trans('api.error.landlord.assignment.multi_assignment');
         }
 

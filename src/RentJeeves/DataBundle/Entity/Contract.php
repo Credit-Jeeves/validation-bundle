@@ -358,7 +358,7 @@ class Contract extends Base
             $unit = $this->getUnit();
         }
         $result[] = $property->getPropertyAddress()->getAddress();
-        if (!$property->isSingle() && $unit) {
+        if (!$property->getPropertyAddress()->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {
