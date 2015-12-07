@@ -160,8 +160,6 @@ fixtures:
         city:           Little Rock
         state:          AR
         zip:            72201
-        jb:             34.7434652
-        kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          617SBroadwayStLittleRockAR

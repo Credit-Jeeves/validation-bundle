@@ -58,7 +58,7 @@ $(document).ready(function () {
             );
 
             var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(data.property.jb, data.property.kb),
+                position: new google.maps.LatLng(data.property.lat, data.property.long),
                 map: this.map,
                 title: data.property.address,
                 icon: rentaPoint,

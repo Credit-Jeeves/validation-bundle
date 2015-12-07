@@ -277,7 +277,9 @@ class Contract
      */
     public function getFullAddress()
     {
-        return sprintf('%s %s', $this->getAddress(), $this->contract->getProperty()->getLocationAddress());
+        $propertyAddress = $this->contract->getProperty()->getPropertyAddress();
+
+        return sprintf('%s %s', $this->getAddress(), $propertyAddress->getLocationAddress());
     }
 
     /**

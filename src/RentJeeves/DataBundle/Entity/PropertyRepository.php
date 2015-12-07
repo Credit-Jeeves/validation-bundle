@@ -337,22 +337,14 @@ EOT;
      */
     public function findOneByAddress(Address $address)
     {
-        $query = $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyAddress', 'propertyAddress');
-        if ($address->getIndex() !== null) {
-            $query
-                ->where('propertyAddress.index = :index')
-                ->setParameter('index', $address->getIndex());
-        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
-            $query
-                ->where('propertyAddress.jb = :jb AND propertyAddress.kb = :kb')
-                ->setParameter('jb', $address->getJb())
-                ->setParameter('kb', $address->getKb());
-        } else {
+        if ($address->getIndex() === null) {
             throw new \LogicException('Address doesn`t have data about location');
         }
 
-        return $query
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->where('propertyAddress.index = :index')
+            ->setParameter('index', $address->getIndex())
             ->andWhere('propertyAddress.number = :number')
             ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */

@@ -5423,123 +5423,6 @@
             "time": "2014-05-14 11:51:43"
         },
         {
-            "name": "willdurand/geocoder",
-            "version": "2.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/geocoder-php/Geocoder.git",
-                "reference": "50e54f88b539de0ca3864e8e6a48412d1358d8b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/geocoder-php/Geocoder/zipball/50e54f88b539de0ca3864e8e6a48412d1358d8b7",
-                "reference": "50e54f88b539de0ca3864e8e6a48412d1358d8b7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "geoip/geoip": "~1.13",
-                "guzzle/guzzle": "@stable",
-                "kriswallsmith/buzz": "@stable",
-                "zendframework/zend-http": "~2.1"
-            },
-            "suggest": {
-                "ext-curl": "Enabling the curl extension allows you to use the CurlHttpAdapter.",
-                "ext-geoip": "Enabling the geoip extension allows you to use the MaxMindProvider.",
-                "geoip/geoip": "If you are going to use the MaxMindBinaryProvider (conflict with geoip extension).",
-                "guzzle/guzzle": "Enabling Guzzle allows you to use the GuzzleHttpAdapter.",
-                "kriswallsmith/buzz": "Enabling Buzz allows you to use the BuzzHttpAdapter.",
-                "zendframework/zend-http": "Enabling Zend Http allows you to use the ZendHttpAdapter."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.5-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Geocoder": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "William Durand",
-                    "email": "william.durand1@gmail.com",
-                    "homepage": "http://www.willdurand.fr"
-                }
-            ],
-            "description": "The almost missing Geocoder PHP 5.3 library.",
-            "homepage": "http://geocoder-php.org",
-            "keywords": [
-                "abstraction",
-                "geocoder",
-                "geocoding",
-                "geoip"
-            ],
-            "time": "2014-05-16 09:11:44"
-        },
-        {
-            "name": "willdurand/geocoder-bundle",
-            "version": "dev-master",
-            "target-dir": "Bazinga/Bundle/GeocoderBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/geocoder-php/BazingaGeocoderBundle.git",
-                "reference": "dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/geocoder-php/BazingaGeocoderBundle/zipball/c4275e827ec37c7fcdd320c5d361afe9f1959608",
-                "reference": "dd2a605c87c338f35cf40bcb50c8f5cb1d7b6409",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/console": "~2.1",
-                "symfony/framework-bundle": "~2.1",
-                "willdurand/geocoder": "~2.5"
-            },
-            "require-dev": {
-                "doctrine/cache": "~1.3",
-                "doctrine/orm": "~2.3",
-                "maxromanovsky/php-maxmind-geoip": "~1.12",
-                "symfony/yaml": "~2.1"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Bazinga\\Bundle\\GeocoderBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "William Durand",
-                    "email": "william.durand1@gmail.com"
-                }
-            ],
-            "description": "Integration of Geocoder into Symfony2",
-            "keywords": [
-                "geocoder",
-                "geocoding"
-            ],
-            "time": "2014-08-01 08:41:03"
-        },
-        {
             "name": "willdurand/js-translation-bundle",
             "version": "dev-master",
             "target-dir": "Bazinga/Bundle/JsTranslationBundle",
@@ -8211,7 +8094,6 @@
         "doctrine/doctrine-migrations-bundle": 20,
         "apy/jsfv-bundle": 20,
         "willdurand/js-translation-bundle": 20,
-        "willdurand/geocoder-bundle": 20,
         "beberlei/doctrineextensions": 20,
         "jms/job-queue-bundle": 20,
         "pagerfanta/pagerfanta": 20,

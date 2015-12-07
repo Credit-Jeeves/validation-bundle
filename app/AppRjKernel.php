@@ -52,7 +52,6 @@ class AppRjKernel extends AppKernel
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
-            new Bazinga\Bundle\GeocoderBundle\BazingaGeocoderBundle(),
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),

@@ -173,8 +173,8 @@ class PropertyAdmin extends Admin
             ->add('propertyAddress.number')
             ->add('propertyAddress.zip')
             ->add('propertyAddress.googleReference')
-            ->add('propertyAddress.jb')
-            ->add('propertyAddress.kb')
+            ->add('propertyAddress.lat')
+            ->add('propertyAddress.long')
             ->add('isMultipleBuildings');
     }
 
@@ -188,8 +188,8 @@ class PropertyAdmin extends Admin
             ->add('propertyAddress.number')
             ->add('propertyAddress.zip')
             ->add('propertyAddress.googleReference')
-            ->add('propertyAddress.jb')
-            ->add('propertyAddress.kb')
+            ->add('propertyAddress.lat')
+            ->add('propertyAddress.long')
             ->add('createdAt')
             ->add('updatedAt')
             ->add('units', null, array('route' => array('name' => 'show')))

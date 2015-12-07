@@ -152,16 +152,6 @@ services:
     geocode_cache_adapter:
         class: "Doctrine\\Common\\Cache\\ApcCache"
 
-bazinga_geocoder:
-    providers:
-        cache:
-            adapter:  geocode_cache_adapter
-            provider: google_maps
-            lifetime: 3456000 # 40 days
-        google_maps:
-            api_key:  %google_maps_key%
-            use_ssl:  true
-
 be_simple_soap:
     clients:
         amsi_leasing:

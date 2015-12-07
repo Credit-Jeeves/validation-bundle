@@ -102,8 +102,8 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <input type="hidden" value="{{ address.index is empty ? address.jb : address.lat }}" class="lat">
-                            <input type="hidden" value="{{ address.index is empty ? address.kb : address.long }}" class="lng">
+                            <input type="hidden" value="{{ address.lat }}" class="lat">
+                            <input type="hidden" value="{{ address.long }}" class="lng">
                             <input type="hidden" value="{{ address.address }}" class="addressSelect">
                         </li>
                         {% set i = i+1 %}

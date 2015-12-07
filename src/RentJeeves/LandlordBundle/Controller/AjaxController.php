@@ -374,8 +374,8 @@ class AjaxController extends Controller
                 'street' => $propertyAddress->getStreet(),
                 'area' => $propertyAddress->getState(),
                 'zip' => ($propertyAddress->getZip()) ? $propertyAddress->getZip() : '',
-                'jb' => $propertyAddress->getJb(),
-                'kb' => $propertyAddress->getKb(),
+                'lat' => $propertyAddress->getLat(),
+                'long' => $propertyAddress->getLong(),
                 'address' => $propertyAddress->getAddress(),
             ],
         ];

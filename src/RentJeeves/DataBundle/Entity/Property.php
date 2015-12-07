@@ -97,19 +97,6 @@ class Property extends Base
         return $result;
     }
 
-    public function getLocationAddress()
-    {
-        $result = array();
-        if ($city = $this->getCity()) {
-            $result[] = $city;
-        }
-        if ($area = $this->getArea()) {
-            $result[] = $area;
-        }
-
-        return implode(', ', $result) . ' ' . $this->getZip();
-    }
-
     public function hasLandlord()
     {
         if ($this->getPropertyGroups()->count() <= 0) {
@@ -160,16 +147,6 @@ class Property extends Base
     }
 
     /**
-     * @deprecated this function need for migrate
-     *
-     * @return bool
-     */
-    public function isSingleFromProperty()
-    {
-        return $this->isSingle;
-    }
-
-    /**
      * @return mixed|null
      */
     public function getExistingSingleUnit()
@@ -205,7 +182,7 @@ class Property extends Base
 
     public function isAllowedToSetSingle($isSingle, $groupId)
     {
-        if ($isSingle == $this->getIsSingle()) {
+        if ($isSingle == $this->getPropertyAddress()->isSingle()) {
             return true;
         }
 
@@ -221,7 +198,7 @@ class Property extends Base
 
         // isSingle = false is allowed only if previous value was null (restricted to convert standalone property)
         if ($isSingle == false) {
-            if (is_null($this->getIsSingle())) {
+            if (is_null($this->getPropertyAddress()->isSingle())) {
                 return true;
             }
         }

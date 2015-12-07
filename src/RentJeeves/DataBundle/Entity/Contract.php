@@ -230,7 +230,7 @@ class Contract extends Base
             $now = new DateTime();
             $interval = $now->diff($date);
             if ($interval->format("%r%a") < 0) {
-                $result = $interval->days.self::PAYMENT_LATE;
+                $result = $interval->days . self::PAYMENT_LATE;
             }
         }
 
@@ -298,13 +298,13 @@ class Contract extends Base
              * don't show days late for finished and delete contract
              */
             if (($lastPayment != self::EMPTY_LAST_PAYMENT &&
-                !in_array(
-                    $this->getStatus(),
-                    array(
-                        ContractStatus::FINISHED,
-                        ContractStatus::DELETED,
-                    )
-                ))
+                    !in_array(
+                        $this->getStatus(),
+                        array(
+                            ContractStatus::FINISHED,
+                            ContractStatus::DELETED,
+                        )
+                    ))
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
@@ -328,7 +328,8 @@ class Contract extends Base
              * without red shading for status
              */
             if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
-                $result['status'] == strtoupper(ContractStatus::INVITE)) {
+                $result['status'] == strtoupper(ContractStatus::INVITE)
+            ) {
                 $result['class'] = 'contract-late';
 
                 return $result;
@@ -511,10 +512,10 @@ class Contract extends Base
             $newDate->modify('+1 months');
             $diff = $amount - $rent;
             $days = $this->countPaidDays($rent, $diff, $paidTo);
-            $newDate->modify('+'.$days.' days');
+            $newDate->modify('+' . $days . ' days');
         } elseif ($amount < $rent) {
             $days = $this->countPaidDays($rent, $amount, $paidTo);
-            $newDate->modify('+'.$days.' days');
+            $newDate->modify('+' . $days . ' days');
         } else {
             $newDate->modify('+1 months');
         }
@@ -540,10 +541,10 @@ class Contract extends Base
             $newDate->modify('-1 months');
             $diff = $amount - $rent;
             $days = $this->countPaidDays($rent, $diff, $newDate);
-            $newDate->modify('-'.$days.' days');
+            $newDate->modify('-' . $days . ' days');
         } elseif ($amount < $rent) {
             $days = $this->countPaidDays($rent, $amount, $newDate);
-            $newDate->modify('-'.$days.' days');
+            $newDate->modify('-' . $days . ' days');
         } else {
             $newDate->modify('-1 months');
         }
@@ -562,7 +563,7 @@ class Contract extends Base
     {
         $days = $date->format('t');
 
-        return floor($paid * $days/ $rent);
+        return floor($paid * $days / $rent);
     }
 
     /**
@@ -577,15 +578,17 @@ class Contract extends Base
     public function getDatagridRow($em)
     {
         $property = $this->getProperty();
+        $propertyAddress = $property->getPropertyAddress();
         $unit = $this->getUnit();
         $orderRepository = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
-        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
-        $result['row_address'] = substr($result['full_address'], 0, 20).'...';
-        $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
+        $result['full_address'] = $this
+                ->getRentAddress($property, $unit) . ' ' . $propertyAddress->getLocationAddress();
+        $result['row_address'] = substr($result['full_address'], 0, 20) . '...';
+        $result['rent'] = ($rent = $this->getRent()) ? '$' . $rent : '--';
         $result['full_pay_to'] = $this->getPayToName();
-        $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
+        $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10) . '...';
         $result['status'] = $this->getStatus();
         $result['payment_type'] = '';
         // @todo get payment source name
@@ -617,7 +620,7 @@ class Contract extends Base
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
-                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10).'...';
+                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
             }
         }
@@ -993,7 +996,7 @@ class Contract extends Base
         for ($i = 1; $i <= $count; $i++) {
 
             /** @var $operation Operation */
-            $operation = $operations->slice($count-$i, 1);
+            $operation = $operations->slice($count - $i, 1);
             $operation = reset($operation);
             if ($operation->getType() == OperationType::RENT) {
                 $order = $operation->getOrder();
@@ -1003,7 +1006,8 @@ class Contract extends Base
 
                 if ($order && $paidFor) {
                     if (($order->getStatus() == OrderStatus::PENDING)
-                        && ($paymentMonth == $requiredMonth)) {
+                        && ($paymentMonth == $requiredMonth)
+                    ) {
                         return true;
                     }
                 }
