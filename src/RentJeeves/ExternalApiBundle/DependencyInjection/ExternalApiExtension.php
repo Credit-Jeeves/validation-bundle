@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Dumper\YamlDumper;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -27,8 +26,9 @@ class ExternalApiExtension extends Extension
         );
         $fileLocator = new FileLocator(__DIR__.'/../Resources/config');
 
+        $loader = new Loader\XmlFileLoader($container, $fileLocator);
+        $loader->load('parameters.xml');
         $loader = new Loader\YamlFileLoader($container, $fileLocator);
         $loader->load('services.yml');
-
     }
 }
