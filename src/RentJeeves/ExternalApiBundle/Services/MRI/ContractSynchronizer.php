@@ -45,10 +45,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $resident,
         $externalPropertyId
     ) {
-        $moveOut = $resident->getLeaseMoveOut();
-        $threeMonthAgo = new \DateTime('-3 month');
-
-        if (strtoupper($resident->getIsCurrent()) !== 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+        if ($this->isResidentOutOfDate($resident)) {
             return [];
         }
 
@@ -167,10 +164,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $customer,
         $externalPropertyId
     ) {
-        $moveOut = $customer->getLeaseMoveOut();
-        $threeMonthAgo = new \DateTime('-3 month');
-
-        if (strtoupper($customer->getIsCurrent()) !== 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+        if ($this->isResidentOutOfDate($customer)) {
             return;
         }
         $sumRecurringCharges = $this->getSumRecurringCharges($customer, $holding->getRecurringCodesArray());
@@ -259,5 +253,21 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         return $amount;
+    }
+
+    /**
+     * @param Value $resident
+     * @return bool
+     */
+    protected function isResidentOutOfDate(Value $resident)
+    {
+        $moveOut = $resident->getLeaseMoveOut();
+        $threeMonthAgo = new \DateTime('-3 month');
+
+        if (strtoupper($resident->getIsCurrent()) !== 'Y' && $moveOut && ($moveOut <= $threeMonthAgo)) {
+            return true;
+        }
+
+        return false;
     }
 }

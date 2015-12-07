@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use Guzzle\Http\Message\Response;
 use JMS\Serializer\DeserializationContext;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\MRISettings;
@@ -14,7 +15,6 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Traits\DebuggableTrait as Debug;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait as Settings;
 use RentJeeves\CoreBundle\HttpClient\HttpClientInterface as HttpClient;
-use Exception;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
@@ -24,7 +24,11 @@ class MRIClient implements ClientInterface
     use Debug;
     use Settings;
 
+    const LOG_PREFIX = '[MRI Client]';
+
     const OPERATION_TIMEOUT = 180;
+
+    const MAX_NUMBER_RETRIES = 3;
 
     protected $mappingSerialize = [
         'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID' => 'RentJeeves\ExternalApiBundle\Model\MRI\MRIResponse',
@@ -78,7 +82,7 @@ class MRIClient implements ClientInterface
         $this->serializer = $serializer;
         $this->httpClient = $httpClient
             ->setConfig(['timeout' => self::OPERATION_TIMEOUT])
-            ->setNumberRetries(3);
+            ->setNumberRetries(self::MAX_NUMBER_RETRIES);
         $this->logger = $logger;
     }
 
@@ -130,27 +134,23 @@ class MRIClient implements ClientInterface
                 'Accept' => 'application/xml',
                 'Content-Type' => 'application/xml',
             ];
-            $this->debugMessage(sprintf("Setup MRI headers %s", print_r($headers, true)));
             $uri = sprintf(
                 '%s?%s',
                 $mriSettings->getUrl(),
                 http_build_query($GETParameters)
             );
 
-            $this->debugMessage(sprintf("Request to MRI by uri %s", $uri));
-
-            if (!empty($body)) {
-                $this->debugMessage(sprintf("Setup body to MRI: %s", $body));
-            }
-
             return $this->manageResponse($this->httpClient->send($httpMethod, $uri, $headers, $body), $method);
-        } catch (Exception $e) {
-            $this->errorMessage(sprintf(
-                'Error message: %s In file: %s By line: %s',
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine()
-            ));
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    '%sError message: %s In file: %s By line: %s',
+                    static::LOG_PREFIX,
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                )
+            );
 
             $this->exceptionCatcher->handleException($e);
         }
@@ -159,20 +159,21 @@ class MRIClient implements ClientInterface
     }
 
     /**
-     * @param $response
-     * @param $method
+     * @param Response|null $response
+     * @param string $method
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     protected function manageResponse($response, $method)
     {
+        if (!$response instanceof Response) {
+            throw new \Exception('Invalid response');
+        }
         $httpCode = $response->getStatusCode();
         $body = $response->getBody();
-        $this->debugMessage(sprintf('Http code: %s', $httpCode));
-        $this->debugMessage(sprintf('Body: %s', $body));
 
         if ($httpCode !== 200) {
-            throw new Exception(sprintf("Bad http code(%s) from MRI", $httpCode));
+            throw new \Exception(sprintf('Bad http code(%s) from MRI', $httpCode));
         }
 
         $context = new DeserializationContext();
@@ -186,9 +187,9 @@ class MRIClient implements ClientInterface
         );
 
         if (!($responseClass instanceof $this->mappingSerialize[$method]) || !is_object($responseClass)) {
-            throw new Exception(
+            throw new \Exception(
                 sprintf(
-                    "Can't deserialize to class %s this body:%s",
+                    'Can\'t deserialize to class %s this body:%s',
                     $this->mappingSerialize[$method],
                     $body->__toString()
                 )
@@ -211,7 +212,8 @@ class MRIClient implements ClientInterface
 
         $this->logger->debug(
             sprintf(
-                'MRI api call "getResidentTransactions" return %s number of Transactions',
+                '%sMRI api call "getResidentTransactions" return %s number of Transactions',
+                static::LOG_PREFIX,
                 count($mriResponse->getValues())
             )
         );
@@ -225,8 +227,14 @@ class MRIClient implements ClientInterface
      */
     public function getResidentTransactionsByNextPageLink($nextPageLink)
     {
+        $this->logger->debug(
+            sprintf(
+                '%sGo to the next page of MRI by link: %s',
+                static::LOG_PREFIX,
+                $nextPageLink
+            )
+        );
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
-        $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
         $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
         $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
         parse_str($urlQuery, $nextPageParams);
@@ -242,15 +250,16 @@ class MRIClient implements ClientInterface
     public function getResidentTransactions($externalPropertyId)
     {
         $this->logger->debug(
-            sprintf('MRI api call getResidentTransactions for property ID: %s', $externalPropertyId)
+            sprintf(
+                '%sMRI api call getResidentTransactions for property ID: %s',
+                static::LOG_PREFIX,
+                $externalPropertyId
+            )
         );
         $method = 'MRI_S-PMRM_ResidentLeaseDetailsByPropertyID';
         $params = [
             'RMPROPID' => $externalPropertyId
         ];
-
-        $this->debugMessage(sprintf('Call MRI method: %s', $method));
-
         $mriResponse = $this->sendRequest($method, $params);
 
         return $this->checkResponseResidentTransactions($mriResponse);
@@ -265,7 +274,13 @@ class MRIClient implements ClientInterface
     public function getResidentialRentRoll($externalPropertyId, $buildingId = null, $unitId = null)
     {
         $this->logger->debug(
-            sprintf('MRI api call getResidentialRentRoll for property ID: %s', $externalPropertyId)
+            sprintf(
+                '%sMRI api call getResidentialRentRoll for property ID "%s"%s%s',
+                static::LOG_PREFIX,
+                $externalPropertyId,
+                $buildingId ? ', building ID "' . $buildingId . '"' : '',
+                $unitId ? ', unit ID "' . $unitId . '"' : ''
+            )
         );
         $method = 'MRI_S-PMRM_ResidentialRentRoll';
         $params = [
@@ -273,8 +288,6 @@ class MRIClient implements ClientInterface
             'BUILDINGID' => $buildingId,
             'UNITID'     => $unitId
         ];
-
-        $this->debugMessage(sprintf('Call MRI method: %s', $method));
 
         return $this->sendRequest($method, $params);
     }
@@ -285,8 +298,14 @@ class MRIClient implements ClientInterface
      */
     public function getResidentialRentRollByNextPageLink($nextPageLink)
     {
+        $this->logger->debug(
+            sprintf(
+                '%sGo to the next page of MRI by link: %s',
+                static::LOG_PREFIX,
+                $nextPageLink
+            )
+        );
         $method = 'MRI_S-PMRM_ResidentialRentRoll';
-        $this->logger->debug(sprintf('Go to the next page of MRI by link: %s', $nextPageLink));
         $urlQuery = parse_url($nextPageLink, PHP_URL_QUERY);
         $urlQuery = str_replace(['&amp;'], ['&'], $urlQuery);
         parse_str($urlQuery, $nextPageParams);
@@ -298,23 +317,30 @@ class MRIClient implements ClientInterface
      * @param  Order $order
      * @param $externalPropertyId
      * @return bool
+     * @throws \Exception
      */
     public function postPayment(Order $order, $externalPropertyId)
     {
+        $this->logger->debug(
+            sprintf(
+                '%sMRI api call postPayment for property ID "%s" and order #%d',
+                static::LOG_PREFIX,
+                $externalPropertyId,
+                $order->getId()
+            )
+        );
         $payment = new Payment();
         $mriOrder = new MRIOrder($order);
         $payment->setEntryRequest($mriOrder);
         $paymentString = $this->paymentToStringFormat($payment, 'xml');
 
         $method = 'MRI_S-PMRM_PaymentDetailsByPropertyID';
-
         $params = [
             'RMPROPID' => $externalPropertyId,
             'body'  => $paymentString,
             'httpMethod' => 'post'
         ];
 
-        $this->debugMessage("Call MRI method: {$method}");
         /** @var Payment $payment */
         $payment = $this->sendRequest($method, $params);
         if ($payment instanceof Payment) {
@@ -322,12 +348,13 @@ class MRIClient implements ClientInterface
 
             if (!empty($error)) {
                 $message = sprintf(
-                    'MRI: Failed posting order(ID#%d). Error message: %s',
+                    '%sMRI: Failed posting order(ID#%d). Error message: %s',
+                    static::LOG_PREFIX,
                     $order->getId(),
                     $error->getMessage()
                 );
                 $this->logger->alert($message); // TODO: replace alert with exception. See RT-1449
-                throw new Exception($message);
+                throw new \Exception($message);
             }
 
             return true;
@@ -338,9 +365,10 @@ class MRIClient implements ClientInterface
 
     /**
      * @param  Payment $payment
+     * @param  string $format
      * @return string
      */
-    public function paymentToStringFormat(Payment $payment, $format)
+    protected function paymentToStringFormat(Payment $payment, $format)
     {
         $groups = $this->serializerGroups;
         if ($payment->getEntryRequest()->isSendDescription()) {

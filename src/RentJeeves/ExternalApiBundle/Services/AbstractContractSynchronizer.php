@@ -230,15 +230,10 @@ abstract class AbstractContractSynchronizer
                     /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                     $this->em->clear();
                 }
-                unset($resident);
-                unset($residentTransactions);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
         }
-        unset($externalPropertyRow);
-        unset($externalPropertyId);
-        unset($externalPropertyRows);
     }
 
     /**
@@ -266,8 +261,6 @@ abstract class AbstractContractSynchronizer
                 $this->handleException($e);
             }
         }
-        unset($contract);
-        unset($contracts);
     }
 
     /**
@@ -307,15 +300,10 @@ abstract class AbstractContractSynchronizer
                     /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
                     $this->em->clear();
                 }
-                unset($resident);
-                unset($residentTransactions);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
         }
-        unset($externalPropertyRow);
-        unset($externalPropertyId);
-        unset($externalPropertyRows);
     }
 
     /**
