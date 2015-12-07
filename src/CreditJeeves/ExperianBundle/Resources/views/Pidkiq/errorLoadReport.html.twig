@@ -1,7 +1,10 @@
 {% extends "CoreBundle::base.html.twig" %}
 
 {% block content %}
-<div>
-   <h4>{{ 'error.summary.report'|trans({'%help-email%': support_email}, 'messages') }}</h4>
-</div>
+   <div>
+      <h1>{{ 'error.summary.longer_then_expected'|trans }}</h1>
+      <br>
+      <div>{{ 'error.summary.try_again'|trans({'%help-email%': support_email}, 'messages')|raw }}</div>
+      <div>{{ 'error.summary.sorry'|trans }}</div>
+   </div>
 {% endblock %}
