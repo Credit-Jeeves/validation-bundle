@@ -47,6 +47,7 @@ class IframeCase extends BaseTestCase
      */
     public function parseGoogleAddress($address, $city, $district, $jb, $kb)
     {
+        $this->markTestSkipped('Remove after RT-1860');
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
@@ -389,6 +390,7 @@ class IframeCase extends BaseTestCase
      */
     public function publicIframe()
     {
+        $this->markTestSkipped('Unskipp after RT-1860');
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
         $this->logout();
