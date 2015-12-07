@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -221,5 +222,24 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('payment_processor', $paymentProcessor);
 
         return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return Payment|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findActiveRentPaymentForContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.depositAccount', 'da')
+            ->where('da.type = :rent')
+            ->andWhere('p.contract = :contract')
+            ->andWhere('p.status = :active')
+            ->setParameter('rent', DepositAccountType::RENT)
+            ->setParameter('contract', $contract)
+            ->setParameter('active', PaymentStatus::ACTIVE)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

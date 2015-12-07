@@ -339,7 +339,7 @@ class PaymentsController extends Controller
                 );
 
                 return $this->get('response_resource.factory')->getResponse($paymentEntity);
-            } catch (RuntimeException $e) {
+            } catch (\Exception $e) {
                 $form->addError(new FormError($e->getMessage()));
             }
         }

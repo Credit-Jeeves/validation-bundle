@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -119,7 +120,7 @@ trait PaymentProcess
         $recurring,
         $pidkiqEnabled
     ) {
-
+        /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
         /** @var Payment $paymentEntity */
@@ -143,7 +144,6 @@ trait PaymentProcess
             throw $this->createNotFoundException('PaymentAccount cannot be null');
         }
 
-        // TODO: set deposit account from form when you implement PayAnything story
         $depositAccount = $contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
         if (null !== $depositAccount) {
             $paymentEntity->setDepositAccount($depositAccount);
@@ -153,6 +153,28 @@ trait PaymentProcess
 
         if ($pidkiqEnabled && !$this->isVerifiedUser($request, $contract)) {
             throw $this->createNotFoundException('User verification failed');
+        }
+
+        if (null == $paymentEntity->getId()) { // if new payment comes
+            // Prevent creating duplicated rent payment for one contract
+            /** @var Payment $existingPayment */
+            $existingPayment = $em->getRepository('RjDataBundle:Payment')->findActiveRentPaymentForContract($contract);
+            if (null !== $existingPayment) {
+                $this->get('logger')->emergency(sprintf(
+                    'ERROR: User %s(id#%s) tries to create %s payment for contract id#%s. ' .
+                    'Existing active payment id#%s, type %s',
+                    $contract->getTenantEmail(),
+                    $contract->getTenant()->getId(),
+                    $paymentEntity->getType(),
+                    $contract->getId(),
+                    $existingPayment->getId(),
+                    $existingPayment->getType()
+                ));
+                throw new \Exception($this->get('translator')->trans(
+                    'checkout.duplicate_payment.error',
+                    ['%support_email%' => $this->container->getParameter('support_email')]
+                ));
+            }
         }
 
         if ($recurring) {
