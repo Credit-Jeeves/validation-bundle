@@ -121,10 +121,10 @@ trait Contract
         }
 
         if (empty($contract)) {
+            $propertyAddress = $property->getPropertyAddress();
             $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
-                ($property->getPropertyAddress()->isSingle()) ?
-                    Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
+                ($propertyAddress->isSingle()) ? Unit::SINGLE_PROPERTY_UNIT_NAME : $row[Mapping::KEY_UNIT],
                 isset($row[Mapping::KEY_UNIT_ID]) ? $row[Mapping::KEY_UNIT_ID] : null,
                 $property->getId(),
                 $group,
