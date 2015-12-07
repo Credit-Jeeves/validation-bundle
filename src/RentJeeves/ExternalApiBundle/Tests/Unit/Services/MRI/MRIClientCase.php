@@ -10,6 +10,7 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
     protected $exceptionCatcherMock;
     protected $serializerMock;
     protected $loggerMock;
+    protected $httpClientMock;
 
     protected function setUp()
     {
@@ -17,6 +18,8 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
         $this->exceptionCatcherMock = $this->systemsMocks->getExceptionCatcherMock();
         $this->serializerMock = $this->systemsMocks->getSerializerMock();
         $this->loggerMock = $this->systemsMocks->getLoggerMock();
+        $this->httpClientMock = $this->getMock('RentJeeves\CoreBundle\HttpClient\HttpClientInterface');
+        $this->httpClientMock->expects($this->any())->method('setConfig')->willReturn($this->httpClientMock);
     }
 
     /**
@@ -27,6 +30,7 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
         new MRIClient(
             $this->exceptionCatcherMock,
             $this->serializerMock,
+            $this->httpClientMock,
             $this->loggerMock
         );
     }
@@ -56,7 +60,7 @@ class MRIClientCase extends \PHPUnit_Framework_TestCase
     {
         $stubClient = $this->getMockBuilder('\RentJeeves\ExternalApiBundle\Services\MRI\MRIClient')
             ->setConstructorArgs([
-                $this->exceptionCatcherMock, $this->serializerMock, $logger
+                $this->exceptionCatcherMock, $this->serializerMock, $this->httpClientMock, $logger
             ])
             ->setMethods(["paymentToStringFormat", "sendRequest"])
             ->getMock();

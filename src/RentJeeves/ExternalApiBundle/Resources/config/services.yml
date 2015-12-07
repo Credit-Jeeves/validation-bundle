@@ -60,6 +60,7 @@ services:
         arguments:
             - "@fp_badaboom.exception_catcher"
             - "@jms_serializer"
+            - "@http_client"
             - "@logger"
     resman.client:
         class: "%resman.client.class%"
