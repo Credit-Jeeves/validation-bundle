@@ -2,13 +2,10 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
