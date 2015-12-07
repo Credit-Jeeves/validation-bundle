@@ -124,7 +124,7 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         return [
             [
-                'contract_url' => 'contract_url/1758512013',
+                'contract_url' => 'contract_url/105035468',
                 'payment_account_url' => 'payment_account_url/656765400',
                 'type' => 'one_time',
                 'rent' => 1200.00,
@@ -135,7 +135,7 @@ class PaymentsControllerCase extends BaseApiTestCase
                 'paid_for' => $date->format('Y-m')
             ],
             [
-                'contract_url' => 'contract_url/1758512013',
+                'contract_url' => 'contract_url/105035468',
                 'payment_account_url' => 'payment_account_url/656765400',
                 'type' => 'recurring',
                 'rent' => "600.00",
@@ -172,6 +172,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      */
     public function createPayment($requestParams, $statusCode = 201)
     {
+        $this->load(true);
         $response = $this->postRequest($requestParams);
 
         $this->assertResponse($response, $statusCode);
@@ -191,6 +192,33 @@ class PaymentsControllerCase extends BaseApiTestCase
         $dueDay = $payment->getContract()->getDueDate();
         $paidForDay = $payment->getPaidFor()->format('j');
         $this->assertEquals($dueDay, $paidForDay);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnErrorWhenTryingToCreateSecondActivePaymentForContract()
+    {
+        $this->load(true);
+
+        $date = new \DateTime();
+        $requestParams = [
+            'contract_url' => 'contract_url/1758512013',
+            'payment_account_url' => 'payment_account_url/656765400',
+            'type' => 'one_time',
+            'rent' => 1200.00,
+            'other' => 75.00,
+            'day' => $date->modify('+ 1 day')->format('j'),
+            'month' => $date->modify('+ 1 month')->format('n'),
+            'year' => $date->format('Y'),
+            'paid_for' => $date->format('Y-m')
+        ];
+        $response = $this->postRequest($requestParams);
+
+        $this->assertResponse($response, 400);
+        $answer = $this->parseContent($response->getContent());
+        $this->assertNotEmpty($answer[0]['message'], 'Response does not have error message');
+        $this->assertEquals('checkout.duplicate_payment.error', $answer[0]['message']);
     }
 
     /**
