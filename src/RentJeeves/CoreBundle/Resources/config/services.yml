@@ -95,3 +95,12 @@ services:
             - @doctrine.orm.default_entity_manager
             - @aci_enrollment_file_deserializer
             - @validator
+
+    guzzle_client:
+        class: Guzzle\Http\Client
+
+    http_client:
+        class: RentJeeves\CoreBundle\HttpClient\HttpClient
+        arguments:
+            - @guzzle_client
+            - @logger

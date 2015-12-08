@@ -1340,4 +1340,100 @@ class PayCase extends BaseTestCase
             'Rent field should equals rent from contract'
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorWhenUserCreatesRentPaymentButActivePaymentAlreadyExists()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $em = $this->getEntityManager();
+
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $this->assertNotEmpty($tenant, 'tenant11@example.com not found');
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+        $em->flush($tenant);
+
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->find(9);
+        $this->assertNotEmpty($contract, 'Contract with id 9 not found');
+        $this->assertEmpty($contract->getActiveRentPayment(), 'Contract id#9 should not have active payments');
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonName);
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '2000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 5,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $existingPaymentSource = $this->page->find(
+            'css',
+            '#id-source-step .payment-accounts label:nth-of-type(2)'
+        );
+        $this->assertNotNull($existingPaymentSource);
+        $existingPaymentSource->click();
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#pay-popup div.pay-step:visible').length"
+        );
+
+        // before making payment, let's create it directly in DB
+        $newPayment = new Payment();
+        $newPayment->setContract($contract);
+        $newPayment->setStatus(PaymentStatus::ACTIVE);
+        $newPayment->setDepositAccount($contract->getGroup()->getRentDepositAccountForCurrentPaymentProcessor());
+        $newPayment->setPaymentAccount($tenant->getPaymentAccounts()->first());
+        $newPayment->setType(PaymentType::ONE_TIME);
+        $newPayment->setAmount(555);
+        $newPayment->setTotal(555);
+        $newPayment->setPaidFor(new \DateTime());
+        $newPayment->setDueDate(1);
+        $newPayment->setStartMonth(1);
+        $newPayment->setStartYear(2020);
+        $em->persist($newPayment);
+        $em->flush($newPayment);
+
+        // active rent payment for this contract exists in DB, user should see an error when tries to create another one
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+
+        $this->assertNotEmpty($errors = $this->page->findAll('css', 'div.attention-box ul>li'));
+        $this->assertCount(1, $errors, 'Expected to see 1 error');
+        $this->assertEquals('checkout.duplicate_payment.error', $errors[0]->getText());
+
+        $payments = $em->getRepository('RjDataBundle:Payment')
+            ->findBy(['contract' => $contract, 'status' => PaymentStatus::ACTIVE]);
+        $this->assertCount(1, $payments, 'Should not be created duplicate payment for contract');
+    }
 }

@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
@@ -201,21 +202,22 @@ class PayController extends Controller
             $recurring = true;
         }
 
-        $this->savePayment(
-            $request,
-            $paymentType,
-            $contract,
-            $paymentAccount,
-            $recurring,
-            true            # verify user
-        );
+        try {
+            $this->savePayment(
+                $request,
+                $paymentType,
+                $contract,
+                $paymentAccount,
+                $recurring,
+                true            # verify user
+            );
+        } catch (\Exception $e) {
+            $paymentType->addError(new FormError($e->getMessage()));
 
-        return new JsonResponse(
-            array(
-                'success' => true
-            )
-        );
+            return $this->renderErrors($paymentType);
+        }
 
+        return new JsonResponse(['success' => true]);
     }
 
     /**
