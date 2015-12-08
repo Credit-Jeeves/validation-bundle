@@ -170,6 +170,9 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @deprecated Need add similar logic to PropertyManager
+     */
     public function isAllowedToSetSingle($isSingle, $groupId)
     {
         if ($isSingle == $this->getPropertyAddress()->isSingle()) {
@@ -250,5 +253,15 @@ class Property extends Base
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("is_single")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    public function isSingle()
+    {
+        return $this->getPropertyAddress()->isSingle();
     }
 }
