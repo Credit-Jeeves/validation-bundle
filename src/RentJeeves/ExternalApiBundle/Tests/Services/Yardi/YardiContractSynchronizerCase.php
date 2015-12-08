@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
 class YardiContractSynchronizerCase extends Base
 {
@@ -45,6 +45,18 @@ class YardiContractSynchronizerCase extends Base
 
         $balanceSynchronizer= $this->getContainer()->get('yardi.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
+
         $updatedContract = $repo->find(20);
         $this->assertGreaterThan(
             4360.5,
@@ -62,7 +74,7 @@ class YardiContractSynchronizerCase extends Base
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Contract');
-
+        /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'We should have contract in fixture.');
         $contract->setStatus(ContractStatus::FINISHED);
@@ -90,6 +102,17 @@ class YardiContractSynchronizerCase extends Base
 
         $balanceSynchronizer = $this->getContainer()->get('yardi.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
 
         $repo = $em->getRepository('RjDataBundle:ContractWaiting');
         $updatedContractWaiting = $repo->findByHoldingPropertyUnitResident(
@@ -136,6 +159,18 @@ class YardiContractSynchronizerCase extends Base
 
         $contractSynchronizer = $this->getContainer()->get('yardi.contract_sync');
         $contractSynchronizer->syncRent();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertRentSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncRentCommand($contract->getHolding(), $externalPropertyId);
+
         /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Did not find contract which should be updated');
@@ -187,6 +222,18 @@ class YardiContractSynchronizerCase extends Base
 
         $contractSyncronizer = $this->getContainer()->get('yardi.contract_sync');
         $contractSyncronizer->syncRent();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertRentSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncRentCommand($contract->getHolding(), $externalPropertyId);
+
         /** @var Contract $contract */
         $this->assertEquals(
             900.00,

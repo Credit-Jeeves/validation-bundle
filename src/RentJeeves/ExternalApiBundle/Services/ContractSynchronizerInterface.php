@@ -15,7 +15,7 @@ interface ContractSynchronizerInterface
      * Execute synchronization balance for specified holding and external property id
      *
      * @param Holding $holding
-     * @param $externalPropertyId
+     * @param string $externalPropertyId
      */
     public function syncBalanceForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId);
 
@@ -28,7 +28,7 @@ interface ContractSynchronizerInterface
      * Execute synchronization rent for specified holding and external property id
      *
      * @param Holding $holding
-     * @param $externalPropertyId
+     * @param string $externalPropertyId
      */
     public function syncRentForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId);
 }

@@ -22,6 +22,10 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
 {
     const LOGGER_PREFIX = '';
 
+    const SYNC_BALANCE = 'balance';
+
+    const SYNC_RENT = 'rent';
+
     /**
      * @var EntityManager
      */
@@ -97,7 +101,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     {
         $this->logMessage(
             sprintf(
-                '[SyncBalance]Start synchronizing balance for holding: %s(#%d), external property: %s',
+                '[SyncBalance]Start synchronizing balance for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
                 $holding->getId(),
                 $externalPropertyId
@@ -130,7 +134,14 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage('[SyncBalance]Finished');
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Finished synchronizing balance for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
     }
 
     /**
@@ -170,7 +181,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     {
         $this->logMessage(
             sprintf(
-                '[SyncRent]Start synchronizing rent for holding: %s(#%d), external property: %s',
+                '[SyncRent]Start synchronizing rent for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
                 $holding->getId(),
                 $externalPropertyId
@@ -203,7 +214,14 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage('[SyncRent]Finished');
+        $this->logMessage(
+            sprintf(
+                '[SyncRent]Finished synchronizing rent for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
     }
 
     /**
@@ -280,19 +298,46 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     }
 
     /**
-     * @param  string $commandName
+     * @param  string $syncType "rent" | "balance"
      * @param  Holding $holding
      * @param  string $externalPropertyId
      * @return Job
      */
-    protected function createSyncJob($commandName, Holding $holding, $externalPropertyId)
+    protected function createSyncJob($syncType, Holding $holding, $externalPropertyId)
     {
-        $arguments[] = '--app=rj';
-        $arguments[] = '--hodling-id=' . $holding->getId();
-        $arguments[] = '--external-property-id=' . $externalPropertyId;
+        switch ($syncType) {
+            case self::SYNC_BALANCE:
+                $logPrefix = '[SyncBalance]';
+                $commandName = SyncContractBalanceCommand::NAME;
+                break;
+            case self::SYNC_RENT:
+                $logPrefix = '[SyncRent]';
+                $commandName = SyncContractRentCommand::NAME;
+                break;
+            default:
+                throw new \RuntimeException('Unsupported synchronize type.');
+        }
+
+        $arguments = [
+            '--holding-id=' . $holding->getId(),
+            '--external-property-id=' . $externalPropertyId,
+        ];
+
         $job = new Job($commandName, $arguments);
         $this->em->persist($job);
         $this->em->flush($job);
+
+        $this->logMessage(
+            sprintf(
+                '%sCreated job#%d: to sync %s for holding: %s(#%d), external property: %s',
+                $logPrefix,
+                $job->getId(),
+                $syncType,
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
 
         return $job;
     }
@@ -307,16 +352,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         foreach ($externalPropertyRows as $externalPropertyRow) {
             list($externalPropertyId) = array_values($externalPropertyRow);
             try {
-                $job = $this->createSyncJob(SyncContractBalanceCommand::NAME, $holding, $externalPropertyId);
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]Created job#%d: to sync balance for holding: %s(#%d), external property: %s',
-                        $job->getId(),
-                        $holding->getName(),
-                        $holding->getId(),
-                        $externalPropertyId
-                    )
-                );
+                $this->createSyncJob(self::SYNC_BALANCE, $holding, $externalPropertyId);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
@@ -359,16 +395,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         foreach ($externalPropertyRows as $externalPropertyRow) {
             list($externalPropertyId) = array_values($externalPropertyRow);
             try {
-                $job = $this->createSyncJob(SyncContractRentCommand::NAME, $holding, $externalPropertyId);
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]Created job#%d: to sync rent for holding: %s(#%d), external property: %s',
-                        $job->getId(),
-                        $holding->getName(),
-                        $holding->getId(),
-                        $externalPropertyId
-                    )
-                );
+                $this->createSyncJob(self::SYNC_RENT, $holding, $externalPropertyId);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }

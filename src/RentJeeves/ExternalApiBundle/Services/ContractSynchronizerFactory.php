@@ -13,7 +13,7 @@ class ContractSynchronizerFactory
     protected $contractSynchronizers;
 
     /**
-     * @param $contractSynchronizers
+     * @param array $contractSynchronizers
      */
     public function __construct(array $contractSynchronizers)
     {

@@ -19,6 +19,12 @@ class SyncContractRentCommand extends BaseCommand
         $this
             ->setName(self::NAME)
             ->addOption(
+                'jms-job-id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Job ID'
+            )
+            ->addOption(
                 'holding-id',
                 null,
                 InputOption::VALUE_REQUIRED,

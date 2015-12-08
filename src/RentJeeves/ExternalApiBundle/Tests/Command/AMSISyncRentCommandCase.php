@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Command\AMSISyncRentCommand;
+use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\AMSI\AMSIClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -53,10 +55,39 @@ class AMSISyncRentCommandCase extends BaseTestCase
             'command' => $command->getName(),
         ]);
 
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        /** @var Job $lastJob */
+        $lastJob = end($jobs);
+
         $this->assertContains(
-            '[AMSI ContractSynchronizer][SyncRent]Rent for Contract #20 updated to 1480',
+            sprintf(
+                '[AMSI ContractSynchronizer][SyncRent]Created job#%d: to sync rent for holding: %s(#%d),' .
+                ' external property: %s',
+                $lastJob->getId(),
+                $contract->getHolding()->getName(),
+                $contract->getHolding()->getId(),
+                AMSIClientCase::EXTERNAL_PROPERTY_ID
+            ),
             $commandTester->getDisplay(),
-            'Rent for Contract#20 not updated'
+            'Job was not be created'
+        );
+
+        $this->assertEquals(
+            SyncContractRentCommand::NAME,
+            $lastJob->getCommand(),
+            'Command name on job is incorrect'
+        );
+
+        $this->assertEquals(
+            [
+                '--holding-id=' . $contract->getHolding()->getId(),
+                '--external-property-id=' . AMSIClientCase::EXTERNAL_PROPERTY_ID,
+                '--app=rj',
+            ],
+            $lastJob->getArgs(),
+            'Arguments on job are incorrect'
         );
     }
 }
