@@ -13,6 +13,7 @@ class ResidentDataManagerCase extends Base
      */
     public function shouldGetAmsiResidents()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $em = $this->getEntityManager();
         $settings = $em->getRepository('RjDataBundle:AMSISettings')->findOneBy(
             ['user' => 'renttrack']

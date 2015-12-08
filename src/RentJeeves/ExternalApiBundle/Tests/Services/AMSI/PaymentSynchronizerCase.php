@@ -24,6 +24,7 @@ class PaymentSynchronizerCase extends BaseTestCase
      */
     public function shouldSendPaymentToAmsiAndReturnTrue()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $transaction = $this->createTransaction(
@@ -49,6 +50,7 @@ class PaymentSynchronizerCase extends BaseTestCase
      */
     public function shouldReturnPaymentForOrderAndReturnTrue(Order $order)
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $order->setStatus(OrderStatus::CANCELLED);
 
         $completedTransaction = $order->getCompleteTransaction();
@@ -82,6 +84,7 @@ class PaymentSynchronizerCase extends BaseTestCase
      */
     public function shouldUpdateSettlementDataAndReturnTrue(Order $order)
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $settings = $order->getContract()->getHolding()->getAmsiSettings();
 
         $settlementDate = $this->getSettlementData()->getSettlementDate(
