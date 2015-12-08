@@ -7,12 +7,13 @@ use CreditJeeves\DataBundle\Entity\Holding;
 interface ContractSynchronizerInterface
 {
     /**
-     * Execute synchronization balance
+     * Execute balance synchronization for all integrated holdings in the system
+     *  and create jobs for synchronization each pair holding and external property.
      */
     public function syncBalance();
 
     /**
-     * Execute synchronization balance for specified holding and external property id
+     * Execute balance synchronization for specified holding and external property id
      *
      * @param Holding $holding
      * @param string $externalPropertyId
@@ -20,12 +21,13 @@ interface ContractSynchronizerInterface
     public function syncBalanceForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId);
 
     /**
-     * Execute synchronization rent
+     * Execute rent synchronization for all integrated holdings in the system
+     *  and create jobs for synchronization each pair holding and external property
      */
     public function syncRent();
 
     /**
-     * Execute synchronization rent for specified holding and external property id
+     * Execute rent synchronization for specified holding and external property id
      *
      * @param Holding $holding
      * @param string $externalPropertyId

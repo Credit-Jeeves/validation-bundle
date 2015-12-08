@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SyncContractBalanceCommand extends BaseCommand
 {
-    const NAME = 'renttrack:lease:synchronize:balance';
+    const NAME = 'renttrack:contract:synchronize:balance';
     /**
      * {@inheritdoc}
      */

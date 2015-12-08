@@ -18,25 +18,25 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
         parent::setUp();
         $this->factory = new ContractSynchronizerFactory([
             ApiIntegrationType::MRI => $this->getMockBuilder(
-                    'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'
-                )
-                ->disableOriginalConstructor()
-                ->getMock(),
+                'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'
+            )
+            ->disableOriginalConstructor()
+            ->getMock(),
             ApiIntegrationType::RESMAN => $this->getMockBuilder(
-                    'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
-                )
-                ->disableOriginalConstructor()
-                ->getMock(),
+                'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
+            )
+            ->disableOriginalConstructor()
+            ->getMock(),
             ApiIntegrationType::YARDI_VOYAGER => $this->getMockBuilder(
-                    'RentJeeves\ExternalApiBundle\Services\Yardi\ContractSynchronizer'
-                )
-                ->disableOriginalConstructor()
-                ->getMock(),
+                'RentJeeves\ExternalApiBundle\Services\Yardi\ContractSynchronizer'
+            )
+            ->disableOriginalConstructor()
+            ->getMock(),
             ApiIntegrationType::AMSI => $this->getMockBuilder(
-                    'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
-                )
-                ->disableOriginalConstructor()
-                ->getMock(),
+                'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
+            )
+            ->disableOriginalConstructor()
+            ->getMock(),
         ]);
     }
 
