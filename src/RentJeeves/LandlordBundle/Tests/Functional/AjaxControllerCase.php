@@ -34,7 +34,8 @@ class AjaxControllerCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
 
         $this->login('tenant11@example.com', 'pass');
-        $this->session->visit($this->getUrl() . 'property/invite/'. $newProperty->getId());
+        $id = $newProperty->getId();
+        $this->session->visit($this->getUrl() . 'property/invite/'. $id);
         $landlordEmailInput = $this->getDomElement(
             '#rentjeeves_publicbundle_invitetype_email',
             'Landlord Email Input not found.'
@@ -47,8 +48,6 @@ class AjaxControllerCase extends BaseTestCase
         $isSinglePropertyCheckbox->click();
         $addPropertyButton = $this->getDomElement('#register', 'Add property button not found.');
         $addPropertyButton->click();
-
-        $propertyAddress = $newProperty->getPropertyAddress();
         $this->assertNull(
             $newProperty->getPropertyAddress()->getGoogleReference(),
             'Google reference should be null until contract is approved by Landlord'
@@ -76,9 +75,9 @@ class AjaxControllerCase extends BaseTestCase
 
         $this->session->wait(15000, '$(".overlay").is(":hidden")');
 
-        $this->getEntityManager()->refresh($propertyAddress);
+        $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find($id);
         $this->assertNotNull(
-            $propertyAddress->getGoogleReference(),
+            $property->getPropertyAddress()->getGoogleReference(),
             'Google reference should be updated.'
         );
     }
