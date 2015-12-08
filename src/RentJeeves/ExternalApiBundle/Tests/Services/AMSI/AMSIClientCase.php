@@ -49,6 +49,7 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyResidentsWithRequiredData()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C');
@@ -92,6 +93,7 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyResidentsWithRecurringCharges()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C', true);
@@ -147,6 +149,7 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyUnits()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);

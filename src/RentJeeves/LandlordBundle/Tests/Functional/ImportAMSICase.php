@@ -14,6 +14,7 @@ class ImportAMSICase extends ImportBaseAbstract
      */
     public function shouldImportAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
