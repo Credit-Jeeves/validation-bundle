@@ -13,6 +13,7 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractRentForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
@@ -52,6 +53,7 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractBalanceForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
@@ -86,6 +88,7 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractWaitingBalanceForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
