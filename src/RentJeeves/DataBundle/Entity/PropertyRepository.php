@@ -250,8 +250,8 @@ EOT;
             ->select('LENGTH(u.name) as co,p,u')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->leftJoin('p.units', 'u')
-            ->where('propertyAddress.jb = :jb')
-            ->andWhere('propertyAddress.kb = :kb')
+            ->where('propertyAddress.lat = :jb')
+            ->andWhere('propertyAddress.long = :kb')
             ->setParameter('jb', $jb)
             ->setParameter('kb', $kb)
             ->addOrderBy('co', 'ASC')
@@ -308,7 +308,7 @@ EOT;
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
             ->andWhere('unit.holding = :holdingId')
-            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
+            ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
             ->orderBy('sortField')
             ->getQuery()
@@ -325,7 +325,7 @@ EOT;
         $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->innerJoin('p.property_groups', 'p_group')
-            ->where('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL');
+            ->where('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL');
         if ($holding) {
             $query
                 ->andWhere('p_group.holding_id = :holdingId')
