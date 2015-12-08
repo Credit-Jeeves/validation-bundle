@@ -260,9 +260,8 @@ class IframeCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");
-        $this->assertNotNull($submit = $this->page->find('css', '#register'));
-        $submit->click();
-        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->assertNotNull($submit = $this->page->find('css', '#register'), 'Submit button not found.');
+        $thisIsMyRental = $this->getDomElement('.thisIsMyRental', '"This is My Rental" button not found.');
         $thisIsMyRental->click();
         $submit->click();
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -289,6 +288,7 @@ class IframeCase extends BaseTestCase
      */
     public function iframeFound()
     {
+        $this->load(true);
         $this->getIframeFound('newtenant13@yandex.ru');
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
