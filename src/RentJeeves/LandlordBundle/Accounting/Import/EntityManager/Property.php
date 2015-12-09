@@ -236,7 +236,14 @@ trait Property
         }
 
         $propertyAddress = $property->getPropertyAddress();
-        $key = md5(sprintf('%s %s', $propertyAddress->getNumber(), $propertyAddress->getStreet()));
+        $key = md5(
+            sprintf(
+                '%s %s %ы',
+                $propertyAddress->getNumber(),
+                $propertyAddress->getStreet(),
+                $propertyAddress->getCity()
+            )
+        );
         if (array_key_exists($key, $this->propertyList)) {
             return $this->propertyList[$key];
         }
