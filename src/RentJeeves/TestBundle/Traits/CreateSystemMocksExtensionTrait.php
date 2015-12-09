@@ -4,20 +4,19 @@ namespace RentJeeves\TestBundle\Traits;
 
 /**
  * Possible to use only in classes which implements \PHPUnit_Framework_TestCase
- *
- * @method \PHPUnit_Framework_MockObject_MockObject getMock
  */
 trait CreateSystemMocksExtensionTrait
 {
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Doctrine\ORM\EntityRepository
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Doctrine\ORM\EntityRepository
      */
     public function getEntityRepositoryMock()
     {
         return $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
     }
+
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|RentJeeves\CoreBundle\Session\Landlord
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Session\Landlord
      */
     public function getSessionLandlordMock()
     {
@@ -25,7 +24,7 @@ trait CreateSystemMocksExtensionTrait
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Symfony\Component\HttpFoundation\Session\Session
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Session\Session
      */
     public function getSessionMock()
     {
