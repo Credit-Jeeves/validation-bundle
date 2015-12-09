@@ -34,6 +34,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('prop.propertyAddress', 'propertyAddress');
         $query->leftJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
