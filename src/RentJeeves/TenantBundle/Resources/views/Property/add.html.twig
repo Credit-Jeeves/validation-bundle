@@ -46,8 +46,8 @@
     </section>
     {% if property %}
         {% set address = property.propertyAddress %}
-        <input type="hidden" value="{{ address.index is empty ? address.jb : address.lat }}" id="lat">
-        <input type="hidden" value="{{ address.index is empty ? address.kb : address.long }}" id="lng">
+        <input type="hidden" value="{{ address.lat }}" id="lat">
+        <input type="hidden" value="{{ address.long }}" id="lng">
     {% else %}
         <input type="hidden" value="40.728333343333" id="lat">
         <input type="hidden" value="-73.994166676667" id="lng">

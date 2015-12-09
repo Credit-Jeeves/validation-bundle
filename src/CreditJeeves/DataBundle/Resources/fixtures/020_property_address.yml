@@ -1,215 +1,219 @@
 model: RentJeeves\DataBundle\Entity\PropertyAddress
 fixtures:
     PropertyAddress_1:
-        state:          NY
-        city:           New York
-        street:         Broadway
         number:         770
+        street:         Broadway
+        city:           New York
+        state:          NY
         zip:            10003
-        jb:             40.7308364
-        kb:             -73.991567
+        lat:            40.73108
+        long:           -73.99186
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          770BroadwayNewYorkNY
     PropertyAddress_2:
-        state:          CA
-        city:           Santa Barbara
-        street:         Andante Rd
         number:         960
+        street:         Andante Rd
+        city:           Santa Barbara
+        state:          CA
         zip:            93105
-        jb:             34.44943
-        kb:             -119.709369
+        lat:            34.44942
+        long:           -119.70936
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          960AndanteRdSantaBarbaraCA
     PropertyAddress_3:
-        state:          CA
-        city:           Mission Canyon
+        number:         999
         street:         Andante Rd
-        number:         750
+        city:           Santa Barbara
+        state:          CA
         zip:            93105
-        jb:             34.44987
-        kb:             -119.7096921
+        lat:            34.44942
+        long:           -119.70936
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          999AndanteRdSantaBarbaraCA
     PropertyAddress_4:
-        state:          NY
-        city:           New York
-        street:         Broadway
         number:         560
+        street:         Broadway
+        city:           New York
+        state:          NY
         zip:            10012
-        jb:             40.723851
-        kb:             -73.997487
+        lat:            40.72384
+        long:           -73.99749
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          560BroadwayNewYorkNY
     PropertyAddress_5:
-        state:          NY
-        city:           Jamaica
-        street:         Broadway
         number:         1
+        street:         Broadway
+        city:           Jamaica
+        state:          NY
         zip:            11414
-        jb:             40.6584069
-        kb:             -73.830445
+        lat:            40.6584
+        long:           -73.83053
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          1BroadwayJamaicaNY
     PropertyAddress_6:
-        state:          MA
-        city:           Boston
+        number:         2
         street:         Washington St
-        number:         10
-        zip:            02132
-        jb:             42.2574449
-        kb:             -71.1616868
+        city:           Dedham
+        state:          MA
+        zip:            02026
+        lat:            42.2572
+        long:           -71.16139
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          2WashingtonStDedhamMA
     PropertyAddress_7:
-        state:          CA
+        number:         2509
+        street:         Novato
         city:           Palos Verdes Estates
-        street:         Vía Fernandez
-        number:         32
+        state:          CA
         zip:            90274
-        jb:             33.7880762
-        kb:             -118.3960347
+        lat:            33.79069
+        long:           -118.38635
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          2509NovatoPalosVerdesEstatesCA
     PropertyAddress_8:
-        state:          WA
+        number:         168
+        street:         18th
         city:           Seattle
-        street:         18th Ave
-        number:         50
+        state:          WA
         zip:            98122
-        jb:             47.6016982
-        kb:             -122.3089461
+        lat:            47.60288
+        long:           -122.30887
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          16818thSeattleWA
     PropertyAddress_9:
-        state:          MO
-        city:           Kansas City
-        street:         W 48th St
         number:         121
+        street:         W 48th St
+        city:           Kansas City
+        state:          MO
         zip:            64112
-        jb:             39.038827
-        kb:             -94.588826
+        lat:            39.03927
+        long:           -94.58821
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          121W48thStKansasCityMO
     PropertyAddress_10:
-        state:          TX
-        city:           Houston
-        street:         Crosstimbers St
         number:         1201
+        street:         Crosstimbers St
+        city:           Houston
+        state:          TX
         zip:            77022
-        jb:             29.8287445
-        kb:             -95.3856651
+        lat:            29.82872
+        long:           -95.38551
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          1201CrosstimbersStHoustonTX
     PropertyAddress_11:
-        state:          Mt
-        city:           Billings
-        street:         Overland Ave
         number:         2026
+        street:         Overland Ave
+        city:           Billings
+        state:          Mt
         zip:            59102
-        jb:             45.753246
-        kb:             -108.565361
+        lat:            45.75281
+        long:           -108.56561
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          2026OverlandAveBillingsMT
     PropertyAddress_12:
-        state:          AZ
-        city:           Scottsdale
-        street:         N Palo Cristi Rd
         number:         5532
+        street:         N Palo Cristi Rd
+        city:           Scottsdale
+        state:          AZ
         zip:            85253
-        jb:             33.518351
-        kb:             -112.0041753
+        lat:            33.51822
+        long:           -112.00489
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          5532NPaloCristiRdScottsdaleAZ
     PropertyAddress_13:
-        state:          Havana
-        city:           Havana
-        street:         de Octubre
-        number:         10
-        zip:            60661
-        jb:             23.1094238
-        kb:             -82.3658518
+        number:         1200
+        street:         Market St
+        city:           Saint Louis
+        state:          MO
+        zip:            63103
+        lat:            38.62736
+        long:           -90.19836
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          1200MarketStSaintLouisMO
     PropertyAddress_14:
-        state:          IL
-        city:           Chicago
-        street:         W Madison St
         number:         733
+        street:         W Madison St
+        city:           Chicago
+        state:          IL
         zip:            60661
-        jb:             41.8810911
-        kb:             -87.6468986
+        lat:             41.8810911
+        long:             -87.6468986
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          733WMadisonStChicagoIL
     PropertyAddress_15:
-        state:          AR
-        city:           Little Rock
-        street:         S Broadway St
         number:         617
+        street:         S Broadway St
+        city:           Little Rock
+        state:          AR
         zip:            72201
-        jb:             34.7434652
-        kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
-        index:          617BroadwayStLittleRockAR
+        index:          617SBroadwayStLittleRockAR
     PropertyAddress_16:
-        state:          NY
-        city:           New York
+        number:         753
         street:         Broadway
-        number:         776
+        city:           New York
+        state:          NY
         zip:            10003
-        jb:             40.7312396
-        kb:             -73.9918488
+        lat:            40.73023
+        long:           -73.99282
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+        index:          753BroadwayNewYork
     PropertyAddress_17:
+        number:         745
         state:          NY
         city:           New York
         street:         Broadway
-        number:         745
         zip:            10003
-        jb:             40.7302448
-        kb:             -73.9927101
+        lat:            40.73023
+        long:           -73.99282
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          745BroadwayNewYorkNY
     PropertyAddress_18:
-        state:          NY
-        city:           New York
-        street:         Broadway
         number:         785
+        street:         Broadway
+        city:           New York
+        state:          NY
         zip:            10003
-        jb:             40.7316721
-        kb:             -73.9917422
+        lat:            40.73162
+        long:           -73.99166
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         index:          785BroadwayNewYorkNY
     PropertyAddress_19:
-        state:          NY
-        city:           New York
-        street:         Lexington Avenue
         number:         116
+        street:         Lexington Ave
+        city:           New York
+        state:          NY
         zip:            10016
-        jb:             40.7426129
-        kb:             -73.9828048
+        lat:            40.74261
+        long:           -73.98283
         is_single:      1
         createdAt:     '-1 day'
         updatedAt:     '-1 day'
         index:          116LexingtonAveNewYorkNY
     PropertyAddress_Normalized:
-        state:          CA
-        city:           Los Angeles
-        street:         West 36th Place
         number:         1156
+        street:         W 36th Pl
+        city:           Los Angeles
+        state:          CA
         zip:            90007
-        jb:             34.021764
-        kb:             -118.293358
+        lat:            34.02176
+        long:           -118.29335
         index:          1156W36thPlLosAngelesCA

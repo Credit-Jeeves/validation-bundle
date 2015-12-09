@@ -34,8 +34,8 @@ class DepositAccountCase extends BaseTestCase
         );
         $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
-                'jb' => '40.7316721',
-                'kb' => '-73.9917422',
+                'lat' => '40.73162',
+                'long' => '-73.99166',
             ]
         );
         $this->assertTrue($tenant instanceof Tenant);

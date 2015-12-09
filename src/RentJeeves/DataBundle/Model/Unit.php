@@ -490,7 +490,7 @@ abstract class Unit
         }
 
         $property = $this->getProperty();
-        if ($property && $property->isSingle()) {
+        if ($property && $property->getPropertyAddress() && $property->getPropertyAddress()->isSingle()) {
             return true;
         }
 

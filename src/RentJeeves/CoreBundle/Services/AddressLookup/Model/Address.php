@@ -9,21 +9,21 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $country;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $state;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $city;
 
@@ -35,37 +35,23 @@ class Address
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $street;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $number;
 
     /**
      * @var string
      *
-     * @Assert\NotBlank(groups={"SmartyStreetsAddress", "GoogleAddress"})
+     * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
      */
     protected $zip;
-
-    /**
-     * @var string using for GeoCoder
-     *
-     * @Assert\NotBlank(groups={"GoogleAddress"})
-     */
-    protected $jb;
-
-    /**
-     * @var string using for GeoCoder
-     *
-     * @Assert\NotBlank(groups={"GoogleAddress"})
-     */
-    protected $kb;
 
     /**
      * @var string using for SS
@@ -143,38 +129,6 @@ class Address
     public function setZip($zip)
     {
         $this->zip = $zip;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJb()
-    {
-        return $this->jb;
-    }
-
-    /**
-     * @param string $jb
-     */
-    public function setJb($jb)
-    {
-        $this->jb = $jb;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKb()
-    {
-        return $this->kb;
-    }
-
-    /**
-     * @param string $kb
-     */
-    public function setKb($kb)
-    {
-        $this->kb = $kb;
     }
 
     /**
@@ -270,7 +224,6 @@ class Address
      */
     public function getIndex()
     {
-        // For google geocoder
         if ($this->latitude === null && $this->longitude === null) {
             return null;
         }

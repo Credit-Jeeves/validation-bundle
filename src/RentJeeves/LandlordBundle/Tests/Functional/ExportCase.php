@@ -65,8 +65,8 @@ class ExportCase extends BaseTestCase
             [
                 'zip' => '10003',
                 'number' => '770',
-                'jb' => '40.7308364',
-                'kb' => '-73.991567'
+                'lat' => '40.73108',
+                'long' => '-73.99186'
             ]
         );
         /** @var DepositAccount $depositAccount */

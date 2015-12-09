@@ -260,7 +260,6 @@
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
         "willdurand/js-translation-bundle": "dev-master",
-        "willdurand/geocoder-bundle": "dev-master",
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master",

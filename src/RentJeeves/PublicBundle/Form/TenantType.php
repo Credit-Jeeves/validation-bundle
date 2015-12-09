@@ -16,7 +16,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use RentJeeves\PublicBundle\Form\UnitType;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 
@@ -173,7 +172,7 @@ class TenantType extends AbstractType
                  * @var $property Property
                  */
                 $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
-                if ($property && $property->isSingle()) {
+                if ($property && $property->getPropertyAddress()->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     $form->get('unit')->setData($unit);
                 }
@@ -200,9 +199,10 @@ class TenantType extends AbstractType
 
                 if (empty($property)) {
                     $form->addError(new FormError('error.property.empty'));
+
                     return;
                 }
-                if ($property->isSingle()) {
+                if ($property->getPropertyAddress()->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     if (!$property->hasIntegratedGroup()) {
                         return;

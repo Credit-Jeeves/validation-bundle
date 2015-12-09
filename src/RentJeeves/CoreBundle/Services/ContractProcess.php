@@ -80,7 +80,8 @@ class ContractProcess
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
-            if ($property->isSingle()) {
+            $propertyAddress = $property->getPropertyAddress();
+            if ($propertyAddress->isSingle()) {
                 $propertyGroup = $property->getPropertyGroups()->first();
                 $contract->setHolding($propertyGroup->getHolding());
                 $contract->setGroup($propertyGroup);

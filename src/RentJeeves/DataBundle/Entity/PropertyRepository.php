@@ -239,34 +239,6 @@ EOT;
     }
 
     /**
-     * @param string $jb
-     * @param string $kb
-     *
-     * @return mixed
-     */
-    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
-    {
-        $result = $this->createQueryBuilder('p')
-            ->select('LENGTH(u.name) as co,p,u')
-            ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->leftJoin('p.units', 'u')
-            ->where('propertyAddress.jb = :jb')
-            ->andWhere('propertyAddress.kb = :kb')
-            ->setParameter('jb', $jb)
-            ->setParameter('kb', $kb)
-            ->addOrderBy('co', 'ASC')
-            ->addOrderBy('u.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-
-        if (isset($result[0][0])) {
-            return $result[0][0];
-        }
-
-        return null;
-    }
-
-    /**
      * @param Holding $holding
      *
      * @return array
@@ -280,7 +252,7 @@ EOT;
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
             ->andWhere('unit.holding = :holdingId')
-            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
+            ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
             ->addOrderBy('co', 'ASC')
             ->addOrderBy('unit.name', 'ASC')
@@ -308,7 +280,7 @@ EOT;
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
             ->andWhere('unit.holding = :holdingId')
-            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
+            ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
             ->orderBy('sortField')
             ->getQuery()
@@ -325,7 +297,7 @@ EOT;
         $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->innerJoin('p.property_groups', 'p_group')
-            ->where('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL');
+            ->where('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL');
         if ($holding) {
             $query
                 ->andWhere('p_group.holding_id = :holdingId')
@@ -365,22 +337,14 @@ EOT;
      */
     public function findOneByAddress(Address $address)
     {
-        $query = $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyAddress', 'propertyAddress');
-        if ($address->getIndex() !== null) {
-            $query
-                ->where('propertyAddress.index = :index')
-                ->setParameter('index', $address->getIndex());
-        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
-            $query
-                ->where('propertyAddress.jb = :jb AND propertyAddress.kb = :kb')
-                ->setParameter('jb', $address->getJb())
-                ->setParameter('kb', $address->getKb());
-        } else {
+        if ($address->getIndex() === null) {
             throw new \LogicException('Address doesn`t have data about location');
         }
 
-        return $query
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->where('propertyAddress.index = :index')
+            ->setParameter('index', $address->getIndex())
             ->andWhere('propertyAddress.number = :number')
             ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */

@@ -33,35 +33,6 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
     }
 
-    public function provideGoogleAddress()
-    {
-        return array(
-            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', 'Brooklyn', 40.699021, -73.993744),
-            array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
-        );
-    }
-
-    /**
-     * @test
-     * @dataProvider provideGoogleAddress
-     */
-    public function parseGoogleAddress($address, $city, $district, $jb, $kb)
-    {
-        $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $this->session->visit($this->getUrl() . 'iframe');
-        $this->session->wait($this->timeout, "typeof $ !== undefined");
-
-        $this->fillGoogleAddress($address);
-        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
-
-        $repo = $this->getContainer()->get('doctrine')->getManager()->getRepository('RjDataBundle:Property');
-        /** @var Property $property */
-        $this->assertNotNull($property = $repo->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb));
-        $propertyAddress = $property->getPropertyAddress();
-        $this->assertEquals($city, $propertyAddress->getCity());
-    }
-
     /**
      * @test
      */
@@ -289,9 +260,8 @@ class IframeCase extends BaseTestCase
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");
-        $this->assertNotNull($submit = $this->page->find('css', '#register'));
-        $submit->click();
-        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $this->assertNotNull($submit = $this->page->find('css', '#register'), 'Submit button not found.');
+        $thisIsMyRental = $this->getDomElement('.thisIsMyRental', '"This is My Rental" button not found.');
         $thisIsMyRental->click();
         $submit->click();
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -318,6 +288,7 @@ class IframeCase extends BaseTestCase
      */
     public function iframeFound()
     {
+        $this->load(true);
         $this->getIframeFound('newtenant13@yandex.ru');
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
@@ -389,7 +360,9 @@ class IframeCase extends BaseTestCase
      */
     public function publicIframe()
     {
+        $this->load(true);
         $this->setDefaultSession('selenium2');
+
         $this->clearEmail();
         $this->logout();
         $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105, United States';
@@ -437,8 +410,7 @@ class IframeCase extends BaseTestCase
         $contract = new Contract();
         $contract->setPaidTo(new DateTime());
         /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')
-            ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
+        $property = $em->getRepository('RjDataBundle:Property')->find(19);
         $unit = $property->getExistingSingleUnit();
         $contract->setProperty($property);
         $contract->setUnit($unit);

@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
@@ -50,7 +49,7 @@ class ImportCsvCase extends ImportBaseAbstract
             }
         }
     }
-    
+
     /**
      * @test
      */
@@ -408,8 +407,8 @@ class ImportCsvCase extends ImportBaseAbstract
          */
         $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
-                'jb' => '40.7308364',
-                'kb' => '-73.991567',
+                'lat' => '40.73108',
+                'long' => '-73.99186',
             ]
         );
 
@@ -544,7 +543,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
         $this->logout();
     }
-
 
     /**
      * @test
@@ -1006,7 +1004,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
     }
 
-
     /**
      * @return array
      */
@@ -1126,7 +1123,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $paidTo = $reflectionProperty->getValue($contract);
         $this->assertNull($paidTo, 'We should not set paid to, it should be null');
     }
-
 
     /**
      * @test
@@ -1289,7 +1285,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $em->persist($property);
         $em->flush();
 
-
         $importGroupSettings = $this->getImportGroupSettings();
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
@@ -1336,7 +1331,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
     }
 
-
     /**
      * @test
      */
@@ -1356,7 +1350,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertNotNull($unitMapping);
     }
-
 
     /**
      * @test
@@ -1469,7 +1462,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setCsvDateFormat('m/d/Y');
         $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
         $this->getEntityManager()->flush();
-
 
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
