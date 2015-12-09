@@ -851,6 +851,8 @@ class AjaxController extends Controller
             return new JsonResponse($response);
         }
 
+        $this->getPropertyProcess()->saveToGoogle($contract->getProperty());
+
         $em->persist($contract);
         $em->flush();
 
