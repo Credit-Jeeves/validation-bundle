@@ -5,5 +5,4 @@ fixtures:
     preciseIDEai: '%net_connect.precise_id.eai%'
     creditProfileUserPwd: "%net_connect.credit_profile.userpwd%"
     creditProfileEai: '%net_connect.credit_profile.eai%'
-    contract: 'Test Contract text'
     rights: Some rules

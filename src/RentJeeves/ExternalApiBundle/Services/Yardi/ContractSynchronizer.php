@@ -52,24 +52,24 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         foreach ($roommates as $roommate) {
             $residentId = $roommate->getCustomerId();
-            $unitName = $resident->getUnit()->getUnitId();
+            $externalUnitId = $resident->getExternalUnitId($externalPropertyId);
             $contracts = $this
                 ->getContractRepository()
-                ->findContractsByHoldingExternalPropertyResidentUnit(
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
                     $holding,
                     $externalPropertyId,
                     $residentId,
-                    $unitName
+                    $externalUnitId
                 );
             empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
             $contractsWaiting = $this
                 ->getContractWaitingRepository()
-                ->findContractsByHoldingExternalPropertyResidentUnit(
+                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
                     $holding,
                     $externalPropertyId,
                     $residentId,
-                    $unitName
+                    $externalUnitId
                 );
 
             empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
@@ -158,6 +158,11 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         return $this->getHoldingRepository()->findHoldingsForUpdatingRentYardi();
     }
 
+    /**
+     * @param Holding $holding
+     * @param ResidentTransactionPropertyCustomer $resident
+     * @param string $externalPropertyId
+     */
     protected function processingResidentForUpdateRent(
         Holding $holding,
         $resident,
@@ -193,11 +198,11 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 continue;
             }
             $leaseId = $charge->getDetail()->getCustomerID();
-            $unitName = $charge->getDetail()->getUnitID();
+            $externalUnitId = $charge->getDetail()->getExternalUnitId($externalPropertyId);
             $amount += $charge->getDetail()->getAmount();
         }
 
-        if (empty($leaseId) || empty($unitName)) {
+        if (empty($leaseId) || empty($externalUnitId)) {
             throw new \LogicException(
                 sprintf(
                     '[SyncRent]Lease id and unitName can not be empty for external property "%s"',
@@ -210,13 +215,23 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         $contracts = $this
             ->getContractRepository()
-            ->findContractsByHoldingExternalPropertyLeaseUnit($holding, $externalPropertyId, $leaseId, $unitName);
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
+            );
 
         empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
         $contractsWaiting = $this
             ->getContractWaitingRepository()
-            ->findContractsByHoldingExternalPropertyLeaseUnit($holding, $externalPropertyId, $leaseId, $unitName);
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $leaseId,
+                $externalUnitId
+            );
 
         empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
 

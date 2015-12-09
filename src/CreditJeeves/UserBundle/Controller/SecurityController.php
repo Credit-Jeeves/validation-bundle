@@ -66,6 +66,21 @@ class SecurityController extends BaseController
                     $this->container->getParameter('fos_user.template.engine')
                 );
         }
+
+        $data['loginMessage'] = $this->getLoginMessage();
+
         return $this->container->get('templating')->renderResponse($template, $data);
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getLoginMessage()
+    {
+        if ($settings = $this->container->get('doctrine')->getRepository('DataBundle:Settings')->findAll()) {
+            $settings = $settings[0];
+        }
+
+        return $settings->getLoginMessage();
     }
 }

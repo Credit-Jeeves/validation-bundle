@@ -130,13 +130,13 @@ class AMSILedgerClient extends AMSIBaseClient
                     ));
                 }
             } else {
-                $this->logger->alert(sprintf(
+                $this->logger->emergency(sprintf(
                     'AMSI: Failed updateSettlementData for batchID #%d. Cannot deserialize response.',
                     $batchId
                 ));
             }
         } catch (\Exception $e) {
-            $this->logger->alert(sprintf(
+            $this->logger->emergency(sprintf(
                 'AMSI: Failed updateSettlementData for batchID #%d. Got exception %s',
                 $batchId,
                 $e->getMessage()

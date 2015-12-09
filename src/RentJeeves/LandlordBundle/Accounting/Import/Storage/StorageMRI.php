@@ -57,7 +57,7 @@ class StorageMRI extends ExternalApiStorage
         // timeout counter from zero and give us another 2 min (120 sec)
         set_time_limit(120);
 
-        /** @var $customer Value  */
+        /** @var Value $customer   */
         foreach ($customers as $customer) {
             if (strtolower($customer->getIsCurrent()) !== strtolower(self::IS_CURRENT)) {
                 continue;
@@ -73,9 +73,6 @@ class StorageMRI extends ExternalApiStorage
 
             $finishAt = $this->getDateString($customer->getLeaseEnd());
             $moveOut = $this->getDateString($customer->getLeaseMoveOut());
-            $monthToMonth = $customer->getLeaseMonthToMonth();
-            $isCurrent = $customer->getIsCurrent();
-            $monthToMonth = strtolower($isCurrent) === 'y' ? $isCurrent : $monthToMonth;
 
             $externalUnitId = $customer->getExternalUnitId();
             $unitName = $customer->getUnitId();
@@ -91,7 +88,7 @@ class StorageMRI extends ExternalApiStorage
                 $customer->getEmail(),
                 $moveOut,
                 $customer->getLeaseBalance(),
-                $monthToMonth,
+                $this->getMonthToMonth($customer),
                 $customer->getPaymentAccepted(),
                 $customer->getLeaseId(),
                 $externalUnitId,
@@ -108,5 +105,34 @@ class StorageMRI extends ExternalApiStorage
         }
 
         return true;
+    }
+
+
+    /**
+     * @param Value $customer
+     *
+     * @return string "Y" or whatever API sends us
+     */
+    protected function getMonthToMonth(Value $customer)
+    {
+        $monthToMonth = $customer->getLeaseMonthToMonth();
+        /** @var \DateTime $leaseEnd */
+        $leaseEnd = $customer->getLeaseEnd();
+        if ($leaseEnd instanceof \DateTime) {
+            $today = new \DateTime();
+            $today->setTime(0, 0, 0);
+            $leaseEnd->setTime(0, 0, 0);
+            $isPastFinishDate = $leaseEnd < $today;
+        } else {
+            $isPastFinishDate = false;
+        }
+
+        $isCurrent = strtolower($customer->getIsCurrent()) === 'y' ? true : false;
+        // if past finishedAt and Current, then force month-to-month
+        if ($isPastFinishDate && $isCurrent) {
+            $monthToMonth = 'Y';
+        }
+
+        return $monthToMonth;
     }
 }

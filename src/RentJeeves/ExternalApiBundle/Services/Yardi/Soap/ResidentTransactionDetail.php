@@ -183,4 +183,13 @@ class ResidentTransactionDetail
 
         return null;
     }
+
+    /**
+     * @param string $externalPropertyId
+     * @return string
+     */
+    public function getExternalUnitId($externalPropertyId)
+    {
+        return sprintf('%s||%s', $externalPropertyId, $this->getUnitID());
+    }
 }

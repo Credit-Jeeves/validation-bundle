@@ -4,11 +4,25 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\Yardi;
 
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
 class YardiContractSynchronizerCase extends Base
 {
+    const PROPERTY_ID = 'rnttrk01';
+
+    /**
+     * @param Unit $unit
+     */
+    protected function createUnitMapping(Unit $unit)
+    {
+        $unitMapping = new UnitMapping();
+        $unitMapping->setUnit($unit);
+        $unitMapping->setExternalUnitId(sprintf('%s||%s', self::PROPERTY_ID, $unit->getActualName()));
+        $unit->setUnitMapping($unitMapping);
+    }
     /**
      * @test
      */
@@ -18,8 +32,11 @@ class YardiContractSynchronizerCase extends Base
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $repo = $em->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
+        $this->createUnitMapping($contract->getUnit());
+        $this->getEntityManager()->flush();
         $this->assertEquals(
             0,
             $contract->getIntegratedBalance(),
@@ -50,7 +67,7 @@ class YardiContractSynchronizerCase extends Base
         $this->assertNotNull($contract, 'We should have contract in fixture.');
         $contract->setStatus(ContractStatus::FINISHED);
         $em->flush($contract);
-
+        $this->createUnitMapping($contract->getUnit());
         $contractWaiting = new ContractWaiting();
         $today = new \DateTime();
         $contractWaiting->setGroup($contract->getGroup());
@@ -63,7 +80,7 @@ class YardiContractSynchronizerCase extends Base
         $contractWaiting->setFirstName('Papa');
         $contractWaiting->setLastName('Karlo');
         $em->persist($contractWaiting);
-        $em->flush($contractWaiting);
+        $em->flush();
 
         $this->assertEquals(
             0,
@@ -110,6 +127,7 @@ class YardiContractSynchronizerCase extends Base
         $em->persist($contract);
         $unit = $contract->getUnit();
         $unit->setName('101');
+        $this->createUnitMapping($unit);
 
         $holding->setUseRecurringCharges(true);
         $holding->setRecurringCodes('.rent,sss');
@@ -139,6 +157,7 @@ class YardiContractSynchronizerCase extends Base
         $em->flush($contract);
         $unit = $contract->getUnit();
         $unit->setName('101');
+        $this->createUnitMapping($unit);
         $contractWaiting = new ContractWaiting();
         $today = new \DateTime();
         $contractWaiting->setGroup($contract->getGroup());
@@ -152,7 +171,7 @@ class YardiContractSynchronizerCase extends Base
         $contractWaiting->setFirstName('Papa');
         $contractWaiting->setLastName('Karlo');
         $em->persist($contractWaiting);
-        $em->flush($contractWaiting);
+        $em->flush();
 
         $this->assertEquals(
             850.00,

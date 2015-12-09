@@ -93,7 +93,6 @@ class MRIClientCase extends Base
         $mriSettings = $holding->getMriSettings();
         $this->assertNotNull($mriSettings);
         $mriClient->setSettings($mriSettings);
-        $mriClient->setDebug(false);
 
         return $mriClient;
     }

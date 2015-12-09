@@ -666,6 +666,14 @@
                 <source>checkout.pay_anything.pay_for.tooltip.text-%PAY_FOR%</source>
                 <target>Only include the %PAY_FOR%.</target>
             </trans-unit>
+            <trans-unit id="checkout.duplicate_payment.error">
+                <source>checkout.duplicate_payment.error</source>
+                <target><![CDATA[
+                    There is already an active payment for your lease.
+                    This should not be possible, so we've scrambled our team of robots to investigate the issue.
+                    Please try again later or contact %support_email%]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
