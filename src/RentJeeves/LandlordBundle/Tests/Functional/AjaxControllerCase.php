@@ -72,13 +72,12 @@ class AjaxControllerCase extends BaseTestCase
 
         $approveTenantButton = $this->getDomElement('#approveTenant', 'Approve tenant button not found.');
         $approveTenantButton->click();
+        $this->session->wait(5000, '$(".overlay").is(":hidden")');
+        $this->logout();
 
-        $this->session->wait(15000, '$(".overlay").is(":hidden")');
-
-        $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find($id);
-        $this->assertNotNull(
-            $property->getPropertyAddress()->getGoogleReference(),
-            'Google reference should be updated.'
-        );
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->session->visit($this->getUrl() . 'admin/rj/group/properties/'. $id.'/edit');
+        $googleReference = $this->getDomElement('input[id$=googleReference]', 'googleReference input not found');
+        $this->assertNotEmpty($googleReference->getValue(), 'Google reference should be updated.');
     }
 }
