@@ -8,16 +8,23 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
+use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface as ResidentDataManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * DI\Service("base.contract_sync")
  */
-abstract class AbstractContractSynchronizer
+abstract class AbstractContractSynchronizer implements ContractSynchronizerInterface
 {
     const LOGGER_PREFIX = '';
+
+    const SYNC_BALANCE = 'balance';
+
+    const SYNC_RENT = 'rent';
 
     /**
      * @var EntityManager
@@ -58,7 +65,7 @@ abstract class AbstractContractSynchronizer
     }
 
     /**
-     * Execute synchronization balance
+     * {@inheritdoc}
      */
     public function syncBalance()
     {
@@ -69,7 +76,6 @@ abstract class AbstractContractSynchronizer
             /** @var Holding $holding */
             while ((list($holding) = $iterableResult->next()) !== false) {
                 $counter++;
-                $this->setExternalSettings($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncBalance]Processing holding "%s" #%d',
@@ -89,7 +95,57 @@ abstract class AbstractContractSynchronizer
     }
 
     /**
-     * Execute synchronization rent of contracts
+     * {@inheritdoc}
+     */
+    public function syncBalanceForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId)
+    {
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Start synchronizing balance for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
+        try {
+            $this->setExternalSettings($holding);
+            $residentTransactions = $this->residentDataManager->getResidentTransactions(
+                $externalPropertyId
+            );
+            $this->logMessage(
+                sprintf(
+                    '[SyncBalance]Find %d resident transactions for processing' .
+                    ' by external property "%s" of holding "%s" #%d',
+                    count($residentTransactions),
+                    $externalPropertyId,
+                    $holding->getName(),
+                    $holding->getId()
+                )
+            );
+            foreach ($residentTransactions as $resident) {
+                try {
+                    $this->processingResidentForUpdateBalance($holding, $resident, $externalPropertyId);
+                } catch (\Exception $e) {
+                    $this->handleException($e);
+                }
+                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                $this->em->clear();
+            }
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
+        $this->logMessage(
+            sprintf(
+                '[SyncBalance]Finished synchronizing balance for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function syncRent()
     {
@@ -100,7 +156,6 @@ abstract class AbstractContractSynchronizer
             /** @var Holding $holding */
             while ((list($holding) = $iterableResult->next()) !== false) {
                 $counter++;
-                $this->setExternalSettings($holding);
                 $this->logMessage(
                     sprintf(
                         '[SyncRent]Processing holding "%s" #%d',
@@ -117,6 +172,56 @@ abstract class AbstractContractSynchronizer
             $this->handleException($e);
         }
         $this->logMessage('[SyncRent]Finished');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function syncRentForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId)
+    {
+        $this->logMessage(
+            sprintf(
+                '[SyncRent]Start synchronizing rent for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
+        try {
+            $this->setExternalSettings($holding);
+            $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
+                $externalPropertyId
+            );
+            $this->logMessage(
+                sprintf(
+                    '[SyncRent]Find %d resident transactions for processing' .
+                    ' by external property "%s" of holding "%s" #%d',
+                    count($residentTransactions),
+                    $externalPropertyId,
+                    $holding->getName(),
+                    $holding->getId()
+                )
+            );
+            foreach ($residentTransactions as $resident) {
+                try {
+                    $this->processingResidentForUpdateRent($holding, $resident, $externalPropertyId);
+                } catch (\Exception $e) {
+                    $this->handleException($e);
+                }
+                /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
+                $this->em->clear();
+            }
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
+        $this->logMessage(
+            sprintf(
+                '[SyncRent]Finished synchronizing rent for holding: %s(#%d) and external property: %s',
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
     }
 
     /**
@@ -193,6 +298,51 @@ abstract class AbstractContractSynchronizer
     }
 
     /**
+     * @param  string $syncType "rent" | "balance"
+     * @param  Holding $holding
+     * @param  string $externalPropertyId
+     * @return Job
+     */
+    protected function createSyncJob($syncType, Holding $holding, $externalPropertyId)
+    {
+        switch ($syncType) {
+            case self::SYNC_BALANCE:
+                $logPrefix = '[SyncBalance]';
+                $commandName = SyncContractBalanceCommand::NAME;
+                break;
+            case self::SYNC_RENT:
+                $logPrefix = '[SyncRent]';
+                $commandName = SyncContractRentCommand::NAME;
+                break;
+            default:
+                throw new \RuntimeException('Unsupported synchronize type.');
+        }
+
+        $arguments = [
+            '--holding-id=' . $holding->getId(),
+            '--external-property-id=' . $externalPropertyId,
+        ];
+
+        $job = new Job($commandName, $arguments);
+        $this->em->persist($job);
+        $this->em->flush($job);
+
+        $this->logMessage(
+            sprintf(
+                '%sCreated job#%d: to sync %s for holding: %s(#%d), external property: %s',
+                $logPrefix,
+                $job->getId(),
+                $syncType,
+                $holding->getName(),
+                $holding->getId(),
+                $externalPropertyId
+            )
+        );
+
+        return $job;
+    }
+
+    /**
      * @param Holding $holding
      * @throws \RuntimeException
      */
@@ -202,34 +352,7 @@ abstract class AbstractContractSynchronizer
         foreach ($externalPropertyRows as $externalPropertyRow) {
             list($externalPropertyId) = array_values($externalPropertyRow);
             try {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]Try processing external property with id "%s"',
-                        $externalPropertyId
-                    )
-                );
-                $residentTransactions = $this->residentDataManager->getResidentTransactions(
-                    $externalPropertyId
-                );
-                $this->logMessage(
-                    sprintf(
-                        '[SyncBalance]Find %d resident transactions for processing' .
-                        ' by external property "%s" of holding "%s" #%d',
-                        count($residentTransactions),
-                        $externalPropertyId,
-                        $holding->getName(),
-                        $holding->getId()
-                    )
-                );
-                foreach ($residentTransactions as $resident) {
-                    try {
-                        $this->processingResidentForUpdateBalance($holding, $resident, $externalPropertyId);
-                    } catch (\Exception $e) {
-                        $this->handleException($e);
-                    }
-                    /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
-                    $this->em->clear();
-                }
+                $this->createSyncJob(self::SYNC_BALANCE, $holding, $externalPropertyId);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
@@ -272,34 +395,7 @@ abstract class AbstractContractSynchronizer
         foreach ($externalPropertyRows as $externalPropertyRow) {
             list($externalPropertyId) = array_values($externalPropertyRow);
             try {
-                $this->logMessage(
-                    sprintf(
-                        '[SyncRent]Try processing external property with id "%s"',
-                        $externalPropertyId
-                    )
-                );
-                $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
-                    $externalPropertyId
-                );
-                $this->logMessage(
-                    sprintf(
-                        '[SyncRent]Find %d resident transactions for processing' .
-                        ' by external property "%s" of holding "%s" #%d',
-                        count($residentTransactions),
-                        $externalPropertyId,
-                        $holding->getName(),
-                        $holding->getId()
-                    )
-                );
-                foreach ($residentTransactions as $resident) {
-                    try {
-                        $this->processingResidentForUpdateRent($holding, $resident, $externalPropertyId);
-                    } catch (\Exception $e) {
-                        $this->handleException($e);
-                    }
-                    /** There we clear entity manager b/c we have a lot of object for UnitOfWork processing */
-                    $this->em->clear();
-                }
+                $this->createSyncJob(self::SYNC_RENT, $holding, $externalPropertyId);
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
