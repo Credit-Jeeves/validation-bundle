@@ -18,8 +18,6 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterfac
  */
 abstract class AbstractContractSynchronizer implements ContractSynchronizerInterface
 {
-    const LOGGER_PREFIX = '';
-
     const SYNC_BALANCE = 'balance';
 
     const SYNC_RENT = 'rent';
@@ -62,14 +60,14 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      */
     public function syncBalance()
     {
-        $this->logMessage('[SyncBalance]Started');
+        $this->logger->info('[SyncBalance]Started');
         try {
             $iterableResult = $this->getHoldingsForUpdatingBalance();
             $counter = 0;
             /** @var Holding $holding */
             while ((list($holding) = $iterableResult->next()) !== false) {
                 $counter++;
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         '[SyncBalance]Processing holding "%s" #%d',
                         $holding->getName(),
@@ -79,12 +77,12 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
                 $this->updateBalancesForHolding($holding);
             }
             if ($counter === 0) {
-                $this->logMessage('[SyncBalance]No data to update');
+                $this->logger->warn('[SyncBalance]No data to update');
             }
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage('[SyncBalance]Finished');
+        $this->logger->info('[SyncBalance]Finished');
     }
 
     /**
@@ -92,7 +90,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      */
     public function syncBalanceForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId)
     {
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Start synchronizing balance for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
@@ -105,9 +103,9 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
             $residentTransactions = $this->residentDataManager->getResidentTransactions(
                 $externalPropertyId
             );
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
-                    '[SyncBalance]Find %d resident transactions for processing' .
+                    '[SyncBalance]Found %d resident transactions for processing' .
                     ' by external property "%s" of holding "%s" #%d',
                     count($residentTransactions),
                     $externalPropertyId,
@@ -127,7 +125,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Finished synchronizing balance for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
@@ -142,14 +140,14 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      */
     public function syncRent()
     {
-        $this->logMessage('[SyncRent]Started');
+        $this->logger->info('[SyncRent]Started');
         try {
             $iterableResult = $this->getHoldingsForUpdatingRent();
             $counter = 0;
             /** @var Holding $holding */
             while ((list($holding) = $iterableResult->next()) !== false) {
                 $counter++;
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         '[SyncRent]Processing holding "%s" #%d',
                         $holding->getName(),
@@ -159,12 +157,12 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
                 $this->updateContractsRentForHolding($holding);
             }
             if ($counter === 0) {
-                $this->logMessage('[SyncRent]No data to update');
+                $this->logger->warn('[SyncRent]No data to update');
             }
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage('[SyncRent]Finished');
+        $this->logger->info('[SyncRent]Finished');
     }
 
     /**
@@ -172,7 +170,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      */
     public function syncRentForHoldingAndExternalPropertyId(Holding $holding, $externalPropertyId)
     {
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncRent]Start synchronizing rent for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
@@ -185,9 +183,9 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
             $residentTransactions = $this->residentDataManager->getResidentsWithRecurringCharges(
                 $externalPropertyId
             );
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
-                    '[SyncRent]Find %d resident transactions for processing' .
+                    '[SyncRent]Found %d resident transactions for processing' .
                     ' by external property "%s" of holding "%s" #%d',
                     count($residentTransactions),
                     $externalPropertyId,
@@ -207,7 +205,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         } catch (\Exception $e) {
             $this->handleException($e);
         }
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncRent]Finished synchronizing rent for holding: %s(#%d) and external property: %s',
                 $holding->getName(),
@@ -240,39 +238,22 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      */
     protected function handleException(\Exception $e)
     {
-        $this->logMessage(
-            sprintf(
-                'ERROR: %s on %s:%d',
-                $e->getMessage(),
-                $e->getFile(),
-                $e->getLine()
-            ),
-            LogLevel::ALERT
-        );
-        $this->reConnectDB();
-    }
-
-    /**
-     * @param string $message
-     * @param string $logLevel should be one of LogLevel constant
-     * @see LogLevel
-     */
-    protected function logMessage($message, $logLevel = LogLevel::INFO)
-    {
+        $message = sprintf('ERROR: %s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine());
         try {
-            $this->logger->log($logLevel, static::LOGGER_PREFIX . $message);
+            $this->logger->alert($message);
         } catch (\Exception $e) {
             // todo: swift is giving us "fwrite(): send of 108 bytes failed with errno=32 Broken pipe" errors
             // For reason why, please see https://credit.atlassian.net/browse/RT-1733
             // For now, we need to keep going to sync all the contracts that we can.
             $this->logger->error(
                 sprintf(
-                    static::LOGGER_PREFIX . 'ERROR: cannot send alert email:"%s". Exception:%s',
+                    'ERROR: cannot send alert email:"%s". Exception:%s',
                     $message,
                     $e->getMessage()
                 )
             );
         }
+        $this->reConnectDB();
     }
 
     /**
@@ -305,7 +286,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         $this->em->persist($job);
         $this->em->flush($job);
 
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '%sCreated job#%d: to sync %s for holding: %s(#%d), external property: %s',
                 $logPrefix,
@@ -348,7 +329,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     {
         $contracts = $this->getContractsForUpdatingBalance($holding, $resident, $externalPropertyId);
         foreach ($contracts as $contract) {
-            $this->logMessage(
+            $this->logger->debug(
                 sprintf(
                     '[SyncBalance]Processing %s #%d.',
                     (new \ReflectionObject($contract))->getShortName(),

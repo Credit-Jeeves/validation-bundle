@@ -38,7 +38,7 @@ services:
         class: RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer
         arguments:
             - "@doctrine.orm.default_entity_manager"
-            - "@logger"
+            - "@monolog.logger.contract_sync"
 
     yardi.contract_sync:
         parent: base.contract_sync
