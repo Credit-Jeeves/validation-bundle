@@ -16,8 +16,6 @@ use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
  */
 class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const LOGGER_PREFIX = '[AMSI ContractSynchronizer]';
-
     /**
      * {@inheritdoc}
      */
@@ -74,7 +72,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $count = count($allContracts);
-        $this->logMessage(
+        $this->logger->debug(
             sprintf(
                 '[SyncBalance]%s contracts for processing' .
                 ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
@@ -106,7 +104,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
         $balance = $lease->getEndBalance();
         $contract->setPaymentAccepted($disallow);
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Setup payment accepted to %s, for leaseId %s',
                 $disallow,
@@ -116,7 +114,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $externalLeaseId = $contract->getExternalLeaseId();
         if (empty($externalLeaseId)) {
             $contract->setExternalLeaseId($lease->getResiId());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
                     (new \ReflectionObject($contract))->getShortName(),
@@ -126,7 +124,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             );
         }
         $contract->setIntegratedBalance($balance);
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
                 (new \ReflectionObject($contract))->getShortName(),
@@ -191,7 +189,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncRent]Rent for %s #%d updated to %s',
                     (new \ReflectionObject($contract))->getShortName(),

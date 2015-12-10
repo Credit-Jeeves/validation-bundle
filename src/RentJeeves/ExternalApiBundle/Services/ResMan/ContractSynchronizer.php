@@ -17,8 +17,6 @@ use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
  */
 class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const LOGGER_PREFIX = '[ResMan ContractSynchronizer]';
-
     /**
      * {@inheritdoc}
      */
@@ -48,7 +46,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     ) {
         $roommates = $resident->getCustomers()->getCustomer();
         if ($roommates->isEmpty()) {
-            $this->logMessage(
+            $this->logger->debug(
                 sprintf(
                     '[SyncBalance]Skip RtCustomer(%s) with empty customer collection for external property "%s".',
                     $resident->getCustomerId(),
@@ -87,7 +85,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $count = count($allContracts);
-        $this->logMessage(
+        $this->logger->debug(
             sprintf(
                 '[SyncBalance]%s contracts for processing' .
                 ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
@@ -110,7 +108,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     protected function updateContractBalanceForResidentTransaction($contract, $baseCustomer)
     {
         $contract->setPaymentAccepted($baseCustomer->getRentTrackPaymentAccepted());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Setup payment accepted to %s, for residentId %s',
                 $contract->getPaymentAccepted(),
@@ -120,7 +118,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $externalLeaseId = $contract->getExternalLeaseId();
         if (empty($externalLeaseId)) {
             $contract->setExternalLeaseId($baseCustomer->getCustomerId());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
                     (new \ReflectionObject($contract))->getShortName(),
@@ -130,7 +128,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             );
         }
         $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
                 (new \ReflectionObject($contract))->getShortName(),
@@ -197,7 +195,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncRent]Rent for %s #%d updated to %s',
                     (new \ReflectionObject($contract))->getShortName(),
