@@ -100,14 +100,14 @@ class Property extends Base
     public function getLocationAddress()
     {
         $result = array();
-        if ($city = $this->getCity()) {
+        if ($city = $this->getPropertyAddress()->getCity()) {
             $result[] = $city;
         }
-        if ($area = $this->getArea()) {
+        if ($area = $this->getPropertyAddress()->getState()) {
             $result[] = $area;
         }
 
-        return implode(', ', $result) . ' ' . $this->getZip();
+        return implode(', ', $result) . ' ' . $this->getPropertyAddress()->getZip();
     }
 
     public function hasLandlord()
@@ -147,16 +147,6 @@ class Property extends Base
         }
 
         return false;
-    }
-
-    /**
-     * @deprecated pls use `$property->getPropertyAddress()->isSingle()`
-     *
-     * @return bool
-     */
-    public function isSingle()
-    {
-        return $this->getPropertyAddress()->isSingle();
     }
 
     /**
@@ -283,5 +273,15 @@ class Property extends Base
         }
 
         return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("is_single")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    public function isSingle()
+    {
+        return $this->getPropertyAddress()->isSingle();
     }
 }
