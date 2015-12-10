@@ -24,7 +24,6 @@ class AMSISyncBalanceCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('amsi.contract_sync')
-            ->usingOutput($output)
             ->syncBalance();
     }
 }

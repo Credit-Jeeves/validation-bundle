@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\TestBundle\Traits\JobAssertionTrait;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
@@ -12,6 +13,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class ContractSynchronizerTestBase extends BaseTestCase
 {
+    use JobAssertionTrait;
     /**
      * @param Holding $holding
      * @param string $externalPropertyId
@@ -76,33 +78,5 @@ class ContractSynchronizerTestBase extends BaseTestCase
             '--app=rj',
         ];
         $this->assertJob($job, SyncContractBalanceCommand::NAME, $args);
-    }
-
-    /**
-     * @param Job $job
-     * @param string $commandName
-     * @param array $args
-     */
-    protected function assertJob(Job $job, $commandName, array $args = [])
-    {
-        $this->assertEquals(
-            $commandName,
-            $job->getCommand(),
-            sprintf(
-                'Command name on job is incorrect, should be "%s" instead "%s"',
-                $commandName,
-                $job->getCommand()
-            )
-        );
-
-        $this->assertEquals(
-            $args,
-            $job->getArgs(),
-            sprintf(
-                "Arguments on job are incorrect should be:\n%s\ninstead\n%s",
-                print_r($args, true),
-                print_r($job->getArgs(), true)
-            )
-        );
     }
 }

@@ -4,15 +4,14 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\ExternalApiBundle\Command\ResManSyncRentCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
-use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
+use RentJeeves\ExternalApiBundle\Command\YardiSyncRentCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\TestBundle\Traits\JobAssertionTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ResManSyncRentCommandCase extends BaseTestCase
+class YardiSyncRentCommandCase extends BaseTestCase
 {
     use JobAssertionTrait;
     /**
@@ -25,19 +24,19 @@ class ResManSyncRentCommandCase extends BaseTestCase
         $this->getEntityManager()->getConnection()->update('jms_jobs', ['state' => 'finished'], ['state' => 'pending']);
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->find(5);
         $this->assertNotNull($holding, 'Check fixtures, should present holding with id = 5');
-        $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $holding->setApiIntegrationType(ApiIntegrationType::YARDI_VOYAGER);
         $holding->setUseRecurringCharges(true);
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(1);
         $this->assertNotNull($property, 'Check fixtures, should exist property with id = 1');
         $propertyMapping = $property->getPropertyMappingByHolding($holding);
-        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $propertyMapping->setExternalPropertyId('001');
 
         $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());
-        $application->add(new ResManSyncRentCommand());
+        $application->add(new YardiSyncRentCommand());
 
-        $command = $application->find('api:resman:sync-rent');
+        $command = $application->find('api:yardi:sync-rent');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
@@ -54,7 +53,7 @@ class ResManSyncRentCommandCase extends BaseTestCase
             SyncContractRentCommand::NAME,
             [
                 '--holding-id=' . $holding->getId(),
-                '--external-property-id=' . ResManClientCase::EXTERNAL_PROPERTY_ID,
+                '--external-property-id=001',
                 '--app=rj',
             ]
         );

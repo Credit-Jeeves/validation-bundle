@@ -3,48 +3,36 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ExternalApiBundle\Command\AMSISyncRentCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\AMSI\AMSIClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\Traits\JobAssertionTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class AMSISyncRentCommandCase extends BaseTestCase
 {
+    use JobAssertionTrait;
     /**
      * @test
      */
-    public function shouldSyncContractRentForAMSI()
+    public function shouldCreateJobsForSyncRent()
     {
-        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
-        $em = $this->getEntityManager();
-        $repo = $em->getRepository('RjDataBundle:Contract');
-        $contract = $repo->find(20);
-        $this->assertNotNull($contract);
-        $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
-        $contract->getHolding()->setUseRecurringCharges(true);
-        $contract->getHolding()->setRecurringCodes('RENT');
-        $contract->setExternalLeaseId(17);
-        $contract->setRent(123321); // test value
-
-        $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
+        $this->getEntityManager()->getConnection()->update('jms_jobs', ['state' => 'finished'], ['state' => 'pending']);
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->find(5);
+        $this->assertNotNull($holding, 'Check fixtures, should present holding with id = 5');
+        $holding->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $holding->setUseRecurringCharges(true);
+        $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(1);
+        $this->assertNotNull($property, 'Check fixtures, should exist property with id = 1');
+        $propertyMapping = $property->getPropertyMappingByHolding($holding);
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
-        $unit = $contract->getUnit();
-        $unitExternalMapping = new UnitMapping();
-        $unitExternalMapping->setExternalUnitId('001|01|101');
-        $unitExternalMapping->setUnit($unit);
-        $unit->setUnitMapping($unitExternalMapping);
-        $tenant = $contract->getTenant();
-        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId('296455');
 
-        $em->flush();
+        $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());
         $application->add(new AMSISyncRentCommand());
@@ -55,39 +43,20 @@ class AMSISyncRentCommandCase extends BaseTestCase
             'command' => $command->getName(),
         ]);
 
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findBy([
+            'state' => 'pending'
+        ]);
 
-        $this->assertNotEmpty($jobs, 'Should be find at least one job');
-        /** @var Job $lastJob */
-        $lastJob = end($jobs);
+        $this->assertCount(1, $jobs, 'Should be found just one ready job');
 
-        $this->assertContains(
-            sprintf(
-                '[AMSI ContractSynchronizer][SyncRent]Created job#%d: to sync rent for holding: %s(#%d),' .
-                ' external property: %s',
-                $lastJob->getId(),
-                $contract->getHolding()->getName(),
-                $contract->getHolding()->getId(),
-                AMSIClientCase::EXTERNAL_PROPERTY_ID
-            ),
-            $commandTester->getDisplay(),
-            'Job was not be created'
-        );
-
-        $this->assertEquals(
+        $this->assertJob(
+            end($jobs),
             SyncContractRentCommand::NAME,
-            $lastJob->getCommand(),
-            'Command name on job is incorrect'
-        );
-
-        $this->assertEquals(
             [
-                '--holding-id=' . $contract->getHolding()->getId(),
+                '--holding-id=' . $holding->getId(),
                 '--external-property-id=' . AMSIClientCase::EXTERNAL_PROPERTY_ID,
                 '--app=rj',
-            ],
-            $lastJob->getArgs(),
-            'Arguments on job are incorrect'
+            ]
         );
     }
 }
