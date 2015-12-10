@@ -257,7 +257,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      * @param string $logLevel should be one of LogLevel constant
      * @see LogLevel
      */
-    protected function logMessage($message, $logLevel = LogLevel::DEBUG)
+    protected function logMessage($message, $logLevel = LogLevel::INFO)
     {
         try {
             $this->logger->log($logLevel, static::LOGGER_PREFIX . $message);
