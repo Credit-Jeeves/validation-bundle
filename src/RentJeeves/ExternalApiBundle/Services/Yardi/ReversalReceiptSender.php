@@ -69,9 +69,9 @@ class ReversalReceiptSender
      * @param \DateTime $depositDate
      * @return boolean
      */
-    public function сollectingReversalPaymentsToJobsForDate(\DateTime $depositDate)
+    public function сollectReversalPaymentsToJobsForDate(\DateTime $depositDate)
     {
-        $this->logger->info('collect reversal payments for date:' . $depositDate->format('Y-m-d'));
+        $this->logger->info('Collect Yardi reversal payments for date:' . $depositDate->format('Y-m-d'));
         try {
             $offsetHoldings = 0;
             while ($holdings = $this->getHoldings($offsetHoldings, self::LIMIT_HOLDINGS)) {
@@ -137,7 +137,7 @@ class ReversalReceiptSender
     {
         foreach ($orders as $order) {
             $job = new Job(
-                'api:yardi:push-reversal-receipt',
+                'renttrack:yardi:push-reversal-receipt',
                 [
                     '--app=rj',
                     sprintf('--order-id=%s', $order->getId()),
@@ -215,7 +215,7 @@ class ReversalReceiptSender
         $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);
         $this->logger->info(
             sprintf(
-                'Push Reversed Order: %s Original trans: %s',
+                'Push Reversed Order to Yardi: %s Original trans: %s',
                 $order->getId(),
                 $order->getCompleteTransaction()->getTransactionId()
             )
@@ -237,7 +237,7 @@ class ReversalReceiptSender
         if ($result instanceof Messages) {
             $this->logger->info(
                 sprintf(
-                    'Successfully post reversed order: %s - %s',
+                    'Reversed order ID %s successfully posted to Yardi. Message: %s',
                     $order->getId(),
                     $result->getMessage()->getMessage()
                 )

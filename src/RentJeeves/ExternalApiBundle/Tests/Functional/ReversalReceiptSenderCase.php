@@ -40,7 +40,7 @@ class ReversalReceiptSenderCase extends BaseTestCase
         $this->getEntityManager()->flush();
         /** @var ReversalReceiptSender $reversalReceiptSender */
         $reversalReceiptSender = $this->getContainer()->get('yardi.reversal_receipts');
-        $reversalReceiptSender->сollectingReversalPaymentsToJobsForDate(new \DateTime());
+        $reversalReceiptSender->сollectReversalPaymentsToJobsForDate(new \DateTime());
         $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
         $this->assertCount(3, $jobs, 'We should create new job');
     }

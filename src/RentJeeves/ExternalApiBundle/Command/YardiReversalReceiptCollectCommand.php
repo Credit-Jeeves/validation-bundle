@@ -14,7 +14,7 @@ class YardiReversalReceiptCollectCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:yardi:collect-reversal-receipts')
+            ->setName('renttrack:yardi:collect-reversal-receipts')
             ->setDescription('Collect reversal payments to Yardi.');
     }
 
@@ -26,11 +26,11 @@ class YardiReversalReceiptCollectCommand extends ContainerAwareCommand
     {
         /** @var ReversalReceiptSender $reversalReceiptSender */
         $reversalReceiptSender = $this->getContainer()->get('yardi.reversal_receipts');
-        $result = $reversalReceiptSender->сollectingReversalPaymentsToJobsForDate(new DateTime());
+        $result = $reversalReceiptSender->сollectReversalPaymentsToJobsForDate(new DateTime());
         if ($result) {
-            $this->getContainer()->get('logger')->debug('Collected successfully');
+            $this->getContainer()->get('logger')->debug('[YardiPushReversalReceiptCommand] Collected successfully');
         } else {
-            $this->getContainer()->get('logger')->debug('Failed collect');
+            $this->getContainer()->get('logger')->debug('[YardiPushReversalReceiptCommand] Failed collect');
         }
     }
 }
