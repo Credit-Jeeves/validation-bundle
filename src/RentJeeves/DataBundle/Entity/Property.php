@@ -284,4 +284,14 @@ class Property extends Base
     {
         return $this->getPropertyAddress()->isSingle();
     }
+
+    /**
+     * @deprecated remove after merge stg and master
+     *
+     * @return bool
+     */
+    public function getIsSingle()
+    {
+        return $this->getPropertyAddress()->isSingle();
+    }
 }
