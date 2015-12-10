@@ -33,7 +33,7 @@ class TransactionRepository extends EntityRepository
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', propertyAddress.number, propertyAddress.street) as property,
-            prop.isSingle,
+            propertyAddress.isSingle,
             unit.name as unitName"
         );
         $query->orderBy('h.batchId', 'DESC');
@@ -170,7 +170,7 @@ class TransactionRepository extends EntityRepository
             h.messages,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', propertyAddress.number, propertyAddress.street) as property,
-            prop.isSingle,
+            propertyAddress.isSingle,
             unit.name as unitName"
         );
 
