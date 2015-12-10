@@ -9,11 +9,9 @@ use Psr\Log\LogLevel;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface as ResidentDataManager;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * DI\Service("base.contract_sync")
@@ -35,11 +33,6 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      * @var LoggerInterface
      */
     protected $logger;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $outputLogger;
 
     /**
      * @var ResidentDataManager
@@ -225,17 +218,6 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     }
 
     /**
-     * @param OutputInterface $outputLogger
-     * @return self
-     */
-    public function usingOutput(OutputInterface $outputLogger)
-    {
-        $this->outputLogger = $outputLogger;
-
-        return $this;
-    }
-
-    /**
      * Reconnect to DB connection if it is closed.
      *
      * The connection can be closed when an exception the thrown from the DB layer. In these cases,
@@ -290,10 +272,6 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
                     $e->getMessage()
                 )
             );
-        }
-
-        if ($this->outputLogger instanceof OutputInterface) {
-            $this->outputLogger->writeln(static::LOGGER_PREFIX . $message);
         }
     }
 

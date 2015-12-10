@@ -64,7 +64,6 @@ class SyncContractBalanceCommand extends BaseCommand
 
         $this->getContainer()->get('contract_sync.factory')
             ->getSynchronizerByHolding($holding)
-            ->usingOutput($output)
             ->syncBalanceForHoldingAndExternalPropertyId($holding, $externalPropertyId);
     }
 

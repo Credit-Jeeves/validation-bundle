@@ -64,7 +64,6 @@ class SyncContractRentCommand extends BaseCommand
 
         $this->getContainer()->get('contract_sync.factory')
             ->getSynchronizerByHolding($holding)
-            ->usingOutput($output)
             ->syncRentForHoldingAndExternalPropertyId($holding, $externalPropertyId);
     }
 
