@@ -196,7 +196,7 @@ class GroupSettingsType extends Base
         $builder->add(
             'externalResidentFollowsUnit',
             'checkbox',
-            ['label' => 'Is External Resident Follows Unit?', 'required' => false]
+            ['label' => 'External Resident Follows Unit?', 'required' => false]
         );
 
         $builder->addEventListener(

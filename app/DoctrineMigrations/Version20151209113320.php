@@ -13,8 +13,7 @@ class Version20151209113319 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql(
-            "ALTER TABLE rj_group_settings
-                ADD is_external_resident_follows_unit TINYINT(1) DEFAULT '0' NOT NULL"
+            "CREATE UNIQUE INDEX UNIQ_1791C28721F4A992 ON rj_property_address (ss_index)"
         );
     }
 
@@ -24,8 +23,7 @@ class Version20151209113319 extends AbstractMigration
     public function down(Schema $schema)
     {
         $this->addSql(
-            "ALTER TABLE rj_group_settings
-                DROP is_external_resident_follows_unit"
+            "DROP INDEX UNIQ_1791C28721F4A992 ON rj_property_address"
         );
     }
 }
