@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
+use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
 class AMSIContractSynchronizerCase extends Base
 {
@@ -13,10 +15,12 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractRentForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
@@ -41,6 +45,18 @@ class AMSIContractSynchronizerCase extends Base
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
         $balanceSynchronizer->syncRent();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertRentSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncRentCommand($contract->getHolding(), $externalPropertyId);
+
         $updatedContract = $repo->find($contract->getId());
 
         $this->assertGreaterThan(0, $updatedContract->getRent(), 'Rent should be greater than 0');
@@ -52,10 +68,12 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractBalanceForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
@@ -77,6 +95,18 @@ class AMSIContractSynchronizerCase extends Base
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
+
         $updatedContract = $repo->find($contract->getId());
         $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
     }
@@ -86,10 +116,12 @@ class AMSIContractSynchronizerCase extends Base
      */
     public function shouldSyncContractWaitingBalanceForAMSI()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $em = $this->getEntityManager();
         $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
+        /** @var ContractWaiting $contractWaiting */
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting);
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
@@ -110,6 +142,18 @@ class AMSIContractSynchronizerCase extends Base
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contractWaiting
+            ->getProperty()
+            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
         $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
         $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
     }

@@ -235,7 +235,15 @@ trait Property
             return $propertyByUnit;
         }
 
-        $key = md5($property->getFullAddress());
+        $propertyAddress = $property->getPropertyAddress();
+        $key = md5(
+            sprintf(
+                '%s %s %s',
+                $propertyAddress->getNumber(),
+                $propertyAddress->getStreet(),
+                $propertyAddress->getCity()
+            )
+        );
         if (array_key_exists($key, $this->propertyList)) {
             return $this->propertyList[$key];
         }

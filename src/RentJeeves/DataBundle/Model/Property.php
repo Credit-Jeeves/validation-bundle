@@ -132,7 +132,6 @@ abstract class Property
      *     type="boolean",
      *     nullable=true
      * )
-     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isSingle;
 
