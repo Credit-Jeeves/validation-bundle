@@ -238,7 +238,7 @@ trait Property
         $propertyAddress = $property->getPropertyAddress();
         $key = md5(
             sprintf(
-                '%s %s %ы',
+                '%s %s %s',
                 $propertyAddress->getNumber(),
                 $propertyAddress->getStreet(),
                 $propertyAddress->getCity()
