@@ -2,11 +2,9 @@
 
 namespace RentJeeves\ExternalApiBundle\Command;
 
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ReversalReceiptSender;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class YardiReversalReceiptCollectCommand extends ContainerAwareCommand
@@ -26,11 +24,11 @@ class YardiReversalReceiptCollectCommand extends ContainerAwareCommand
     {
         /** @var ReversalReceiptSender $reversalReceiptSender */
         $reversalReceiptSender = $this->getContainer()->get('yardi.reversal_receipts');
-        $result = $reversalReceiptSender->сollectReversalPaymentsToJobsForDate(new DateTime());
+        $result = $reversalReceiptSender->collectReversedPaymentsToJobsByDate(new \DateTime());
         if ($result) {
-            $this->getContainer()->get('logger')->debug('[YardiPushReversalReceiptCommand] Collected successfully');
+            $this->getContainer()->get('logger')->debug('[YardiReversalReceiptCollectCommand] Collected successfully');
         } else {
-            $this->getContainer()->get('logger')->debug('[YardiPushReversalReceiptCommand] Failed collect');
+            $this->getContainer()->get('logger')->debug('[YardiReversalReceiptCollectCommand] Failed collect');
         }
     }
 }

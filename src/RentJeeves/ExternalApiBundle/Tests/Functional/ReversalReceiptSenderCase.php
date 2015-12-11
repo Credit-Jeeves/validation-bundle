@@ -4,10 +4,8 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
-use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Command\YardiReversalReceiptCommand;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ReversalReceiptSender;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -40,7 +38,7 @@ class ReversalReceiptSenderCase extends BaseTestCase
         $this->getEntityManager()->flush();
         /** @var ReversalReceiptSender $reversalReceiptSender */
         $reversalReceiptSender = $this->getContainer()->get('yardi.reversal_receipts');
-        $reversalReceiptSender->сollectReversalPaymentsToJobsForDate(new \DateTime());
+        $reversalReceiptSender->collectReversedPaymentsToJobsByDate(new \DateTime());
         $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
         $this->assertCount(3, $jobs, 'We should create new job');
     }

@@ -14,7 +14,7 @@ class YardiPushReversalReceiptCommand extends ContainerAwareCommand
     {
         $this->setName('renttrack:yardi:push-reversal-receipt')
             ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'Job ID')
-            ->addOption('order-id', null, InputOption::VALUE_OPTIONAL, 'Order ID')
+            ->addOption('order-id', null, InputOption::VALUE_REQUIRED, 'Order ID')
             ->setDescription('Pushes reversal orders to Yardi.');
     }
 

@@ -16,14 +16,14 @@ class YardiReversalReceiptCollectCommandCase extends BaseTestCase
     {
         $reversalReceiptSender = $this->getMock(
             'RentJeeves\ExternalApiBundle\Services\Yardi\ReversalReceiptSender',
-            ['сollectReversalPaymentsToJobsForDate'],
+            ['collectReversedPaymentsToJobsByDate'],
             [],
             '',
             false
         );
         $reversalReceiptSender
             ->expects($this->exactly(1))
-            ->method('сollectReversalPaymentsToJobsForDate')
+            ->method('collectReversedPaymentsToJobsByDate')
             ->will($this->returnValue(true));
 
         $this->getKernel()->getContainer()->set(

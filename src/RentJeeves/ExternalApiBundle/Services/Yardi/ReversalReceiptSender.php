@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order as Transaction;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
@@ -69,7 +68,7 @@ class ReversalReceiptSender
      * @param \DateTime $depositDate
      * @return boolean
      */
-    public function сollectReversalPaymentsToJobsForDate(\DateTime $depositDate)
+    public function collectReversedPaymentsToJobsByDate(\DateTime $depositDate)
     {
         $this->logger->info('Collect Yardi reversal payments for date:' . $depositDate->format('Y-m-d'));
         try {
@@ -223,8 +222,8 @@ class ReversalReceiptSender
         $transactionXml = $this->getTransactionXml($settings, $order);
         if ($transactionXml === false) {
             $this->logger->alert(sprintf(
-                'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.\n
-                        You can re-run initial import for setup externalLeaseId for active contract.',
+                'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.
+                You can re-run initial import for setup externalLeaseId for active contract.',
                 $order->getId(),
                 $order->getContract()->getId()
             ));
