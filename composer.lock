@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "951bfe7789473abbcb557c3a6b836520",
+    "hash": "27f0c0e6fcae9c6964d173bf1af2e44b",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -502,7 +502,7 @@
         },
         {
             "name": "besimple/wsdl2php",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aschamberger/BeSimpleWsdlToPhp.git",
@@ -697,7 +697,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2015-12-07 10:04:11"
+            "time": "2015-12-07 10:04:33"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -1114,7 +1114,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/2f28f691d8bba2aedb3537d12917d92ba3f63cb8",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/a6ef2a0c1655cb0fa0d3e8e93df908a779504e55",
                 "reference": "5173c05e65668449214373f1bf8997f73848d36c",
                 "shasum": ""
             },
@@ -1196,7 +1196,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9c5a4ebedb583b882062fb8b276b8af5ca9063ac",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/030ff41ef1db66370b36467086bfb817a661fe6a",
                 "reference": "8dc5d88800194304babf30695d231232cf65fedb",
                 "shasum": ""
             },
@@ -1280,7 +1280,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/861d3564c03b3867845ffd87d9b19f49dc673c69",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/86d2b1c9c195c12175551d02a475067977c0afcf",
                 "reference": "f7138381aa884c0f679da4de41e369b94ead9cd3",
                 "shasum": ""
             },
@@ -1695,7 +1695,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/formapro/JsFormValidatorBundle/zipball/656484231056ea9f7f312ceedbff37e6fee0452e",
+                "url": "https://api.github.com/repos/formapro/JsFormValidatorBundle/zipball/55c59f278100ef75fc6813963b794522adfe9c13",
                 "reference": "0bc03f92142e3377ab405b4c2f698e3e73381d29",
                 "shasum": ""
             },
@@ -1993,7 +1993,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/663da6b3159a895b41f38222d44b497defb122b9",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/6ebbd6df404068b50f6f52c5b215c39fe8282772",
                 "reference": "a1763eb9c8d3988d607b4448a1a24197f7bcf8cb",
                 "shasum": ""
             },
@@ -2900,7 +2900,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/a63cd330588eff18f6deb0251fd142d2c1fe30b6",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/3e396c980545350c2efb65a50041d2a9f9d6562e",
                 "reference": "ca66cd3ace6bea5367838c6dfb00a6a0bacb8a79",
                 "shasum": ""
             },
@@ -3380,7 +3380,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/9af37448fa2f82856d068205afa96e9874527672",
+                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/93b189b16ad0d410eb9b300eae7ab0ad7d8edede",
                 "reference": "493963f0c0ab9b3272064a39f0d981172b976ad0",
                 "shasum": ""
             },
@@ -4101,6 +4101,51 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "renttrack/profit-stars-client-bundle",
+            "version": "dev-master",
+            "target-dir": "RentTrack/ProfitStarsClientBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
+                "reference": "7ba369f19e8ecd8386613c0d513312442be5a6df"
+            },
+            "require": {
+                "besimple/wsdl2php": "v1.0.0",
+                "php": ">=5.4.2",
+                "symfony/framework-bundle": "2.4.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\ProfitStarsClientBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tatyana Stronina",
+                    "email": "tatyana@renttrack.com"
+                },
+                {
+                    "name": "Alexander Onatskyy",
+                    "email": "onatskyy@gmail.com"
+                }
+            ],
+            "description": "Symfony2 ProfitStarsClientBundle.",
+            "homepage": "https://github.com/Credit-Jeeves/ProfitStarsClientBundle",
+            "keywords": [
+                "profit stars",
+                "soap",
+                "wsdl"
+            ],
+            "time": "2015-12-11 11:04:06"
         },
         {
             "name": "renttrack/smarty-streets-bundle",
@@ -4825,7 +4870,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/2ff8473e33e224af87dc00d48a552a35a75115af",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/6672ca37fe19a8e2a8ae52a93a7163e1b00ef7d5",
                 "reference": "7370d18f511653d39c33d75c2190caaafdebb492",
                 "shasum": ""
             },
@@ -5047,12 +5092,12 @@
             "target-dir": "Symfony/Bundle/MonologBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/MonologBundle.git",
+                "url": "https://github.com/symfony/monolog-bundle.git",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "reference": "e81c2e9c4dc0a9ff794674017069e036f575f278",
                 "shasum": ""
             },
@@ -5375,7 +5420,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/112c5112609ff74df6e6a1a7375efc30f442c0db",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5cdca6bc1f1510c365c169dda68c5e1ebbad1d93",
                 "reference": "6af8182fbd3ead19f8f9e01d33e9b09063e1a1b0",
                 "shasum": ""
             },
@@ -5433,7 +5478,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/BazingaJsTranslationBundle/zipball/0b7a9b5034ff1a7f9879e4dc42e6c37bf8426863",
+                "url": "https://api.github.com/repos/willdurand/BazingaJsTranslationBundle/zipball/b8767497d31d7bbd81aeb8ee80d0c6ef4e569dd1",
                 "reference": "c78a691faabb8d0933a8791217937a7052d890a9",
                 "shasum": ""
             },
@@ -5700,7 +5745,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/901254e402269e78476843614f728917925c8135",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/da03bb9e7ffa8a45007e61988215d1ab569480c1",
                 "reference": "a61d282f41595d3386516077e25864265e5094e8",
                 "shasum": ""
             },
@@ -6073,7 +6118,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/bd44f6b6e40247b6530bc8abe802e4e4d914976a",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/b4213c21f138c96c29ba2f57349d6fca5b2878a9",
                 "reference": "e847b073c2b5350045edbb40443645ad09a59538",
                 "shasum": ""
             },
@@ -8103,9 +8148,9 @@
         "besimple/soap-wsdl": 20,
         "besimple/soap-client": 20,
         "besimple/soap-server": 20,
-        "besimple/wsdl2php": 20,
         "renttrack/transunion-bundle": 20,
         "renttrack/smarty-streets-bundle": 20,
+        "renttrack/profit-stars-client-bundle": 20,
         "proberts/skip32": 20,
         "behat/mink": 20,
         "behat/mink-zombie-driver": 20,

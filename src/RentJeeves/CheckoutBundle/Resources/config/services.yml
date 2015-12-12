@@ -240,3 +240,15 @@ services:
         arguments:
             - %dod_limit_max_payment%
             - @logger
+
+    payment_processor.profit_stars.rdc.report_loader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader
+        public: false
+        arguments:
+            - @profit_stars.transaction_reporting.client
+
+    payment_processor.profit_stars.rdc:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
+        arguments:
+            - @payment_processor.profit_stars.rdc.report_loader
+
