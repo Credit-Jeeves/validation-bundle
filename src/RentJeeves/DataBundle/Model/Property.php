@@ -118,17 +118,6 @@ abstract class Property
     protected $isMultipleBuildings = false;
 
     /**
-     * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ImportMappingByProperty",
-     *     mappedBy="property"
-     * )
-     * @Serializer\Exclude
-     *
-     * @var ImportMappingByProperty
-     */
-    protected $importMappingByProperty;
-
-    /**
      * @var PropertyAddress
      *
      * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
@@ -138,22 +127,6 @@ abstract class Property
      * @Serializer\Groups({"payRent"})
      */
     protected $propertyAddress;
-
-    /**
-     * @return ImportMappingByProperty
-     */
-    public function getImportMappingByProperty()
-    {
-        return $this->importMappingByProperty;
-    }
-
-    /**
-     * @param ImportMappingByProperty $importMappingByProperty
-     */
-    public function setImportMappingByProperty(ImportMappingByProperty $importMappingByProperty)
-    {
-        $this->importMappingByProperty = $importMappingByProperty;
-    }
 
     /**
      * @return boolean
