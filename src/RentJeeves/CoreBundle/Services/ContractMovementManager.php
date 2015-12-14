@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services\Deduplication;
+namespace RentJeeves\CoreBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount;
+use RentJeeves\CoreBundle\Exception\ContractMovementManagerException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -15,10 +16,8 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
-class ContractMovement
+class ContractMovementManager
 {
-    const LOG_PREFIX = '[ContractMovement]';
-    
     /**
      * @var EntityManagerInterface
      */
@@ -57,74 +56,81 @@ class ContractMovement
      * @param Contract $contract
      * @param Unit $destinationUnit
      *
-     * @return boolean
+     * @throws ContractMovementManagerException if we can`t move contract
      */
     public function move(Contract $contract, Unit $destinationUnit)
     {
         $sourceUnit = $contract->getUnit();
         if ($sourceUnit->getHolding() !== $destinationUnit->getHolding()) {
             $this->logger->warning(
-                sprintf(
-                    '%s: ERROR: srcUnit#%d and dstUnit#%d are if different holdings. ' .
+                $message = sprintf(
+                    'ERROR: srcUnit#%d and dstUnit#%d are in different holdings. ' .
                     'Cannot move contract#%d because external lease ID will be incorrect.',
-                    self::LOG_PREFIX,
                     $sourceUnit->getId(),
                     $destinationUnit->getId(),
                     $contract->getId()
                 )
             );
 
-            return false;
+            throw new ContractMovementManagerException($message);
         }
 
         $sourcePaymentProcessor = $sourceUnit->getGroup()->getGroupSettings()->getPaymentProcessor();
         $destinationPaymentProcessor = $destinationUnit->getGroup()->getGroupSettings()->getPaymentProcessor();
         if ($sourcePaymentProcessor !== $destinationPaymentProcessor) {
             $this->logger->warning(
-                sprintf(
-                    '%s: ERROR: we cannot move contracts to groups that use a different payment processor.',
-                    self::LOG_PREFIX
+                $message = sprintf(
+                    'ERROR: we cannot move contracts to groups that use a different payment processor. ' .
+                    '(srcUnit#%d and dstUnit#%d)',
+                    $sourceUnit->getId(),
+                    $destinationUnit->getId()
                 )
             );
 
-            return false;
+            throw new ContractMovementManagerException($message);
         }
 
         $tenant = $contract->getTenant();
-        $externalResidentId = $this->findExternalResidentId($tenant, $contract->getHolding());
-        if ($externalResidentId !== null && $contract->getGroupSettings()->isExternalResidentFollowsUnit() === true) {
+        $externalResident = $this->findExternalResidentId($tenant, $contract->getHolding());
+        if ($externalResident !== null && $contract->getGroupSettings()->isExternalResidentFollowsUnit() === true) {
             $this->logger->warning(
-                sprintf(
-                    '%s: ERROR: resident ID follow units. We must resolve manually first.',
-                    self::LOG_PREFIX
+                $message = sprintf(
+                    'ERROR: resident ID#%s for Tenant#%d follow units. We must resolve manually first.',
+                    $externalResident->getResidentId(),
+                    $tenant->getId()
                 )
             );
 
-            return false;
+            throw new ContractMovementManagerException($message);
         }
 
-        if (false === $this->updateDepositAccountsForActivePayments($contract, $destinationUnit->getGroup())) {
-            return false;
+        if ($contract->getGroup() !== $destinationUnit->getGroup()) {
+            $this->updateDepositAccountsForActivePayments($contract, $destinationUnit->getGroup());
         }
 
         if (false === $this->dryRunMode) {
             $contract->setUnit($destinationUnit);
             $contract->setProperty($destinationUnit->getProperty());
             $contract->setGroup($destinationUnit->getGroup());
-            $contract->setHolding($destinationUnit->getHolding());
             $this->em->flush();
         }
 
-        $this->logger->info(sprintf('%s: Contract#%d is updated.', self::LOG_PREFIX, $contract->getId()));
+        $this->logger->info(sprintf('Contract#%d is updated.', $contract->getId()));
+    }
 
-        return true;
+    /**
+     * @param boolean $dryRunMode
+     */
+    public function setDryRunMode($dryRunMode)
+    {
+        $this->dryRunMode = (boolean) $dryRunMode;
     }
 
     /**
      * @param Contract $contract
      * @param Group $group
      *
-     * @return boolean
+     * @throws ContractMovementManagerException Can not update active Payment or can not retokenize DepositAccount
      */
     protected function updateDepositAccountsForActivePayments(Contract $contract, Group $group)
     {
@@ -134,9 +140,8 @@ class ContractMovement
             $similarDepositAccount = $this->findSimilarDepositAccountForAnotherGroup($paymentDepositAccount, $group);
             if (null === $similarDepositAccount) {
                 $this->logger->warning(
-                    sprintf(
-                        '%s: ERROR: %s Deposit Account for Group#%d(%s) not found. Can not update active Payment#%d.',
-                        self::LOG_PREFIX,
+                    $message = sprintf(
+                        'ERROR: %s Deposit Account for Group#%d(%s) not found. Can not update active Payment#%d.',
                         $paymentDepositAccount->getType(),
                         $group->getId(),
                         $group->getName(),
@@ -144,7 +149,7 @@ class ContractMovement
                     )
                 );
 
-                return false;
+                throw new ContractMovementManagerException($message);
             }
 
             $accountData = new PaymentAccount();
@@ -155,29 +160,18 @@ class ContractMovement
                 }
             } catch (\Exception $e) {
                 $this->logger->warning(
-                    sprintf(
-                        '%s: ERROR: Could not retokenize DepositAccount#%d : %s',
-                        self::LOG_PREFIX,
+                    $message = sprintf(
+                        'ERROR: Could not retokenize DepositAccount#%d : %s',
                         $similarDepositAccount->getId(),
                         $e->getMessage()
                     )
                 );
 
-                return false;
+                throw new ContractMovementManagerException($message);
             }
 
             $payment->setDepositAccount($similarDepositAccount);
         }
-
-        return true;
-    }
-
-    /**
-     * @param boolean $dryRunMode
-     */
-    public function setDryRunMode($dryRunMode)
-    {
-        $this->dryRunMode = (boolean) $dryRunMode;
     }
 
     /**

@@ -106,9 +106,9 @@ services:
             - @logger
 
     dedupe.contract_movement:
-        class: RentJeeves\CoreBundle\Services\Deduplication\ContractMovement
+        class: RentJeeves\CoreBundle\Services\ContractMovementManager
         arguments:
             - @doctrine.orm.default_entity_manager
             - @payment_processor.factory
-            - @logger
+            - @monolog.logger.contract_movement_manager
 

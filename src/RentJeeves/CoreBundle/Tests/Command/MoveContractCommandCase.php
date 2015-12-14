@@ -16,7 +16,7 @@ class MoveContractCommandCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfSendNotCorrectContactId()
     {
-        $this->createAndExecuteCommandTester(['--contract_id' => 0]);
+        $this->createAndExecuteCommandTester(['--contract-id' => 0]);
     }
 
     /**
@@ -26,7 +26,7 @@ class MoveContractCommandCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfSendNotCorrectUnitId()
     {
-        $this->createAndExecuteCommandTester(['--contract_id' => 1, '--dst_unit_id' => 0]);
+        $this->createAndExecuteCommandTester(['--contract-id' => 1, '--dst-unit-id' => 0]);
     }
 
     /**
@@ -39,15 +39,13 @@ class MoveContractCommandCase extends BaseTestCase
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(17);
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(1);
 
-        $this->getEntityManager()->flush();
-
         $contract->getUnit()->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $unit->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
         $this->createAndExecuteCommandTester(
             [
-                '--contract_id' => $contract->getId(),
-                '--dst_unit_id' => $unit->getId()
+                '--contract-id' => $contract->getId(),
+                '--dst-unit-id' => $unit->getId()
             ]
         );
 
@@ -60,18 +58,13 @@ class MoveContractCommandCase extends BaseTestCase
         );
         $this->assertEquals(
             $unit->getProperty()->getId(),
-            $contract->getUnit()->getProperty()->getId(),
+            $contract->getProperty()->getId(),
             'Contract`s Property is not updated'
         );
         $this->assertEquals(
             $unit->getGroup()->getId(),
-            $contract->getUnit()->getGroup()->getId(),
+            $contract->getGroup()->getId(),
             'Contract`s Group is not updated'
-        );
-        $this->assertEquals(
-            $unit->getHolding()->getId(),
-            $contract->getUnit()->getHolding()->getId(),
-            'Contract`s Holding is not updated'
         );
     }
 
@@ -94,8 +87,8 @@ class MoveContractCommandCase extends BaseTestCase
 
         $this->createAndExecuteCommandTester(
             [
-                '--contract_id' => $contract->getId(),
-                '--dst_unit_id' => $unit->getId(),
+                '--contract-id' => $contract->getId(),
+                '--dst-unit-id' => $unit->getId(),
                 '--dry-run' => 1
             ]
         );

@@ -1,5 +1,5 @@
 monolog:
-    channels: ["import"]
+    channels: ["import", "contract_movement_manager"]
     handlers:
         main:
             type:         fingers_crossed

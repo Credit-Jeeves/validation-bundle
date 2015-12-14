@@ -5,7 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
-use RentJeeves\CoreBundle\Services\Deduplication\ContractMovement;
+use RentJeeves\CoreBundle\Services\ContractMovementManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -17,7 +17,7 @@ use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
-class ContractMovementCase extends UnitTestBase
+class ContractMovementManagerCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
     use WriteAttributeExtensionTrait;
@@ -27,7 +27,7 @@ class ContractMovementCase extends UnitTestBase
      */
     public function shouldCreateNewObjectContractMovement()
     {
-        new ContractMovement(
+        new ContractMovementManager(
             $this->getEntityManagerMock(),
             $this->getPaymentProcessorFactoryMock(),
             $this->getLoggerMock()
@@ -36,6 +36,8 @@ class ContractMovementCase extends UnitTestBase
 
     /**
      * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
+     * @expectedExceptionMessage srcUnit#1 and dstUnit#2 are in different holdings
      */
     public function shouldLogErrorAndReturnFalseIfSrcUnitAndDstUnitHaveDifferentHolding()
     {
@@ -53,20 +55,21 @@ class ContractMovementCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
             ->method($this->equalTo('warning'))
-            ->with($this->stringContains('srcUnit#1 and dstUnit#2 are if different holdings.'));
+            ->with($this->stringContains('srcUnit#1 and dstUnit#2 are in different holdings.'));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $this->getEntityManagerMock(),
             $this->getPaymentProcessorFactoryMock(),
             $logger
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-        $this->assertFalse($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**
      * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
+     * @expectedExceptionMessage we cannot move contracts to groups that use a different payment processor.
      */
     public function shouldLogErrorAndReturnFalseIfSrcUnitAndDstUnitHaveDifferentPaymentProcessors()
     {
@@ -95,18 +98,19 @@ class ContractMovementCase extends UnitTestBase
             ->method($this->equalTo('warning'))
             ->with($this->stringContains('we cannot move contracts to groups that use a different payment processor.'));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $this->getEntityManagerMock(),
             $this->getPaymentProcessorFactoryMock(),
             $logger
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-        $this->assertFalse($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**
      * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
+     * @expectedExceptionMessage resident ID#1 for Tenant#5 follow units. We must resolve manually first.
      */
     public function shouldLogErrorAndReturnFalseIfTenantHasExternalResidentIdAndGroupIsExternalResidentFollowsUnit()
     {
@@ -130,19 +134,24 @@ class ContractMovementCase extends UnitTestBase
         $srcContract = new Contract();
         $this->writeIdAttribute($srcContract, 1);
         $srcContract->setUnit($srcUnit);
-        $srcContract->setTenant(new Tenant());
+        $tenant = new Tenant();
+        $this->writeIdAttribute($tenant, 5);
+        $srcContract->setTenant($tenant);
         $srcContract->setHolding($holding);
         $srcContract->setGroup($srcGroup);
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
             ->method($this->equalTo('warning'))
-            ->with($this->stringContains('resident ID follow units. We must resolve manually first.'));
+            ->with($this->stringContains('resident ID#1 for Tenant#5 follow units. We must resolve manually first.'));
+
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setResidentId('1');
 
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method($this->equalTo('findOneBy'))
-            ->will($this->returnValue(new ResidentMapping()));
+            ->will($this->returnValue($residentMapping));
 
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -150,19 +159,19 @@ class ContractMovementCase extends UnitTestBase
             ->with($this->equalTo('RjDataBundle:ResidentMapping'))
             ->will($this->returnValue($repositoryMock));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $em,
             $this->getPaymentProcessorFactoryMock(),
             $logger
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-
-        $this->assertFalse($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**
      * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
+     * @expectedExceptionMessage Can not update active Payment
      */
     public function shouldLogErrorAndReturnFalseIfCantUpdateActivePayments()
     {
@@ -232,19 +241,19 @@ class ContractMovementCase extends UnitTestBase
             ->with($this->equalTo($dstGroup))
             ->will($this->returnValue(null));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $em,
             $factory,
             $logger
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-
-        $this->assertFalse($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**
      * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
+     * @expectedExceptionMessage Could not retokenize DepositAccount#1 : test
      */
     public function shouldLogErrorAndReturnFalseIfCantRetokenizeDepositAccount()
     {
@@ -322,15 +331,13 @@ class ContractMovementCase extends UnitTestBase
             ->with($this->equalTo($dstGroup))
             ->will($this->returnValue($paymentProcessorMock));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $em,
             $factory,
             $logger
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-
-        $this->assertFalse($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**
@@ -409,15 +416,13 @@ class ContractMovementCase extends UnitTestBase
             ->with($this->equalTo($dstGroup))
             ->will($this->returnValue($paymentProcessorMock));
 
-        $contractMovement = new ContractMovement(
+        $contractMovement = new ContractMovementManager(
             $em,
             $factory,
             $this->getLoggerMock()
         );
 
-        $result = $contractMovement->move($srcContract, $dstUnit);
-
-        $this->assertTrue($result, 'ContractMovement returned incorrect result');
+        $contractMovement->move($srcContract, $dstUnit);
     }
 
     /**

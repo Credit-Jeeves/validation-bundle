@@ -23,7 +23,7 @@ interface SubmerchantProcessorInterface extends PaymentProcessorInterface
      * @param AccountData $accountData Mapped PaymentAccount
      * @param DepositAccount $depositAccount DepositAccount to register PaymentAccount to
      *
-     * @throw \Exception if PaymentAccount not registered
+     * @throws \Exception if PaymentAccount not registered
      *
      * @return true if PaymentAccount successfully registered
      */
