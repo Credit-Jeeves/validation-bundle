@@ -40,7 +40,7 @@ class LockboxParserCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldParseLockboxDataIntoArrayWithDebitTransactions()
+    public function shouldParseLockboxDataIntoArrayWithDebitTransactionsAndSkipZeroAmountTransaction()
     {
         $data = file_get_contents(__DIR__ . '/../../../../../Fixtures/Aci/debitsLockbox.csv');
 
