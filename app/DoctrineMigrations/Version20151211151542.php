@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20151209113320 extends AbstractMigration
+class Version20151211151542 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -13,7 +13,7 @@ class Version20151209113320 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql(
-            "CREATE UNIQUE INDEX UNIQ_1791C28721F4A992 ON rj_property_address (ss_index)"
+            "DROP TABLE IF EXISTS rj_group_account_mapping"
         );
     }
 
@@ -22,8 +22,5 @@ class Version20151209113320 extends AbstractMigration
      */
     public function down(Schema $schema)
     {
-        $this->addSql(
-            "DROP INDEX UNIQ_1791C28721F4A992 ON rj_property_address"
-        );
     }
 }
