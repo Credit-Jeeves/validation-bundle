@@ -1,8 +1,6 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
-use CreditJeeves\DataBundle\Enum\GroupType;
-use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Sonata\AdminBundle\Admin\Admin;
@@ -69,7 +67,7 @@ class ResidentMappingAdmin extends Admin
         } elseif ($id = $request->get('id')) {
             $em = $container->get('doctrine.orm.default_entity_manager');
             $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->find($id);
-            $holding = ($residentMapping)? $residentMapping->getHolding()->getId() : null;
+            $holding = ($residentMapping) ? $residentMapping->getHolding()->getId() : null;
             $tenant = $residentMapping ? $residentMapping->getTenant()->getId() : null;
         } else {
             $holding = null;
@@ -79,17 +77,12 @@ class ResidentMappingAdmin extends Admin
         $formMapper
             ->add(
                 'holding',
-                'entity',
-                array(
-                    'class' => 'DataBundle:Holding',
-                    'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('holding')
-                                ->innerJoin('holding.groups', 'gr')
-                                ->where('gr.type = :typeGroup')
-                                ->orderBy('holding.name', 'ASC')
-                                ->setParameter('typeGroup', GroupType::RENT);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by cj_holding.id rather than a select drop-down
+                [
+                    'label' => "Holding ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'CreditJeeves\DataBundle\Entity\Holding'
+                ]
             )
             ->add(
                 'tenant',

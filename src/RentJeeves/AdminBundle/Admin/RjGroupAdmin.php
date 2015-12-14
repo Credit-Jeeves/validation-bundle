@@ -137,7 +137,12 @@ class RjGroupAdmin extends Admin
             ->with('Details')
                 ->add(
                     'holding',
-                    'sonata_type_model'
+                    'sonata_type_model_reference', // Use a text field by cj_holding.id rather than a select drop-down
+                    [
+                        'label' => "Holding ID",
+                        'model_manager' => $this->getModelManager(),
+                        'class' => 'CreditJeeves\DataBundle\Entity\Holding'
+                    ]
                 )
                 ->add(
                     'affiliate',

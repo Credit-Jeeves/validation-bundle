@@ -46,7 +46,7 @@ class PropertyMappingAdmin extends Admin
         if ($id = $request->get('id')) {
             $em = $container->get('doctrine.orm.default_entity_manager');
             $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->find($id);
-            $holding = ($propertyMapping)? $propertyMapping->getHolding() : null;
+            $holding = ($propertyMapping) ? $propertyMapping->getHolding() : null;
         } else {
             $holding = null;
         }
@@ -68,13 +68,12 @@ class PropertyMappingAdmin extends Admin
             )
             ->add(
                 'property',
-                'entity',
-                array(
-                    'class' => 'RjDataBundle:Property',
-                    'query_builder' => function (EntityRepository $er) use ($holding) {
-                            return $er->findByHolding($holding);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by property_id rather than a select drop-down
+                [
+                    'label' => "Property ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'RentJeeves\DataBundle\Entity\Property'
+                ]
             )
             ->add('externalPropertyId');
 
