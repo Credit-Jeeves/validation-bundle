@@ -44,6 +44,7 @@ trait PaymentProcess
         /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
         $paymentAccountMapped->getEntity()->setUser($tenant);
+        $paymentAccountMapped->getEntity()->setLastFour($this->getLast4Digits($paymentAccountMapped));
 
         if ($paymentAccountMapped->getEntity()->getType() === PaymentAccountType::DEBIT_CARD) {
             if (!$this->get('binlist.card')->isLowDebitFee($paymentAccountMapped->get('card_number'))) {
@@ -104,6 +105,7 @@ trait PaymentProcess
         // call out to PaymentProcessor interface for RentTrack payment token
         $mapper = $this->get('payment_account.type.mapper');
         $paymentAccountMapped = $mapper->mapLandlordAccountTypeForm($billingAccountType);
+        $billingAccount->setLastFour($this->getLast4Digits($paymentAccountMapped));
         /** @var SubmerchantProcessorInterface $paymentProcessor */
         $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         // We can use any contract because we use only it just for get group in this case
@@ -228,5 +230,25 @@ trait PaymentProcess
     {
         return $paymentAccountType->has('is_new_address') ?
             $paymentAccountType->get('is_new_address')->getData() === "true" : false;
+    }
+
+    /**
+     * @param \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped
+     * @return string|null
+     * @throws \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\Exception\InvalidAttributeNameException
+     */
+    protected function getLast4Digits(
+        \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped
+    ) {
+        $paymentAccountType = $paymentAccountMapped->getEntity()->getType();
+        if ($paymentAccountType === PaymentAccountType::DEBIT_CARD ||
+            $paymentAccountType === PaymentAccountType::CARD
+        ) {
+            $number = $paymentAccountMapped->get('card_number');
+        } elseif ($paymentAccountType == PaymentAccountType::BANK) {
+            $number = $paymentAccountMapped->get('account_number');
+        }
+
+        return isset($number) ? substr(str_replace(' ', '', $number), -4) : null;
     }
 }
