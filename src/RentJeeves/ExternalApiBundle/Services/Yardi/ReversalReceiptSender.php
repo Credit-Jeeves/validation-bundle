@@ -3,15 +3,13 @@
 namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order as Transaction;
-use DateTime;
 use Doctrine\ORM\EntityManager;
-use Exception;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -20,11 +18,12 @@ use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum as SoapClie
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 
 /**
- * @DI\Service("yardi.push_reversal_receipts")
+ * Service yardi.reversal_receipts
  */
 class ReversalReceiptSender
 {
     const LIMIT_TRANSACTIONS = 50;
+
     const LIMIT_HOLDINGS = 50;
 
     /**
@@ -38,11 +37,6 @@ class ReversalReceiptSender
     protected $clientFactory;
 
     /**
-     * @var ExceptionCatcher
-     */
-    protected $exceptionCatcher;
-
-    /**
      * @var Serializer
      */
     protected $serializer;
@@ -53,91 +47,124 @@ class ReversalReceiptSender
     protected $logger;
 
     /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "clientFactory" = @DI\Inject("soap.client.factory"),
-     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
-     *     "serializer" = @DI\Inject("jms_serializer"),
-     *     "logger" = @DI\Inject("logger")
-     * })
+     * @param EntityManager $em
+     * @param SoapClientFactory $clientFactory
+     * @param Serializer $serializer
+     * @param LoggerInterface $logger
      */
     public function __construct(
         EntityManager $em,
         SoapClientFactory $clientFactory,
-        ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
         LoggerInterface $logger
     ) {
         $this->em = $em;
         $this->clientFactory = $clientFactory;
-        $this->exceptionCatcher = $exceptionCatcher;
         $this->serializer = $serializer;
         $this->logger = $logger;
     }
 
     /**
-     * @param DateTime $depositDate
+     * @param \DateTime $depositDate
+     * @return boolean
      */
-    public function run(DateTime $depositDate)
+    public function collectReversedPaymentsToJobsByDate(\DateTime $depositDate)
     {
-        $this->logger->info('Reversal payments for date:' . $depositDate->format('Y-m-d'));
+        $this->logger->info('Collect Yardi reversal payments for date:' . $depositDate->format('Y-m-d'));
         try {
             $offsetHoldings = 0;
             while ($holdings = $this->getHoldings($offsetHoldings, self::LIMIT_HOLDINGS)) {
-                /** @var Holding $holding */
-                foreach ($holdings as $holding) {
-                    try {
-                        $this->logger->info('Holding: ' . $holding->getName());
-                        $offset = 0;
-
-                        while ($reversedTransactions = $this->getReversedTransactions(
-                            $holding,
-                            $depositDate,
-                            $offset,
-                            self::LIMIT_TRANSACTIONS
-                        )) {
-                            $this->pushReceipts($holding->getYardiSettings(), $reversedTransactions);
-
-                            $offset += self::LIMIT_TRANSACTIONS;
-                            $this->em->clear();
-                        }
-                    } catch (Exception $e) {
-                        $this->exceptionCatcher->handleException($e);
-                        $this->logger->alert(
-                            sprintf(
-                                "Reversals for holding(ID:%s) failed to post to Yardi. Exception: %s",
-                                $holding->getId(),
-                                $e->getMessage()
-                            )
-                        );
-                    }
-                }
+                $this->collectJobsByHoldings($holdings, $depositDate);
                 $offsetHoldings += self::LIMIT_HOLDINGS;
             }
-        } catch (Exception $e) {
-            $this->exceptionCatcher->handleException($e);
+
+            return true;
+        } catch (\Exception $e) {
             $this->logger->alert(
                 sprintf(
-                    "Posting reversals to Yardi failed to complete for all holdings. Exception: %s",
+                    'Collecting reversals to Yardi failed to complete for all holdings. Exception: %s',
                     $e->getMessage()
                 )
             );
+
+            return false;
         }
     }
 
+    /**
+     * @param array $holdings
+     * @param \DateTime $depositDate
+     */
+    protected function collectJobsByHoldings(array $holdings, \DateTime $depositDate)
+    {
+        /** @var Holding $holding */
+        foreach ($holdings as $holding) {
+            try {
+                $this->logger->info(
+                    sprintf(
+                        'Collecting Yardi reversed jobs for holding: %s',
+                        $holding->getName()
+                    )
+                );
+                $offset = 0;
+
+                while ($reversedOrders = $this->getReversedTransactions(
+                    $holding,
+                    $depositDate,
+                    $offset,
+                    self::LIMIT_TRANSACTIONS
+                )) {
+                    $this->createJobs($reversedOrders);
+                    $offset += self::LIMIT_TRANSACTIONS;
+                }
+            } catch (\Exception $e) {
+                $this->logger->alert(
+                    sprintf(
+                        'Reversals for holding(ID:%s) failed collect reversal payments. Exception: %s',
+                        $holding->getId(),
+                        $e->getMessage()
+                    )
+                );
+            }
+        }
+    }
+
+    /**
+     * @param array $orders
+     */
+    protected function createJobs($orders)
+    {
+        foreach ($orders as $order) {
+            $job = new Job(
+                'renttrack:yardi:push-reversal-receipt',
+                [
+                    '--app=rj',
+                    sprintf('--order-id=%s', $order->getId()),
+                ]
+            );
+            $this->em->persist($job);
+        }
+        $this->em->flush();
+    }
+
+    /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return array
+     */
     protected function getHoldings($offset, $limit)
     {
         return $this->em->getRepository('DataBundle:Holding')->findHoldingsWithYardiSettings($offset, $limit);
     }
 
     /**
-     * @param $holding
-     * @param $depositDate
-     * @param $offset
-     * @param $limit
-     * @return mixed
+     * @param Holding $holding
+     * @param \DateTime $depositDate
+     * @param integer $offset
+     * @param integer $limit
+     * @return array
      */
-    protected function getReversedTransactions($holding, $depositDate, $offset, $limit)
+    protected function getReversedTransactions(Holding $holding, \DateTime $depositDate, $offset, $limit)
     {
         return $this->em->getRepository('DataBundle:Order')->getReversedOrders(
             $holding,
@@ -148,53 +175,85 @@ class ReversalReceiptSender
     }
 
     /**
-     * @param YardiSettings $settings
-     * @param $transactions
-     * @throws Exception
+     * @param integer $orderId
+     * @return boolean
      */
-    protected function pushReceipts(YardiSettings $settings, $transactions)
+    public function pushReversedReceiptByOrderId($orderId)
     {
+        try {
+            $order = $this->em->getRepository('DataBundle:Order')->find($orderId);
+            if (empty($order)) {
+                throw new \LogicException(sprintf('We can\'t find order by ID %s', $orderId));
+            }
+
+            return $this->pushReversedOrder($order);
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                sprintf(
+                    'Reversed Order(ID:%s) failed to post to Yardi. Exception: %s',
+                    $orderId,
+                    $e->getMessage()
+                )
+            );
+
+            return false;
+        }
+    }
+
+    /**
+     * @param Transaction $order
+     * @return bool
+     * @throws \Exception
+     */
+    protected function pushReversedOrder(Transaction $order)
+    {
+        /** @var Operation $operation */
+        $operation = $order->getRentOperations()->first();
+        $settings = $operation->getContract()->getHolding()->getYardiSettings();
         /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);
+        $this->logger->info(
+            sprintf(
+                'Push Reversed Order to Yardi: %s Original trans: %s',
+                $order->getId(),
+                $order->getCompleteTransaction()->getTransactionId()
+            )
+        );
+        $transactionXml = $this->getTransactionXml($settings, $order);
+        if ($transactionXml === false) {
+            $this->logger->alert(sprintf(
+                'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.
+                You can re-run initial import for setup externalLeaseId for active contract.',
+                $order->getId(),
+                $order->getContract()->getId()
+            ));
 
-        /** @var Transaction $transaction */
-        foreach ($transactions as $transaction) {
-            try {
-                $this->logger->info('Original trans# ' . $transaction->getCompleteTransaction()->getTransactionId());
-                $transactionXml = $this->getTransactionXml($settings, $transaction);
-                if ($transactionXml === false) {
-                    $this->logger->alert(sprintf(
-                        'Order(ID:%s) can not be sent to Yardi, because contract(ID:%s) does not have externalLeaseId.\n
-                        You can re-run initial import for setup externalLeaseId for active contract.',
-                        $transaction->getId(),
-                        $transaction->getContract()->getId()
-                    ));
-                    continue;
-                }
-                /** @var Messages $result */
-                $result = $residentClient->importResidentTransactionsLogin($transactionXml);
-                if ($result instanceof Messages) {
-                    $this->logger->info($result->getMessage()->getMessage());
-                } else {
-                    $this->logger->alert(
-                        sprintf(
-                            "Reversal Order(ID:%s) failed to post to Yardi: Error: %s",
-                            $transaction->getId(),
-                            $residentClient->getErrorMessage()
-                        )
-                    );
-                }
-            } catch (Exception $e) {
-                $this->exceptionCatcher->handleException($e);
-                $this->logger->alert(
-                    sprintf(
-                        "Reversal Order(ID:%s) failed to post to Yardi. Exception: %s",
-                        $transaction->getId(),
-                        $e->getMessage()
-                    )
-                );
-            }
+            return false;
         }
+
+        /** @var Messages $result */
+        $result = $residentClient->importResidentTransactionsLogin($transactionXml);
+        if ($result instanceof Messages) {
+            $this->logger->info(
+                sprintf(
+                    'Reversed order ID %s successfully posted to Yardi. Message: %s',
+                    $order->getId(),
+                    $result->getMessage()->getMessage()
+                )
+            );
+
+            return true;
+        }
+
+        $this->logger->alert(
+            sprintf(
+                'Reversed Order(ID:%s) failed to post to Yardi: Error: %s',
+                $order->getId(),
+                $residentClient->getErrorMessage()
+            )
+        );
+
+        return false;
     }
 
     /**

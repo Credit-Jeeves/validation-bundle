@@ -12,6 +12,13 @@ parameters:
     binlist.card.class: 'RentJeeves\ExternalApiBundle\Services\Binlist\BinlistCard'
 
 services:
+    yardi.reversal_receipts:
+        class: RentJeeves\ExternalApiBundle\Services\Yardi\ReversalReceiptSender
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@soap.client.factory"
+            - "@jms_serializer"
+            - "@logger"
     yardi.resident_data:
         class: RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager
         arguments:
