@@ -209,4 +209,49 @@ class UnitRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Unit $currentUnit
+     * @param Unit $excludedUnit
+     *
+     * @return Unit[]
+     */
+    public function findOtherUnitsWithSameExternalUnitIdInGroupExcludeUnit(Unit $currentUnit, Unit $excludedUnit)
+    {
+        if (null === $currentUnit->getUnitMapping()) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->where('um.externalUnitId = :externalId')
+            ->andWhere('u.group = :group')
+            ->andWhere('u.id != :excludedUnitId AND u.id != :currentUnitId')
+            ->setParameter('group', $currentUnit->getGroup())
+            ->setParameter('currentUnitId', $currentUnit->getId())
+            ->setParameter('excludedUnitId', $excludedUnit->getId())
+            ->setParameter('externalId', $currentUnit->getUnitMapping()->getExternalUnitId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Unit $currentUnit
+     * @param Property $property
+     *
+     * @return Unit[]
+     */
+    public function findOtherUnitsWithSameNameByUnitAndPropertyAndSortById(Unit $currentUnit, Property $property)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.property = :property')
+            ->andWhere('u.name = :unitName')
+            ->andWhere('u.id != :excludedUnitId')
+            ->setParameter('property', $property)
+            ->setParameter('unitName', $currentUnit->getName())
+            ->setParameter('excludedUnitId', $currentUnit->getId())
+            ->orderBy('u.id', 'desc')
+            ->getQuery()
+            ->execute();
+    }
 }

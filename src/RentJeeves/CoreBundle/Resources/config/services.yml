@@ -112,3 +112,10 @@ services:
             - @payment_processor.factory
             - @monolog.logger.contract_movement_manager
 
+    dedupe.unit_deduplicator:
+        class: RentJeeves\CoreBundle\Services\UnitDeduplicator
+        arguments:
+            - @dedupe.contract_movement
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.unit_deduplicator
+

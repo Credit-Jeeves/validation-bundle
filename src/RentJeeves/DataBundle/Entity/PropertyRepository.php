@@ -3,10 +3,14 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 
+/**
+ * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class PropertyRepository extends EntityRepository
 {
     /**

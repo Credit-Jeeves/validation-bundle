@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -172,7 +173,7 @@ abstract class Unit
     }
 
     /**
-     * @return ContractWaiting
+     * @return ArrayCollection|\RentJeeves\DataBundle\Entity\ContractWaiting[]
      */
     public function getContractsWaiting()
     {
@@ -422,8 +423,6 @@ abstract class Unit
     }
 
     /**
-     * Get contracts
-     *
      * @return ArrayCollection
      */
     public function getContracts()
