@@ -2903,7 +2903,7 @@
             </trans-unit>
             <trans-unit id="settings.plans.comment">
                 <source>settings.plans.comment</source>
-                <target>Each plan lets you pay rent by E-Check or credit card, set up auto-payments and opt-in to report your payments to earn credit.</target>
+                <target>Each plan lets you pay rent by E-Check or Credit Card, set up recurring payments, and report your rent payments to major credit bureaus (you do not have to sign up for ScoreTrack to build credit history). Please verify your identity on the Build Credit History tab before signing up for ScoreTrack.</target>
             </trans-unit>
             <trans-unit id="settings.plans.label">
                 <source>settings.plans.label</source>
