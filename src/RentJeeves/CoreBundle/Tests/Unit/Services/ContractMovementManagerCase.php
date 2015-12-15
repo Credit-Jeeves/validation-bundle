@@ -39,7 +39,7 @@ class ContractMovementManagerCase extends UnitTestBase
      * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
      * @expectedExceptionMessage srcUnit#1 and dstUnit#2 are in different holdings
      */
-    public function shouldLogErrorAndReturnFalseIfSrcUnitAndDstUnitHaveDifferentHolding()
+    public function shouldLogErrorAndThrowExceptionIfSrcUnitAndDstUnitHaveDifferentHolding()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
@@ -71,7 +71,7 @@ class ContractMovementManagerCase extends UnitTestBase
      * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
      * @expectedExceptionMessage we cannot move contracts to groups that use a different payment processor.
      */
-    public function shouldLogErrorAndReturnFalseIfSrcUnitAndDstUnitHaveDifferentPaymentProcessors()
+    public function shouldLogErrorAndThrowExceptionIfSrcUnitAndDstUnitHaveDifferentPaymentProcessors()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
@@ -112,7 +112,7 @@ class ContractMovementManagerCase extends UnitTestBase
      * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
      * @expectedExceptionMessage resident ID#1 for Tenant#5 follow units. We must resolve manually first.
      */
-    public function shouldLogErrorAndReturnFalseIfTenantHasExternalResidentIdAndGroupIsExternalResidentFollowsUnit()
+    public function shouldLogErrorAndThrowExceptionIfTenantHasExternalResidentIdAndGroupIsExternalResidentFollowsUnit()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
@@ -173,7 +173,7 @@ class ContractMovementManagerCase extends UnitTestBase
      * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
      * @expectedExceptionMessage Can not update active Payment
      */
-    public function shouldLogErrorAndReturnFalseIfCantUpdateActivePayments()
+    public function shouldLogErrorAndThrowExceptionIfCantUpdateActivePayments()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
@@ -255,7 +255,7 @@ class ContractMovementManagerCase extends UnitTestBase
      * @expectedException \RentJeeves\CoreBundle\Exception\ContractMovementManagerException
      * @expectedExceptionMessage Could not retokenize DepositAccount#1 : test
      */
-    public function shouldLogErrorAndReturnFalseIfCantRetokenizeDepositAccount()
+    public function shouldLogErrorAndThrowExceptionIfCantRetokenizeDepositAccount()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
@@ -343,7 +343,7 @@ class ContractMovementManagerCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldReturnTrueIfAllDataIsValid()
+    public function shouldMoveContractIfAllInputDataIsValid()
     {
         $srcUnit = new Unit();
         $this->writeIdAttribute($srcUnit, 1);
