@@ -5,7 +5,6 @@ namespace RentJeeves\ExternalApiBundle\Services;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Job;
@@ -18,6 +17,9 @@ use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterfac
  */
 abstract class AbstractContractSynchronizer implements ContractSynchronizerInterface
 {
+    // Time limit for each sync job
+    const MAXIMUM_RUNTIME_SEC = 600; // 10 minutes
+
     const SYNC_BALANCE = 'balance';
 
     const SYNC_RENT = 'rent';
@@ -283,6 +285,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
         ];
 
         $job = new Job($commandName, $arguments);
+        $job->setMaxRuntime(self::MAXIMUM_RUNTIME_SEC);
         $this->em->persist($job);
         $this->em->flush($job);
 
