@@ -54,7 +54,7 @@ class LockboxParser implements CollectPayParserInterface
 
         foreach ($decodedLockboxData as $reportRecord) {
             try {
-                if (!$this->isPaymentDetailRecord($reportRecord)) {
+                if (!$this->isPaymentDetailRecord($reportRecord) || $this->isEmptyTransactionAmount($reportRecord)) {
                     continue;
                 }
 
@@ -103,6 +103,16 @@ class LockboxParser implements CollectPayParserInterface
     protected function isPaymentDetailRecord(array $record)
     {
         return self::RECORD_PAYMENT_DETAIL == $this->getRecordField($record, self::KEY_RECORD_TYPE);
+    }
+
+    /**
+     * @param array $record
+     * @return bool
+     * @throws AciReportException
+     */
+    protected function isEmptyTransactionAmount(array $record)
+    {
+        return 0.00 == $this->getRecordField($record, self::KEY_TRANSACTION_AMOUNT);
     }
 
     /**
