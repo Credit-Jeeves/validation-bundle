@@ -104,3 +104,11 @@ services:
         arguments:
             - @guzzle_client
             - @logger
+
+    dedupe.contract_movement:
+        class: RentJeeves\CoreBundle\Services\ContractMovementManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @payment_processor.factory
+            - @monolog.logger.contract_movement_manager
+

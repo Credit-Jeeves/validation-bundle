@@ -3,8 +3,12 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * @method Unit find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class UnitRepository extends EntityRepository
 {
     /**
