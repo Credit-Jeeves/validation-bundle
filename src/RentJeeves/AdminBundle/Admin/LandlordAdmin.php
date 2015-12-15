@@ -21,7 +21,7 @@ class LandlordAdmin extends Admin
     const TYPE = UserType::LANDLORD;
 
     protected $formOptions = array(
-            'validation_groups' => 'user_admin'
+        'validation_groups' => ['holding', 'user_admin']
     );
 
     /**

@@ -113,7 +113,13 @@ class ResidentMappingAdmin extends Admin
                  * @var $residentMapping ResidentMapping
                  */
                 $residentMapping = $form->getData();
+                if (null === $residentMapping->getHolding()) {
+                    $form->get('holding')->addError(
+                        new FormError('Invalid HoldingId')
+                    );
 
+                    return;
+                }
                 $residentMappingDuplicate = $em->getRepository('RjDataBundle:ResidentMapping')
                     ->findOneBy(
                         array(

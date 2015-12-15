@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Admin\Admin;
@@ -54,17 +55,12 @@ class PropertyMappingAdmin extends Admin
         $formMapper
             ->add(
                 'holding',
-                'entity',
-                array(
-                    'class' => 'DataBundle:Holding',
-                    'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('holding')
-                                ->innerJoin('holding.groups', 'gr')
-                                ->where('gr.type = :typeGroup')
-                                ->orderBy('holding.name', 'ASC')
-                                ->setParameter('typeGroup', GroupType::RENT);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by cj_holding.id rather than a select drop-down
+                [
+                    'label' => "Holding ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'CreditJeeves\DataBundle\Entity\Holding'
+                ]
             )
             ->add(
                 'property',
@@ -88,6 +84,17 @@ class PropertyMappingAdmin extends Admin
                 $form = $event->getForm();
 
                 $propertyMapping = $form->getData();
+                $holding = $propertyMapping->getHolding();
+                /**
+                 * @TODO: remove this `if` after adding autocomplete
+                 */
+                if (null === $holding || false === $this->isValidHolding($holding)) {
+                    $form->get('holding')->addError(
+                        new FormError('Invalid HoldingId. Holding must contain group(s) with type RENT.')
+                    );
+
+                    return;
+                }
 
                 $existentPropertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')
                     ->findOneBy(
@@ -108,5 +115,26 @@ class PropertyMappingAdmin extends Admin
                 }
             }
         );
+    }
+
+    /**
+     * Need for sonata
+     *
+     * @param Holding $holding
+     *
+     * @return bool
+     */
+    protected function isValidHolding(Holding $holding)
+    {
+        $groups = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.default_entity_manager')
+            ->getRepository('DataBundle:Group')->createQueryBuilder('g')
+            ->where('g.type = :typeGroup')
+            ->andWhere('g.holding = :holding')
+            ->setParameter('typeGroup', GroupType::RENT)
+            ->setParameter('holding', $holding)
+            ->getQuery()
+            ->execute();
+
+        return count($groups) > 0;
     }
 }

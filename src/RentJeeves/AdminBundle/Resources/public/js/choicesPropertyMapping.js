@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    var holding = $($('select').get(0));
+    var holding = $('input[id$=_holding]');
     var property = $($('select').get(1));
     var route = 'admin_property_mapping';
 
