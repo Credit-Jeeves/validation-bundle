@@ -201,7 +201,6 @@ services:
             - RentJeeves\DataBundle\Entity\PropertyMapping
             - 'SonataAdminBundle:CRUD'
         calls:
-            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_property_mapping.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.unit_mapping:
