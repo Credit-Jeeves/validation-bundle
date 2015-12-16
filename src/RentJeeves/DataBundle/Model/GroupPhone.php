@@ -200,4 +200,19 @@ abstract class GroupPhone
     {
         return $this->updatedAt;
     }
+
+    /**
+     * Need for sonata
+     * @todo: Group should be required in db
+     *
+     * @Assert\True(message = "Group is invalid or empty", groups={"sonata"})
+     */
+    public function isValidHolding()
+    {
+        if ($this->getGroup() === null) {
+            return false;
+        }
+
+        return true;
+    }
 }

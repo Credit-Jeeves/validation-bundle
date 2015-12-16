@@ -181,21 +181,7 @@ class RjGroupAdmin extends Admin
                 )
             ->end()
             ->with('Group Phones')
-                ->add(
-                    'groupPhones',
-                    'sonata_type_collection',
-                    array(
-                        // Prevents the "Delete" option from being displayed
-                        'type_options' => array(
-                            'delete' => false
-                        )
-                    ),
-                    array(
-                        'edit' => 'inline',
-                        'inline' => 'table',
-                        'sortable' => 'position',
-                    )
-                )
+                // override in /src/RentJeeves/AdminBundle/Resources/views/CRUD/group_edit.html.twig
             ->end()
             ->with('Virtual terminal')
                 ->add(

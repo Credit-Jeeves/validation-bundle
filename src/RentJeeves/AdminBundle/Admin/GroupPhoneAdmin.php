@@ -11,6 +11,14 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class GroupPhoneAdmin extends Admin
 {
+
+    /**
+     * @var array
+     */
+    protected $formOptions = [
+        'validation_groups' => ['sonata']
+    ];
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -35,11 +43,12 @@ class GroupPhoneAdmin extends Admin
             ->add('phone')
             ->add(
                 'group',
-                'sonata_type_model',
-                array(
-                    'empty_value' => 'None',
-                    'required' => false
-                )
+                'sonata_type_model_reference', // Use a text field by rj_group.id rather than a select drop-down
+                [
+                    'label' => "Group ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'CreditJeeves\DataBundle\Entity\Group'
+                ]
             )
             ->add(
                 'isActive',
