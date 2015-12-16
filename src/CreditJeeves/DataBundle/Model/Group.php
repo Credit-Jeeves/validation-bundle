@@ -1530,4 +1530,19 @@ abstract class Group
 
         return true;
     }
+
+    /**
+     * Need for sonata
+     * @todo: Holding should be required in db
+     *
+     * @Assert\True(message = "Holding is invalid or empty", groups={"holding"})
+     */
+    public function isValidHolding()
+    {
+        if ($this->getHolding() === null) {
+            return false;
+        }
+
+        return true;
+    }
 }

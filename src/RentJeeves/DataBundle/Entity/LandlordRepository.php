@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 class LandlordRepository extends EntityRepository
 {
@@ -59,5 +60,37 @@ class LandlordRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @return Landlord[]
+     */
+    public function findNotPayDirectHoldingAdmins()
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.holding', 'h')
+            ->innerJoin('h.groups', 'g')
+            ->where('l.is_super_admin = 1')
+            ->andWhere('g.orderAlgorithm != :orderAlgorithm')
+            ->setParameter('orderAlgorithm', OrderAlgorithmType::PAYDIRECT)
+            ->orderBy('l.email', 'DESC')
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Landlord[]
+     */
+    public function findNotPayDirectHoldingNotAdmins()
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.holding', 'h')
+            ->innerJoin('h.groups', 'g')
+            ->where('l.is_super_admin = 0')
+            ->andWhere('g.orderAlgorithm != :orderAlgorithm')
+            ->setParameter('orderAlgorithm', OrderAlgorithmType::PAYDIRECT)
+            ->orderBy('l.email', 'DESC')
+            ->getQuery()
+            ->execute();
     }
 }

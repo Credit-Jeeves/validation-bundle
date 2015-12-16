@@ -21,7 +21,7 @@ class LandlordAdmin extends Admin
     const TYPE = UserType::LANDLORD;
 
     protected $formOptions = array(
-            'validation_groups' => 'user_admin'
+        'validation_groups' => ['holding', 'user_admin']
     );
 
     /**
@@ -108,7 +108,12 @@ class LandlordAdmin extends Admin
             ->with('General')
                 ->add(
                     'holding',
-                    'sonata_type_model'
+                    'sonata_type_model_reference', // Use a text field by cj_holding.id rather than a select drop-down
+                    [
+                        'label' => "Holding ID",
+                        'model_manager' => $this->getModelManager(),
+                        'class' => 'CreditJeeves\DataBundle\Entity\Holding'
+                    ]
                 )
                 ->add('first_name')
                 ->add(

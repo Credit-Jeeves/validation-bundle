@@ -133,12 +133,15 @@ abstract class ResidentMapping
     }
 
     /**
+     * Holding $holding = null - need for sonata
+     * @todo: remove after implement autocomplete
+     *
      * Set Holding
      *
      * @param Holding $holding
      * @return ResidentMapping
      */
-    public function setHolding(Holding $holding)
+    public function setHolding(Holding $holding = null)
     {
         $this->holding = $holding;
         return $this;
