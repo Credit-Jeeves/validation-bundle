@@ -103,11 +103,8 @@ class OrderRepository extends EntityRepository
                 $query->orderBy('ten.first_name', $order);
                 $query->addOrderBy('ten.last_name', $order);
                 break;
-            case 'date-posted':
-                $query->orderBy('o.created_at', $order);
-                break;
             case 'date-initiated':
-                $query->orderBy('o.updated_at', $order);
+                $query->orderBy('o.created_at', $order);
                 break;
             case 'property':
                 $query->orderBy('propertyAddress.number', $order);
