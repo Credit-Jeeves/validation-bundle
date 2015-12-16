@@ -79,8 +79,10 @@ class SecurityController extends BaseController
     {
         if ($settings = $this->container->get('doctrine')->getRepository('DataBundle:Settings')->findAll()) {
             $settings = $settings[0];
+
+            return $settings->getLoginMessage();
         }
 
-        return $settings->getLoginMessage();
+        return null;
     }
 }
