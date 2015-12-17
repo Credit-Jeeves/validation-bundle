@@ -1,5 +1,5 @@
 {% if admin.isGranted('LIST', object)%}
-    <a href="#" class="btn group_link">
+    <a href="{{ path('admin_import_property_list', { 'import_id': object.id }) }}" class="btn group_link">
         <i class="icon-contract"></i>
         Properties
     </a>

@@ -415,7 +415,7 @@ abstract class ImportProperty
     /**
      * @return boolean
      */
-    public function getProcessed()
+    public function isProcessed()
     {
         return $this->processed;
     }

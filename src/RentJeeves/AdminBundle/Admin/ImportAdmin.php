@@ -29,12 +29,18 @@ class ImportAdmin extends Admin
         return '/' . self::TYPE;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('create');
         $collection->remove('edit');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -60,6 +66,22 @@ class ImportAdmin extends Admin
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper
+            ->add('group.name')
+            ->add('user.email')
+            ->add('importType')
+            ->add('status')
+            ->add('createdAt', 'doctrine_orm_date')
+            ->add('finishedAt', 'doctrine_orm_date');
+    }
+
+    /**
+     * Used in template to display count of properties in one import.
+     *
      * @param $importId
      * @return int
      */

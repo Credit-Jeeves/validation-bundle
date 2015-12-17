@@ -269,6 +269,17 @@ services:
         calls:
             - [ setTranslationDomain, [messages]]
 
+    sonata.admin.import_property:
+        class: RentJeeves\AdminBundle\Admin\ImportPropertyAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Import Property" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\ImportProperty
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [messages]]
+
     rental_report:
         class: RentJeeves\AdminBundle\Form\RentalReportType
         tags:
