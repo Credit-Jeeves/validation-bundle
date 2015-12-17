@@ -36,15 +36,14 @@ abstract class Import
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Landlord",
-     *     inversedBy="imports"
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User"
      * )
      * @ORM\JoinColumn(
      *     name="user_id",
      *     referencedColumnName="id",
      *     nullable=false
      * )
-     * @var \RentJeeves\DataBundle\Entity\Landlord
+     * @var \CreditJeeves\DataBundle\Entity\User
      */
     protected $user;
 
@@ -78,19 +77,23 @@ abstract class Import
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created_at", type="datetime")
-     *
+     * @ORM\Column(
+     *     name="created_at",
+     *     type="datetime"
+     * )
      * @var \DateTime
      */
     protected $createdAt;
 
     /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(name="updated_at", type="datetime")
-     *
+     * @ORM\Column(
+     *     name="finished_at",
+     *     type="datetime",
+     *     nullable=true
+     * )
      * @var \DateTime
      */
-    protected $updatedAt;
+    protected $finishedAt;
 
     public function __construct()
     {
@@ -108,7 +111,7 @@ abstract class Import
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
@@ -124,7 +127,7 @@ abstract class Import
     /**
      * @param \CreditJeeves\DataBundle\Entity\Group $group
      */
-    public function setGroup($group)
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
         $this->group = $group;
     }
@@ -172,21 +175,21 @@ abstract class Import
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt()
+    public function getFinishedAt()
     {
-        return $this->updatedAt;
+        return $this->finishedAt;
     }
 
     /**
      * @param \DateTime $updatedAt
      */
-    public function setUpdatedAt($updatedAt)
+    public function setFinishedAt(\DateTime $updatedAt)
     {
-        $this->updatedAt = $updatedAt;
+        $this->finishedAt = $updatedAt;
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity\Landlord
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {
@@ -194,9 +197,9 @@ abstract class Import
     }
 
     /**
-     * @param \RentJeeves\DataBundle\Entity\Landlord $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      */
-    public function setUser($user)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user)
     {
         $this->user = $user;
     }

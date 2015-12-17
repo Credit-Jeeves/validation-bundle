@@ -11,5 +11,8 @@ use RentJeeves\DataBundle\Model\Import as Base;
  */
 class Import extends Base
 {
-
+    public function getCountImportProperties()
+    {
+        return $this->getImportProperties()->count();
+    }
 }

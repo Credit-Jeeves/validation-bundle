@@ -3,6 +3,7 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
 
 /**
  * @ORM\MappedSuperclass
@@ -22,7 +23,7 @@ abstract class ImportProperty
      * @ORM\Column(
      *     type="string",
      *     name="external_property_id",
-     *     nullable=false
+     *     nullable=true
      * )
      * @var string
      */
@@ -32,7 +33,7 @@ abstract class ImportProperty
      * @ORM\Column(
      *     type="string",
      *     name="external_building_id",
-     *     nullable=false
+     *     nullable=true
      * )
      * @var string
      */
@@ -42,27 +43,31 @@ abstract class ImportProperty
      * @ORM\Column(
      *     name="address_has_units",
      *     type="boolean",
-     *     nullable=false
+     *     options={
+     *         "default"=0
+     *     }
      * )
      * @var boolean
      */
-    protected $addressHasUnits;
+    protected $addressHasUnits = false;
 
     /**
      * @ORM\Column(
      *     name="property_has_buildings",
      *     type="boolean",
-     *     nullable=false
+     *     options={
+     *         "default"=0
+     *     }
      * )
      * @var boolean
      */
-    protected $propertyHasBuildings;
+    protected $propertyHasBuildings = false;
 
     /**
      * @ORM\Column(
      *     type="string",
      *     name="unit_name",
-     *     nullable=false
+     *     nullable=true
      * )
      * @var string
      */
@@ -82,7 +87,7 @@ abstract class ImportProperty
      * @ORM\Column(
      *     type="string",
      *     name="street_number",
-     *     nullable=false
+     *     nullable=true
      * )
      * @var string
      */
@@ -92,20 +97,26 @@ abstract class ImportProperty
      * @ORM\Column(
      *     type="string",
      *     name="street_name",
-     *     nullable=false
+     *     nullable=true
      * )
      * @var string
      */
     protected $streetName;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      * @var string
      */
     protected $city;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      * @var string
      */
     protected $state;
@@ -113,11 +124,45 @@ abstract class ImportProperty
     /**
      * @ORM\Column(
      *     type="string",
-     *     length=15
+     *     length=15,
+     *     nullable=true
      * )
      * @var string
      */
     protected $zip;
+
+    /**
+     * @ORM\Column(
+     *     type="ImportPropertyStatus",
+     *     options={
+     *         "default"="none"
+     *     }
+     * )
+     * @var string
+     */
+    protected $status = ImportPropertyStatus::NONE;
+
+    /**
+     * @ORM\Column(
+     *     name="error_messages",
+     *     type="array",
+     *     nullable=true
+     * )
+     * @var array
+     */
+    protected $errorMessages;
+
+    /**
+     * @ORM\Column(
+     *     name="is_processed",
+     *     type="boolean",
+     *     options={
+     *         "default"=0
+     *     }
+     * )
+     * @var boolean
+     */
+    protected $processed = false;
 
     /**
      * @ORM\ManyToOne(
@@ -333,5 +378,53 @@ abstract class ImportProperty
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
+    }
+
+    /**
+     * @param array $errorMessages
+     */
+    public function setErrorMessages($errorMessages)
+    {
+        $this->errorMessages = $errorMessages;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getProcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param boolean $processed
+     */
+    public function setProcessed($processed)
+    {
+        $this->processed = $processed;
     }
 }
