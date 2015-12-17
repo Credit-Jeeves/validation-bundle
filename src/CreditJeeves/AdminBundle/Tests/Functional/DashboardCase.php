@@ -14,7 +14,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     public function adminManageEmails()
     {
         $this->load(true);
-        //$this->setDefaultSession('Selenium2');
+        $this->setDefaultSession('Symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_emails'));
         $tableTr->clickLink('link_list');
@@ -84,7 +84,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function adminManageAdmins()
     {
-        //$this->setDefaultSession('Goutte');
+        $this->setDefaultSession('Symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(2, $tables, 'Wrong number of blocks');

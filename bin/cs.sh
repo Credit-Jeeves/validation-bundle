@@ -20,7 +20,7 @@ $BASE_DIR/src/CreditJeeves/ExperianBundle/NetConnect,\
 $BASE_DIR/src/CreditJeeves/CoreBundle/sfConfig.php,\
 $BASE_DIR/web/_intellij_phpdebug_validator.php,\
 $BASE_DIR/bin/doctrine.php,\
-$BASE_DIR/web/bundles/,\
+$BASE_DIR/web/,\
 $BASE_DIR/app/,\
 $BASE_DIR/src/RentJeeves/ExternalApiBundle/Services/Yardi/Soap"
 

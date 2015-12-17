@@ -1,3 +1,5 @@
+/web/js/*
+/web/css/*
 /web/*_dev.php
 /web/*_test.php
 /web/test.php
@@ -18,4 +20,5 @@
 /phpunit.xml
 /bin/php-cs-fixer
 phpunit*.phar
+
 

@@ -131,6 +131,7 @@ class ExportCase extends BaseTestCase
     public function goToYardiReport()
     {
         $this->load(true);
+        $this->setDefaultSession('goutte');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('accounting.menu.export');
