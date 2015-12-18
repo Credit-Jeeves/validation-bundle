@@ -7,6 +7,7 @@ use RentJeeves\CoreBundle\Services\ContractMovementManager;
 use RentJeeves\CoreBundle\Services\UnitDeduplicator;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -33,17 +34,59 @@ class UnitDeduplicatorCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\CoreBundle\Exception\UnitDeduplicatorException
-     * @expectedExceptionMessage ERROR: the dstProperty#1 is not in the same group as the srcUnit#1
+     * @expectedExceptionMessage have different isSingle values
      */
-    public function shouldLogErrorAndThrowExceptionIfUnitAndPropertyHaveDifferentGroups()
+    public function shouldLogErrorAndThrowExceptionIfSrcAndDsrPropertiesHaveDifferentIsSingle()
     {
+        $srcProperty = new Property();
+        $srcPropertyAddress = new PropertyAddress();
+        $srcPropertyAddress->setIsSingle(true);
+        $srcProperty->setPropertyAddress($srcPropertyAddress);
+
         $unit = new Unit();
         $this->writeIdAttribute($unit, 1);
         $unit->setGroup(new Group());
+        $unit->setProperty($srcProperty);
 
         $property = new Property();
         $this->writeIdAttribute($property, 1);
         $property->addPropertyGroup(new Group());
+        $dstPropertyAddress = new PropertyAddress();
+        $dstPropertyAddress->setIsSingle(false);
+        $property->setPropertyAddress($dstPropertyAddress);
+
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('warning')
+            ->with($this->stringContains('have different isSingle values'));
+
+        $deduplicator = new UnitDeduplicator(
+            $this->getContractMovementMock(),
+            $this->getEntityManagerMock(),
+            $logger
+        );
+        $deduplicator->deduplicate($unit, $property);
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\UnitDeduplicatorException
+     * @expectedExceptionMessage ERROR: the dstProperty#1 is not in the same group as the srcUnit#1
+     */
+    public function shouldLogErrorAndThrowExceptionIfUnitAndPropertyHaveDifferentGroups()
+    {
+        $srcProperty = new Property();
+        $srcProperty->setPropertyAddress(new PropertyAddress());
+
+        $unit = new Unit();
+        $this->writeIdAttribute($unit, 1);
+        $unit->setGroup(new Group());
+        $unit->setProperty($srcProperty);
+
+        $property = new Property();
+        $this->writeIdAttribute($property, 1);
+        $property->addPropertyGroup(new Group());
+        $property->setPropertyAddress(new PropertyAddress());
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
@@ -56,7 +99,6 @@ class UnitDeduplicatorCase extends UnitTestBase
             $logger
         );
         $deduplicator->deduplicate($unit, $property);
-
     }
 
     /**
@@ -66,10 +108,14 @@ class UnitDeduplicatorCase extends UnitTestBase
      */
     public function shouldLogErrorAndThrowExceptionIfSrcUnitAndDstUnitHaveDifferentExternalUnitId()
     {
+        $srcProperty = new Property();
+        $srcProperty->setPropertyAddress(new PropertyAddress());
+
         $srcUnit = new Unit();
         $srcUnit->setName('test');
         $this->writeIdAttribute($srcUnit, 1);
         $srcUnit->setGroup($group = new Group());
+        $srcUnit->setProperty($srcProperty);
 
         $srcUnitMapping = new UnitMapping();
         $srcUnitMapping->setExternalUnitId('test1');
@@ -84,6 +130,7 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $property = new Property();
         $property->addPropertyGroup($group);
+        $property->setPropertyAddress(new PropertyAddress());
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
@@ -119,10 +166,14 @@ class UnitDeduplicatorCase extends UnitTestBase
      */
     public function shouldLogErrorAndThrowExceptionIfGroupHaveMultipleExternalUnit()
     {
+        $srcProperty = new Property();
+        $srcProperty->setPropertyAddress(new PropertyAddress());
+
         $srcUnit = new Unit();
         $srcUnit->setName('test');
         $this->writeIdAttribute($srcUnit, 1);
         $srcUnit->setGroup($group = new Group());
+        $srcUnit->setProperty($srcProperty);
 
         $srcUnitMapping = new UnitMapping();
         $srcUnitMapping->setExternalUnitId('test1');
@@ -137,6 +188,7 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $property = new Property();
         $property->addPropertyGroup($group);
+        $property->setPropertyAddress(new PropertyAddress());
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
@@ -176,16 +228,21 @@ class UnitDeduplicatorCase extends UnitTestBase
      */
     public function shouldLogErrorAndThrowExceptionIfCantMoveContract()
     {
+        $srcProperty = new Property();
+        $srcProperty->setPropertyAddress(new PropertyAddress());
+
         $srcUnit = new Unit();
         $srcUnit->setName('test');
         $this->writeIdAttribute($srcUnit, 1);
         $srcUnit->setGroup($group = new Group());
+        $srcUnit->setProperty($srcProperty);
 
         $firstUnit = new Unit();
         $this->writeIdAttribute($firstUnit, 2);
 
         $property = new Property();
         $property->addPropertyGroup($group);
+        $property->setPropertyAddress(new PropertyAddress());
 
         $contract = new Contract();
         $this->writeIdAttribute($contract, 1);
@@ -228,24 +285,31 @@ class UnitDeduplicatorCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldRemoveSourceUnitIfInputDataIsValid()
+    public function shouldRemoveIsSingleSourceUnitIfInputDataIsValid()
     {
+        $srcProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+        $propertyAddress->setIsSingle(false);
+        $srcProperty->setPropertyAddress($propertyAddress);
+
         $srcUnit = new Unit();
         $srcUnit->setName('test');
         $this->writeIdAttribute($srcUnit, 1);
         $srcUnit->setGroup($group = new Group());
+        $srcUnit->setProperty($srcProperty);
 
         $firstUnit = new Unit();
         $this->writeIdAttribute($firstUnit, 2);
 
         $property = new Property();
         $property->addPropertyGroup($group);
+        $property->setPropertyAddress($propertyAddress);
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->at(0))
             ->method('info')
             ->with($this->stringContains(
-                'Unit#1 is deleted.'
+                'SrcUnit is deleted.'
             ));
         $logger->expects($this->at(1))
             ->method('info')
@@ -264,6 +328,64 @@ class UnitDeduplicatorCase extends UnitTestBase
             ->with($this->equalTo('RjDataBundle:Unit'))
             ->will($this->returnValue($unitRepositoryMock));
         $em->expects($this->once())
+            ->method($this->equalTo('remove'))
+            ->with($this->equalTo($srcUnit));
+
+        $deduplicator = new UnitDeduplicator(
+            $this->getContractMovementMock(),
+            $em,
+            $logger
+        );
+
+        $deduplicator->deduplicate($srcUnit, $property);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotRemoveIsSingleSourceUnitIfInputDataIsValid()
+    {
+        $srcProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+        $propertyAddress->setIsSingle(true);
+        $srcProperty->setPropertyAddress($propertyAddress);
+
+        $srcUnit = new Unit();
+        $srcUnit->setName('test');
+        $this->writeIdAttribute($srcUnit, 1);
+        $srcUnit->setGroup($group = new Group());
+        $srcUnit->setProperty($srcProperty);
+
+        $firstUnit = new Unit();
+        $this->writeIdAttribute($firstUnit, 2);
+
+        $property = new Property();
+        $property->addPropertyGroup($group);
+        $property->setPropertyAddress($propertyAddress);
+
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->at(0))
+            ->method('info')
+            ->with($this->stringContains(
+                'SrcUnit is deduplicated, but not deleted.'
+            ));
+        $logger->expects($this->at(1))
+            ->method('info')
+            ->with($this->stringContains(
+                'Migration Units and Contracts from one Property to another is finished.'
+            ));
+
+        $unitRepositoryMock = $this->getUnitRepositoryMock();
+        $unitRepositoryMock->expects($this->once())
+            ->method('findFirstUnitsWithSameNameByUnitAndPropertyAndSortById')
+            ->will($this->returnValue($firstUnit));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method($this->equalTo('getRepository'))
+            ->with($this->equalTo('RjDataBundle:Unit'))
+            ->will($this->returnValue($unitRepositoryMock));
+        $em->expects($this->never())
             ->method($this->equalTo('remove'))
             ->with($this->equalTo($srcUnit));
 

@@ -431,29 +431,19 @@ abstract class Unit
     }
 
     /**
-     * Add ContractWaiting
-     *
      * @param ContractWaitingEntity $contract
-     * @return $this
      */
     public function addContractWaiting(ContractWaitingEntity $contract)
     {
         $this->contractsWaiting[] = $contract;
-
-        return $this;
     }
 
     /**
-     * Remove ContractWaiting
-     *
-     * @param Contract
-     * @return $this
+     * @param ContractWaitingEntity $contract
      */
     public function removeContractWaiting(ContractWaitingEntity $contract)
     {
         $this->contractsWaiting->removeElement($contract);
-
-        return $this;
     }
 
     /**

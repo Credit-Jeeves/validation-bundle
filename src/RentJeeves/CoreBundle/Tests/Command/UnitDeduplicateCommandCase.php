@@ -40,8 +40,11 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
-
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
         $this->assertGreaterThan(1, count($contracts));
+        $dstProperty = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(18);
+        $dstProperty->getPropertyAddress()->setIsSingle(false);
+
         /**
          * @var Contract $firstContract
          */
@@ -95,6 +98,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $unitWithSameName = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(2);
         $unit->setName($unitWithSameName->getName());
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
@@ -128,7 +132,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             'srcUnit is not deleted.'
         );
 
-        $this->getEntityManager()->refresh($unitMapping);
         $this->assertEquals($unitWithSameName, $unitMapping->getUnit(), 'UnitMapping is not updated.');
 
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
@@ -165,6 +168,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $unitWithSameName = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(2);
         $unit->setName($unitWithSameName->getName());
+
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
@@ -245,6 +250,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $contracts = $unit->getContracts();
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $this->assertGreaterThan(1, count($contracts));
         /**

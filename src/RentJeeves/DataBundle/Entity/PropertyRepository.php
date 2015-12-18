@@ -376,4 +376,20 @@ EOT;
 
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * @param Property $property
+     *
+     * @return Property[]
+     */
+    public function findAllOtherPropertiesWithSamePropertyAddress(Property $property)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.propertyAddress = :propertyAddress')
+            ->andWhere('p.id != :currentPropertyId')
+            ->setParameter('propertyAddress', $property->getPropertyAddress())
+            ->setParameter('currentPropertyId', $property->getId())
+            ->getQuery()
+            ->execute();
+    }
 }
