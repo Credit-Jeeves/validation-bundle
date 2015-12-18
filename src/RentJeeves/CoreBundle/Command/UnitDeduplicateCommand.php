@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CoreBundle\Command;
 
-use RentJeeves\CoreBundle\Exception\ContractMovementManagerException;
 use RentJeeves\CoreBundle\Exception\UnitDeduplicatorException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,6 +45,8 @@ class UnitDeduplicateCommand extends BaseCommand
             $unitDeduplicator->deduplicate($srcUnit, $dstProperty);
         } catch (UnitDeduplicatorException $e) {
             $this->getLogger()->warning('Unit is not deduplicated: ' . $e);
+
+            return;
         }
 
         $this->getLogger()->info('Unit is deduplicated.');

@@ -257,7 +257,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
                 '--src-unit-id' => 1,
                 '--dst-property-id' => 18,
                 '--dry-run' => 1
-            ]);
+            ]
+        );
 
         $this->assertNotEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),

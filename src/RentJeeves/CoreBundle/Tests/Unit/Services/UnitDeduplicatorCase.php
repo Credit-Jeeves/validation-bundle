@@ -94,8 +94,8 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $unitRepositoryMock = $this->getUnitRepositoryMock();
         $unitRepositoryMock->expects($this->once())
-            ->method($this->equalTo('findOtherUnitsWithSameNameByUnitAndPropertyAndSortById'))
-            ->will($this->returnValue([$firstUnit, new Unit()]));
+            ->method($this->equalTo('findFirstUnitsWithSameNameByUnitAndPropertyAndSortById'))
+            ->will($this->returnValue($firstUnit));
 
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -147,8 +147,8 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $unitRepositoryMock = $this->getUnitRepositoryMock();
         $unitRepositoryMock->expects($this->once())
-            ->method('findOtherUnitsWithSameNameByUnitAndPropertyAndSortById')
-            ->will($this->returnValue([$firstUnit, new Unit()]));
+            ->method('findFirstUnitsWithSameNameByUnitAndPropertyAndSortById')
+            ->will($this->returnValue($firstUnit));
         $unitRepositoryMock->expects($this->once())
             ->method('findOtherUnitsWithSameExternalUnitIdInGroupExcludeUnit')
             ->with($this->equalTo($srcUnit), $this->equalTo($firstUnit))
@@ -201,8 +201,8 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $unitRepositoryMock = $this->getUnitRepositoryMock();
         $unitRepositoryMock->expects($this->once())
-            ->method('findOtherUnitsWithSameNameByUnitAndPropertyAndSortById')
-            ->will($this->returnValue([$firstUnit, new Unit()]));
+            ->method('findFirstUnitsWithSameNameByUnitAndPropertyAndSortById')
+            ->will($this->returnValue($firstUnit));
 
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -255,8 +255,8 @@ class UnitDeduplicatorCase extends UnitTestBase
 
         $unitRepositoryMock = $this->getUnitRepositoryMock();
         $unitRepositoryMock->expects($this->once())
-            ->method('findOtherUnitsWithSameNameByUnitAndPropertyAndSortById')
-            ->will($this->returnValue([$firstUnit, new Unit()]));
+            ->method('findFirstUnitsWithSameNameByUnitAndPropertyAndSortById')
+            ->will($this->returnValue($firstUnit));
 
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -291,7 +291,7 @@ class UnitDeduplicatorCase extends UnitTestBase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ContractMovementManager
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\DataBundle\Entity\UnitRepository
      */
     protected function getUnitRepositoryMock()
     {

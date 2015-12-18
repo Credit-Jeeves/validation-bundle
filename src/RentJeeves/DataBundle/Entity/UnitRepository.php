@@ -239,9 +239,9 @@ class UnitRepository extends EntityRepository
      * @param Unit $currentUnit
      * @param Property $property
      *
-     * @return Unit[]
+     * @return Unit|null
      */
-    public function findOtherUnitsWithSameNameByUnitAndPropertyAndSortById(Unit $currentUnit, Property $property)
+    public function findFirstUnitsWithSameNameByUnitAndPropertyAndSortById(Unit $currentUnit, Property $property)
     {
         return $this->createQueryBuilder('u')
             ->where('u.property = :property')
@@ -250,8 +250,9 @@ class UnitRepository extends EntityRepository
             ->setParameter('property', $property)
             ->setParameter('unitName', $currentUnit->getName())
             ->setParameter('excludedUnitId', $currentUnit->getId())
+            ->setMaxResults(1)
             ->orderBy('u.id', 'desc')
             ->getQuery()
-            ->execute();
+            ->getOneOrNullResult();
     }
 }

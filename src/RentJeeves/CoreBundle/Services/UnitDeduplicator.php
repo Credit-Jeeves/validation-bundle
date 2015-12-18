@@ -32,7 +32,6 @@ class UnitDeduplicator
     protected $dryRunMode = false;
 
     /**
-     * UnitDeduplicator constructor.
      * @param ContractMovementManager $contractMovement
      * @param EntityManagerInterface $em
      * @param LoggerInterface $logger
@@ -68,12 +67,11 @@ class UnitDeduplicator
             throw new UnitDeduplicatorException($message);
         }
 
-        $unitsWithSameName = $this->findOtherUnitsWithSameNameInDstProperty(
+        $destinationUnit = $this->findFirstUnitWithSameNameInDstProperty(
             $sourceUnit,
             $destinationProperty
         );
-        if (count($unitsWithSameName) > 0) {
-            $destinationUnit = $unitsWithSameName[0];
+        if (null !== $destinationUnit) {
             $this->updateExternalUnitMapping($sourceUnit, $destinationUnit);
         } else {
             $destinationUnit = new Unit();
@@ -141,12 +139,11 @@ class UnitDeduplicator
             }
         }
 
-        $externalId = $sourceUnitMapping->getExternalUnitId();
-        if ($this->hasOtherUnitsWithSameExternalUnitIdInGroupExcludeDstUnit($sourceUnit, $destinationUnit)) {
+        if (true == $this->checkGroupHasOtherUnitsWithSameExternalUnitIdExcludeDstUnit($sourceUnit, $destinationUnit)) {
             $this->logger->warning(
                 $message = sprintf(
                     'ERROR: there are multiple external unit ID="%s" in Group#%d, please resolve manually.',
-                    $externalId,
+                    $sourceUnitMapping->getExternalUnitId(),
                     $sourceUnit->getGroup()->getId()
                 )
             );
@@ -228,11 +225,11 @@ class UnitDeduplicator
      * @param Unit $unit
      * @param Property $property
      *
-     * @return array|\RentJeeves\DataBundle\Entity\Unit[]
+     * @return Unit|null
      */
-    protected function findOtherUnitsWithSameNameInDstProperty(Unit $unit, Property $property)
+    protected function findFirstUnitWithSameNameInDstProperty(Unit $unit, Property $property)
     {
-        return $this->em->getRepository('RjDataBundle:Unit')->findOtherUnitsWithSameNameByUnitAndPropertyAndSortById(
+        return $this->em->getRepository('RjDataBundle:Unit')->findFirstUnitsWithSameNameByUnitAndPropertyAndSortById(
             $unit,
             $property
         );
@@ -244,7 +241,7 @@ class UnitDeduplicator
      *
      * @return boolean
      */
-    protected function hasOtherUnitsWithSameExternalUnitIdInGroupExcludeDstUnit(Unit $srcUnit, Unit $dstUnit)
+    protected function checkGroupHasOtherUnitsWithSameExternalUnitIdExcludeDstUnit(Unit $srcUnit, Unit $dstUnit)
     {
         $units = $this->em->getRepository('RjDataBundle:Unit')->findOtherUnitsWithSameExternalUnitIdInGroupExcludeUnit(
             $srcUnit,
