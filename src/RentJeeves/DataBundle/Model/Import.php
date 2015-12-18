@@ -49,6 +49,7 @@ abstract class Import
 
     /**
      * @ORM\Column(
+     *     name="import_type",
      *     type="ImportModelType",
      *     nullable=false
      * )

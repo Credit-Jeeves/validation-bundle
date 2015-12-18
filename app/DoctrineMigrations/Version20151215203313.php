@@ -42,7 +42,7 @@ class Version20151215203313 extends AbstractMigration
                 id BIGINT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT NOT NULL,
                 user_id BIGINT NOT NULL,
-                importType ENUM('property','contract')
+                import_type ENUM('property','contract')
                     COMMENT '(DC2Type:ImportModelType)' NOT NULL,
                 status ENUM('running','complete')
                     COMMENT '(DC2Type:ImportStatus)' NOT NULL,

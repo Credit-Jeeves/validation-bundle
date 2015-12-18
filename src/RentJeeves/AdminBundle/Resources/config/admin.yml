@@ -265,9 +265,7 @@ services:
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Import
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [messages]]
+            - ~
 
     sonata.admin.import_property:
         class: RentJeeves\AdminBundle\Admin\ImportPropertyAdmin
@@ -276,9 +274,7 @@ services:
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\ImportProperty
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [messages]]
+            - ~
 
     rental_report:
         class: RentJeeves\AdminBundle\Form\RentalReportType
