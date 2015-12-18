@@ -51,6 +51,14 @@ class RjHoldingAdmin extends Admin
                     'label' => 'admin.holding.payments_enabled',
                 ]
             )
+            ->add(
+                'postAppFeeAndSecurityDeposit',
+                null,
+                [
+                    'required' => false,
+                    'label' => 'admin.holding.post_app_fee_security_deposit',
+                ]
+            )
             ->with('Accounting Settings')
                 ->add(
                     'apiIntegrationType',

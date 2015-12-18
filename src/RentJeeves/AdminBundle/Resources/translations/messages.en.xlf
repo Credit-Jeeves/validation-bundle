@@ -330,6 +330,10 @@
                 <source>admin.errors.csv_settings.empty</source>
                 <target>Fill all csv settings (Field Delimiter, Text Delimiter and Date Format).</target>
             </trans-unit>
+            <trans-unit id="admin.holding.post_app_fee_security_deposit">
+                <source>admin.holding.post_app_fee_security_deposit</source>
+                <target>Post Application Fee / Security Deposit?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
