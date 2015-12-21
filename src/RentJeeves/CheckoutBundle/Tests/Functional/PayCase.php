@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -1435,5 +1436,94 @@ class PayCase extends BaseTestCase
         $payments = $em->getRepository('RjDataBundle:Payment')
             ->findBy(['contract' => $contract, 'status' => PaymentStatus::ACTIVE]);
         $this->assertCount(1, $payments, 'Should not be created duplicate payment for contract');
+    }
+
+    /**
+     * @test
+     */
+    public function paymentSourceShouldSaveLastFourDigitsOfAccountNumber()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonName);
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $this->session->wait(
+            $this->timeout,
+            'jQuery("#rentjeeves_checkoutbundle_paymenttype_amount:visible").length'
+        );
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#id-source-step:visible").length'
+        );
+        $this->page->clickLink('payment.account.new');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#rentjeeves_checkoutbundle_userdetailstype:visible").length'
+        );
+        /** @var PaymentAccount $paymentSource */
+        $paymentSource = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')
+            ->findOneByName('Test payment');
+        $this->assertNotNull($paymentSource, 'Payment source is not created');
+        $this->assertEquals('5678', $paymentSource->getLastFour(), 'Payment source last 4 digits should be 5678');
+
+        /**
+         * Test CC number
+         */
+        $this->page->pressButton('pay_popup.step.previous');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#id-source-step:visible").length'
+        );
+        $this->page->clickLink('payment.account.new');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test card payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4987654321098769',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '100',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => 2,
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
+                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_25' => true
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#rentjeeves_checkoutbundle_userdetailstype:visible').length"
+        );
+        $paymentSource = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')
+            ->findOneByName('Test card payment');
+        $this->assertNotNull($paymentSource, 'Payment source is not created');
+        $this->assertEquals('8769', $paymentSource->getLastFour(), 'Payment source last 4 digits should equal 8769');
     }
 }
