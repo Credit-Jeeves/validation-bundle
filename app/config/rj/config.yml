@@ -85,10 +85,10 @@ sonata_admin:
                 - sonata.admin.operations
                 - sonata.admin.jobs
                 - sonata.admin.settings
+                - sonata.admin.import_report
             RentJeeves:
               items:
                 - sonata.admin.payments
-#                - sonata.admin.payment.accounts
                 - sonata.admin.rj_holding
                 - sonata.admin.rj_group
                 - sonata.admin.landlord
