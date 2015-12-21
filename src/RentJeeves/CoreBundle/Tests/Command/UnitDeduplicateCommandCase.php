@@ -40,6 +40,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
+
+        $this->assertGreaterThan(1, count($contracts));
         /**
          * @var Contract $firstContract
          */
@@ -104,6 +106,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
+
+        $this->assertGreaterThan(1, count($contracts));
         /**
          * @var Contract $firstContract
          */
@@ -181,6 +185,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
+
+        $this->assertGreaterThan(1, count($contracts));
         /**
          * @var Contract $firstContract
          */
@@ -239,6 +245,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $contracts = $unit->getContracts();
+
+        $this->assertGreaterThan(1, count($contracts));
         /**
          * @var Contract $firstContract
          */

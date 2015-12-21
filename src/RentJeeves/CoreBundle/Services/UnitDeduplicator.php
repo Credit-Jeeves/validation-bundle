@@ -152,9 +152,7 @@ class UnitDeduplicator
         }
 
         if (null === $destinationUnitMapping) {
-            if (false === $this->dryRunMode) {
-                $sourceUnitMapping->setUnit($destinationUnit);
-            }
+            $sourceUnitMapping->setUnit($destinationUnit);
             $this->logger->info(
                 sprintf(
                     'The UnitMapping#%d is now associated to the Unit#%d.',
@@ -163,9 +161,7 @@ class UnitDeduplicator
                 )
             );
         } elseif ($sourceUnitMapping->getExternalUnitId() === $destinationUnitMapping->getExternalUnitId()) {
-            if (false === $this->dryRunMode) {
-                $this->em->remove($sourceUnitMapping);
-            }
+            $this->em->remove($sourceUnitMapping);
             $this->logger->info(
                 sprintf(
                     'The UnitMapping for Unit#%d is deleted.',
