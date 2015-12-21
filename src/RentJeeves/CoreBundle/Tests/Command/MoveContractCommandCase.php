@@ -3,8 +3,6 @@ namespace RentJeeves\CoreBundle\Tests\Command;
 
 use RentJeeves\CoreBundle\Command\MoveContractCommand;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
 class MoveContractCommandCase extends BaseTestCase
@@ -16,7 +14,7 @@ class MoveContractCommandCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfSendNotCorrectContactId()
     {
-        $this->createAndExecuteCommandTester(['--contract-id' => 0]);
+        $this->executeCommandTester(new MoveContractCommand(), ['--contract-id' => 0]);
     }
 
     /**
@@ -26,7 +24,7 @@ class MoveContractCommandCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfSendNotCorrectUnitId()
     {
-        $this->createAndExecuteCommandTester(['--contract-id' => 1, '--dst-unit-id' => 0]);
+        $this->executeCommandTester(new MoveContractCommand(), ['--contract-id' => 1, '--dst-unit-id' => 0]);
     }
 
     /**
@@ -42,7 +40,8 @@ class MoveContractCommandCase extends BaseTestCase
         $contract->getUnit()->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $unit->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $this->createAndExecuteCommandTester(
+        $this->executeCommandTester(
+            new MoveContractCommand(),
             [
                 '--contract-id' => $contract->getId(),
                 '--dst-unit-id' => $unit->getId()
@@ -85,7 +84,8 @@ class MoveContractCommandCase extends BaseTestCase
         $contract->getUnit()->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $unit->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
 
-        $this->createAndExecuteCommandTester(
+        $this->executeCommandTester(
+            new MoveContractCommand(),
             [
                 '--contract-id' => $contract->getId(),
                 '--dst-unit-id' => $unit->getId(),
@@ -100,22 +100,5 @@ class MoveContractCommandCase extends BaseTestCase
             $contract->getUnit()->getId(),
             'Contract`s Unit is updated'
         );
-    }
-
-    /**
-     * @param array $params
-     */
-    private function createAndExecuteCommandTester(array $params = [])
-    {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new MoveContractCommand());
-
-        $command = $application->find('renttrack:contract:move');
-        $commandTester = new CommandTester($command);
-
-        $params['command'] = $command->getName();
-
-        $commandTester->execute($params);
     }
 }
