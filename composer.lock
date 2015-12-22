@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f61ac452f85cfe0e5de9441647fa8db1",
-    "content-hash": "41e21f5984f1bd41da358cfd8511690c",
+    "hash": "47d9937054b6cc2344605ad746d2e9ff",
+    "content-hash": "e1226eb562075dbc54744b095d1e206f",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -407,7 +407,7 @@
         },
         {
             "name": "besimple/soap-common",
-            "version": "v0.2.5",
+            "version": "0.2.x-dev",
             "target-dir": "BeSimple/SoapCommon",
             "source": {
                 "type": "git",
@@ -5931,16 +5931,16 @@
     "packages-dev": [
         {
             "name": "behat/mink",
-            "version": "v1.5.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/Mink.git",
-                "reference": "0769e6d9726c140a54dbf827a438c0f9912749fe"
+                "reference": "8b68523a339ec991bcd638b39dc8f04f808da88a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/0769e6d9726c140a54dbf827a438c0f9912749fe",
-                "reference": "0769e6d9726c140a54dbf827a438c0f9912749fe",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/8b68523a339ec991bcd638b39dc8f04f808da88a",
+                "reference": "8b68523a339ec991bcd638b39dc8f04f808da88a",
                 "shasum": ""
             },
             "require": {
@@ -5956,12 +5956,12 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-develop": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Behat\\Mink": "src/"
+                "psr-4": {
+                    "Behat\\Mink\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -5975,14 +5975,14 @@
                     "homepage": "http://everzet.com"
                 }
             ],
-            "description": "Web acceptance testing framework for PHP 5.3",
+            "description": "Browser controller/emulator abstraction for PHP",
             "homepage": "http://mink.behat.org/",
             "keywords": [
                 "browser",
                 "testing",
                 "web"
             ],
-            "time": "2013-04-13 23:39:27"
+            "time": "2015-02-04 17:02:06"
         },
         {
             "name": "behat/mink-browserkit-driver",
@@ -6041,31 +6041,31 @@
         },
         {
             "name": "behat/mink-bundle",
-            "version": "v1.4.2",
+            "version": "v1.4.1",
             "target-dir": "Behat/MinkBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/MinkBundle.git",
-                "reference": "0cba40c460bce9fe5bfb890964b71ab32c0029ca"
+                "reference": "d9bc3144438f4d286d380d0d43dc1535690d46c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/MinkBundle/zipball/0cba40c460bce9fe5bfb890964b71ab32c0029ca",
-                "reference": "0cba40c460bce9fe5bfb890964b71ab32c0029ca",
+                "url": "https://api.github.com/repos/minkphp/MinkBundle/zipball/d9bc3144438f4d286d380d0d43dc1535690d46c1",
+                "reference": "d9bc3144438f4d286d380d0d43dc1535690d46c1",
                 "shasum": ""
             },
             "require": {
                 "behat/mink": "~1.4",
-                "behat/mink-browserkit-driver": "~1.1",
+                "behat/mink-browserkit-driver": "~1.1.0",
                 "php": ">=5.3.3",
                 "symfony/framework-bundle": "~2.2"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": "~1.0,>=1.0.8",
-                "behat/mink-sahi-driver": "~1.1",
-                "behat/mink-selenium-driver": "~1.1",
-                "behat/mink-selenium2-driver": "~1.1",
-                "behat/mink-zombie-driver": "~1.1"
+                "behat/mink-goutte-driver": "~1.0.8",
+                "behat/mink-sahi-driver": "~1.1.0",
+                "behat/mink-selenium-driver": "~1.1.0",
+                "behat/mink-selenium2-driver": "~1.1.0",
+                "behat/mink-zombie-driver": "~1.1.0"
             },
             "suggest": {
                 "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
@@ -6100,7 +6100,7 @@
                 "test",
                 "web"
             ],
-            "time": "2014-11-05 15:49:58"
+            "time": "2014-02-18 12:40:01"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -8027,7 +8027,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.5.0",
+            "version": "0.2.9999999.9999999-dev",
             "package": "besimple/soap-common"
         },
         {
@@ -8061,6 +8061,12 @@
             "package": "sensio/generator-bundle"
         },
         {
+            "alias": "1.5.0",
+            "alias_normalized": "1.5.0.0",
+            "version": "1.6.1.0",
+            "package": "behat/mink"
+        },
+        {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
             "version": "1.0.2.0",
@@ -8090,6 +8096,7 @@
         "apy/jsfv-bundle": 20,
         "doctrine/migrations": 20,
         "beberlei/doctrineextensions": 20,
+        "besimple/soap-common": 20,
         "sensio/generator-bundle": 20,
         "comfortablynumb/backup-restore-bundle": 20
     },
