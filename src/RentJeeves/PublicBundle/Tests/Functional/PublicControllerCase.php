@@ -314,17 +314,16 @@ class PublicControllerCase extends BaseTestCase
         $this->fillForm(
             $newUserForm,
             [
-                'rentjeeves_publicbundle_tenanttype_first_name' => 'Tomas', // set not matched name
-                'rentjeeves_publicbundle_tenanttype_last_name'  => 'Totti',
-                'rentjeeves_publicbundle_tenanttype_email' => 'tomas_totti@mail.com',
+                'rentjeeves_publicbundle_tenanttype_first_name' => 'Frank', // set not matched name
+                'rentjeeves_publicbundle_tenanttype_last_name'  => 'Gaudi',
+                'rentjeeves_publicbundle_tenanttype_email' => 'frank_gaudi@mail.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => '123',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => '123',
                 'rentjeeves_publicbundle_tenanttype_tos' => true,
             ]
         );
         $this->page->pressButton('continue');
-
-        $this->session->wait($this->timeout, '$("h3.title:contains(\'verify.email\')").length > 0');
+        $this->session->wait(60000, '$("h3.title:contains(\'verify.email\')").length > 0');
         $this->assertContains('/new/send/', $this->session->getCurrentUrl(), 'Location should be /new/send/');
 
         /** @var Contract $contract */
