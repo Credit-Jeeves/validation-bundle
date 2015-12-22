@@ -172,7 +172,7 @@ abstract class Unit
     }
 
     /**
-     * @return ContractWaiting
+     * @return ArrayCollection|ContractWaiting[]
      */
     public function getContractsWaiting()
     {

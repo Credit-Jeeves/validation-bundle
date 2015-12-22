@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use RentJeeves\PublicBundle\Form\UnitType;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 
@@ -173,7 +173,7 @@ class TenantType extends AbstractType
                  * @var $property Property
                  */
                 $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
-                if ($property && $property->isSingle()) {
+                if ($property && $property->getPropertyAddress()->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     $form->get('unit')->setData($unit);
                 }
@@ -200,9 +200,10 @@ class TenantType extends AbstractType
 
                 if (empty($property)) {
                     $form->addError(new FormError('error.property.empty'));
+
                     return;
                 }
-                if ($property->isSingle()) {
+                if ($property->getPropertyAddress()->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     if (!$property->hasIntegratedGroup()) {
                         return;
@@ -260,11 +261,20 @@ class TenantType extends AbstractType
                 }
 
                 /**
-                 * Seems we have waiting contract for this unit and first_name, last_name not the same
-                 * block with error
+                 * Seems we have waiting contract for this unit and first_name, last_name not the same.
+                 * Create a contract if group is integrated and pay_anything is allowed.
+                 * Otherwise block with error.
                  */
                 if (is_null($self->getWaitingContract()) && count($contractsWaiting) > 0) {
-                    $form->addError(new FormError('error.unit.reserved'));
+                    $isAllowedPayAnything = $unit->getGroup()->getGroupSettings()->isAllowPayAnything();
+                    $isIntegrated = $unit->getGroup()->getGroupSettings()->getIsIntegrated();
+                    if ($isIntegrated && $isAllowedPayAnything) {
+                        $contractWaiting = $contractsWaiting->first();
+                        $contractWaiting->setStatus(ContractStatus::PENDING);
+                        $self->setWaitingContract($contractWaiting);
+                    } else {
+                        $form->addError(new FormError('error.unit.reserved'));
+                    }
                 }
             }
         );
