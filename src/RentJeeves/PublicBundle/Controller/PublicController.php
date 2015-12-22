@@ -351,13 +351,12 @@ class PublicController extends Controller
             }
 
             $this->checkPropertyBelongOneGroup($property);
-            exit;
 
             return $this->redirectToRoute('iframe_new_property', ['id' => $property->getId()]);
         } catch (\InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         } catch (\LogicException $e) {
-            throw new HttpException(500, 'We are scrambling our robots...');
+            throw new HttpException(412, 'We are scrambling our robots...');
         }
     }
 
@@ -470,7 +469,7 @@ class PublicController extends Controller
             } catch (\InvalidArgumentException $e) {
                 throw new BadRequestHttpException($e->getMessage());
             } catch (\LogicException $e) {
-                throw new HttpException(500, 'We are scrambling our robots...');
+                throw new HttpException(412, 'We are scrambling our robots...');
             }
 
             $session->remove('holding_id');
