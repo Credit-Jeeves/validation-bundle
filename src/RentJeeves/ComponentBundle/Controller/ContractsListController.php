@@ -9,6 +9,8 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\PublicBundle\Controller\PublicController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\DateTime;
@@ -93,6 +95,8 @@ class ContractsListController extends Controller
         $paidForArr = [];
         $isNewUser = false;
         $isInPaymentWindow = false;
+        $isInPayAnythingWindow = false;
+        $defaultPayAnythingParams = [];
         $hasIntegratedBalance = false;
         $allowPayAnything = false;
         if ($contracts && 1 == count($contracts) && $contracts[0]->getStatus() == ContractStatus::INVITE) {
@@ -131,10 +135,29 @@ class ContractsListController extends Controller
             }
         }
 
+        $session = $this->get('session');
+        if ($allowPayAnything && $session->has(PublicController::SESSION_CREATE_INTEGRATION_USER)) {
+            $isInPayAnythingWindow  = true;
+            $integrationParams = $session->get(PublicController::SESSION_CREATE_INTEGRATION_USER);
+
+            $defaultPayAnythingParams['amounts'] = $integrationParams['amounts'] ?: [];
+            $defaultPayAnythingParams['amounts'] = $integrationParams['amounts'] ?: [];
+            if (isset($integrationParams['amounts'][DepositAccountType::SECURITY_DEPOSIT])) {
+                $defaultPayAnythingParams['payFor'] = DepositAccountType::SECURITY_DEPOSIT;
+            }
+            if (isset($integrationParams['amounts'][DepositAccountType::APPLICATION_FEE])) {
+                $defaultPayAnythingParams['payFor'] = DepositAccountType::APPLICATION_FEE;
+            }
+        }
+
         $contractsJson = $this->get('jms_serializer')->serialize(
             $activeContracts,
             'json',
             SerializationContext::create()->setGroups(['payRent'])
+        );
+        $defaultPayAnythingParamsJson = $this->get('jms_serializer')->serialize(
+            $defaultPayAnythingParams,
+            'json'
         );
 
         $pageVars = [
@@ -147,6 +170,8 @@ class ContractsListController extends Controller
             'hasIntegratedBalance' => $hasIntegratedBalance,
             'isInPaymentWindow' => $isInPaymentWindow,
             'allowPayAnything' => $allowPayAnything,
+            'isInPayAnythingWindow' => $isInPayAnythingWindow,
+            'defaultPayAnythingParams' => $defaultPayAnythingParamsJson,
         ];
 
         if ($mobile) {

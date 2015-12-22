@@ -7,6 +7,7 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
 /**
  * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -391,5 +392,53 @@ EOT;
             ->setParameter('currentPropertyId', $property->getId())
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param  string $accountingSystemType
+     * @param  string $externalPropertyId
+     * @param  string $externalUnitId
+     * @return Property|null
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyByExternalPropertyUnitIds($accountingSystemType, $externalPropertyId, $externalUnitId)
+    {
+        ApiIntegrationType::throwsInvalid($accountingSystemType);
+
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('p.units', 'units')
+            ->innerJoin('units.unitMapping', 'um')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('units.holding = pm.holding')
+            ->andWhere('h.apiIntegrationType = :accountingSystemType')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->setParameter('accountingSystemType', $accountingSystemType)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('externalUnitId', $externalUnitId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param  string $accountingSystemType
+     * @param  string $externalPropertyId
+     * @return Property|null
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyByExternalPropertyId($accountingSystemType, $externalPropertyId)
+    {
+        ApiIntegrationType::throwsInvalid($accountingSystemType);
+
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('h.apiIntegrationType = :accountingSystemType')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('accountingSystemType', $accountingSystemType)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

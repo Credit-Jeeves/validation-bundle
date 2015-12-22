@@ -59,23 +59,31 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param Property $property
-     * @param null $unitName
+     * @param string $unitName
      * @param ContractWaiting $contractWaiting
-     *
+     * @param string $externalLeaseId
+     * @param float $rent
      * @return Contract|void
      */
     public function createContractFromTenantSide(
         Tenant $tenant,
         Property $property,
         $unitName = null,
-        ContractWaiting $contractWaiting = null
+        ContractWaiting $contractWaiting = null,
+        $externalLeaseId = null,
+        $rent = null
     ) {
 
         $contract = $this->contract ?: new Contract();
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setStatus(ContractStatus::PENDING);
-
+        if ($externalLeaseId) {
+            $contract->setExternalLeaseId($externalLeaseId);
+        }
+        if ($rent) {
+            $contract->setRent($rent);
+        }
         /**
          * @var $contractWaiting ContractWaiting
          */

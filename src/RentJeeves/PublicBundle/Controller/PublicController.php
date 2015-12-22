@@ -2,14 +2,19 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -20,6 +25,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Process\Exception\LogicException;
 
 class PublicController extends Controller
@@ -29,6 +37,8 @@ class PublicController extends Controller
     const TYPE_HOLDING = 'holding';
 
     const TYPE_GROUP = 'group';
+
+    const SESSION_CREATE_INTEGRATION_USER = 'create_integration_user';
 
     /**
      * @Route("/iframe", name="iframe")
@@ -189,6 +199,169 @@ class PublicController extends Controller
     }
 
     /**
+     * @param string $accountingSystemType
+     * @param Request $request
+     * @return array
+     */
+    protected function checkAndSaveRequestData($accountingSystemType, Request $request)
+    {
+        $accountingSystemType = array_search($accountingSystemType, ApiIntegrationType::$importMapping);
+        if ($accountingSystemType === false) {
+            throw new \InvalidArgumentException('Accounting system type is invalid.');
+        }
+        $parameters = ['accsys' => $accountingSystemType];
+        $requiredParams = ['resid', 'leasid', 'propid'];
+
+        foreach ($requiredParams as $paramName) {
+            if (!$paramValue = $request->get($paramName)) {
+                throw new \InvalidArgumentException(
+                    sprintf('Please provide required parameter "%s".', $paramName)
+                );
+            }
+            $parameters[$paramName] = $paramValue;
+        }
+
+        $params = ['unitid', 'rent'];
+
+        foreach ($params as $paramName) {
+            if ($paramValue = $request->get($paramName)) {
+                $parameters[$paramName] = $paramValue;
+            }
+        }
+
+        $amounts = [];
+        if ($appFee = $request->get('appfee')) {
+            $amounts[DepositAccountType::APPLICATION_FEE] = $appFee;
+        }
+        if ($secDep = $request->get('secdep')) {
+            $amounts[DepositAccountType::SECURITY_DEPOSIT] = $secDep;
+        }
+        $parameters['amounts'] = $amounts;
+
+        /** @var Session $session */
+        $session = $request->getSession();
+        $session->set(self::SESSION_CREATE_INTEGRATION_USER, $parameters);
+
+        return $parameters;
+    }
+
+    /**
+     * @param string $accountingSystemType
+     * @param string $externalPropertyId
+     * @param string|null $externalUnitId
+     * @return null|Property
+     */
+    protected function getPropertyByExternalParameters(
+        $accountingSystemType,
+        $externalPropertyId,
+        $externalUnitId = null
+    ) {
+        $em = $this->getEntityManager();
+        try {
+            if ($externalUnitId) {
+                return $em->getRepository('RjDataBundle:Property')
+                    ->getPropertyByExternalPropertyUnitIds($accountingSystemType, $externalPropertyId, $externalUnitId);
+            } else {
+                return $em->getRepository('RjDataBundle:Property')
+                    ->getPropertyByExternalPropertyId($accountingSystemType, $externalPropertyId);
+            }
+        } catch (NonUniqueResultException $e) {
+            $this->get('logger')->emergency(
+                sprintf(
+                    'Find more then one property for parameters: accounting system "%s", external property "%s"%s',
+                    $accountingSystemType,
+                    $externalPropertyId,
+                    $externalUnitId  ? ', external unit "' . $externalUnitId . '"' : ''
+                )
+            );
+            throw new \LogicException('Should be found just 1 property by external parameters');
+        }
+    }
+
+    /**
+     * @param Property $property
+     * @throws \LogicException
+     */
+    protected function checkPropertyBelongOneGroup(Property $property)
+    {
+        if ($property->getPropertyGroups()->count() > 1) {
+            $this->get('logger')->emergency(
+                sprintf(
+                    'Property #%d should belong just to one group.',
+                    $property->getId()
+                )
+            );
+            throw new \LogicException('Property should belong just to one group.');
+        }
+        try {
+            $this->getEntityManager()
+                ->getRepository('RjDataBundle:Unit')
+                ->createQueryBuilder('u')
+                ->select('1')
+                ->where('u.property = :property')
+                ->having('COUNT(DISTINCT u.group) = 1')
+                ->setParameter('property', 2)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            $this->get('logger')->emergency(
+                sprintf(
+                    'Property #%d should have units that belong just to one group.',
+                    $property->getId()
+                )
+            );
+            throw new \LogicException('Property should have units that belong just to one group.');
+        }
+    }
+
+    /**
+     * @param string $accountingSystemType
+     * @param Request $request
+     * @return Response
+     * @throws  BadRequestHttpException|NotFoundHttpException
+     *
+     * @Route(
+     *     "/user/integration/new/{accountingSystemType}",
+     *     requirements={
+     *         "accountingSystemType" = "mri|resman|yardi|amsi"
+     *     },
+     *     name="new_integration_user"
+     * )
+     */
+    public function newIntegrationUserAction($accountingSystemType, Request $request)
+    {
+        try {
+            $requestData = $this->checkAndSaveRequestData($accountingSystemType, $request);
+
+            if (isset($requestData['unitid'])) {
+                $property = $this->getPropertyByExternalParameters(
+                    $requestData['accsys'],
+                    $requestData['propid'],
+                    $requestData['unitid']
+                );
+            } else {
+                $property = $this->getPropertyByExternalParameters(
+                    $requestData['accsys'],
+                    $requestData['propid']
+                );
+            }
+
+            if (!$property) {
+                throw $this->createNotFoundException('Property not found.');
+            }
+
+            $this->checkPropertyBelongOneGroup($property);
+            exit;
+
+            return $this->redirectToRoute('iframe_new_property', ['id' => $property->getId()]);
+        } catch (\InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        } catch (\LogicException $e) {
+            throw new HttpException(500, 'We are scrambling our robots...');
+        }
+    }
+
+    /**
      * @param int|null $id
      * @param string   $type
      * @param Request  $request
@@ -292,7 +465,13 @@ class PublicController extends Controller
         $form = $this->createForm($tenantType = new TenantType($em), $tenant);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tenant = $this->processNewTenantForm($form, $tenantType);
+            try {
+                $tenant = $this->processNewTenantForm($form, $tenantType);
+            } catch (\InvalidArgumentException $e) {
+                throw new BadRequestHttpException($e->getMessage());
+            } catch (\LogicException $e) {
+                throw new HttpException(500, 'We are scrambling our robots...');
+            }
 
             $session->remove('holding_id');
             $session->remove('resident_id');
@@ -336,6 +515,20 @@ class PublicController extends Controller
         }
         if (true === isset($contractUnits) && count($contractUnits) > 0) {
             $parameters['contractUnits'] = $contractUnits;
+        }
+        if ($session->has(self::SESSION_CREATE_INTEGRATION_USER)) {
+            $externalParams = $session->get(self::SESSION_CREATE_INTEGRATION_USER);
+            if (isset($externalParams['unitid']) &&
+                $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy([
+                    'externalUnitId' => $externalParams['unitid']
+                ])
+            ){
+                $unitId = $unitMapping->getUnit()->getId();
+            } else {
+                $unitId = Unit::SEARCH_UNIT_UNASSIGNED;
+            }
+
+            $parameters['unitId'] = $unitId;
         }
 
         return $this->render('RjPublicBundle:Public:new.html.twig', $parameters);
@@ -439,12 +632,30 @@ class PublicController extends Controller
         $tenant->setCulture($this->container->getParameter('kernel.default_locale'));
         $em = $this->getEntityManager();
         $em->persist($tenant);
-        $em->flush($tenant);
+        $session = $this->get('session');
         /** @var Unit $unit */
         $unit = $form->get('unit')->getData();
         /** @var Property $property */
         $property = $em->getRepository('RjDataBundle:Property')
             ->findOneWithUnitAndAlphaNumericSort($form->get('propertyId')->getData());
+        $externalLeaseId = null;
+        if ($session->has(self::SESSION_CREATE_INTEGRATION_USER)) {
+            $externalParameters = $session->get(self::SESSION_CREATE_INTEGRATION_USER);
+            if (!isset($externalParameters['leasid'])) {
+                throw new \InvalidArgumentException('Lease id should be specified.');
+            }
+            $externalLeaseId = $externalParameters['leasid'];
+            $rent = isset($externalParameters['rent']) ? $externalParameters['rent'] : null;
+            $residentMapping = $this->createResidentMapping(
+                $externalParameters,
+                $property,
+                $unit
+            );
+            $residentMapping->setTenant($tenant);
+            $tenant->addResidentsMapping($residentMapping);
+            $em->persist($residentMapping);
+        }
+        $em->flush();
 
         /** @var ContractProcess $contractProcess */
         $contractProcess = $this->get('contract.process');
@@ -452,12 +663,73 @@ class PublicController extends Controller
             $tenant,
             $property,
             $unit->getActualName(),
-            $tenantType->getWaitingContract()
+            $tenantType->getWaitingContract(),
+            $externalLeaseId,
+            $rent
         );
 
         $this->get('project.mailer')->sendRjCheckEmail($tenant);
 
         return $tenant;
+    }
+
+    /**
+     * @param  array $externalParams
+     * @param  Property $property
+     * @param  Unit $unit
+     * @return ResidentMapping
+     */
+    protected function createResidentMapping(array $externalParams, Property $property, Unit $unit)
+    {
+        if (!isset($externalParams['resid'])) {
+            throw new \InvalidArgumentException('Resident id should be specified.');
+        }
+        if (!isset($externalParams['propid'])) {
+            throw new \InvalidArgumentException('External property id should be specified.');
+        }
+        if (!isset($externalParams['accsys'])) {
+            throw new \InvalidArgumentException('Accounting system should be specified.');
+        }
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setResidentId($externalParams['resid']);
+        $selectedUnit = null;
+        if ($unit->getActualName() !== Unit::SEARCH_UNIT_UNASSIGNED) {
+            $selectedUnit = $property->searchUnit($unit->getActualName());
+        }
+        $em = $this->getEntityManager();
+        try {
+            if ($selectedUnit) {
+                $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')
+                    ->getPropertyMappingByPropertyUnitAndExternalPropertyBelongAccountingSystem(
+                        $property,
+                        $selectedUnit,
+                        $externalParams['propid'],
+                        $externalParams['accsys']
+                    );
+            } else {
+                $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')
+                    ->getPropertyMappingByPropertyAndExternalPropertyBelongAccountingSystem(
+                        $property,
+                        $externalParams['propid'],
+                        $externalParams['accsys']
+                    );
+            }
+        } catch (NonUniqueResultException $e) {
+            $this->get('logger')->emergency(
+                sprintf(
+                    'Find more then one property mapping for parameters:' .
+                    ' property #%d,%s accounting system "%s", external property "%s"',
+                    $property->getId(),
+                    $selectedUnit ? ' and selected unit "' . $selectedUnit. '",' : '',
+                    $externalParams['accsys'],
+                    $externalParams['propid']
+                )
+            );
+            throw new \LogicException('Should be find just one property mapping with this parameters.');
+        }
+        $residentMapping->setHolding($propertyMapping->getHolding());
+
+        return $residentMapping;
     }
 
     /**
