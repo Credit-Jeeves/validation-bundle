@@ -327,9 +327,11 @@ class PublicControllerCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("h3.title:contains(\'verify.email\')").length > 0');
         $this->assertContains('/new/send/', $this->session->getCurrentUrl(), 'Location should be /new/send/');
 
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneByUnit($unit);
         /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneByUnit($unit);
         $this->assertNotNull($contract, 'Contract with unit #27 should be created from waiting!');
         $this->assertEquals(ContractStatus::PENDING, $contract->getStatus(), 'Contract should be created as PENDING');
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneByUnit($unit);
+        $this->assertNotNull($contractWaiting, 'ContractWaiting with unit #27 should remain in the DB');
     }
 }

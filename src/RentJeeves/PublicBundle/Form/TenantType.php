@@ -7,7 +7,6 @@ use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -173,7 +172,7 @@ class TenantType extends AbstractType
                  * @var $property Property
                  */
                 $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
-                if ($property && $property->getPropertyAddress()->isSingle()) {
+                if ($property && $property->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     $form->get('unit')->setData($unit);
                 }
@@ -200,10 +199,9 @@ class TenantType extends AbstractType
 
                 if (empty($property)) {
                     $form->addError(new FormError('error.property.empty'));
-
                     return;
                 }
-                if ($property->getPropertyAddress()->isSingle()) {
+                if ($property->isSingle()) {
                     $unit = $property->getExistingSingleUnit();
                     if (!$property->hasIntegratedGroup()) {
                         return;
@@ -262,17 +260,13 @@ class TenantType extends AbstractType
 
                 /**
                  * Seems we have waiting contract for this unit and first_name, last_name not the same.
-                 * Create a contract if group is integrated and pay_anything is allowed.
+                 * Allow to create a contract if group is integrated and pay_anything is allowed.
                  * Otherwise block with error.
                  */
                 if (is_null($self->getWaitingContract()) && count($contractsWaiting) > 0) {
                     $isAllowedPayAnything = $unit->getGroup()->getGroupSettings()->isAllowPayAnything();
                     $isIntegrated = $unit->getGroup()->getGroupSettings()->getIsIntegrated();
-                    if ($isIntegrated && $isAllowedPayAnything) {
-                        $contractWaiting = $contractsWaiting->first();
-                        $contractWaiting->setStatus(ContractStatus::PENDING);
-                        $self->setWaitingContract($contractWaiting);
-                    } else {
+                    if (!($isIntegrated && $isAllowedPayAnything)) {
                         $form->addError(new FormError('error.unit.reserved'));
                     }
                 }

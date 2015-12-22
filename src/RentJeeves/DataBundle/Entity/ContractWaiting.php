@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\ContractWaiting as Base;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,27 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContractWaiting extends Base
 {
-    /**
-     * @var string
-     */
-    protected $status = ContractStatus::APPROVED;
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
     /**
      * @return array
      */

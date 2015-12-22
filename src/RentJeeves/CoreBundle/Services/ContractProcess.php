@@ -131,7 +131,7 @@ class ContractProcess
         $contract->setHolding($contractWaiting->getGroup()->getHolding());
         $contract->setGroup($contractWaiting->getGroup());
         $contract->setUnit($contractWaiting->getUnit());
-        $contract->setStatus($contractWaiting->getStatus());
+        $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
         $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
         $contract->setFinishAt($contractWaiting->getFinishAt());
