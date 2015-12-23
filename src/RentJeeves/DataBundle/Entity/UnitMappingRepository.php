@@ -27,6 +27,12 @@ class UnitMappingRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @param Group $group
+     * @param string $externalUnitId
+     * @return UnitMapping
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getMappingForImport(Group $group, $externalUnitId)
     {
         return $this->createQueryBuilder('mapping')

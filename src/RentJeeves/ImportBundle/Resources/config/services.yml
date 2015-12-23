@@ -41,3 +41,11 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
+
+    import.property.loader:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @property.manager
+            - @monolog.logger.property_import
