@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 
 /**
@@ -16,13 +15,11 @@ class ExtractorFactory
     protected $supportedAccountingSystems;
 
     /**
-     * @param MRIExtractor $MRIExtractor
+     * @param array $supportedAccountingSystems
      */
-    public function __construct(MRIExtractor $MRIExtractor)
+    public function __construct(array $supportedAccountingSystems)
     {
-        $this->supportedAccountingSystems = [
-            ApiIntegrationType::MRI => $MRIExtractor,
-        ];
+        $this->supportedAccountingSystems = $supportedAccountingSystems;
     }
 
     /**

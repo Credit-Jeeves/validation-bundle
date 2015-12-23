@@ -1,0 +1,7 @@
+<?php
+
+namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
+
+class InvalidCustomTransformer
+{
+}

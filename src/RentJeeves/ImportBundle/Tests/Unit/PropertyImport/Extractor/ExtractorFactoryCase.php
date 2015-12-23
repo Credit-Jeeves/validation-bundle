@@ -16,7 +16,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGetNotExistExtractor()
     {
-        $factory = new ExtractorFactory($this->getMriExtractorMock());
+        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
         $factory->getExtractor('test');
     }
 
@@ -39,7 +39,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldReturnCorrectExtractor($extractorName, $expectedExtractor)
     {
-        $factory = new ExtractorFactory($this->getMriExtractorMock());
+        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
         $extractor = $factory->getExtractor($extractorName);
 
         $this->assertInstanceOf($expectedExtractor, $extractor, 'Incorrect instance of Extractor.');

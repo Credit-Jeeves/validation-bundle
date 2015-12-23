@@ -9,5 +9,5 @@ parameters:
     experian.logging: false
 
     server: local
-    server_name_cj: renttrack.local
-    server_name_rj: renttrack.local
+    server_name_cj: dev.renttrack.com
+    server_name_rj: dev.renttrack.com
