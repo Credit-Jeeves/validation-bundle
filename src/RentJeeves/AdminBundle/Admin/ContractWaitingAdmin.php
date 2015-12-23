@@ -1,9 +1,6 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
-use CreditJeeves\DataBundle\Enum\GroupType;
-use CreditJeeves\DataBundle\Enum\UserType;
-use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -95,45 +92,30 @@ class ContractWaitingAdmin extends Admin
         $formMapper
             ->add(
                 'group',
-                'entity',
-                array(
-                    'class' => 'DataBundle:Group',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('gr')
-                            ->where('gr.type = :typeGroup')
-                            ->orderBy('gr.name', 'ASC')
-                            ->setParameter('typeGroup', GroupType::RENT);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by id rather than a select drop-down
+                [
+                    'label' => "Group ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'CreditJeeves\DataBundle\Entity\Group'
+                ]
             )
             ->add(
                 'property',
-                'entity',
-                array(
-                    'class' => 'RjDataBundle:Property',
-                    'required' => true,
-                    'query_builder' => function (EntityRepository $er) use ($group) {
-                        return $er->createQueryBuilder('pr')
-                            ->innerJoin('pr.property_groups', 'gr')
-                            ->where('gr.id = :group')
-                            ->setParameter('group', $group);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by id rather than a select drop-down
+                [
+                    'label' => "Property ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'RentJeeves\DataBundle\Entity\Property'
+                ]
             )
             ->add(
                 'unit',
-                'entity',
-                array(
-                    'class' => 'RjDataBundle:Unit',
-                    'required' => true,
-                    'query_builder' => function (EntityRepository $er) use ($group, $property) {
-                        return $er->createQueryBuilder('u')
-                            ->where('u.property = :property')
-                            ->andWhere('u.group = :group')
-                            ->setParameter('group', $group)
-                            ->setParameter('property', $property);
-                    }
-                )
+                'sonata_type_model_reference', // Use a text field by id rather than a select drop-down
+                [
+                    'label' => "Unit ID",
+                    'model_manager' => $this->getModelManager(),
+                    'class' => 'RentJeeves\DataBundle\Entity\Unit'
+                ]
             )
             ->add('rent')
             ->add('residentId')
