@@ -239,6 +239,4 @@ class PublicControllerCase extends BaseTestCase
         );
         $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for Group #26');
     }
-
-
 }
