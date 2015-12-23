@@ -1,0 +1,23 @@
+services:
+    # property import logger
+    monolog.formatter.import:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%channel%%.Group#%%extra.group_id%%.%%level_name%%: %%message%%\n"
+
+    monolog.processor.import:
+        class: RentJeeves\ImportBundle\Logger\LoggerProcessor
+        tags:
+            - { name: monolog.processor, method: processRecord, handler: property_import }
+
+    # factories
+    import.property.extractor_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory
+
+    # services
+    import.property.extractor.mri:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
+        public: false
+        arguments:
+            - @mri.resident_data
+            - @monolog.logger.property_import
