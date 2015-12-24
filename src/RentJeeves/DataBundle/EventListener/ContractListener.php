@@ -191,8 +191,13 @@ class ContractListener
             return;
         }
 
+        $oldValue = $payment->getCloseDetails();
         $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
-        $eventArgs->getEntityManager()->flush($payment);
+        $newValue = $payment->getCloseDetails();
+        $eventArgs->getEntityManager()->getUnitOfWork()->scheduleExtraUpdate(
+            $payment,
+            ['closeDetails' => [$oldValue, $newValue]]
+        );
     }
 
     /**
