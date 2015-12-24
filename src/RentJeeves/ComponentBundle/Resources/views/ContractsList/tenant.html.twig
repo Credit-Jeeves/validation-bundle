@@ -167,8 +167,8 @@
                 _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
             }
         {% endif %}
-        {%  set jsActionPayAnythingWindow = '' %}
-        {%  set jsActionPaymentWindow = '' %}
+        {% set jsActionPayAnythingWindow = '' %}
+        {% set jsActionPaymentWindow = '' %}
         {% if isInPayAnythingWindow %}
             {% set jsActionPayAnythingWindow = '$("#pay-anything-1").click();' %}
         {% endif %}

@@ -12,7 +12,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class CreateNewIntegrationTenantCase extends BaseTestCase
 {
-    static $requestParameters = [
+    protected $requestParameters = [
         'resid' => 'Test_Resident_111',
         'leasid' => 'Test_Lease_111',
         'propid' => 'rnttrk02',
@@ -22,7 +22,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         'secdep' => 102,
     ];
 
-    protected function preparedFixtures()
+    protected function prepareFixtures()
     {
         $group = $this->getEntityManager()->find('DataBundle:Group', 25);
         $this->assertNotNull($group, 'Check fixtures, should exist group with id 25');
@@ -35,7 +35,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->assertNotNull($unit, 'Check fixtures, property with id 2 should have at least one unit');
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
-        $unitMapping->setExternalUnitId(self::$requestParameters['unitid']);
+        $unitMapping->setExternalUnitId($this->requestParameters['unitid']);
         $unit->setUnitMapping($unitMapping);
         $this->getEntityManager()->persist($unitMapping);
         $this->getEntityManager()->persist($property);
@@ -58,16 +58,17 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     public function shouldCreateUserByFullParameters()
     {
         $this->load(true);
-        $this->preparedFixtures();
-        $parameters = self::$requestParameters;
+        $this->prepareFixtures();
+        $parameters = $this->requestParameters;
         $this->setDefaultSession('selenium2');
 
         $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new/2/property';
-        $this->assertTrue(
-            $this->session->getCurrentUrl() === $redirectedUrl,
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
             'Should redirection to ' . $redirectedUrl
         );
         $selectedUnit = $this->getDomElement(
@@ -86,10 +87,9 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_email' => 'externaluser1@example.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => 1
             ]
         );
-        $tos = $this->getDomElement('#rentjeeves_publicbundle_tenanttype_tos');
-        $tos->click();
 
         $regBtn = $this->getDomElement('#register', 'Register button should be present');
         $regBtn->click();
@@ -145,8 +145,8 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     public function shouldCreateUserByPartlyParameters()
     {
         $this->load(true);
-        $this->preparedFixtures();
-        $parameters = self::$requestParameters;
+        $this->prepareFixtures();
+        $parameters = $this->requestParameters;
         $this->setDefaultSession('selenium2');
 
         unset($parameters['unitid']);
@@ -156,8 +156,9 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new/2/property';
-        $this->assertTrue(
-            $this->session->getCurrentUrl() === $redirectedUrl,
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
             'Should redirection to ' . $redirectedUrl
         );
         $selectedUnit = $this->getDomElement(
@@ -176,10 +177,9 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_email' => 'externaluser1@example.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => 1,
             ]
         );
-        $tos = $this->getDomElement('#rentjeeves_publicbundle_tenanttype_tos');
-        $tos->click();
 
         $regBtn = $this->getDomElement('#register', 'Register button should be present');
         $regBtn->click();
@@ -234,57 +234,81 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     public function shouldCheckRequiredParametersDataProvider()
     {
         return [
-            [self::$requestParameters, 'resid', 400, false],
-            [self::$requestParameters, 'leasid', 400, false],
-            [self::$requestParameters, 'propid', 400, false],
-            [self::$requestParameters, 'unitid', 200, true], // unitid is not required
-            [self::$requestParameters, 'rent', 200, true], // rent is not required
-            [self::$requestParameters, 'appfee', 200, true], // appfee is not required
-            [self::$requestParameters, 'secdep', 200, true], // secdep is not required
+            [$this->requestParameters, 'resid'],
+            [$this->requestParameters, 'leasid'],
+            [$this->requestParameters, 'propid'],
         ];
     }
 
     /**
      * @param array $parameters
-     * @param string $requiredParameterName
-     * @param int $resultStatusCode
-     * @param bool $shouldRedirect
+     * @param string $parameterName
      *
      * @test
      * @dataProvider shouldCheckRequiredParametersDataProvider
      */
-    public function shouldCheckRequiredParameters(
-        array $parameters,
-        $requiredParameterName,
-        $resultStatusCode,
-        $shouldRedirect
-    ) {
+    public function shouldCheckRequiredParameters(array $parameters, $parameterName)
+    {
         $this->load(true);
-        $this->preparedFixtures();
+        $this->prepareFixtures();
         $this->setDefaultSession('goutte');
 
-        unset($parameters[$requiredParameterName]);
+        unset($parameters[$parameterName]);
         $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
 
-        $redirectedUrl = $this->getUrl() . 'user/new/2/property';
-
         $this->assertEquals(
-            $resultStatusCode,
+            400,
             $this->session->getStatusCode(),
             sprintf(
-                'Invalid status code should be %d expected %d',
-                $resultStatusCode,
+                'Invalid status code should be 400 expected %d',
                 $this->session->getStatusCode()
             )
         );
-        $this->assertTrue(
-            ($shouldRedirect && $this->session->getCurrentUrl() === $redirectedUrl) ||
-            (!$shouldRedirect && $this->session->getCurrentUrl() !== $redirectedUrl),
+    }
+
+    /**
+     * @return array
+     */
+    public function shouldCheckNotRequiredParametersDataProvider()
+    {
+        return [
+            [$this->requestParameters, 'unitid'],
+            [$this->requestParameters, 'rent'],
+            [$this->requestParameters, 'appfee'],
+            [$this->requestParameters, 'secdep'],
+        ];
+    }
+
+    /**
+     * @param array $parameters
+     * @param string $parameterName
+     *
+     * @test
+     * @dataProvider shouldCheckNotRequiredParametersDataProvider
+     */
+    public function shouldCheckNotRequiredParameters(array $parameters, $parameterName)
+    {
+        $this->load(true);
+        $this->prepareFixtures();
+        $this->setDefaultSession('goutte');
+
+        unset($parameters[$parameterName]);
+        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+
+        $this->assertEquals(
+            200,
+            $this->session->getStatusCode(),
             sprintf(
-                'Should%s redirection to %s.',
-                $shouldRedirect ? '' : ' not',
-                $redirectedUrl
+                'Invalid status code should be 400 expected %d',
+                $this->session->getStatusCode()
             )
+        );
+
+        $redirectedUrl = $this->getUrl() . 'user/new/2/property';
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirection to ' . $redirectedUrl
         );
     }
 
@@ -298,7 +322,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $property = $this->getEntityManager()->find('RjDataBundle:Property', 2);
         $this->assertNotNull($property, 'Check fixtures, should exist property with id 2');
         $this->assertCount(2, $property->getPropertyGroups(), 'Check fixtures, property #2 should belong to 2 groups');
-        $parameters = self::$requestParameters;
+        $parameters = $this->requestParameters;
         unset($parameters['unitid']); // should remove unitid b/c we do not have unit mapping
         $this->session->visit(
             $this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters)
@@ -316,7 +340,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     public function shouldCheckPropertyHasUnitsBelongOneGroup()
     {
         $this->load(true);
-        $this->preparedFixtures();
+        $this->prepareFixtures();
         $this->setDefaultSession('goutte');
         $property = $this->getEntityManager()->find('RjDataBundle:Property', 2);
         $this->assertCount(1, $property->getPropertyGroups(), 'Check fixtures, property #2 should belong to one group');
@@ -340,7 +364,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $this->session->visit(
-            $this->getUrl() . 'user/integration/new/yardi?' . http_build_query(self::$requestParameters)
+            $this->getUrl() . 'user/integration/new/yardi?' . http_build_query($this->requestParameters)
         );
         $this->assertEquals(
             412,

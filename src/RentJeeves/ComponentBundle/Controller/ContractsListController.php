@@ -7,10 +7,9 @@ use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Constraint\DayRangeValidator;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\Controller\PublicController;
+use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\DateTime;
@@ -135,17 +134,16 @@ class ContractsListController extends Controller
             }
         }
 
-        $session = $this->get('session');
-        if ($allowPayAnything && $session->has(PublicController::SESSION_CREATE_INTEGRATION_USER)) {
+        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
+        if ($allowPayAnything && $integrationDataManager->hasIntegrationData()) {
             $isInPayAnythingWindow  = true;
-            $integrationParams = $session->get(PublicController::SESSION_CREATE_INTEGRATION_USER);
 
-            $defaultPayAnythingParams['amounts'] = $integrationParams['amounts'] ?: [];
-            $defaultPayAnythingParams['amounts'] = $integrationParams['amounts'] ?: [];
-            if (isset($integrationParams['amounts'][DepositAccountType::SECURITY_DEPOSIT])) {
+            $defaultPayAnythingParams['amounts'] = $integrationDataManager->getAmounts();
+            if (isset($defaultPayAnythingParams['amounts'][DepositAccountType::SECURITY_DEPOSIT])) {
                 $defaultPayAnythingParams['payFor'] = DepositAccountType::SECURITY_DEPOSIT;
             }
-            if (isset($integrationParams['amounts'][DepositAccountType::APPLICATION_FEE])) {
+            if (isset($defaultPayAnythingParams['amounts'][DepositAccountType::APPLICATION_FEE])) {
                 $defaultPayAnythingParams['payFor'] = DepositAccountType::APPLICATION_FEE;
             }
         }

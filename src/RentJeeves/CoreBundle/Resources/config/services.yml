@@ -111,6 +111,13 @@ services:
             - @guzzle_client
             - @logger
 
+    form.type.entity_hidden:
+        class: RentJeeves\CoreBundle\Form\Type\EntityHiddenType
+        arguments:
+            - @doctrine.orm.default_entity_manager
+        tags:
+            - { name: form.type, alias: entity_hidden }
+
     dedupe.contract_movement:
         class: RentJeeves\CoreBundle\Services\ContractMovementManager
         arguments:
@@ -131,4 +138,3 @@ services:
             - @dedupe.unit_deduplicator
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_deduplicator
-

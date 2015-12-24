@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
@@ -395,15 +396,15 @@ EOT;
     }
 
     /**
-     * @param  string $accountingSystemType
+     * @param  string $accountingSystem
      * @param  string $externalPropertyId
      * @param  string $externalUnitId
      * @return Property|null
      * @throws NonUniqueResultException
      */
-    public function getPropertyByExternalPropertyUnitIds($accountingSystemType, $externalPropertyId, $externalUnitId)
+    public function getPropertyByExternalPropertyUnitIds($accountingSystem, $externalPropertyId, $externalUnitId)
     {
-        ApiIntegrationType::throwsInvalid($accountingSystemType);
+        ApiIntegrationType::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
@@ -411,10 +412,10 @@ EOT;
             ->innerJoin('units.unitMapping', 'um')
             ->innerJoin('pm.holding', 'h')
             ->andWhere('units.holding = pm.holding')
-            ->andWhere('h.apiIntegrationType = :accountingSystemType')
+            ->andWhere('h.apiIntegrationType = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('um.externalUnitId = :externalUnitId')
-            ->setParameter('accountingSystemType', $accountingSystemType)
+            ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('externalUnitId', $externalUnitId)
             ->getQuery()
@@ -422,23 +423,44 @@ EOT;
     }
 
     /**
-     * @param  string $accountingSystemType
+     * @param  string $accountingSystem
      * @param  string $externalPropertyId
      * @return Property|null
      * @throws NonUniqueResultException
      */
-    public function getPropertyByExternalPropertyId($accountingSystemType, $externalPropertyId)
+    public function getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId)
     {
-        ApiIntegrationType::throwsInvalid($accountingSystemType);
+        ApiIntegrationType::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
-            ->andWhere('h.apiIntegrationType = :accountingSystemType')
+            ->andWhere('h.apiIntegrationType = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
-            ->setParameter('accountingSystemType', $accountingSystemType)
+            ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Property $property
+     * @return boolean
+     * @throws NonUniqueResultException|NoResultException
+     */
+    public function checkPropertyBelongOneGroup(Property $property)
+    {
+        if ($property->getPropertyGroups()->count() > 1) {
+            throw new NonUniqueResultException('Property belongs to more then one group');
+        }
+
+        return (bool) $this->createQueryBuilder('p')
+            ->select('1')
+            ->innerJoin('p.units', 'u')
+            ->where('p.id = :property')
+            ->having('COUNT(DISTINCT u.group) = 1')
+            ->setParameter('property', $property)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

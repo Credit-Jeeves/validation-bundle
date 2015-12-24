@@ -3291,6 +3291,10 @@
                 <source>mri.import.error.empty.externalPropertyIds</source>
                 <target>Empty list of properties id, please contact to support.</target>
             </trans-unit>
+            <trans-unit id="entity_hidden.invalid_message">
+                <source>entity_hidden.invalid_message</source>
+                <target>The entity does not exist.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
