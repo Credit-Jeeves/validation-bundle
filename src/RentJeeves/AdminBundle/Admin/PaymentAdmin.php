@@ -64,6 +64,7 @@ class PaymentAdmin extends Admin
                 'actions',
                 [
                     'actions' => [
+                        'edit' => [],
                         'jobs' => ['template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'],
                         'orders' => ['template' => 'AdminBundle:CRUD:list__payment_orders.html.twig'],
                     ]
@@ -71,42 +72,19 @@ class PaymentAdmin extends Admin
             );
     }
 
-    public function getFilterParameters()
+    public function configureFormFields(FormMapper $formMapper)
     {
-        $return = parent::getFilterParameters();
-
-        if (null == $this->getRequest()->get('order_id', null)) {
-            if (!isset($return['startDate']['value']['month']) &&
-                !isset($return['startDate']['value']['day']) &&
-                !isset($return['startDate']['value']['year'])
-            ) {
-                $return['startDate'] = array(
-                    'value' => array(
-                        'month' => date('n'),
-                        'day' => date('j'),
-                        'year' => date('Y'),
-                    ),
-                );
-            } else {
-                $date = new DateTime();
-                $date->setTime(0, 0, 0);
-                $date->setDate(
-                    @$return['startDate']['value']['year'],
-                    @$return['startDate']['value']['month'],
-                    @$return['startDate']['value']['day']
-                );
-                $return['startDate']['value']['year'] = $date->format('Y');
-                $return['startDate']['value']['month'] = $date->format('n');
-                $return['startDate']['value']['day'] = $date->format('j');
-            }
-
-            if (!isset($return['status']['value'])) {
-                $return['status']['type'] = '3';
-                $return['status']['value'] = PaymentStatus::ACTIVE;
-            }
-        }
-
-        return $return;
+        $formMapper
+            ->add('dueDate')
+            ->add('startMonth')
+            ->add('startYear')
+            ->add(
+                'status',
+                'choice',
+                ['choices' => PaymentStatus::cachedTitles()]
+            )
+            ->add('amount')
+            ->add('closeDetails', 'text', ['required' => false]);
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
