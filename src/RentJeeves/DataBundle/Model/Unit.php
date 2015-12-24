@@ -3,7 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\ContractWaiting as ContractWaitingEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -165,9 +165,9 @@ abstract class Unit
     protected $unitMapping;
 
     /**
-     * @param ContractWaiting $contractsWaiting
+     * @param ContractWaitingEntity $contractsWaiting
      */
-    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    public function addContractsWaiting(ContractWaitingEntity $contractsWaiting)
     {
         $this->contractsWaiting = $contractsWaiting;
     }
@@ -433,10 +433,10 @@ abstract class Unit
     /**
      * Add ContractWaiting
      *
-     * @param ContractWaiting $contract
+     * @param ContractWaitingEntity $contract
      * @return $this
      */
-    public function addContractWaiting(ContractWaiting $contract)
+    public function addContractWaiting(ContractWaitingEntity $contract)
     {
         $this->contractsWaiting[] = $contract;
 
@@ -449,7 +449,7 @@ abstract class Unit
      * @param Contract
      * @return $this
      */
-    public function removeContractWaiting(ContractWaiting $contract)
+    public function removeContractWaiting(ContractWaitingEntity $contract)
     {
         $this->contractsWaiting->removeElement($contract);
 
