@@ -1507,4 +1507,47 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param \DateTime $dueDate
+     * @return integer
+     */
+    public function countContractsForSendTenantEmail(\DateTime $dueDate)
+    {
+        return $this->createQueryBuilder('c')
+                ->select('count(c.id)')
+                ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
+                ->setParameter('current', ContractStatus::CURRENT)
+                ->setParameter('approved', ContractStatus::APPROVED)
+                ->setParameter('dueDays', $this->getDueDays(0, $dueDate))
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+
+    /**
+     * @param \DateTime $dueDate
+     * @param integer $start
+     * @param integer $limit
+     * @return array
+     */
+    public function getContractsIdForSendTenantEmail(\DateTime $dueDate, $start, $limit)
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('current', ContractStatus::CURRENT)
+            ->setParameter('approved', ContractStatus::APPROVED)
+            ->setParameter('dueDays', $this->getDueDays(0, $dueDate))
+            ->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getScalarResult();
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return array_map('current', $result);
+    }
 }
