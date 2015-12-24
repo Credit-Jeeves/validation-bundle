@@ -9,6 +9,9 @@ use RentJeeves\CoreBundle\Exception\UnitDeduplicatorException;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 
+/**
+ * Service name "dedupe.unit_deduplicator"
+ */
 class UnitDeduplicator
 {
     /**

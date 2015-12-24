@@ -16,6 +16,9 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
+/**
+ * Service name "dedupe.contract_movement"
+ */
 class ContractMovementManager
 {
     /**

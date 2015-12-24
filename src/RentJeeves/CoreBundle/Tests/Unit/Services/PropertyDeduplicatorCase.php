@@ -103,7 +103,7 @@ class PropertyDeduplicatorCase extends UnitTestBase
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
-            ->method('warning')
+            ->method('info')
             ->with($this->equalTo('Not found any dubbed Properties for Property#1 and PropertyAddress#777'));
 
         $propertyDeduplicator = new PropertyDeduplicator(

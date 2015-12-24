@@ -18,7 +18,7 @@ class PropertyDeduplicateCommandCase extends BaseTestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage propertyAddress with id = 0 not found.
      */
-    public function shouldThrowExceptionIfSendNotCorrectUnitId()
+    public function shouldThrowExceptionIfSendNotCorrectPropertyId()
     {
         $this->executeCommandTester(new PropertyDeduplicateCommand(), ['--property-address-id' => 0]);
     }
@@ -163,7 +163,7 @@ class PropertyDeduplicateCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldDebbedPropertyAndRemoveUnitIfPropertyIsSingle()
+    public function shouldDeduplicatePropertyAndRemoveUnitIfPropertyIsSingle()
     {
         $this->load(true);
 

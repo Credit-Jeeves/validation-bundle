@@ -11,6 +11,9 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 
+/**
+ * Service name "dedupe.property_deduplicator"
+ */
 class PropertyDeduplicator
 {
     /**
@@ -76,7 +79,7 @@ class PropertyDeduplicator
 
         $sourceProperties = $this->findAllOtherPropertiesWithSamePropertyAddress($destinationProperty);
         if (true === empty($sourceProperties)) {
-            $this->logger->warning(
+            $this->logger->info(
                 $message = sprintf(
                     'Not found any dubbed Properties for Property#%d and PropertyAddress#%d',
                     $destinationProperty->getId(),

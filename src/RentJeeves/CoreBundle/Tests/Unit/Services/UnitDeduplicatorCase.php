@@ -285,7 +285,7 @@ class UnitDeduplicatorCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldRemoveIsSingleSourceUnitIfInputDataIsValid()
+    public function shouldDeduplicateSrcUnitAndNotRemoveIfOwningPropertyIsNotSingle()
     {
         $srcProperty = new Property();
         $propertyAddress = new PropertyAddress();
@@ -343,7 +343,7 @@ class UnitDeduplicatorCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldNotRemoveIsSingleSourceUnitIfInputDataIsValid()
+    public function shouldRemoveSrcUnitIfOwningPropertyIsSingle()
     {
         $srcProperty = new Property();
         $propertyAddress = new PropertyAddress();
