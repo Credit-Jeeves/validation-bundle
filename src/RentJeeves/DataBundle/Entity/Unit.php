@@ -63,6 +63,9 @@ class Unit extends Base
         return $apiIntegrationType === ApiIntegrationType::MRI || $apiIntegrationType === ApiIntegrationType::RESMAN;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->name;
@@ -82,9 +85,9 @@ class Unit extends Base
 
         $em = $args->getEntityManager();
         foreach ($contractsWaiting as $contractWaiting) {
+            $cm = $em->getClassMetadata(get_class($contractWaiting));
             $em->remove($contractWaiting);
+            $em->getUnitOfWork()->recomputeSingleEntityChangeSet($cm, $contractWaiting);
         }
-
-        $em->flush();
     }
 }
