@@ -16,7 +16,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use RentJeeves\PublicBundle\Form\UnitType;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 
@@ -260,11 +259,16 @@ class TenantType extends AbstractType
                 }
 
                 /**
-                 * Seems we have waiting contract for this unit and first_name, last_name not the same
-                 * block with error
+                 * Seems we have waiting contract for this unit and first_name, last_name not the same.
+                 * Allow to create a contract if group is integrated and pay_anything is allowed.
+                 * Otherwise block with error.
                  */
                 if (is_null($self->getWaitingContract()) && count($contractsWaiting) > 0) {
-                    $form->addError(new FormError('error.unit.reserved'));
+                    $isAllowedPayAnything = $unit->getGroup()->getGroupSettings()->isAllowPayAnything();
+                    $isIntegrated = $unit->getGroup()->getGroupSettings()->getIsIntegrated();
+                    if (!($isIntegrated && $isAllowedPayAnything)) {
+                        $form->addError(new FormError('error.unit.reserved'));
+                    }
                 }
             }
         );

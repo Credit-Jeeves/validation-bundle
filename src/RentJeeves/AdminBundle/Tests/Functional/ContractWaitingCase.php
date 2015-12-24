@@ -28,13 +28,13 @@ class ContractWaitingCase extends BaseTestCase
         $edit->click();
 
         $this->assertNotNull($input = $this->page->findAll('css', 'input'));
-        $this->assertEquals(9, count($input), 'Unexpected amount of input fields');
-        $input[0]->setValue("200");
-        $input[1]->setValue("615");
-        $input[2]->setValue("test@mail.com");
-        $input[3]->setValue("FirstName");
-        $input[4]->setValue("LastName");
-        $input[5]->setValue("100");
+        $this->assertEquals(12, count($input), 'Unexpected amount of input fields');
+        $input[3]->setValue("200");
+        $input[4]->setValue("615");
+        $input[5]->setValue("test@mail.com");
+        $input[6]->setValue("FirstName");
+        $input[7]->setValue("LastName");
+        $input[8]->setValue("100");
 
         $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'), 'Cannot find update button');
         $this->assertEquals(3, count($btn));
