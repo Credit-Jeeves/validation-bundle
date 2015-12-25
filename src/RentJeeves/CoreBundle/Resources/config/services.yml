@@ -125,3 +125,10 @@ services:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.unit_deduplicator
 
+    dedupe.property_deduplicator:
+        class: RentJeeves\CoreBundle\Services\PropertyDeduplicator
+        arguments:
+            - @dedupe.unit_deduplicator
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_deduplicator
+

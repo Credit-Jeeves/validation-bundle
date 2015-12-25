@@ -493,7 +493,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('contract.group', 'group');
         $query->innerJoin('group.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
-        $query->innerJoin('property.propertyMapping', 'mapping');
+        $query->innerJoin('property.propertyMappings', 'mapping');
         $query->innerJoin('ord.transactions', 'transaction');
         $query->leftJoin(
             'ord.sentOrder',
@@ -529,7 +529,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('operation.contract', 'contract');
         $query->innerJoin('contract.holding', 'holding');
         $query->innerJoin('contract.property', 'property');
-        $query->innerJoin('property.propertyMapping', 'mapping');
+        $query->innerJoin('property.propertyMappings', 'mapping');
         $query->innerJoin('ord.transactions', 'transaction');
 
         $query->where("transaction.depositDate = :depositDate");

@@ -325,7 +325,7 @@ EOT;
     public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
     {
         return $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.holding = :holdingId')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('holdingId', $holding->getId())
@@ -375,5 +375,21 @@ EOT;
         /** TODO: change this to oneOrNull once duplicate properties removed from DB */
 
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @return Property[]
+     */
+    public function findAllOtherPropertiesWithSamePropertyAddress(Property $property)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.propertyAddress = :propertyAddress')
+            ->andWhere('p.id != :currentPropertyId')
+            ->setParameter('propertyAddress', $property->getPropertyAddress())
+            ->setParameter('currentPropertyId', $property->getId())
+            ->getQuery()
+            ->execute();
     }
 }

@@ -1,11 +1,13 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\PropertyMapping as PropertyMappingEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -95,7 +97,7 @@ abstract class Property
      * )
      * @Serializer\Exclude
      */
-    protected $propertyMapping;
+    protected $propertyMappings;
 
     /**
      * @ORM\OneToMany(
@@ -150,6 +152,7 @@ abstract class Property
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->contractsWaiting = new ArrayCollection();
+        $this->propertyMappings = new ArrayCollection();
     }
 
     /**
@@ -177,19 +180,19 @@ abstract class Property
     }
 
     /**
-     * @param PropertyMapping $propertyMapping
+     * @param PropertyMappingEntity $propertyMapping
      */
-    public function setPropertyMapping(PropertyMapping $propertyMapping)
+    public function addPropertyMapping(PropertyMappingEntity $propertyMapping)
     {
-        $this->propertyMapping = $propertyMapping;
+        $this->propertyMappings[] = $propertyMapping;
     }
 
     /**
-     * @return PropertyMapping
+     * @return ArrayCollection|PropertyMappingEntity[]
      */
-    public function getPropertyMapping()
+    public function getPropertyMappings()
     {
-        return $this->propertyMapping;
+        return $this->propertyMappings;
     }
 
     /**
@@ -239,11 +242,15 @@ abstract class Property
     }
 
     /**
-     * Add groups
-     * This is used for fixture load
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Group $groups
-     * @return Property
+     * @param Collection $property_groups
+     */
+    public function setGroups(Collection $property_groups = null)
+    {
+        $this->property_groups = $property_groups;
+    }
+
+    /**
+     * @deprecated use only for for fixture load; if u want update all propertyGroups use `setGroups`
      */
     public function setPropertyGroups($group)
     {
