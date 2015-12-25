@@ -1280,7 +1280,6 @@ class ImportCsvCase extends ImportBaseAbstract
             $em->remove($unit);
         }
         $em->flush();
-
         $propertyAddress = $property->getPropertyAddress();
         $propertyAddress->setIsSingle(true);
 

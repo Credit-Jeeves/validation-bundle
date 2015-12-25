@@ -164,6 +164,12 @@ abstract class Unit
      */
     protected $unitMapping;
 
+    public function __construct()
+    {
+        $this->contracts = new ArrayCollection();
+        $this->contractsWaiting = new ArrayCollection();
+    }
+
     /**
      * @param ContractWaitingEntity $contractsWaiting
      */
@@ -195,13 +201,7 @@ abstract class Unit
     {
         return $this->deletedAt;
     }
-
-    public function __construct()
-    {
-        $this->contracts = new ArrayCollection();
-        $this->contractsWaiting = new ArrayCollection();
-    }
-
+    
     /**
      * Get id
      *
@@ -451,7 +451,9 @@ abstract class Unit
      */
     public function removeContractWaiting(ContractWaitingEntity $contract)
     {
-        $this->contractsWaiting->removeElement($contract);
+        if ($this->contractsWaiting->contains($contract)) {
+            $this->contractsWaiting->removeElement($contract);
+        }
 
         return $this;
     }

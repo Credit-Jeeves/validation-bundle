@@ -70,24 +70,4 @@ class Unit extends Base
     {
         return $this->name;
     }
-
-    /**
-     * Documentation link https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-     * @ORM\PostRemove
-     */
-    public function deleteAllWaitingContracts(BaseLifecycleEventArgs $args)
-    {
-        $contractsWaiting = $this->getContractsWaiting();
-
-        if (empty($contractsWaiting)) {
-            return;
-        }
-
-        $em = $args->getEntityManager();
-        foreach ($contractsWaiting as $contractWaiting) {
-            $cm = $em->getClassMetadata(get_class($contractWaiting));
-            $em->remove($contractWaiting);
-            $em->getUnitOfWork()->recomputeSingleEntityChangeSet($cm, $contractWaiting);
-        }
-    }
 }

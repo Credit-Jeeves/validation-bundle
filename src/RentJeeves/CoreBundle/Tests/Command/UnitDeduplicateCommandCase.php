@@ -4,6 +4,7 @@ namespace RentJeeves\CoreBundle\Tests\Command;
 use RentJeeves\CoreBundle\Command\UnitDeduplicateCommand;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
@@ -199,9 +200,9 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var ContractWaiting $contractWaiting
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
-
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
-
+        /** @var Unit $unit */
+        self::$kernel = null;
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'

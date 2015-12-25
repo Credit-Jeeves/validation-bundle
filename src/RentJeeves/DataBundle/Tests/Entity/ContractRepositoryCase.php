@@ -348,7 +348,7 @@ class ContractRepositoryCase extends BaseTestCase
             )
         );
         $this->assertNotNull($unit);
-        $this->assertTrue($unit->getContractsWaiting()->count() === 1);
+        $this->assertCount(1, $unit->getContractsWaiting(), 'Should be one contract waiting in fixtures');
 
         $contractWaiting = new ContractWaiting();
         $contractWaiting->setProperty($unit->getProperty());
@@ -361,11 +361,11 @@ class ContractRepositoryCase extends BaseTestCase
         $contractWaiting->setRent('7777');
         $contractWaiting->setFirstName('Hi');
         $contractWaiting->setLastName('ho');
+        $unit->addContractWaiting($contractWaiting);
 
         $em->persist($contractWaiting);
         $em->flush();
         $id = $contractWaiting->getId();
-        $em->clear();
         /**
          * @var $unit Unit
          */
@@ -375,16 +375,13 @@ class ContractRepositoryCase extends BaseTestCase
             )
         );
         $this->assertNotNull($unit);
-        $this->assertTrue($unit->getContractsWaiting()->count() === 2);
+        $this->assertCount(2, $unit->getContractsWaiting(), 'We added one more contract should have +1');
         $em->remove($unit);
         $em->flush();
-        $em->clear();
 
         static::$kernel = null;
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $em = $this->getEntityManager();
 
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
         $this->assertEmpty($contractWaiting);

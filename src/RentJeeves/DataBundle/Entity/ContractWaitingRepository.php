@@ -337,4 +337,16 @@ class ContractWaitingRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param Unit $unit
+     */
+    public function deleteByUnit(Unit $unit)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->delete();
+        $query->where('c.unit = :unit');
+        $query->setParameter('unit', $unit);
+        $query->getQuery()->execute();
+    }
 }
