@@ -200,12 +200,7 @@ class ContractMovementManager
      */
     protected function findAllActivePaymentsByContract(Contract $contract)
     {
-        return $this->em->getRepository('RjDataBundle:Payment')->findBy(
-            [
-                'contract' => $contract,
-                'status' => PaymentStatus::ACTIVE
-            ]
-        );
+        return $this->em->getRepository('RjDataBundle:Payment')->findAllActivePaymentsForContract($contract);
     }
 
     /**

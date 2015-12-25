@@ -95,7 +95,6 @@ class Payment
      * @Assert\NotBlank(
      *      message="checkout.error.status.empty"
      * )
-     * @Serializer\Groups({"payRent"})
      *
      * @var PaymentStatus
      */
