@@ -30,4 +30,9 @@ class PaymentCloseReason extends Enum
      * Used when payment is closed due to migration to another payment processor
      */
     const PAYMENT_PROCESSOR_MIGRATION = 'payment_processor_migration';
+
+    /**
+     * Used when admin closes flagged payment.
+     */
+    const CLOSED_BY_ADMIN = 'closed_by_admin';
 }
