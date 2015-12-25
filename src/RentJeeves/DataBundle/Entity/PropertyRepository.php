@@ -325,7 +325,7 @@ EOT;
     public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
     {
         return $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.holding = :holdingId')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('holdingId', $holding->getId())

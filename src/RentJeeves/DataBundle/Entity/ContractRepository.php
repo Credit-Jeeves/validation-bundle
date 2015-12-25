@@ -1089,7 +1089,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.unit', 'u');
         $query->innerJoin('u.unitMapping', 'um');
         $query->innerJoin('c.property', 'p');
-        $query->innerJoin('p.propertyMapping', 'pm');
+        $query->innerJoin('p.propertyMappings', 'pm');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
         $query->innerJoin('c.tenant', 't');
@@ -1129,7 +1129,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.unit', 'u')
             ->innerJoin('u.unitMapping', 'um')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
+            ->innerJoin('p.propertyMappings', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.tenant', 't')
@@ -1378,7 +1378,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('c.tenant', 't')
             ->innerJoin('t.residentsMapping', 'rm')
             ->where('c.status in (:statuses)')
@@ -1416,7 +1416,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('c.tenant', 't')
             ->innerJoin('t.residentsMapping', 'rm')
             ->where('c.status in (:statuses)')
@@ -1455,7 +1455,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('c.status in (:statuses)')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
@@ -1491,7 +1491,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('c.status in (:statuses)')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
