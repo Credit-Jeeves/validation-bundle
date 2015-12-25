@@ -37,7 +37,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
     public function shouldDeduplicateAndMoveAllEntitiesToNewUnitIfPropertyDoesNotHaveUnitWithSameName()
     {
         $this->load(true);
-
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
@@ -56,7 +55,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 18]);
-
+        static::$kernel = null;
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'
@@ -65,23 +64,36 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $this->assertNotEquals($lastUnit, $newLastUnit, 'New Unit is not created.');
         $this->assertEquals($unit->getName(), $newLastUnit->getName(), 'New Unit has incorrect name');
 
-        $this->assertEquals($newLastUnit, $firstContract->getUnit(), 'firstContract has incorrect Unit');
         $this->assertEquals(
-            $newLastUnit->getProperty(),
-            $firstContract->getProperty(),
+            $newLastUnit->getId(),
+            $firstContract->getUnit()->getId(),
+            'firstContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $newLastUnit->getProperty()->getId(),
+            $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
-        $this->assertEquals($newLastUnit, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
-            $newLastUnit->getProperty(),
-            $lastContract->getProperty(),
+            $newLastUnit->getId(),
+            $lastContract->getUnit()->getId(),
+            'lastContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $newLastUnit->getProperty()->getId(),
+            $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
         );
 
-        $this->assertEquals($newLastUnit, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
-            $newLastUnit->getProperty(),
-            $contractWaiting->getProperty(),
+            $newLastUnit->getId(),
+            $contractWaiting->getUnit()->getId(),
+            'contractWaiting has incorrect Unit'
+        );
+
+        $this->assertEquals(
+            $newLastUnit->getProperty()->getId(),
+            $contractWaiting->getProperty()->getId(),
             'contractWaiting has incorrect Property'
         );
     }
@@ -123,35 +135,51 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $contractWaiting = $unit->getContractsWaiting()->first();
 
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
-
+        static::$kernel = null;
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'
         );
-
-        $this->getEntityManager()->refresh($unitMapping);
-        $this->assertEquals($unitWithSameName, $unitMapping->getUnit(), 'UnitMapping is not updated.');
+        $unitMapping = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            [
+                'externalUnitId' => 'test'
+            ]
+        );
+        $this->assertNotEmpty($unitMapping);
+        $this->assertEquals($unitWithSameName->getId(), $unitMapping->getUnit()->getId(), 'UnitMapping is not updated.');
 
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
-        $this->assertEquals($lastUnit, $newLastUnit, 'New Unit is created.');
+        $this->assertEquals($lastUnit->getId(), $newLastUnit->getid(), 'New Unit is created.');
 
-        $this->assertEquals($unitWithSameName, $firstContract->getUnit(), 'firstContract has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $firstContract->getProperty(),
+            $unitWithSameName->getId(),
+            $firstContract->getUnit()->getId(),
+            'firstContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
-        $this->assertEquals($unitWithSameName, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $lastContract->getProperty(),
+            $unitWithSameName->getId(),
+            $lastContract->getUnit()->getId(),
+            'lastContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
         );
 
-        $this->assertEquals($unitWithSameName, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $contractWaiting->getProperty(),
+            $unitWithSameName->getId(),
+            $contractWaiting->getUnit()->getId(),
+            'contractWaiting has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $contractWaiting->getProperty()->getId(),
             'contractWaiting has incorrect Property'
         );
     }
@@ -214,25 +242,37 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         );
 
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
-        $this->assertEquals($lastUnit, $newLastUnit, 'New Unit is created.');
+        $this->assertEquals($lastUnit->getId(), $newLastUnit->getId(), 'New Unit is created.');
 
-        $this->assertEquals($unitWithSameName, $firstContract->getUnit(), 'firstContract has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $firstContract->getProperty(),
+            $unitWithSameName->getId(),
+            $firstContract->getUnit()->getId(),
+            'firstContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
-        $this->assertEquals($unitWithSameName, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $lastContract->getProperty(),
+            $unitWithSameName->getId(),
+            $lastContract->getUnit()->getId(),
+            'lastContract has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
         );
 
-        $this->assertEquals($unitWithSameName, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
-            $unitWithSameName->getProperty(),
-            $contractWaiting->getProperty(),
+            $unitWithSameName->getId(),
+            $contractWaiting->getUnit()->getId(),
+            'contractWaiting has incorrect Unit'
+        );
+        $this->assertEquals(
+            $unitWithSameName->getProperty()->getId(),
+            $contractWaiting->getProperty()->getId(),
             'contractWaiting has incorrect Property'
         );
     }
@@ -277,8 +317,20 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $this->getEntityManager()->refresh($firstContract);
         $this->getEntityManager()->refresh($lastContract);
         $this->getEntityManager()->refresh($contractWaiting);
-        $this->assertEquals($unit, $firstContract->getUnit(), 'firstContract is updated in dryRun mode.');
-        $this->assertEquals($unit, $lastContract->getUnit(), 'lastContract is updated in dryRun mode.');
-        $this->assertEquals($unit, $contractWaiting->getUnit(), 'contractWaiting is updated in dryRun mode.');
+        $this->assertEquals(
+            $unit->getId(),
+            $firstContract->getUnit()->getId(),
+            'firstContract is updated in dryRun mode.'
+        );
+        $this->assertEquals(
+            $unit->getId(),
+            $lastContract->getUnit()->getId(),
+            'lastContract is updated in dryRun mode.'
+        );
+        $this->assertEquals(
+            $unit->getId(),
+            $contractWaiting->getUnit()->getId(),
+            'contractWaiting is updated in dryRun mode.'
+        );
     }
 }
