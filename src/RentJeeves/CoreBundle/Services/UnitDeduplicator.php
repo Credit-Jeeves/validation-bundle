@@ -180,7 +180,6 @@ class UnitDeduplicator
         foreach ($srcUnit->getContractsWaiting() as $contractWaiting) {
             $contractWaiting->setProperty($dstUnit->getProperty());
             $contractWaiting->setUnit($dstUnit);
-            $dstUnit->removeContractWaiting($contractWaiting);
 
             $this->logger->info(
                 sprintf(

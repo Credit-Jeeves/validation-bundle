@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "47d9937054b6cc2344605ad746d2e9ff",
-    "content-hash": "e1226eb562075dbc54744b095d1e206f",
+    "hash": "3170d257c1d5e0f39b9573a2f455f287",
+    "content-hash": "4f41ac7786867cf4b6957ac11f2d27eb",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -341,17 +341,17 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "dev-rj",
+            "version": "v0.2.6",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Tobur/BeSimpleSoapClient.git",
-                "reference": "556811857396d704cbe9c2dd3f833e1f120d6423"
+                "url": "https://github.com/Credit-Jeeves/BeSimpleSoapClient.git",
+                "reference": "9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Tobur/BeSimpleSoapClient/zipball/556811857396d704cbe9c2dd3f833e1f120d6423",
-                "reference": "556811857396d704cbe9c2dd3f833e1f120d6423",
+                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80",
+                "reference": "9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80",
                 "shasum": ""
             },
             "require": {
@@ -401,9 +401,9 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Tobur/BeSimpleSoapClient/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/master"
             },
-            "time": "2015-12-21 13:27:30"
+            "time": "2015-12-25 11:40:10"
         },
         {
             "name": "besimple/soap-common",
@@ -994,16 +994,16 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "dev-master",
+            "version": "1.5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "bc23e0f46da064cbc53c1b1243472477487ef754"
+                "reference": "fb3f5917781cf95863d3fd4d2595da43da3686c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/bc23e0f46da064cbc53c1b1243472477487ef754",
-                "reference": "bc23e0f46da064cbc53c1b1243472477487ef754",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/fb3f5917781cf95863d3fd4d2595da43da3686c1",
+                "reference": "fb3f5917781cf95863d3fd4d2595da43da3686c1",
                 "shasum": ""
             },
             "require": {
@@ -1020,7 +1020,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
@@ -1060,7 +1060,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-12-19 04:57:29"
+            "time": "2015-12-19 05:04:23"
         },
         {
             "name": "doctrine/collections",
@@ -2312,12 +2312,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
-                "reference": "7e7fc55fa3fad79031727fbc7d8e418b641be875"
+                "reference": "da303c95ed17bfe8ac908d5138235bd160e2efce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/7e7fc55fa3fad79031727fbc7d8e418b641be875",
-                "reference": "7e7fc55fa3fad79031727fbc7d8e418b641be875",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/da303c95ed17bfe8ac908d5138235bd160e2efce",
+                "reference": "da303c95ed17bfe8ac908d5138235bd160e2efce",
                 "shasum": ""
             },
             "require": {
@@ -2383,7 +2383,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2015-12-18 20:34:21"
+            "time": "2015-12-24 19:24:15"
         },
         {
             "name": "guzzle/guzzle",
@@ -7979,7 +7979,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "dev-rj",
+            "version": "0.2.6.0",
             "package": "besimple/soap-client"
         },
         {
@@ -8092,7 +8092,6 @@
         "renttrack/transunion-bundle": 20,
         "renttrack/smarty-streets-bundle": 20,
         "stof/doctrine-extensions-bundle": 20,
-        "besimple/soap-client": 20,
         "apy/jsfv-bundle": 20,
         "doctrine/migrations": 20,
         "beberlei/doctrineextensions": 20,

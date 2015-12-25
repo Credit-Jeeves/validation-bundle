@@ -62,7 +62,7 @@
         },
         {
             "type": "vcs",
-            "url": "git@github.com:Tobur/BeSimpleSoapClient.git"
+            "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
         {
             "type": "vcs",
@@ -203,7 +203,7 @@
         "renttrack/smarty-streets-bundle": "dev-master",
         "doctrine/orm": "v2.4.8",
         "stof/doctrine-extensions-bundle": "dev-master as v1.1.0",
-        "besimple/soap-client": "dev-rj as dev-master",
+        "besimple/soap-client": "v0.2.6 as dev-master",
         "apy/jsfv-bundle":"dev-master as 2.1",
         "doctrine/migrations": "dev-master as 1.0.0",
 

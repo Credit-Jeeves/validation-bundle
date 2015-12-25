@@ -229,7 +229,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
-        /** @var Unit $unit */
+
         self::$kernel = null;
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
