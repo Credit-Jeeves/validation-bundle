@@ -34,3 +34,15 @@ monolog:
             to_email:   %monolog.alert.email_to%
             subject:    SYSTEM ALERT
             level:      alert
+
+services:
+    # property import logger
+    monolog.formatter.import:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%channel%%.Group#%%extra.group_id%%.%%level_name%%: %%message%%\n"
+
+    monolog.processor.import:
+        class: RentJeeves\ImportBundle\Logger\LoggerProcessor
+        tags:
+            - { name: monolog.processor, method: processRecord, handler: property_import }
