@@ -273,6 +273,19 @@ abstract class Holding
      */
     protected $exportTenantId = true;
 
+    /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="post_app_fee_and_security_deposit",
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     *
+     * @var boolean
+     */
+    protected $postAppFeeAndSecurityDeposit = false;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -789,5 +802,21 @@ abstract class Holding
     public function setExportTenantId($exportTenantId)
     {
         $this->exportTenantId = $exportTenantId;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPostAppFeeAndSecurityDeposit()
+    {
+        return $this->postAppFeeAndSecurityDeposit;
+    }
+
+    /**
+     * @param boolean $postAppFeeAndSecurityDeposit
+     */
+    public function setPostAppFeeAndSecurityDeposit($postAppFeeAndSecurityDeposit)
+    {
+        $this->postAppFeeAndSecurityDeposit = $postAppFeeAndSecurityDeposit;
     }
 }
