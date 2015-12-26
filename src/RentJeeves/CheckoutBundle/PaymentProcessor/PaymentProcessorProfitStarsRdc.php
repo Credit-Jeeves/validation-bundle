@@ -11,6 +11,9 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
+/**
+ * Service name "payment_processor.profit_stars.rdc"
+ */
 class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface
 {
     /** @var ReportLoader */

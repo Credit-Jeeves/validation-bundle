@@ -7,6 +7,9 @@ use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\ArrayOfInt;
 use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\GetCreditandDebitReportsResponse;
 use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\TransactionReportingClient;
 
+/**
+ * Service name "payment_processor.profit_stars.rdc.report_loader"
+ */
 class ReportLoader
 {
     /** @var TransactionReportingClient */
