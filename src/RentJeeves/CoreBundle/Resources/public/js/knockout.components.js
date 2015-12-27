@@ -1,0 +1,32 @@
+/**
+ * Component show info message
+ * name : 'infoMessage-widget'
+ * params
+ *  - message - external observable parameter
+ *  - initialMessage
+ *  - visibleConditions
+ */
+ko.components.register('infoMessage-widget', {
+    viewModel: function(params) {
+        this.message = (params && params.message) ?
+            ko.computed(function () {
+                if (!params.message()) {
+                    params.message(params.initialMessage || '');
+                }
+                return params.message();
+            }, this) :
+            ko.observable(
+                params && params.initialMessage || ''
+            );
+        this.isVisible = ko.computed(function () {
+            if (params && params.visibleConditions !== undefined) {
+                return params.visibleConditions && this.message();
+            }
+            return this.message();
+        }, this);
+    },
+    template:
+        '<div class="information-box pie-el"' +
+        ' data-bind="visible: isVisible(), text: message">' +
+        '</div>'
+});

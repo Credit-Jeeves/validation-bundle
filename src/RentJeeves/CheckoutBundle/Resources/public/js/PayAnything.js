@@ -19,6 +19,8 @@ function PayAnything(parent, contract, defaultParams) {
         defaultAmounts = defaultParams.amounts ? defaultParams.amounts : {};
     }
 
+    var redirectUrl = null;
+
     // Wizard-popup steps
     var steps = ['details', 'source', 'pay', 'finish'];
     var current = 0;
@@ -112,11 +114,18 @@ function PayAnything(parent, contract, defaultParams) {
                 // End
                 break;
             case 'pay':
+                if (data.redirectUrl) {
+                    redirectUrl = data.redirectUrl;
+                }
                 break;
             case 'finish':
                 rootNode.dialog('close');
                 jQuery('body').showOverlay();
-                window.location.reload();
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                } else {
+                    window.location.reload();
+                }
                 return;
                 break;
         }
@@ -201,7 +210,21 @@ function PayAnything(parent, contract, defaultParams) {
                     if (data) {
                         loadedGroupId = groupId;
                         self.availablePayFor(data);
-                        self.payFor(defaultPayFor);
+                        if (defaultPayFor) {
+                            var payFor = ko.utils.arrayFirst(self.availablePayFor(), function(item) {
+                                return item.value == defaultPayFor;
+                            });
+                            if (payFor) {
+                                self.payFor(payFor.value);
+                            } else {
+                                payFor = ko.utils.arrayFirst(self.availablePayFor(), function(item) {
+                                    return (item.value in defaultAmounts);
+                                });
+                                if (payFor) {
+                                    self.payFor(payFor.value);
+                                }
+                            }
+                        }
                         rootNode.hideOverlay();
                     }
                 }

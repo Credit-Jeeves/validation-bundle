@@ -76,7 +76,7 @@ class AccountingSystemIntegrationDataManager
             $processedData[$paramName] = $paramValue;
         }
 
-        $optionalParams = ['unitid', 'rent'];
+        $optionalParams = ['unitid', 'rent', 'redirect'];
         foreach ($optionalParams as $paramName) {
             if ($paramValue = $request->get($paramName)) {
                 $processedData[$paramName] = $paramValue;
@@ -103,6 +103,12 @@ class AccountingSystemIntegrationDataManager
     public function hasIntegrationData()
     {
         return !empty($this->cachedData) || $this->session->has(self::SESSION_INTEGRATION_DATA);
+    }
+
+    public function removeIntegrationData()
+    {
+        $this->cashedData = null;
+        $this->session->remove(self::SESSION_INTEGRATION_DATA);
     }
 
     /**
@@ -165,6 +171,35 @@ class AccountingSystemIntegrationDataManager
     public function getAmounts()
     {
         return $this->get('amounts', []);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPayments()
+    {
+        return count(array_filter($this->get('amounts', []))) > 0;
+    }
+
+    /**
+     * @param string $paymentType
+     */
+    public function removePayment($paymentType)
+    {
+        $amounts = $this->get('amounts', []);
+        if (!empty($amounts[$paymentType]) ) {
+            $amounts[$paymentType] = null;
+            $this->cashedData['amounts'] = $amounts;
+            $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cashedData);
+        }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRedirectUrl()
+    {
+        return $this->get('redirect');
     }
 
     /**

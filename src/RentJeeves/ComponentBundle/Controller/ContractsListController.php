@@ -140,10 +140,10 @@ class ContractsListController extends Controller
             $isInPayAnythingWindow  = true;
 
             $defaultPayAnythingParams['amounts'] = $integrationDataManager->getAmounts();
-            if (isset($defaultPayAnythingParams['amounts'][DepositAccountType::SECURITY_DEPOSIT])) {
+            if (!empty($defaultPayAnythingParams['amounts'][DepositAccountType::SECURITY_DEPOSIT])) {
                 $defaultPayAnythingParams['payFor'] = DepositAccountType::SECURITY_DEPOSIT;
             }
-            if (isset($defaultPayAnythingParams['amounts'][DepositAccountType::APPLICATION_FEE])) {
+            if (!empty($defaultPayAnythingParams['amounts'][DepositAccountType::APPLICATION_FEE])) {
                 $defaultPayAnythingParams['payFor'] = DepositAccountType::APPLICATION_FEE;
             }
         }
