@@ -20,6 +20,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         'rent' => 505,
         'appfee' => 101,
         'secdep' => 102,
+        'redirect' => 'http://localhost',
     ];
 
     protected function prepareFixtures()
@@ -229,6 +230,415 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldRedirect()
+    {
+        $this->shouldCreateUserByFullParameters();
+
+        $startDateField = $this->getDomElement(
+            '#rentjeeves_checkoutbundle_payanything_paymenttype_start_date',
+            'Start date field not found'
+        );
+        $startDateField->setValue((new \DateTime('tomorrow'))->format('m/d/Y'));
+
+        $nextBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.step.next")');
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $payAccountId = 'rentjeeves_checkoutbundle_paymentaccounttype_pay_anything';
+        $form = $this->page->find('css', '#' . $payAccountId);
+
+        $this->fillForm(
+            $form,
+            [
+                $payAccountId . '_name' => 'Test Bank Acc',
+                $payAccountId . '_PayorName' => 'FirstN LastN',
+                $payAccountId . '_RoutingNumber' => '062202574',
+                $payAccountId . '_AccountNumber_AccountNumber' => '123245678',
+                $payAccountId . '_AccountNumber_AccountNumberAgain' => '123245678',
+                $payAccountId . '_ACHDepositType_0' => true,
+            ]
+        );
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn = $this->getDomElement('#pay-anything-popup button span:contains("checkout.make_payment")');
+        $makeBtn->click();
+
+        $this->session->wait(
+            $this->timeout,
+            '$("button span:contains(\'pay_popup.close\')").is(":visible")'
+        );
+
+        $closeBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.close")');
+        $closeBtn->click();
+
+        $this->session->wait($this->timeout, '(document.readyState == "complete")'); // wait reload page
+
+        $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup again');
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+
+        $infoMessage = $this->getDomElement(
+            '#pay-anything-popup .information-box.pie-el',
+            'Should be displayed information message'
+        );
+        $this->assertEquals(
+            'pay_anything_popup.should_pay_message',
+            $infoMessage->getText(),
+            'Should be displayed info message that need payed also application fee'
+        );
+        $payFor = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_payFor');
+        $this->assertEquals(
+            DepositAccountType::APPLICATION_FEE,
+            $payFor->getValue(),
+            'Should be selected "application fee" on pay for field'
+        );
+        $amount = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_amount');
+        $this->assertEquals(
+            $this->requestParameters['appfee'],
+            $amount->getValue(),
+            'Should be prefilled amount to ' . $this->requestParameters['appfee']
+        );
+        $payFor->setValue(DepositAccountType::SECURITY_DEPOSIT);
+        $this->assertEquals(
+            '',
+            $amount->getValue(),
+            'Should be clean prefilled amount for already payed security deposit.'
+        );
+        $payFor->setValue(DepositAccountType::APPLICATION_FEE);
+
+        $startDateField->setValue((new \DateTime('tomorrow'))->format('m/d/Y'));
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $nextBtn->click();
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc->click();
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $closeBtn->click();
+
+        $this->assertStringStartsWith(
+            $this->requestParameters['redirect'],
+            $this->session->getCurrentUrl(),
+            'Should redirect to ' . $this->requestParameters['redirect']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotRedirectIfEmptyRedirectParam()
+    {
+        unset($this->requestParameters['redirect']);
+
+        $this->shouldCreateUserByFullParameters();
+
+        $startDateField = $this->getDomElement(
+            '#rentjeeves_checkoutbundle_payanything_paymenttype_start_date',
+            'Start date field not found'
+        );
+        $startDateField->setValue((new \DateTime('tomorrow'))->format('m/d/Y'));
+
+        $nextBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.step.next")');
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $payAccountId = 'rentjeeves_checkoutbundle_paymentaccounttype_pay_anything';
+        $form = $this->getDomElement('#' . $payAccountId);
+
+        $this->fillForm(
+            $form,
+            [
+                $payAccountId . '_name' => 'Test Bank Acc',
+                $payAccountId . '_PayorName' => 'FirstN LastN',
+                $payAccountId . '_RoutingNumber' => '062202574',
+                $payAccountId . '_AccountNumber_AccountNumber' => '123245678',
+                $payAccountId . '_AccountNumber_AccountNumberAgain' => '123245678',
+                $payAccountId . '_ACHDepositType_0' => true,
+            ]
+        );
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn = $this->getDomElement('#pay-anything-popup button span:contains("checkout.make_payment")');
+        $makeBtn->click();
+
+        $this->session->wait(
+            $this->timeout,
+            '$("button span:contains(\'pay_popup.close\')").is(":visible")'
+        );
+
+        $closeBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.close")');
+        $closeBtn->click();
+
+        $this->session->wait($this->timeout, '(document.readyState == "complete")'); // wait reload page
+
+        $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup again');
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+
+        $infoMessage = $this->getDomElement(
+            '#pay-anything-popup .information-box.pie-el',
+            'Should be displayed information message'
+        );
+        $this->assertEquals(
+            'pay_anything_popup.should_pay_message',
+            $infoMessage->getText(),
+            'Should be displayed info message that need payed also application fee'
+        );
+        $payFor = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_payFor');
+        $this->assertEquals(
+            DepositAccountType::APPLICATION_FEE,
+            $payFor->getValue(),
+            'Should be selected "application fee" on pay for field'
+        );
+        $amount = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_amount');
+        $this->assertEquals(
+            $this->requestParameters['appfee'],
+            $amount->getValue(),
+            'Should be prefilled amount to ' . $this->requestParameters['appfee']
+        );
+        $payFor->setValue(DepositAccountType::SECURITY_DEPOSIT);
+        $this->assertEquals(
+            '',
+            $amount->getValue(),
+            'Should be clean prefilled amount for already payed security deposit.'
+        );
+        $payFor->setValue(DepositAccountType::APPLICATION_FEE);
+
+        $startDateField->setValue((new \DateTime('tomorrow'))->format('m/d/Y'));
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $nextBtn->click();
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc->click();
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $closeBtn->click();
+
+        $this->assertStringStartsWith(
+            $this->getUrl(),
+            $this->session->getCurrentUrl(),
+            'Should not be redirected'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotRedirectIfEmptyAmountsParams()
+    {
+        $this->load(true);
+        $this->prepareFixtures();
+        $parameters = $this->requestParameters;
+        $this->setDefaultSession('selenium2');
+
+        unset($parameters['unitid']);
+        unset($parameters['rent']);
+        unset($parameters['appfee']);
+        unset($parameters['secdep']);
+        unset($parameters['redirect']);
+        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $redirectedUrl = $this->getUrl() . 'user/new/2/property';
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirection to ' . $redirectedUrl
+        );
+        $selectedUnit = $this->getDomElement(
+            '#idUnit2 option.unassignedUnit',
+            'Unit select should be present on the page.'
+        );
+        $this->assertTrue((bool) $selectedUnit->getAttribute('selected'), 'Unassigned unit should be selected');
+        $btn = $this->getDomElement('button.thisIsMyRental', '"This is my rental" button does not exist.');
+        $btn->click();
+        $form = $this->getDomElement('#formNewUser', 'Form for create new user should be present.');
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_publicbundle_tenanttype_first_name' => 'FirstN',
+                'rentjeeves_publicbundle_tenanttype_last_name' => 'LastN',
+                'rentjeeves_publicbundle_tenanttype_email' => 'externaluser1@example.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => 1,
+            ]
+        );
+
+        $regBtn = $this->getDomElement('#register', 'Register button should be present');
+        $regBtn->click();
+        $this->session->wait($this->timeout, '$(\'h3.title:contains("verify.email")\').length');
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('externaluser1@example.com');
+        $this->assertNotNull($tenant, 'Tenant was not created');
+        // login
+        $this->login('externaluser1@example.com', 'pass');
+
+        $payAnythingDialog = $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup');
+
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+
+        $paymentForm = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype');
+
+        $startDate = (new \DateTime('tomorrow'))->format('m/d/Y');
+
+        $this->fillForm(
+            $paymentForm,
+            [
+                'rentjeeves_checkoutbundle_payanything_paymenttype_payFor' => DepositAccountType::APPLICATION_FEE,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 112,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_start_date' => $startDate,
+            ]
+        );
+
+        $nextBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.step.next")');
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $payAccountId = 'rentjeeves_checkoutbundle_paymentaccounttype_pay_anything';
+        $form = $this->getDomElement('#' . $payAccountId);
+
+        $this->fillForm(
+            $form,
+            [
+                $payAccountId . '_name' => 'Test Bank Acc',
+                $payAccountId . '_PayorName' => 'FirstN LastN',
+                $payAccountId . '_RoutingNumber' => '062202574',
+                $payAccountId . '_AccountNumber_AccountNumber' => '123245678',
+                $payAccountId . '_AccountNumber_AccountNumberAgain' => '123245678',
+                $payAccountId . '_ACHDepositType_0' => true,
+            ]
+        );
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn = $this->getDomElement('#pay-anything-popup button span:contains("checkout.make_payment")');
+        $makeBtn->click();
+
+        $this->session->wait(
+            $this->timeout,
+            '$("button span:contains(\'pay_popup.close\')").is(":visible")'
+        );
+
+        $closeBtn = $this->getDomElement('#pay-anything-popup button span:contains("pay_popup.close")');
+        $closeBtn->click();
+
+        $this->session->wait($this->timeout, '(document.readyState == "complete")'); // wait reload page
+
+        $this->assertStringStartsWith(
+            $this->getUrl(),
+            $this->session->getCurrentUrl(),
+            'Should not be redirected'
+        );
+
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
+
+        $this->assertFalse(
+            $payAnythingDialog->isVisible(),
+            'Should not be displayed pay anything popup automatically'
+        );
+
+        $this->session->executeScript('$("#pay-anything-1").click();');
+        // use this hack b/c selenium not work link under other elements
+
+        $this->assertTrue(
+            $payAnythingDialog->isVisible(),
+            'Should be displayed pay anything popup'
+        );
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $infoMessage = $this->getDomElement('#pay-anything-popup .information-box.pie-el');
+        $this->assertFalse(
+            $infoMessage->isVisible(),
+            'Should not be displayed information message'
+        );
+
+        $this->fillForm(
+            $paymentForm,
+            [
+                'rentjeeves_checkoutbundle_payanything_paymenttype_payFor' => DepositAccountType::SECURITY_DEPOSIT,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 121,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_start_date' => $startDate,
+            ]
+        );
+
+        $nextBtn->click();
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc->click();
+
+        $nextBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $makeBtn->click();
+
+        $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
+        $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $closeBtn->click();
+
+        $this->assertStringStartsWith(
+            $this->getUrl(),
+            $this->session->getCurrentUrl(),
+            'Should not be redirected'
+        );
+
+        $this->assertFalse(
+            $payAnythingDialog->isVisible(),
+            'Should not be displayed pay anything popup automatically'
+        );
+    }
+
+    /**
      * @return array
      */
     public function shouldCheckRequiredParametersDataProvider()
@@ -276,6 +686,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             [$this->requestParameters, 'rent'],
             [$this->requestParameters, 'appfee'],
             [$this->requestParameters, 'secdep'],
+            [$this->requestParameters, 'redirect'],
         ];
     }
 

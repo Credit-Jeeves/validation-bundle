@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\Services\IntegrationDataManager;
+use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use RentJeeves\CheckoutBundle\Form\Type\PayAnythingPaymentType;
@@ -139,15 +139,15 @@ class PayAnythingController extends BaseController
         );
 
         $redirectUrl = null;
-        /** @var IntegrationDataManager $integrationDataManager */
-        $integrationDataManager = $this->get('integration.data_manager');
+        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($integrationDataManager->hasIntegrationData()) {
             $integrationDataManager->removePayment($depositAccountType);
             $amounts = $integrationDataManager->getAmounts();
             if (!$integrationDataManager->hasPayments() && !empty($amounts)) {
                 $redirectUrl = $integrationDataManager->getRedirectUrl();
                 $integrationDataManager->removeIntegrationData();
-            } else {
+            } elseif (!empty($amounts)) {
                 DepositAccountType::setTranslator([$this->get('translator'), 'trans']);
                 $shouldPayList = implode(
                     ', ',
@@ -170,6 +170,8 @@ class PayAnythingController extends BaseController
                         ]
                     )
                 );
+            } else {
+                $integrationDataManager->removeIntegrationData();
             }
         }
 

@@ -107,7 +107,7 @@ class AccountingSystemIntegrationDataManager
 
     public function removeIntegrationData()
     {
-        $this->cashedData = null;
+        $this->cachedData = null;
         $this->session->remove(self::SESSION_INTEGRATION_DATA);
     }
 
@@ -189,8 +189,8 @@ class AccountingSystemIntegrationDataManager
         $amounts = $this->get('amounts', []);
         if (!empty($amounts[$paymentType]) ) {
             $amounts[$paymentType] = null;
-            $this->cashedData['amounts'] = $amounts;
-            $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cashedData);
+            $this->cachedData['amounts'] = $amounts;
+            $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cachedData);
         }
     }
 
