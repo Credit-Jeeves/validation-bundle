@@ -656,11 +656,10 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
      *
      * @test
      * @dataProvider shouldCheckRequiredParametersDataProvider
+     * @depends shouldCreateUserByFullParameters
      */
     public function shouldCheckRequiredParameters(array $parameters, $parameterName)
     {
-        $this->load(true);
-        $this->prepareFixtures();
         $this->setDefaultSession('goutte');
 
         unset($parameters[$parameterName]);
@@ -696,11 +695,10 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
      *
      * @test
      * @dataProvider shouldCheckNotRequiredParametersDataProvider
+     * @depends shouldCreateUserByFullParameters
      */
     public function shouldCheckNotRequiredParameters(array $parameters, $parameterName)
     {
-        $this->load(true);
-        $this->prepareFixtures();
         $this->setDefaultSession('goutte');
 
         unset($parameters[$parameterName]);
@@ -747,10 +745,10 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
     /**
      * @test
+     * @depends shouldCheckPropertyBelongOneGroup
      */
     public function shouldCheckPropertyHasUnitsBelongOneGroup()
     {
-        $this->load(true);
         $this->prepareFixtures();
         $this->setDefaultSession('goutte');
         $property = $this->getEntityManager()->find('RjDataBundle:Property', 2);
