@@ -6,9 +6,9 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
-class ContractSynchronizerCase extends BaseTestCase
+class MRIContractSynchronizerCase extends Base
 {
     /**
      * @test
@@ -62,6 +62,18 @@ class ContractSynchronizerCase extends BaseTestCase
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
+
         $updatedContract = $repo->find($contract->getId());
         $updatedContract2 = $repo->find($contract2->getId());
         $this->assertGreaterThan(
@@ -94,6 +106,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
         $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
+        /** @var ContractWaiting $contractWaiting */
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be 0');
@@ -115,6 +128,18 @@ class ContractSynchronizerCase extends BaseTestCase
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
         $balanceSynchronizer->syncBalance();
+
+        $externalPropertyId = $contractWaiting
+            ->getProperty()
+            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertBalanceSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
+        $this->runSyncBalanceCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertGreaterThan(8340, (int) $updatedContractWaiting->getIntegratedBalance(), 'Balance not updated');
@@ -130,6 +155,7 @@ class ContractSynchronizerCase extends BaseTestCase
 
         $em = $this->getEntityManager();
         $repo = $em->getRepository('RjDataBundle:Contract');
+        /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Should have contract in fixtures');
         $contract->setRent(0);
@@ -151,6 +177,18 @@ class ContractSynchronizerCase extends BaseTestCase
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
         $balanceSynchronizer->syncRent();
+
+        $externalPropertyId = $contract
+            ->getProperty()
+            ->getPropertyMappingByHolding($contract->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertRentSyncJob($lastJob, $contract->getHolding(), $externalPropertyId);
+
+        $this->runSyncRentCommand($contract->getHolding(), $externalPropertyId);
+
         $updatedContract = $repo->find($contract->getId());
         $this->assertGreaterThan(0, (int) $updatedContract->getRent(), 'Rent not updated');
     }
@@ -163,6 +201,7 @@ class ContractSynchronizerCase extends BaseTestCase
         $this->load(true);
         $em = $this->getEntityManager();
         $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
+        /** @var ContractWaiting $contractWaiting */
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
         $contractWaiting->setRent(0);
@@ -185,6 +224,18 @@ class ContractSynchronizerCase extends BaseTestCase
 
         $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
         $balanceSynchronizer->syncRent();
+
+        $externalPropertyId = $contractWaiting
+            ->getProperty()
+            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
+            ->getExternalPropertyId();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertNotEmpty($jobs, 'Should be find at least one job');
+        $lastJob = end($jobs);
+        $this->assertRentSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
+        $this->runSyncRentCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
+
         /** @var ContractWaiting $updatedContractWaiting */
         $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertGreaterThan(0, (int) $updatedContractWaiting->getRent(), 'Balance not updated');

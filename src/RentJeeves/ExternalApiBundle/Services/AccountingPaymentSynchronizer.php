@@ -97,20 +97,43 @@ class AccountingPaymentSynchronizer
     {
         $this->logger->debug('Checking if external payment post is allowed and order can be send...');
 
-        if ($order->getCustomOperation()) {
-            $this->logger->debug('Order with custom operation NOT allowed for external payment post. done.');
-
-            return false;
-        }
-
         if (!$contract = $order->getContract()) {
-            $this->logger->debug('Order does not have contract, we don\'t send it to external API');
+            $this->logger->debug(
+                sprintf('Order ID#%s does not have contract, we don\'t send it to external API', $order->getId())
+            );
 
             return false;
         }
 
         $holding = $contract->getHolding();
         $integrationType = $holding->getApiIntegrationType();
+        $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
+        if ($order->getCustomOperation()) {
+            if (false == $postAppFeeAndSecurityDeposit) {
+                $this->logger->debug(sprintf(
+                    'Order ID#%s with custom operation NOT allowed for external payment post. ' .
+                    'Posting AppFee/Security Deposit switched off in holding %s (ID#%s). done.',
+                    $order->getId(),
+                    $holding->getName(),
+                    $holding->getId()
+                ));
+
+                return false;
+            }
+            // RT-1926: Allow only ResMan non rent payments. Other AS will be allowed later.
+            if (ApiIntegrationType::RESMAN !== $integrationType) {
+                $this->logger->debug(sprintf(
+                    'Order ID#%s with custom operation NOT allowed for external payment post. ' .
+                    'Api Integration Type of holding %s (ID#%s) is not ResMan. done.',
+                    $order->getId(),
+                    $holding->getName(),
+                    $holding->getId()
+                ));
+
+                return false;
+            }
+        }
+
         $isIntegrated = (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
             $this->logger->debug('Holding is allowed for external payment post.');

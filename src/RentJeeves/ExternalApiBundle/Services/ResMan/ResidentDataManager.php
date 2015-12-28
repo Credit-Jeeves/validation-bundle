@@ -72,7 +72,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
             $customers = $customer->getCustomers();
             if (($customers instanceof Customers) === false) {
                 $customer = print_r($customer, true);
-                $this->logger->info(
+                $this->logger->warning(
                     sprintf("[ResMan Resident Manager]Skipping entry from resman with no tenants:\n%s", $customer)
                 );
 

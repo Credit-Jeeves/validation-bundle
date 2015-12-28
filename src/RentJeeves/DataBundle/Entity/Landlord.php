@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use CreditJeeves\DataBundle\Entity\Group;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\LandlordRepository")
@@ -178,5 +179,20 @@ class Landlord extends User
     public function setExternalLandlordId($externalLandlordId)
     {
         $this->externalLandlordId = $externalLandlordId;
+    }
+
+    /**
+     * Need for sonata
+     * @todo: Holding should be required in db
+     *
+     * @Assert\True(message = "Holding is invalid or empty", groups={"holding"})
+     */
+    public function isValidHolding()
+    {
+        if ($this->getHolding() === null) {
+            return false;
+        }
+
+        return true;
     }
 }

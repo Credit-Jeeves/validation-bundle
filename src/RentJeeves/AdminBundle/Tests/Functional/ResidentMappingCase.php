@@ -8,7 +8,7 @@ class ResidentMappingCase extends BaseTestCase
     /**
      * @test
      */
-    public function checkCreate()
+    public function shouldCreateNewResidentMapping()
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
@@ -22,18 +22,14 @@ class ResidentMappingCase extends BaseTestCase
 
         $this->assertNotNull($create = $this->page->find('css', '.sonata-action-element'));
         $create->click();
-        $this->session->wait(
-            10000,
-            "$('.overlay-trigger').length > 0"
-        );
+        $this->session->wait(15000, "$('.overlay-trigger').length <= 0");
 
-        $this->session->wait(
-            15000,
-            "$('.overlay-trigger').length <= 0"
-        );
         $this->assertNotNull($input = $this->page->findAll('css', 'form input'));
-        $this->assertEquals(5, count($input));
-        $input[0]->setValue("residentIdyepitsme");
+        $this->assertEquals(6, count($input));
+
+        $input[0]->setValue(5);
+        $this->session->wait(15000, "$('.overlay-trigger').length <= 0");
+        $input[1]->setValue("residentIdyepitsme");
 
         $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'));
         $this->assertEquals(3, count($btn));

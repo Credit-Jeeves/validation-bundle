@@ -325,7 +325,6 @@ class PropertyAddress
 
         return sprintf('%s %s', $this->number, $this->street);
     }
-
     /**
      * @return string
      */

@@ -7,3 +7,8 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
 
+    group_phone_type:
+        class: CreditJeeves\DataBundle\Form\GroupPhoneType
+        tags:
+            - { name: form.type }
+
