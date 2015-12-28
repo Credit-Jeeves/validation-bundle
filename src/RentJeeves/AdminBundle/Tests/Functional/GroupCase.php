@@ -433,4 +433,34 @@ class GroupCase extends BaseTestCase
             'Date Format should be set to \'"\''
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldCreateImportPropertiesJob()
+    {
+        $this->load(true);
+        $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
+        $this->setDefaultSession('selenium2');
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
+
+        $importProperties = $this->getDomElement(
+            'a:contains("admin.import.property")',
+            'Import Property link not found'
+        );
+        $importProperties->click();
+        $alertMessage = $this->getDomElement('.alert-success');
+        $this->assertEquals(
+            'admin.import_properties_job.created',
+            $alertMessage->getText(),
+            'Did not get success message when tried create job'
+        );
+        $this->assertCount(
+            $jobsCount+1,
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
+    }
 }

@@ -79,3 +79,7 @@
 .job-status-icon.finished {
     background-color: #468847;
 }
+
+.import_properties_button {
+    width: 135px !important;
+}
