@@ -248,7 +248,7 @@ class UnitRepository extends EntityRepository
             ->andWhere('u.name = :unitName')
             ->andWhere('u.id != :excludedUnitId')
             ->setParameter('property', $property)
-            ->setParameter('unitName', $currentUnit->getName())
+            ->setParameter('unitName', $currentUnit->getActualName())
             ->setParameter('excludedUnitId', $currentUnit->getId())
             ->setMaxResults(1)
             ->orderBy('u.id', 'desc')

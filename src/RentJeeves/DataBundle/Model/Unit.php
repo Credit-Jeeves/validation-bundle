@@ -201,7 +201,7 @@ abstract class Unit
     {
         return $this->deletedAt;
     }
-    
+
     /**
      * Get id
      *
@@ -446,7 +446,7 @@ abstract class Unit
     /**
      * Remove ContractWaiting
      *
-     * @param Contract
+     * @param ContractWaitingEntity Contract
      * @return $this
      */
     public function removeContractWaiting(ContractWaitingEntity $contract)

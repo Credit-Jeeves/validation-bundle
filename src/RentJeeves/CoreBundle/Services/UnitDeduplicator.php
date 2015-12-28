@@ -9,6 +9,9 @@ use RentJeeves\CoreBundle\Exception\UnitDeduplicatorException;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 
+/**
+ * Service name "dedupe.unit_deduplicator"
+ */
 class UnitDeduplicator
 {
     /**
@@ -54,6 +57,22 @@ class UnitDeduplicator
      */
     public function deduplicate(Unit $sourceUnit, Property $destinationProperty)
     {
+        $isSingleDestinationProperty = $destinationProperty->getPropertyAddress()->isSingle();
+        $isSingleSourceProperty = $sourceUnit->getProperty()->getPropertyAddress()->isSingle();
+        if ($isSingleDestinationProperty !== $isSingleSourceProperty) {
+            $this->logger->warning(
+                $message = sprintf(
+                    'ERROR: can`t deduplicate Unit#%d from srcProperty#%d to dstProperty#%d, ' .
+                    'because they have different isSingle values.',
+                    $sourceUnit->getId(),
+                    $sourceUnit->getProperty()->getId(),
+                    $destinationProperty->getId()
+                )
+            );
+
+            throw new UnitDeduplicatorException($message);
+        }
+
         $propertyGroups = $destinationProperty->getPropertyGroups();
         if (false === $propertyGroups->contains($sourceUnit->getGroup())) {
             $this->logger->warning(
@@ -78,7 +97,7 @@ class UnitDeduplicator
             $destinationUnit->setProperty($destinationProperty);
             $destinationUnit->setGroup($sourceUnit->getGroup());
             $destinationUnit->setHolding($sourceUnit->getHolding());
-            $destinationUnit->setName($sourceUnit->getName());
+            $destinationUnit->setName($sourceUnit->getActualName());
 
             if (false === $this->dryRunMode) {
                 $this->em->persist($destinationUnit);
@@ -86,7 +105,7 @@ class UnitDeduplicator
             $this->logger->info(
                 sprintf(
                     'New Unit with name "%s" is created.',
-                    $sourceUnit->getName()
+                    $sourceUnit->getActualName()
                 )
             );
         }
@@ -94,11 +113,16 @@ class UnitDeduplicator
         $this->updateContractsWaitingForUnit($sourceUnit, $destinationUnit);
         $this->updateContractsForUnit($sourceUnit, $destinationUnit);
         if (false === $this->dryRunMode) {
-            $this->em->remove($sourceUnit);
+            if (false === $isSingleSourceProperty) { // not remove units from isSingle Property
+                $this->disableSoftDelete();
+                $this->em->remove($sourceUnit);
+            }
             $this->em->flush();
+            $this->logger->info(
+                $isSingleSourceProperty ? 'SrcUnit is deduplicated, but not deleted.' : 'SrcUnit is deleted.'
+            );
         }
 
-        $this->logger->info(sprintf('Unit#%d is deleted.', $sourceUnit->getId()));
         $this->logger->info('Migration Units and Contracts from one Property to another is finished.');
     }
 
@@ -213,6 +237,22 @@ class UnitDeduplicator
                 );
 
                 throw new UnitDeduplicatorException($message);
+            }
+        }
+    }
+
+    /**
+     * TurnOn hard delete for Units
+     */
+    protected function disableSoftDelete()
+    {
+        if (null !== $eventManager = $this->em->getEventManager()) {
+            foreach ($eventManager->getListeners() as $eventName => $listeners) {
+                foreach ($listeners as $listener) {
+                    if ($listener instanceof \Gedmo\SoftDeleteable\SoftDeleteableListener) {
+                        $this->em->getEventManager()->removeEventListener($eventName, $listener);
+                    }
+                }
             }
         }
     }

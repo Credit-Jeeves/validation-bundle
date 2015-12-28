@@ -4,7 +4,6 @@ namespace RentJeeves\CoreBundle\Tests\Command;
 use RentJeeves\CoreBundle\Command\UnitDeduplicateCommand;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
@@ -37,11 +36,15 @@ class UnitDeduplicateCommandCase extends BaseTestCase
     public function shouldDeduplicateAndMoveAllEntitiesToNewUnitIfPropertyDoesNotHaveUnitWithSameName()
     {
         $this->load(true);
+
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
-
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
         $this->assertGreaterThan(1, count($contracts));
+        $dstProperty = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(18);
+        $dstProperty->getPropertyAddress()->setIsSingle(false);
+
         /**
          * @var Contract $firstContract
          */
@@ -64,6 +67,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $this->assertNotEquals($lastUnit, $newLastUnit, 'New Unit is not created.');
         $this->assertEquals($unit->getName(), $newLastUnit->getName(), 'New Unit has incorrect name');
 
+        $this->assertEquals($newLastUnit, $firstContract->getUnit(), 'firstContract has incorrect Unit');
         $this->assertEquals(
             $newLastUnit->getId(),
             $firstContract->getUnit()->getId(),
@@ -74,6 +78,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
+        $this->assertEquals($newLastUnit, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
             $newLastUnit->getId(),
             $lastContract->getUnit()->getId(),
@@ -85,6 +90,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             'lastContract has incorrect Property'
         );
 
+        $this->assertEquals($newLastUnit, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
             $newLastUnit->getId(),
             $contractWaiting->getUnit()->getId(),
@@ -108,6 +114,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $unitWithSameName = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(2);
         $unit->setName($unitWithSameName->getName());
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
@@ -140,21 +147,13 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'
         );
-        $unitMapping = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-            [
-                'externalUnitId' => 'test'
-            ]
-        );
-        $this->assertNotEmpty($unitMapping);
-        $this->assertEquals(
-            $unitWithSameName->getId(),
-            $unitMapping->getUnit()->getId(),
-            'UnitMapping is not updated.'
-        );
+
+        $this->assertEquals($unitWithSameName, $unitMapping->getUnit(), 'UnitMapping is not updated.');
 
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $this->assertEquals($lastUnit->getId(), $newLastUnit->getid(), 'New Unit is created.');
 
+        $this->assertEquals($unitWithSameName, $firstContract->getUnit(), 'firstContract has incorrect Unit');
         $this->assertEquals(
             $unitWithSameName->getId(),
             $firstContract->getUnit()->getId(),
@@ -165,6 +164,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
+        $this->assertEquals($unitWithSameName, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
             $unitWithSameName->getId(),
             $lastContract->getUnit()->getId(),
@@ -176,6 +176,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             'lastContract has incorrect Property'
         );
 
+        $this->assertEquals($unitWithSameName, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
             $unitWithSameName->getId(),
             $contractWaiting->getUnit()->getId(),
@@ -198,6 +199,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $unitWithSameName = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(2);
         $unit->setName($unitWithSameName->getName());
+
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
@@ -232,6 +235,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var ContractWaiting $contractWaiting
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
+
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
 
         $this->getEntityManager()->clear();
@@ -290,6 +294,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $contracts = $unit->getContracts();
+        $unit->getProperty()->getPropertyAddress()->setIsSingle(false);
 
         $this->assertGreaterThan(1, count($contracts));
         /**
