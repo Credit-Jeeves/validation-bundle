@@ -243,37 +243,6 @@ EOT;
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * @param string $jb
-     * @param string $kb
-     *
-     * @return mixed
-     */
-    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
-    {
-        $result = $this->createQueryBuilder('p')
-            ->select('LENGTH(u.name) as co,p,u')
-            ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->leftJoin('p.units', 'u')
-            ->where('propertyAddress.lat = :jb')
-            ->andWhere('propertyAddress.long = :kb')
-            ->setParameter('jb', $jb)
-            ->setParameter('kb', $kb)
-            ->addOrderBy('co', 'ASC')
-            ->addOrderBy('u.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-
-        if (isset($result[0][0])) {
-            return $result[0][0];
-        }
-
-        return null;
-    }
-
-    /**
->>>>>>> staging
      * @param Holding $holding
      *
      * @return array

@@ -11,7 +11,6 @@ class PropertyMappingCase extends BaseTestCase
      */
     public function shouldCreateAndListPropertyMapping()
     {
-        $this->markTestSkipped('Unskipp after RT-1860');
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');

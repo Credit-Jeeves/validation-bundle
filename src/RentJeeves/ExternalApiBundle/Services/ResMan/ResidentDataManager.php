@@ -48,7 +48,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
 
     /**
      * @param $externalPropertyId
-     * @return RtCustomer[]a
+     * @return RtCustomer[]
      */
     public function getResidentTransactions($externalPropertyId)
     {
