@@ -55,7 +55,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 18]);
-        static::$kernel = null;
+        $this->getEntityManager()->clear();
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'
@@ -135,7 +135,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $contractWaiting = $unit->getContractsWaiting()->first();
 
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
-        static::$kernel = null;
+        $this->getEntityManager()->clear();
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'
@@ -146,7 +146,11 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             ]
         );
         $this->assertNotEmpty($unitMapping);
-        $this->assertEquals($unitWithSameName->getId(), $unitMapping->getUnit()->getId(), 'UnitMapping is not updated.');
+        $this->assertEquals(
+            $unitWithSameName->getId(),
+            $unitMapping->getUnit()->getId(),
+            'UnitMapping is not updated.'
+        );
 
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $this->assertEquals($lastUnit->getId(), $newLastUnit->getid(), 'New Unit is created.');
@@ -230,7 +234,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $contractWaiting = $unit->getContractsWaiting()->first();
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
 
-        self::$kernel = null;
+        $this->getEntityManager()->clear();
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
             'srcUnit is not deleted.'

@@ -378,11 +378,8 @@ class ContractRepositoryCase extends BaseTestCase
         $this->assertCount(2, $unit->getContractsWaiting(), 'We added one more contract should have +1');
         $em->remove($unit);
         $em->flush();
-
-        static::$kernel = null;
-
-        $em = $this->getEntityManager();
-
+        $em->clear();
+        
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
         $this->assertEmpty($contractWaiting);
     }
