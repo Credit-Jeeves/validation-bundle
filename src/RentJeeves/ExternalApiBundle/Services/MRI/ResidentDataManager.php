@@ -80,7 +80,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
         $this->logger->debug(sprintf('Get MRI Residents by page:%s', $nextPageLink));
         $mriResponse = $this->client->getResidentTransactionsByNextPageLink($nextPageLink);
 
-        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactionsByNextPageLink');
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactionsByNextPageLink', $nextPageLink);
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
@@ -96,7 +96,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
         $this->logger->debug(sprintf('Get MRI Residents by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentTransactions($externalPropertyId);
 
-        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactions');
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentTransactions', $externalPropertyId);
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
@@ -129,7 +129,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
         $this->logger->debug(sprintf('Get MRI Residents RentRoll by page:%s', $nextPageLink));
         $mriResponse = $this->client->getResidentialRentRollByNextPageLink($nextPageLink);
 
-        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRollByNextPageLink');
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRollByNextPageLink', $nextPageLink);
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
@@ -145,7 +145,7 @@ class ResidentDataManager implements ResidentDataManagerInterface
         $this->logger->debug(sprintf('Get MRI Residents RentRoll by external property ID:%s', $externalPropertyId));
         $mriResponse = $this->client->getResidentialRentRoll($externalPropertyId);
 
-        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRoll');
+        $this->assertSuccessfulResponse($mriResponse, 'getResidentialRentRoll', $externalPropertyId);
 
         $this->setNextPageLink($mriResponse->getNextPageLink());
 
@@ -181,10 +181,10 @@ class ResidentDataManager implements ResidentDataManagerInterface
      *
      * @throws \RuntimeException if $mriResponse is false which indicates a failure
      */
-    protected function assertSuccessfulResponse($mriResponse, $externalMethodName)
+    protected function assertSuccessfulResponse($mriResponse, $externalMethodName, $context)
     {
         if ($mriResponse === false) {
-            throw new \RuntimeException(sprintf('MRI Client call failed to %s.', $externalMethodName));
+            throw new \RuntimeException(sprintf('MRI Client call failed to %s. Context: %s', $externalMethodName, $context));
         }
     }
 }
