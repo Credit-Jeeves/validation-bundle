@@ -360,8 +360,6 @@ class IframeCase extends BaseTestCase
      */
     public function publicIframe()
     {
-        $this->markTestSkipped('Unskipp after RT-1860');
-
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
