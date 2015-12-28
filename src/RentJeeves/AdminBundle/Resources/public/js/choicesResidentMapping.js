@@ -1,7 +1,7 @@
 $( document ).ready(function() {
 
-    var holding = $($('select').get(0));
-    var tenant = $($('select').get(1));
+    var holding = $('input[id$=_holding]');
+    var tenant = $($('select').get(0));
 
     function choice(route, callback)
     {

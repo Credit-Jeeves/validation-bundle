@@ -66,10 +66,10 @@ services:
             - [ setTemplate, [edit, AdminBundle:CRUD:group_edit.html.twig]]
             - [ setTranslationDomain, [messages]]
 
-    sonata.admin.rj_group.phone:
+    sonata.admin.rj_group_phone:
         class: RentJeeves\AdminBundle\Admin\GroupPhoneAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Groups" }
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "GroupsPhones" }
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\GroupPhone
@@ -201,7 +201,6 @@ services:
             - RentJeeves\DataBundle\Entity\PropertyMapping
             - 'SonataAdminBundle:CRUD'
         calls:
-            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_property_mapping.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.unit_mapping:

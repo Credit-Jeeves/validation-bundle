@@ -16,8 +16,6 @@ use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
  */
 class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const LOGGER_PREFIX = '[MRI ContractSynchronizer]';
-
     /**
      * {@inheritdoc}
      */
@@ -54,7 +52,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         $allContracts = $this->getContracts($holding, $externalPropertyId, $residentId, $externalUnitId);
         $count = count($allContracts);
-        $this->logMessage(
+        $this->logger->debug(
             sprintf(
                 '[SyncBalance]%s contracts for processing' .
                 ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
@@ -114,7 +112,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $resident
     ) {
         $contract->setPaymentAccepted($resident->getPaymentAccepted());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Setup payment accepted to %s, for leaseId %s',
                 $resident->getPaymentAccepted(),
@@ -125,7 +123,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $externalLeaseId = $contract->getExternalLeaseId();
         if (empty($externalLeaseId)) {
             $contract->setExternalLeaseId($resident->getLeaseId());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
                     (new \ReflectionObject($contract))->getShortName(),
@@ -136,7 +134,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $contract->setIntegratedBalance($resident->getLeaseBalance());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
                 (new \ReflectionObject($contract))->getShortName(),
@@ -175,7 +173,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             $externalUnitId = $customer->getExternalUnitId();
             $allContracts = $this->getContracts($holding, $externalPropertyId, $residentId, $externalUnitId);
             $count = count($allContracts);
-            $this->logMessage(
+            $this->logger->debug(
                 sprintf(
                     '[SyncRent]%s contracts for processing' .
                     ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
@@ -193,7 +191,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 } catch (\Exception $e) {
                     $this->handleException($e);
                 }
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         '[SyncRent]Rent for %s #%d updated to %s',
                         (new \ReflectionObject($contract))->getShortName(),
@@ -219,13 +217,13 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         /** @var Charge $charge */
         foreach ($charges as $charge) {
             if (strtolower($charge->getFrequency()) !== 'm') {
-                $this->logMessage(sprintf('[SyncRent]Frequency not equals "m" it "%s"', $charge->getFrequency()));
+                $this->logger->info(sprintf('[SyncRent]Frequency not equals "m" it "%s"', $charge->getFrequency()));
                 continue;
             }
 
             $chargeCode = $charge->getChargeCode();
             if (!in_array($chargeCode, $recurringCodes) && !empty($chargeCodes)) {
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         '[SyncRent]Charge code(%s) not in list (%s)',
                         $chargeCode,
@@ -239,7 +237,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             $endDate = $charge->getDateTimeEndDate();
 
             if (!DateChecker::nowFallsBetweenDates($effectiveDate, $endDate)) {
-                $this->logMessage(
+                $this->logger->info(
                     sprintf(
                         '[SyncRent]Today doesn\'t not fall between "%s" and "%s"',
                         $effectiveDate ? $effectiveDate->format('Y-m-d') : '',

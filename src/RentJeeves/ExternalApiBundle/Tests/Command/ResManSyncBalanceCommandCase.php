@@ -4,21 +4,21 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
-use RentJeeves\ExternalApiBundle\Command\ResManSyncRentCommand;
-use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
+use RentJeeves\ExternalApiBundle\Command\ResManSyncBalanceCommand;
+use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
 use RentJeeves\ExternalApiBundle\Tests\Services\ResMan\ResManClientCase;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\TestBundle\Traits\JobAssertionTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ResManSyncRentCommandCase extends BaseTestCase
+class ResManSyncBalanceCommandCase extends BaseTestCase
 {
     use JobAssertionTrait;
     /**
      * @test
      */
-    public function shouldCreateJobsForSyncRent()
+    public function shouldCreateJobForSyncBalance()
     {
         $this->load(true);
 
@@ -26,7 +26,7 @@ class ResManSyncRentCommandCase extends BaseTestCase
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->find(5);
         $this->assertNotNull($holding, 'Check fixtures, should present holding with id = 5');
         $holding->setApiIntegrationType(ApiIntegrationType::RESMAN);
-        $holding->setUseRecurringCharges(true);
+        $holding->getResManSettings()->setSyncBalance(true);
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(1);
         $this->assertNotNull($property, 'Check fixtures, should exist property with id = 1');
         $propertyMapping = $property->getPropertyMappingByHolding($holding);
@@ -35,9 +35,9 @@ class ResManSyncRentCommandCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());
-        $application->add(new ResManSyncRentCommand());
+        $application->add(new ResManSyncBalanceCommand());
 
-        $command = $application->find('api:resman:sync-rent');
+        $command = $application->find('api:resman:sync-balance');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command' => $command->getName(),
@@ -51,7 +51,7 @@ class ResManSyncRentCommandCase extends BaseTestCase
 
         $this->assertJob(
             end($jobs),
-            SyncContractRentCommand::NAME,
+            SyncContractBalanceCommand::NAME,
             [
                 '--holding-id=' . $holding->getId(),
                 '--external-property-id=' . ResManClientCase::EXTERNAL_PROPERTY_ID,

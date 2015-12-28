@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Tests\Unit\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\DataBundle\Entity\GroupSettings;
@@ -65,11 +66,13 @@ class GroupCase extends BaseTestCase
     {
         $group = new Group();
         $groupSettings = new GroupSettings();
+        $group->setHolding(new Holding());
         $group->setGroupSettings($groupSettings);
         $groupSettings->setPaymentProcessor(PaymentProcessor::ACI);
         $group->setStatementDescriptor('12345678912345678912345');
         $validator = $this->getContainer()->get('validator');
         $errors = $validator->validate($group, ['holding']);
+
         $this->assertCount(1, $errors);
     }
 

@@ -91,6 +91,7 @@ sonata_admin:
                 - sonata.admin.payments
                 - sonata.admin.rj_holding
                 - sonata.admin.rj_group
+                - sonata.admin.rj_group_phone
                 - sonata.admin.landlord
                 - sonata.admin.tenant
                 - sonata.admin.contract_waiting

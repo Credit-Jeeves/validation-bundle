@@ -31,12 +31,21 @@ services:
             - "@resman.client"
             - "@logger"
 
+    contract_sync.factory:
+        class: RentJeeves\ExternalApiBundle\Services\ContractSynchronizerFactory
+        arguments:
+            -
+              %accounting_system.yardi%: "@yardi.contract_sync"
+              %accounting_system.mri%: "@mri.contract_sync"
+              %accounting_system.resman%: "@resman.contract_sync"
+              %accounting_system.amsi%: "@amsi.contract_sync"
+
     base.contract_sync:
         abstract:  true
         class: RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer
         arguments:
             - "@doctrine.orm.default_entity_manager"
-            - "@logger"
+            - "@monolog.logger.contract_sync"
 
     yardi.contract_sync:
         parent: base.contract_sync

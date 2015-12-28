@@ -76,7 +76,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
 
         $output->writeln('Sending emails to holding admins.');
 
-        $holdingAdmins = $repoLandlord->findBy(['is_super_admin' => true], ['email' => 'DESC']);
+        $holdingAdmins = $repoLandlord->findNotPayDirectHoldingAdmins();
         foreach ($holdingAdmins as $holdingAdmin) {
             $needSend = false;
             /** @var Landlord $holdingAdmin */
@@ -111,7 +111,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $output->writeln('');
         $output->writeln('Sending emails to non-admins.');
 
-        $landlords = $repoLandlord->findBy(['is_super_admin' => false], ['email' => 'DESC']);
+        $landlords = $repoLandlord->findNotPayDirectHoldingNotAdmins();
         foreach ($landlords as $landlord) {
             /** @var Landlord $landlord */
             foreach ($landlord->getAgentGroups() as $group) {

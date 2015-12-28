@@ -34,6 +34,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('prop.propertyAddress', 'propertyAddress');
         $query->leftJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
@@ -102,11 +103,8 @@ class OrderRepository extends EntityRepository
                 $query->orderBy('ten.first_name', $order);
                 $query->addOrderBy('ten.last_name', $order);
                 break;
-            case 'date-posted':
-                $query->orderBy('o.created_at', $order);
-                break;
             case 'date-initiated':
-                $query->orderBy('o.updated_at', $order);
+                $query->orderBy('o.created_at', $order);
                 break;
             case 'property':
                 $query->orderBy('propertyAddress.number', $order);

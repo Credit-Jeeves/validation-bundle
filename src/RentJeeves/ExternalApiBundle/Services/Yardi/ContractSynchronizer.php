@@ -16,8 +16,6 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionTransact
  */
 class ContractSynchronizer extends AbstractContractSynchronizer
 {
-    const LOGGER_PREFIX = '[Yardi ContractSynchronizer]';
-
     /**
      * {@inheritdoc}
      */
@@ -76,7 +74,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         }
 
         $count = count($allContracts);
-        $this->logMessage(
+        $this->logger->debug(
             sprintf(
                 '[SyncBalance]%s contracts for processing' .
                 ' by external property "%s" of holding "%s" #%d and leaseId (main resident Id) "%s"',
@@ -102,7 +100,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     ) {
         $balance = $this->calcResidentBalance($resident);
         $contract->setPaymentAccepted($resident->getPaymentAccepted());
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]Setup payment accepted to %s, for leaseId %s',
                 $resident->getPaymentAccepted(),
@@ -112,7 +110,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $externalLeaseId = $contract->getExternalLeaseId();
         if (empty($externalLeaseId)) {
             $contract->setExternalLeaseId($resident->getLeaseId());
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncBalance]%s #%d externalLeaseId has been updated. ExternalLeaseId set to #%s',
                     (new \ReflectionObject($contract))->getShortName(),
@@ -122,7 +120,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             );
         }
         $contract->setIntegratedBalance($balance);
-        $this->logMessage(
+        $this->logger->info(
             sprintf(
                 '[SyncBalance]%s #%s has been updated. Now the balance is $%s',
                 (new \ReflectionObject($contract))->getShortName(),
@@ -176,7 +174,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         foreach ($transactions as $transaction) {
             $charge = $transaction->getCharge();
             if (!in_array($charge->getDetail()->getChargeCode(), $recurringCodes) && !empty($recurringCodes)) {
-                $this->logMessage(
+                $this->logger->warn(
                     sprintf(
                         '[SyncRent]RecurringCodes list(%s) does not contain charge code (%s)',
                         $holding->getRecurringCodes(),
@@ -188,7 +186,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             $fromDate = $charge->getDetail()->getServiceFromDateObject();
             $toDate = $charge->getDetail()->getServiceToDateObject();
             if (!DateChecker::nowFallsBetweenDates($fromDate, $toDate)) {
-                $this->logMessage(
+                $this->logger->warn(
                     sprintf(
                         '[SyncRent]Today does not fall between "%s" and "%s"',
                         $fromDate ? $fromDate->format('Y-m-d') : '',
@@ -243,7 +241,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
             } catch (\Exception $e) {
                 $this->handleException($e);
             }
-            $this->logMessage(
+            $this->logger->info(
                 sprintf(
                     '[SyncRent]Rent for %s #%d was set to %s',
                     (new \ReflectionObject($contract))->getShortName(),
