@@ -64,10 +64,13 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             'srcUnit is not deleted.'
         );
         $newLastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
-        $this->assertNotEquals($lastUnit, $newLastUnit, 'New Unit is not created.');
+        $this->assertNotEquals($lastUnit->getId(), $newLastUnit->getId(), 'New Unit is not created.');
         $this->assertEquals($unit->getName(), $newLastUnit->getName(), 'New Unit has incorrect name');
-
-        $this->assertEquals($newLastUnit, $firstContract->getUnit(), 'firstContract has incorrect Unit');
+        $this->assertEquals(
+            $newLastUnit->getId(),
+            $firstContract->getUnit()->getId(),
+            'firstContract has incorrect Unit'
+        );
         $this->assertEquals(
             $newLastUnit->getId(),
             $firstContract->getUnit()->getId(),
@@ -78,7 +81,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $firstContract->getProperty()->getId(),
             'firstContract has incorrect Property'
         );
-        $this->assertEquals($newLastUnit, $lastContract->getUnit(), 'lastContract has incorrect Unit');
         $this->assertEquals(
             $newLastUnit->getId(),
             $lastContract->getUnit()->getId(),
@@ -90,7 +92,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             'lastContract has incorrect Property'
         );
 
-        $this->assertEquals($newLastUnit, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
         $this->assertEquals(
             $newLastUnit->getId(),
             $contractWaiting->getUnit()->getId(),
@@ -237,12 +238,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $contractWaiting = $unit->getContractsWaiting()->first();
 
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
-
         $this->getEntityManager()->clear();
-        $this->assertEmpty(
-            $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1),
-            'srcUnit is not deleted.'
-        );
 
         $this->assertEmpty(
             $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->find($unitMappingId),

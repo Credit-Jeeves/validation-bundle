@@ -61,6 +61,10 @@
             }
         },
         {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git"
+        },
+        {
             "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
@@ -206,6 +210,7 @@
         "besimple/soap-client": "v0.2.6 as dev-master",
         "apy/jsfv-bundle":"dev-master as 2.1",
         "doctrine/migrations": "dev-master as 1.0.0",
+        "renttrack/profit-stars-client-bundle": "dev-master",
 
         "symfony/symfony": "v2.4.10",
         "doctrine/dbal": "v2.4.4",
@@ -247,8 +252,7 @@
         "besimple/soap-common": "0.2.x-dev as dev-master",
         "besimple/soap-wsdl": "v0.2.4 as dev-master",
         "besimple/soap-server": "v0.2.5 as dev-master",
-        "renttrack/profit-stars-client-bundle": "dev-master",        
-	"ass/xmlsecurity": "v1.1.1 as dev-master"
+    	"ass/xmlsecurity": "v1.1.1 as dev-master"
     },
     "require-dev": {
         "khepin/yaml-fixtures-bundle": "v0.8.2 as dev-master",

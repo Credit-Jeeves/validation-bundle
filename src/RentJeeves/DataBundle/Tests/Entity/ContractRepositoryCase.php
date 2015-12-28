@@ -379,7 +379,7 @@ class ContractRepositoryCase extends BaseTestCase
         $em->remove($unit);
         $em->flush();
         $em->clear();
-        
+
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
         $this->assertEmpty($contractWaiting);
     }

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3170d257c1d5e0f39b9573a2f455f287",
-    "content-hash": "4f41ac7786867cf4b6957ac11f2d27eb",
+    "hash": "b4e6787a89d4ff736cbfcaa4b10ffb40",
+    "content-hash": "694efa22b147cd3f46a0f989eb801421",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1134,12 +1134,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "11b994b8d19e4f258e6597cac3638305bfe38ee9"
+                "reference": "68c0e2f52fce0b8379ddcee7d5e85f32387559c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/11b994b8d19e4f258e6597cac3638305bfe38ee9",
-                "reference": "11b994b8d19e4f258e6597cac3638305bfe38ee9",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/68c0e2f52fce0b8379ddcee7d5e85f32387559c2",
+                "reference": "68c0e2f52fce0b8379ddcee7d5e85f32387559c2",
                 "shasum": ""
             },
             "require": {
@@ -1199,7 +1199,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2015-12-04 12:51:11"
+            "time": "2015-12-25 13:10:52"
         },
         {
             "name": "doctrine/dbal",
@@ -2312,18 +2312,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
-                "reference": "da303c95ed17bfe8ac908d5138235bd160e2efce"
+                "reference": "b36cc0016eb9774e4154566f145f1bcb0dae6b23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/da303c95ed17bfe8ac908d5138235bd160e2efce",
-                "reference": "da303c95ed17bfe8ac908d5138235bd160e2efce",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/b36cc0016eb9774e4154566f145f1bcb0dae6b23",
+                "reference": "b36cc0016eb9774e4154566f145f1bcb0dae6b23",
                 "shasum": ""
             },
             "require": {
                 "behat/transliterator": "~1.0",
                 "doctrine/common": "~2.4",
-                "php": ">=5.3.2"
+                "php": ">=5.4"
             },
             "require-dev": {
                 "doctrine/common": ">=2.5.0",
@@ -2383,7 +2383,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2015-12-24 19:24:15"
+            "time": "2015-12-27 20:37:36"
         },
         {
             "name": "guzzle/guzzle",
@@ -4295,6 +4295,52 @@
                 "psr-3"
             ],
             "time": "2015-06-02 13:48:41"
+        },
+        {
+            "name": "renttrack/profit-stars-client-bundle",
+            "version": "dev-master",
+            "target-dir": "RentTrack/ProfitStarsClientBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
+                "reference": "f05b6546b34c94fb13ab02935b9b49b7b5d2b1db"
+            },
+            "require": {
+                "besimple/wsdl2php": "v1.0.0",
+                "php": ">=5.4.2",
+                "symfony/finder": "2.*",
+                "symfony/framework-bundle": "2.4.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\ProfitStarsClientBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tatyana Stronina",
+                    "email": "tatyana@renttrack.com"
+                },
+                {
+                    "name": "Alexander Onatskyy",
+                    "email": "onatskyy@gmail.com"
+                }
+            ],
+            "description": "Symfony2 ProfitStarsClientBundle.",
+            "homepage": "https://github.com/Credit-Jeeves/ProfitStarsClientBundle",
+            "keywords": [
+                "profit stars",
+                "soap",
+                "wsdl"
+            ],
+            "time": "2015-12-24 09:33:41"
         },
         {
             "name": "renttrack/smarty-streets-bundle",
@@ -8094,6 +8140,7 @@
         "stof/doctrine-extensions-bundle": 20,
         "apy/jsfv-bundle": 20,
         "doctrine/migrations": 20,
+        "renttrack/profit-stars-client-bundle": 20,
         "beberlei/doctrineextensions": 20,
         "besimple/soap-common": 20,
         "sensio/generator-bundle": 20,
