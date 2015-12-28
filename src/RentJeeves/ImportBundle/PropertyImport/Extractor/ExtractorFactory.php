@@ -13,14 +13,14 @@ class ExtractorFactory
     /**
      * @var array
      */
-    protected $supportedAccountingSystem;
+    protected $supportedAccountingSystems;
 
     /**
      * @param MRIExtractor $MRIExtractor
      */
     public function __construct(MRIExtractor $MRIExtractor)
     {
-        $this->supportedAccountingSystem = [
+        $this->supportedAccountingSystems = [
             ApiIntegrationType::MRI => $MRIExtractor,
         ];
     }
@@ -38,12 +38,12 @@ class ExtractorFactory
      */
     public function getExtractor($accountingSystemName)
     {
-        if (false === in_array($accountingSystemName, array_keys($this->supportedAccountingSystem))) {
+        if (false === in_array($accountingSystemName, array_keys($this->supportedAccountingSystems))) {
             throw new ImportInvalidArgumentException(
                 sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
             );
         }
 
-        return $this->supportedAccountingSystem[$accountingSystemName];
+        return $this->supportedAccountingSystems[$accountingSystemName];
     }
 }
