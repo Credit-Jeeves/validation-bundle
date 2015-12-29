@@ -5,6 +5,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ImportSource;
@@ -1274,11 +1275,11 @@ class ImportCsvCase extends ImportBaseAbstract
          * Create a property with no units
          */
         $units = $property->getUnits();
+        /** @var Unit $unit */
         foreach ($units as $unit) {
             $em->remove($unit);
         }
         $em->flush();
-
         $propertyAddress = $property->getPropertyAddress();
         $propertyAddress->setIsSingle(true);
 

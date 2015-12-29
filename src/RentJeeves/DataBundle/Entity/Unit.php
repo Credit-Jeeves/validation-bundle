@@ -63,28 +63,11 @@ class Unit extends Base
         return $apiIntegrationType === ApiIntegrationType::MRI || $apiIntegrationType === ApiIntegrationType::RESMAN;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->name;
-    }
-
-    /**
-     * Documentation link https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-     * @ORM\PostRemove
-     */
-    public function deleteAllWaitingContracts(BaseLifecycleEventArgs $args)
-    {
-        $contractsWaiting = $this->getContractsWaiting();
-
-        if (empty($contractsWaiting)) {
-            return;
-        }
-
-        $em = $args->getEntityManager();
-        foreach ($contractsWaiting as $contractWaiting) {
-            $em->remove($contractWaiting);
-        }
-
-        $em->flush();
     }
 }

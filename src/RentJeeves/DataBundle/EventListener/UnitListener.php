@@ -32,21 +32,27 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
  *         "method"="preUpdate"
  *     }
  * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preRemove",
+ *         "method"="preRemove"
+ *     }
+ * )
  */
 class UnitListener
 {
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     */
     public function postSoftDelete(LifecycleEventArgs $eventArgs)
     {
-        /**
-         * @var $unit Unit
-         */
-        $unit = $eventArgs->getEntity();
-        if (!$unit instanceof Unit) {
-            return;
-        }
-        $unit->deleteAllWaitingContracts($eventArgs);
+        $this->removeContractsWaiting($eventArgs);
     }
 
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
@@ -61,6 +67,9 @@ class UnitListener
         }
     }
 
+    /**
+     * @param PreUpdateEventArgs $eventArgs
+     */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
@@ -76,5 +85,29 @@ class UnitListener
         if ($propertyAddress->isSingle() && $entity->getActualName() !== Unit::SINGLE_PROPERTY_UNIT_NAME) {
             $entity->setName(Unit::SINGLE_PROPERTY_UNIT_NAME);
         }
+    }
+
+    /**
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function preRemove(LifecycleEventArgs $eventArgs)
+    {
+        $this->removeContractsWaiting($eventArgs);
+    }
+
+    /**
+     * Documentation link https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    protected function removeContractsWaiting(LifecycleEventArgs $eventArgs)
+    {
+        /** @var $unit Unit */
+        $unit = $eventArgs->getEntity();
+        if (!$unit instanceof Unit) {
+            return;
+        }
+
+        $eventArgs->getEntityManager()->getRepository('RjDataBundle:ContractWaiting')->deleteByUnit($unit);
     }
 }

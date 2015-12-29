@@ -85,7 +85,7 @@ class PaymentCase extends BaseTestCase
         $contract->setStatus(ContractStatus::DELETED);
         $doctrineManager->persist($contract);
         $doctrineManager->flush($contract);
-        static::$kernel = null;
+        $this->getEntityManager()->clear();
         /** @var Payment $payment */
         $payment = $doctrineManager->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);
