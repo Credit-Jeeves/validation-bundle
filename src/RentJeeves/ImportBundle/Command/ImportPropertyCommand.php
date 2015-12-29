@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Command;
+namespace RentJeeves\ImportBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +18,12 @@ class ImportPropertyCommand extends ContainerAwareCommand
             ->setDescription('Import Properties by Group ID');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //@TODO add service to use
     }
 }
