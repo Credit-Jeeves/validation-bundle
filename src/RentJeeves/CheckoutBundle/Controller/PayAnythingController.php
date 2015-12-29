@@ -149,24 +149,13 @@ class PayAnythingController extends BaseController
                 $integrationDataManager->removeIntegrationData();
             } elseif (!empty($amounts)) {
                 DepositAccountType::setTranslator([$this->get('translator'), 'trans']);
-                $shouldPayList = implode(
-                    ', ',
-                    array_map(
-                        function ($depositAccountType) {
-                            return DepositAccountType::title($depositAccountType);
-                        },
-                        array_keys(
-                            array_filter($integrationDataManager->getAmounts())
-                        )
-                    )
-                );
                 $request->getSession()->getFlashBag()->add(
                     'payAnything',
                     $this->getTranslator()->trans(
                         'pay_anything_popup.should_pay_message',
                         [
-                            '%payed%' => DepositAccountType::title($depositAccountType),
-                            '%should_pay%' => $shouldPayList
+                            '%paid%' => DepositAccountType::title($depositAccountType),
+                            '%should_pay%' => $integrationDataManager->getPaymentsList()
                         ]
                     )
                 );

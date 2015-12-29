@@ -185,7 +185,7 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param Property $property
-     * @param $unitName
+     * @param string $unitName
      * @param string $externalLeaseId
      * @param float $rent
      *

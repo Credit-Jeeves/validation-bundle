@@ -182,12 +182,42 @@ class AccountingSystemIntegrationDataManager
     }
 
     /**
+     * Calculate payments that should be payed
+     * Return just payment types, that have some preset amount
+     *
+     * @return array
+     */
+    public function getPayments()
+    {
+        return array_keys(
+            array_filter($this->getAmounts())
+        );
+    }
+
+    /**
+     * Get list of payment title types that should be payed
+     * @return string
+     */
+    public function getPaymentsList()
+    {
+        return implode(
+            ', ',
+            array_map(
+                function ($depositAccountType) {
+                    return DepositAccountType::title($depositAccountType);
+                },
+                $this->getPayments()
+            )
+        );
+    }
+
+    /**
      * @param string $paymentType
      */
     public function removePayment($paymentType)
     {
         $amounts = $this->get('amounts', []);
-        if (!empty($amounts[$paymentType]) ) {
+        if (!empty($amounts[$paymentType])) {
             $amounts[$paymentType] = null;
             $this->cachedData['amounts'] = $amounts;
             $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cachedData);

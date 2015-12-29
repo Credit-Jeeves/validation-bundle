@@ -1,5 +1,8 @@
 /**
- * Component show info message
+ * Component infoMessage-widget, can be used like container for show information (yellow) message
+ *  - Can observe internal external parameter and change message text
+ *  - Can have initial message text
+ *  - Can use external (calculable) condition for visibility
  * name : 'infoMessage-widget'
  * params
  *  - message - external observable parameter

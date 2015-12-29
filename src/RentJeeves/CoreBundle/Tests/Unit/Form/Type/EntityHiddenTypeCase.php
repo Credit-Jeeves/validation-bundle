@@ -24,7 +24,7 @@ class EntityHiddenTypeCase extends TypeTestCase
     /**
      * @test
      */
-    public function submitValidData()
+    public function shouldMapHiddenEntityIfDataIsValid()
     {
         $this->em
             ->expects($this->once())
@@ -33,7 +33,7 @@ class EntityHiddenTypeCase extends TypeTestCase
         $data = [
             'entity' => self::VALID_ENTITY_ID,
         ];
-        $type = new EntityHiddenTypeTestFom();
+        $type = new EntityHiddenTypeTestForm();
         $form = $this->factory->create($type, [], ['class' => self::VALID_ENTITY_CLASS]);
         $form->submit($data);
 
@@ -53,7 +53,7 @@ class EntityHiddenTypeCase extends TypeTestCase
     /**
      * @test
      */
-    public function submitInValidData()
+    public function shouldNotMapHiddenEntityIfDataIsInvalid()
     {
         $this->em
             ->expects($this->once())
@@ -62,7 +62,7 @@ class EntityHiddenTypeCase extends TypeTestCase
         $data = [
             'entity' => self::VALID_ENTITY_ID + 1,
         ];
-        $type = new EntityHiddenTypeTestFom();
+        $type = new EntityHiddenTypeTestForm();
         $form = $this->factory->create($type, [], ['class' => self::VALID_ENTITY_CLASS]);
         $form->submit($data);
 
@@ -80,7 +80,7 @@ class EntityHiddenTypeCase extends TypeTestCase
     /**
      * @test
      */
-    public function createFormWithInvalidClass()
+    public function shouldNotMapHiddenEntityIfClassNameIsInvalid()
     {
         $this->em
             ->expects($this->once())
@@ -89,7 +89,7 @@ class EntityHiddenTypeCase extends TypeTestCase
         $data = [
             'entity' => self::VALID_ENTITY_ID,
         ];
-        $type = new EntityHiddenTypeTestFom();
+        $type = new EntityHiddenTypeTestForm();
         $form = $this->factory->create($type, [], ['class' => 'InvalidClass']);
         $form->submit($data);
 
@@ -127,7 +127,7 @@ class EntityHiddenTypeCase extends TypeTestCase
      */
     public function getEntityMock($entityClass, $id = null)
     {
-        $entity = $this->getMock($entityClass, [], [], '', false);
+        $entity = $this->getBaseMock($entityClass);
         $entity->expects($this->any())->method('getId')->willReturn($id);
 
         return $entity;
@@ -139,7 +139,7 @@ class EntityHiddenTypeCase extends TypeTestCase
      */
     public function getEntityRepositoryMock($entityClass)
     {
-        $repo = $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
+        $repo = $this->getBaseMock('Doctrine\ORM\EntityRepository');
         $entity = $this->getEntityMock($entityClass, self::VALID_ENTITY_ID);
         $repo
             ->expects($this->any())

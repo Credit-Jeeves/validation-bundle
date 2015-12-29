@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class EntityHiddenTypeTestFom extends AbstractType
+class EntityHiddenTypeTestForm extends AbstractType
 {
     public function getName()
     {
