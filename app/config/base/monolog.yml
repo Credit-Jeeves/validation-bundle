@@ -1,5 +1,5 @@
 monolog:
-    channels: ["import", "rjDueEmail", "contract_movement_manager", "unit_deduplicator", "property_deduplicator", "contract_sync"]
+    channels: ["import", "rjDueEmail", "property_import", "contract_movement_manager", "unit_deduplicator", "property_deduplicator", "contract_sync"]
     handlers:
         main:
             type:         fingers_crossed
@@ -15,6 +15,12 @@ monolog:
         chromephp:
             type:  chromephp
             level: info
+        property_import:
+            level:      debug
+            type:       stream
+            path:       '%kernel.logs_dir%/property_import_%kernel.environment%.log'
+            channels:   [property_import]
+            formatter:  monolog.formatter.import
         swift_emergency:
             type:       swift_mailer
             from_email: %monolog.email_from%
@@ -28,3 +34,15 @@ monolog:
             to_email:   %monolog.alert.email_to%
             subject:    SYSTEM ALERT
             level:      alert
+
+services:
+    # property import logger
+    monolog.formatter.import:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%channel%%.Group#%%extra.group_id%%.%%level_name%%: %%message%%\n"
+
+    monolog.processor.import:
+        class: RentJeeves\ImportBundle\Logger\LoggerProcessor
+        tags:
+            - { name: monolog.processor, method: processRecord, handler: property_import }

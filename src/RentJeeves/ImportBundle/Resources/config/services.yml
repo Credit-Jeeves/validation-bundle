@@ -1,0 +1,13 @@
+services:
+    # factories
+    import.property.extractor_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory
+        arguments:
+            - @import.property.extractor.mri
+    # services
+    import.property.extractor.mri:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
+        public: false
+        arguments:
+            - @mri.resident_data
+            - @monolog.logger.property_import
