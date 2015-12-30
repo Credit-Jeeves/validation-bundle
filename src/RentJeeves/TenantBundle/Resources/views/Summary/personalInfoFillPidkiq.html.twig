@@ -24,7 +24,7 @@
     <script type="text/javascript">
         var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq({{ addressesJson | raw }});
         {% if defaultAddressId %}
-            PersonalInfoFillPidkiqModel.address.addressChoice({{ defaultAddressId }});
+            PersonalInfoFillPidkiqModel.address.addressChoice("{{ defaultAddressId }}");
         {% else %}
             PersonalInfoFillPidkiqModel.address.isAddNewAddress(true);
         {% endif %}

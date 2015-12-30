@@ -181,7 +181,7 @@ class TenantType extends AbstractType
                     if (strtolower($contractWaiting->getLastName()) !== $lastName) {
                         continue;
                     }
-                    $form->get('contractWaiting')->setData($contractWaiting);
+                    $data['contractWaiting'] = $contractWaiting->getId();
                     break;
                 }
 
@@ -190,12 +190,13 @@ class TenantType extends AbstractType
                  * Allow to create a contract if group is integrated and pay_anything is allowed.
                  * Otherwise block with error.
                  */
-                if (is_null($form->get('contractWaiting')->getData()) &&
+                if (empty($data['contractWaiting']) &&
                     count($contractsWaiting) > 0 &&
                     !$unit->getGroup()->getGroupSettings()->isAllowPayAnything()
                 ) {
                         $form->addError(new FormError('error.unit.reserved'));
                 }
+                $event->setData($data);
             }
         );
     }

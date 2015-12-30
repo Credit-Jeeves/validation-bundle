@@ -2,6 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -802,7 +803,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $waitingContractParams
         );
 
-        $this->assertNull($waitingContract);
+        $this->assertTrue(is_null($waitingContract), 'Should remove contract waiting');
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array('email' => 'dan.price@mail.com')
