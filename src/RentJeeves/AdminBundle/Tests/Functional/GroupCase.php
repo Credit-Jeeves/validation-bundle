@@ -448,21 +448,22 @@ class GroupCase extends BaseTestCase
 
         $importProperties = $this->getDomElements(
             'a:contains("admin.import.property")',
-            'Import Property link not found'
+            'Import Property links not found'
+        );
+        $importProperties[0]->click();
+        $this->getDomElement('.alert-danger', 'Should get error for group which doesn\'t have externalProperties');
+
+        $importProperties = $this->getDomElements(
+            'a:contains("admin.import.property")',
+            'Import Property links not found'
         );
         $importProperties[2]->click();
-        $this->getDomElement('.alert-success');
+        $this->getDomElement('.alert-success', 'Should get successful message');
         $this->assertCount(
             $jobsCount+1,
             $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
             'Job not created'
         );
 
-        $importProperties = $this->getDomElements(
-            'a:contains("admin.import.property")',
-            'Import Property link not found'
-        );
-        $importProperties[0]->click();
-        $this->getDomElement('.alert-danger');
     }
 }
