@@ -338,6 +338,14 @@
                 <source>admin.holding.post_app_fee_security_deposit</source>
                 <target>Post Application Fee / Security Deposit?</target>
             </trans-unit>
+            <trans-unit id="admin.import_properties_job.created">
+                <source>admin.import_properties_job.created</source>
+                <target>Job for import properties per group %group_name% has been created</target>
+            </trans-unit>
+            <trans-unit id="admin.import_properties_job.error.empty_external_properties">
+                <source>admin.import_properties_job.error.empty_external_properties</source>
+                <target>Group %group_name% doesn't have externalPropertiesID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -13,6 +13,7 @@ class ImportPropertyCommand extends ContainerAwareCommand
     {
         $this
             ->setName('renttrack:import:property')
+            ->addOption('external-property-id', null, InputOption::VALUE_REQUIRED, 'External Property ID')
             ->addOption('group-id', null, InputOption::VALUE_REQUIRED, 'Group ID')
             ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'Job ID')
             ->setDescription('Import Properties by Group ID');

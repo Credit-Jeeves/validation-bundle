@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
@@ -41,5 +42,22 @@ class PropertyMappingRepository extends EntityRepository
         $query->setParameter('holdingId', $holding->getId());
 
         return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param Group $group
+     * @return array
+     */
+    public function getPropertiesMappingByGroup(Group $group)
+    {
+        return $this->createQueryBuilder('pm')
+            ->select('pm.externalPropertyId')
+            ->innerJoin('pm.property', 'p')
+            ->innerJoin('p.property_groups', 'c')
+            ->where('c.id = :group')
+            ->setParameter('group', $group)
+            ->groupBy('pm.externalPropertyId')
+            ->getQuery()
+            ->getArrayResult();
     }
 }

@@ -1576,10 +1576,6 @@
                 <source>error.summary.sorry</source>
                 <target>Sorry for the inconvenience :(</target>
             </trans-unit>
-            <trans-unit id="admin.import_properties_job.created">
-                <source>admin.import_properties_job.created</source>
-                <target>Job for import properties per group %group_name% created</target>
-            </trans-unit>
         </body>
     </file>
 </xliff>

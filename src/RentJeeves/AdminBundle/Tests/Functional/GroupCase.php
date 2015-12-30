@@ -446,21 +446,23 @@ class GroupCase extends BaseTestCase
         $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
         $groupBlock->clickLink('link_list');
 
-        $importProperties = $this->getDomElement(
+        $importProperties = $this->getDomElements(
             'a:contains("admin.import.property")',
             'Import Property link not found'
         );
-        $importProperties->click();
-        $alertMessage = $this->getDomElement('.alert-success');
-        $this->assertEquals(
-            'admin.import_properties_job.created',
-            $alertMessage->getText(),
-            'Did not get success message when tried create job'
-        );
+        $importProperties[2]->click();
+        $this->getDomElement('.alert-success');
         $this->assertCount(
             $jobsCount+1,
             $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
             'Job not created'
         );
+
+        $importProperties = $this->getDomElements(
+            'a:contains("admin.import.property")',
+            'Import Property link not found'
+        );
+        $importProperties[0]->click();
+        $this->getDomElement('.alert-danger');
     }
 }

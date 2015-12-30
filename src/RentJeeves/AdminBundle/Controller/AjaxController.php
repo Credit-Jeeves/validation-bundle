@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Property;
@@ -345,53 +346,55 @@ class AjaxController extends Controller
     }
 
     /**
-     * @Route(
-     *    "/rj/property_mapping",
-     *     name="admin_property_mapping",
-     *     options={"expose"=true}
-     * )
-     */
-    public function getHoldingProperties(Request $request)
-    {
-        $holdingId = $request->request->get('holdingId');
-        $em = $this->getDoctrine()->getManager();
-        $holding = $em->getRepository('DataBundle:Holding')->find($holdingId);
-        if (!$holding) {
-            throw new NotFoundHttpException(sprintf('Holding with id #%s not found', $holdingId));
-        }
-        $properties = $em->getRepository('RjDataBundle:Property')->findByHolding($holding)->getQuery()->getResult();
-
-        return $this->makeJsonResponse(
-            $properties,
-            array("AdminProperty")
-        );
-    }
-
-    /**
      * @Route("import/property/createJob/{group_id}", name="admin_create_import_property_job", options={"expose"=true})
      * @ParamConverter("group", class="DataBundle:Group", options={"id" = "group_id"})
      * @Method({"GET"})
      */
     public function importPropertyCreateJob(Group $group, Request $request)
     {
+        /** @var EntityManager $em */
         $em = $this->get('doctrine')->getManager();
-        $job = new Job(
-            'renttrack:import:property',
-            [
-                '--app=rj',
-                sprintf('--group-id=%s', $group->getId()),
-            ]
-        );
-        $em->persist($job);
-        $em->flush();
         /** @var Translator $translator */
         $translator = $this->get('translator');
+        $propertiesMapping = $em->getRepository('RjDataBundle:PropertyMapping')->getPropertiesMappingByGroup($group);
+        $refer = $request->server->get('HTTP_REFERER');
+        if (empty($refer)) {
+            $refer = $this->get('router')->generate('admin_rj_group_list', [], true);
+        }
+
+        if (empty($propertiesMapping)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans(
+                    'admin.import_properties_job.error.empty_external_properties',
+                    ['%group_name%' => $group->getName()]
+                )
+            );
+
+            return new RedirectResponse($refer);
+        }
+
+        foreach ($propertiesMapping as $propertyMapping) {
+            $job = new Job(
+                'renttrack:import:property',
+                [
+                    '--app=rj',
+                    sprintf('--group-id=%s', $group->getId()),
+                    sprintf('--external-property-id=%s', $propertyMapping['externalPropertyId'])
+                ]
+            );
+        }
+
+        $em->persist($job);
+        $em->flush();
+
         $request->getSession()->getFlashBag()->add(
             'success',
             $translator->trans('admin.import_properties_job.created', ['%group_name%' => $group->getName()])
         );
 
-        return new RedirectResponse($request->server->get('HTTP_REFERER'));
+
+        return new RedirectResponse($refer);
     }
 
     /**
