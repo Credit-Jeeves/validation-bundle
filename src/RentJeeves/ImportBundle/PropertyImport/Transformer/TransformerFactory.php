@@ -109,6 +109,7 @@ class TransformerFactory
         );
 
         if (true === class_exists(static::CUSTOM_NAMESPACE . $className, false)) {
+            // if the class exists - there is no sense to register a new class. Just create new instance of this class
             $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
             $customTransformer = new $customTransformerClass();
         } else {
@@ -155,10 +156,7 @@ class TransformerFactory
             throw new ImportException($message);
         }
 
-        foreach ($finder as $item) {
-            $file = $item;
-            break;
-        }
+        $file = current(iterator_to_array($finder->getIterator()));
         /** @var SplFileInfo $file */
         $customFilePath = $file->getRealpath();
 
@@ -177,7 +175,7 @@ class TransformerFactory
         if (false === class_exists($customTransformerClass, false)) {
             $this->logger->warning(
                 $message = sprintf(
-                    'File is founded, but can`t create instance of class "%s".' .
+                    'File is found, but can`t create instance of class "%s".' .
                     ' Pls check name and namespace in custom file "%s".',
                     $customTransformerClass,
                     $customFilePath

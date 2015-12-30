@@ -1,5 +1,6 @@
 parameters:
-    # add the path that leads into the project does not make sense
+    # using a path that leads into the project does not make sense. Use a path out of project if you need to.
+    # Otherwise put transformers into ImportBundle.
     import.property.transformer.custom_paths: []
 
 services:

@@ -69,12 +69,7 @@ class TransformerFactoryCase extends UnitTestBase
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
         );
 
-        $transformer = $factory->getTransformer($group, 'test');
-
-        $this->assertInstanceOf(
-            'RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface',
-            $transformer
-        );
+        $factory->getTransformer($group, 'test');
     }
 
     /**

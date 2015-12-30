@@ -16,9 +16,9 @@ class ImportTransformerRepository extends EntityRepository
     {
         $result = $this->createQueryBuilder('it')
             ->select('it.className')
-            ->where('it.holding = :holding AND it.externalPropertyId = :externalPropertyId')
-            ->orWhere('it.group = :group')
-            ->orWhere('it.holding = :holding')
+            ->where('it.holding = :holding AND it.externalPropertyId = :externalPropertyId AND it.group is NULL')
+            ->orWhere('it.group = :group AND it.holding is NULL AND it.externalPropertyId is NULL')
+            ->orWhere('it.holding = :holding AND it.group is NULL AND it.externalPropertyId is NULL')
             ->orderBy('it.externalPropertyId', 'desc')
             ->addOrderBy('it.group', 'desc')
             ->setParameter('holding', $group->getHolding())
