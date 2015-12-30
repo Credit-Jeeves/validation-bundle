@@ -748,8 +748,9 @@ class Contract extends Base
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
-                    (!$payment->getDepositAccount() ||
+                if ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                        PaymentStatus::FLAGGED === $payment->getStatus())
+                    && (!$payment->getDepositAccount() ||
                         DepositAccountType::RENT === $payment->getDepositAccount()->getType())
                 ) {
                     return true;
@@ -775,7 +776,8 @@ class Contract extends Base
     {
         return $this->getPayments()->filter(
             function (Payment $payment) {
-                return (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                return ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                    PaymentStatus::FLAGGED === $payment->getStatus()) &&
                     DepositAccountType::RENT !== $payment->getDepositAccount()->getType());
             }
         );

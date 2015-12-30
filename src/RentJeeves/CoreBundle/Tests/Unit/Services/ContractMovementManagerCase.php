@@ -211,9 +211,9 @@ class ContractMovementManagerCase extends UnitTestBase
         $payment = new Payment();
         $payment->setDepositAccount($paymentDepositAccount = new DepositAccount());
 
-        $paymentRepositoryMock = $this->getEntityRepositoryMock();
+        $paymentRepositoryMock = $this->getPaymentRepositoryMock();
         $paymentRepositoryMock->expects($this->once())
-            ->method($this->equalTo('findBy'))
+            ->method($this->equalTo('findAllActivePaymentsForContract'))
             ->will($this->returnValue([$payment]));
 
         $depositAccountRepositoryMock = $this->getEntityRepositoryMock();
@@ -293,9 +293,9 @@ class ContractMovementManagerCase extends UnitTestBase
         $payment = new Payment();
         $payment->setDepositAccount($paymentDepositAccount = new DepositAccount());
 
-        $paymentRepositoryMock = $this->getEntityRepositoryMock();
+        $paymentRepositoryMock = $this->getPaymentRepositoryMock();
         $paymentRepositoryMock->expects($this->once())
-            ->method($this->equalTo('findBy'))
+            ->method($this->equalTo('findAllActivePaymentsForContract'))
             ->will($this->returnValue([$payment]));
 
         $similarDepositAccount = new DepositAccount();
@@ -376,9 +376,9 @@ class ContractMovementManagerCase extends UnitTestBase
         $payment = new Payment();
         $payment->setDepositAccount($paymentDepositAccount = new DepositAccount());
 
-        $paymentRepositoryMock = $this->getEntityRepositoryMock();
+        $paymentRepositoryMock = $this->getPaymentRepositoryMock();
         $paymentRepositoryMock->expects($this->once())
-            ->method($this->equalTo('findBy'))
+            ->method($this->equalTo('findAllActivePaymentsForContract'))
             ->will($this->returnValue([$payment]));
 
         $similarDepositAccount = new DepositAccount();
@@ -446,6 +446,20 @@ class ContractMovementManagerCase extends UnitTestBase
     {
         return $this->getMock(
             'RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay',
+            [],
+            [],
+            '',
+            false
+        );
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|PaymentProcessorFactory
+     */
+    protected function getPaymentRepositoryMock()
+    {
+        return $this->getMock(
+            'RentJeeves\DataBundle\Entity\PaymentRepository',
             [],
             [],
             '',

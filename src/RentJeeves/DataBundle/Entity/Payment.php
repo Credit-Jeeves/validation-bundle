@@ -44,6 +44,24 @@ class Payment extends Base
      */
     protected $other = 0.0;
 
+    /**
+     * FLAGGED is internal status. It should not be visible for users.
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("status")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return PaymentStatus|string
+     */
+    public function getDisplayedStatus()
+    {
+        if (PaymentStatus::FLAGGED === $this->status) {
+            return PaymentStatus::ACTIVE;
+        }
+
+        return $this->status;
+    }
+
     public function checkContract()
     {
         $contract = $this->getContract();

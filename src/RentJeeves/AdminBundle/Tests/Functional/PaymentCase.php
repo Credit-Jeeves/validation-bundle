@@ -1,14 +1,19 @@
 <?php
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentCloseReason;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PaymentCase extends BaseTestCase
 {
+    use AdminFormUniqueIdGetter;
+
     /**
      * @test
      */
-    public function filter()
+    public function shouldSetCloseReasonWhenAdminClosesPayment()
     {
         $this->load(true);
         $this->setDefaultSession('symfony');
@@ -17,30 +22,41 @@ class PaymentCase extends BaseTestCase
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->assertTrue(1 <= count($table->findAll('css', 'tbody tr')));
+        $this->assertCount(6, $table->findAll('css', 'tbody tr'));
+        $this->assertCount(6, $editLinks = $table->findAll('css', '.edit_link'));
+        $editLinks[0]->click();
 
-        $this->page->fillField('filter_startDate_value_day', date('j')-1?:2);
-        $this->page->pressButton('btn_filter');
+        $uniqueId = $this->getUniqueId();
 
-        $this->assertNotNull($notice = $this->page->find('css', 'p.notice'));
-        $this->assertEquals('no_result', $notice->getText());
+        $paymentStatus = $this->getDomElement('#' . $uniqueId . '_status');
+        $paymentStatus->setValue(PaymentStatus::CLOSE);
 
+        $this->page->pressButton('btn_update_and_edit');
+
+        $em = $this->getEntityManager();
+        /** @var Payment $payment */
+        $payment = $em->find('RjDataBundle:Payment', 1);
+        $this->assertNotNull($payment, 'Not found payment #1');
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus(), 'Payment status should be updated to CLOSE');
+        $this->assertNotEmpty($closeDetails = $payment->getCloseDetails(), 'Close details should be filled in!');
+        $this->assertCount(2, $closeDetails, 'Close details should have 2 items');
+        $this->assertEquals('Reason: closed_by_admin', $closeDetails[1], 'Close details should have a reason');
     }
 
     /**
      * @test
-     * @depends filter
      */
     public function butchRun()
     {
-        $this->setDefaultSession('symfony');
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         $this->assertNotNull($checkBoxes = $table->findAll('css', '.sonata-ba-list-field input'));
-        $this->assertCount(1, $checkBoxes);
+        $this->assertCount(6, $checkBoxes);
 
         foreach ($checkBoxes as $checkBox) {
             $checkBox->check();
@@ -48,7 +64,7 @@ class PaymentCase extends BaseTestCase
         $this->page->pressButton('btn_batch');
         $this->page->pressButton('btn_execute_batch_action');
 
-        $this->assertNotNull($alert = $this->page->find('css', '.alert-success'));
+        $this->assertNotNull($alert = $this->page->find('css', '.alert-success'), 'Alert not found');
         $this->assertEquals('admin.butch.run.success-1', $alert->getText());
 
         foreach ($checkBoxes as $checkBox) {
@@ -59,6 +75,5 @@ class PaymentCase extends BaseTestCase
 
         $this->assertNotNull($alert = $this->page->find('css', '.alert-warning'));
         $this->assertEquals('admin.butch.run.warning', $alert->getText());
-
     }
 }

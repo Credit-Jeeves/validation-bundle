@@ -970,13 +970,13 @@ class ContractRepository extends EntityRepository
             'c.payments',
             'p',
             Expr\Join::WITH,
-            "p.status = :active"
+            "p.status in (:activeStatuses)"
         );
 
         $query->where($dql);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('active', PaymentStatus::ACTIVE);
+        $query->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED]);
         $query->setParameter('startDate', $startPaymentDate->format('Y-m-d'));
         $query->setParameter('endMonth', $endPaymentDate->format('n'));
         $query->setParameter('endYear', $endPaymentDate->format('Y'));
