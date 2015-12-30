@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use RentJeeves\AdminBundle\Form\UserSettingsType;
 
@@ -38,6 +39,14 @@ class LandlordAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/'.self::TYPE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->add('unlock', $this->getRouterIdParameter() . '/unlock');
     }
 
     /**
