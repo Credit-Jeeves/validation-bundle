@@ -70,4 +70,22 @@ class UnitMappingRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Property $property
+     * @param string $externalPropertyId
+     * @return UnitMapping|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getUnitMappingByPropertyAndExternalUnitId(Property $property, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('mapping')
+            ->innerJoin('mapping.unit', 'u')
+            ->where('u.property = :property')
+            ->andWhere('mapping.externalUnitId = :externalUnitId')
+            ->setParameter('property', $property)
+            ->setParameter('externalUnitId', $externalPropertyId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -4,7 +4,9 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyMappingRepository extends EntityRepository
@@ -41,5 +43,63 @@ class PropertyMappingRepository extends EntityRepository
         $query->setParameter('holdingId', $holding->getId());
 
         return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param  Property $property
+     * @param  string $externalPropertyId
+     * @param  string $accountingSystem
+     * @return PropertyMapping
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyMappingByPropertyAndExternalPropertyBelongAccountingSystem(
+        Property $property,
+        $externalPropertyId,
+        $accountingSystem
+    ) {
+        ApiIntegrationType::throwsInvalid($accountingSystem);
+
+        return $this->createQueryBuilder('pm')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('pm.property = :property')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('h.apiIntegrationType = :apiIntegrationType')
+            ->setParameter('property', $property)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('apiIntegrationType', $accountingSystem)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param  Property $property
+     * @param  Unit $unit
+     * @param  string $externalPropertyId
+     * @param  string $accountingSystem
+     * @return PropertyMapping
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyMappingByPropertyUnitAndExternalPropertyBelongAccountingSystem(
+        Property $property,
+        Unit $unit,
+        $externalPropertyId,
+        $accountingSystem
+    ) {
+        ApiIntegrationType::throwsInvalid($accountingSystem);
+
+        return $this->createQueryBuilder('pm')
+            ->innerJoin('pm.property', 'p')
+            ->innerJoin('pm.holding', 'h')
+            ->innerJoin('p.units', 'units')
+            ->andWhere('pm.property = :property')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('units.id = :unit')
+            ->andWhere('h.apiIntegrationType = :apiIntegrationType')
+            ->setParameter('property', $property)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('unit', $unit)
+            ->setParameter('apiIntegrationType', $accountingSystem)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

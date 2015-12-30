@@ -166,15 +166,23 @@
             if (typeof _gaq !== 'undefined') {
                 _gaq.push(['_trackEvent', 'Tenant', 'First Login']);
             }
-            {% if isInPaymentWindow %}
-                if (window.paymentHistoryLoadedCallback) {
-                    window.paymentHistoryLoadedCallback = function () {
-                        $('#contract-pay-1').click();
-                    }
-                } else {
-                    $('#contract-pay-1').click();
-                }
-            {% endif %}
         {% endif %}
+        {% set jsActionPayAnythingWindow = '' %}
+        {% set jsActionPaymentWindow = '' %}
+        {% if isInPayAnythingWindow %}
+            {% set jsActionPayAnythingWindow = '$("#pay-anything-1").click();' %}
+        {% endif %}
+        {% if isInPaymentWindow %}
+            {% set jsActionPaymentWindow = '$("#contract-pay-1").click();' %}
+        {% endif %}
+        if (window.paymentHistoryLoadedCallback) {
+            window.paymentHistoryLoadedCallback = function () {
+                {{ jsActionPayAnythingWindow | raw }}
+                {{ jsActionPaymentWindow | raw }}
+            }
+        } else {
+            {{ jsActionPayAnythingWindow | raw }}
+            {{ jsActionPaymentWindow | raw }}
+        }
     });
 </script>

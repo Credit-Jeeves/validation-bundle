@@ -42,9 +42,19 @@
             </ul>
         </div>
 
-        <div class="information-box pie-el" data-bind="visible: infoMessage() != null && ('details' == step() || 'pay' == step()), text: infoMessage()">
-        </div>
-
+        {% set message = '' %}
+        {% for flashMessage in app.session.flashbag.get('payAnything') %}
+            {% set message = message ~ flashMessage %}
+        {% endfor %}
+        <!-- ko component: {
+            name: 'infoMessage-widget',
+            params: {
+                message: infoMessage,
+                initialMessage: '{{ message }}',
+                visibleConditions: ('details' == step() || 'pay' == step())
+            }
+        } -->
+        <!-- /ko -->
         <div class="col" data-bind="visible: 'details' == step()">
             {% include 'RjCheckoutBundle:PayAnything:_step-1-details.html.twig' %}
         </div>

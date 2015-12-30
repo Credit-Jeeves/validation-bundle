@@ -66,14 +66,21 @@
                                                     class="select-unit linkselect-link">
                                                 {% if contractUnits is defined %}
                                                     {% for unit in prop.units if unit in contractUnits %}
-                                                        <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                                        <option value="{{ unit.name }}"
+                                                                {% if unitId is defined and unitId == unit.id %}selected="selected"{% endif %}>
+                                                            {{ unit.name }}
+                                                        </option>
                                                     {% endfor %}
                                                 {% else %}
                                                     {% for unit in prop.units %}
-                                                        <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                                        <option value="{{ unit.name }}"
+                                                                {% if unitId is defined and unitId == unit.id %}selected="selected"{% endif %}>
+                                                            {{ unit.name }}
+                                                        </option>
                                                     {% endfor %}
                                                 {% endif %}
-                                                <option value="UNASSIGNED" class="unassignedUnit"><a
+                                                <option value="UNASSIGNED" class="unassignedUnit"
+                                                        {% if unitId is defined and unitId == 'UNASSIGNED' %}selected="selected"{% endif %}><a
                                                             href="#">{{ 'unassigned.unit'|trans }}</a></option>
                                                 <option value="new" class="addNewUnit"><a
                                                             href="#">{{ 'add.new'|trans }}</a></option>

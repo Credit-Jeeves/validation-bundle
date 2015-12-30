@@ -77,6 +77,7 @@ security:
         - { path: ^/user/invite,                    role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/check/*,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user/integration/new/*,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/new/send/*,                     role: IS_AUTHENTICATED_ANONYMOUSLY }

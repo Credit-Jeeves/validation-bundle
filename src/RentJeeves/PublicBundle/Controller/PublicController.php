@@ -8,8 +8,11 @@ use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
+use RentJeeves\PublicBundle\Services\TenantProcessor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -20,6 +23,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Process\Exception\LogicException;
 
 class PublicController extends Controller
@@ -189,6 +195,40 @@ class PublicController extends Controller
     }
 
     /**
+     * @param string $accountingSystem
+     * @param Request $request
+     * @return Response
+     * @throws  BadRequestHttpException|NotFoundHttpException|HttpException
+     *
+     * @Route(
+     *     "/user/integration/new/{accountingSystem}",
+     *     requirements={
+     *         "accountingSystem" = "mri|resman|yardi|amsi"
+     *     },
+     *     name="new_integration_user"
+     * )
+     */
+    public function newIntegrationUserAction($accountingSystem, Request $request)
+    {
+        try {
+            $integrationDataManager = $this->get('accounting_system.integration.data_manager');
+            $integrationDataManager->processRequestData($accountingSystem, $request);
+
+            $property = $integrationDataManager->getProperty();
+
+            if (!$property) {
+                throw $this->createNotFoundException('Property not found.');
+            }
+
+            return $this->redirectToRoute('iframe_new_property', ['id' => $property->getId()]);
+        } catch (\InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        } catch (\LogicException $e) {
+            throw new HttpException(412, 'We are scrambling our robots...');
+        }
+    }
+
+    /**
      * @param int|null $id
      * @param string   $type
      * @param Request  $request
@@ -289,10 +329,16 @@ class PublicController extends Controller
             }
         }
 
-        $form = $this->createForm($tenantType = new TenantType($em), $tenant);
+        $form = $this->createForm(new TenantType($em), $tenant);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tenant = $this->processNewTenantForm($form, $tenantType);
+            try {
+                $tenant = $this->processNewTenantForm($form);
+            } catch (\InvalidArgumentException $e) {
+                throw new BadRequestHttpException($e->getMessage());
+            } catch (\LogicException $e) {
+                throw new HttpException(412, 'We are scrambling our robots...');
+            }
 
             $session->remove('holding_id');
             $session->remove('resident_id');
@@ -338,6 +384,15 @@ class PublicController extends Controller
             $parameters['contractUnits'] = $contractUnits;
         }
 
+        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
+        if ($integrationDataManager->hasIntegrationData()) {
+            $unitId = Unit::SEARCH_UNIT_UNASSIGNED;
+            if ($integrationDataManager->getUnit()) {
+                $unitId = $integrationDataManager->getUnit()->getId();
+            }
+            $parameters['unitId'] = $unitId;
+        }
+
         return $this->render('RjPublicBundle:Public:new.html.twig', $parameters);
     }
 
@@ -358,10 +413,10 @@ class PublicController extends Controller
             $this->createNotFoundException('Holding not found');
         }
 
-        $form = $this->createForm($tenantType = new TenantType($em), new Tenant());
+        $form = $this->createForm(new TenantType($em), new Tenant());
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tenant = $this->processNewTenantForm($form, $tenantType);
+            $tenant = $this->processNewTenantForm($form);
 
             return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
         }
@@ -399,10 +454,10 @@ class PublicController extends Controller
             $this->createNotFoundException('Group not found');
         }
 
-        $form = $this->createForm($tenantType = new TenantType($em), new Tenant());
+        $form = $this->createForm(new TenantType($em), new Tenant());
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tenant = $this->processNewTenantForm($form, $tenantType);
+            $tenant = $this->processNewTenantForm($form);
 
             return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
         }
@@ -425,34 +480,41 @@ class PublicController extends Controller
 
     /**
      * @param FormInterface $form
-     * @param TenantType $tenantType
      * @return Tenant
      */
-    protected function processNewTenantForm(FormInterface $form, TenantType $tenantType)
+    protected function processNewTenantForm(FormInterface $form)
     {
-        $password = $form->get('password')->getData();
-        /** @var Tenant $tenant */
-        $tenant = $form->getData();
-        $password = $this->container->get('user.security.encoder.digest')
-            ->encodePassword($password, $tenant->getSalt());
-        $tenant->setPassword($password);
-        $tenant->setCulture($this->container->getParameter('kernel.default_locale'));
-        $em = $this->getEntityManager();
-        $em->persist($tenant);
-        $em->flush($tenant);
+        /** @var TenantProcessor $tenantProcessor */
+        $tenantProcessor = $this->get('tenant.processor');
+        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
+        /** @var Property $property */
+        $property = $form->get('propertyId')->getData();
         /** @var Unit $unit */
         $unit = $form->get('unit')->getData();
-        /** @var Property $property */
-        $property = $em->getRepository('RjDataBundle:Property')
-            ->findOneWithUnitAndAlphaNumericSort($form->get('propertyId')->getData());
-
+        $externalLeaseId = null;
+        $rent = null;
+        if (!$integrationDataManager->hasIntegrationData()) {
+            $tenant = $tenantProcessor->createNewTenant($form->getData(), $form->get('password')->getData());
+        } else {
+            $residentMapping = $integrationDataManager->createResidentMapping($property, $unit->getActualName());
+            $tenant = $tenantProcessor->createNewIntegratedTenant(
+                $form->getData(),
+                $form->get('password')->getData(),
+                $residentMapping
+            );
+            $externalLeaseId = $integrationDataManager->getExternalLeaseId();
+            $rent = $integrationDataManager->getRent();
+        }
         /** @var ContractProcess $contractProcess */
         $contractProcess = $this->get('contract.process');
         $contractProcess->createContractFromTenantSide(
             $tenant,
             $property,
             $unit->getActualName(),
-            $tenantType->getWaitingContract()
+            $form->get('contractWaiting')->getData(),
+            $externalLeaseId,
+            $rent
         );
 
         $this->get('project.mailer')->sendRjCheckEmail($tenant);
