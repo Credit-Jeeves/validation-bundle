@@ -16,7 +16,7 @@ class PaymentCase extends BaseTestCase
     public function shouldSetCloseReasonWhenAdminClosesPayment()
     {
         $this->load(true);
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
         $block->clickLink('link_list');
