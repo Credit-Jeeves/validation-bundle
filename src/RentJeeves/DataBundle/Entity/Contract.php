@@ -365,7 +365,7 @@ class Contract extends Base
                 $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
                 $late = $operation->getDaysLate();
                 $nYear = $paidFor->format('Y');
-                $nMonth = $paidFor->format('m');
+                $nMonth = $paidFor->format('n');
                 $interval = $currentDate->diff($paidFor)->format('%r%a');
                 $status = $order->getStatus();
                 switch ($status) {
