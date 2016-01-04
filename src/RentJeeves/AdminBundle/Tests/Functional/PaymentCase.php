@@ -22,7 +22,6 @@ class PaymentCase extends BaseTestCase
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->assertCount(6, $table->findAll('css', 'tbody tr'));
         $this->assertCount(6, $editLinks = $table->findAll('css', '.edit_link'));
         $editLinks[0]->click();
 
@@ -30,6 +29,11 @@ class PaymentCase extends BaseTestCase
 
         $paymentStatus = $this->getDomElement('#' . $uniqueId . '_status');
         $paymentStatus->setValue(PaymentStatus::CLOSE);
+        $startDate = new \DateTime('next month');
+        $paymentStartYear = $this->getDomElement('#' . $uniqueId . '_startYear');
+        $paymentStartYear->setValue($startDate->format('Y'));
+        $paymentStartMonth = $this->getDomElement('#' . $uniqueId . '_startMonth');
+        $paymentStartMonth->setValue($startDate->format('n'));
 
         $this->page->pressButton('btn_update_and_edit');
 
