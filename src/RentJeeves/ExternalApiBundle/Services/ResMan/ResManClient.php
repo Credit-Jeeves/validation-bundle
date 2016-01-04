@@ -51,11 +51,6 @@ class ResManClient implements ClientInterface
     protected $apiKey;
 
     /**
-     * @var string
-     */
-    protected $apiUrl;
-
-    /**
      * @var Serializer
      */
     protected $serializer;
@@ -85,20 +80,17 @@ class ResManClient implements ClientInterface
      * @param Logger           $logger
      * @param string           $integrationPartnerId
      * @param string           $apiKey
-     * @param string           $apiUrl
      */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
         Logger $logger,
         $integrationPartnerId,
-        $apiKey,
-        $apiUrl
+        $apiKey
     ) {
         $this->exceptionCatcher = $exceptionCatcher;
         $this->integrationPartnerId = $integrationPartnerId;
         $this->apiKey = $apiKey;
-        $this->apiUrl = $apiUrl;
         $this->serializer = $serializer;
         $this->httpClient = new HttpClient();
         $this->logger = $logger;
@@ -146,9 +138,12 @@ class ResManClient implements ClientInterface
             'ApiKey'                => $this->apiKey,
         ];
 
-        $uri = $this->apiUrl . $method;
+        $parameters = $this->settings->getParameters();
 
-        $postBody = array_merge($baseParams, $params, $this->settings->getParameters());
+        $uri = $parameters['url'] . $method;
+        unset($parameters['url']);
+
+        $postBody = array_merge($baseParams, $params, $parameters);
         $this->debugMessage(sprintf("Send request to resman with parameters:%s", print_r($postBody, true)));
 
         $request = $this->httpClient->post($uri, $headers = null, $postBody);

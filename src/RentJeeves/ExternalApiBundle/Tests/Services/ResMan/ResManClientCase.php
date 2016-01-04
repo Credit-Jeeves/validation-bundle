@@ -41,8 +41,8 @@ class ResManClientCase extends Base
         $resManClient = $container->get('resman.client');
         $settings = new ResManSettings();
         $settings->setAccountId('400');
+        $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
-
         /** @var $residentTransactions ResidentTransactions */
         $residentTransactions = $resManClient->getResidentTransactions(self::EXTERNAL_PROPERTY_ID);
         $this->assertInstanceOf(
@@ -86,6 +86,7 @@ class ResManClientCase extends Base
 
         $settings = new ResManSettings();
         $settings->setAccountId('400');
+        $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
 
         $batchId = $resManClient->openBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
@@ -110,6 +111,7 @@ class ResManClientCase extends Base
 
         $settings = new ResManSettings();
         $settings->setAccountId('400');
+        $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
             ApiIntegrationType::RESMAN,
@@ -200,6 +202,7 @@ class ResManClientCase extends Base
 
         $settings = new ResManSettings();
         $settings->setAccountId('400');
+        $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
 
         $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);

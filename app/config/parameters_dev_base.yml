@@ -72,7 +72,6 @@ parameters:
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
-    resman.api_url: https://api.myresman.com/MITS/
 
     pdo.db_options:
         db_table:        session

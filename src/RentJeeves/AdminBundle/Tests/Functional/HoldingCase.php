@@ -100,13 +100,19 @@ class HoldingCase extends BaseTestCase
             $tabLinks = $this->page->findAll('css', '.nav-tabs a'),
             'Tabs not found'
         );
-        $tabLinks[3]->click(); // ResMan Settings
+        $tabLinks[3]->click(); // ResMan
 
         $this->assertNotNull(
             $accountId = $this->page->find('css', "#{$uniqueId}_resManSettings_accountId"),
             'ResManSettings accountId input not found'
         );
         $accountId->setValue('728192738921738927398');
+
+        $this->assertNotNull(
+            $accountId = $this->page->find('css', "#{$uniqueId}_resManSettings_url"),
+            'ResManSettings url input not found'
+        );
+        $accountId->setValue('https://api.myresman.com/MITS/');
 
         $this->assertNotNull($submit = $this->page->find('css', '.btn-primary'), 'Submit button not found');
         $submit->click();
