@@ -21,10 +21,7 @@ abstract class Import
     protected $id;
 
     /**
-     * @ORM\ManyToOne(
-     *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *      inversedBy="imports"
-     * )
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group")
      * @ORM\JoinColumn(
      *      name="group_id",
      *      referencedColumnName="id",
@@ -35,9 +32,7 @@ abstract class Import
     protected $group;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\User"
-     * )
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User")
      * @ORM\JoinColumn(
      *     name="user_id",
      *     referencedColumnName="id",

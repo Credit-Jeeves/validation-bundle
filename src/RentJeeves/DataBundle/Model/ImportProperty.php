@@ -86,22 +86,12 @@ abstract class ImportProperty
     /**
      * @ORM\Column(
      *     type="string",
-     *     name="street_number",
+     *     name="address1",
      *     nullable=true
      * )
      * @var string
      */
-    protected $streetNumber;
-
-    /**
-     * @ORM\Column(
-     *     type="string",
-     *     name="street_name",
-     *     nullable=true
-     * )
-     * @var string
-     */
-    protected $streetName;
+    protected $address1;
 
     /**
      * @ORM\Column(
@@ -319,33 +309,17 @@ abstract class ImportProperty
     /**
      * @return string
      */
-    public function getStreetName()
+    public function getAddress1()
     {
-        return $this->streetName;
+        return $this->address1;
     }
 
     /**
-     * @param string $streetName
+     * @param string $address1
      */
-    public function setStreetName($streetName)
+    public function setAddress1($address1)
     {
-        $this->streetName = $streetName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStreetNumber()
-    {
-        return $this->streetNumber;
-    }
-
-    /**
-     * @param string $streetNumber
-     */
-    public function setStreetNumber($streetNumber)
-    {
-        $this->streetNumber = $streetNumber;
+        $this->address1 = $address1;
     }
 
     /**
