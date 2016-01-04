@@ -65,7 +65,7 @@ class PaymentCase extends BaseTestCase
         $this->page->pressButton('btn_execute_batch_action');
 
         $this->assertNotNull($alert = $this->page->find('css', '.alert-success'), 'Alert not found');
-        $this->assertEquals('admin.butch.run.success-1', $alert->getText());
+        $this->assertEquals('× admin.butch.run.success-1', $alert->getText());
 
         foreach ($checkBoxes as $checkBox) {
             $checkBox->check();

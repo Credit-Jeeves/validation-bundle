@@ -49,7 +49,7 @@ class LandlordCase extends BaseTestCase
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
         $delete->click();
         $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
-        $this->assertEquals('flash_delete_success', $message->getText());
+        $this->assertEquals('× flash_delete_success', $message->getText());
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(7, $landlords);
         $this->logout();
