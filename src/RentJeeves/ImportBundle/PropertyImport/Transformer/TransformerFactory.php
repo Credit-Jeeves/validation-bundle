@@ -71,10 +71,11 @@ class TransformerFactory
      *
      * @return TransformerInterface returns an import transformer object
      */
-    public function getTransformer(Group $group, $externalPropertyId = null)
+    public function getTransformer(Group $group, $externalPropertyId)
     {
         $customClassName = $this->importTransformerRepository->findClassNameWithPriorityByGroupAndExternalPropertyId(
-            $group, $externalPropertyId
+            $group,
+            $externalPropertyId
         );
 
         if ($customClassName !== null) {
