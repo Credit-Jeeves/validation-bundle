@@ -148,7 +148,7 @@ class PayCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2015',
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2016',
             )
         );
         // is disabled datepicker?
