@@ -57,9 +57,9 @@ class GroupController extends Controller
                     sprintf('--external-property-id=%s', $propertyMapping['externalPropertyId'])
                 ]
             );
+            $em->persist($job);
         }
-
-        $em->persist($job);
+        
         $em->flush();
 
         $request->getSession()->getFlashBag()->add(
