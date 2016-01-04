@@ -122,7 +122,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
         $delete->click();
         $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
-        $this->assertEquals('flash_delete_success', $message->getText());
+        $this->assertEquals('× flash_delete_success', $message->getText());
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(1, $admins);
         $this->logout();

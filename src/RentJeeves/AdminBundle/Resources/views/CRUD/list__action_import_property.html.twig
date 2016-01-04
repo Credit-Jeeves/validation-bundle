@@ -1,0 +1,9 @@
+{% if admin.isGranted('LIST', object)%}
+    <br />
+    <a href="{{ path('admin_create_import_property_job', { "group_id": object.id }) }}" class="btn edit_link import_properties_button"
+       title="{{ 'admin.import.property'|trans }}">
+        <i class="icon-contract"></i>
+        {{ 'admin.import.property'|trans }}
+    </a>
+
+{% endif %}

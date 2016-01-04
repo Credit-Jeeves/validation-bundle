@@ -124,7 +124,10 @@ class RjGroupAdmin extends Admin
                         ),
                         'properties' => array(
                              'template' => 'AdminBundle:CRUD:list__action_properties.html.twig'
-                        )
+                        ),
+                        'import_properties' => [
+                            'template' => 'AdminBundle:CRUD:list__action_import_property.html.twig'
+                        ]
                     )
                 )
             );
