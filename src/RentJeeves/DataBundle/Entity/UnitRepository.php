@@ -68,6 +68,26 @@ class UnitRepository extends EntityRepository
     }
 
     /**
+     * @param Property $property
+     * @param Group $group
+     * @param string $unitName
+     * @return null|Unit
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getImportUnitByPropertyGroupAndUnitName(Property $property, Group $group, $unitName)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.property = :property')
+            ->andWhere('u.group = :group')
+            ->andWhere('u.name = :unitName')
+            ->setParameter('property', $property)
+            ->setParameter('group', $group)
+            ->setParameter('unitName', $unitName)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param $groupId
      * @param null $unitName
      * @param null $externalUnitId

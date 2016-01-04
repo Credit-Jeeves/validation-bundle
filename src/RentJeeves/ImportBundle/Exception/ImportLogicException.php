@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ImportBundle\Exception;
 
-class ImportLoaderException extends ImportException
+class ImportLogicException extends ImportException
 {
+
 }

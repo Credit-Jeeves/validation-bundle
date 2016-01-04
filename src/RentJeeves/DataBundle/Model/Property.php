@@ -323,7 +323,7 @@ abstract class Property
     /**
      * Get units
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|\RentJeeves\DataBundle\Entity\Unit[]
      */
     public function getUnits()
     {
