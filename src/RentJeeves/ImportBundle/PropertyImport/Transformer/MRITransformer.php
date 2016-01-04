@@ -89,7 +89,7 @@ class MRITransformer implements TransformerInterface
      */
     protected function getAddressHasUnits(Value $accountingSystemRecord)
     {
-        return false;
+        return true;
     }
 
     /**

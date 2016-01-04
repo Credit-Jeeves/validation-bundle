@@ -44,12 +44,12 @@ abstract class ImportProperty
      *     name="address_has_units",
      *     type="boolean",
      *     options={
-     *         "default"=0
+     *         "default"=1
      *     }
      * )
      * @var boolean
      */
-    protected $addressHasUnits = false;
+    protected $addressHasUnits = true;
 
     /**
      * @ORM\Column(
