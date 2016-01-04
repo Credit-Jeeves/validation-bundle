@@ -45,7 +45,7 @@ parameters:
 
     login.attempts: 1
     login.delay: 1
-    net_connect.precise_id.userpwd: 'renttrack_pid_demo:022RSX%WJNrK0w' #required! # overwritten by DB
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:e2YHtkPvdlcV97' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!

@@ -1,4 +1,4 @@
-function PayAnything(parent, contract) {
+function PayAnything(parent, contract, defaultParams) {
     var rootNodeName ='#pay-anything-popup';
     var rootNode = jQuery(rootNodeName);
 
@@ -11,6 +11,15 @@ function PayAnything(parent, contract) {
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype_pay_anything',
         'pay': 'rentjeeves_checkoutbundle_payanything_paymenttype'
     };
+
+    var defaultPayFor = null;
+    var defaultAmounts = {};
+    if (defaultParams) {
+        defaultPayFor = defaultParams.payFor;
+        defaultAmounts = defaultParams.amounts ? defaultParams.amounts : {};
+    }
+
+    var redirectUrl = null;
 
     // Wizard-popup steps
     var steps = ['details', 'source', 'pay', 'finish'];
@@ -105,11 +114,18 @@ function PayAnything(parent, contract) {
                 // End
                 break;
             case 'pay':
+                if (data.redirectUrl) {
+                    redirectUrl = data.redirectUrl;
+                }
                 break;
             case 'finish':
                 rootNode.dialog('close');
                 jQuery('body').showOverlay();
-                window.location.reload();
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                } else {
+                    window.location.reload();
+                }
                 return;
                 break;
         }
@@ -194,6 +210,21 @@ function PayAnything(parent, contract) {
                     if (data) {
                         loadedGroupId = groupId;
                         self.availablePayFor(data);
+                        if (defaultPayFor) {
+                            var payFor = ko.utils.arrayFirst(self.availablePayFor(), function(item) {
+                                return item.value == defaultPayFor;
+                            });
+                            if (payFor) {
+                                self.payFor(payFor.value);
+                            } else {
+                                payFor = ko.utils.arrayFirst(self.availablePayFor(), function(item) {
+                                    return (item.value in defaultAmounts);
+                                });
+                                if (payFor) {
+                                    self.payFor(payFor.value);
+                                }
+                            }
+                        }
                         rootNode.hideOverlay();
                     }
                 }
@@ -252,6 +283,14 @@ function PayAnything(parent, contract) {
     self.payment = new Payment(self);
 
     self.payFor = ko.observable(null);
+
+    self.payFor.subscribe(function (newPayFor) {
+        if (newPayFor in defaultAmounts) {
+            self.payment.amount(defaultAmounts[newPayFor]);
+        } else {
+            self.payment.amount(null);
+        }
+    });
 
     self.availablePayFor = ko.observableArray([]);
 

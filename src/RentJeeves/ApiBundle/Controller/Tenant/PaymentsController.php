@@ -296,7 +296,7 @@ class PaymentsController extends Controller
             throw new NotFoundHttpException('Payment not found');
         }
         // Closes only active payments
-        if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+        if (PaymentStatus::ACTIVE == $payment->getStatus() || PaymentStatus::FLAGGED == $payment->getStatus()) {
             $em = $this->getDoctrine()->getManager();
             $payment->setClosed($this, PaymentCloseReason::USER_CANCELLED);
             $em->flush($payment);

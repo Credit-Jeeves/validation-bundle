@@ -36,75 +36,37 @@ use RentJeeves\DataBundle\Validators\ContractDuplicate;
  */
 class Contract extends Base
 {
-    /**
-     * @var string
-     */
     const RESOLVE_EMAIL = 'email';
 
-    /**
-     * @var string
-     */
     const RESOLVE_PAID = 'paid';
 
-    /**
-     * @var string
-     */
     const RESOLVE_UNPAID = 'unpaid';
 
-    /**
-     * @var string
-     */
     const PAYMENT_OK = 'OK';
 
-    /**
-     * @var string
-     */
+    const PAYMENT_NA = 'N/A';
+
     const PAYMENT_PAY = 'PAY';
 
-    /**
-     * @var string
-     */
     const PAYMENT_AUTO = 'AUTO';
 
-    /**
-     * @var string
-     */
     const PAYMENT_LATE = ' DAYS LATE';
 
-    /**
-     * @var string
-     */
     const STATUS_EMPTY = 'empty-month';
 
-    /**
-     * @var string
-     */
     const CONTRACT_ENDED = 'CONTRACT ENDED';
 
-    /**
-     * @const string
-     */
     const CURRENT_ACTIVE = 'ACTIVE';
 
-    /**
-     * @var string
-     */
     const STATUS_PAY = 'auto';
 
-    /**
-     * @var string
-     */
     const STATUS_OK = 'C';
 
-    /**
-     * @var string
-     */
     const STATUS_LATE = '1';
 
-    /**
-     * @var string
-     */
     const EMPTY_LAST_PAYMENT = '-';
+
+    const HISTORY_PERIOD_MONTHS = 24;
 
     /**
      * Details in RT-65
@@ -441,36 +403,53 @@ class Contract extends Base
         return $result;
     }
 
+    /**
+     * @return array
+     */
     private function createHistoryArray()
     {
-        $result = array();
-        $aMonthes = array();
-        for ($i = 1; $i < 13; $i++) {
-            $aMonthes[date('m', mktime(0, 0, 0, $i, 1))] = array(
-                'status' => self::STATUS_EMPTY,
-                'text' => '',
-                'amount' => 0,
-            );
+        $startDate = $this->getStartAt();
+        if (null === $startDate) {
+            return [];
         }
-        $start = $this->getStartAt();
-        $finish = $this->getFinishAt();
-        $startYear = $start->format('Y');
+
+        $result = [];
+        $startDate->setTime(0, 0, 0);
+        $finishDate = $this->getFinishAt();
+        $createDate = $this->getCreatedAt()->setTime(0, 0, 0);
+
+        $maintainedHistoryPeriod = $createDate->getClone()->sub(
+            new \DateInterval('P' . self::HISTORY_PERIOD_MONTHS . 'M')
+        );
+        // if start_date > 24 month before created_date --> treat it as "created_at - 24 months"
+        if ($startDate < $maintainedHistoryPeriod) {
+            $startDate = $maintainedHistoryPeriod;
+        }
+        $startYear = $startDate->format('Y');
         $currentYear = new DateTime('now');
-        $finishYear = $currentYear->format('Y');
-        if ($finish) {
-            $finishYear = $finish->format('Y');
+        $finishYear = $currentYear->format('Y'); // default finish year is the current one
+        if ($finishDate) {
+            $finishYear = $finishDate->format('Y');
         }
-        for ($i = $startYear; $i <= $finishYear; $i++) {
-            $result[$i] = $aMonthes;
+        for ($year = $startYear; $year <= $finishYear; $year++) {
+            for ($monthIdx = 1; $monthIdx < 13; $monthIdx++) {
+                $status = self::STATUS_EMPTY;
+                $amount = 0;
+                $text = '';
+                $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
+                // if month is between startDate and createDate
+                if ($date <= $createDate && $startDate <= $date) {
+                    $status = self::STATUS_OK;
+                    $amount = self::PAYMENT_NA;
+                    $text   = self::PAYMENT_OK;
+                }
+                $result[$year][$monthIdx] = [
+                    'status' => $status,
+                    'text'   => $text,
+                    'amount' => $amount,
+                ];
+            }
         }
-        /*if (ContractStatus::FINISHED != $this->getStatus()) {
-            $paidTo = $this->getPaidTo();
-            $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
-                'status' => self::STATUS_PAY,
-                'text' => self::PAYMENT_PAY,
-                'amount' => 0,
-            );
-        }*/
 
         return $result;
     }
@@ -769,8 +748,9 @@ class Contract extends Base
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
-                    (!$payment->getDepositAccount() ||
+                if ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                        PaymentStatus::FLAGGED === $payment->getStatus())
+                    && (!$payment->getDepositAccount() ||
                         DepositAccountType::RENT === $payment->getDepositAccount()->getType())
                 ) {
                     return true;
@@ -796,7 +776,8 @@ class Contract extends Base
     {
         return $this->getPayments()->filter(
             function (Payment $payment) {
-                return (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                return ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                    PaymentStatus::FLAGGED === $payment->getStatus()) &&
                     DepositAccountType::RENT !== $payment->getDepositAccount()->getType());
             }
         );

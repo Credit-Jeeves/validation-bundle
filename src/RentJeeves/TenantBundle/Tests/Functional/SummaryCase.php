@@ -33,7 +33,7 @@ class SummaryCase extends BaseTestCase
                 'questions_OutWalletAnswer3_2' => true,
             )
         );
-        $this->page->pressButton('pay_popup.step.3');
+        $this->session->evaluateScript('$("button span:contains(\'pay_popup.step.3\')").click()');
 
         $this->assertNotNull(
             $error = $this->page->find('css', '.attention-box')
@@ -74,7 +74,7 @@ class SummaryCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
-        $this->page->pressButton('pay_popup.step.3');
+        $this->session->evaluateScript('$("button span:contains(\'pay_popup.step.3\')").click()');
         $this->assertNotNull(
             $error = $this->page->find('css', '.attention-box')
         );
@@ -90,7 +90,7 @@ class SummaryCase extends BaseTestCase
                 'questions_OutWalletAnswer4_3' => true,
             )
         );
-        $this->page->pressButton('pay_popup.step.3');
+        $this->session->evaluateScript('$("button span:contains(\'pay_popup.step.3\')").click()');
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
         $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary') === null");
         $this->assertNotNull($summaryPage = $this->page->find('css', '#summary_page'));

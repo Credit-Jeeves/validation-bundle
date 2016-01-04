@@ -84,6 +84,10 @@ class Property extends Base
         return $result;
     }
 
+    /**
+     * @param string $unitSearch
+     * @return Unit|null
+     */
     public function searchUnit($unitSearch)
     {
         $result = null;
