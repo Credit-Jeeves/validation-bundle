@@ -77,8 +77,9 @@ class Mailer extends BaseMailer implements MailerInterface
             $this->handleException($e);
             $this->container->get('logger')->alert(
                 sprintf(
-                    'Error when sending email (%s) : %s',
+                    'Error when sending email (%s) to user %s : %s',
                     $templateName,
+                    $emailTo,
                     $e->getMessage()
                 )
             );

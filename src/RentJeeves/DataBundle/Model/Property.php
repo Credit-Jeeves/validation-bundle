@@ -1,11 +1,13 @@
 <?php
 namespace RentJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\PropertyAddress as PropertyAddressEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\PropertyMapping as PropertyMappingEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -20,147 +22,6 @@ abstract class Property
      * @Serializer\Groups({"RentJeevesImport", "AdminProperty"})
      */
     protected $id;
-
-    /**
-     * @ORM\Column(
-     *     name="country",
-     *     type="string",
-     *     length=3,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $country = 'US';
-
-    /**
-     * @ORM\Column(
-     *     name="area",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $area;
-
-    /**
-     * @ORM\Column(
-     *     name="city",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $city;
-
-    /**
-     * @ORM\Column(
-     *     name="district",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $district;
-
-    /**
-     * @ORM\Column(
-     *     name="street",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $street;
-
-    /**
-     * @ORM\Column(
-     *     name="number",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $number;
-
-    /**
-     * @ORM\Column(
-     *     name="zip",
-     *     type="string",
-     *     length=15,
-     *     nullable=true
-     * )
-     * @Serializer\Groups({"payRent"})
-     */
-    protected $zip;
-
-    /**
-     * @ORM\Column(
-     *     name="google_reference",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     */
-    protected $google_reference;
-
-    /**
-     * @ORM\Column(
-     *     name="jb",
-     *     type="float",
-     *     nullable=true
-     * )
-     */
-    protected $jb;
-
-    /**
-     * @ORM\Column(
-     *     name="kb",
-     *     type="float",
-     *     nullable=true
-     * )
-     */
-    protected $kb;
-
-    /**
-     * @ORM\Column(
-     *     name="is_single",
-     *     type="boolean",
-     *     nullable=true
-     * )
-     */
-    protected $isSingle;
-
-    /**
-     * @ORM\Column(
-     *     name="ss_lat",
-     *     type="string",
-     *     nullable=true
-     * )
-     */
-    protected $lat;
-
-    /**
-     * @ORM\Column(
-     *     name="ss_long",
-     *     type="string",
-     *     nullable=true
-     * )
-     */
-    protected $long;
-
-    /**
-     * @ORM\Column(
-     *     name="ss_index",
-     *     type="string",
-     *     nullable=true
-     * )
-     */
-    protected $index;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -236,7 +97,7 @@ abstract class Property
      * )
      * @Serializer\Exclude
      */
-    protected $propertyMapping;
+    protected $propertyMappings;
 
     /**
      * @ORM\OneToMany(
@@ -259,17 +120,6 @@ abstract class Property
     protected $isMultipleBuildings = false;
 
     /**
-     * @ORM\OneToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ImportMappingByProperty",
-     *     mappedBy="property"
-     * )
-     * @Serializer\Exclude
-     *
-     * @var ImportMappingByProperty
-     */
-    protected $importMappingByProperty;
-
-    /**
      * @var PropertyAddress
      *
      * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\PropertyAddress", cascade={"persist"})
@@ -279,22 +129,6 @@ abstract class Property
      * @Serializer\Groups({"payRent"})
      */
     protected $propertyAddress;
-
-    /**
-     * @return ImportMappingByProperty
-     */
-    public function getImportMappingByProperty()
-    {
-        return $this->importMappingByProperty;
-    }
-
-    /**
-     * @param ImportMappingByProperty $importMappingByProperty
-     */
-    public function setImportMappingByProperty(ImportMappingByProperty $importMappingByProperty)
-    {
-        $this->importMappingByProperty = $importMappingByProperty;
-    }
 
     /**
      * @return boolean
@@ -318,6 +152,15 @@ abstract class Property
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->contractsWaiting = new ArrayCollection();
+        $this->propertyMappings = new ArrayCollection();
+    }
+
+    /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -337,240 +180,19 @@ abstract class Property
     }
 
     /**
-     * @param PropertyMapping $propertyMapping
+     * @param PropertyMappingEntity $propertyMapping
      */
-    public function setPropertyMapping(PropertyMapping $propertyMapping)
+    public function addPropertyMapping(PropertyMappingEntity $propertyMapping)
     {
-        $this->propertyMapping = $propertyMapping;
+        $this->propertyMappings[] = $propertyMapping;
     }
 
     /**
-     * @return PropertyMapping
+     * @return ArrayCollection|PropertyMappingEntity[]
      */
-    public function getPropertyMapping()
+    public function getPropertyMappings()
     {
-        return $this->propertyMapping;
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @deprecated
-     *
-     * Set country
-     *
-     * @param string $country
-     * @return Property
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @deprecated
-     * Get country
-     *
-     * @return string
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * Set area
-     *
-     * @param string $area
-     * @return Property
-     */
-    public function setArea($area)
-    {
-        $this->area = $area;
-
-        return $this;
-    }
-
-    /**
-     * Get area
-     *
-     * @return string
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * Set city
-     *
-     * @param string $city
-     * @return Property
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set district
-     *
-     * @param string $district
-     * @return Property
-     */
-    public function setDistrict($district)
-    {
-        $this->district = $district;
-
-        return $this;
-    }
-
-    /**
-     * Get district
-     *
-     * @return string
-     */
-    public function getDistrict()
-    {
-        return $this->district;
-    }
-
-    /**
-     * Set street_address
-     *
-     * @param string $streetAddress
-     * @return Property
-     */
-    public function setStreet($street)
-    {
-        $this->street = $street;
-
-        return $this;
-    }
-
-    /**
-     * Get street_address
-     *
-     * @return string
-     */
-    public function getStreet()
-    {
-        return $this->street;
-    }
-
-    /**
-     * Set street_number
-     *
-     * @param string $streetNumber
-     * @return Property
-     */
-    public function setNumber($number)
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
-    /**
-     * Get street_number
-     *
-     * @return string
-     */
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    /**
-     * Set zip
-     *
-     * @param string $zip
-     * @return Property
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-
-        return $this;
-    }
-
-    /**
-     * Get zip
-     *
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
-     * Set jb
-     *
-     * @param float $jb
-     * @return Property
-     */
-    public function setJb($jb)
-    {
-        $this->jb = $jb;
-
-        return $this;
-    }
-
-    /**
-     * Get jb
-     *
-     * @return float
-     */
-    public function getJb()
-    {
-        return $this->jb;
-    }
-
-    /**
-     * Set kb
-     *
-     * @param float $kb
-     * @return Property
-     */
-    public function setKb($kb)
-    {
-        $this->kb = $kb;
-
-        return $this;
-    }
-
-    /**
-     * Get jb
-     *
-     * @return float
-     */
-    public function getKb()
-    {
-        return $this->kb;
+        return $this->propertyMappings;
     }
 
     /**
@@ -620,42 +242,15 @@ abstract class Property
     }
 
     /**
-     * You should set this using "property.manager"->setupSingleProperty() instead.
-     *
-     * @param boolean $isSingle
-     *
-     * @deprecated
+     * @param Collection $property_groups
      */
-    public function setIsSingle($isSingle)
+    public function setGroups(Collection $property_groups = null)
     {
-        $this->isSingle = $isSingle;
+        $this->property_groups = $property_groups;
     }
 
     /**
-     * @return bool|null
-     */
-    public function isSingle()
-    {
-        return $this->isSingle;
-    }
-
-    /**
-     * @deprecated Please use function on the following line for getting value
-     * @see RentJeeves\DataBundle\Model\Property::isSingle()
-     *
-     * @return boolean|null
-     */
-    public function getIsSingle()
-    {
-        return $this->isSingle;
-    }
-
-    /**
-     * Add groups
-     * This is used for fixture load
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Group $groups
-     * @return Property
+     * @deprecated use only for for fixture load; if u want update all propertyGroups use `setGroups`
      */
     public function setPropertyGroups($group)
     {
@@ -728,7 +323,7 @@ abstract class Property
     /**
      * Get units
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|\RentJeeves\DataBundle\Entity\Unit[]
      */
     public function getUnits()
     {
@@ -766,80 +361,6 @@ abstract class Property
     public function getContracts()
     {
         return $this->contracts;
-    }
-
-    /**
-     * @deprecated use PropertyAddress
-     */
-    public function setGoogleReference($google_reference)
-    {
-        $this->google_reference = $google_reference;
-
-        return $this;
-    }
-
-    /**
-     * @deprecated use PropertyAddress
-     */
-    public function getGoogleReference()
-    {
-        return $this->google_reference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLat()
-    {
-        return $this->lat;
-    }
-
-    /**
-     * @param string $lat
-     */
-    public function setLat($lat)
-    {
-        $this->lat = $lat;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLong()
-    {
-        return $this->long;
-    }
-
-    /**
-     * @param string $long
-     */
-    public function setLong($long)
-    {
-        $this->long = $long;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
-    /**
-     * @param string $index
-     */
-    public function setIndex($index)
-    {
-        $this->index = $index;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress1()
-    {
-        return sprintf('%s %s', $this->number, $this->street);
     }
 
     /**

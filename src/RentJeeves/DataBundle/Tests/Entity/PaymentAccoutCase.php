@@ -46,6 +46,7 @@ class PaymentAccountCase extends BaseTestCase
             $em->flush($pa);
         }
         static::$kernel = null;
+        $em = $this->getEntityManager();
         /** @var Payment $payment */
         $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);

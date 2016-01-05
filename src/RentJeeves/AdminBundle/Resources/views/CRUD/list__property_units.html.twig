@@ -8,7 +8,7 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 
 #}
-{% if admin.isGranted('EDIT', object) and not object.isSingle %}
+{% if admin.isGranted('EDIT', object) and not object.propertyAddress.isSingle %}
     <a href="{{ path('admin_rentjeeves_data_unit_list', { "property_id": object.id }) }}" class="btn edit_link" title="{{ 'admin.list.landlords'|trans({}) }}">
         <i class="icon-contract"></i>
         Units

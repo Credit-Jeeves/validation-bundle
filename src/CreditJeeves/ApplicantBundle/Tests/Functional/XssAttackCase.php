@@ -15,6 +15,7 @@ class XssAttackCase extends BaseTestCase
      */
     public function sendGetRequest()
     {
+        $this->markTestSkipped('We don\'t use sf1 anymore. Need write new test for xss hack.');
         $this->setDefaultSession('goutte');
         require_once __DIR__ . '/../../../CoreBundle/sfConfig.php';
         require_once __DIR__ . '/../../../../../vendor/credit-jeeves/credit-jeeves/lib/curl/Curl.class.php';

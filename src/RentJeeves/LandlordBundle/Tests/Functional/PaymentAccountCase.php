@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PaymentAccountCase extends BaseTestCase
@@ -116,6 +117,11 @@ class PaymentAccountCase extends BaseTestCase
 
         $this->assertEquals('mary less (settings.payment_account.active)', $accounts[0]->getText());
         $this->assertEquals('gary', $accounts[2]->getText());
+        // check that billing account has last 4 digits filled
+        $billingAccount = $this->getEntityManager()->getRepository('RjDataBundle:BillingAccount')
+            ->findOneBy(['isActive' => true, 'paymentProcessor' => PaymentProcessor::HEARTLAND]);
+        $this->assertNotNull($billingAccount, 'Should exist active HPS billing account');
+        $this->assertEquals('5678', $billingAccount->getLastFour(), 'Last four digits should be 5678');
     }
 
     /**

@@ -249,11 +249,11 @@ trait Property
         }
 
         $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddress(
-            $number = $property->getPropertyAddress()->getNumber(),
-            $street = $property->getPropertyAddress()->getStreet(),
-            $city = $property->getPropertyAddress()->getCity(),
-            $state = $property->getPropertyAddress()->getState(),
-            $zipCode = $property->getPropertyAddress()->getZip()
+            $propertyAddress->getNumber(),
+            $propertyAddress->getStreet(),
+            $propertyAddress->getCity(),
+            $propertyAddress->getState(),
+            $propertyAddress->getZip()
         );
 
         if ($validDBProperty) {

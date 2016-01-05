@@ -1,12 +1,13 @@
 <?php
 namespace RentJeeves\CoreBundle\Command;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 abstract class BaseCommand extends ContainerAwareCommand
 {
     /**
-     * @return \Symfony\Bridge\Monolog\Logger
+     * @return LoggerInterface
      */
     protected function getLogger()
     {

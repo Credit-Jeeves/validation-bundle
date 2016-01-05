@@ -167,21 +167,18 @@ class Google
      * @param Property $property
      * @param boolean $toString
      *
-     * @return array
+     * @return array|string
      *
      * @throws \InvalidArgumentException when Property doesn\'t have location data
      */
     protected function getLocationData(Property $property, $toString = true)
     {
         $propertyAddress = $property->getPropertyAddress();
-        if ($propertyAddress->getJb() && $propertyAddress->getKb()) {
-            $locationData['latitude'] = $propertyAddress->getJb();
-            $locationData['longitude'] = $propertyAddress->getKb();
-        } elseif ($propertyAddress->getLat() && $propertyAddress->getLong()) {
+        if ($propertyAddress->getLat() && $propertyAddress->getLong()) {
             $locationData['latitude'] = $propertyAddress->getLat();
             $locationData['longitude'] = $propertyAddress->getLong();
         } else {
-            throw new \InvalidArgumentException(sprintf('Property doesn\'t have neither jb/kb nor lat/long'));
+            throw new \InvalidArgumentException(sprintf('Property doesn\'t have lat/long'));
         }
 
         return $toString ? $locationData['latitude'] . ',' . $locationData['longitude'] : $locationData;

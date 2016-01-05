@@ -1,0 +1,14 @@
+services:
+    accounting_system.integration.data_manager:
+        class: RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @session
+            - @logger
+
+    tenant.processor:
+        class: RentJeeves\PublicBundle\Services\TenantProcessor
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @user.security.encoder.digest
+            - %kernel.default_locale%

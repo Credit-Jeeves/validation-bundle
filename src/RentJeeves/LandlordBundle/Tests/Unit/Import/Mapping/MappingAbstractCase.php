@@ -196,7 +196,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($data[MappingTest::KEY_CITY], $propertyAddress->getCity());
         $this->assertEquals($data[MappingTest::KEY_STREET], $propertyAddress->getStreet());
-        $this->assertEmpty($property->getNumber(), 'Number not empty, but should');
+        $this->assertEmpty($propertyAddress->getNumber(), 'Number not empty, but should');
         $this->assertEquals($data[MappingTest::KEY_ZIP], $propertyAddress->getZip());
         $this->assertEquals($data[MappingTest::KEY_STATE], $propertyAddress->getState());
     }

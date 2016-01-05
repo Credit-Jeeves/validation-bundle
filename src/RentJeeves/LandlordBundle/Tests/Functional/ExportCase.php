@@ -65,8 +65,8 @@ class ExportCase extends BaseTestCase
             [
                 'zip' => '10003',
                 'number' => '770',
-                'jb' => '40.7308364',
-                'kb' => '-73.991567'
+                'lat' => '40.73108',
+                'long' => '-73.99186'
             ]
         );
         /** @var DepositAccount $depositAccount */
@@ -131,6 +131,7 @@ class ExportCase extends BaseTestCase
     public function goToYardiReport()
     {
         $this->load(true);
+        $this->setDefaultSession('goutte');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         $this->page->clickLink('accounting.menu.export');

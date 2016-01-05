@@ -2,16 +2,8 @@
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
     "version": "3.6",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
-        {
-            "name": "Ton Sharp",
-            "email": "Forma-PRO@66ton99.org.ua"
-        },
-        {
-            "name": "Alex Emelyanov",
-            "email": "alex.emelyanov.ua@gmail.com"
-        },
         {
             "name": "Darryl Eaton",
             "email": "darryl@creditjeeves.com"
@@ -69,129 +61,115 @@
             }
         },
         {
-            "type": "package",
-            "package": {
-                "name": "credit-jeeves/credit-jeeves",
-                "type": "library",
-                "description": "Legacy code",
-                "version": "dev-master",
-                "source": {
-                    "type": "git",
-                    "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "c903d18fdacee165615574dde0b0d9d7c5dfd5ea"
-                }
-            }
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/KhepinYamlFixturesBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/DoctrineExtensions.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/SmartyStreetsBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:formapro/xmlseclib.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/JMSJobQueueBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/validation-bundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/PayumBundle.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/Heartland.git"
         },
         {
             "type": "vcs",
             "url": "https://github.com/goetas/serializer.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/ArfBundle.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/SimulationBundle.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/environment.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/Payum.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/PayumBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/Heartland.git"
-        },
-        {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/ACIClient.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
-        },
-        {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/BadaBoom.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/FpBadaBoomBundle.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/SensioGeneratorBundle.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/KhepinYamlFixturesBundle.git"
-        },
-        {
-            "type": "git",
+            "type": "vcs",
             "url": "https://github.com/Credit-Jeeves/migrations"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url":"git@github.com:Credit-Jeeves/RjEmailBundle.git"
         },
         {
-            "type": "git",
+            "type": "vcs",
             "url":"git@github.com:Credit-Jeeves/APYJsFormValidationBundle.git"
         },
         {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:formapro/xmlseclib.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/JMSJobQueueBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/validation-bundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/DoctrineExtensions.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/SmartyStreetsBundle.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:Credit-Jeeves/doctrine2.git"
-        },
-        {
-            "type": "git",
+            "type": "vcs",
             "url": "git@github.com:/piersroberts/Skip32.git"
         }
     ],
@@ -211,87 +189,89 @@
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "credit-jeeves/credit-jeeves": "dev-master",
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
         "credit-jeeves/api-bundle": "dev-master",
-        "friendsofsymfony/rest-bundle": "dev-master",
-        "nelmio/api-doc-bundle": "dev-master",
-        "friendsofsymfony/oauth-server-bundle": "dev-master",
-        "braincrafted/validation-bundle": "dev-ton as dev-master",
-        "doctrine/orm": "dev-preUpdate as 2.4.0",
-        "doctrine/doctrine-bundle": "dev-master",
-        "doctrine/doctrine-cache-bundle": "dev-master",
-        "twig/twig": "dev-master",
-        "twig/extensions": "1.*",
-        "kriswallsmith/assetic": "1.1.*",
-        "symfony/symfony": "2.4.*",
-        "symfony/assetic-bundle": "2.3.*",
-        "symfony/swiftmailer-bundle": "2.3.*",
-        "symfony/monolog-bundle": "2.4.*",
-        "symfony/icu": "v1.1.0",
-        "sensio/distribution-bundle": "2.3.*",
-        "sensio/framework-extra-bundle": "~3.0",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "jms/security-extra-bundle": "dev-master",
-        "jms/di-extra-bundle": "1.4.*",
-        "friendsofsymfony/user-bundle": "v1.3.2",
-        "friendsofsymfony/jsrouting-bundle": "~1.1",
+        "rj/email-bundle": "dev-master",
+        "hat/environment": "dev-ton",
+        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "payum/aci" : "dev-master",
         "payum2/payum": "dev-master as 0.5.x-dev",
         "payum2/payum-bundle": "dev-heartland",
         "payum2/heartland": "dev-master",
-        "ass/xmlsecurity": "dev-master",
-        "hat/environment": "dev-ton",
-        "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",
-        "fp/universal-error-catcher": "1.0.*",
         "fp/badaboom-bundle": "dev-ton",
-        "jms/serializer-bundle": "dev-master",
-        "jms/serializer": "dev-master",
-        "stof/doctrine-extensions-bundle": "dev-master",
-        "a2lix/translation-form-bundle": "dev-master",
-        "rj/email-bundle": "dev-master",
-        "sonata-project/admin-bundle": "2.2.9",
-        "sonata-project/doctrine-orm-admin-bundle": "2.2.*@dev",
-        "doctrine/migrations": "dev-master",
-        "doctrine/doctrine-migrations-bundle": "dev-master",
-        "guzzle/http": "v3.5.0",
-        "apy/jsfv-bundle":"dev-master",
-        "willdurand/js-translation-bundle": "dev-master",
-        "willdurand/geocoder-bundle": "dev-master",
-        "beberlei/DoctrineExtensions": "dev-master",
-        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
-        "pagerfanta/pagerfanta": "dev-master",
-        "fp/jsformvalidator-bundle": "dev-master",
-        "besimple/soap-bundle": "dev-master",
-        "besimple/soap-common": "dev-master",
-        "besimple/soap-wsdl": "dev-master",
-        "besimple/soap-client": "dev-master",
-        "besimple/soap-server": "dev-master",
-        "besimple/wsdl2php": "dev-master",
+        "braincrafted/validation-bundle": "dev-ton as dev-master",
         "renttrack/transunion-bundle": "dev-master",
         "renttrack/smarty-streets-bundle": "dev-master",
-        "proberts/skip32": "dev-master"
+        "doctrine/orm": "v2.4.8",
+        "stof/doctrine-extensions-bundle": "dev-master as v1.1.0",
+        "besimple/soap-client": "v0.2.6 as dev-master",
+        "apy/jsfv-bundle":"dev-master as 2.1",
+        "doctrine/migrations": "dev-master as 1.0.0",
+        "renttrack/profit-stars-client-bundle": "dev-master",
+
+        "symfony/symfony": "v2.4.10",
+        "doctrine/dbal": "v2.4.4",
+        "symfony/icu": "v1.1.0",
+        "friendsofsymfony/oauth-server-bundle": "1.4.2",
+        "doctrine/doctrine-bundle": "v1.3.0",
+        "doctrine/doctrine-cache-bundle": "v1.0.1",
+        "twig/twig": "v1.15.1",
+        "twig/extensions": "v1.0.1",
+        "kriswallsmith/assetic": "v1.1.2",
+        "symfony/assetic-bundle": "v2.3.0",
+        "symfony/swiftmailer-bundle": "v2.3.7",
+        "symfony/monolog-bundle": "v2.4.1",
+        "sensio/distribution-bundle": "v2.3.4",
+        "sensio/framework-extra-bundle": "v3.0.0",
+        "incenteev/composer-parameter-handler": "v2.1.0",
+        "jms/security-extra-bundle": "1.5.1",
+        "jms/di-extra-bundle": "1.4.*",
+        "knplabs/knp-menu-bundle": "1.1.*",
+        "fp/universal-error-catcher": "1.0.2",
+        "a2lix/translation-form-bundle": "2.*",
+        "sonata-project/admin-bundle": "2.2.9",
+        "sonata-project/doctrine-orm-admin-bundle": "2.2.7",
+        "doctrine/doctrine-migrations-bundle": "v1.0.0",
+        "guzzle/http": "v3.5.0",
+        "willdurand/js-translation-bundle": "2.1",
+        "beberlei/DoctrineExtensions": "dev-master",
+        "pagerfanta/pagerfanta": "1.0.*",
+        "fp/jsformvalidator-bundle": "1.1",
+        "proberts/skip32": "0.0.0-alpha-2",
+        "friendsofsymfony/jsrouting-bundle": "1.5.*",
+        "friendsofsymfony/user-bundle": "v1.3.2",
+        "besimple/wsdl2php": "v1.0.0",
+        "jms/serializer-bundle": "0.13.0 as dev-master",
+        "jms/serializer": "0.16 as dev-master",
+        "friendsofsymfony/rest-bundle": "1.4 as dev-master",
+        "nelmio/api-doc-bundle": "2.5.0 as dev-master",
+        "besimple/soap-bundle": "v0.2.5 as dev-master",
+        "besimple/soap-common": "0.2.x-dev as dev-master",
+        "besimple/soap-wsdl": "v0.2.4 as dev-master",
+        "besimple/soap-server": "v0.2.5 as dev-master",
+    	"ass/xmlsecurity": "v1.1.1 as dev-master"
     },
     "require-dev": {
+        "khepin/yaml-fixtures-bundle": "v0.8.2 as dev-master",
+        "sensio/generator-bundle": "dev-master as v2.3.5",
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
         "phpunit/phpunit": "~4",
-        "behat/mink": "dev-master as 1.5.0",
-        "behat/mink-bundle": "1.4.*",
-        "behat/mink-selenium2-driver": "1.1.*",
-        "behat/mink-zombie-driver": "dev-master",
+        "behat/mink": "v1.6.1 as 1.5.0",
+        "behat/mink-bundle": "v1.4.1",
         "behat/mink-goutte-driver": "v1.0.8",
-        "doctrine/data-fixtures": "dev-master",
-        "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
-        "sensio/generator-bundle": "dev-master",
-        "khepin/yaml-fixtures-bundle": "dev-master",
+        "behat/mink-selenium2-driver": "v1.1.1",
+        "doctrine/data-fixtures": "v1.0.2 as dev-master",
+        "behat/mink-browserkit-driver": "v1.1.0",
+        "doctrine/doctrine-fixtures-bundle": "v2.2.0",
         "comfortablynumb/backup-restore-bundle": "dev-master",
-        "ton/email-bundle": "1.0.*",
-        "fabpot/php-cs-fixer": "@stable"
+        "ton/email-bundle": "v1.0.0",
+        "fabpot/php-cs-fixer": "v0.5.7",
+        "sebastian/diff": "1.1.0"
     },
     "scripts": {
         "post-install-cmd": [

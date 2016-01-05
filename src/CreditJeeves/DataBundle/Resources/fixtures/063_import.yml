@@ -1,0 +1,16 @@
+model: RentJeeves\DataBundle\Entity\Import
+fixtures:
+    Import_1:
+        group: RentGroup_1
+        user: Landlord_1
+        importType: 'property'
+        status: 'complete'
+        createdAt: 'now'
+        finishedAt: 'now'
+    Import_2:
+        group: RentGroup_1
+        user: Landlord_1
+        importType: 'property'
+        status: 'running'
+        createdAt: 'now'
+        finishedAt: 'now'

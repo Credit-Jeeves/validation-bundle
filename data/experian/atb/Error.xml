@@ -1,0 +1,21 @@
+<Simulation>
+  <transaction_signature>NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3
+    icy26YjqrpzMRSGs73qWNpUdTAJpchPdkaaPj8GCI35ybC7Ewoxp0/79TtvT
+    hc4g42PfHNM4X3en0+Gnak4soE4JFiZATEIoRgBmVqgDsmNKFOlww7EO3HBU
+    bj7WdyLUerZR
+  </transaction_signature>
+  <scoreInit>9005</scoreInit>
+  <scoreBest>9005</scoreBest>
+  <cashUsed>0</cashUsed>
+  <simType>0</simType>
+  <Message>Initial Score is greater than ScoreMax. guNo simulation is
+    available by IncreaseScoreByX_FULL.</Message>
+  <DataChanged>
+  </DataChanged>
+  <RawDataCSV>
+  </RawDataCSV>
+  <FilterCSV>
+  </FilterCSV>
+  <AttributeCSV>
+  </AttributeCSV>
+</Simulation>

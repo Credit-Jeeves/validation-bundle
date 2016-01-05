@@ -3,8 +3,12 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * @method Unit find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class UnitRepository extends EntityRepository
 {
     /**
@@ -61,6 +65,26 @@ class UnitRepository extends EntityRepository
         }
 
         return $result;
+    }
+
+    /**
+     * @param Property $property
+     * @param Group $group
+     * @param string $unitName
+     * @return null|Unit
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getImportUnitByPropertyGroupAndUnitName(Property $property, Group $group, $unitName)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.property = :property')
+            ->andWhere('u.group = :group')
+            ->andWhere('u.name = :unitName')
+            ->setParameter('property', $property)
+            ->setParameter('group', $group)
+            ->setParameter('unitName', $unitName)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -135,9 +159,10 @@ class UnitRepository extends EntityRepository
 
     /**
      * @param array $params
+     *
      * @return array<Unit>
      */
-    public function getUnitsByAddress($params)
+    public function getUnitsByAddress(array $params)
     {
         $number = isset($params['number']) ? $params['number'] : '';
         $street = isset($params['street']) ? $params['street'] : '';
@@ -201,6 +226,52 @@ class UnitRepository extends EntityRepository
             ->andWhere('u.holding = :holding')
             ->setParameter('holding', $holding)
             ->setParameter('externalId', $externalUnitId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Unit $currentUnit
+     * @param Unit $excludedUnit
+     *
+     * @return Unit[]
+     */
+    public function findOtherUnitsWithSameExternalUnitIdInGroupExcludeUnit(Unit $currentUnit, Unit $excludedUnit)
+    {
+        if (null === $currentUnit->getUnitMapping()) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->innerJoin('u.unitMapping', 'um')
+            ->where('um.externalUnitId = :externalId')
+            ->andWhere('u.group = :group')
+            ->andWhere('u.id != :excludedUnitId AND u.id != :currentUnitId')
+            ->setParameter('group', $currentUnit->getGroup())
+            ->setParameter('currentUnitId', $currentUnit->getId())
+            ->setParameter('excludedUnitId', $excludedUnit->getId())
+            ->setParameter('externalId', $currentUnit->getUnitMapping()->getExternalUnitId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Unit $currentUnit
+     * @param Property $property
+     *
+     * @return Unit|null
+     */
+    public function findFirstUnitsWithSameNameByUnitAndPropertyAndSortById(Unit $currentUnit, Property $property)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.property = :property')
+            ->andWhere('u.name = :unitName')
+            ->andWhere('u.id != :excludedUnitId')
+            ->setParameter('property', $property)
+            ->setParameter('unitName', $currentUnit->getActualName())
+            ->setParameter('excludedUnitId', $currentUnit->getId())
+            ->setMaxResults(1)
+            ->orderBy('u.id', 'desc')
             ->getQuery()
             ->getOneOrNullResult();
     }

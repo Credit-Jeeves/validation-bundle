@@ -10,6 +10,7 @@ class PaymentAccount
      * @var object
      */
     protected $entity;
+
     /**
      * @var array
      */

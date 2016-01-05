@@ -27,6 +27,12 @@ class UnitMappingRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @param Group $group
+     * @param string $externalUnitId
+     * @return UnitMapping
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getMappingForImport(Group $group, $externalUnitId)
     {
         return $this->createQueryBuilder('mapping')
@@ -67,6 +73,24 @@ class UnitMappingRepository extends EntityRepository
             ->setParameter('groupId', $group->getId())
             ->setParameter('externalUnitId', $externalUnitId)
             ->setParameter('propertyId', $property->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Property $property
+     * @param string $externalPropertyId
+     * @return UnitMapping|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getUnitMappingByPropertyAndExternalUnitId(Property $property, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('mapping')
+            ->innerJoin('mapping.unit', 'u')
+            ->where('u.property = :property')
+            ->andWhere('mapping.externalUnitId = :externalUnitId')
+            ->setParameter('property', $property)
+            ->setParameter('externalUnitId', $externalPropertyId)
             ->getQuery()
             ->getOneOrNullResult();
     }

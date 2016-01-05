@@ -21,9 +21,10 @@ class ResManSettings extends Base implements SettingsInterface
 
     public function getParameters()
     {
-        return array(
-            'AccountID' => $this->getAccountId()
-        );
+        return [
+            'AccountID' => $this->getAccountId(),
+            'url' => $this->getUrl()
+        ];
     }
 
     /**

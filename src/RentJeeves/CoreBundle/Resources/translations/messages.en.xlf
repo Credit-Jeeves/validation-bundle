@@ -3251,6 +3251,10 @@
                 <source>pay_anything_popup.title</source>
                 <target>Pay Something Else</target>
             </trans-unit>
+            <trans-unit id="pay_anything_popup.should_pay_message">
+                <source>pay_anything_popup.should_pay_message</source>
+                <target>Thank you for your %paid% payment, now please pay your %should_pay%</target>
+            </trans-unit>
             <trans-unit id="load.report.is_not_allowed.title">
                 <source>load.report.is_not_allowed.title</source>
                 <target>Report loading is not allowed</target>
@@ -3290,6 +3294,10 @@
             <trans-unit id="mri.import.error.empty.externalPropertyIds">
                 <source>mri.import.error.empty.externalPropertyIds</source>
                 <target>Empty list of properties id, please contact to support.</target>
+            </trans-unit>
+            <trans-unit id="entity_hidden.invalid_message">
+                <source>entity_hidden.invalid_message</source>
+                <target>The entity does not exist.</target>
             </trans-unit>
         </body>
     </file>

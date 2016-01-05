@@ -184,7 +184,11 @@ class ResidentDataManager implements ResidentDataManagerInterface
     protected function assertSuccessfulResponse($mriResponse, $externalMethodName, $context)
     {
         if ($mriResponse === false) {
-            throw new \RuntimeException(sprintf('MRI Client call failed to %s. Context: %s', $externalMethodName, $context));
+            throw new \RuntimeException(sprintf(
+                'MRI Client call failed to %s. Context: %s',
+                $externalMethodName,
+                $context
+            ));
         }
     }
 }

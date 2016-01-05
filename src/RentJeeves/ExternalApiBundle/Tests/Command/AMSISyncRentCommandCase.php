@@ -20,6 +20,7 @@ class AMSISyncRentCommandCase extends BaseTestCase
      */
     public function shouldCreateJobsForSyncRent()
     {
+        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
 
         $this->getEntityManager()->getConnection()->update('jms_jobs', ['state' => 'finished'], ['state' => 'pending']);

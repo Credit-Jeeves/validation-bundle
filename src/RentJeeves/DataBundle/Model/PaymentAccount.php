@@ -204,28 +204,6 @@ abstract class PaymentAccount
     protected $payments;
 
     /**
-     * // FIXME need to add cascade={"remove"} but it remove DepositAccount too
-     * @ORM\ManyToMany(
-     *      targetEntity="DepositAccount",
-     *      inversedBy="paymentAccounts"
-     * )
-     * @ORM\JoinTable(
-     *      name="rj_payment_account_deposit_account",
-     *      joinColumns={
-     *          @ORM\JoinColumn(name="payment_account_id", referencedColumnName="id", onDelete="CASCADE")
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id", onDelete="CASCADE")
-     *      }
-     * )
-     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
-     * @Serializer\Groups({"details", "paymentAccounts"});
-     *
-     * @var ArrayCollection
-     */
-    protected $depositAccounts;
-
-    /**
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccountHpsMerchant",
      *      mappedBy="paymentAccount",
@@ -272,7 +250,6 @@ abstract class PaymentAccount
     {
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
-        $this->depositAccounts = new ArrayCollection();
         $this->creditTrackJobs = new ArrayCollection();
         $this->hpsMerchants = new ArrayCollection();
     }

@@ -49,8 +49,14 @@ class PaymentAccountTypeMapper
 
         if (PaymentAccountTypeEnum::BANK == $paymentAccountType->get('type')->getData()) {
             $paymentAccountData->set('account_name', $paymentAccountType->get('PayorName')->getData());
+            $paymentAccountData->getEntity()->setLastFour(
+                $this->getLast4Digits($paymentAccountType->get('AccountNumber')->getData())
+            );
         } else {
             $paymentAccountData->set('account_name', $paymentAccountType->get('CardAccountName')->getData());
+            $paymentAccountData->getEntity()->setLastFour(
+                $this->getLast4Digits($paymentAccountType->get('CardNumber')->getData())
+            );
         }
 
         // TODO Need remove (PaymentAccountTypeEnum::BANK) after implementation RT-1324
@@ -73,6 +79,10 @@ class PaymentAccountTypeMapper
         return $paymentAccountData;
     }
 
+    /**
+     * @param Form $paymentAccountType
+     * @return PaymentAccount
+     */
     public function mapLandlordAccountTypeForm(Form $paymentAccountType)
     {
         $paymentAccountData = new PaymentAccount();
@@ -83,6 +93,10 @@ class PaymentAccountTypeMapper
             ->set('account_name', $paymentAccountType->get('PayorName')->getData())
             ->set('routing_number', $paymentAccountType->get('RoutingNumber')->getData())
             ->set('account_number', $paymentAccountType->get('AccountNumber')->getData());
+
+        $paymentAccountData->getEntity()->setLastFour(
+            $this->getLast4Digits($paymentAccountType->get('AccountNumber')->getData())
+        );
 
         return $paymentAccountData;
     }
@@ -105,6 +119,9 @@ class PaymentAccountTypeMapper
                 $paymentAccountType->get('bank')->get('type')->getData()
             );
 
+            $paymentAccountData->getEntity()->setLastFour(
+                $this->getLast4Digits($paymentAccountType->get('bank')->get('account')->getData())
+            );
         } elseif (PaymentAccountTypeEnum::CARD == $paymentAccountType->get('type')->getData()) {
             $expirationDate = $paymentAccountType->get('card')->getData()->getExpiration();
             $paymentAccountData
@@ -112,8 +129,22 @@ class PaymentAccountTypeMapper
                 ->set('expiration_year', $expirationDate->format('Y'))
                 ->set('card_number', $paymentAccountType->get('card')->get('account')->getData())
                 ->set('csc_code', $paymentAccountType->get('card')->get('cvv')->getData());
+
+            $paymentAccountData->getEntity()->setLastFour(
+                $this->getLast4Digits($paymentAccountType->get('card')->get('account')->getData())
+            );
         }
 
         return $paymentAccountData;
+    }
+
+
+    /**
+     * @param $number
+     * @return null|string
+     */
+    protected function getLast4Digits($number)
+    {
+        return isset($number) ? substr(str_replace(' ', '', $number), -4) : null;
     }
 }

@@ -25,7 +25,7 @@ class UnitsControllerCase extends BaseApiTestCase
                     'zip' => '10016'
                 ],
                 [
-                    'street' => 'Lexington Avenue',
+                    'street' => 'Lexington Ave',
                     'number' => '116',
                     'state' => 'NY',
                     'city' => 'New York',

@@ -970,13 +970,13 @@ class ContractRepository extends EntityRepository
             'c.payments',
             'p',
             Expr\Join::WITH,
-            "p.status = :active"
+            "p.status in (:activeStatuses)"
         );
 
         $query->where($dql);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('active', PaymentStatus::ACTIVE);
+        $query->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED]);
         $query->setParameter('startDate', $startPaymentDate->format('Y-m-d'));
         $query->setParameter('endMonth', $endPaymentDate->format('n'));
         $query->setParameter('endYear', $endPaymentDate->format('Y'));
@@ -1089,7 +1089,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.unit', 'u');
         $query->innerJoin('u.unitMapping', 'um');
         $query->innerJoin('c.property', 'p');
-        $query->innerJoin('p.propertyMapping', 'pm');
+        $query->innerJoin('p.propertyMappings', 'pm');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
         $query->innerJoin('c.tenant', 't');
@@ -1129,7 +1129,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.unit', 'u')
             ->innerJoin('u.unitMapping', 'um')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
+            ->innerJoin('p.propertyMappings', 'pm', Expr\Join::WITH, 'c.holding = pm.holding')
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.tenant', 't')
@@ -1179,7 +1179,7 @@ class ContractRepository extends EntityRepository
         $query->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT]);
         $query->setParameter('propertyId', $property->getId());
         $query->setParameter('holdingId', $holding->getId());
-        if ($property->isSingle()) {
+        if ($property->getPropertyAddress()->isSingle()) {
             $query->setParameter('unitName', UNIT::SINGLE_PROPERTY_UNIT_NAME);
         } else {
             $query->setParameter('unitName', $unitName);
@@ -1378,7 +1378,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('c.tenant', 't')
             ->innerJoin('t.residentsMapping', 'rm')
             ->where('c.status in (:statuses)')
@@ -1416,7 +1416,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('c.tenant', 't')
             ->innerJoin('t.residentsMapping', 'rm')
             ->where('c.status in (:statuses)')
@@ -1455,7 +1455,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
             ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('c.status in (:statuses)')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
@@ -1491,7 +1491,7 @@ class ContractRepository extends EntityRepository
             ->innerJoin('c.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('c.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('c.status in (:statuses)')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
@@ -1506,5 +1506,48 @@ class ContractRepository extends EntityRepository
             ->setParameter('externalLeaseId', $externalLeaseId)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param \DateTime $dueDate
+     * @return integer
+     */
+    public function countContractsForSendTenantEmail(\DateTime $dueDate)
+    {
+        return $this->createQueryBuilder('c')
+                ->select('count(c.id)')
+                ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
+                ->setParameter('current', ContractStatus::CURRENT)
+                ->setParameter('approved', ContractStatus::APPROVED)
+                ->setParameter('dueDays', $this->getDueDays(0, $dueDate))
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+
+    /**
+     * @param \DateTime $dueDate
+     * @param integer $start
+     * @param integer $limit
+     * @return array
+     */
+    public function getContractsIdForSendTenantEmail(\DateTime $dueDate, $start, $limit)
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('current', ContractStatus::CURRENT)
+            ->setParameter('approved', ContractStatus::APPROVED)
+            ->setParameter('dueDays', $this->getDueDays(0, $dueDate))
+            ->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getScalarResult();
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return array_map('current', $result);
     }
 }

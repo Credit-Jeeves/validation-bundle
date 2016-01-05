@@ -118,23 +118,34 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
-     * @param Holding $holding
      * @param Contract $contract
      * @param string $paymentType
+     * @param boolean $isRecurringPaymentEnded
+     * @param float $paymentTotal
      *
      * @return bool
      */
-    public function sendRjPaymentDue(Tenant $tenant, Holding $holding, Contract $contract, $paymentType = null)
-    {
+    public function sendRjPaymentDue(
+        Contract $contract,
+        $paymentType = null,
+        $isRecurringPaymentEnded = true,
+        $paymentTotal = null
+    ) {
         $vars = [
-            'nameHolding' => $holding->getName(),
-            'nameTenant' => $tenant->getFullName(),
+            'nameHolding' => $contract->getHolding()->getName(),
+            'nameTenant' => $contract->getTenant()->getFullName(),
             'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
             'paymentType' => $paymentType,
+            'isRecurringPaymentEnded' => $isRecurringPaymentEnded,
+            'paymentTotal' => $paymentTotal
         ];
 
-        return $this->sendBaseLetter('rjPaymentDue', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter(
+            'rjPaymentDue',
+            $vars,
+            $contract->getTenant()->getEmail(),
+            $contract->getTenant()->getCulture()
+        );
     }
 
     /**

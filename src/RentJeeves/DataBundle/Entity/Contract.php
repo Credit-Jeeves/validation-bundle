@@ -36,75 +36,37 @@ use RentJeeves\DataBundle\Validators\ContractDuplicate;
  */
 class Contract extends Base
 {
-    /**
-     * @var string
-     */
     const RESOLVE_EMAIL = 'email';
 
-    /**
-     * @var string
-     */
     const RESOLVE_PAID = 'paid';
 
-    /**
-     * @var string
-     */
     const RESOLVE_UNPAID = 'unpaid';
 
-    /**
-     * @var string
-     */
     const PAYMENT_OK = 'OK';
 
-    /**
-     * @var string
-     */
+    const PAYMENT_NA = 'N/A';
+
     const PAYMENT_PAY = 'PAY';
 
-    /**
-     * @var string
-     */
     const PAYMENT_AUTO = 'AUTO';
 
-    /**
-     * @var string
-     */
     const PAYMENT_LATE = ' DAYS LATE';
 
-    /**
-     * @var string
-     */
     const STATUS_EMPTY = 'empty-month';
 
-    /**
-     * @var string
-     */
     const CONTRACT_ENDED = 'CONTRACT ENDED';
 
-    /**
-     * @const string
-     */
     const CURRENT_ACTIVE = 'ACTIVE';
 
-    /**
-     * @var string
-     */
     const STATUS_PAY = 'auto';
 
-    /**
-     * @var string
-     */
     const STATUS_OK = 'C';
 
-    /**
-     * @var string
-     */
     const STATUS_LATE = '1';
 
-    /**
-     * @var string
-     */
     const EMPTY_LAST_PAYMENT = '-';
+
+    const HISTORY_PERIOD_MONTHS = 24;
 
     /**
      * Details in RT-65
@@ -230,7 +192,7 @@ class Contract extends Base
             $now = new DateTime();
             $interval = $now->diff($date);
             if ($interval->format("%r%a") < 0) {
-                $result = $interval->days.self::PAYMENT_LATE;
+                $result = $interval->days . self::PAYMENT_LATE;
             }
         }
 
@@ -298,13 +260,13 @@ class Contract extends Base
              * don't show days late for finished and delete contract
              */
             if (($lastPayment != self::EMPTY_LAST_PAYMENT &&
-                !in_array(
-                    $this->getStatus(),
-                    array(
-                        ContractStatus::FINISHED,
-                        ContractStatus::DELETED,
-                    )
-                ))
+                    !in_array(
+                        $this->getStatus(),
+                        array(
+                            ContractStatus::FINISHED,
+                            ContractStatus::DELETED,
+                        )
+                    ))
                 ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
             ) {
@@ -328,7 +290,8 @@ class Contract extends Base
              * without red shading for status
              */
             if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
-                $result['status'] == strtoupper(ContractStatus::INVITE)) {
+                $result['status'] == strtoupper(ContractStatus::INVITE)
+            ) {
                 $result['class'] = 'contract-late';
 
                 return $result;
@@ -357,7 +320,7 @@ class Contract extends Base
             $unit = $this->getUnit();
         }
         $result[] = $property->getPropertyAddress()->getAddress();
-        if (!$property->isSingle() && $unit) {
+        if (!$property->getPropertyAddress()->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {
@@ -402,7 +365,7 @@ class Contract extends Base
                 $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
                 $late = $operation->getDaysLate();
                 $nYear = $paidFor->format('Y');
-                $nMonth = $paidFor->format('m');
+                $nMonth = $paidFor->format('n');
                 $interval = $currentDate->diff($paidFor)->format('%r%a');
                 $status = $order->getStatus();
                 switch ($status) {
@@ -440,36 +403,53 @@ class Contract extends Base
         return $result;
     }
 
+    /**
+     * @return array
+     */
     private function createHistoryArray()
     {
-        $result = array();
-        $aMonthes = array();
-        for ($i = 1; $i < 13; $i++) {
-            $aMonthes[date('m', mktime(0, 0, 0, $i, 1))] = array(
-                'status' => self::STATUS_EMPTY,
-                'text' => '',
-                'amount' => 0,
-            );
+        $startDate = $this->getStartAt();
+        if (null === $startDate) {
+            return [];
         }
-        $start = $this->getStartAt();
-        $finish = $this->getFinishAt();
-        $startYear = $start->format('Y');
+
+        $result = [];
+        $startDate->setTime(0, 0, 0);
+        $finishDate = $this->getFinishAt();
+        $createDate = $this->getCreatedAt()->setTime(0, 0, 0);
+
+        $maintainedHistoryPeriod = $createDate->getClone()->sub(
+            new \DateInterval('P' . self::HISTORY_PERIOD_MONTHS . 'M')
+        );
+        // if start_date > 24 month before created_date --> treat it as "created_at - 24 months"
+        if ($startDate < $maintainedHistoryPeriod) {
+            $startDate = $maintainedHistoryPeriod;
+        }
+        $startYear = $startDate->format('Y');
         $currentYear = new DateTime('now');
-        $finishYear = $currentYear->format('Y');
-        if ($finish) {
-            $finishYear = $finish->format('Y');
+        $finishYear = $currentYear->format('Y'); // default finish year is the current one
+        if ($finishDate) {
+            $finishYear = $finishDate->format('Y');
         }
-        for ($i = $startYear; $i <= $finishYear; $i++) {
-            $result[$i] = $aMonthes;
+        for ($year = $startYear; $year <= $finishYear; $year++) {
+            for ($monthIdx = 1; $monthIdx < 13; $monthIdx++) {
+                $status = self::STATUS_EMPTY;
+                $amount = 0;
+                $text = '';
+                $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
+                // if month is between startDate and createDate
+                if ($date <= $createDate && $startDate <= $date) {
+                    $status = self::STATUS_OK;
+                    $amount = self::PAYMENT_NA;
+                    $text   = self::PAYMENT_OK;
+                }
+                $result[$year][$monthIdx] = [
+                    'status' => $status,
+                    'text'   => $text,
+                    'amount' => $amount,
+                ];
+            }
         }
-        /*if (ContractStatus::FINISHED != $this->getStatus()) {
-            $paidTo = $this->getPaidTo();
-            $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
-                'status' => self::STATUS_PAY,
-                'text' => self::PAYMENT_PAY,
-                'amount' => 0,
-            );
-        }*/
 
         return $result;
     }
@@ -511,10 +491,10 @@ class Contract extends Base
             $newDate->modify('+1 months');
             $diff = $amount - $rent;
             $days = $this->countPaidDays($rent, $diff, $paidTo);
-            $newDate->modify('+'.$days.' days');
+            $newDate->modify('+' . $days . ' days');
         } elseif ($amount < $rent) {
             $days = $this->countPaidDays($rent, $amount, $paidTo);
-            $newDate->modify('+'.$days.' days');
+            $newDate->modify('+' . $days . ' days');
         } else {
             $newDate->modify('+1 months');
         }
@@ -540,10 +520,10 @@ class Contract extends Base
             $newDate->modify('-1 months');
             $diff = $amount - $rent;
             $days = $this->countPaidDays($rent, $diff, $newDate);
-            $newDate->modify('-'.$days.' days');
+            $newDate->modify('-' . $days . ' days');
         } elseif ($amount < $rent) {
             $days = $this->countPaidDays($rent, $amount, $newDate);
-            $newDate->modify('-'.$days.' days');
+            $newDate->modify('-' . $days . ' days');
         } else {
             $newDate->modify('-1 months');
         }
@@ -562,7 +542,7 @@ class Contract extends Base
     {
         $days = $date->format('t');
 
-        return floor($paid * $days/ $rent);
+        return floor($paid * $days / $rent);
     }
 
     /**
@@ -577,15 +557,17 @@ class Contract extends Base
     public function getDatagridRow($em)
     {
         $property = $this->getProperty();
+        $propertyAddress = $property->getPropertyAddress();
         $unit = $this->getUnit();
         $orderRepository = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
-        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
-        $result['row_address'] = substr($result['full_address'], 0, 20).'...';
-        $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
+        $result['full_address'] = $this
+                ->getRentAddress($property, $unit) . ' ' . $propertyAddress->getLocationAddress();
+        $result['row_address'] = substr($result['full_address'], 0, 20) . '...';
+        $result['rent'] = ($rent = $this->getRent()) ? '$' . $rent : '--';
         $result['full_pay_to'] = $this->getPayToName();
-        $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
+        $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10) . '...';
         $result['status'] = $this->getStatus();
         $result['payment_type'] = '';
         // @todo get payment source name
@@ -617,7 +599,7 @@ class Contract extends Base
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
-                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10).'...';
+                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
             }
         }
@@ -766,8 +748,9 @@ class Contract extends Base
     {
         $collection = $this->getPayments()->filter(
             function (Payment $payment) {
-                if (PaymentStatus::ACTIVE === $payment->getStatus() &&
-                    (!$payment->getDepositAccount() ||
+                if ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                        PaymentStatus::FLAGGED === $payment->getStatus())
+                    && (!$payment->getDepositAccount() ||
                         DepositAccountType::RENT === $payment->getDepositAccount()->getType())
                 ) {
                     return true;
@@ -793,7 +776,8 @@ class Contract extends Base
     {
         return $this->getPayments()->filter(
             function (Payment $payment) {
-                return (PaymentStatus::ACTIVE === $payment->getStatus() &&
+                return ((PaymentStatus::ACTIVE === $payment->getStatus() ||
+                    PaymentStatus::FLAGGED === $payment->getStatus()) &&
                     DepositAccountType::RENT !== $payment->getDepositAccount()->getType());
             }
         );
@@ -993,7 +977,7 @@ class Contract extends Base
         for ($i = 1; $i <= $count; $i++) {
 
             /** @var $operation Operation */
-            $operation = $operations->slice($count-$i, 1);
+            $operation = $operations->slice($count - $i, 1);
             $operation = reset($operation);
             if ($operation->getType() == OperationType::RENT) {
                 $order = $operation->getOrder();
@@ -1003,7 +987,8 @@ class Contract extends Base
 
                 if ($order && $paidFor) {
                     if (($order->getStatus() == OrderStatus::PENDING)
-                        && ($paymentMonth == $requiredMonth)) {
+                        && ($paymentMonth == $requiredMonth)
+                    ) {
                         return true;
                     }
                 }

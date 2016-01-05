@@ -37,7 +37,7 @@ class LandlordCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.error_list').length > 0");
         $errorList = $this->page->findAll('css', '.error_list');
         $this->assertCount(8, $errorList, 'Error list');
-        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
+        $fillAddress = '451 Greenwich St New York, NY 10013, United States';
         $this->fillGoogleAddress($fillAddress);
         $this->page->clickLink('Pricing');
         $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
@@ -85,7 +85,7 @@ class LandlordCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'landlord/register/');
-        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
+        $fillAddress = '451 Greenwich St New York, NY 10013, United States';
         $this->fillGoogleAddress($fillAddress);
 
         $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));

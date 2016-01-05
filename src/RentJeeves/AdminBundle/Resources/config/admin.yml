@@ -98,6 +98,7 @@ services:
             - RentJeeves\DataBundle\Entity\Landlord
             - 'SonataAdminBundle:CRUD'
         calls:
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_user_custom_actions.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.tenant:
@@ -109,7 +110,7 @@ services:
             - RentJeeves\DataBundle\Entity\Tenant
             - 'SonataAdminBundle:CRUD'
         calls:
-            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_tenant.html.twig]]
+            - [ setTemplate, [edit, AdminBundle:CRUD:form_edit_user_custom_actions.html.twig]]
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.contract:
@@ -236,6 +237,7 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     sonata.admin.settings:
         class: RentJeeves\AdminBundle\Admin\SettingsAdmin
         tags:
@@ -255,6 +257,24 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [messages]]
+
+    sonata.admin.import_report:
+        class: RentJeeves\AdminBundle\Admin\ImportAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Import Reports" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Import
+            - ~
+
+    sonata.admin.import_property:
+        class: RentJeeves\AdminBundle\Admin\ImportPropertyAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Import Property" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\ImportProperty
+            - ~
 
     rental_report:
         class: RentJeeves\AdminBundle\Form\RentalReportType

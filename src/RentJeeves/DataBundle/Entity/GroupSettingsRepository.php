@@ -17,10 +17,10 @@ class GroupSettingsRepository extends EntityRepository
         $query->innerJoin('group.contracts', 'contract');
         $query->innerJoin('contract.payments', 'payment');
         $query->where('setting.id = :settingId');
-        $query->andWhere('payment.status = :paymentStatus');
+        $query->andWhere('payment.status in (:activeStatuses)');
         $query->andWhere('payment.type = :type');
 
-        $query->setParameter('paymentStatus', PaymentStatus::ACTIVE);
+        $query->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED]);
         $query->setParameter('settingId', $groupSettingId);
         $query->setParameter('type', PaymentType::RECURRING);
         $query->setMaxResults(1);

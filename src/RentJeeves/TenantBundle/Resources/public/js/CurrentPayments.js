@@ -35,9 +35,9 @@ function CurrentPayments(contracts, verification, paidForArr) {
         }
     };
 
-    self.openPayAnythingPopup = function(contractId) {
+    self.openPayAnythingPopup = function(contractId, defaultParams) {
         if (!self.pay_anything) {
-            self.pay_anything = new PayAnything(self, self.getContractById(contractId));
+            self.pay_anything = new PayAnything(self, self.getContractById(contractId), defaultParams);
         } else {
             self.pay_anything.contract(self.getContractById(contractId));
         }

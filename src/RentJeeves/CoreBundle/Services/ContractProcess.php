@@ -59,35 +59,44 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param Property $property
-     * @param null $unitName
+     * @param string $unitName
      * @param ContractWaiting $contractWaiting
-     *
+     * @param string $externalLeaseId
+     * @param float $rent
      * @return Contract|void
      */
     public function createContractFromTenantSide(
         Tenant $tenant,
         Property $property,
         $unitName = null,
-        ContractWaiting $contractWaiting = null
+        ContractWaiting $contractWaiting = null,
+        $externalLeaseId = null,
+        $rent = null
     ) {
 
         $contract = $this->contract ?: new Contract();
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setStatus(ContractStatus::PENDING);
-
+        if ($externalLeaseId) {
+            $contract->setExternalLeaseId($externalLeaseId);
+        }
+        if ($rent) {
+            $contract->setRent($rent);
+        }
         /**
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
-            if ($property->isSingle()) {
+            $propertyAddress = $property->getPropertyAddress();
+            if ($propertyAddress->isSingle()) {
                 $propertyGroup = $property->getPropertyGroups()->first();
                 $contract->setHolding($propertyGroup->getHolding());
                 $contract->setGroup($propertyGroup);
                 $contract->setUnit($property->getExistingSingleUnit());
             } else {
                 if (Unit::SEARCH_UNIT_UNASSIGNED === $unitName || !$unit = $property->searchUnit($unitName)) {
-                    return $this->createContractForEachGroup($tenant, $property, $unitName);
+                    return $this->createContractForEachGroup($tenant, $property, $unitName, $externalLeaseId, $rent);
                 }
 
                 $contract->setHolding($unit->getHolding());
@@ -176,14 +185,21 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param Property $property
-     * @param $unitName
+     * @param string $unitName
+     * @param string $externalLeaseId
+     * @param float $rent
      *
+     * @return array <Contract>
      * @todo Need fix this
      *
-     * @return array<Contract>
      */
-    public function createContractForEachGroup(Tenant $tenant, Property $property, $unitName)
-    {
+    public function createContractForEachGroup(
+        Tenant $tenant,
+        Property $property,
+        $unitName,
+        $externalLeaseId = null,
+        $rent = null
+    ) {
         $result = [];
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $property->getPropertyGroups();
@@ -192,6 +208,12 @@ class ContractProcess
         $contract->setProperty($property);
         $contract->setStatus(ContractStatus::PENDING);
         $contract->setSearch($unitName);
+        if ($externalLeaseId) {
+            $contract->setExternalLeaseId($externalLeaseId);
+        }
+        if ($rent) {
+            $contract->setRent($rent);
+        }
 
         // can be created duplicate contract for each group only first time
         !$this->isValidateContract || $this->validate($contract);

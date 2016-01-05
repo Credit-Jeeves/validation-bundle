@@ -72,7 +72,13 @@
 
 {% if contract.is_allowed_to_pay_anything and contract.status != 'finished' %}
     <div style="float:left; padding-top: 5px">
-        <a id="pay-anything-{{ loop.revindex }}" href="javascript:void(0)" data-bind="click: openPayAnythingPopup.bind($data, {{ contract.id }})">
+        <a id="pay-anything-{{ loop.revindex }}"
+            href="javascript:void(0)"
+            data-bind="click: openPayAnythingPopup.bind(
+                $data,
+                {{ contract.id }}
+                {% if defaultPayAnythingParams is defined %}, {{ defaultPayAnythingParams }}{% endif %}
+            )">
             {{ 'contract.pay_anything' | trans() }}
         </a>
     </div>

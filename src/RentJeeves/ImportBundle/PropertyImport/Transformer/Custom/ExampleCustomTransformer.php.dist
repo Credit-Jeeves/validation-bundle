@@ -1,0 +1,18 @@
+<?php
+
+namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom; // Custom Transformer should have this namespace
+
+use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface;
+
+// class name must match the name of the file
+class ExampleCustomTransformer implements TransformerInterface // should implements TransformerInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function transformData(array $accountingSystemData, Import $import)
+    {
+        throw new \LogicException('This class only for test');
+    }
+}
