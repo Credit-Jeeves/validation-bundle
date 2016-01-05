@@ -460,7 +460,7 @@ class GroupCase extends BaseTestCase
         $importProperties[2]->click();
         $this->getDomElement('.alert-success', 'Should get successful message');
         $this->assertCount(
-            $jobsCount+1,
+            $jobsCount+2, //2 because on this group we have 2 external properties id
             $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
             'Job not created'
         );
