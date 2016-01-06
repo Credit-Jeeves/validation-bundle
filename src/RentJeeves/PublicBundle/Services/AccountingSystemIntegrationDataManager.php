@@ -66,7 +66,7 @@ class AccountingSystemIntegrationDataManager
         }
         $processedData = ['accsys' => $accountingSystem];
 
-        $requiredParams = ['resid', 'leasid', 'propid'];
+        $requiredParams = ['resid', 'leaseid', 'propid'];
         foreach ($requiredParams as $paramName) {
             if (!$paramValue = $request->get($paramName)) {
                 throw new \InvalidArgumentException(
@@ -154,7 +154,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function getExternalLeaseId()
     {
-        return $this->get('leasid');
+        return $this->get('leaseid');
     }
 
     /**
