@@ -119,7 +119,7 @@ class UnitDeduplicator
             }
             $this->em->flush();
             $this->logger->info(
-                true !== $isSingleSourceProperty ? 'SrcUnit is deduplicated, but not deleted.' : 'SrcUnit is deleted.'
+                true === $isSingleSourceProperty ? 'SrcUnit is deduplicated, but not deleted.' : 'SrcUnit is deleted.'
             );
         }
 
