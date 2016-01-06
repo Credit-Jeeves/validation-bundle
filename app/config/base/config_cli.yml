@@ -1,5 +1,2 @@
 imports:
     - { resource: ./monolog.yml }
-
-assetic:
-    use_controller: true
