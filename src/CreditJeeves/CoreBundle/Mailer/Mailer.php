@@ -73,7 +73,7 @@ class Mailer extends BaseMailer implements MailerInterface
             $this->container->get('mailer')->send($message);
 
             return true;
-        } catch (\Twig_Error_Runtime $e) {
+        } catch (\Twig_Error $e) {
             $this->handleException($e);
             $this->container->get('logger')->alert(
                 sprintf(
