@@ -90,9 +90,7 @@ class UnitDeduplicator
             $sourceUnit,
             $destinationProperty
         );
-        if (null !== $destinationUnit) {
-            $this->updateExternalUnitMapping($sourceUnit, $destinationUnit);
-        } else {
+        if (null === $destinationUnit) {
             $destinationUnit = new Unit();
             $destinationUnit->setProperty($destinationProperty);
             $destinationUnit->setGroup($sourceUnit->getGroup());
@@ -112,6 +110,8 @@ class UnitDeduplicator
 
         $this->updateContractsWaitingForUnit($sourceUnit, $destinationUnit);
         $this->updateContractsForUnit($sourceUnit, $destinationUnit);
+        $this->updateExternalUnitMapping($sourceUnit, $destinationUnit);
+
         if (false === $this->dryRunMode) {
             if (true !== $isSingleSourceProperty) { // not remove units from isSingle Property
                 $this->disableSoftDelete();
