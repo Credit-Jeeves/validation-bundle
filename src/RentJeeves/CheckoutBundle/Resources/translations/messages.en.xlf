@@ -674,6 +674,10 @@
                     Please try again later or contact %support_email%]]>
                 </target>
             </trans-unit>
+            <trans-unit id="checkout.payment.error.cannot_be_processed">
+                <source>checkout.payment.error.cannot_be_processed</source>
+                <target>Your payment can not be processed. Please try again later or contact %support_email%.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
