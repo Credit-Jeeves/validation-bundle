@@ -179,12 +179,26 @@ class ReportSynchronizer
     {
         $this->logger->debug(sprintf('Deposit Transaction %s: Start sync...', $reportTransaction->getTransactionId()));
 
+        $isPositiveAmount = ($reportTransaction->getAmount() > 0) ? true : false;
+
         /** @var HeartlandTransaction $transaction */
         if (!$transaction = $this->findTransaction($reportTransaction->getTransactionId())) {
-            $this->logger->alert(sprintf(
-                'Deposit transaction ID %s not found',
-                $reportTransaction->getTransactionId()
-            ));
+
+            if ($isPositiveAmount) {
+                # this deposit is not in our system -- this is a red flag!
+                $this->logger->emergency(sprintf(
+                    'Deposit transaction ID %s not found system ' .
+                    'At best this will throw off Batch Deposit Reports, at worst, something dubious happened. ' .
+                    'Either way, this is a red flag and should be investigated.  You will likely need to look up ' .
+                    'the transaction in the payment processor console',
+                    $reportTransaction->getTransactionId()
+                ));
+            } else {
+                $this->logger->alert(sprintf(
+                    'Deposit transaction ID %s is actually a return and is handled by return transacions -- skip.',
+                    $reportTransaction->getTransactionId()
+                ));
+            }
 
             return;
         }
