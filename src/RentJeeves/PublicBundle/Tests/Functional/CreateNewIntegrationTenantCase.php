@@ -14,7 +14,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 {
     protected $requestParameters = [
         'resid' => 'Test_Resident_111',
-        'leasid' => 'Test_Lease_111',
+        'leaseid' => 'Test_Lease_111',
         'propid' => 'rnttrk02',
         'unitid' => 'Test_Unit_111',
         'rent' => 505,
@@ -111,7 +111,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->assertCount(1, $tenant->getContracts(), 'Should be created 1 contract');
         /** @var Contract $contract */
         $contract = $tenant->getContracts()->first();
-        $this->assertEquals($parameters['leasid'], $contract->getExternalLeaseId(), 'Lease id is invalid.');
+        $this->assertEquals($parameters['leaseid'], $contract->getExternalLeaseId(), 'Lease id is invalid.');
         $this->assertEquals(
             '27-f',
             $contract->getUnit()->getName(),
@@ -313,7 +313,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->assertCount(1, $tenant->getContracts(), 'Should be created 1 contract');
         /** @var Contract $contract */
         $contract = $tenant->getContracts()->first();
-        $this->assertEquals($parameters['leasid'], $contract->getExternalLeaseId(), 'Lease id is invalid.');
+        $this->assertEquals($parameters['leaseid'], $contract->getExternalLeaseId(), 'Lease id is invalid.');
         $this->assertEquals(
             Unit::SEARCH_UNIT_UNASSIGNED,
             $contract->getSearch(),
@@ -647,7 +647,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     {
         return [
             [$this->requestParameters, 'resid'],
-            [$this->requestParameters, 'leasid'],
+            [$this->requestParameters, 'leaseid'],
             [$this->requestParameters, 'propid'],
         ];
     }
