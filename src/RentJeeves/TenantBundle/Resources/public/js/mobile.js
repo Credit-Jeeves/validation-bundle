@@ -35,6 +35,8 @@ debug=false;
 
 payAccounts=[]
 
+lastHistory=-1;
+
 $(document).ready(function(){
 
     h=$.mobile.getScreenHeight();
@@ -45,6 +47,7 @@ $(document).ready(function(){
             payAccounts=d
             init() //we need payAccounts first
             $.each(historyIds,function(key,value){
+                lastHistory=value;
                 getHistory(value) //this eventually calls deposit date, which needs payAccounts
             })
         })
@@ -52,6 +55,7 @@ $(document).ready(function(){
 })
 
 function init(){
+
 
     //load main page payments info
 
@@ -913,7 +917,8 @@ function getHistory(historyId) {
 
             $(".loadingPaymentHistory").hide()
 
-
+            if(historyId==lastHistory)
+                $("#loader").hide()
         })
     }
 }
