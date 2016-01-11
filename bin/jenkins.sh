@@ -41,9 +41,9 @@ php bin/environment.php --$BUILD || exit 1
 #fi
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
-nice -n 2 php -C -q -d memory_limit=8192M $PHPUNIT_PATH \
-  "${PHPUNIT_PARAMS[@]}" \
-  --log-junit=$BUILD_DIR/allTests.xml
+#nice -n 2 php -C -q -d memory_limit=8192M $PHPUNIT_PATH \
+#  "${PHPUNIT_PARAMS[@]}" \
+#  --log-junit=$BUILD_DIR/allTests.xml
 
 echo "##### RUN MIGRATION TEST #####"
 
