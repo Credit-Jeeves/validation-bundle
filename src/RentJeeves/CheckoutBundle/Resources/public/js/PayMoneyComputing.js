@@ -77,14 +77,15 @@ function PayMoneyComputing(parent, contract) {
     });
 
     self.getFeeNote = ko.computed(function() {
+        var i18nKey = null;
         if ('card' == parent.currentPaymentAccount().type()) {
-            return 'checkout.fee.card.note-%FEE%';
+            i18nKey = 'checkout.fee.card.note-%FEE%';
         } else if ('bank' == parent.currentPaymentAccount().type()) {
-            return 'checkout.fee.bank.note-%FEE%';
+            i18nKey = 'checkout.fee.bank.note-%FEE%';
         } else if ('debit_card' == parent.currentPaymentAccount().type()) {
-            return 'checkout.fee.debit_card.note-%FEE%';
+            i18nKey = 'checkout.fee.debit_card.note-%FEE%';
         }
-        return '';
+        return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true)}) : '';
     });
 
     self.getFeeNoteHelp = ko.computed(function() {
