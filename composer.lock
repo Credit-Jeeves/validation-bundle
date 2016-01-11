@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dd47caa0656b8a2ea91c14110e4a3729",
-    "content-hash": "4b4c9ec3a447d2e129c31f527d8c6a22",
+    "hash": "885946f0c0d6a2bc41bb45460b6f7ee0",
+    "content-hash": "4b52816955ce1d1a7f6280555c71e111",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -2308,22 +2308,22 @@
         },
         {
             "name": "gedmo/doctrine-extensions",
-            "version": "dev-master",
+            "version": "v2.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
-                "reference": "59b674773757bb747677da4dfe6437dad7cfb33a"
+                "reference": "04ac4d1cdbdc610816562344c7ed74aecf2cd1ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/59b674773757bb747677da4dfe6437dad7cfb33a",
-                "reference": "59b674773757bb747677da4dfe6437dad7cfb33a",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/04ac4d1cdbdc610816562344c7ed74aecf2cd1ca",
+                "reference": "04ac4d1cdbdc610816562344c7ed74aecf2cd1ca",
                 "shasum": ""
             },
             "require": {
                 "behat/transliterator": "~1.0",
                 "doctrine/common": "~2.4",
-                "php": ">=5.4"
+                "php": ">=5.3.2"
             },
             "require-dev": {
                 "doctrine/common": ">=2.5.0",
@@ -2383,7 +2383,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2016-01-07 09:45:25"
+            "time": "2015-11-30 18:58:48"
         },
         {
             "name": "guzzle/guzzle",
