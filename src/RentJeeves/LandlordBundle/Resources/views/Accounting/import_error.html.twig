@@ -1,0 +1,27 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+    <div class="sub-menu">
+        {{ knp_menu_render('LandlordBundle:Builder:accountingMenu', { 'template': '::menu.html.twig' }) }}
+    </div>
+    <div class="container-content">
+        <div id="action_plan_page">
+            <div class="column-middle floatleft">
+                <h1>{{ 'error.oops'|trans }} </h1>
+                <br />
+                <p>{{ message }}</p>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/submenu.css'
+    '@LandlordBundle/Resources/public/css/stepImport.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
