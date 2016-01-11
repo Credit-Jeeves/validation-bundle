@@ -33,6 +33,13 @@ function PaymentAccount(data, defaultType) {
         return card.join('');
     });
 
+    /**
+     * Only for translation
+     */
+    this.getMethod = function(){
+        return Translator.trans('checkout.' + this.type());
+    };
+
     var mapping = {
         'cc_expiration': {
             create: function(options) {
