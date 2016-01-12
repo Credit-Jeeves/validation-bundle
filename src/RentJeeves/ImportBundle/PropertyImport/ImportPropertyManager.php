@@ -1,0 +1,84 @@
+<?php
+
+namespace RentJeeves\ImportBundle\PropertyImport;
+
+use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\ImportBundle\Exception\ImportException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
+use RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader;
+use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
+
+/**
+ * Service`s name "import.property.manager"
+ */
+class ImportPropertyManager
+{
+    /**
+     * @var ExtractorFactory
+     */
+    protected $extractorFactory;
+
+    /**
+     * @var TransformerFactory
+     */
+    protected $transformerFactory;
+
+    /**
+     * @var PropertyLoader
+     */
+    protected $propertyLoader;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param ExtractorFactory   $extractorFactory
+     * @param TransformerFactory $transformerFactory
+     * @param PropertyLoader     $propertyLoader
+     * @param LoggerInterface    $logger
+     */
+    public function __construct(
+        ExtractorFactory $extractorFactory,
+        TransformerFactory $transformerFactory,
+        PropertyLoader $propertyLoader,
+        LoggerInterface $logger
+    ) {
+        $this->extractorFactory = $extractorFactory;
+        $this->transformerFactory = $transformerFactory;
+        $this->propertyLoader = $propertyLoader;
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param Import $import
+     * @param string $externalPropertyId
+     */
+    public function import(Import $import, $externalPropertyId)
+    {
+        $group = $import->getGroup();
+        $this->logger->info(
+            sprintf('Start import data for Import#%d and extPropertyId#%s.', $import->getId(), $externalPropertyId),
+            ['group_id' => $group->getId()]
+        );
+        try {
+            $extractor = $this->extractorFactory->getExtractor($group->getHolding()->getApiIntegrationType());
+            $transformer = $this->transformerFactory->getTransformer($group, $externalPropertyId);
+
+            $extractData = $extractor->extractData($group, $externalPropertyId);
+            $transformer->transformData($extractData, $import);
+            $this->propertyLoader->loadData($import);
+        } catch (ImportException $e) {
+            $this->logger->info(
+                sprintf('Import data is finished with error : %s.', $e->getMessage()),
+                ['group_id' => $group->getId()]
+            );
+
+            return;
+        }
+
+        $this->logger->info('Import data is finished.', ['group_id' => $group->getId()]);
+    }
+}
