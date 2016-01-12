@@ -94,7 +94,7 @@
                 <script>
                     paidDates=[{% for contract in contracts %}
                         {% if contract.payment_type == 'recurring' or contract.payment_type == 'one_time' %}
-                        [{{contract.id}},"{{ contract.payment_due_date }}"]
+                        [{{contract.id}},"{{ contract.payment_due_date }}"],
                         {% endif %}
                         {% endfor %}]
                     $.each(paidDates,function(a,b){
