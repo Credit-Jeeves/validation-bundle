@@ -183,10 +183,18 @@ class RentIsDueEmailSender
         foreach ($contractsId as $contractId) {
             try {
                 $this->logger->info(sprintf('Send emails for contract: %s', $contractId));
+                /** @var Contract $contract */
                 $contract = $this->em->getRepository('RjDataBundle:Contract')->find($contractId);
                 if (empty($contract)) {
                     throw new \LogicException(sprintf('Contract not found %s', $contractId));
                 }
+
+                if ($contract->getTenant()->getEmailNotification() === false) {
+                    throw new \LogicException(
+                        sprintf('User %s disabled his notification in the settings', $contract->getTenant()->getEmail())
+                    );
+                }
+
                 $result = $this->sendPaymentDueEmailByContract($contract);
                 if ($result === false) {
                     throw new \RuntimeException(sprintf('We could not send the email for contractId %s', $contractId));

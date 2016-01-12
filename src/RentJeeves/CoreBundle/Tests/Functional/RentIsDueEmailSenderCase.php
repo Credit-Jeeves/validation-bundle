@@ -275,4 +275,37 @@ class RentIsDueEmailSenderCase extends BaseTestCase
 
         $this->assertCount(0, $plugin->getPreSendMessages(), 'We should NOT send email.');
     }
+
+    /**
+     * @test
+     */
+    public function shouldNotSendEmailWhenUserDisableEmailNotify()
+    {
+        $this->load(true);
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['externalLeaseId' => 't0012020']
+        );
+        $this->assertNotEmpty($contract, 'We should have this contract in fixtures');
+        $contract->setStatus(ContractStatus::APPROVED);
+        $contract->getTenant()->setEmailNotification(false);
+        $today = new DateTime('now');
+        $today->modify('+4 days');
+        $contract->setDueDate($today->format('d'));
+        $this->getEntityManager()->flush();
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        /** @var TenantMailer $tenantMailer */
+        $tenantMailer = $this->getContainer()->get('rent.is_due.email_sender');
+        $tenantMailer->modifyShiftedDate('+4 days');
+        $tenantMailer->findContractsAndSendPaymentDueEmails();
+
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'We should NOT send any email for contract which we preparing.'
+        );
+    }
 }
