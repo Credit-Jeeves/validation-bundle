@@ -57,30 +57,47 @@ class LoggableListenerCase extends BaseTestCase
             $contractHistory->getPaymentAccepted(),
             'PaymentAccepted should be saved in history correctly'
         );
-
-        return $contract;
     }
 
     /**
-     * @param Contract $contract
      * @test
-     * @depends createAndUpdate
      */
-    public function shouldCheckThatOnlyWhenVersionedFieldChangedWeAddNewLogEntry(Contract $contract)
+    public function shouldCheckThatOnlyWhenVersionedFieldChangedWeAddNewLogEntry()
     {
-        $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
-            $contract->getId()
-        );
-        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
-        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
-        $contract->setHolding(
-            $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Estate Holding')
-        );
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByCode('DXC6KXOAGX');
+        /** @var Contract $contract */
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setRent(1000);
+        $contract->setFinishAt(new DateTime());
+        $contract->setStartAt(new DateTime());
+        $contract->setStatus(ContractStatus::INVITE);
+        $contract->setGroup($group);
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
+        $contract->setProperty($group->getGroupProperties()->last());
+        $contract->setUnit($contract->getProperty()->getUnits()->first());
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
+
+        $em->persist($contract);
+        $em->flush($contract);
+
+        $contractHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
+        $this->assertNotNull($contractHistory);
+        $this->assertCount(1, $contractHistory);
+
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Estate Holding');
+        $this->assertNotEmpty($holding, 'Holding should exist in fixtures');
+        $contract->setHolding($holding);
         $this->getEntityManager()->flush();
         $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
             $contract->getId()
         );
         $this->assertNotNull($contractsHistory, 'We should have objects in DB');
-        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
+        $this->assertCount(1, $contractsHistory, 'We should have 1 objects in DB');
     }
 }

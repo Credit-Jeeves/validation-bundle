@@ -6,9 +6,6 @@ use Gedmo\Loggable\LoggableListener as Base;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
-/**
- * @author Ton Sharp <66ton99@gmail.com>
- */
 class LoggableListener extends Base
 {
     protected function isLoggable($object)
@@ -16,7 +13,8 @@ class LoggableListener extends Base
         if ($object instanceof Contract) {
             return true;
         }
-        return parent::isLoggable($object);
+
+        return false;
     }
 
 
