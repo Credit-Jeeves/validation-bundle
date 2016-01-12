@@ -346,6 +346,10 @@
                 <source>admin.import_properties_job.error.empty_external_properties</source>
                 <target>Group %group_name% doesn't have externalPropertiesID</target>
             </trans-unit>
+            <trans-unit id="admin.attention.payments_automatically_closed">
+                <source>admin.attention.payments_automatically_closed</source>
+                <target>Attention! If you set status to "deleted" or "finished", all active payments for this contract will be automatically closed.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -14,6 +14,8 @@ class PaymentCloseReason extends Enum
 
     const CONTRACT_CHANGED = 'contract_changed';
 
+    const CONTRACT_FINISHED = 'contract_finished';
+
     const CONTRACT_DELETED = 'contract_deleted';
 
     /**
