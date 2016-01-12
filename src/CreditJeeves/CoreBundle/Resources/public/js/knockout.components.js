@@ -11,15 +11,15 @@
  */
 ko.components.register('infoMessage-widget', {
     viewModel: function(params) {
-        this.message = (params && params.message) ?
+        this.message = (params && params.message !== undefined) ?
             ko.computed(function () {
-                if (!params.message()) {
+                if (params.message() === null) {
                     params.message(params.initialMessage || '');
                 }
                 return params.message();
             }, this) :
             ko.observable(
-                params && params.initialMessage || ''
+                (params && params.initialMessage) || ''
             );
         this.isVisible = ko.computed(function () {
             if (params && params.visibleConditions !== undefined) {
@@ -31,5 +31,6 @@ ko.components.register('infoMessage-widget', {
     template:
         '<div class="information-box pie-el"' +
         ' data-bind="visible: isVisible(), text: message">' +
-        '</div>'
+        '</div>',
+    synchronous: true
 });

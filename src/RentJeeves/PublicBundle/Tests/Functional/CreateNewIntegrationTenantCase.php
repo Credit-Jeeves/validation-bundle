@@ -12,6 +12,9 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class CreateNewIntegrationTenantCase extends BaseTestCase
 {
+    /**
+     * @var array
+     */
     protected $requestParameters = [
         'resid' => 'Test_Resident_111',
         'leaseid' => 'Test_Lease_111',
@@ -38,7 +41,13 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->assertNotNull($unit, 'Check fixtures, property with id 2 should have at least one unit');
         $unitMapping = new UnitMapping();
         $unitMapping->setUnit($unit);
-        $unitMapping->setExternalUnitId($this->requestParameters['unitid']);
+        $unitMapping->setExternalUnitId(
+            sprintf(
+                '%s||%s',
+                $this->requestParameters['propid'],
+                $this->requestParameters['unitid']
+            )
+        );
         $unit->setUnitMapping($unitMapping);
         $em->persist($unitMapping);
         $em->persist($property);
@@ -79,7 +88,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             '#idUnit2 option:contains("27-f")',
             'Unit select should be present on the page.'
         );
-        $this->assertTrue((bool) $selectedUnit->getAttribute('selected'), 'Unassigned unit should be selected');
+        $this->assertTrue((bool) $selectedUnit->getAttribute('selected'), 'Specified unit should be selected');
         $btn = $this->getDomElement('button.thisIsMyRental', '"This is my rental" button does not exist.');
         $btn->click();
         $form = $this->getDomElement('#formNewUser', 'Form for create new user should be present.');
@@ -233,6 +242,8 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
+        $this->assertFalse($infoMessage->isVisible(), 'Should not be displayed info message');
+
         $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
         $paymentAcc->click();
 
@@ -241,10 +252,14 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
+        $this->assertFalse($infoMessage->isVisible(), 'Should not be displayed info message');
+
         $makeBtn->click();
 
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
+
+        $this->assertFalse($infoMessage->isVisible(), 'Should not be displayed info message');
 
         $closeBtn->click();
 

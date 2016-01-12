@@ -399,11 +399,15 @@ EOT;
      * @param  string $accountingSystem
      * @param  string $externalPropertyId
      * @param  string $externalUnitId
-     * @return Property|null
-     * @throws NonUniqueResultException
+     * @param  string $externalBuildingId
+     * @return null|Property
      */
-    public function getPropertyByExternalPropertyUnitIds($accountingSystem, $externalPropertyId, $externalUnitId)
-    {
+    public function getPropertyByExternalPropertyUnitIds(
+        $accountingSystem,
+        $externalPropertyId,
+        $externalUnitId,
+        $externalBuildingId = null
+    ) {
         ApiIntegrationType::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('p')
@@ -414,10 +418,18 @@ EOT;
             ->andWhere('units.holding = pm.holding')
             ->andWhere('h.apiIntegrationType = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
-            ->andWhere('um.externalUnitId = :externalUnitId')
+            ->andWhere('um.externalUnitId LIKE :externalUnitMask')
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)
-            ->setParameter('externalUnitId', $externalUnitId)
+            ->setParameter(
+                'externalUnitMask',
+                sprintf(
+                    '%s|%s|%s',
+                    $externalPropertyId,
+                    $externalBuildingId ?: '%',
+                    $externalUnitId
+                )
+            )
             ->getQuery()
             ->getOneOrNullResult();
     }

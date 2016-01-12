@@ -97,6 +97,7 @@ function PayAnything(parent, contract, defaultParams) {
     });
 
     var successStepHandler = function(data) {
+        self.infoMessage('');
         var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
