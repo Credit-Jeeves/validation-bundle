@@ -34,13 +34,17 @@ class YardiPushReversalReceiptCommand extends ContainerAwareCommand
                     $input->getOption('order-id')
                 )
             );
-        } else {
-            $this->getContainer()->get('logger')->info(
-                sprintf(
-                    '[YardiPushReversalReceiptCommand] Order ID#%s failed to push',
-                    $input->getOption('order-id')
-                )
-            );
+
+            return 0;
         }
+
+        $this->getContainer()->get('logger')->info(
+            sprintf(
+                '[YardiPushReversalReceiptCommand] Order ID#%s failed to push',
+                $input->getOption('order-id')
+            )
+        );
+
+        return 1;
     }
 }

@@ -27,8 +27,12 @@ class YardiReversalReceiptCollectCommand extends ContainerAwareCommand
         $result = $reversalReceiptSender->collectReversedPaymentsToJobsByDate(new \DateTime());
         if ($result) {
             $this->getContainer()->get('logger')->info('[YardiReversalReceiptCollectCommand] Collected successfully');
-        } else {
-            $this->getContainer()->get('logger')->info('[YardiReversalReceiptCollectCommand] Failed collect');
+
+            return 0;
         }
+
+        $this->getContainer()->get('logger')->info('[YardiReversalReceiptCollectCommand] Failed collect');
+
+        return 1;
     }
 }
