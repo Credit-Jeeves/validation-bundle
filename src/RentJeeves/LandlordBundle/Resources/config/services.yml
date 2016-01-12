@@ -14,6 +14,7 @@ services:
          class: RentJeeves\LandlordBundle\Services\ImportSettingsValidator
          arguments:
              - "@translator"
+             - "%support_email%"
     accounting.import.storage.csv:
          class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv
          arguments:

@@ -23,11 +23,17 @@ class ImportSettingsValidator
     protected $errorMessage = null;
 
     /**
+     * @var string
+     */
+    protected $supportEmail;
+
+    /**
      * @param Translator $translator
      */
-    public function __construct(Translator $translator)
+    public function __construct(Translator $translator, $supportEmail)
     {
         $this->translator = $translator;
+        $this->supportEmail = $supportEmail;
     }
 
     /**
@@ -38,7 +44,10 @@ class ImportSettingsValidator
     {
         $this->errorMessage = null;
         if (!$currentGroup->isExistImportSettings()) {
-            $this->errorMessage = $this->translator->trans('import.error.settings_missing');
+            $this->errorMessage = $this->translator->trans(
+                'import.error.settings_missing',
+                ['%support_email%' => $this->supportEmail]
+            );
 
             return false;
         }

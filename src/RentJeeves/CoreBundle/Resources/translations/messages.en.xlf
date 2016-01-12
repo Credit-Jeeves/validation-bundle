@@ -3301,11 +3301,11 @@
             </trans-unit>
             <trans-unit id="import.error.settings_missing">
                 <source>import.error.settings_missing</source>
-                <target>For current group we doesn't have import settings.</target>
+                <target>The import settings for this account are not configured. Please contact %support_email% and we can set these up for you.</target>
             </trans-unit>
             <trans-unit id="import.error.settings_is_wrong">
                 <source>import.error.settings_is_wrong</source>
-                <target>For current group import settings is wrong. Please double check holding level and group level settings.</target>
+                <target>It looks like your import settings have a problem. Please contact and we will get this fixed for you.</target>
             </trans-unit>
         </body>
     </file>
