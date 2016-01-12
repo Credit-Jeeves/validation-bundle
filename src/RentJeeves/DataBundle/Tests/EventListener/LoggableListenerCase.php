@@ -57,5 +57,30 @@ class LoggableListenerCase extends BaseTestCase
             $contractHistory->getPaymentAccepted(),
             'PaymentAccepted should be saved in history correctly'
         );
+
+        return $contract;
+    }
+
+    /**
+     * @param Contract $contract
+     * @test
+     * @depends createAndUpdate
+     */
+    public function shouldCheckThatOnlyWhenVersionedFieldChangedWeAddNewLogEntry(Contract $contract)
+    {
+        $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
+            $contract->getId()
+        );
+        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
+        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
+        $contract->setHolding(
+            $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Estate Holding')
+        );
+        $this->getEntityManager()->flush();
+        $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
+            $contract->getId()
+        );
+        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
+        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
     }
 }
