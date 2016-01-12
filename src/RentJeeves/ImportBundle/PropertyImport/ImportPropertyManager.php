@@ -4,7 +4,9 @@ namespace RentJeeves\ImportBundle\PropertyImport;
 
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\ImportBundle\Exception\ImportException;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
@@ -55,10 +57,24 @@ class ImportPropertyManager
     /**
      * @param Import $import
      * @param string $externalPropertyId
+     *
+     * @throws ImportLogicException when U use this service for Import with type != property
      */
     public function import(Import $import, $externalPropertyId)
     {
         $group = $import->getGroup();
+        if ($import->getImportType() !== ImportModelType::PROPERTY) {
+            $this->logger->warning(
+                $message = sprintf(
+                    'Invalid import type. Should be "%s" instead "%s".',
+                    ImportModelType::PROPERTY,
+                    $import->getImportType()
+                ),
+                ['group_id' => $group->getId()]
+            );
+            throw new ImportLogicException($message);
+        }
+
         $this->logger->info(
             sprintf('Start import data for Import#%d and extPropertyId#%s.', $import->getId(), $externalPropertyId),
             ['group_id' => $group->getId()]
@@ -69,7 +85,7 @@ class ImportPropertyManager
 
             $extractData = $extractor->extractData($group, $externalPropertyId);
             $transformer->transformData($extractData, $import);
-            $this->propertyLoader->loadData($import);
+            $this->propertyLoader->loadData($import, $externalPropertyId);
         } catch (ImportException $e) {
             $this->logger->info(
                 sprintf('Import data is finished with error : %s.', $e->getMessage()),
