@@ -12,7 +12,6 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
@@ -52,30 +51,23 @@ class PropertyLoader
     }
 
     /**
-     * {@inheritdoc}
+     * @param Import $import
+     * @param string $externalPropertyId
      */
-    public function loadData(Import $import)
+    public function loadData(Import $import, $externalPropertyId)
     {
-        if ($import->getImportType() !== ImportModelType::PROPERTY) {
-            $this->logger->warning(
-                $message = sprintf(
-                    'Invalid import type. Should be "%s" instead "%s"',
-                    ImportModelType::PROPERTY,
-                    $import->getImportType()
-                ),
-                ['group_id' => $import->getGroup()->getId()]
-            );
-            throw new ImportRuntimeException($message);
-        }
-
         $this->logger->info(
-            sprintf('Starting process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Starting process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
 
         $iterableResult = $this->em
             ->getRepository('RjDataBundle:ImportProperty')
-            ->getNotProcessedImportProperties($import);
+            ->getNotProcessedImportProperties($import, $externalPropertyId);
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
             $this->processImportProperty($importProperty);
@@ -84,7 +76,11 @@ class PropertyLoader
         }
 
         $this->logger->info(
-            sprintf('Finished process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Finished process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
     }
