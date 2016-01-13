@@ -2105,14 +2105,15 @@
                     Are you sure want to end this contract?
                     Please enter any uncollected balance, or $0 if lease was paid
                     in full. Tenant payment history will be reported to credit service
-                    agencies.
+                    agencies. Any active payments will be cancelled.
                 </target>
             </trans-unit>
             <trans-unit id="remove.contract.description">
                 <source>remove.contract.description</source>
-                <target>
-                    Are you sure want to remove this contract?
-                </target>
+                <target><![CDATA[
+                    Are you sure want to remove this contract?<br />
+                    Any active payments will be cancelled.
+                ]]></target>
             </trans-unit>
             <trans-unit id="remove.contract">
                 <source>remove.contract</source>
