@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Transformer;
+namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
