@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Services;
+namespace RentJeeves\ImportBundle\Validator;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;

@@ -19,7 +19,6 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
-use RentJeeves\LandlordBundle\Services\ImportSettingsValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
@@ -35,7 +34,6 @@ use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
@@ -88,29 +86,6 @@ class AccountingController extends Controller
         if (!$accountingPermission->$methodName()) {
             throw new Exception("Don't have access");
         }
-    }
-
-    /**
-     * @Route(
-     *     "/import/error/setting",
-     *     name="accounting_import_error_settings"
-     * )
-     */
-    public function importErrorAction()
-    {
-        /** @var ImportSettingsValidator $importSettingsValidator */
-        $importSettingsValidator = $this->get('import.settings.validator');
-
-        if ($importSettingsValidator->isValidImportSettings($this->getUser()->getCurrentGroup())) {
-            return new RedirectResponse(
-                $this->get('router')->generate('accounting_import_file', [], true)
-            );
-        }
-
-        return $this->render(
-            'LandlordBundle:Accounting:import_error.html.twig',
-            ['message' => $importSettingsValidator->getErrorMessage()]
-        );
     }
 
     /**
@@ -174,8 +149,9 @@ class AccountingController extends Controller
         /** @var ImportSettingsValidator $importSettingsValidator */
         $importSettingsValidator = $this->get('import.settings.validator');
         if ($importSettingsValidator->isValidImportSettings($this->getUser()->getCurrentGroup()) === false) {
-            return new RedirectResponse(
-                $this->get('router')->generate('accounting_import_error_settings', [], true)
+            return $this->render(
+                'LandlordBundle:Accounting:import_error.html.twig',
+                ['message' => $importSettingsValidator->getErrorMessage()]
             );
         }
 
@@ -192,12 +168,15 @@ class AccountingController extends Controller
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
-            return [
-                'form'            => $form->createView(),
-                'nGroups'         => $this->getGroups()->count(),
-                'integrationType' => $integrationType,
-                'source'          => $source
-            ];
+            return $this->render(
+                'LandlordBundle:Accounting:importFile.html.twig',
+                [
+                    'form'            => $form->createView(),
+                    'nGroups'         => $this->getGroups()->count(),
+                    'integrationType' => $integrationType,
+                    'source'          => $source
+                ]
+            );
         }
 
         $this->getImportLogger()->debug(sprintf('Import requested. Type: %s', $source));

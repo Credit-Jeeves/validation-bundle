@@ -49,3 +49,10 @@ services:
             - @doctrine.orm.default_entity_manager
             - @property.manager
             - @monolog.logger.property_import
+
+    #validators
+    import.settings.validator:
+         class: RentJeeves\ImportBundle\Validator\ImportSettingsValidator
+         arguments:
+             - "@translator"
+             - "%support_email%"

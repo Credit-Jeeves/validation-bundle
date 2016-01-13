@@ -44,27 +44,13 @@ class LandlordPermission
      */
     public function hasAccessToImport()
     {
-        if (!$this->group->isExistImportSettings()) {
-            return false;
-        }
-        $importSettings = $this->group->getImportSettings();
-        $apiIntegrationType = $this->user->getHolding()->getApiIntegrationType();
-        $isValidImportSettings = true;
-        if ($apiIntegrationType !== ApiIntegrationType::NONE && $importSettings->getSource() === ImportSource::CSV) {
-            $isValidImportSettings = false;
-        }
-
-        if (empty($this->group)) {
-            return false;
-        }
-
         $setting = $this->group->getGroupSettings();
 
         if (empty($setting)) {
             return false;
         }
 
-        return $setting->getIsIntegrated() && $isValidImportSettings;
+        return $setting->getIsIntegrated();
     }
 
     /**

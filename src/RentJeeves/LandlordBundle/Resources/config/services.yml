@@ -10,11 +10,6 @@ parameters:
     landlord.contract_manager.class: RentJeeves\LandlordBundle\Services\LandlordContractManager
 
 services:
-    import.settings.validator:
-         class: RentJeeves\LandlordBundle\Services\ImportSettingsValidator
-         arguments:
-             - "@translator"
-             - "%support_email%"
     accounting.import.storage.csv:
          class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv
          arguments:
