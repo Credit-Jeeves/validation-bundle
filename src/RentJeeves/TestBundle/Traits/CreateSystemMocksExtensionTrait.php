@@ -80,4 +80,20 @@ trait CreateSystemMocksExtensionTrait
     {
         return $this->getMock($class, [], [], '', false);
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getContainerAwareRegistryMock()
+    {
+        return $this->getBaseMock('\Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getPayment()
+    {
+        return $this->getBaseMock('\Payum\Core\Payment');
+    }
 }
