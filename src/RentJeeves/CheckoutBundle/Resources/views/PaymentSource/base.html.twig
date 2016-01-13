@@ -30,7 +30,7 @@
         {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
     {% endif %}
     <p class="note" data-bind="visible: getFee">
-        <strong data-bind="text: getFeeNote, i18n: {'FEE': getFeeText}"></strong>
+        <strong data-bind="text: getFeeNote"></strong>
         <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">
             ?
         </i>

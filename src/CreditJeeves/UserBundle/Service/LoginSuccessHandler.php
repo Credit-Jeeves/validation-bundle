@@ -122,9 +122,13 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         }
 
         try {
-            $route = $this->container->get('router')->match($referPath);
+            $parsedUrl = parse_url($referPath);
+            if (!isset($parsedUrl['path'])) {
+                return null;
+            }
+            $route = $this->container->get('router')->match($parsedUrl['path']);
         } catch (ResourceNotFoundException $e) {
-            $this->container->get('logger')->alert(sprintf('[LoginSuccessHandler]Resource not fount %s', $fullRefer));
+            $this->container->get('logger')->alert(sprintf('[LoginSuccessHandler]Resource not found %s', $fullRefer));
             return null;
         }
 

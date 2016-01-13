@@ -66,7 +66,7 @@ class AccountingSystemIntegrationDataManager
         }
         $processedData = ['accsys' => $accountingSystem];
 
-        $requiredParams = ['resid', 'leasid', 'propid'];
+        $requiredParams = ['resid', 'leaseid', 'propid'];
         foreach ($requiredParams as $paramName) {
             if (!$paramValue = $request->get($paramName)) {
                 throw new \InvalidArgumentException(
@@ -137,7 +137,7 @@ class AccountingSystemIntegrationDataManager
         if ($property = $this->getProperty() and $externalUnitId = $this->get('unitid')) {
             try {
                 $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')
-                    ->getUnitMappingByPropertyAndExternalUnitId($property, $externalUnitId);
+                    ->getUnitMappingByPropertyAndExternalUnitId($property, $this->get('propid'), $externalUnitId);
                 if ($unitMapping) {
                     return $unitMapping->getUnit();
                 }
@@ -154,7 +154,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function getExternalLeaseId()
     {
-        return $this->get('leasid');
+        return $this->get('leaseid');
     }
 
     /**

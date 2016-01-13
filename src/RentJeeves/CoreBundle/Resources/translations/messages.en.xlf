@@ -150,7 +150,7 @@
             </trans-unit>
             <trans-unit id="terms.service">
                 <source>terms.service</source>
-                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers. You also understand that once you verify your identity, your rent payments will be reported automatically to TransUnion, but you must Opt-In to Experian RentBureau.</target>
+                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers. You also understand that once you verify your identity, your rent payments will be reported automatically to Equifax and TransUnion, but you must Opt-In to Experian RentBureau.</target>
             </trans-unit>
             <trans-unit id="terms.service.pre-link">
                 <source>terms.service.pre-link</source>
@@ -3253,7 +3253,7 @@
             </trans-unit>
             <trans-unit id="pay_anything_popup.should_pay_message">
                 <source>pay_anything_popup.should_pay_message</source>
-                <target>Thank you for your %paid% payment, now please pay your %should_pay%</target>
+                <target>Thank you for your %paid% payment, now please pay your %should_pay%. Multiple payments are required when destination deposit accounts are different.</target>
             </trans-unit>
             <trans-unit id="load.report.is_not_allowed.title">
                 <source>load.report.is_not_allowed.title</source>
