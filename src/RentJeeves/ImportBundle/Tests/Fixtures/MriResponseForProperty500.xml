@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mri_s-pmrm_residentleasedetailsbypropertyid>
+  <entry>
+    <ResidentNameID>0000000001</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>101</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Phillip</FirstName>
+    <LastName>Purcell</LastName>
+    <ResidentStatus>Old</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2006-11-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2007-12-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>0.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2007-10-31T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-04T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>-111289270.00</LeaseBalance>
+    <IsCurrent>N</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000091</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>101</UnitID>
+    <LeaseID>2</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Kelly</FirstName>
+    <LastName>Armstrong</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-02-20T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-02-19T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>740.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>8347.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000422</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>101</UnitID>
+    <LeaseID>2</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Darryl</FirstName>
+    <LastName>Eaton</LastName>
+    <ResidentStatus>Co-Resident</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-02-20T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-02-19T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>740.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>8347.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>0000000002</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>102</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>John</FirstName>
+    <LastName>Thomas</LastName>
+    <ResidentStatus>Old</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2006-10-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2007-09-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>0.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2007-09-30T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-04T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>0.00</LeaseBalance>
+    <IsCurrent>N</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000092</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>102</UnitID>
+    <LeaseID>2</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>William</FirstName>
+    <LastName>Beachman</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-02-06T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-02-05T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1020.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>11051.90</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000093</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>102</UnitID>
+    <LeaseID>2</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Betty</FirstName>
+    <LastName>Beachman</LastName>
+    <ResidentStatus>Co-Resident</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-02-06T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-02-05T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1020.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>11051.90</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>0000000003</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>103</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Brent</FirstName>
+    <LastName>Favre</LastName>
+    <ResidentStatus>Old</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2006-09-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2007-08-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>0.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2007-08-31T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-04T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>0.00</LeaseBalance>
+    <IsCurrent>N</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000004</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>103</UnitID>
+    <LeaseID>2</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Marsha</FirstName>
+    <LastName>Smith</LastName>
+    <ResidentStatus>Old</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-01-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2008-12-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>750.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2008-02-18T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-21T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>0.00</LeaseBalance>
+    <IsCurrent>N</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000005</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>106</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Jeff</FirstName>
+    <LastName>Jenkins</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2007-12-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-11-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>750.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>6200.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000006</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>106</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Coretta</FirstName>
+    <LastName>Jenkins</LastName>
+    <ResidentStatus>Co-Resident</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2007-12-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-11-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>750.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>6200.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000007</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>107</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Holly</FirstName>
+    <LastName>Dunn</LastName>
+    <ResidentStatus>Old</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2007-10-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2008-09-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1000.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2008-01-03T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-20T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>0.00</LeaseBalance>
+    <IsCurrent>N</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000095</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>108</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Marsha</FirstName>
+    <LastName>Smith</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-02-18T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2015-02-17T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>760.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2008-04-30T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>750.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>0000000008</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>109</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Michael</FirstName>
+    <LastName>Scott</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-04-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-04-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-03-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1071.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-07-20T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>14802.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>Y</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000009</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>110</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Kris</FirstName>
+    <LastName>Kringle</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-02-29T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-03-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2009-02-27T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>772.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-19T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>9436.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000010</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>110</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Martha</FirstName>
+    <LastName>Clause</LastName>
+    <ResidentStatus>Co-Resident</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-02-29T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-03-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2009-02-27T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>772.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-19T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>9436.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000384</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>01</BuildingID>
+    <UnitID>115</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Carley</FirstName>
+    <LastName>Jones</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email>cjones@cleveland.edu</Email>
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-03-27T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-03-26T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>760.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>17137.58</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>0000000011</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>201</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Javier</FirstName>
+    <LastName>Nunez</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-06-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-06-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-05-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1040.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>14400.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000012</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>202</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Gail</FirstName>
+    <LastName>Brady</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-05-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-05-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2008-04-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>775.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-04T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>10450.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000013</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>202</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Baby</FirstName>
+    <LastName>Brady</LastName>
+    <ResidentStatus>Other Resident</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-05-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-05-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2008-04-30T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>775.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2008-03-04T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>10450.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000383</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>203</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Taylor</FirstName>
+    <LastName>Jacobs</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email>tjacobs@msn.net</Email>
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-03-20T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-03-19T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1040.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>10109.84</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>WF00000421</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>203</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Darryl</FirstName>
+    <LastName>Eaton</LastName>
+    <ResidentStatus>Other Resident</ResidentStatus>
+    <Email>darryl@example.com</Email>
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2008-03-20T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-03-19T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1040.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>10109.84</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments />
+  </entry>
+  <entry>
+    <ResidentNameID>0000000014</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>204</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>John</FirstName>
+    <LastName>Stevenson</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart />
+    <OccupyDate>2007-02-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-01-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>750.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>10550.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000015</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>207</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Henley</FirstName>
+    <LastName>Groom</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2007-01-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2006-01-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-12-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1000.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut>2008-04-30T00:00:00.0000000</LeaseMoveOut>
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>1900.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+  <entry>
+    <ResidentNameID>0000000016</ResidentNameID>
+    <PropertyID>500</PropertyID>
+    <BuildingID>02</BuildingID>
+    <UnitID>208</UnitID>
+    <LeaseID>1</LeaseID>
+    <Address />
+    <BuildingAddress>9951 Acklin Drive</BuildingAddress>
+    <City>Dallas</City>
+    <State>TX</State>
+    <Zipcode>75243</Zipcode>
+    <FirstName>Barry</FirstName>
+    <LastName>Blumenstock</LastName>
+    <ResidentStatus>Current</ResidentStatus>
+    <Email />
+    <Birthday />
+    <LeaseStart>2008-06-01T00:00:00.0000000</LeaseStart>
+    <OccupyDate>2007-06-01T00:00:00.0000000</OccupyDate>
+    <LeaseEnd>2025-05-31T00:00:00.0000000</LeaseEnd>
+    <LeaseMonthlyRentAmount>1030.00</LeaseMonthlyRentAmount>
+    <LeaseMoveOut />
+    <LeaseMonthToMonth>N</LeaseMonthToMonth>
+    <PayAllowed />
+    <LastUpdateDate>2015-03-17T00:00:00.0000000</LastUpdateDate>
+    <CurrCode />
+    <LeaseBalance>13300.00</LeaseBalance>
+    <IsCurrent>Y</IsCurrent>
+    <BlockEPayments>N</BlockEPayments>
+  </entry>
+</mri_s-pmrm_residentleasedetailsbypropertyid>
