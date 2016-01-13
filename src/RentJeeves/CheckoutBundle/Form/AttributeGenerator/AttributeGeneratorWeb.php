@@ -87,18 +87,19 @@ class AttributeGeneratorWeb extends AttributeGenerator
                     '<div class="tooltip-box type3 pie-el" ' .
                     'data-bind="visible: (\'recurring\' == payment.type() && !!payment.startDate())">' .
                     '<h4 data-bind="' .
-                    'text: \'checkout.recurring.\' + payment.frequency() + \'.tooltip.title-%DUE_DAY%\', ' .
-                    'i18n: {\'DUE_DAY\': payment.dueDate}' .
+                    'text: Translator.trans(\'checkout.recurring.\' + payment.frequency() + ' .
+                    '\'.tooltip.title-%DUE_DAY%\', ' .
+                    '{\'DUE_DAY\': payment.dueDate()})' .
                     '"></h4>' .
                     '<p data-bind="' .
-                    'text: \'checkout.recurring.\' + payment.frequency() + \'.\' + payment.ends() + ' .
+                    'text: Translator.trans(\'checkout.recurring.\' + payment.frequency() + \'.\' + payment.ends() + ' .
                     '\'.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%\', ' .
-                    'i18n: {' .
-                    '\'AMOUNT\': getTotal, ' .
-                    '\'DUE_DAY\': payment.dueDate, ' .
-                    '\'SETTLE_DAYS\': settleDays, ' .
-                    '\'ENDS_ON\': getLastPaymentDay' .
-                    '}' .
+                    '{' .
+                        '\'AMOUNT\': getTotal(), ' .
+                        '\'DUE_DAY\': payment.dueDate(), ' .
+                        '\'SETTLE_DAYS\': settleDays, ' .
+                        '\'ENDS_ON\': getLastPaymentDay()' .
+                    '})' .
                     '"></p></div>' .
                     // green message box for empty start_date
                     '<div class="tooltip-box type3 pie-el" data-bind="visible: !payment.startDate()">' .
