@@ -1,0 +1,51 @@
+parameters:
+    # using a path that leads into the project does not make sense. Use a path out of project if you need to.
+    # Otherwise put transformers into ImportBundle.
+    import.property.transformer.custom_paths: []
+
+services:
+    import_transformer.repository:
+        class: RentJeeves\DataBundle\Entity\ImportTransformerRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - RentJeeves\DataBundle\Entity\ImportTransformer
+
+    # factories
+    import.property.extractor_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory
+        arguments:
+            -
+              %accounting_system.mri%: @import.property.extractor.mri
+
+    import.property.transformer_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory
+        arguments:
+            - @import_transformer.repository
+            - @monolog.logger.property_import
+            - %import.property.transformer.custom_paths%
+            -
+              %accounting_system.mri%: @import.property.transformer.mri
+
+    # services
+    import.property.extractor.mri:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
+        public: false
+        arguments:
+            - @mri.resident_data
+            - @monolog.logger.property_import
+
+    import.property.transformer.mri:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.loader:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @property.manager
+            - @monolog.logger.property_import

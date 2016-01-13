@@ -40,13 +40,15 @@ class SinglePropertyValidator extends ConstraintValidator
             $property = $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
             if ($property &&
                 ($property->hasUnits() || $property->hasGroups() ||
-                    ($property->getIsSingle() !== $value && $property->getIsSingle() !== null)
+                    ($property->getPropertyAddress()->isSingle() !== $value &&
+                        $property->getPropertyAddress()->isSingle() !== null)
                 )
             ) {
                 $this->context->addViolation(
                     $constraint->commonMessage,
                     array('%SUPPORT_EMAIL%' => $this->supportEmail)
                 );
+
                 return false;
             }
 

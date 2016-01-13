@@ -14,6 +14,7 @@ class ReturnedCase extends BaseTestCase
     public function removeTenant()
     {
         $this->load(true);
+        $this->setDefaultSession('Symfony');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('common.account');
         $this->page->clickLink('settings.remove');
@@ -35,6 +36,7 @@ class ReturnedCase extends BaseTestCase
      */
     public function returnedTenant()
     {
+        $this->setDefaultSession('Symfony');
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
         /*We don't have this form any more, because we don't remove user. RT-266

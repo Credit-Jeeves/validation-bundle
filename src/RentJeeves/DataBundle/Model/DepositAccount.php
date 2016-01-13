@@ -84,16 +84,6 @@ abstract class DepositAccount
     protected $message;
 
     /**
-     * @ORM\ManyToMany(
-     *      targetEntity="PaymentAccount",
-     *      mappedBy="depositAccounts",
-     *      cascade={"remove"}
-     * )
-     * @Serializer\SerializedName("paymentAccounts")
-     */
-    protected $paymentAccounts;
-
-    /**
      * @var string
      *
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -148,7 +138,6 @@ abstract class DepositAccount
 
     public function __construct()
     {
-        $this->paymentAccounts = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->passedAch = false;

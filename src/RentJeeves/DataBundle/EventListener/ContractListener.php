@@ -82,7 +82,8 @@ class ContractListener
 
         // if property is standalone we just add system unit to the contract
         $property = $contract->getProperty();
-        if ($property->isSingle() && $unit = $property->getExistingSingleUnit()) {
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->isSingle() && $unit = $property->getExistingSingleUnit()) {
             $contract->setUnit($unit);
 
             return;
@@ -190,8 +191,13 @@ class ContractListener
             return;
         }
 
+        $oldValue = $payment->getCloseDetails();
         $payment->setClosed($this, PaymentCloseReason::CONTRACT_CHANGED);
-        $eventArgs->getEntityManager()->flush($payment);
+        $newValue = $payment->getCloseDetails();
+        $eventArgs->getEntityManager()->getUnitOfWork()->scheduleExtraUpdate(
+            $payment,
+            ['closeDetails' => [$oldValue, $newValue]]
+        );
     }
 
     /**

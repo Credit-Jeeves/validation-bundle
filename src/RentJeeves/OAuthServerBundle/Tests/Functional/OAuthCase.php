@@ -15,9 +15,9 @@ class OAuthCase extends BaseTestCase
      */
     public function findTenantByMappedResidentIdAndHolding()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->clearEmail();
+        $this->setDefaultSession('selenium2');
 
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()
@@ -41,7 +41,6 @@ class OAuthCase extends BaseTestCase
         );
 
         $this->assertNotNull($createUserLink = $this->page->find('css', '#create-user'));
-
         $createUserLink->click();
 
         $this->assertNotNull($form = $this->page->find('css', '#registration_form'));
@@ -64,7 +63,6 @@ class OAuthCase extends BaseTestCase
         $this->assertNotNull($connect = $this->page->find('css', '#connectBtn'));
 
         $connect->click();
-
         $this->assertNotNull($text = $this->page->find('css', 'h3'));
 
         $this->assertEquals('authorization.main_info', $text->getText());

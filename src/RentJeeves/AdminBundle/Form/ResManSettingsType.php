@@ -24,6 +24,7 @@ class ResManSettingsType extends Base
                 'required'          => false,
             ]
         );
+        $builder->add('url', 'text');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

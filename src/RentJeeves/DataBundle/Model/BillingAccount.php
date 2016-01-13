@@ -58,6 +58,18 @@ abstract class BillingAccount
 
     /**
      * @ORM\Column(
+     *     name="last_four",
+     *     type="string",
+     *     length=4,
+     *     nullable=true
+     * )
+     * @Type("string")
+     * @Serializer\Exclude
+     */
+    protected $lastFour;
+
+    /**
+     * @ORM\Column(
      *      name="bank_account_type",
      *      type="BankAccountType",
      *      nullable=false
@@ -202,5 +214,21 @@ abstract class BillingAccount
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastFour()
+    {
+        return $this->lastFour;
+    }
+
+    /**
+     * @param string $lastFour
+     */
+    public function setLastFour($lastFour)
+    {
+        $this->lastFour = $lastFour;
     }
 }

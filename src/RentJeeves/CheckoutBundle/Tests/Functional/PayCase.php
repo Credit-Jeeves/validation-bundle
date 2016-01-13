@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -147,7 +148,7 @@ class PayCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
-                'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2015',
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => '1/1/2016',
             )
         );
         // is disabled datepicker?
@@ -1435,5 +1436,156 @@ class PayCase extends BaseTestCase
         $payments = $em->getRepository('RjDataBundle:Payment')
             ->findBy(['contract' => $contract, 'status' => PaymentStatus::ACTIVE]);
         $this->assertCount(1, $payments, 'Should not be created duplicate payment for contract');
+    }
+
+    /**
+     * @test
+     */
+    public function paymentSourceShouldSaveLastFourDigitsOfAccountNumber()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonName);
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+        $this->session->wait(
+            $this->timeout,
+            'jQuery("#rentjeeves_checkoutbundle_paymenttype_amount:visible").length'
+        );
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#id-source-step:visible").length'
+        );
+        $this->page->clickLink('payment.account.new');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumber' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber_AccountNumberAgain' => '123245678',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#rentjeeves_checkoutbundle_userdetailstype:visible").length'
+        );
+        /** @var PaymentAccount $paymentSource */
+        $paymentSource = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')
+            ->findOneByName('Test payment');
+        $this->assertNotNull($paymentSource, 'Payment source is not created');
+        $this->assertEquals('5678', $paymentSource->getLastFour(), 'Payment source last 4 digits should be 5678');
+
+        /**
+         * Test CC number
+         */
+        $this->page->pressButton('pay_popup.step.previous');
+        $this->session->wait(
+            $this->timeout + 10000,
+            'jQuery("#id-source-step:visible").length'
+        );
+        $this->page->clickLink('payment.account.new');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test card payment',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4987654321098769',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '100',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => 2,
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => date('Y') + 1,
+                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_25' => true
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#rentjeeves_checkoutbundle_userdetailstype:visible').length"
+        );
+        $paymentSource = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount')
+            ->findOneByName('Test card payment');
+        $this->assertNotNull($paymentSource, 'Payment source is not created');
+        $this->assertEquals('8769', $paymentSource->getLastFour(), 'Payment source last 4 digits should equal 8769');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetPaymentToFlaggedWhenTenantSetsAmountGreaterThanMaxLimit()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $this->assertNotEmpty($tenant, 'tenant11@example.com not found');
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+        $em->flush($tenant);
+        $this->assertCount(6, $em->getRepository('RjDataBundle:Payment')->findAll(), 'Expected 6 payments in fixtures');
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonName);
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'), 'PayPopup should exist');
+        $this->assertNotNull($payPopup = $payPopup->getParent(), 'PayPopup->getParent() should exist');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '10999',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 3,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+        // choose existing payment source
+        $this->page->find('css', '#id-source-step .payment-accounts label:nth-of-type(2)')->click();
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "jQuery('.pay-step:visible').length");
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+        $this->page->pressButton('pay_popup.close');
+
+        $em->clear();
+        $this->assertCount(7, $em->getRepository('RjDataBundle:Payment')->findAll(), 'Expected 6 payments in fixtures');
+        $this->assertNotNull($payment = $em->getRepository('RjDataBundle:Payment')->find(7), 'Payment #7 should exist');
+
+        $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be FLAGGED');
     }
 }

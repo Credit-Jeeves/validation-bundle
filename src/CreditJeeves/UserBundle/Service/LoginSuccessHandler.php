@@ -3,6 +3,7 @@ namespace CreditJeeves\UserBundle\Service;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -114,16 +115,23 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             return null;
         }
 
-        $referPath = str_replace(
-            ['rj_dev.php/', 'index.php/', 'rj_test.php/', '_dev.php/', '_test.php/'],
-            "",
-            parse_url(
-                $fullRefer,
-                PHP_URL_PATH
-            )
-        );
+        if (strpos($fullRefer, '.php') !== false) {
+            list(, $referPath) = explode('.php', $fullRefer);
+        } else {
+            $referPath = $fullRefer;
+        }
 
-        $route = $this->container->get('router')->match($referPath);
+        try {
+            $parsedUrl = parse_url($referPath);
+            if (!isset($parsedUrl['path'])) {
+                return null;
+            }
+            $route = $this->container->get('router')->match($parsedUrl['path']);
+        } catch (ResourceNotFoundException $e) {
+            $this->container->get('logger')->alert(sprintf('[LoginSuccessHandler]Resource not found %s', $fullRefer));
+            return null;
+        }
+
         $routesSkipped = [
             'fos_user_resetting_reset',
             'fos_user_security_login',

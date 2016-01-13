@@ -1,0 +1,214 @@
+<Simulation>
+  <transaction_signature>NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3
+icy26YjqrpzMRSGs73qWNpUdTIvelmpvj6soW+dJS4Pz39d85BZkmcw95UG+
+QJSNMYbgVwaC/Uocv689TxVnCpfu/JApDNyeTEj7uJOYJ7VXEBCXmtTKsqsk
+UsrS6I6cSJbW
+</transaction_signature>
+  <scoreInit>536</scoreInit>
+  <scoreBest>589</scoreBest>
+  <cashUsed>34</cashUsed>
+  <simType>101</simType>
+  <Message />
+  <DataChanged>
+    <S357>
+      <Block id='13'>
+        <tr_record_ident>357</tr_record_ident>
+        <tr_record_len>280</tr_record_len>
+        <tr_spc_cmt>
+        </tr_spc_cmt>
+        <tr_evaluation>P</tr_evaluation>
+        <tr_opendate>200306</tr_opendate>
+        <tr_statdate>200703</tr_statdate>
+        <tr_maxdelqdate>000000</tr_maxdelqdate>
+        <tr_type>18</tr_type>
+        <tr_terms>REV</tr_terms>
+        <tr_ecoa>1</tr_ecoa>
+        <tr_amount1>400</tr_amount1>
+        <tr_amount1_qual>L</tr_amount1_qual>
+        <tr_amount2>477</tr_amount2>
+        <tr_amount2_qual>H</tr_amount2_qual>
+        <tr_baldate>20070516</tr_baldate>
+        <tr_balance>356</tr_balance>
+        <tr_status>11</tr_status>
+        <tr_reserved>
+        </tr_reserved>
+        <tr_apd>0</tr_apd>
+        <tr_opncls>O</tr_opncls>
+        <tr_rev_install>R</tr_rev_install>
+        <tr_consu_cmt>
+        </tr_consu_cmt>
+        <tr_acctnum>5178007092321234</tr_acctnum>
+        <tr_pmtballn_date>00000000</tr_pmtballn_date>
+        <tr_ballnamount />
+        <tr_monhist>46</tr_monhist>
+        <tr_day30cnt>0</tr_day30cnt>
+        <tr_day60cnt>0</tr_day60cnt>
+        <tr_day90cnt>0</tr_day90cnt>
+        <tr_derogcnt>0</tr_derogcnt>
+        <tr_collateral />
+        <tr_pmthist>C-CCCCCCCCCCCCCCCCCCCCCCC</tr_pmthist>
+        <tr_monpmt_amount>25</tr_monpmt_amount>
+        <tr_monpmt_type>S</tr_monpmt_type>
+        <tr_frequency>
+        </tr_frequency>
+        <tr_lastpmtdate>20070311</tr_lastpmtdate>
+        <tr_subcode>1210189</tr_subcode>
+        <tr_kob>BC</tr_kob>
+        <tr_subname>FIRST PREMIER BANK</tr_subname>
+        <tr_orig_credname />
+        <tr_sold_text />
+        <tr_pmthist_84mth />
+        <tr_disp_flag />
+        <tr_max_pmtcode />
+        <tr_first_delqdate>000000</tr_first_delqdate>
+        <tr_seconddelqdate>000000</tr_seconddelqdate>
+        <tr_initpayleveldate>200703</tr_initpayleveldate>
+        <tr_acctcond>A1</tr_acctcond>
+        <tr_enhstatus>11</tr_enhstatus>
+        <tr_enhtype>18</tr_enhtype>
+        <tr_enhspccmt>
+        </tr_enhspccmt>
+        <tr_associate_date>00000000</tr_associate_date>
+        <tr_spec_pmt_code />
+        <tr_spec_pmt_dt>00000000</tr_spec_pmt_dt>
+        <tr_spec_pmt_amt />
+        <tr_actual_pmt_amt />
+        <tr_terms_duration />
+        <tr_terms_frecuency />
+        <tr_orig_cred_class_code />
+        <tr_cred_lim_amt />
+        <tr_hi_bal_amt />
+        <tr_orig_loan_amt />
+        <tr_charge_off_amt />
+        <tr_sec_agen_code />
+        <tr_sec_agen_id />
+        <tr_com_cond_code />
+        <tr_con_inf_ind />
+        <tr_len_mort_id />
+        <tr_mort_id />
+        <tr_payment_profile />
+        <tr_purch_port_from_name />
+        <tr_y2k_opendate>20030615</tr_y2k_opendate>
+        <tr_y2k_statdate>20070301</tr_y2k_statdate>
+        <tr_y2k_maxdlqdate>00000000</tr_y2k_maxdlqdate>
+        <tr_y2k_baldate>20070516</tr_y2k_baldate>
+        <tr_y2k_lastpmtdate>20070311</tr_y2k_lastpmtdate>
+        <tr_y2k_firstdelqdate>00000000</tr_y2k_firstdelqdate>
+        <tr_y2k_seconddelqdate>00000000</tr_y2k_seconddelqdate>
+        <tr_y2k_pmtleveldate>20070301</tr_y2k_pmtleveldate>
+        <tr_statusid />
+        <tr_recent_opnid />
+        <tr_debt_counsid />
+        <tr_amount_avail />
+        <tr_type_cat />
+        <tr_credgrant_tel />
+        <tr_subs_add />
+        <tr_subs_city />
+        <tr_subs_state />
+        <tr_subs_zip />
+      </Block>
+      <Block id='9'>
+        <tr_record_ident>357</tr_record_ident>
+        <tr_record_len>284</tr_record_len>
+        <tr_spc_cmt>
+        </tr_spc_cmt>
+        <tr_evaluation>P</tr_evaluation>
+        <tr_opendate>200209</tr_opendate>
+        <tr_statdate>200703</tr_statdate>
+        <tr_maxdelqdate>000000</tr_maxdelqdate>
+        <tr_type>18</tr_type>
+        <tr_terms>REV</tr_terms>
+        <tr_ecoa>1</tr_ecoa>
+        <tr_amount1>1000</tr_amount1>
+        <tr_amount1_qual>L</tr_amount1_qual>
+        <tr_amount2>1146</tr_amount2>
+        <tr_amount2_qual>H</tr_amount2_qual>
+        <tr_baldate>20070516</tr_baldate>
+        <tr_balance>890</tr_balance>
+        <tr_status>11</tr_status>
+        <tr_reserved>
+        </tr_reserved>
+        <tr_apd>0</tr_apd>
+        <tr_opncls>O</tr_opncls>
+        <tr_rev_install>R</tr_rev_install>
+        <tr_consu_cmt>
+        </tr_consu_cmt>
+        <tr_acctnum>4036240000161556</tr_acctnum>
+        <tr_pmtballn_date>00000000</tr_pmtballn_date>
+        <tr_ballnamount />
+        <tr_monhist>54</tr_monhist>
+        <tr_day30cnt>0</tr_day30cnt>
+        <tr_day60cnt>0</tr_day60cnt>
+        <tr_day90cnt>0</tr_day90cnt>
+        <tr_derogcnt>0</tr_derogcnt>
+        <tr_collateral />
+        <tr_pmthist>C-CCCCCCCCCCCCCCCCCCCCCCC</tr_pmthist>
+        <tr_monpmt_amount>28</tr_monpmt_amount>
+        <tr_monpmt_type>S</tr_monpmt_type>
+        <tr_frequency>
+        </tr_frequency>
+        <tr_lastpmtdate>20070322</tr_lastpmtdate>
+        <tr_subcode>1250850</tr_subcode>
+        <tr_kob>BB</tr_kob>
+        <tr_subname>SST/COLUMBUS BANK&amp;TRUS</tr_subname>
+        <tr_orig_credname />
+        <tr_sold_text />
+        <tr_pmthist_84mth />
+        <tr_disp_flag />
+        <tr_max_pmtcode />
+        <tr_first_delqdate>000000</tr_first_delqdate>
+        <tr_seconddelqdate>000000</tr_seconddelqdate>
+        <tr_initpayleveldate>200703</tr_initpayleveldate>
+        <tr_acctcond>A1</tr_acctcond>
+        <tr_enhstatus>11</tr_enhstatus>
+        <tr_enhtype>18</tr_enhtype>
+        <tr_enhspccmt>
+        </tr_enhspccmt>
+        <tr_associate_date>00000000</tr_associate_date>
+        <tr_spec_pmt_code />
+        <tr_spec_pmt_dt>00000000</tr_spec_pmt_dt>
+        <tr_spec_pmt_amt />
+        <tr_actual_pmt_amt />
+        <tr_terms_duration />
+        <tr_terms_frecuency />
+        <tr_orig_cred_class_code />
+        <tr_cred_lim_amt />
+        <tr_hi_bal_amt />
+        <tr_orig_loan_amt />
+        <tr_charge_off_amt />
+        <tr_sec_agen_code />
+        <tr_sec_agen_id />
+        <tr_com_cond_code />
+        <tr_con_inf_ind />
+        <tr_len_mort_id />
+        <tr_mort_id />
+        <tr_payment_profile />
+        <tr_purch_port_from_name />
+        <tr_y2k_opendate>20020927</tr_y2k_opendate>
+        <tr_y2k_statdate>20070301</tr_y2k_statdate>
+        <tr_y2k_maxdlqdate>00000000</tr_y2k_maxdlqdate>
+        <tr_y2k_baldate>20070516</tr_y2k_baldate>
+        <tr_y2k_lastpmtdate>20070322</tr_y2k_lastpmtdate>
+        <tr_y2k_firstdelqdate>00000000</tr_y2k_firstdelqdate>
+        <tr_y2k_seconddelqdate>00000000</tr_y2k_seconddelqdate>
+        <tr_y2k_pmtleveldate>20070301</tr_y2k_pmtleveldate>
+        <tr_statusid />
+        <tr_recent_opnid />
+        <tr_debt_counsid />
+        <tr_amount_avail />
+        <tr_type_cat />
+        <tr_credgrant_tel />
+        <tr_subs_add />
+        <tr_subs_city />
+        <tr_subs_state />
+        <tr_subs_zip />
+      </Block>
+    </S357>
+  </DataChanged>
+  <RawDataCSV>
+  </RawDataCSV>
+  <FilterCSV>
+  </FilterCSV>
+  <AttributeCSV>
+  </AttributeCSV>
+</Simulation>

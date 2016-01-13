@@ -52,7 +52,6 @@ class AppRjKernel extends AppKernel
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
             new Fp\JsFormValidatorBundle\FpJsFormValidatorBundle(),
-            new Bazinga\Bundle\GeocoderBundle\BazingaGeocoderBundle(),
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
@@ -67,6 +66,7 @@ class AppRjKernel extends AppKernel
             new BeSimple\SoapBundle\BeSimpleSoapBundle(),
             new RentTrack\TransUnionBundle\TransUnionBundle(),
             new RentTrack\SmartyStreetsBundle\SmartyStreetsBundle(),
+            new RentTrack\ProfitStarsClientBundle\ProfitStarsClientBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),
@@ -82,6 +82,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\ApiBundle\ApiBundle(),
             new RentJeeves\ApiBundle\RjApiBundle(),
             new RentJeeves\OAuthServerBundle\OAuthServerBundle(),
+            new RentJeeves\ImportBundle\ImportBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {

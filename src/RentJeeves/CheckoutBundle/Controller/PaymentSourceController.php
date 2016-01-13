@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Group;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -232,6 +233,19 @@ class PaymentSourceController extends Controller
                 $depositAccountType,
                 $group->getGroupSettings()->getPaymentProcessor()
             );
+            if (null == $depositAccount) {
+                $this->get('logger')->alert(sprintf(
+                    'Rent Deposit account not found when tenant tries to create a payment. Tenant email: %s, Group: %s',
+                    $paymentAccount->getUser()->getEmail(),
+                    $group->getName()
+                ));
+                throw new PaymentProcessorInvalidArgumentException(
+                    $this->get('translator')->trans(
+                        'checkout.payment.error.cannot_be_processed',
+                        ['%support_email%' => $this->container->getParameter('support_email')]
+                    )
+                );
+            }
 
             /** @var SubmerchantProcessorInterface $paymentProcessor */
             $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);

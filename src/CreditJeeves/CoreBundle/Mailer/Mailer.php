@@ -73,12 +73,13 @@ class Mailer extends BaseMailer implements MailerInterface
             $this->container->get('mailer')->send($message);
 
             return true;
-        } catch (\Twig_Error_Runtime $e) {
+        } catch (\Twig_Error $e) {
             $this->handleException($e);
             $this->container->get('logger')->alert(
                 sprintf(
-                    'Error when sending email (%s) : %s',
+                    'Error when sending email (%s) to user %s : %s',
                     $templateName,
+                    $emailTo,
                     $e->getMessage()
                 )
             );

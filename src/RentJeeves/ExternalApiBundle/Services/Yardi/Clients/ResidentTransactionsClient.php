@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
-use DateTime;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseChargesLoginResponse;
@@ -89,7 +88,7 @@ class ResidentTransactionsClient extends AbstractClient
     }
 
     // Could not get a successful result with this method.
-    public function importResidentTransactionsDepositDate($transactionXml, DateTime $depositDate, $depositMemo = null)
+    public function importResidentTransactionsDepositDate($transactionXml, \DateTime $depositDate, $depositMemo = null)
     {
         $parameters = array(
             'ImportResidentTransactions_DepositDate' => array_merge(
@@ -133,7 +132,7 @@ class ResidentTransactionsClient extends AbstractClient
 
     /**
      * @param $externalPropertyId
-     * @param DateTime $postMonth
+     * @param \DateTime $postMonth
      * @return ResidentLeaseChargesLoginResponse|null
      * @throws \Exception
      * @throws \SoapFault

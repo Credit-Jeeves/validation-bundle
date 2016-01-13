@@ -11,7 +11,6 @@ class PropertyMappingCase extends BaseTestCase
      */
     public function shouldCreateAndListPropertyMapping()
     {
-        $this->markTestSkipped('Unskipp after RT-1860');
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
@@ -35,8 +34,10 @@ class PropertyMappingCase extends BaseTestCase
             "$('.overlay-trigger').length <= 0"
         );
         $this->assertNotNull($input = $this->page->findAll('css', 'form input'));
-        $this->assertCount(5, $input);
-        $input[0]->setValue("p987SS13");
+        $this->assertCount(7, $input);
+        $input[0]->setValue(5);
+        $input[1]->setValue(3);
+        $input[2]->setValue("p987SS13");
 
         $this->assertNotNull($btn = $this->page->findAll('css', '.form-actions .btn'));
         $this->assertCount(3, $btn);

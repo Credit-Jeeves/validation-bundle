@@ -152,7 +152,7 @@ table.properties-table th {
     );
 }
 
-.contract-late {
+#actions-block .contract-late {
     background-image: linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
     background-image: -o-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
     background-image: -moz-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);

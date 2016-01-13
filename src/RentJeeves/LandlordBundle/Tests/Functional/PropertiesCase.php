@@ -59,7 +59,7 @@ class PropertiesCase extends BaseTestCase
         $searchFilterSelectLink->click();
         $this->assertNotNull($searchFilterSelectLinkValue = $this->page->find('css', '#searchFilterSelect_li_1'));
         $searchFilterSelectLinkValue->click();
-        $search->setValue('Havana');
+        $search->setValue('Saint Louis');
 
         $this->assertNotNull($searchButton = $this->page->find('css', '#searchButton'));
         $searchButton->click();
@@ -69,7 +69,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertCount(1, $firstTr, 'wrong number of collum');
 
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
+        $this->assertEquals('1200 Market St', $firstTd->getText(), 'Wrong notice');
     }
 
     /**
@@ -99,7 +99,7 @@ class PropertiesCase extends BaseTestCase
         $saveProperty->click();
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
+        $fillAddress = '451 Greenwich St New York, NY 10013, United States';
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
@@ -133,8 +133,8 @@ class PropertiesCase extends BaseTestCase
         // check DB to verify that property has been created correctly
         $property = $this->getPropertyRepository()->findOneByPropertyAddressFields(
             [
-                'street' => 'Greenwich Street',
-                'number' => '13',
+                'street' => 'Greenwich St',
+                'number' => '451',
                 'zip' => '10013'
             ]
         );
@@ -165,7 +165,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $fillAddress = '13 Greenwich St, Manhattan, New York, NY 10013, United States';
+        $fillAddress = '451 Greenwich St New York, NY 10013, United States';
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
@@ -188,8 +188,8 @@ class PropertiesCase extends BaseTestCase
 
         $property = $this->getPropertyRepository()->findOneByPropertyAddressFields(
             [
-                'street' => 'Greenwich Street',
-                'number' => '13',
+                'street' => 'Greenwich St',
+                'number' => '451',
                 'zip' => '10013'
             ]
         );

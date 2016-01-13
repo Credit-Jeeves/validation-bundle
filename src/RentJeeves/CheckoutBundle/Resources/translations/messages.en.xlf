@@ -669,10 +669,14 @@
             <trans-unit id="checkout.duplicate_payment.error">
                 <source>checkout.duplicate_payment.error</source>
                 <target><![CDATA[
-                    There is already an active payment for your lease.
-                    This should not be possible, so we've scrambled our team of robots to investigate the issue.
-                    Please try again later or contact %support_email%]]>
+                    Our team of robot minions found an active payment already exists for your lease.
+                    Please refresh your page and try again.
+                    If you continue to get this message please contact %support_email%]]>
                 </target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.error.cannot_be_processed">
+                <source>checkout.payment.error.cannot_be_processed</source>
+                <target>Your payment can not be processed. Please try again later or contact %support_email%.</target>
             </trans-unit>
         </body>
     </file>

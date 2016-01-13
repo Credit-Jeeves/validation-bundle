@@ -3,10 +3,16 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 
+/**
+ * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
+ */
 class PropertyRepository extends EntityRepository
 {
     /**
@@ -239,34 +245,6 @@ EOT;
     }
 
     /**
-     * @param string $jb
-     * @param string $kb
-     *
-     * @return mixed
-     */
-    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
-    {
-        $result = $this->createQueryBuilder('p')
-            ->select('LENGTH(u.name) as co,p,u')
-            ->innerJoin('p.propertyAddress', 'propertyAddress')
-            ->leftJoin('p.units', 'u')
-            ->where('propertyAddress.lat = :jb')
-            ->andWhere('propertyAddress.long = :kb')
-            ->setParameter('jb', $jb)
-            ->setParameter('kb', $kb)
-            ->addOrderBy('co', 'ASC')
-            ->addOrderBy('u.name', 'ASC')
-            ->getQuery()
-            ->getResult();
-
-        if (isset($result[0][0])) {
-            return $result[0][0];
-        }
-
-        return null;
-    }
-
-    /**
      * @param Holding $holding
      *
      * @return array
@@ -280,7 +258,7 @@ EOT;
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
             ->andWhere('unit.holding = :holdingId')
-            ->andWhere('propertyAddress.jb IS NOT NULL AND propertyAddress.kb IS NOT NULL')
+            ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
             ->addOrderBy('co', 'ASC')
             ->addOrderBy('unit.name', 'ASC')
@@ -349,7 +327,7 @@ EOT;
     public function getPropertiesByExternalId(Holding $holding, $externalPropertyId)
     {
         return $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.holding = :holdingId')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('holdingId', $holding->getId())
@@ -365,22 +343,14 @@ EOT;
      */
     public function findOneByAddress(Address $address)
     {
-        $query = $this->createQueryBuilder('p')
-            ->innerJoin('p.propertyAddress', 'propertyAddress');
-        if ($address->getIndex() !== null) {
-            $query
-                ->where('propertyAddress.index = :index')
-                ->setParameter('index', $address->getIndex());
-        } elseif ($address->getJb() !== null && $address->getKb() !== null) {
-            $query
-                ->where('propertyAddress.jb = :jb AND propertyAddress.kb = :kb')
-                ->setParameter('jb', $address->getJb())
-                ->setParameter('kb', $address->getKb());
-        } else {
+        if ($address->getIndex() === null) {
             throw new \LogicException('Address doesn`t have data about location');
         }
 
-        return $query
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyAddress', 'propertyAddress')
+            ->where('propertyAddress.index = :index')
+            ->setParameter('index', $address->getIndex())
             ->andWhere('propertyAddress.number = :number')
             ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */
@@ -407,5 +377,102 @@ EOT;
         /** TODO: change this to oneOrNull once duplicate properties removed from DB */
 
         return $query->setMaxResults(1)->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @return Property[]
+     */
+    public function findAllOtherPropertiesWithSamePropertyAddress(Property $property)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.propertyAddress = :propertyAddress')
+            ->andWhere('p.id != :currentPropertyId')
+            ->setParameter('propertyAddress', $property->getPropertyAddress())
+            ->setParameter('currentPropertyId', $property->getId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param  string $accountingSystem
+     * @param  string $externalPropertyId
+     * @param  string $externalUnitId
+     * @param  string $externalBuildingId
+     * @return null|Property
+     */
+    public function getPropertyByExternalPropertyUnitIds(
+        $accountingSystem,
+        $externalPropertyId,
+        $externalUnitId,
+        $externalBuildingId = null
+    ) {
+        ApiIntegrationType::throwsInvalid($accountingSystem);
+
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('p.units', 'units')
+            ->innerJoin('units.unitMapping', 'um')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('units.holding = pm.holding')
+            ->andWhere('h.apiIntegrationType = :accountingSystem')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('um.externalUnitId LIKE :externalUnitMask')
+            ->setParameter('accountingSystem', $accountingSystem)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter(
+                'externalUnitMask',
+                sprintf(
+                    '%s|%s|%s',
+                    $externalPropertyId,
+                    $externalBuildingId ?: '%',
+                    $externalUnitId
+                )
+            )
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param  string $accountingSystem
+     * @param  string $externalPropertyId
+     * @return Property|null
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId)
+    {
+        ApiIntegrationType::throwsInvalid($accountingSystem);
+
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('h.apiIntegrationType = :accountingSystem')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('accountingSystem', $accountingSystem)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Property $property
+     * @return boolean
+     * @throws NonUniqueResultException|NoResultException
+     */
+    public function checkPropertyBelongOneGroup(Property $property)
+    {
+        if ($property->getPropertyGroups()->count() > 1) {
+            throw new NonUniqueResultException('Property belongs to more then one group');
+        }
+
+        return (bool) $this->createQueryBuilder('p')
+            ->select('1')
+            ->innerJoin('p.units', 'u')
+            ->where('p.id = :property')
+            ->having('COUNT(DISTINCT u.group) = 1')
+            ->setParameter('property', $property)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

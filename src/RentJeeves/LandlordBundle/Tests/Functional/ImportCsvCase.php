@@ -1,11 +1,12 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ImportSource;
@@ -50,7 +51,7 @@ class ImportCsvCase extends ImportBaseAbstract
             }
         }
     }
-    
+
     /**
      * @test
      */
@@ -408,8 +409,8 @@ class ImportCsvCase extends ImportBaseAbstract
          */
         $property = $em->getRepository('RjDataBundle:Property')->findOneByPropertyAddressFields(
             [
-                'jb' => '40.7308364',
-                'kb' => '-73.991567',
+                'lat' => '40.73108',
+                'long' => '-73.99186',
             ]
         );
 
@@ -544,7 +545,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
         $this->logout();
     }
-
 
     /**
      * @test
@@ -803,7 +803,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $waitingContractParams
         );
 
-        $this->assertNull($waitingContract);
+        $this->assertTrue(is_null($waitingContract), 'Should remove contract waiting');
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array('email' => 'dan.price@mail.com')
@@ -1006,7 +1006,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
     }
 
-
     /**
      * @return array
      */
@@ -1126,7 +1125,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $paidTo = $reflectionProperty->getValue($contract);
         $this->assertNull($paidTo, 'We should not set paid to, it should be null');
     }
-
 
     /**
      * @test
@@ -1278,17 +1276,16 @@ class ImportCsvCase extends ImportBaseAbstract
          * Create a property with no units
          */
         $units = $property->getUnits();
+        /** @var Unit $unit */
         foreach ($units as $unit) {
             $em->remove($unit);
         }
         $em->flush();
-
         $propertyAddress = $property->getPropertyAddress();
         $propertyAddress->setIsSingle(true);
 
         $em->persist($property);
         $em->flush();
-
 
         $importGroupSettings = $this->getImportGroupSettings();
         $importGroupSettings->setSource(ImportSource::CSV);
@@ -1336,7 +1333,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitRedirectToSummaryPage();
     }
 
-
     /**
      * @test
      */
@@ -1356,7 +1352,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertNotNull($unitMapping);
     }
-
 
     /**
      * @test
@@ -1469,7 +1464,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setCsvDateFormat('m/d/Y');
         $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
         $this->getEntityManager()->flush();
-
 
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');

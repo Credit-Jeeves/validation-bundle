@@ -306,6 +306,13 @@ abstract class GroupSettings
     protected $showRentOnWizard = true;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", name="is_external_resident_follows_unit", options={"default":0})
+     */
+    protected $externalResidentFollowsUnit = false;
+
+    /**
      * @param float $feeACH
      */
     public function setFeeACH($feeACH)
@@ -663,5 +670,21 @@ abstract class GroupSettings
     public function setShowRentOnWizard($showRentOnWizard)
     {
         $this->showRentOnWizard = $showRentOnWizard;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExternalResidentFollowsUnit()
+    {
+        return $this->externalResidentFollowsUnit;
+    }
+
+    /**
+     * @param boolean $externalResidentFollowsUnit
+     */
+    public function setExternalResidentFollowsUnit($externalResidentFollowsUnit)
+    {
+        $this->externalResidentFollowsUnit = $externalResidentFollowsUnit;
     }
 }

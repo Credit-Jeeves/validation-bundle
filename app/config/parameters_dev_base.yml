@@ -45,7 +45,7 @@ parameters:
 
     login.attempts: 1
     login.delay: 1
-    net_connect.precise_id.userpwd: 'renttrack_pid_demo:iIsvmRdCZXY3ms' #required! # overwritten by DB
+    net_connect.precise_id.userpwd: 'renttrack_pid_demo:e2YHtkPvdlcV97' #required! # overwritten by DB
     net_connect.precise_id.eai: 'HRPCX4RA' #required! # overwritten by DB
     net_connect.precise_id.url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
     net_connect.precise_id.dbhost: 'PRECISE_ID_TEST' #required!
@@ -68,11 +68,10 @@ parameters:
     # parameter was added for task RT-362, we can fast allow and disallow feature that disallow duplicate contract
     allow_duplicate_contracts: false
     # parameter was added for task RT-1668, we can fast allow and disallow feature that show Score Track
-    allow_score_track: false
+    allow_score_track: true
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
-    resman.api_url: https://api.myresman.com/MITS/
 
     pdo.db_options:
         db_table:        session

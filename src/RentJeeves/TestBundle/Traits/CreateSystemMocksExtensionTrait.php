@@ -4,32 +4,31 @@ namespace RentJeeves\TestBundle\Traits;
 
 /**
  * Possible to use only in classes which implements \PHPUnit_Framework_TestCase
- *
- * @method \PHPUnit_Framework_MockObject_MockObject getMock
  */
 trait CreateSystemMocksExtensionTrait
 {
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Doctrine\ORM\EntityRepository
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Doctrine\ORM\EntityRepository
      */
     public function getEntityRepositoryMock()
     {
-        return $this->getMock('Doctrine\ORM\EntityRepository', [], [], '', false);
-    }
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|RentJeeves\CoreBundle\Session\Landlord
-     */
-    public function getSessionLandlordMock()
-    {
-        return $this->getMock('RentJeeves\CoreBundle\Session\Landlord', [], [], '', false);
+        return $this->getBaseMock('Doctrine\ORM\EntityRepository');
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Symfony\Component\HttpFoundation\Session\Session
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Session\Landlord
+     */
+    public function getSessionLandlordMock()
+    {
+        return $this->getBaseMock('RentJeeves\CoreBundle\Session\Landlord');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Symfony\Component\HttpFoundation\Session\Session
      */
     public function getSessionMock()
     {
-        return $this->getMock('Symfony\Component\HttpFoundation\Session\Session', [], [], '', false);
+        return $this->getBaseMock('Symfony\Component\HttpFoundation\Session\Session');
     }
 
     /**
@@ -37,7 +36,7 @@ trait CreateSystemMocksExtensionTrait
      */
     public function getMailerMock()
     {
-        return $this->getMock('\RentJeeves\CoreBundle\Mailer\Mailer', [], [], '', false);
+        return $this->getBaseMock('\RentJeeves\CoreBundle\Mailer\Mailer');
     }
 
     /**
@@ -45,7 +44,7 @@ trait CreateSystemMocksExtensionTrait
      */
     public function getLoggerMock()
     {
-        return $this->getMock('\Monolog\Logger', [], [], '', false);
+        return $this->getBaseMock('\Monolog\Logger');
     }
 
     /**
@@ -53,7 +52,7 @@ trait CreateSystemMocksExtensionTrait
      */
     public function getEntityManagerMock()
     {
-        return $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
+        return $this->getBaseMock('\Doctrine\ORM\EntityManager');
     }
 
     /**
@@ -61,7 +60,7 @@ trait CreateSystemMocksExtensionTrait
      */
     public function getValidatorMock()
     {
-        return $this->getMock('\Symfony\Component\Validator\Validator', [], [], '', false);
+        return $this->getBaseMock('\Symfony\Component\Validator\Validator');
     }
 
     /**
@@ -69,6 +68,16 @@ trait CreateSystemMocksExtensionTrait
      */
     public function getConstraintViolationMock()
     {
-        return $this->getMock('\Symfony\Component\Validator\ConstraintViolation', [], [], '', false);
+        return $this->getBaseMock('\Symfony\Component\Validator\ConstraintViolation');
+    }
+
+    /**
+     * @param string $class Class name with namespace
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getBaseMock($class)
+    {
+        return $this->getMock($class, [], [], '', false);
     }
 }

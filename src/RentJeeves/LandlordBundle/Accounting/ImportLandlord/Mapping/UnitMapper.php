@@ -67,7 +67,7 @@ class UnitMapper extends AbstractMapper
             $newUnit = $this->createSinglePropertyUnit();
         } else {
             $property = $this->getOrCreateProperty();
-            if ($property->getId() !== null && $property->isSingle()) {
+            if ($property->getId() !== null && $property->getPropertyAddress()->isSingle()) {
                 throw new MappingException(
                     sprintf(
                         '[Mapping] : We can`t create new Unit for single Property#%d',

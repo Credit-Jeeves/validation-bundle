@@ -1,9 +1,6 @@
 imports:
     - { resource: config.yml }
 
-assetic:
-    use_controller: true
-
 # Override default log config so we always run at info level
 monolog:
     channels: [ "import", "contract_sync" ]

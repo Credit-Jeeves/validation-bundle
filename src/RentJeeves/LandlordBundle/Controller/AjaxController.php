@@ -374,8 +374,8 @@ class AjaxController extends Controller
                 'street' => $propertyAddress->getStreet(),
                 'area' => $propertyAddress->getState(),
                 'zip' => ($propertyAddress->getZip()) ? $propertyAddress->getZip() : '',
-                'jb' => $propertyAddress->getLat(),
-                'kb' => $propertyAddress->getLong(),
+                'lat' => $propertyAddress->getLat(),
+                'long' => $propertyAddress->getLong(),
                 'address' => $propertyAddress->getAddress(),
             ],
         ];
@@ -429,8 +429,8 @@ class AjaxController extends Controller
             ->getUnitsArray($property, $this->getCurrentGroup());
 
         return new JsonResponse([
-            'property' => $property->getAddress(),
-            'isSingle' => $property->isSingle(),
+            'property' => $property->getPropertyAddress()->getAddress(),
+            'isSingle' => $property->getPropertyAddress()->isSingle(),
             'units' => $units
         ]);
     }
@@ -524,7 +524,7 @@ class AjaxController extends Controller
             }
         }
 
-        if (!$property->isSingle()) {
+        if (!$property->getPropertyAddress()->isSingle()) {
             // we assume existing units not in request were deleted -- so delete them.
             foreach ($existingUnits as $existingUnit) {
                 $this->checkContractBeforeRemove($existingUnit);
@@ -778,7 +778,7 @@ class AjaxController extends Controller
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
 
-        if (!$property->isSingle() && empty($details['unit_id'])) {
+        if (!$property->getPropertyAddress()->isSingle() && empty($details['unit_id'])) {
             $errors[] = $translator->trans('contract.error.unit');
         }
 
@@ -850,6 +850,8 @@ class AjaxController extends Controller
 
             return new JsonResponse($response);
         }
+
+        $this->getPropertyProcess()->saveToGoogle($contract->getProperty());
 
         $em->persist($contract);
         $em->flush();

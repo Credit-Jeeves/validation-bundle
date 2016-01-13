@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Entity\Holding;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -57,6 +58,33 @@ abstract class ResManSettings
      * @var boolean
      */
     protected $syncBalance = false;
+
+    /**
+     * @ORM\Column(
+     *      type="text",
+     *      name="url",
+     *      nullable=false
+     * )
+     * @Assert\Url()
+     * @var string
+     */
+    protected $url;
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
 
     /**
      * @return boolean

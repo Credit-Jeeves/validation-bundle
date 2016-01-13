@@ -288,7 +288,7 @@ class ReceiptBatchSender
                 if (!isset($remotePropertyId)) {
                     /** @var $order Order */
                     $order = $ordersReceiptBatch[0];
-                    $propertyMapping = $order->getContract()->getProperty()->getPropertyMapping();
+                    $propertyMapping = $order->getContract()->getProperty()->getPropertyMappings();
                     $remotePropertyId = $propertyMapping->first()->getExternalPropertyId();
                 }
                 $yardiBatchId = $this->getBatchId($remotePropertyId, $batchId);

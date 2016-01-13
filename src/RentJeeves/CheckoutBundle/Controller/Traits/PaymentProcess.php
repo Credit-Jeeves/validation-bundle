@@ -160,8 +160,10 @@ trait PaymentProcess
             /** @var Payment $existingPayment */
             $existingPayment = $em->getRepository('RjDataBundle:Payment')->findActiveRentPaymentForContract($contract);
             if (null !== $existingPayment) {
-                $this->get('logger')->emergency(sprintf(
-                    'ERROR: User %s(id#%s) tries to create %s payment for contract id#%s. ' .
+                $this->get('logger')->alert(sprintf(
+                    'Duplicate Payment Safety Check Triggered. ' .
+                    'The user %s(id#%s) tried to create %s payment for contract id#%s ' .
+                    'But got an error and was told to try again.  They might call in for support. ' .
                     'Existing active payment id#%s, type %s',
                     $contract->getTenantEmail(),
                     $contract->getTenant()->getId(),
@@ -195,7 +197,7 @@ trait PaymentProcess
             $contract->setStatus(ContractStatus::APPROVED);
         }
 
-        $this->get('payment.amount_limit')->checkIfExceedsMax($paymentEntity);
+        $this->get('dod')->checkPayment($paymentEntity);
 
         $em->persist($contract);
         $em->persist($paymentEntity);

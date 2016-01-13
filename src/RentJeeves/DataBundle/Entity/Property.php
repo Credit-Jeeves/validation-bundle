@@ -84,6 +84,10 @@ class Property extends Base
         return $result;
     }
 
+    /**
+     * @param string $unitSearch
+     * @return Unit|null
+     */
     public function searchUnit($unitSearch)
     {
         $result = null;
@@ -95,19 +99,6 @@ class Property extends Base
         }
 
         return $result;
-    }
-
-    public function getLocationAddress()
-    {
-        $result = array();
-        if ($city = $this->getPropertyAddress()->getCity()) {
-            $result[] = $city;
-        }
-        if ($area = $this->getPropertyAddress()->getState()) {
-            $result[] = $area;
-        }
-
-        return implode(', ', $result) . ' ' . $this->getPropertyAddress()->getZip();
     }
 
     public function hasLandlord()
@@ -150,16 +141,6 @@ class Property extends Base
     }
 
     /**
-     * @deprecated this function need for migrate
-     *
-     * @return bool
-     */
-    public function isSingleFromProperty()
-    {
-        return $this->isSingle;
-    }
-
-    /**
      * @return mixed|null
      */
     public function getExistingSingleUnit()
@@ -193,9 +174,12 @@ class Property extends Base
         return false;
     }
 
+    /**
+     * @deprecated Need add similar logic to PropertyManager
+     */
     public function isAllowedToSetSingle($isSingle, $groupId)
     {
-        if ($isSingle == $this->getIsSingle()) {
+        if ($isSingle == $this->getPropertyAddress()->isSingle()) {
             return true;
         }
 
@@ -211,7 +195,7 @@ class Property extends Base
 
         // isSingle = false is allowed only if previous value was null (restricted to convert standalone property)
         if ($isSingle == false) {
-            if (is_null($this->getIsSingle())) {
+            if (is_null($this->getPropertyAddress()->isSingle())) {
                 return true;
             }
         }
@@ -266,7 +250,7 @@ class Property extends Base
     public function getPropertyMappingByHolding(Holding $holding)
     {
         /** @var $propertyMapping PropertyMapping */
-        foreach ($this->getPropertyMapping() as $propertyMapping) {
+        foreach ($this->getPropertyMappings() as $propertyMapping) {
             if ($propertyMapping->getHolding()->getId() === $holding->getId()) {
                 return $propertyMapping;
             }
@@ -281,16 +265,6 @@ class Property extends Base
      * @Serializer\Groups({"RentJeevesImport"})
      */
     public function isSingle()
-    {
-        return $this->getPropertyAddress()->isSingle();
-    }
-
-    /**
-     * @deprecated remove after merge stg and master
-     *
-     * @return bool
-     */
-    public function getIsSingle()
     {
         return $this->getPropertyAddress()->isSingle();
     }

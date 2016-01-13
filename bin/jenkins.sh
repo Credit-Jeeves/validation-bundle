@@ -28,6 +28,8 @@ mkdir $BUILD_DIR/coverage/html
 
 
 if [ ! -f $DIR/vendor/autoload.php ]; then
+     rm -rf vendor/credit-jeeves/credit-jeeves
+     rm -R web/*
      php bin/composer.phar install --no-scripts
 fi
 

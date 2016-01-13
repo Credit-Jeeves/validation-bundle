@@ -1,12 +1,5 @@
 services:
-    address_lookup_service: @address_lookup_service.google
-
-    address_lookup_service.google:
-        class: RentJeeves\CoreBundle\Services\AddressLookup\GoogleGeocoderAddressLookupService
-        arguments:
-            - @bazinga_geocoder.geocoder
-            - @validator
-            - @logger
+    address_lookup_service: @address_lookup_service.smarty_streets
 
     address_lookup_service.smarty_streets:
         class: RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupService
@@ -14,4 +7,9 @@ services:
             - @smarty_streets.client
             - @validator
             - @logger
-
+    # override cache service for SmartyStreetsBundle https://github.com/Credit-Jeeves/SmartyStreetsBundle#custom-cache-driver
+    smarty_streets.cache:
+        class: RentJeeves\CoreBundle\Services\AddressLookup\Cache\SmartyStreetsCacheService
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager

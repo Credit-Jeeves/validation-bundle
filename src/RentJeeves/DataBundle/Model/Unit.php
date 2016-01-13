@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\ContractWaiting as ContractWaitingEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -163,16 +164,22 @@ abstract class Unit
      */
     protected $unitMapping;
 
+    public function __construct()
+    {
+        $this->contracts = new ArrayCollection();
+        $this->contractsWaiting = new ArrayCollection();
+    }
+
     /**
-     * @param ContractWaiting $contractsWaiting
+     * @param ContractWaitingEntity $contractsWaiting
      */
-    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    public function addContractsWaiting(ContractWaitingEntity $contractsWaiting)
     {
         $this->contractsWaiting = $contractsWaiting;
     }
 
     /**
-     * @return ContractWaiting
+     * @return ArrayCollection|\RentJeeves\DataBundle\Entity\ContractWaiting[]
      */
     public function getContractsWaiting()
     {
@@ -193,12 +200,6 @@ abstract class Unit
     public function getDeletedAt()
     {
         return $this->deletedAt;
-    }
-
-    public function __construct()
-    {
-        $this->contracts = new ArrayCollection();
-        $this->contractsWaiting = new ArrayCollection();
     }
 
     /**
@@ -422,8 +423,6 @@ abstract class Unit
     }
 
     /**
-     * Get contracts
-     *
      * @return ArrayCollection
      */
     public function getContracts()
@@ -434,10 +433,10 @@ abstract class Unit
     /**
      * Add ContractWaiting
      *
-     * @param ContractWaiting $contract
+     * @param ContractWaitingEntity $contract
      * @return $this
      */
-    public function addContractWaiting(ContractWaiting $contract)
+    public function addContractWaiting(ContractWaitingEntity $contract)
     {
         $this->contractsWaiting[] = $contract;
 
@@ -447,12 +446,14 @@ abstract class Unit
     /**
      * Remove ContractWaiting
      *
-     * @param Contract
+     * @param ContractWaitingEntity Contract
      * @return $this
      */
-    public function removeContractWaiting(ContractWaiting $contract)
+    public function removeContractWaiting(ContractWaitingEntity $contract)
     {
-        $this->contractsWaiting->removeElement($contract);
+        if ($this->contractsWaiting->contains($contract)) {
+            $this->contractsWaiting->removeElement($contract);
+        }
 
         return $this;
     }
@@ -490,7 +491,7 @@ abstract class Unit
         }
 
         $property = $this->getProperty();
-        if ($property && $property->isSingle()) {
+        if ($property && $property->getPropertyAddress() && $property->getPropertyAddress()->isSingle()) {
             return true;
         }
 

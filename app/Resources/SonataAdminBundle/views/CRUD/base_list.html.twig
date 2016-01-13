@@ -22,6 +22,7 @@ file that was distributed with this source code.
 {% block list_table %}
     {% set batchactions = admin.batchactions %}
     {% if admin.datagrid.results|length > 0 %}
+        {% include 'SonataCoreBundle:FlashMessage:render.html.twig' %}
         {% if admin.hasRoute('batch') %}
         <form action="{{ admin.generateUrl('batch', {'filter': admin.filterParameters}) }}" method="POST" >
             <input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}" />

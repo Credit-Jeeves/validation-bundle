@@ -47,8 +47,8 @@
         </div>
     </section>
 
-    <input type="hidden" value="{{ property.jb }}" id="lat">
-    <input type="hidden" value="{{ property.kb }}" id="lng">
+    <input type="hidden" value="{{ property.propertyAddress.lat }}" id="lat">
+    <input type="hidden" value="{{ property.PropertyAddress.long }}" id="lng">
 {% endblock %}
 
 {% block javascripts %}

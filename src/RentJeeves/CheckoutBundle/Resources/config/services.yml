@@ -235,8 +235,25 @@ services:
             - %rt_group_code%
             - %credittrack_payment_per_month%
 
-    payment.amount_limit:
-        class: RentJeeves\CheckoutBundle\Services\PaymentAmountLimit
+    dod.payment_amount_max:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentAmountMaxLimit
         arguments:
             - %dod_limit_max_payment%
+
+    dod:
+        class: RentJeeves\CheckoutBundle\DoD\DodManager
+        arguments:
             - @logger
+        calls:
+            - [addRule, ["@dod.payment_amount_max"]]
+
+    payment_processor.profit_stars.rdc.report_loader:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader
+        public: false
+        arguments:
+            - @profit_stars.transaction_reporting.client
+
+    payment_processor.profit_stars.rdc:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
+        arguments:
+            - @payment_processor.profit_stars.rdc.report_loader

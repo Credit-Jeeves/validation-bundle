@@ -31,7 +31,7 @@ class ContractWaitingRepository extends EntityRepository
         $query->innerJoin('contract.unit', 'u');
         $query->innerJoin('u.unitMapping', 'um');
         $query->innerJoin('contract.property', 'p');
-        $query->innerJoin('p.propertyMapping', 'pm');
+        $query->innerJoin('p.propertyMappings', 'pm');
         $query->innerJoin('contract.group', 'g');
         $query->innerJoin('g.groupSettings', 'gs');
 
@@ -67,7 +67,7 @@ class ContractWaitingRepository extends EntityRepository
             ->innerJoin('u.unitMapping', 'um')
             ->innerJoin('contract.property', 'p')
             ->innerJoin('contract.group', 'g')
-            ->innerJoin('p.propertyMapping', 'pm', Expr\Join::WITH, 'g.holding = pm.holding')
+            ->innerJoin('p.propertyMappings', 'pm', Expr\Join::WITH, 'g.holding = pm.holding')
             ->innerJoin('g.groupSettings', 'gs')
             ->where('contract.residentId = :residentId')
             ->andWhere('pm.externalPropertyId = :propertyId')
@@ -219,7 +219,7 @@ class ContractWaitingRepository extends EntityRepository
             ->innerJoin('cw.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('cw.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
             ->andWhere('g.holding = :holding')
@@ -253,7 +253,7 @@ class ContractWaitingRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('cw.property', 'p')
             ->innerJoin('p.propertyAddress', 'pa')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
             ->andWhere('g.holding = :holding')
@@ -288,7 +288,7 @@ class ContractWaitingRepository extends EntityRepository
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('cw.property', 'p')
             ->innerJoin('p.propertyAddress', 'pa')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
             ->andWhere('g.holding = :holding')
@@ -323,7 +323,7 @@ class ContractWaitingRepository extends EntityRepository
             ->innerJoin('cw.group', 'g')
             ->innerJoin('g.groupSettings', 'gs')
             ->innerJoin('cw.property', 'p')
-            ->innerJoin('p.propertyMapping', 'pm')
+            ->innerJoin('p.propertyMappings', 'pm')
             ->where('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('pm.holding = :holding')
             ->andWhere('g.holding = :holding')
@@ -336,5 +336,17 @@ class ContractWaitingRepository extends EntityRepository
             ->setParameter('externalLeaseId', $externalLeaseId)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Unit $unit
+     */
+    public function deleteByUnit(Unit $unit)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->delete();
+        $query->where('c.unit = :unit');
+        $query->setParameter('unit', $unit);
+        $query->getQuery()->execute();
     }
 }

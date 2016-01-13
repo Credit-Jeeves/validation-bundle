@@ -75,16 +75,6 @@ class PropertyAddress
     protected $googleReference;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    protected $jb;
-
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    protected $kb;
-
-    /**
      * @ORM\Column(name="is_single", type="boolean", nullable=true)
      *
      * @Serializer\Groups({"payRent"})
@@ -102,7 +92,7 @@ class PropertyAddress
     protected $long;
 
     /**
-     * @ORM\Column(name="ss_index", type="string", length=255, nullable=true)
+     * @ORM\Column(name="ss_index", type="string", length=255, nullable=true, unique=true)
      */
     protected $index;
 
@@ -225,38 +215,6 @@ class PropertyAddress
     }
 
     /**
-     * @return string
-     */
-    public function getJb()
-    {
-        return $this->jb;
-    }
-
-    /**
-     * @param string $jb
-     */
-    public function setJb($jb)
-    {
-        $this->jb = $jb;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKb()
-    {
-        return $this->kb;
-    }
-
-    /**
-     * @param string $kb
-     */
-    public function setKb($kb)
-    {
-        $this->kb = $kb;
-    }
-
-    /**
      * @return boolean
      */
     public function isSingle()
@@ -364,6 +322,7 @@ class PropertyAddress
         if (null === $this->number || null === $this->street) {
             return '';
         }
+
         return sprintf('%s %s', $this->number, $this->street);
     }
     /**
@@ -374,7 +333,16 @@ class PropertyAddress
         if ('' === $this->getAddress() || null === $this->city || null === $this->state || null === $this->zip) {
             return '';
         }
+
         return sprintf('%s, %s, %s %s', $this->getAddress(), $this->city, $this->state, $this->zip);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocationAddress()
+    {
+        return sprintf('%s, %s %s', $this->city, $this->state, $this->zip);
     }
 
     /**
@@ -387,13 +355,8 @@ class PropertyAddress
         $this->setStreet($address->getStreet());
         $this->setNumber($address->getNumber());
         $this->setZip($address->getZip());
-        if ($this->getJb() === null && $this->getKb() === null && $address->getJb() && $address->getKb()) {
-            $this->setJb($address->getJb());
-            $this->setKb($address->getKb());
-        } elseif ($address->getLatitude() && $address->getLongitude() && $address->getIndex()) {
-            $this->setLat($address->getLatitude());
-            $this->setLong($address->getLongitude());
-            $this->setIndex($address->getIndex());
-        }
+        $this->setLat($address->getLatitude());
+        $this->setLong($address->getLongitude());
+        $this->setIndex($address->getIndex());
     }
 }

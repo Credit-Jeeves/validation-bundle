@@ -28,6 +28,9 @@ class PaymentRepository extends EntityRepository
     use DateCommon;
 
     /**
+     * This function is used to collect payments into jobs.
+     * Use ONLY ACTIVE status here.
+     *
      * @param DateTime $date
      * @param array $ids
      *
@@ -213,11 +216,11 @@ class PaymentRepository extends EntityRepository
         $query->innerJoin('p.paymentAccount', 'pa');
         $query->innerJoin('p.contract', 'c');
 
-        $query->where('p.status = :statusActive');
+        $query->where('p.status in (:activeStatuses)');
         $query->andWhere('c.holding = :holding');
         $query->andWhere('pa.paymentProcessor = :payment_processor');
 
-        $query->setParameter('statusActive', PaymentStatus::ACTIVE);
+        $query->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED]);
         $query->setParameter('holding', $holding);
         $query->setParameter('payment_processor', $paymentProcessor);
 
@@ -235,11 +238,26 @@ class PaymentRepository extends EntityRepository
             ->innerJoin('p.depositAccount', 'da')
             ->where('da.type = :rent')
             ->andWhere('p.contract = :contract')
-            ->andWhere('p.status = :active')
+            ->andWhere('p.status in (:activeStatuses)')
             ->setParameter('rent', DepositAccountType::RENT)
             ->setParameter('contract', $contract)
-            ->setParameter('active', PaymentStatus::ACTIVE)
+            ->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED])
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return ArrayCollection|Payment[]
+     */
+    public function findAllActivePaymentsForContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.contract = :contract')
+            ->andWhere('p.status in (:activeStatuses)')
+            ->setParameter('contract', $contract)
+            ->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED])
+            ->getQuery()
+            ->execute();
     }
 }
