@@ -596,7 +596,7 @@ abstract class Contract
      */
     public function setRent($rent)
     {
-        $this->rent = $rent;
+        $this->rent = number_format($rent, 2, ".", "");
 
         return $this;
     }
@@ -616,7 +616,7 @@ abstract class Contract
      */
     public function setIntegratedBalance($integratedBalance)
     {
-        $this->integratedBalance = $integratedBalance;
+        $this->integratedBalance = number_format($integratedBalance, 2, ".", "");
     }
 
     /**
@@ -632,7 +632,7 @@ abstract class Contract
      */
     public function setUncollectedBalance($uncollectedBalance)
     {
-        $this->uncollectedBalance = $uncollectedBalance;
+        $this->uncollectedBalance = number_format($uncollectedBalance, 2, ".", "");
     }
 
     /**

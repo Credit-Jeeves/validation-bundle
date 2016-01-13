@@ -62,7 +62,7 @@ class LoggableListenerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCheckThatOnlyWhenVersionedFieldChangedWeAddNewLogEntry()
+    public function shouldCheckWhenFieldNotVersionedWeNotAddNewLogEntry()
     {
         $this->load(true);
         $em = $this->getContainer()->get('doctrine')->getManager();
@@ -73,7 +73,7 @@ class LoggableListenerCase extends BaseTestCase
         /** @var Contract $contract */
         $contract = new Contract();
         $contract->setTenant($tenant);
-        $contract->setRent(1000);
+        $contract->setRent(1000.00);
         $contract->setFinishAt(new DateTime());
         $contract->setStartAt(new DateTime());
         $contract->setStatus(ContractStatus::INVITE);
@@ -93,6 +93,7 @@ class LoggableListenerCase extends BaseTestCase
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Estate Holding');
         $this->assertNotEmpty($holding, 'Holding should exist in fixtures');
         $contract->setHolding($holding);
+        $contract->setRent('1000');
         $this->getEntityManager()->flush();
         $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
             $contract->getId()
