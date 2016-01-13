@@ -117,8 +117,10 @@ class PaymentListener
             } elseif (ContractStatus::FINISHED === $entity->getStatus()) {
                 $payment->setClosed($this, PaymentCloseReason::CONTRACT_FINISHED);
             }
-            $em->persist($payment);
-            $em->flush($payment);
+            if (PaymentStatus::CLOSE === $payment->getStatus()) {
+                $em->persist($payment);
+                $em->flush($payment);
+            }
         }
     }
 
