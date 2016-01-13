@@ -53,7 +53,8 @@ class LoggableListener extends Base
             /** @var UnitOfWork $uow */
             $uow = $om->getUnitOfWork();
             $logEntry->setObject($object);
-            $newValues = array();
+            $currentValues = [];
+            $newValues = [];
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
                 foreach ($uow->getOriginalEntityData($object) as $field => $value) {
                     if (!in_array($field, $config['versioned'])) {
@@ -70,7 +71,7 @@ class LoggableListener extends Base
                             );
                         }
                     }
-                    $newValues[$field] = $value;
+                    $currentValues[$field] = $value;
                 }
                 foreach ($uow->getEntityChangeSet($object) as $field => $changes) {
                     if (!in_array($field, $config['versioned'])) {
@@ -90,7 +91,7 @@ class LoggableListener extends Base
                     }
                     $newValues[$field] = $value;
                 }
-                $logEntry->setData($newValues);
+                $logEntry->setData($currentValues);
             }
             if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
                 return;

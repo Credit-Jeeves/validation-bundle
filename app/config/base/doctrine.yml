@@ -52,8 +52,6 @@ stof_doctrine_extensions:
             timestampable: true
 #            gedmo_loggable: true
             loggable: true
-    class:
-        loggable: CreditJeeves\DataBundle\EventListener\LoggableListener
     uploadable:
         validate_writable_directory: false
 
