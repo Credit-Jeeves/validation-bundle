@@ -84,7 +84,7 @@ class PropertyLoader
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
             $this->processImportProperty($importProperty);
-            $this->em->flush($importProperty);
+            $this->em->flush();
             $this->em->clear();
         }
 
