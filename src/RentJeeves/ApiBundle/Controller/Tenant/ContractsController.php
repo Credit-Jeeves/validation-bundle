@@ -62,6 +62,10 @@ class ContractsController extends Controller
      *         400="Error validating data. Please check parameters and retry.",
      *         404="Contract not found",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Contract",
+     *         "groups"={"Base", "ContractDetails"}
      *     }
      * )
      * @Rest\Get("/contracts/{id}")

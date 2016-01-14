@@ -392,4 +392,30 @@ abstract class BaseApiTestCase extends BaseTestCase
 
         return sprintf('%s://%s', $protocol, $domainName);
     }
+
+    /**
+     * This function need rewrite for correct working with depends tests with dataProviders
+     *
+     * {@inheritdoc}
+     */
+    protected function getDataSetAsString($includeData = false)
+    {
+        if (!$includeData && $this->getPrivateField('data')) {
+            return '-' . $this->getPrivateField('dataName');
+        }
+
+        return parent::getDataSetAsString($includeData);
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    protected function getPrivateField($name)
+    {
+        $reflector = new \ReflectionProperty('PHPUnit_Framework_TestCase', $name);
+        $reflector->setAccessible(true);
+
+        return $reflector->getValue($this);
+    }
 }
