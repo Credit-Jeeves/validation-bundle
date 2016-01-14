@@ -81,20 +81,52 @@ class ImportPropertyManager
         );
         try {
             $extractor = $this->extractorFactory->getExtractor($group->getHolding()->getApiIntegrationType());
-            $transformer = $this->transformerFactory->getTransformer($group, $externalPropertyId);
+            $this->logger->info(
+                sprintf(
+                    'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for extract data.',
+                    $import->getId(),
+                    $externalPropertyId,
+                    get_class($extractor)
+                ),
+                ['group_id' => $group->getId()]
+            );
 
-            $extractData = $extractor->extractData($group, $externalPropertyId);
-            $transformer->transformData($extractData, $import);
-            $this->propertyLoader->loadData($import, $externalPropertyId);
+            $extractedData = $extractor->extractData($group, $externalPropertyId);
+
+            if (false === empty($extractedData)) {
+                $transformer = $this->transformerFactory->getTransformer($group, $externalPropertyId);
+                $this->logger->info(
+                    sprintf(
+                        'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for transform data.',
+                        $import->getId(),
+                        $externalPropertyId,
+                        get_class($transformer)
+                    ),
+                    ['group_id' => $group->getId()]
+                );
+                $transformer->transformData($extractedData, $import);
+                $this->propertyLoader->loadData($import, $externalPropertyId);
+            }
         } catch (ImportException $e) {
             $this->logger->info(
-                sprintf('Import data is finished with error : %s.', $e->getMessage()),
+                sprintf(
+                    'Import data for Import#%d and extPropertyId#%s is finished with error : %s.',
+                    $import->getId(),
+                    $externalPropertyId,
+                    $e->getMessage()),
                 ['group_id' => $group->getId()]
             );
 
             return;
         }
 
-        $this->logger->info('Import data is finished.', ['group_id' => $group->getId()]);
+        $this->logger->info(
+            sprintf(
+                'Import data for Import#%d and extPropertyId#%s is finished.',
+                $import->getId(),
+                $externalPropertyId
+            ),
+            ['group_id' => $group->getId()]
+        );
     }
 }
