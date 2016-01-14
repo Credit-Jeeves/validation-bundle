@@ -6,30 +6,12 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use CreditJeeves\DataBundle\Enum\GroupType;
 
 class RjHoldingAdmin extends Admin
 {
     /**
-     * {@inheritdoc}
+     * @param FormMapper $formMapper
      */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        $query->add(
-            'where',
-            $query->expr()->in(
-                $alias . '_g.type',
-                array(
-                    GroupType::RENT
-                )
-            )
-        );
-
-        return $query;
-    }
-
     public function configureFormFields(FormMapper $formMapper)
     {
         parent::configureFormFields($formMapper);
