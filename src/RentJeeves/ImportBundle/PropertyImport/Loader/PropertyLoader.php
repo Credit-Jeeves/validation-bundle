@@ -12,12 +12,13 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\Exception\ImportRuntimeException;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Validator;
 
 /**
  * Service`s name "import.property.loader"
@@ -35,6 +36,11 @@ class PropertyLoader
     protected $propertyManager;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -42,40 +48,39 @@ class PropertyLoader
     /**
      * @param EntityManager   $em
      * @param PropertyManager $propertyManager
+     * @param Validator       $validator
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, PropertyManager $propertyManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        PropertyManager $propertyManager,
+        Validator $validator,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->propertyManager = $propertyManager;
+        $this->validator = $validator;
         $this->logger = $logger;
     }
 
     /**
-     * {@inheritdoc}
+     * @param Import $import
+     * @param string $externalPropertyId
      */
-    public function loadData(Import $import)
+    public function loadData(Import $import, $externalPropertyId)
     {
-        if ($import->getImportType() !== ImportModelType::PROPERTY) {
-            $this->logger->warning(
-                $message = sprintf(
-                    'Invalid import type. Should be "%s" instead "%s"',
-                    ImportModelType::PROPERTY,
-                    $import->getImportType()
-                ),
-                ['group_id' => $import->getGroup()->getId()]
-            );
-            throw new ImportRuntimeException($message);
-        }
-
         $this->logger->info(
-            sprintf('Starting process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Starting process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
 
         $iterableResult = $this->em
             ->getRepository('RjDataBundle:ImportProperty')
-            ->getNotProcessedImportProperties($import);
+            ->getNotProcessedImportProperties($import, $externalPropertyId);
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
             $this->processImportProperty($importProperty);
@@ -84,7 +89,11 @@ class PropertyLoader
         }
 
         $this->logger->info(
-            sprintf('Finished process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Finished process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
     }
@@ -289,6 +298,27 @@ class PropertyLoader
             return $unit;
         } catch (NonUniqueResultException $e) {
             throw new ImportRuntimeException('Try to find unit but get non unique result');
+        }
+    }
+
+    /**
+     * @param Unit $unit
+     *
+     * @throws ImportLogicException if Unit is not valid
+     */
+    protected function validateUnit(Unit $unit)
+    {
+        $unitErrors = $this->validator->validate($unit, ['import']);
+        $errors = [];
+        /** @var ConstraintViolation $constraint */
+        foreach ($unitErrors as $constraint) {
+            $errors[] = sprintf('%s : %s', $constraint->getPropertyPath(), $constraint->getMessage());
+        }
+
+        if (false === empty($errors)) {
+            throw new ImportLogicException(
+                sprintf('Unit is not valid: %s', implode(', ', array_values($errors)))
+            );
         }
     }
 }

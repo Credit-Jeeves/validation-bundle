@@ -28,6 +28,14 @@ services:
               %accounting_system.mri%: @import.property.transformer.mri
 
     # services
+    import.property.manager:
+        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager
+        arguments:
+            - @import.property.extractor_factory
+            - @import.property.transformer_factory
+            - @import.property.loader
+            - @monolog.logger.property_import
+
     import.property.extractor.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
         public: false
@@ -48,4 +56,5 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @property.manager
+            - @validator
             - @monolog.logger.property_import

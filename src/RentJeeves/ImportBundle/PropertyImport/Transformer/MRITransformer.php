@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
@@ -14,7 +14,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 class MRITransformer implements TransformerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var EntityManager
      */
     protected $em;
 
@@ -24,10 +24,15 @@ class MRITransformer implements TransformerInterface
     protected $logger;
 
     /**
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface        $logger
+     * @var array
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    protected $arrayCache = [];
+
+    /**
+     * @param EntityManager   $em
+     * @param LoggerInterface $logger
+     */
+    public function __construct(EntityManager $em, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -40,6 +45,9 @@ class MRITransformer implements TransformerInterface
     {
         /** @var Value $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
+            if (true === $this->checkExistImportPropertyInCache($import, $accountingSystemRecord)) {
+                continue;
+            }
 
             $importProperty = new ImportProperty();
             $importProperty->setImport($import);
@@ -57,6 +65,8 @@ class MRITransformer implements TransformerInterface
             $importProperty->setZip($this->getZip($accountingSystemRecord));
 
             $this->em->persist($importProperty);
+
+            $this->arrayCache[] = $import->getId() . $this->getExternalUnitId($accountingSystemRecord);
         }
 
         $this->em->flush();
@@ -163,5 +173,24 @@ class MRITransformer implements TransformerInterface
     protected function getZip(Value $accountingSystemRecord)
     {
         return $accountingSystemRecord->getZipCode();
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\ImportPropertyRepository
+     */
+    protected function getImportPropertyRepository()
+    {
+        return $this->em->getRepository('RjDataBundle:ImportProperty');
+    }
+
+    /**
+     * @param Import $import
+     * @param Value  $accountingSystemRecord
+     *
+     * @return bool
+     */
+    protected function checkExistImportPropertyInCache(Import $import, Value $accountingSystemRecord)
+    {
+        return in_array($import->getId() . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
     }
 }
