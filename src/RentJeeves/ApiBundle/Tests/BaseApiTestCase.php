@@ -394,7 +394,8 @@ abstract class BaseApiTestCase extends BaseTestCase
     }
 
     /**
-     * This function need rewrite for correct working with depends tests with dataProviders
+     * This method was rewritten for using when we have test that depends from test with dataProvider
+     * Should use like <mainTestName>-<orderNumber>
      *
      * {@inheritdoc}
      */

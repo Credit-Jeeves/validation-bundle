@@ -167,13 +167,14 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-1
      */
-    public function shouldBePresentBalanceOnGetContract(array $data)
+    public function shouldBePresentBalanceOnGetContractWhenGroupIsIntegrated(array $data)
     {
         list($contractId, $answerFromApi) = $data;
-        $this->assertArrayHasKey('balance', $answerFromApi, 'Should be present balance on answer from API');
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         /** @var Contract $contractInDB */
         $contractInDB = $repo->find($contractId);
+        $this->assertTrue($contractInDB->getGroupSettings()->getIsIntegrated(), 'Group should be integrated');
+        $this->assertArrayHasKey('balance', $answerFromApi, 'Should be present balance on answer from API');
         $this->assertEquals(
             number_format($contractInDB->getIntegratedBalance(), 2, '.', ''),
             $answerFromApi['balance'],
@@ -187,9 +188,13 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-2
      */
-    public function shouldNotBePresentBalanceOnGetContract(array $data)
+    public function shouldNotBePresentBalanceOnGetContractWhenGroupIsNotIntegrated(array $data)
     {
         list($contractId, $answerFromApi) = $data;
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertFalse($contractInDB->getGroupSettings()->getIsIntegrated(), 'Group should not be integrated');
         $this->assertArrayNotHasKey('balance', $answerFromApi, 'Should not be present balance on answer from API');
     }
 
@@ -199,7 +204,7 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-1
      */
-    public function shouldBePresentExternalGroupIdOnGetContract(array $data)
+    public function shouldBePresentExternalGroupIdOnGetContractWhenNotNull(array $data)
     {
         list($contractId, $answerFromApi) = $data;
         $this->assertArrayHasKey(
@@ -207,15 +212,15 @@ class ContractsControllerCase extends BaseApiTestCase
             $answerFromApi,
             'Answer from api should have mailing_address'
         );
-        $answerFromApi = $answerFromApi['mailing_address'];
+        $mailingAddress = $answerFromApi['mailing_address'];
 
-        $this->assertArrayHasKey('location_id', $answerFromApi, 'Should be present location_id on answer from API');
+        $this->assertArrayHasKey('location_id', $mailingAddress, 'Should be present location_id on answer from API');
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         /** @var Contract $contractInDB */
         $contractInDB = $repo->find($contractId);
         $this->assertEquals(
             $contractInDB->getGroup()->getExternalGroupId(),
-            $answerFromApi['location_id'],
+            $mailingAddress['location_id'],
             'Location_id should be equals external group id on DB'
         );
     }
@@ -226,7 +231,7 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-2
      */
-    public function shouldNotBePresentExternalGroupIdOnGetContract(array $data)
+    public function shouldNotBePresentExternalGroupIdOnGetContractWhenNull(array $data)
     {
         list($contractId, $answerFromApi) = $data;
         $this->assertArrayNotHasKey(
