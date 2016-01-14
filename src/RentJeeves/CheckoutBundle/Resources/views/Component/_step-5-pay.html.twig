@@ -34,7 +34,7 @@
             <label>{{ 'checkout.recurs_on' | trans }}</label>
             <div class="fields-box">
                 <span class="value"
-                      data-bind="text: 'checkout.day.' + payment.frequency() +'.each_month-%DAY%', i18n: {'DAY': payment.dueDate}">
+                      data-bind="text: Translator.trans('checkout.day.' + payment.frequency() +'.each_month-%DAY%', {'DAY': payment.dueDate()})">
                 </span>
             </div>
         </div>
