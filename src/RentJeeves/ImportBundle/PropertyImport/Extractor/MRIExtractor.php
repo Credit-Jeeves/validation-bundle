@@ -38,6 +38,14 @@ class MRIExtractor implements ExtractorInterface
      */
     public function extractData(Group $group, $externalPropertyId)
     {
+        $this->logger->info(
+            sprintf(
+                'Starting process extractData for extPropertyId#%s',
+                $externalPropertyId
+            ),
+            ['group_id' => $group->getId()]
+        );
+
         if (!$group->getIntegratedApiSettings() instanceof MRISettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for MRIExtractor.',
@@ -63,6 +71,24 @@ class MRIExtractor implements ExtractorInterface
 
             throw new ImportExtractorException($message);
         }
+
+        if (empty($data)) {
+            $this->logger->info(
+                sprintf(
+                    'Returned response for extPropertyId#%s is empty.',
+                    $externalPropertyId
+                ),
+                ['group_id' => $group->getId()]
+            );
+        }
+
+        $this->logger->info(
+            sprintf(
+                'Finished process extractData for extPropertyId#%s',
+                $externalPropertyId
+            ),
+            ['group_id' => $group->getId()]
+        );
 
         return $data;
     }
