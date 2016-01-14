@@ -65,10 +65,11 @@ class MRITransformer implements TransformerInterface
             $importProperty->setZip($this->getZip($accountingSystemRecord));
 
             $this->em->persist($importProperty);
-            $this->em->flush($importProperty);
 
             $this->arrayCache[] = $import->getId() . $this->getExternalUnitId($accountingSystemRecord);
         }
+
+        $this->em->flush();
     }
 
     /**
