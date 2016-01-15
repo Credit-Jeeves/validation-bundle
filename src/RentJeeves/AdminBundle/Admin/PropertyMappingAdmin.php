@@ -4,7 +4,6 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Enum\GroupType;
-use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -15,6 +14,14 @@ use Symfony\Component\Form\FormEvents;
 
 class PropertyMappingAdmin extends Admin
 {
+    /**
+     * @var array
+     */
+    protected $formOptions = ['validation_groups' => ['admin_part']];
+
+    /**
+     * @param ListMapper $listMapper
+     */
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper

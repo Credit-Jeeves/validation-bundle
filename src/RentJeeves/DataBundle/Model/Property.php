@@ -290,7 +290,7 @@ abstract class Property
     /**
      * Get property_groups
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|\CreditJeeves\DataBundle\Entity\Group[]
      */
     public function getPropertyGroups()
     {
