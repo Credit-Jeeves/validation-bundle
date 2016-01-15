@@ -113,7 +113,8 @@ class ImportPropertyManager
                     'Import data for Import#%d and extPropertyId#%s is finished with error : %s.',
                     $import->getId(),
                     $externalPropertyId,
-                    $e->getMessage()),
+                    $e->getMessage()
+                ),
                 ['group_id' => $group->getId()]
             );
 
