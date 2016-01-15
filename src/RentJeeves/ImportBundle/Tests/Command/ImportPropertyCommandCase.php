@@ -20,7 +20,7 @@ class ImportPropertyCommandCase extends BaseTestCase
     public function shouldThrowExceptionIfImportNotFound()
     {
         $this->load(true);
-        $this->executeCommandTester(new ImportPropertyCommand(),['--import-id' => 0]);
+        $this->executeCommandTester(new ImportPropertyCommand(), ['--import-id' => 0]);
     }
 
     /**
@@ -31,7 +31,7 @@ class ImportPropertyCommandCase extends BaseTestCase
     public function shouldThrowExceptionIfExtPropertyIdNotFoundForGroupFromImport()
     {
         $this->load(true);
-        $this->executeCommandTester(new ImportPropertyCommand(),['--import-id' => 1, '--external-property-id' => '1']);
+        $this->executeCommandTester(new ImportPropertyCommand(), ['--import-id' => 1, '--external-property-id' => '1']);
     }
 
     /**
