@@ -75,7 +75,7 @@ class BillingAccountManager extends AbstractManager
             $profileBilling->setProfile($userProfile);
             $profileBilling->setDivisionId($billingAccount->getBusinessId());
             $profileBilling->setBillingAccountNumber(
-                $this->getUserBillingAccountNumber($userProfile->getUser(), $depositAccount->getId())
+                $this->getUserBillingAccountNumber($userProfile->getUser(), $depositAccount->getMerchantName())
             );
 
             $userProfile->addAciCollectPayProfileBilling($profileBilling);
