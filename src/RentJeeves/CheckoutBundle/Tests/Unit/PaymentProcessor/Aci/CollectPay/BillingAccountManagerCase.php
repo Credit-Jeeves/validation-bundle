@@ -9,15 +9,32 @@ use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class BillingAccountManagerCase extends  \PHPUnit_Framework_TestCase
+class BillingAccountManagerCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
     /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getContainerAwareRegistryMock()
+    {
+        return $this->getBaseMock('\Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getPayumPaymentMock()
+    {
+        return $this->getBaseMock('\Payum\Core\Payment');
+    }
+
+    /**
      * @test
      */
-    public function addBillingAccountShouldHaveDivisionId()
+    public function billingAccountShouldExist()
     {
         $em = $this->getEntityManagerMock();
         $logger = $this->getLoggerMock();
@@ -38,14 +55,14 @@ class BillingAccountManagerCase extends  \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addBillingAccountShouldNotHaveDivisionIdAndShouldBeSuccess()
+    public function addBillingAccountShouldBeSuccess()
     {
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())->method('persist');
         $em->expects($this->once())->method('flush');
         $logger = $this->getLoggerMock();
         $containerAwareRegistryRegister = $this->getContainerAwareRegistryMock();
-        $payment = $this->getPayment();
+        $payment = $this->getPayumPaymentMock();
         $payment->expects($this->once())->method('execute');
         $containerAwareRegistryRegister->expects($this->once())->method('getPayment')->willReturn($payment);
 
@@ -65,4 +82,3 @@ class BillingAccountManagerCase extends  \PHPUnit_Framework_TestCase
         $billingAccountManager->addBillingAccount($aciUserProfile, $depositAccount);
     }
 }
-
