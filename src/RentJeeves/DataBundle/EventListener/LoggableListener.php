@@ -56,40 +56,48 @@ class LoggableListener extends Base
             $currentValues = [];
             $newValues = [];
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
-                foreach ($uow->getOriginalEntityData($object) as $field => $value) {
+                foreach ($uow->getOriginalEntityData($object) as $field => $newValue) {
                     if (!in_array($field, $config['versioned'])) {
                         continue;
                     }
-                    if ($meta->isSingleValuedAssociation($field) && $value) {
-                        $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
-                        $value = $wrappedAssoc->getIdentifier(false);
-                        if (!is_array($value) && !$value) {
+                    if ($meta->isSingleValuedAssociation($field) && $newValue) {
+                        $oid = spl_object_hash($newValue);
+                        $wrappedAssoc = AbstractWrapper::wrap($newValue, $om);
+                        $newValue = $wrappedAssoc->getIdentifier(false);
+                        if (!is_array($newValue) && !$newValue) {
                             $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
                                 'field' => $field
                             );
                         }
                     }
-                    $currentValues[$field] = $value;
+                    $currentValues[$field] = $newValue;
                 }
                 foreach ($uow->getEntityChangeSet($object) as $field => $changes) {
                     if (!in_array($field, $config['versioned'])) {
                         continue;
                     }
-                    $value = $changes[1];
-                    if ($meta->isSingleValuedAssociation($field) && $value) {
-                        $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
-                        $value = $wrappedAssoc->getIdentifier(false);
-                        if (!is_array($value) && !$value) {
+                    $newValue = $changes[1];
+                    $oldValue = $changes[0];
+                    if ($meta->isSingleValuedAssociation($field) && $newValue) {
+                        $oid = spl_object_hash($newValue);
+                        $wrappedAssoc = AbstractWrapper::wrap($newValue, $om);
+                        $newValue = $wrappedAssoc->getIdentifier(false);
+                        if (!is_array($newValue) && !$newValue) {
                             $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
                                 'field' => $field
                             );
                         }
                     }
-                    $newValues[$field] = $value;
+
+                    if ($newValue instanceof \DateTime && $oldValue instanceof \DateTime) {
+                        if ($newValue->getTimestamp() === $oldValue->getTimestamp()) {
+                            continue;
+                        }
+                    }
+
+                    $newValues[$field] = $newValue;
                 }
                 $logEntry->setData($currentValues);
             }

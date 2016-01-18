@@ -74,8 +74,9 @@ class LoggableListenerCase extends BaseTestCase
         $contract = new Contract();
         $contract->setTenant($tenant);
         $contract->setRent(1000.00);
-        $contract->setFinishAt(new DateTime());
-        $contract->setStartAt(new DateTime());
+        $today = new \DateTime();
+        $contract->setFinishAt($today);
+        $contract->setStartAt($today);
         $contract->setStatus(ContractStatus::INVITE);
         $contract->setGroup($group);
         $contract->setDueDate($group->getGroupSettings()->getDueDate());
@@ -94,6 +95,11 @@ class LoggableListenerCase extends BaseTestCase
         $this->assertNotEmpty($holding, 'Holding should exist in fixtures');
         $contract->setHolding($holding);
         $contract->setRent('1000');
+        $timezone = new \DateTimeZone('Arctic/Longyearbyen');
+        $todayWithTimeZone = \DateTime::createFromFormat(\DateTime::ISO8601, $today->format(\DateTime::ISO8601));
+        $todayWithTimeZone->setTimezone($timezone);
+        $contract->setStartAt($todayWithTimeZone);
+
         $this->getEntityManager()->flush();
         $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
             $contract->getId()
