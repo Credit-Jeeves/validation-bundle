@@ -437,7 +437,7 @@ class GroupCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCreateImportPropertiesJob()
+    public function shouldCreateImportPropertiesJobsForGroupWithExtProperties()
     {
         $this->load(true);
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
@@ -450,20 +450,31 @@ class GroupCase extends BaseTestCase
             'a:contains("admin.import.property")',
             'Import Property links not found'
         );
-        $importProperties[0]->click();
-        $this->getDomElement('.alert-danger', 'Should get error for group which doesn\'t have externalProperties');
+        $importProperties[2]->click();
+        $this->getDomElement('.alert-success', 'Should get successful message');
+        $this->assertCount(
+            $jobsCount + 2, //2 because on this group we have 2 external properties id
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowErrorMessageIfPressImportPropertyForGroupWithoutExtPropertyId()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
 
         $importProperties = $this->getDomElements(
             'a:contains("admin.import.property")',
             'Import Property links not found'
         );
-        $importProperties[2]->click();
-        $this->getDomElement('.alert-success', 'Should get successful message');
-        $this->assertCount(
-            $jobsCount+2, //2 because on this group we have 2 external properties id
-            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
-            'Job not created'
-        );
-
+        $importProperties[0]->click();
+        $this->getDomElement('.alert-danger', 'Should get error for group which doesn\'t have externalProperties');
     }
 }

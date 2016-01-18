@@ -43,6 +43,14 @@ class MRITransformer implements TransformerInterface
      */
     public function transformData(array $accountingSystemData, Import $import)
     {
+        $this->logger->info(
+            sprintf(
+                'Starting process transformData for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
+
         /** @var Value $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
             if (true === $this->checkExistImportPropertyInCache($import, $accountingSystemRecord)) {
@@ -70,6 +78,14 @@ class MRITransformer implements TransformerInterface
         }
 
         $this->em->flush();
+
+        $this->logger->info(
+            sprintf(
+                'Finished process transformData for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
     }
 
     /**
