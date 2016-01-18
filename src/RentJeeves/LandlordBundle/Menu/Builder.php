@@ -66,7 +66,6 @@ class Builder extends ContainerAware
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
             case 'accounting_import':
-            case 'accounting_import_error_settings':
             case 'accounting_match_file':
             case 'accounting_import_file':
             case 'import_summary_report':

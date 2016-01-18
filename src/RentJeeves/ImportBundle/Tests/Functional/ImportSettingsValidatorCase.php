@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Tests\Functional;
+namespace RentJeeves\ImportBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -22,8 +22,9 @@ class ImportSettingsValidatorCase extends BaseTestCase
             ['source' => 'integrated_api']
         );
 
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $this->getEntityManager()->flush();
