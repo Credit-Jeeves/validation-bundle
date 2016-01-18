@@ -10,6 +10,21 @@ parameters:
     landlord.contract_manager.class: RentJeeves\LandlordBundle\Services\LandlordContractManager
 
 services:
+    export.serializer.boston:
+         class: RentJeeves\LandlordBundle\Accounting\Export\Serializer\BostonCsvSerializer
+         arguments:
+             - "@jms_serializer"
+    accounting.export.boston:
+         class: RentJeeves\LandlordBundle\Accounting\Export\Report\BostonReport
+         arguments:
+             - "@doctrine.orm.default_entity_manager"
+             - "@export.serializer.boston"
+             - "@soft.deleteable.control"
+    accounting.export.boston_archive:
+         class: RentJeeves\LandlordBundle\Accounting\Export\Report\BostonArchive
+         arguments:
+            - "@accounting.export.boston"
+            - "@export.serializer.boston"
     accounting.import.storage.csv:
          class: RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv
          arguments:

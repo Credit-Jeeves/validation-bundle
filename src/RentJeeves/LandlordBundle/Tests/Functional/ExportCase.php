@@ -1026,4 +1026,116 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('t0013534', (string) $personId);
         $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
+
+    /**
+     * @return array
+     */
+    public function exportByBostonCsv()
+    {
+        return [
+            ['deposits', 14, 'uncheck'],
+            ['payments', 16, 'uncheck'],
+            ['deposits', 14, 'check'],
+            ['payments', 16, 'check'],
+        ];
+    }
+
+    /**
+     * @param $exportBy
+     * @param $countRows
+     * @param $methodForAllGroups
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     *
+     * @test
+     * @dataProvider exportByBostonCsv
+     */
+    public function exportBostonCsv($exportBy, $countRows, $methodForAllGroups)
+    {
+        $this->load(true);
+        $this->createPayment();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('accounting.menu.export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'), 'This option should be');
+        $type->selectOption('boston');
+        $this->selectExportBy($exportBy);
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'), 'Should get errors');
+        $this->assertCount(2, $errors, 'Should be 2 errors');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'), 'Field should be');
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'), 'Field should be');
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $this->assertNotNull(
+            $forAllGroups = $this->page->find('css', '#base_order_report_type_includeAllGroups'),
+            'Option should be'
+        );
+        $forAllGroups->$methodForAllGroups();
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+
+        $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
+
+        // check file with unit id
+        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[2]), 'Row #2 should exist');
+        $this->assertEquals('AAABBB-7', $csvArrRow[1], 'External unit id should be AAABBB-7');
+    }
+
+    /**
+     * @test
+     */
+    public function bostonBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('accounting.menu.export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->assertNotNull(
+            $type = $this->page->find('css', '#base_order_report_type_type'),
+            'Option should be'
+        );
+        $type->selectOption('boston');
+        $this->page->pressButton('order.report.download');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'), 'We shoul have errors');
+        $this->assertCount(2, $errors, 'Sould be 2 errors');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'), 'Field should be');
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'), 'Field should be');
+        $this->assertNotNull(
+            $makeZip = $this->page->find('css', '#base_order_report_type_makeZip'),
+            'Option should be'
+        );
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $makeZip->check();
+
+        $this->page->pressButton('order.report.download');
+
+        $csvZip = $this->session->getDriver()->getContent();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS), 'Should return true');
+        $this->assertEquals(8, $archive->numFiles, 'Archive should have 8 files');
+
+        // check file with unit id
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertCount(1, $rows, 'Should be one row');
+        $columns = explode(",", $rows[0]);
+        $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');
+        $this->assertEquals(1500, $columns[2], 'Amount should be 1500');
+        $this->assertEquals('123123', $columns[6], 'Transaction ID should be');
+    }
 }
