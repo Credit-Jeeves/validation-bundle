@@ -5,6 +5,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ApiIntegrationType;
@@ -1673,5 +1674,71 @@ class ImportCsvCase extends ImportBaseAbstract
         // check that added 2 new properties from import file
         $countNew = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
         $this->assertEquals($countNew, $count + 2);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldImportFileWithExternalLeaseId()
+    {
+        $this->load(true);
+
+        $importGroupSettings = $this->getImportGroupSettings();
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
+        $importGroupSettings->setApiPropertyIds(null);
+        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['rent' => '2100.00', 'status' => ContractStatus::APPROVED]
+        );
+        $this->assertNotEmpty($contract, 'We should have such contract in fixtures');
+        $contract->setExternalLeaseId(99999999);
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setResidentId('t0088888');
+        $residentMapping->setHolding($contract->getHolding());
+        $residentMapping->setTenant($contract->getTenant());
+        $this->getEntityManager()->persist($residentMapping);
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFilePathByName('import_lease_id.csv');
+        $attFile->attachFile($filePath);
+        $this->setPropertyFirst();
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($this->page->find('css', '.error_list>li'), 'Error should not be on this page.');
+        $this->assertNotNull($this->page->find('css', 'table'), 'We should see mapping table.');
+
+        $mapFile = $this->mapFile;
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
+        $mapFile[16] = ImportMapping::KEY_EXTERNAL_LEASE_ID;
+
+        $this->fillCsvMapping($mapFile, 16);
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(1000, "$('table').is(':visible')");
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertCount(2, $trs, "Count statuses is wrong");
+        $this->assertCount(1, $trs['import.status.new'], "Count contract with status 'new' wrong");
+        $this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+        $this->getEntityManager()->clear();
+        $contractUpdated = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['rent' => '777989.00', 'status' => ContractStatus::APPROVED]
+        );
+        $this->assertNotEmpty($contractUpdated, 'We should update exist contract per lease id');
+        $contractNew = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['externalLeaseId' => '123456789']
+        );
+        $this->assertNotEmpty($contractNew, 'We should insert new contract');
     }
 }

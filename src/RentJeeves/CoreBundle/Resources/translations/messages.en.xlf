@@ -3300,6 +3300,10 @@
                 <source>entity_hidden.invalid_message</source>
                 <target>The entity does not exist.</target>
             </trans-unit>
+            <trans-unit id="common.lease_id">
+                <source>common.lease_id</source>
+                <target>Lease ID</target>
+            </trans-unit>
             <trans-unit id="import.error.settings_missing">
                 <source>import.error.settings_missing</source>
                 <target>The import settings for this account are not configured. Please contact %support_email% and we can set these up for you.</target>
