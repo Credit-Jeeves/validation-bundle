@@ -63,4 +63,3 @@ class ImportSettingsValidatorCase extends BaseTestCase
         $this->assertEmpty($importSettingsValidator->getErrorMessage(), 'We shouldn\'t have any messages here');
     }
 }
-
