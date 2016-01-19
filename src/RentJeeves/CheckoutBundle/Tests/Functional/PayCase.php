@@ -868,6 +868,43 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldShowMessageIfUpdateTypePaymentToOneTime()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton('contract-pay-4');
+        $popupDialog = $this->getDomElement('#pay-popup');
+        $this->assertTrue($popupDialog->isVisible(), 'Popup dialog should be visible');
+        $infoMessageBox = $this->getDomElement('div.information-box');
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should not be visible');
+        $paymentTypeInput = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_type');
+        $paymentTypeInput->setValue(PaymentTypeEnum::ONE_TIME);
+        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
+        $this->assertEquals(
+            'checkout.payment.switch_to_one_time',
+            $infoMessageBox->getText(),
+            'Info message should be translated from "checkout.payment.switch_to_one_time"'
+        );
+        $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
+
+        $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
+        $closeButton->click();
+
+        $this->page->pressButton('contract-pay-2');
+
+        $this->assertTrue($popupDialog->isVisible(), 'Popup dialog should be visible');
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should not be visible');
+        $paymentTypeInput->setValue(PaymentTypeEnum::ONE_TIME);
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should not be visible');
+    }
+
+    /**
+     * @test
+     */
     public function shouldShowTypeCardForGroupWithActiveCardAndHideForGroupWithDisable()
     {
         $this->setDefaultSession('selenium2');
