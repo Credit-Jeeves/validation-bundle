@@ -90,9 +90,18 @@ class LoggableListener extends Base
                             );
                         }
                     }
-
+                    //Timezone bug, date the same bug timezone different
                     if ($newValue instanceof \DateTime && $oldValue instanceof \DateTime) {
                         if ($newValue->getTimestamp() === $oldValue->getTimestamp()) {
+                            continue;
+                        }
+                    }
+                    // "100" and 100.00 the same value, we should not update
+                    if (is_numeric($newValue)) {
+                        $newValue = floatval($newValue);
+                        $oldValue = floatval($oldValue);
+
+                        if ($newValue === $oldValue) {
                             continue;
                         }
                     }
