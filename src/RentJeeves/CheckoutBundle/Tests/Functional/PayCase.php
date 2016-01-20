@@ -868,7 +868,7 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldShowMessageIfUpdateTypePaymentToOneTime()
+    public function shouldShowMessageIfUpdateTypePaymentFromRecurringToOneTime()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);

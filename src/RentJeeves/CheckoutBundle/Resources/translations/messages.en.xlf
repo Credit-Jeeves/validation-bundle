@@ -680,7 +680,7 @@
             </trans-unit>
             <trans-unit id="checkout.payment.switch_to_one_time">
                 <source>checkout.payment.switch_to_one_time</source>
-                <target>You are switching to a one-time payment. Your payment will not longer be recurring.</target>
+                <target>You are switching to a one-time payment. Your payment will no longer be recurring.</target>
             </trans-unit>
         </body>
     </file>
