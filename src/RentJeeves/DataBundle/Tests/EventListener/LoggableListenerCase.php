@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractHistory;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
@@ -34,28 +35,40 @@ class LoggableListenerCase extends BaseTestCase
         $contract->setProperty($group->getGroupProperties()->last());
         $contract->setUnit($contract->getProperty()->getUnits()->first());
         $contract->setPaymentAccepted(PaymentAccepted::ANY);
+        $contract->setPaymentAllowed(false);
 
         $em->persist($contract);
         $em->flush($contract);
-
-        $contractHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
-        $this->assertNotNull($contractHistory);
-        $this->assertCount(1, $contractHistory);
-
+        /** @var ContractHistory[] $contractHistories */
+        $contractHistories = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
+        $this->assertNotNull($contractHistories, 'Should be created ContractHistory record after Contract');
+        $this->assertCount(1, $contractHistories, 'Should be created just one ContractHistory record after Contract');
+        $contractHistory = end($contractHistories);
+        $this->assertEquals(
+            false,
+            $contractHistory->isPaymentAllowed(),
+            'Should be added paymentAllowed to contract history on create'
+        );
         //Update
         $contract->setRent(1100);
         $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
+        $contract->setPaymentAllowed(true);
         $em->persist($contract);
         $em->flush($contract);
 
-        $contractsHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
-        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
-        $this->assertCount(2, $contractsHistory, 'We should have 2 objects in DB');
-        $contractHistory = end($contractsHistory);
+        $contractHistories = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
+        $this->assertNotNull($contractHistories, 'We should have objects in DB');
+        $this->assertCount(2, $contractHistories, 'We should have 2 objects in DB');
+        $contractHistory = end($contractHistories);
         $this->assertEquals(
             PaymentAccepted::CASH_EQUIVALENT,
             $contractHistory->getPaymentAccepted(),
             'PaymentAccepted should be saved in history correctly'
+        );
+        $this->assertEquals(
+            true,
+            $contractHistory->isPaymentAllowed(),
+            'Should be added paymentAllowed to contract history on update'
         );
     }
 }

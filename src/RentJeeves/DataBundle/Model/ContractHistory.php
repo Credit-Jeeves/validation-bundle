@@ -78,6 +78,18 @@ abstract class ContractHistory extends AbstractLogEntry
 
     /**
      * @ORM\Column(
+     *     type="boolean",
+     *     nullable=false,
+     *     name="payment_allowed",
+     *     options={
+     *         "default"="1"
+     *     }
+     * )
+     */
+    protected $paymentAllowed = true;
+
+    /**
+     * @ORM\Column(
      *     type="decimal",
      *     precision=10,
      *     scale=2,
@@ -419,4 +431,21 @@ abstract class ContractHistory extends AbstractLogEntry
     {
         $this->paymentAccepted = $paymentAccepted;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isPaymentAllowed()
+    {
+        return $this->paymentAllowed;
+    }
+
+    /**
+     * @param boolean $paymentAllowed
+     */
+    public function setPaymentAllowed($paymentAllowed)
+    {
+        $this->paymentAllowed = (bool) $paymentAllowed;
+    }
+
 }
