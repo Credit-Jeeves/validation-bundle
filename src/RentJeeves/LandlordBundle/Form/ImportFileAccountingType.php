@@ -31,26 +31,8 @@ class ImportFileAccountingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!$this->currentGroup->isExistImportSettings()) {
-            throw new \LogicException(
-                sprintf(
-                    'We don\'t have import settings for group %s',
-                    $this->currentGroup->getId()
-                )
-            );
-        }
-
         $apiIntegrationType = $this->currentGroup->getHolding()->getApiIntegrationType();
         $importSettings = $this->currentGroup->getImportSettings();
-
-        if ($apiIntegrationType !== ApiIntegrationType::NONE && $importSettings->getSource() === ImportSource::CSV) {
-            throw new \LogicException(
-                sprintf(
-                    'For ApiIntegrationType %s we can\'t use source csv. Please set correct settings',
-                    $apiIntegrationType
-                )
-            );
-        }
 
         if ($importSettings->getSource() === ImportSource::CSV &&
             $importSettings->getImportType() === ImportType::SINGLE_PROPERTY
