@@ -84,7 +84,7 @@ class PropertyLoader
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
             $this->processImportProperty($importProperty);
-            $this->em->flush();
+            $this->em->flush($importProperty);
             $this->em->clear();
         }
 
@@ -114,6 +114,7 @@ class PropertyLoader
             if (!$property->isSingle()) {
                 $unit = $this->processUnit($property, $importProperty);
             }
+            $this->em->flush();
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
