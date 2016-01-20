@@ -447,5 +447,4 @@ abstract class ContractHistory extends AbstractLogEntry
     {
         $this->paymentAllowed = (bool) $paymentAllowed;
     }
-
 }
