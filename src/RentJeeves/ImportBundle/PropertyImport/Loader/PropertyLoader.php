@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Loader;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
@@ -165,7 +166,7 @@ class PropertyLoader
             $importProperty->getZip()
         );
 
-        if (is_null($property)) {
+        if (null === $property) { // ImportProperty has incorrect address
             $this->logger->alert(
                 $message = sprintf(
                     'Address is invalid for ImportProperty#%d',
@@ -173,23 +174,23 @@ class PropertyLoader
                 ),
                 ['group_id' => $importProperty->getImport()->getGroup()->getId()]
             );
+
             throw new ImportInvalidArgumentException($message);
         }
 
-        if ($property->getId() &&
-            !$property->getPropertyGroups()->isEmpty() &&
-            !$property->getPropertyGroups()->contains($group)
-        ) {
+        if (false === $this->isNewPropertyShouldBeCreated($property, $group, $importProperty)) {
             $propertyAddress = $property->getPropertyAddress();
             $property = new Property();
             $property->setPropertyAddress($propertyAddress);
-        } elseif ($property->getPropertyGroups()->isEmpty()) {
+        }
+
+        if ($property->getPropertyGroups()->isEmpty()) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
         }
 
-        if (!$property->getId() ||
-            !$propertyMapping = $property->getPropertyMappingByHolding($group->getHolding())
+        if (null === $property->getId() ||
+            null === $propertyMapping = $property->getPropertyMappingByHolding($group->getHolding())
         ) {
             $propertyMapping = new PropertyMapping();
             $propertyMapping->setExternalPropertyId($importProperty->getExternalPropertyId());
@@ -198,7 +199,9 @@ class PropertyLoader
             $property->addPropertyMapping($propertyMapping);
         }
 
-        if ($propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()) {
+        if (false === $importProperty->isAllowMultipleProperties() &&
+            $propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()
+        ) {
             $this->logger->warning(
                 $message = sprintf(
                     'External property ids do not match for ImportProperty#%d (%s !== %s).',
@@ -208,6 +211,7 @@ class PropertyLoader
                 ),
                 ['group_id' => $importProperty->getImport()->getGroup()->getId()]
             );
+
             throw new ImportInvalidArgumentException($message);
         }
 
@@ -303,6 +307,36 @@ class PropertyLoader
         } catch (NonUniqueResultException $e) {
             throw new ImportRuntimeException('Try to find unit but get non unique result');
         }
+    }
+
+    /**
+     * @param Property       $property
+     * @param Group          $group
+     * @param ImportProperty $importProperty
+     *
+     * @return bool true if we need create new Property
+     */
+    protected function isNewPropertyShouldBeCreated(
+        Property $property,
+        Group $group,
+        ImportProperty $importProperty
+    ) {
+        if ($property->getId() === null) {
+            return false;
+        }
+
+        if (!$property->getPropertyGroups()->isEmpty() && !$property->getPropertyGroups()->contains($group)) {
+            return true;
+        }
+
+        $propertyMapping = $property->getPropertyMappingByHolding($group->getHolding());
+        if (null !== $propertyMapping && true === $importProperty->isAllowMultipleProperties() &&
+            $propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

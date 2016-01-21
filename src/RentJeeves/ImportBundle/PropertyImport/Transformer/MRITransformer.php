@@ -71,6 +71,7 @@ class MRITransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($accountingSystemRecord));
             $importProperty->setState($this->getState($accountingSystemRecord));
             $importProperty->setZip($this->getZip($accountingSystemRecord));
+            $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($accountingSystemRecord));
 
             $this->em->persist($importProperty);
 
@@ -189,6 +190,16 @@ class MRITransformer implements TransformerInterface
     protected function getZip(Value $accountingSystemRecord)
     {
         return $accountingSystemRecord->getZipCode();
+    }
+
+    /**
+     * @param Value $accountingSystemRecord
+     *
+     * @return boolean
+     */
+    protected function getAllowMultipleProperties(Value $accountingSystemRecord)
+    {
+        return false;
     }
 
     /**
