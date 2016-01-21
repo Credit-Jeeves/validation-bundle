@@ -71,4 +71,53 @@ class LoggableListenerCase extends BaseTestCase
             'Should be added paymentAllowed to contract history on update'
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldCheckWhenFieldNotVersionedWeNotAddNewLogEntry()
+    {
+        $this->load(true);
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByCode('DXC6KXOAGX');
+        /** @var Contract $contract */
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setRent(1000.00);
+        $today = new \DateTime();
+        $contract->setFinishAt($today);
+        $contract->setStartAt($today);
+        $contract->setStatus(ContractStatus::INVITE);
+        $contract->setGroup($group);
+        $contract->setDueDate($group->getGroupSettings()->getDueDate());
+        $contract->setProperty($group->getGroupProperties()->last());
+        $contract->setUnit($contract->getProperty()->getUnits()->first());
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
+
+        $em->persist($contract);
+        $em->flush($contract);
+
+        $contractHistory = $em->getRepository('RjDataBundle:ContractHistory')->findByObjectId($contract->getId());
+        $this->assertNotNull($contractHistory);
+        $this->assertCount(1, $contractHistory);
+
+        $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Estate Holding');
+        $this->assertNotEmpty($holding, 'Holding should exist in fixtures');
+        $contract->setHolding($holding);
+        $contract->setRent('1000');
+        $timezone = new \DateTimeZone('Arctic/Longyearbyen');
+        $todayWithTimeZone = \DateTime::createFromFormat(\DateTime::ISO8601, $today->format(\DateTime::ISO8601));
+        $todayWithTimeZone->setTimezone($timezone);
+        $contract->setStartAt($todayWithTimeZone);
+
+        $this->getEntityManager()->flush();
+        $contractsHistory = $this->getEntityManager()->getRepository('RjDataBundle:ContractHistory')->findByObjectId(
+            $contract->getId()
+        );
+        $this->assertNotNull($contractsHistory, 'We should have objects in DB');
+        $this->assertCount(1, $contractsHistory, 'We should have 1 objects in DB');
+    }
 }
