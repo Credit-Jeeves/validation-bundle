@@ -114,7 +114,10 @@ class PropertyLoader
             if (!$property->isSingle()) {
                 $unit = $this->processUnit($property, $importProperty);
             }
-            $this->em->flush();
+            $this->em->flush([
+                $property,
+                $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
+            ]);
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
@@ -192,6 +195,7 @@ class PropertyLoader
             $propertyMapping->setExternalPropertyId($importProperty->getExternalPropertyId());
             $propertyMapping->setHolding($group->getHolding());
             $propertyMapping->setProperty($property);
+            $property->addPropertyMapping($propertyMapping);
         }
 
         if ($propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()) {
@@ -222,9 +226,6 @@ class PropertyLoader
         }
 
         $property->setIsMultipleBuildings($importProperty->isPropertyHasBuildings());
-
-        $this->em->persist($property);
-        $this->em->persist($propertyMapping);
 
         return $property;
     }
