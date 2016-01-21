@@ -25,3 +25,4 @@ class AccountingSystem extends Enum
         self::AMSI          => 'amsi',
     ];
 }
+
