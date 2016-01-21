@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -188,16 +188,16 @@ class Group extends BaseGroup
     public function getIntegratedApiSettings()
     {
         $holding = $this->getHolding();
-        switch ($holding->getApiIntegrationType()) {
-            case ApiIntegrationType::AMSI:
+        switch ($holding->getAccountingSystem()) {
+            case AccountingSystem::AMSI:
                 return $holding->getAmsiSettings();
-            case ApiIntegrationType::MRI:
+            case AccountingSystem::MRI:
                 return $holding->getMriSettings();
-            case ApiIntegrationType::RESMAN:
+            case AccountingSystem::RESMAN:
                 return $holding->getResManSettings();
-            case ApiIntegrationType::YARDI_VOYAGER:
+            case AccountingSystem::YARDI_VOYAGER:
                 return $holding->getYardiSettings();
-            case ApiIntegrationType::NONE:
+            case AccountingSystem::NONE:
             default:
                 return null;
         }

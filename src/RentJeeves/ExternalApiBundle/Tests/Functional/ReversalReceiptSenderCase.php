@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use RentJeeves\DataBundle\Entity\Transaction;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Command\YardiReversalReceiptCommand;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ReversalReceiptSender;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -25,7 +25,7 @@ class ReversalReceiptSenderCase extends BaseTestCase
         /** @var Holding $holding */
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->findOneByName('Rent Holding');
         $this->assertNotEmpty($holding, 'Holding should exist in fixtures');
-        $holding->setApiIntegrationType(ApiIntegrationType::YARDI_VOYAGER);
+        $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         /** @var Transaction $reversalTransaction */
         $reversalTransaction =  $this->getEntityManager()->getRepository('RjDataBundle:Transaction')->findOneBy(
             ['transactionId' =>'65123261']

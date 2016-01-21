@@ -42,7 +42,7 @@ class ImportPropertyManagerCase extends UnitTestBase
     public function shouldCallAllServiceForImportCorrectData()
     {
         $holding = new Holding();
-        $holding->setApiIntegrationType('testType');
+        $holding->setAccountingSystem('testType');
 
         $group = new Group();
         $group->setHolding($holding);

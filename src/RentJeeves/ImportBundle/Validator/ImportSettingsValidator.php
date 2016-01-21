@@ -3,7 +3,7 @@
 namespace RentJeeves\ImportBundle\Validator;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use Symfony\Component\Translation\Translator;
 
@@ -52,10 +52,10 @@ class ImportSettingsValidator
             return false;
         }
 
-        $apiIntegrationType = $currentGroup->getHolding()->getApiIntegrationType();
+        $accountingSystem = $currentGroup->getHolding()->getAccountingSystem();
         $importSettings = $currentGroup->getImportSettings();
 
-        if ($apiIntegrationType !== ApiIntegrationType::NONE && $importSettings->getSource() === ImportSource::CSV) {
+        if ($accountingSystem !== AccountingSystem::NONE && $importSettings->getSource() === ImportSource::CSV) {
             $this->errorMessage = $this->translator->trans('import.error.settings_is_wrong');
 
             return false;

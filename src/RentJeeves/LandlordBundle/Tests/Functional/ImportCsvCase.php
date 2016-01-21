@@ -8,7 +8,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
@@ -65,7 +65,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -341,7 +341,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         for ($i = 0; $i < 2; $i++) {
@@ -561,7 +561,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('n-j-Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -625,7 +625,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('m/d/y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
@@ -828,7 +828,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -934,7 +934,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1029,7 +1029,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1139,7 +1139,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('d/m/y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1207,7 +1207,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1293,7 +1293,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1364,7 +1364,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings = $this->getImportGroupSettings();
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1463,7 +1463,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         /** @var EntityManager $em */
@@ -1518,7 +1518,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1566,7 +1566,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setCsvDateFormat('m/d/Y');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1618,7 +1618,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings = $this->getImportGroupSettings();
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
         // get count of property

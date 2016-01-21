@@ -82,7 +82,7 @@ class TransformerFactory
             return $this->getCustomTransformer($customClassName, $group);
         }
 
-        $accountingSystemName = $group->getHolding()->getApiIntegrationType();
+        $accountingSystemName = $group->getHolding()->getAccountingSystem();
         if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
             throw new ImportInvalidArgumentException(
                 sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)

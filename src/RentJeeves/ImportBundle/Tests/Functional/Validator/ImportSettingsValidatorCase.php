@@ -3,7 +3,7 @@
 namespace RentJeeves\ImportBundle\Tests\Functional\Validator;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Services\ImportSettingsValidator;
@@ -23,7 +23,7 @@ class ImportSettingsValidatorCase extends BaseTestCase
         );
 
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
 
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);

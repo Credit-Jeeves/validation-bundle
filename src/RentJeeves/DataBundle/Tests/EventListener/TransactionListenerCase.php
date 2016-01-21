@@ -9,7 +9,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Transaction;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
@@ -33,7 +33,7 @@ class TransactionListenerCase extends BaseTestCase
         $finishAt = new DateTime();
         $finishAt->modify('+24 month');
         $contract = $this->getContract($startAt, $finishAt);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
 
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());

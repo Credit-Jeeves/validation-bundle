@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Command\YardiSyncBalanceCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -24,7 +24,7 @@ class YardiSyncBalanceCommandCase extends BaseTestCase
         $this->getEntityManager()->getConnection()->update('jms_jobs', ['state' => 'finished'], ['state' => 'pending']);
         $holding = $this->getEntityManager()->getRepository('DataBundle:Holding')->find(5);
         $this->assertNotNull($holding, 'Check fixtures, should present holding with id = 5');
-        $holding->setApiIntegrationType(ApiIntegrationType::YARDI_VOYAGER);
+        $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $holding->getYardiSettings()->setSyncBalance(true);
         $property = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(1);
         $this->assertNotNull($property, 'Check fixtures, should exist property with id = 1');

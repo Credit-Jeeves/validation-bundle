@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -60,7 +60,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function processRequestData($accountingSystem, Request $request)
     {
-        $accountingSystem = array_search($accountingSystem, ApiIntegrationType::$importMapping);
+        $accountingSystem = array_search($accountingSystem, AccountingSystem::$importMapping);
         if ($accountingSystem === false) {
             throw new \InvalidArgumentException('Accounting system type is invalid.');
         }

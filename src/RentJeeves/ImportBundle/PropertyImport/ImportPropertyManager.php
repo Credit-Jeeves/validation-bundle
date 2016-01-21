@@ -80,7 +80,7 @@ class ImportPropertyManager
             ['group_id' => $group->getId()]
         );
         try {
-            $extractor = $this->extractorFactory->getExtractor($group->getHolding()->getApiIntegrationType());
+            $extractor = $this->extractorFactory->getExtractor($group->getHolding()->getAccountingSystem());
             $this->logger->info(
                 sprintf(
                     'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for extract data.',
