@@ -10,7 +10,7 @@ class PaymentAccountManagerTest extends Base
     {
         switch ($merchantName) {
             case 'RentTrackCorp':
-                return 'D5E0A348-A8E7-4B7B-AA3D-A75E90DFB9C2';
+                return '568C0904-9174-46DE-BEC4-9B76599B28C5';
         }
         return "26232CDD-8A40-471E-91BA-608CDFD7EFB3";
         // FIXME need to improve because now it is magic!
