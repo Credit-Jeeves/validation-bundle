@@ -141,6 +141,19 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     type="boolean",
+     *     nullable=false,
+     *     name="payment_allowed",
+     *     options={
+     *         "default"="1"
+     *     }
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $paymentAllowed = true;
+
+    /**
+     * @ORM\Column(
      *     type="decimal",
      *     precision=10,
      *     scale=2,
@@ -940,5 +953,21 @@ abstract class Contract
     public function getTransUnionStartAt()
     {
         return $this->transUnionStartAt;
+    }
+
+    /**
+     * @param boolean $paymentAllowed
+     */
+    public function setPaymentAllowed($paymentAllowed)
+    {
+        $this->paymentAllowed = (bool) $paymentAllowed;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPaymentAllowed()
+    {
+        return $this->paymentAllowed;
     }
 }
