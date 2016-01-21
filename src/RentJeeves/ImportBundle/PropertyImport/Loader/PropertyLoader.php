@@ -293,6 +293,8 @@ class PropertyLoader
                 $unit->setUnitMapping($unitMapping);
             }
 
+            $this->validateUnit($unit);
+
             $this->em->persist($unit);
             $this->em->persist($unitMapping);
 
