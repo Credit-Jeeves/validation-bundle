@@ -2870,9 +2870,9 @@
                 <source>order.report.type.yardi_genesis_v2</source>
                 <target>Yardi Genesis V2 (CSV)</target>
             </trans-unit>
-            <trans-unit id="order.report.type.boston">
-                <source>order.report.type.boston</source>
-                <target>MRI Boston Post (CSV)</target>
+            <trans-unit id="order.report.type.boston_post">
+                <source>order.report.type.boston_post</source>
+                <target>Boston Post (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>

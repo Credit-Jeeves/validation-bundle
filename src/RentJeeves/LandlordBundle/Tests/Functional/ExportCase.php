@@ -1063,9 +1063,6 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'), 'This option should be');
         $type->selectOption('boston');
         $this->selectExportBy($exportBy);
-        $this->page->pressButton('order.report.download');
-        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'), 'Should get errors');
-        $this->assertCount(2, $errors, 'Should be 2 errors');
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'), 'Field should be');
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'), 'Field should be');
         $begin->setValue($beginD->format('m/d/Y'));
@@ -1105,9 +1102,6 @@ class ExportCase extends BaseTestCase
             'Option should be'
         );
         $type->selectOption('boston');
-        $this->page->pressButton('order.report.download');
-        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'), 'We shoul have errors');
-        $this->assertCount(2, $errors, 'Sould be 2 errors');
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'), 'Field should be');
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'), 'Field should be');
         $this->assertNotNull(

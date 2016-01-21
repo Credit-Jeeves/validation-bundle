@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Model;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
 
-class BostonExport
+class BostonPostExport
 {
     /**
      * @var Order
@@ -70,7 +70,9 @@ class BostonExport
      */
     public function getDueDate()
     {
-        if ($this->order->getTransaction() && $this->order->getTransaction()->getDepositDate()) {
+        $completeTransaction = $this->order->getCompleteTransaction();
+
+        if ($completeTransaction && $completeTransaction->getDepositDate()) {
             return $this->order->getTransaction()->getDepositDate()->format('dmY');
         }
 
@@ -134,8 +136,10 @@ class BostonExport
      */
     public function getDepositDate()
     {
-        if ($this->order->getDepositDate() instanceof \DateTime) {
-            return $this->order->getDepositDate()->format('dmY');
+        $completeTransaction = $this->order->getCompleteTransaction();
+
+        if ($completeTransaction && $completeTransaction->getDepositDate()) {
+            return $this->order->getTransaction()->getDepositDate()->format('dmY');
         }
 
         return '';

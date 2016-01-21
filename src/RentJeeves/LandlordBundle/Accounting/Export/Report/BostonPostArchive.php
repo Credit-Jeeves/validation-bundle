@@ -6,9 +6,9 @@ use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInter
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 
 /**
- * accounting.export.boston_archive
+ * accounting.export.boston_post_archive
  */
-class BostonArchive extends BostonReport
+class BostonPostArchive extends BostonPostReport
 {
     use ZipArchiveReport;
 
@@ -75,10 +75,9 @@ class BostonArchive extends BostonReport
     /**
      * @param array $params
      */
+
     protected function generateFilename($params)
     {
-        parent::generateFilename($params);
-        $fileName = explode('.', $this->filename);
-        $this->filename = $fileName[0].'.zip';
+        $this->filename = 'batch_report.zip';
     }
 }

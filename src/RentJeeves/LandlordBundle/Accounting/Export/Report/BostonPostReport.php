@@ -10,9 +10,9 @@ use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use DateTime;
 
 /**
- * accounting.export.boston
+ * accounting.export.boston_post
  */
-class BostonReport extends ExportReport
+class BostonPostReport extends ExportReport
 {
     /**
      * @var EntityManager
@@ -42,7 +42,7 @@ class BostonReport extends ExportReport
         $this->em = $em;
         $this->exportSerializer = $serializer;
         $this->softDeleteableControl = $softDeleteableControl;
-        $this->type = 'boston';
+        $this->type = 'boston_post';
         $this->fileType = 'csv';
     }
 
@@ -90,10 +90,7 @@ class BostonReport extends ExportReport
         }
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        /**
-         * By task logic for select the same, that's why we use the same repository method
-         */
-        return $orderRepository->getOrdersForPromasReport($groups, $beginDate, $endDate, $exportBy);
+        return $orderRepository->getOrdersForBostonPostReport($groups, $beginDate, $endDate, $exportBy);
     }
 
     /**
@@ -104,7 +101,7 @@ class BostonReport extends ExportReport
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
-            throw new ExportException('Not enough parameters for Boston report');
+            throw new ExportException('Not enough parameters for Boston Post report');
         }
     }
 
