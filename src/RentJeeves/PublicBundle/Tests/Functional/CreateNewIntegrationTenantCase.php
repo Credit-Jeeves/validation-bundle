@@ -274,7 +274,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->assertEquals(
             'success=true',
             $parsedCurrentUrl['query'],
-            sprintf('Should be added "success" parameter to redirect url,  but get "%s"' , $parsedCurrentUrl['query'])
+            sprintf('Should be added "success" parameter to redirect url,  but get "%s"', $parsedCurrentUrl['query'])
         );
     }
 
