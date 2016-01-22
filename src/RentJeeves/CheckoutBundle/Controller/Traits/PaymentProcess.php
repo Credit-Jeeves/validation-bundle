@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DebitType;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Form\Form;
@@ -45,21 +46,29 @@ trait PaymentProcess
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
         $paymentAccountMapped->getEntity()->setUser($tenant);
 
+        /** @var SubmerchantProcessorInterface $paymentProcessor */
+        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+
         if ($paymentAccountMapped->getEntity()->getType() === PaymentAccountType::DEBIT_CARD) {
-            if (!$this->get('binlist.card')->isLowDebitFee($paymentAccountMapped->get('card_number'))) {
+            $cardNumber = $paymentAccountMapped->get('card_number');
+            $cardType = $paymentProcessor->getCardType($cardNumber);
+
+            if ($cardType === PaymentAccountType::DEBIT_CARD) {
+                $paymentAccountMapped->getEntity()->setDebitType(DebitType::DEBIT);
+            } elseif ($this->get('binlist.card')->isLowDebitFee($cardNumber)) {
+                $paymentAccountMapped->getEntity()->setDebitType(DebitType::SIGNATURE_NON_EXEMPT);
+            } else {
                 throw new \InvalidArgumentException(
                     $this->get('translator')->trans('checkout.error.type.debit_card.invalid')
                 );
             }
 
-            $paymentAccountMapped->getEntity()->setLastFour(substr($paymentAccountMapped->get('card_number'), -4));
+            $paymentAccountMapped->getEntity()->setLastFour(substr($cardNumber, -4));
             $paymentAccountMapped->getEntity()->setRegistered(true);
         }
 
         $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
 
-        /** @var SubmerchantProcessorInterface $paymentProcessor */
-        $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
         $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
 
         return $paymentAccountMapped->getEntity();
