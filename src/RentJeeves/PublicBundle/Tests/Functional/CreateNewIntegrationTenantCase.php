@@ -268,6 +268,14 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             $this->session->getCurrentUrl(),
             'Should redirect to ' . $this->requestParameters['redirect']
         );
+
+        $parsedCurrentUrl = parse_url($this->session->getCurrentUrl());
+        $this->assertArrayHasKey('query', $parsedCurrentUrl, 'Redirected url should have query parameter');
+        $this->assertEquals(
+            'success=true',
+            $parsedCurrentUrl['query'],
+            sprintf('Should be added "success" parameter to redirect url,  but get "%s"' , $parsedCurrentUrl['query'])
+        );
     }
 
     /**
