@@ -147,6 +147,14 @@ class RjHoldingAdmin extends Admin
                         'label' => 'admin.holding.export_tenant_id',
                     ]
                 )
+            ->with('Profit Stars')
+                ->add(
+                    'profitStarsSettings',
+                    'profit_stars_settings_type',
+                    [
+                        'required' => false,
+                    ]
+                )
             ->end();
     }
 
@@ -191,6 +199,13 @@ class RjHoldingAdmin extends Admin
             $amsiSettings->setHolding($holding);
         } else {
             $holding->setAmsiSettings(null);
+        }
+
+        $profitStarsSettings = $holding->getProfitStarsSettings();
+        if ($profitStarsSettings) {
+            $profitStarsSettings->setHolding($holding);
+        } else {
+            $holding->setProfitStarsSettings(null);
         }
     }
 
