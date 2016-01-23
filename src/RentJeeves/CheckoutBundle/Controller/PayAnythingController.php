@@ -145,7 +145,7 @@ class PayAnythingController extends BaseController
             $integrationDataManager->removePayment($depositAccountType);
             $amounts = $integrationDataManager->getAmounts();
             if (!$integrationDataManager->hasPayments() && !empty($amounts)) {
-                $redirectUrl = $integrationDataManager->getRedirectUrl();
+                $redirectUrl = $integrationDataManager->getRedirectUrl(['success' => 'true']);
                 $integrationDataManager->removeIntegrationData();
             } elseif (!empty($amounts)) {
                 DepositAccountType::setTranslator([$this->get('translator'), 'trans']);
