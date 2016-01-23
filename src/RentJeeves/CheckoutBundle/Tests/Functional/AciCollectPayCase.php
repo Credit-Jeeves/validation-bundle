@@ -6,11 +6,16 @@ use ACI\Utils\OldProfilesStorage;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\BinlistBank;
+use RentJeeves\DataBundle\Entity\DebitCardBinlist;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\DebitType;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\ExternalApiBundle\Services\Binlist\BinlistCard;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Config\FileLocator;
@@ -238,6 +243,7 @@ class AciCollectPayCase extends BaseTestCase
                     'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
                 ];
             case PaymentAccountType::CARD:
+            case PaymentAccountType::DEBIT_CARD:
                 return [
                     'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                     'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
@@ -363,5 +369,205 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertEquals('Unsupported card type or invalid card number.', $errors[0]->getText());
         $this->assertEquals('checkout.error.csc.type', $errors[1]->getText());
 
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateDebitCardPaymentAccountDebitTypeDebit()
+    {
+        // prepare fixtures
+        $em = $this->getEntityManager();
+        $group = $em->getRepository('DataBundle:Group')->find(24);
+        $this->assertNotNull($group, 'Check fixtures, group with id 24 should exist');
+        $group->getGroupSettings()->setAllowedDebitFee(true);
+        $group->getGroupSettings()->setDebitFee(2);
+        $em->flush();
+        $repo = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
+        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
+        $repo->clear();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonNameForCreate);
+
+        $this->getDomElement('#pay-popup');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $formData = $this->getPaymentAccountFormData(PaymentAccountType::DEBIT_CARD);
+
+        $formData['rentjeeves_checkoutbundle_paymentaccounttype_type_2'] = true;
+        $formData['rentjeeves_checkoutbundle_paymentaccounttype_CardNumber'] = '5113298820090135';
+
+        $this->fillForm($form, $formData);
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->getEntityManager()->refresh($this->contractForCreate);
+        $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
+
+        $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
+
+        $merchantName = $this->contractForCreate
+            ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
+
+        $this->assertTrue(
+            $profile->hasBillingAccountForDivisionId($merchantName),
+            'Profile should have billing account'
+        );
+        $aciPaymentAccounts = $repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]);
+        $this->assertCount($countsBefore + 1, $aciPaymentAccounts);
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = end($aciPaymentAccounts);
+        $this->assertEquals(
+            PaymentAccountType::DEBIT_CARD,
+            $paymentAccount->getType(),
+            'Created Payment Account should be Debit Card'
+        );
+        $this->assertEquals(
+            DebitType::DEBIT,
+            $paymentAccount->getDebitType(),
+            'Created Payment Account should be have debit_type "debit"'
+        );
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateDebitCardPaymentAccountDebitTypeSignatureNonExempt()
+    {
+        // prepare fixtures
+        $em = $this->getEntityManager();
+        $group = $em->getRepository('DataBundle:Group')->find(24);
+        $this->assertNotNull($group, 'Check fixtures, group with id 24 should exist');
+        $group->getGroupSettings()->setAllowedDebitFee(true);
+        $group->getGroupSettings()->setDebitFee(2);
+        $binlistBank = new BinlistBank();
+        $binlistBank->setBankName('ABC');
+        $binlistBank->setLowDebitFee(true);
+        $binlistCard = new DebitCardBinlist();
+        $binlistCard->setBinlistBank($binlistBank);
+        $binlistCard->setIin('511020');
+        $binlistCard->setCardType(BinlistCard::TYPE_DEBIT);
+        $em->persist($binlistCard);
+
+        $em->flush();
+        $repo = $this->getEntityManager()->getRepository('RjDataBundle:PaymentAccount');
+        $countsBefore = count($repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]));
+        $repo->clear();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonNameForCreate);
+
+        $this->getDomElement('#pay-popup');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $formData = $this->getPaymentAccountFormData(PaymentAccountType::DEBIT_CARD);
+
+        $formData['rentjeeves_checkoutbundle_paymentaccounttype_type_2'] = true;
+
+        $this->fillForm($form, $formData);
+
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 85000, // local need more time for passed test
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
+        $this->getEntityManager()->refresh($this->contractForCreate);
+        $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
+
+        $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
+
+        $merchantName = $this->contractForCreate
+            ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
+
+        $this->assertTrue(
+            $profile->hasBillingAccountForDivisionId($merchantName),
+            'Profile should have billing account'
+        );
+        $aciPaymentAccounts = $repo->findBy(['paymentProcessor' => PaymentProcessor::ACI]);
+        $this->assertCount($countsBefore + 1, $aciPaymentAccounts);
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = end($aciPaymentAccounts);
+        $this->assertEquals(
+            PaymentAccountType::DEBIT_CARD,
+            $paymentAccount->getType(),
+            'Created Payment Account should be Debit Card'
+        );
+        $this->assertEquals(
+            DebitType::SIGNATURE_NON_EXEMPT,
+            $paymentAccount->getDebitType(),
+            'Created Payment Account should be have debit_type "signature_non_exempt"'
+        );
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 }
