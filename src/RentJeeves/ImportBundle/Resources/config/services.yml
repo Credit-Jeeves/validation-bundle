@@ -21,7 +21,7 @@ services:
     import.property.transformer_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory
         arguments:
-            - @import_transformer.repository
+            - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
             - %import.property.transformer.custom_paths%
             -
