@@ -39,8 +39,16 @@ class GroupSettingsType extends Base
         $this->em = $em;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $paymentProcessors = PaymentProcessor::cacheSpecificTitles(
+            [PaymentProcessor::HEARTLAND, PaymentProcessor::ACI]
+        );
+
         $builder->add(
             'isPidVerificationSkipped',
             'checkbox',
@@ -140,7 +148,11 @@ class GroupSettingsType extends Base
             )
         );
 
-        $builder->add('paymentProcessor', 'choice', ['choices' => PaymentProcessor::cachedTitles()]);
+        $builder->add(
+            'paymentProcessor',
+            'choice',
+            ['choices' => $paymentProcessors]
+        );
 
         $builder->add(
             'feeCC',

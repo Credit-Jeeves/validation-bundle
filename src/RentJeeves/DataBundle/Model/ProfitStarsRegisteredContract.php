@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\MappedSuperclass
  * @UniqueEntity(fields={"contract", "locationId"})
  */
-class ProfitStarsRegisteredContracts
+class ProfitStarsRegisteredContract
 {
     /**
      * @var int
@@ -23,7 +23,7 @@ class ProfitStarsRegisteredContracts
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      *
-     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract")
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="profitStarsRegisteredContract")
      * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=false)
      */
     protected $contract;

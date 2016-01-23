@@ -391,11 +391,22 @@ abstract class Contract
      */
     protected $externalLeaseId;
 
+    /**
+     * @var ArrayCollection|ProfitStarsRegisteredContract[]
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\ProfitStarsRegisteredContract",
+     *      mappedBy="contract"
+     * )
+     */
+    protected $profitStarsRegisteredContracts;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
+        $this->profitStarsRegisteredContracts = new ArrayCollection();
     }
 
     /**
@@ -969,5 +980,21 @@ abstract class Contract
     public function isPaymentAllowed()
     {
         return $this->paymentAllowed;
+    }
+
+    /**
+     * @return ArrayCollection|ProfitStarsRegisteredContract[]
+     */
+    public function getProfitStarsRegisteredContracts()
+    {
+        return $this->profitStarsRegisteredContracts;
+    }
+
+    /**
+     * @param ProfitStarsRegisteredContract $profitStarsRegisteredContract
+     */
+    public function addProfitStarsRegisteredContract(ProfitStarsRegisteredContract $profitStarsRegisteredContract)
+    {
+        $this->profitStarsRegisteredContracts->add($profitStarsRegisteredContract);
     }
 }

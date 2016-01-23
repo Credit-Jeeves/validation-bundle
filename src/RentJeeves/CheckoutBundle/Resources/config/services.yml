@@ -253,7 +253,19 @@ services:
         arguments:
             - @profit_stars.transaction_reporting.client
 
+    payment_processor.profit_stars.rdc.contract_registry:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager
+        public: false
+        arguments:
+            - @profit_stars.payment_vault.client
+            - @doctrine.orm.default_entity_manager
+            - @logger
+            - @skip32.id_encoder
+            - %profit_stars.store_id%
+            - %profit_stars.store_key%
+
     payment_processor.profit_stars.rdc:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
         arguments:
             - @payment_processor.profit_stars.rdc.report_loader
+            - @payment_processor.profit_stars.rdc.contract_registry

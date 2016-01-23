@@ -3,7 +3,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Model\ProfitStarsRegisteredContracts as ProfitStarsRegisteredContractsModel;
+use RentJeeves\DataBundle\Model\ProfitStarsRegisteredContract as ProfitStarsRegisteredContractModel;
 
 /**
  * @ORM\Entity
@@ -14,7 +14,7 @@ use RentJeeves\DataBundle\Model\ProfitStarsRegisteredContracts as ProfitStarsReg
  *     }
  * )
  */
-class ProfitStarsRegisteredContracts extends ProfitStarsRegisteredContractsModel
+class ProfitStarsRegisteredContract extends ProfitStarsRegisteredContractModel
 {
 
 }
