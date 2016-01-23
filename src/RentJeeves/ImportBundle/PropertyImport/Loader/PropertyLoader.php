@@ -178,7 +178,7 @@ class PropertyLoader
             throw new ImportInvalidArgumentException($message);
         }
 
-        if (false === $this->isNewPropertyShouldBeCreated($property, $group, $importProperty)) {
+        if (true === $this->isDifferentPropertyShouldBeCreated($property, $group, $importProperty)) {
             $propertyAddress = $property->getPropertyAddress();
             $property = new Property();
             $property->setPropertyAddress($propertyAddress);
@@ -316,7 +316,7 @@ class PropertyLoader
      *
      * @return bool true if we need create new Property
      */
-    protected function isNewPropertyShouldBeCreated(
+    protected function isDifferentPropertyShouldBeCreated(
         Property $property,
         Group $group,
         ImportProperty $importProperty
@@ -325,10 +325,13 @@ class PropertyLoader
             return false;
         }
 
+        // found property  but belongs to a different group -- so we need a different property record.
         if (!$property->getPropertyGroups()->isEmpty() && !$property->getPropertyGroups()->contains($group)) {
             return true;
         }
 
+        // typically a given address maps to only one external_property_id within a holding.
+        // However, we will create a different property and mapping at the same address, if explicitly allowed.
         $propertyMapping = $property->getPropertyMappingByHolding($group->getHolding());
         if (null !== $propertyMapping && true === $importProperty->isAllowMultipleProperties() &&
             $propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()
