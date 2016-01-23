@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
+use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
@@ -285,6 +286,17 @@ abstract class Holding
      * @var boolean
      */
     protected $postAppFeeAndSecurityDeposit = false;
+
+    /**
+     * @var \RentJeeves\DataBundle\Entity\ProfitStarsSettings
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ProfitStarsSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $profitStarsSettings;
 
     public function __construct()
     {
@@ -818,5 +830,21 @@ abstract class Holding
     public function setPostAppFeeAndSecurityDeposit($postAppFeeAndSecurityDeposit)
     {
         $this->postAppFeeAndSecurityDeposit = $postAppFeeAndSecurityDeposit;
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\ProfitStarsSettings
+     */
+    public function getProfitStarsSettings()
+    {
+        return $this->profitStarsSettings;
+    }
+
+    /**
+     * @param \RentJeeves\DataBundle\Entity\ProfitStarsSettings $profitStarsSettings
+     */
+    public function setProfitStarsSettings(ProfitStarsSettings $profitStarsSettings = null)
+    {
+        $this->profitStarsSettings = $profitStarsSettings;
     }
 }
