@@ -21,10 +21,10 @@ function PayDatesComputing(parent) {
         return parent.contract() ? parent.contract().payToName : '';
     });
 
-    self.settleDays = ko.computed(function() {
-        if(parent.contract().groupSetting.paymentProcessor === 'heartland'){
+    self.settleDays = function() {
+        if(parent.contract().groupSetting.payment_processor === 'heartland'){
             return document.bussinesDays.heartland;
-        } else if(parent.contract().groupSetting.paymentProcessor === 'aci') {
+        } else if(parent.contract().groupSetting.payment_processor === 'aci') {
             if(parent.contract().groupSetting.orderAlgorithm === 'pay_direct'){
                 return document.bussinesDays.aci_pay_direct;
             } else {
@@ -33,7 +33,7 @@ function PayDatesComputing(parent) {
         } else {
             return 1;
         }
-    });
+    };
 
     self.settle = ko.computed(function() {
         var settleDate = new Date(parent.payment.startDate());
@@ -44,8 +44,7 @@ function PayDatesComputing(parent) {
             daysAdd = (5 == startDayOfWeek ? 2 : 0);
         }
         /* end of logic: skip weekends */
-
-        settleDate.add(self.settleDays).days();// see comment of this.settleDays
+        settleDate.add(self.settleDays()).days();// see comment of this.settleDays
         var dayOfWeek = (0 == settleDate.getDay() ? 7 : settleDate.getDay()); // Move Sunday from 0 to 7
         var daysShift = 8 - dayOfWeek; // Settle day can't be weekend
         if (2 < daysShift) {
