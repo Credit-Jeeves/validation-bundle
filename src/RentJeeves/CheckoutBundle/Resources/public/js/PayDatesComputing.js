@@ -21,7 +21,20 @@ function PayDatesComputing(parent) {
         return parent.contract() ? parent.contract().payToName : '';
     });
 
-    self.settleDays = 3; // All logic logic in "settle" method depends on this value
+    self.settleDays = ko.computed(function() {
+        if(parent.contract().groupSetting.paymentProcessor === 'heartland'){
+            return document.bussinesDays.heartland;
+        } else if(parent.contract().groupSetting.paymentProcessor === 'aci') {
+            if(parent.contract().groupSetting.orderAlgorithm === 'pay_direct'){
+                return document.bussinesDays.aci_pay_direct;
+            } else {
+                return document.bussinesDays.aci_submerchant;
+            }
+        } else {
+            return 1;
+        }
+    });
+
     self.settle = ko.computed(function() {
         var settleDate = new Date(parent.payment.startDate());
         var startDayOfWeek = (0 == settleDate.getDay() ? 7 : settleDate.getDay()); // Move Sunday from 0 to 7

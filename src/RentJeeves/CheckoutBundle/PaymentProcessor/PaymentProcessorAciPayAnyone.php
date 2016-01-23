@@ -14,6 +14,8 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalid
  */
 class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
 {
+    const DELIVERY_BUSINESS_DAYS = 10;
+
     /**
      * @var PaymentManager
      */

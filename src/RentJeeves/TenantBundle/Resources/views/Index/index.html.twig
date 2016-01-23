@@ -21,3 +21,15 @@
     {% include 'RjComponentBundle:PaymentHistory:payments.html.twig' with {'contracts': user.contracts} %}
 
 {% endblock %}
+
+{% block head_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        document.bussinesDays = {
+            // take greater value for each type
+            heartland : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_BANK') }},
+            aci_pay_direct : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS') }},
+            aci_submerchant : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS') }},
+        };
+    </script>
+{% endblock %}
