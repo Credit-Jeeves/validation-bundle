@@ -4,12 +4,12 @@ namespace RentJeeves\LandlordBundle\Accounting\Export\Serializer;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface as Serializer;
-use RentJeeves\LandlordBundle\Model\BostonPostExport;
+use RentJeeves\LandlordBundle\Model\MRIBostonPostExport;
 
 /**
- * export.serializer.boston_post
+ * export.serializer.mri_boston_post
  */
-class BostonPostCsvSerializer implements ExportSerializerInterface
+class MRIBostonPostCsvSerializer implements ExportSerializerInterface
 {
     /**
      * @var Serializer
@@ -32,12 +32,12 @@ class BostonPostCsvSerializer implements ExportSerializerInterface
     {
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('boston');
+        $context->setGroups('mri_boston_post');
         $context->setAttribute('use_header', false);
         $mappedData = [];
         /** @var Order $order */
         foreach ($data as $order) {
-            $bostonExport = new BostonPostExport($order);
+            $bostonExport = new MRIBostonPostExport($order);
             $mappedData[] = $bostonExport;
         }
 

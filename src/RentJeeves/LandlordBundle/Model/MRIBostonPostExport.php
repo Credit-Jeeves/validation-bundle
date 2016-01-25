@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Model;
 use CreditJeeves\DataBundle\Entity\Order;
 use JMS\Serializer\Annotation as Serializer;
 
-class BostonPostExport
+class MRIBostonPostExport
 {
     /**
      * @var Order
@@ -23,7 +23,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("household_id")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */
@@ -35,7 +35,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("unit_id")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */
@@ -51,7 +51,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("total_pmt_amt")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      *
      * @return float
@@ -64,7 +64,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("due_date")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */
@@ -82,7 +82,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Route Number")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */
@@ -94,7 +94,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Account Number")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */
@@ -106,7 +106,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Check Number")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return int
      */
@@ -118,7 +118,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Check Amount")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return float
      */
@@ -130,7 +130,7 @@ class BostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Deposit Date")
-     * @Serializer\Groups({"boston"})
+     * @Serializer\Groups({"mri_boston_post"})
      *
      * @return string
      */

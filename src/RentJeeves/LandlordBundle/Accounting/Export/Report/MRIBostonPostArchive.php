@@ -6,9 +6,9 @@ use RentJeeves\LandlordBundle\Accounting\Export\Serializer\ExportSerializerInter
 use RentJeeves\LandlordBundle\Accounting\Export\ZipArchiveReport;
 
 /**
- * accounting.export.boston_post_archive
+ * accounting.export.mri_boston_post_archive
  */
-class BostonPostArchive extends BostonPostReport
+class MRIBostonPostArchive extends MRIBostonPostReport
 {
     use ZipArchiveReport;
 

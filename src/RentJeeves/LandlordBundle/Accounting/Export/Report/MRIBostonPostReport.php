@@ -10,9 +10,9 @@ use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use DateTime;
 
 /**
- * accounting.export.boston_post
+ * accounting.export.mri_boston_post
  */
-class BostonPostReport extends ExportReport
+class MRIBostonPostReport extends ExportReport
 {
     /**
      * @var EntityManager

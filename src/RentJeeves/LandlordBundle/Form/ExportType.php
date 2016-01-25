@@ -21,7 +21,7 @@ class ExportType extends AbstractType
     protected $validationGroups;
 
     protected $aviableValidationGroups = array(
-        'yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page', 'yardi_genesis_v2', 'boston_post'
+        'yardi', 'promas', 'renttrack', 'yardi_genesis', 'real_page', 'yardi_genesis_v2', 'mri_boston_post'
     );
 
     public function __construct($user, $group = null, $validationGroups = array('yardi'))
@@ -78,7 +78,7 @@ class ExportType extends AbstractType
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
                                 'real_page',
-                                'boston_post'
+                                'mri_boston_post'
                             )
                         )
                     ),
@@ -91,7 +91,7 @@ class ExportType extends AbstractType
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
                                 'real_page',
-                                'boston_post'
+                                'mri_boston_post'
                             )
                         )
                     ),
@@ -121,7 +121,7 @@ class ExportType extends AbstractType
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
                                 'real_page',
-                                'boston_post'
+                                'mri_boston_post'
                             )
                         )
                     ),
@@ -134,7 +134,7 @@ class ExportType extends AbstractType
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
                                 'real_page',
-                                'boston_post'
+                                'mri_boston_post'
                             )
                         )
                     ),
@@ -180,7 +180,7 @@ class ExportType extends AbstractType
                     'renttrack'         => 'order.report.type.renttrack',
                     'yardi_genesis'     => 'order.report.type.yardi_genesis',
                     'yardi_genesis_v2'  => 'order.report.type.yardi_genesis_v2',
-                    'boston_post'       => 'order.report.type.boston_post'
+                    'mri_boston_post'   => 'order.report.type.mri_boston_post'
                 ],
                 'required'    => true,
                 'attr'        => [
@@ -198,7 +198,7 @@ class ExportType extends AbstractType
                             'groups' => [
                                 'yardi',
                                 'promas',
-                                'boston_post',
+                                'mri_boston_post',
                                 'renttrack',
                                 'yardi_genesis',
                                 'yardi_genesis_v2',
@@ -228,7 +228,7 @@ class ExportType extends AbstractType
                         value: selectedProperty',
                     'row_attr' => [
                         'data-bind' =>
-                            "visible: (selectedType() != 'promas' && selectedType() != 'boston_post'
+                            "visible: (selectedType() != 'promas' && selectedType() != 'mri_boston_post'
                             && selectedType() != 'renttrack'
                             && includeAllGroups() == false)",
                     ]
@@ -333,7 +333,7 @@ class ExportType extends AbstractType
 
         $checkBoxJs = "visible: selectedType() == 'renttrack' || selectedType() == 'yardi_genesis'";
         $checkBoxJs .= "|| selectedType() == 'yardi_genesis_v2' || selectedType() == 'promas'";
-        $checkBoxJs .= "|| selectedType() == 'boston_post'";
+        $checkBoxJs .= "|| selectedType() == 'mri_boston_post'";
 
         $builder->add(
             'includeAllGroups',
