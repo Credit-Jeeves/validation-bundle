@@ -2,18 +2,19 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\True;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use RentJeeves\LandlordBundle\Form\ContractType;
-use RentJeeves\LandlordBundle\Form\InviteTenantType;
 
 class InviteTenantContractType extends AbstractType
 {
 
     protected $user;
+
+    /**
+     * @var Group
+     */
     protected $group;
 
     public function __construct($user, $group = null)
@@ -32,7 +33,7 @@ class InviteTenantContractType extends AbstractType
             'contract',
             new ContractType($this->group)
         );
-        if ($this->group && $this->group->getGroupSettings()->getIsIntegrated()) {
+        if ($this->group && $this->group->getHolding()->isApiIntegrated()) {
             $builder->add(
                 'resident',
                 new TenantResidentMappingType()

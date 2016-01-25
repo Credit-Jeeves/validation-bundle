@@ -562,4 +562,29 @@ class Contract
 
         return false;
     }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("isApiIntegrated")
+     *
+     * @return boolean
+     */
+    public function isApiIntegrated()
+    {
+        return $this->contract->getGroup()->getHolding()->isApiIntegrated();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("leaseId")
+     *
+     * @return string
+     */
+    public function getLeaseId()
+    {
+        return $this->contract->getExternalLeaseId();
+    }
+
 }

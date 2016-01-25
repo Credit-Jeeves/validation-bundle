@@ -68,6 +68,19 @@ class ContractType extends AbstractType
             ]
         );
 
+        if ($this->group->getHolding()->isApiIntegrated() === false) {
+            $builder->add(
+                'externalLeaseId',
+                'text',
+                [
+                    'label' => 'Lease ID',
+                    'error_bubbling' => true,
+                    'required' => true,
+                ]
+            );
+        }
+
+
         $builder->add(
             'finishAtType',
             'choice',

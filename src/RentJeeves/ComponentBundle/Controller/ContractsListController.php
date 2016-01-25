@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormView;
 class ContractsListController extends Controller
 {
     /**
-     * @param Group $Group
      * @param FormView $form
      * @param string $searchText
      * @param string $searchColumn
@@ -26,7 +25,7 @@ class ContractsListController extends Controller
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return mixed
      */
-    public function indexAction(Group $Group, FormView $form, $searchText = null, $searchColumn = null)
+    public function indexAction(FormView $form, $searchText = null, $searchColumn = null)
     {
         /** @var $user Landlord */
         $user = $this->getUser();
@@ -46,11 +45,12 @@ class ContractsListController extends Controller
 
         return [
             'form'          => $form,
-            'Group'         => $Group,
+            'group'         => $group,
             'canInvite'     => $canInvite,
             'start'         => $start,
             'end'           => $end,
-            'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
+            'isIntegrated'  => $group->getGroupSettings()->getIsIntegrated(),
+            'isApiIntegrated' => $group->getHolding()->isApiIntegrated(),
             'searchText'    => $searchText,
             'searchColumn'  => $searchColumn
         ];

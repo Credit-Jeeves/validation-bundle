@@ -24,5 +24,12 @@ class AccountingSystem extends Enum
         self::MRI           => 'mri',
         self::AMSI          => 'amsi',
     ];
+
+    public static $integratedWithApi = [
+        self::YARDI_VOYAGER => 'yardi',
+        self::RESMAN        => 'resman',
+        self::MRI           => 'mri',
+        self::AMSI          => 'amsi',
+    ];
 }
 

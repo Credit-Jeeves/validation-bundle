@@ -34,7 +34,10 @@ class ImportFactory
 
     protected $importType;
 
-    protected $availableImportType = array(self::CSV, self::INTEGRATED_API);
+    /**
+     * @var array
+     */
+    protected $availableImportType = [self::CSV, self::INTEGRATED_API];
 
     /**
      * @InjectParams({
@@ -152,7 +155,7 @@ class ImportFactory
         $user = $this->container->get('security.context')->getToken()->getUser();
         /** @var $holding Holding */
         $holding = $user->getHolding();
-        if ($holding->getAccountingSystem() === AccountingSystem::NONE) {
+        if ($holding->getAccountingSystem() === AccountingSystem::NONE || $holding->isApiIntegrated() === false) {
             return AccountingSystem::NONE;
         }
 
