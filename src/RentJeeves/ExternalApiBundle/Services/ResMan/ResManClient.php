@@ -5,6 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
 use RentJeeves\DataBundle\Entity\ResManSettings;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transaction\ResidentTransactions as PaymentTransaction;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResMan;
@@ -350,7 +351,14 @@ class ResManClient implements ClientInterface
         Order $order,
         $externalPropertyId
     ) {
-        $method = 'AddPaymentToBatch';
+        if (null !== $order->getDepositAccount() &&
+            DepositAccountType::SECURITY_DEPOSIT === $order->getDepositAccount()->getType()
+        ) {
+            $method = 'AddDepositToBatch';
+        } else {
+            $method = 'AddPaymentToBatch';
+        }
+
         $this->debugMessage("Call ResMan method: {$method}");
         $residentTransactionsXml = $this->getResidentTransactionXml($order);
         $accountId = $this->getSettings()->getAccountId();

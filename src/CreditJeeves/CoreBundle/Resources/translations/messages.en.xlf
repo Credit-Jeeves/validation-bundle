@@ -876,7 +876,7 @@
             </trans-unit>
             <trans-unit id="notification.score.comment">
                 <source>notification.score.comment</source>
-                <target>Yes, please send me notifications like changes in my credit score and reaching my target prequalification score.</target>
+                <target>Yes, please send me notifications like payment receipts and rent amount changes.</target>
             </trans-unit>
             <trans-unit id="notification.offer">
                 <source>notification.offer</source>
@@ -884,7 +884,7 @@
             </trans-unit>
             <trans-unit id="notification.offer.comment">
                 <source>notification.offer.comment</source>
-                <target>Yes, please send me offers like discounts on full credit reports or loans that I might qualify for.</target>
+                <target>Yes, please send me offers like discounts on credit products or loans that I might qualify for.</target>
             </trans-unit>
 
             <trans-unit id="remove.comment">
