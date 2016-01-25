@@ -11,7 +11,7 @@ class AccountingSystem extends Enum
     const RESMAN = 'resman';
     const MRI = 'mri';
     const AMSI = 'amsi';
-    const BOSTON_POST = 'boston post';
+    const MRI_BOSTON_POST = 'mri boston post';
 
     public static $importMapping = [
         self::NONE          => 'csv',
