@@ -271,7 +271,8 @@ class UnitRepository extends EntityRepository
             ->setParameter('unitName', $currentUnit->getActualName())
             ->setParameter('excludedUnitId', $currentUnit->getId())
             ->setMaxResults(1)
-            ->orderBy('u.id', 'desc')
+            ->orderBy('u.deletedAt', 'asc')
+            ->addOrderBy('u.id', 'asc')
             ->getQuery()
             ->getOneOrNullResult();
     }

@@ -26,6 +26,11 @@ class UnitDeduplicateCommand extends BaseCommand
     {
         $this->getLogger()->info('Start deduplicating.');
 
+        if (true === $this->getEntityManager()->getFilters()->isEnabled('softdeleteable')) {
+            $this->getEntityManager()->getFilters()->disable('softdeleteable');
+            $this->getLogger()->info('Soft-deleteble filter is disabled.');
+        }
+
         if (null === $srcUnit = $this->getUnitRepository()->find($input->getOption('src-unit-id'))) {
             throw new \InvalidArgumentException(
                 sprintf('Unit with id = %d not found.', $input->getOption('src-unit-id'))

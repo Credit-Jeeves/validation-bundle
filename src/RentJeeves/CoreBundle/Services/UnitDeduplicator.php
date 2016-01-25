@@ -115,6 +115,8 @@ class UnitDeduplicator
         if (false === $this->dryRunMode) {
             if (true !== $isSingleSourceProperty) { // not remove units from isSingle Property
                 $this->disableSoftDelete();
+                // need for remove old relations with contract (without it, contract is removed)
+                $this->em->refresh($sourceUnit);
                 $this->em->remove($sourceUnit);
             }
             $this->em->flush();

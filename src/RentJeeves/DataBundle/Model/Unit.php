@@ -131,7 +131,6 @@ abstract class Unit
      *     mappedBy="unit",
      *     cascade={
      *         "persist",
-     *         "remove",
      *         "merge"
      *     },
      *     orphanRemoval=true
