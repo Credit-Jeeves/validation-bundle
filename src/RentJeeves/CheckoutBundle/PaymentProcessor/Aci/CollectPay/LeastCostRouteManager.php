@@ -12,6 +12,9 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalid
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 
+/**
+ * DI\Service("payment_processor.aci.collect_pay.lcr_manager")
+ */
 class LeastCostRouteManager
 {
     /**
@@ -57,7 +60,7 @@ class LeastCostRouteManager
                     $e->getMessage()
                 )
             );
-            throw $e;
+            throw new PaymentProcessorRuntimeException($e->getMessage(), null, $e);
         }
 
         if (!$request->getIsSuccessful()) {
