@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Model\User;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
@@ -64,10 +65,11 @@ class TenantCase extends BaseTestCase
             'Check fixtures, third pending contract should have status "contract.statuses.contract_ended"'
         );
         $this->assertNotNull(
-            $approve = $this->page->find('css', '.approve'),
+            $approves = $this->page->findAll('css', '.approve'),
             'Button "Approve" for contract doesn\'t found'
         );
-        $approve->click(); // open dialog
+        $this->assertCount(3, $approves);
+        $approves[0]->click(); // open dialog
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "$('.overlay').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
@@ -1212,5 +1214,137 @@ class TenantCase extends BaseTestCase
         $this->assertCount(1, $linkToTenantInDifferentGroups, 'We didn\'t get correct number of links');
         $this->assertEquals('Test Rent Group', $linkToTenantInDifferentGroups[0]->getText());
         $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function saveLeaseId()
+    {
+        $this->loadTenantTab();
+        $this->setDefaultSession('selenium2');
+        // Prepare Group for test
+        $em = $this->getEntityManager();
+        /** @var $group Group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotEmpty($group, 'Group should exist in fixtures');
+        $setting = $group->getGroupSettings();
+        $setting->setIsIntegrated(true);
+        $holding = $group->getHolding();
+        $holding->setAccountingSystem(AccountingSystem::MRI_BOSTON_POST);
+        $em->persist($holding);
+        $em->persist($group);
+        $em->flush();
+
+        $this->session->reload();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($edits = $this->page->findAll('css', '.edit'), 'Can not find contract edit button');
+        $this->assertArrayHasKey(0, $edits, 'Should have one element');
+        $edits[0]->click();
+
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup').is(':visible')");
+        $this->assertNotNull($lease = $this->page->find('css', '#leaseId-edit'), 'Can not find lease field');
+        $externalLeaseId = 't1234572222';
+        $lease->setValue($externalLeaseId);
+        $this->page->pressButton('savechanges');
+        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['externalLeaseId' => $externalLeaseId]
+        );
+        $this->assertNotEmpty($contract, 'Should be contract with such rent and lease id');
+    }
+
+    /**
+     * @test
+     */
+    public function inviteNewTenantWithExternalLeaseId()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var $group Group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
+        $setting = $group->getGroupSettings();
+        $setting->setIsIntegrated(true);
+        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTON_POST);
+        $em->flush();
+        $em->clear();
+        $this->clearEmail();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        // set group - "Sea side Rent Group" to be able to change isIntegrated setting
+        $this->assertNotNull($select = $this->page->find('css', '.group-select>a'));
+        $select->click();
+        $this->assertNotNull($selectOption = $this->page->find('css', '#holding-group_li_1>span'));
+        $selectOption->click();
+        $this->session->wait(5000, "false"); // wait refresh page
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (4)', $allh2->getText(), 'Wrong count');
+        $this->page->pressButton('add.tenant');
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
+        $this->page->pressButton('invite.tenant');
+        $this->session->wait(3500, "false"); // wait refresh page
+
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
+
+        $formField = [
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name' => 'Sharamko',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone' => '7858655392',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email' => 'test@email.ru',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent' => '200',
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate' => 23,
+            'rentjeeves_landlordbundle_invitetenantcontracttype_contract_externalLeaseId' => '322323',
+        ];
+
+        $this->fillForm($form, $formField);
+
+        $start = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt');
+        $this->assertNotNull($start);
+        $start->click();
+
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $finish = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt');
+        $this->assertNotNull($finish);
+        $finish->click();
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
+
+        $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
+        $this->assertNotNull($next);
+        $next->click();
+
+        $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
+        $this->assertNotNull($future);
+        $future[count($future) - 1]->click();
+
+        $this->page->pressButton('invite.tenant');
+
+        //Check created contracts
+        $this->session->wait($this->timeout, "!$('#tenant-add-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (5)', $allh2->getText(), 'Wrong count');
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->setValue('contract.status.invite');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
+        $this->logout();
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(['externalLeaseId' => '322323']);
+        $this->assertNotEmpty($contract, 'Contract not created');
     }
 }

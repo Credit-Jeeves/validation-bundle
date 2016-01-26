@@ -786,6 +786,9 @@ class AjaxController extends Controller
         $contract->setRent($details['amount']);
         $contract->setDueDate($details['dueDate']);
         $contract->setStartAt(new DateTime($details['start']));
+        if (array_key_exists('leaseId', $details)) {
+            $contract->setExternalLeaseId($details['leaseId']);
+        }
         if (!empty($details['finish'])) {
             $contract->setFinishAt(new DateTime($details['finish']));
         } else {
