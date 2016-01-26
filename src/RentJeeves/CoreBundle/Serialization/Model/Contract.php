@@ -586,5 +586,4 @@ class Contract
     {
         return $this->contract->getExternalLeaseId();
     }
-
 }
