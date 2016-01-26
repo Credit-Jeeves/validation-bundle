@@ -1688,7 +1688,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['rent' => '2100.00', 'status' => ContractStatus::APPROVED]
         );
