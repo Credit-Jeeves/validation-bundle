@@ -40,7 +40,7 @@ class LeastCostRouteManager
     /**
      * @param $cardNumber
      * @return string
-     * @throws \Exception
+     * @throws PaymentProcessorRuntimeException|PaymentProcessorInvalidCardNumber
      */
     public function getLeastCostRoute($cardNumber)
     {

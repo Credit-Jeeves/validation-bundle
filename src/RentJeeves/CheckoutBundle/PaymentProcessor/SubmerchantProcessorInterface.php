@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidCardNumber;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -90,7 +91,7 @@ interface SubmerchantProcessorInterface extends PaymentProcessorInterface
     /**
      * @param string $cardNumber
      * @return string "card" or "debit_card". (@see PaymentAccountType)
-     * @throws PaymentProcessorInvalidCardNumber
+     * @throws PaymentProcessorRuntimeException|PaymentProcessorInvalidCardNumber
      */
     public function getCardType($cardNumber);
 }

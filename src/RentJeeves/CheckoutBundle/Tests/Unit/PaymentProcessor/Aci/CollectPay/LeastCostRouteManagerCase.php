@@ -25,7 +25,12 @@ class LeastCostRouteManagerCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())->method('alert');
 
-        $manager = new LeastCostRouteManager($this->getPayumMock(), $logger);
+        $paymentProcessor = $this->getBaseMock('Payum\Core\Payment');
+        $paymentProcessor->method('execute')->willThrowException(new CurlException('Incorrect url'));
+        $payum = $this->getBaseMock('Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry');
+        $payum->expects($this->any())->method('getPayment')->willReturn($paymentProcessor);
+
+        $manager = new LeastCostRouteManager($payum, $logger);
         $manager->getLeastCostRoute('555555555555555555');
     }
 
@@ -38,7 +43,7 @@ class LeastCostRouteManagerCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())->method('alert');
 
-        $manager = new LeastCostRouteManager($this->getPayumMock(), $logger);
+        $manager = new LeastCostRouteManager($this->getPayumMock(LeastCostRouteType::DEBIT_CARD, false), $logger);
         $manager->getLeastCostRoute('5313298820090136');
     }
 
@@ -50,7 +55,7 @@ class LeastCostRouteManagerCase extends UnitTestBase
     {
         $logger = $this->getLoggerMock();
 
-        $manager = new LeastCostRouteManager($this->getPayumMock(), $logger);
+        $manager = new LeastCostRouteManager($this->getPayumMock(LeastCostRouteType::INVALID_CARD), $logger);
         $manager->getLeastCostRoute('0123456789101214');
     }
 
@@ -60,58 +65,48 @@ class LeastCostRouteManagerCase extends UnitTestBase
     public function validCardNumberDataProvider()
     {
         return [
-            ['5113298820090135', PaymentAccountType::DEBIT_CARD],
-            ['4111111111111111', PaymentAccountType::CARD],
+            ['5113298820090135', LeastCostRouteType::DEBIT_CARD, PaymentAccountType::DEBIT_CARD],
+            ['4111111111111111', LeastCostRouteType::CREDIT_CARD, PaymentAccountType::CARD],
         ];
     }
 
     /**
      * @param string $cardNumber
+     * @param string $leastCostRouteType
      * @param string $paymentAccountType
      *
      * @test
      * @dataProvider validCardNumberDataProvider
      */
-    public function shouldReturnPaymentAccountTypeOnValidCard($cardNumber, $paymentAccountType)
+    public function shouldReturnPaymentAccountTypeOnValidCard($cardNumber, $leastCostRouteType, $paymentAccountType)
     {
         $logger = $this->getLoggerMock();
 
-        $manager = new LeastCostRouteManager($this->getPayumMock(), $logger);
+        $manager = new LeastCostRouteManager($this->getPayumMock($leastCostRouteType), $logger);
         $this->assertEquals(
             $paymentAccountType,
-            $manager->getLeastCostRoute($cardNumber),
+            $manager->getLeastCostRoute('5113298820090135'),
             sprintf('For card "%s" payment account type should be "%s"', $cardNumber, $paymentAccountType)
         );
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry
+     * @param string $leastCostRouteType
+     * @param bool $isSuccessful
+     * @return \Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getPayumMock()
+    protected function getPayumMock($leastCostRouteType, $isSuccessful = true)
     {
         $paymentProcessor = $this->getBaseMock('Payum\Core\Payment');
-        $paymentProcessor->method('execute')->willReturnCallback(function (CheckLeastCostRoute $request) {
-            /** @var LeastCostRoute $model */
-            $model = $request->getModel();
-            switch ($model->getCardNumber()) {
-                case '0123456789101214':
-                    $model->setLeastCostRouting(LeastCostRouteType::INVALID_CARD);
-                    break;
-                case '4111111111111111':
-                    $model->setLeastCostRouting(LeastCostRouteType::CREDIT_CARD);
-                    break;
-                case '5113298820090135':
-                    $model->setLeastCostRouting(LeastCostRouteType::DEBIT_CARD);
-                    break;
-                case '5313298820090136':
-                    $model->setLeastCostRouting(LeastCostRouteType::CREDIT_CARD);
-                    $request->setIsSuccessful(false);
-                    break;
-                default:
-                    throw new CurlException('Incorrect url');
-            }
-            $request->setModel($model);
-        });
+        $paymentProcessor
+            ->method('execute')
+            ->willReturnCallback(function (CheckLeastCostRoute $request) use ($leastCostRouteType, $isSuccessful) {
+                /** @var LeastCostRoute $model */
+                $model = $request->getModel();
+                $model->setLeastCostRouting($leastCostRouteType);
+                $request->setIsSuccessful($isSuccessful);
+                $request->setModel($model);
+            });
         $payum = $this->getBaseMock('Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry');
         $payum->expects($this->any())->method('getPayment')->willReturn($paymentProcessor);
 
