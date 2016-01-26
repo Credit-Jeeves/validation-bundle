@@ -74,7 +74,6 @@ function PayDatesComputing(parent) {
             }
             settleDateForCard.add(daysShiftForCard + daysAdd).days();
 
-            console.log(settleDateForCard,settleDate );
             return settleDateForCard.toString('M/d/yyyy') + ' for Credit or <br/>' + settleDate.toString('M/d/yyyy') + ' for e-Check';
         }
     });
