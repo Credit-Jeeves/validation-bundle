@@ -38,9 +38,9 @@ function PayDatesComputing(parent) {
      * @returns int using in AttributeGeneratorWeb
      */
     self.settleDays = function () {
-        var bussinesDays = self.getBusinessDaysForCurrentPaymentProcessor();
+        var businessDays = self.getBusinessDaysForCurrentPaymentProcessor();
 
-        return (bussinesDays.bank > bussinesDays.card) ? bussinesDays.bank : bussinesDays.card;
+        return (businessDays.bank > businessDays.card) ? businessDays.bank : businessDays.card;
     };
 
     self.settle = ko.computed(function () {
