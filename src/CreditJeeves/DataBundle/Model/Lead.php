@@ -3,11 +3,9 @@ namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\LeadSource;
 use CreditJeeves\DataBundle\Enum\LeadStatus;
-use CreditJeeves\DataBundle\Enum\SourceType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -52,49 +50,41 @@ abstract class Lead
 
     /**
      * @ORM\Column(type="bigint", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $target_score;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $target_name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $target_url;
 
     /**
      * @ORM\Column(type="bigint", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $state;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $trade_in;
 
     /**
      * @ORM\Column(type="bigint", nullable=true)
-     * @Gedmo\Versioned
      */
     protected $down_payment;
 
     /**
      * @ORM\Column(type="smallint", nullable=true, options={"default"="0"})
-     * @Gedmo\Versioned
      */
     protected $fraction = 0;
 
     /**
      * @ORM\Column(type="LeadStatus", options={"default"="new"})
-     * @Gedmo\Versioned
      */
     protected $status = LeadStatus::NEWONE;
 
@@ -137,21 +127,6 @@ abstract class Lead
      * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
      */
     protected $group;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\LeadHistory",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $histories;
-
-    public function __construct()
-    {
-        $this->histories = new ArrayCollection();
-    }
 
     /**
      * Get id

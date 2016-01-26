@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -60,7 +60,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function processRequestData($accountingSystem, Request $request)
     {
-        $accountingSystem = array_search($accountingSystem, ApiIntegrationType::$importMapping);
+        $accountingSystem = array_search($accountingSystem, AccountingSystem::$importMapping);
         if ($accountingSystem === false) {
             throw new \InvalidArgumentException('Accounting system type is invalid.');
         }
@@ -225,11 +225,32 @@ class AccountingSystemIntegrationDataManager
     }
 
     /**
+     * @param array $params
      * @return null|string
      */
-    public function getRedirectUrl()
+    public function getRedirectUrl(array $params = [])
     {
-        return $this->get('redirect');
+        $redirectUrl = $this->get('redirect');
+        if ($redirectUrl && !empty($params)) {
+            // @parse_url to suppress E_WARNING for invalid urls
+            $parsedRedirectUrl = @parse_url($redirectUrl);
+            if ($parsedRedirectUrl !== false) {
+                $scheme = isset($parsedRedirectUrl['scheme']) ? $parsedRedirectUrl['scheme'] . '://' : '';
+                $host = isset($parsedRedirectUrl['host']) ? $parsedRedirectUrl['host'] : '';
+                $port = isset($parsedRedirectUrl['port']) ? ':' . $parsedRedirectUrl['port'] : '';
+                $path = isset($parsedRedirectUrl['path']) ? $parsedRedirectUrl['path'] : '';
+                $query = '?';
+                $queryParams = [];
+                if (isset($parsedRedirectUrl['query'])) {
+                    parse_str($parsedRedirectUrl['query'], $queryParams);
+                }
+                $query .= http_build_query(array_merge($queryParams, $params));
+                $fragment = isset($parsedRedirectUrl['fragment']) ? '#' . $parsedRedirectUrl['fragment'] : '';
+                $redirectUrl = $scheme . $host . $port . $path . $query . $fragment;
+            }
+        }
+
+        return $redirectUrl;
     }
 
     /**

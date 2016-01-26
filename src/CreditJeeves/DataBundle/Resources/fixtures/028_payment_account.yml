@@ -69,7 +69,7 @@ fixtures:
         address: TenantAddres_1
         type: card
         name: RT Card
-        token: 'D5E0A348-A8E7-4B7B-AA3D-A75E90DFB9C2'
+        token: '568C0904-9174-46DE-BEC4-9B76599B28C5'
         ccExpiration: 'last day of +3 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'

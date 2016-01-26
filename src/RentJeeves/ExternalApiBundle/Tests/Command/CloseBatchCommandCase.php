@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Command\CloseBatchCommand;
 use RentJeeves\ExternalApiBundle\Services\ExternalApiClientFactory;
@@ -24,8 +24,8 @@ class CloseBatchCommandCase extends BaseTestCase
     public function providerShouldCloseAllBatches()
     {
         return [
-            [ApiIntegrationType::RESMAN, ResManClientCase::EXTERNAL_PROPERTY_ID],
-            [ApiIntegrationType::YARDI_VOYAGER, PaymentClientCase::PROPERTY_ID]
+            [AccountingSystem::RESMAN, ResManClientCase::EXTERNAL_PROPERTY_ID],
+            [AccountingSystem::YARDI_VOYAGER, PaymentClientCase::PROPERTY_ID]
         ];
     }
 
@@ -48,7 +48,7 @@ class CloseBatchCommandCase extends BaseTestCase
         $repo = $em->getRepository('RjDataBundle:Transaction');
         $holding = $repo->getMerchantHoldingByBatchId(self::BATCH_ID);
 
-        $holding->setApiIntegrationType($accountType);
+        $holding->setAccountingSystem($accountType);
 
         $em->persist($batchMapping);
 

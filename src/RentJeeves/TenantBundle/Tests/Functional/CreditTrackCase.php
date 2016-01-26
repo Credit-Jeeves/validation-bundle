@@ -64,7 +64,10 @@ class CreditTrackCase extends BaseTestCase
     public function newAccountSignup()
     {
         $this->enterSignupFlow();
-        $this->page->clickLink('payment.account.new');
+
+        $this->session->wait($this->timeout, "$('#id-source-step .payment-accounts a.checkout-plus').is(':visible')");
+        $link = $this->page->find('css', '#id-source-step .payment-accounts a.checkout-plus');
+        $link->click();
 
         $this->makeNew();
 

@@ -4,6 +4,9 @@ namespace RentJeeves\DataBundle\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 
+/**
+ * @deprecated please use AccountingSystem
+ */
 class ApiIntegrationType extends Enum
 {
     const NONE = 'none';

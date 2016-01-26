@@ -208,7 +208,7 @@ class ReversalReceiptSender
     protected function pushReversedOrder(Transaction $order)
     {
         /** @var Operation $operation */
-        $operation = $order->getRentOperations()->first();
+        $operation = $order->getOperations()->first();
         $settings = $operation->getContract()->getHolding()->getYardiSettings();
         /** @var $residentClient ResidentTransactionsClient */
         $residentClient = $this->clientFactory->getClient($settings, SoapClient::YARDI_RESIDENT_TRANSACTIONS);

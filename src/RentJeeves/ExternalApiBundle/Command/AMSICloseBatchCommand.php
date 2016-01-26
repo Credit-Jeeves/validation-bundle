@@ -4,7 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Monolog\Logger;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
@@ -76,7 +76,7 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
     {
         return $this->getContainer()->get('doctrine.orm.default_entity_manager')
             ->getRepository('DataBundle:Holding')
-            ->findAllByApiIntegration(ApiIntegrationType::AMSI);
+            ->findAllByAccountingSystem(AccountingSystem::AMSI);
     }
 
     /**

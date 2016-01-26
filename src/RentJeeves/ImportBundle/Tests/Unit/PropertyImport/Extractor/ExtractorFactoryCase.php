@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -16,7 +16,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGetNotExistExtractor()
     {
-        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
+        $factory = new ExtractorFactory([AccountingSystem::MRI => $this->getMriExtractorMock()]);
         $factory->getExtractor('test');
     }
 
@@ -26,7 +26,7 @@ class ExtractorFactoryCase extends UnitTestBase
     public function getExtractors()
     {
         return [
-            [ApiIntegrationType::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
+            [AccountingSystem::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
         ];
     }
 
@@ -39,7 +39,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldReturnCorrectExtractor($extractorName, $expectedExtractor)
     {
-        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
+        $factory = new ExtractorFactory([AccountingSystem::MRI => $this->getMriExtractorMock()]);
         $extractor = $factory->getExtractor($extractorName);
 
         $this->assertInstanceOf($expectedExtractor, $extractor, 'Incorrect instance of Extractor.');

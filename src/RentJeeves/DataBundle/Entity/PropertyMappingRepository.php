@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PropertyMappingRepository extends EntityRepository
@@ -58,16 +58,16 @@ class PropertyMappingRepository extends EntityRepository
         $externalPropertyId,
         $accountingSystem
     ) {
-        ApiIntegrationType::throwsInvalid($accountingSystem);
+        AccountingSystem::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('pm')
             ->innerJoin('pm.holding', 'h')
             ->andWhere('pm.property = :property')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
-            ->andWhere('h.apiIntegrationType = :apiIntegrationType')
+            ->andWhere('h.accountingSystem = :accountingSystem')
             ->setParameter('property', $property)
             ->setParameter('externalPropertyId', $externalPropertyId)
-            ->setParameter('apiIntegrationType', $accountingSystem)
+            ->setParameter('accountingSystem', $accountingSystem)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -86,7 +86,7 @@ class PropertyMappingRepository extends EntityRepository
         $externalPropertyId,
         $accountingSystem
     ) {
-        ApiIntegrationType::throwsInvalid($accountingSystem);
+        AccountingSystem::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('pm')
             ->innerJoin('pm.property', 'p')
@@ -95,17 +95,18 @@ class PropertyMappingRepository extends EntityRepository
             ->andWhere('pm.property = :property')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('units.id = :unit')
-            ->andWhere('h.apiIntegrationType = :apiIntegrationType')
+            ->andWhere('h.accountingSystem = :accountingSystem')
             ->setParameter('property', $property)
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('unit', $unit)
-            ->setParameter('apiIntegrationType', $accountingSystem)
+            ->setParameter('accountingSystem', $accountingSystem)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
      * @param Group $group
+     *
      * @return array
      */
     public function getPropertiesMappingByGroup(Group $group)
@@ -119,5 +120,25 @@ class PropertyMappingRepository extends EntityRepository
             ->groupBy('pm.externalPropertyId')
             ->getQuery()
             ->getArrayResult();
+    }
+
+    /**
+     * @param Group  $group
+     * @param string $externalPropertyId
+     *
+     * @return PropertyMapping[]
+     */
+    public function getPropertyMappingByGroupAndExternalPropertyId(Group $group, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('pm')
+            ->select('pm.externalPropertyId')
+            ->innerJoin('pm.property', 'p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('group', $group)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->execute();
     }
 }

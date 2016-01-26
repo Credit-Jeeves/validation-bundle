@@ -8,7 +8,8 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
@@ -114,7 +115,7 @@ class ResManClientCase extends Base
         $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
-            ApiIntegrationType::RESMAN,
+            AccountingSystem::RESMAN,
             self::RESIDENT_ID,
             self::EXTERNAL_PROPERTY_ID,
             self::EXTERNAL_LEASE_ID,
@@ -124,6 +125,45 @@ class ResManClientCase extends Base
         $order = $transaction->getOrder();
         $this->assertNotNull($order);
         $order->setBatchId($batchId);
+        $result = $resManClient->addPaymentToBatch($order, self::EXTERNAL_PROPERTY_ID);
+        $this->assertTrue($result);
+
+        return $batchId;
+    }
+
+    /**
+     * @param $batchId
+     *
+     * @test
+     * @depends shouldOpenNewBatch
+     *
+     * @return string
+     */
+    public function shouldAddDepositToBatch($batchId)
+    {
+        $container = $this->getKernel()->getContainer();
+        /** @var ResManClient $resManClient */
+        $resManClient = $container->get('resman.client');
+
+        $settings = new ResManSettings();
+        $settings->setAccountId('400');
+        $settings->setUrl('https://api.myresman.com/MITS/');
+        $resManClient->setSettings($settings);
+        $transaction = $this->createTransaction(
+            AccountingSystem::RESMAN,
+            self::RESIDENT_ID,
+            self::EXTERNAL_PROPERTY_ID,
+            self::EXTERNAL_LEASE_ID,
+            self::EXTERNAL_UNIT_ID
+        );
+
+        $order = $transaction->getOrder();
+        $this->assertNotNull($order);
+        $order->setBatchId($batchId);
+        $depositAccount = $order->getDepositAccount();
+        $this->assertNotNull($depositAccount, 'DepositAccount should be set for Order');
+        $depositAccount->setType(DepositAccountType::SECURITY_DEPOSIT);
+        $order->setDepositAccount($depositAccount);
         $result = $resManClient->addPaymentToBatch($order, self::EXTERNAL_PROPERTY_ID);
         $this->assertTrue($result);
 

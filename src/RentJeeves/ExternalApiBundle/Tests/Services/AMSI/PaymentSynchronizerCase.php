@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Transaction;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -28,7 +28,7 @@ class PaymentSynchronizerCase extends BaseTestCase
         $this->load(true);
 
         $transaction = $this->createTransaction(
-            ApiIntegrationType::AMSI,
+            AccountingSystem::AMSI,
             '4492',
             '001',
             13,

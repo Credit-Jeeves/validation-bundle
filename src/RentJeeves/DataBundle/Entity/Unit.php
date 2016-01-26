@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Model\Unit as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -58,9 +58,9 @@ class Unit extends Base
     protected function isIntegratedWithBuildingId()
     {
         $holding = $this->getGroup() ? $this->getGroup()->getHolding() : null;
-        $apiIntegrationType = $holding ? $holding->getApiIntegrationType() : null;
+        $accountingSystem = $holding ? $holding->getAccountingSystem() : null;
 
-        return $apiIntegrationType === ApiIntegrationType::MRI || $apiIntegrationType === ApiIntegrationType::RESMAN;
+        return $accountingSystem === AccountingSystem::MRI || $accountingSystem === AccountingSystem::RESMAN;
     }
 
     /**

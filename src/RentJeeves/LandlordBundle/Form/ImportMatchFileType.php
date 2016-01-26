@@ -84,6 +84,7 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_CREDITS              => $this->translator->trans('common.open_credits'),
             ImportMapping::KEY_PAYMENT_ACCEPTED     => $this->translator->trans('common.payment_accepted'),
             ImportMapping::KEY_TENANT_STATUS        => $this->translator->trans('common.tenant.status'),
+            ImportMapping::KEY_EXTERNAL_LEASE_ID    => $this->translator->trans('common.lease_id'),
         ];
 
         if ($this->storage->isMultipleGroup()) {

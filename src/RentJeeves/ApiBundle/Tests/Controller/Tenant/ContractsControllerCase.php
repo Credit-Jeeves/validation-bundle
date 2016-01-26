@@ -21,20 +21,21 @@ class ContractsControllerCase extends BaseApiTestCase
     public static function getContractDataProvider()
     {
         return [
-            [ 1, true ],
-            [ 2, true ],
-            [ 3, false],
+            [ 1 ],
+            [ 2 ],
+            [ 3 ],
         ];
     }
 
     /**
      * @param int  $id
-     * @param bool $checkBalance
      *
      * @test
      * @dataProvider getContractDataProvider
+     *
+     * @return array
      */
-    public function getContract($id, $checkBalance)
+    public function getContract($id)
     {
         $encodedId = $this->getIdEncoder()->encode($id);
 
@@ -157,14 +158,87 @@ class ContractsControllerCase extends BaseApiTestCase
             ReportingType::getMapValue($answerFromApi['experian_reporting'])
         );
 
-        if ($checkBalance) {
-            $this->assertEquals(
-                number_format($contractInDB->getIntegratedBalance(), 2, '.', ''),
-                $answerFromApi['balance']
-            );
-        } else {
-            $this->assertArrayNotHasKey('balance', $answerFromApi);
-        }
+        return [$id, $answerFromApi];
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-1
+     */
+    public function shouldBePresentBalanceOnGetContractWhenGroupIsIntegrated(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertTrue($contractInDB->getGroupSettings()->getIsIntegrated(), 'Group should be integrated');
+        $this->assertArrayHasKey('balance', $answerFromApi, 'Should be present balance on answer from API');
+        $this->assertEquals(
+            number_format($contractInDB->getIntegratedBalance(), 2, '.', ''),
+            $answerFromApi['balance'],
+            'Balance should be equals'
+        );
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-2
+     */
+    public function shouldNotBePresentBalanceOnGetContractWhenGroupIsNotIntegrated(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertFalse($contractInDB->getGroupSettings()->getIsIntegrated(), 'Group should not be integrated');
+        $this->assertArrayNotHasKey('balance', $answerFromApi, 'Should not be present balance on answer from API');
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-1
+     */
+    public function shouldBePresentExternalGroupIdOnGetContractWhenNotNull(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $this->assertArrayHasKey(
+            'mailing_address',
+            $answerFromApi,
+            'Answer from api should have mailing_address'
+        );
+        $mailingAddress = $answerFromApi['mailing_address'];
+
+        $this->assertArrayHasKey('location_id', $mailingAddress, 'Should be present location_id on answer from API');
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertEquals(
+            $contractInDB->getGroup()->getExternalGroupId(),
+            $mailingAddress['location_id'],
+            'Location_id should be equals external group id on DB'
+        );
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-2
+     */
+    public function shouldNotBePresentExternalGroupIdOnGetContractWhenNull(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $this->assertArrayNotHasKey(
+            'location_id',
+            $answerFromApi,
+            'Should not be present location_id on answer from API'
+        );
     }
 
     /**
@@ -918,7 +992,7 @@ class ContractsControllerCase extends BaseApiTestCase
      * @param string $reportingStartAt
      *
      * @test
-     * @depends setExperianReportingStartAt
+     * @depends setExperianReportingStartAt-0
      * @dataProvider updateExperianReportingStartAtDataProvider
      */
     public function updateExperianReportingStartAt($requestParameters, $reportingStatus, $reportingStartAt)

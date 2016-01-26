@@ -7,11 +7,10 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
-use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,78 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends BaseGroup
 {
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\SerializedName("name")
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiName()
-    {
-        return $this->getMailingAddressName();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("street_address_1")
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiStreetAddress1()
-    {
-        return $this->getStreetAddress1();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("street_address_2")
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiStreetAddress2()
-    {
-        return $this->getStreetAddress2();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("city")
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiCity()
-    {
-        return $this->getCity();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("state")
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiState()
-    {
-        return $this->getState();
-    }
-
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("zip")
-     * @Serializer\Groups({"ContractDetails"})
-     * @Serializer\Type("string")
-     * @return string
-     */
-    public function getApiZip()
-    {
-        return $this->getZip();
-    }
-
     /**
      * @return array
      */
@@ -261,16 +188,16 @@ class Group extends BaseGroup
     public function getIntegratedApiSettings()
     {
         $holding = $this->getHolding();
-        switch ($holding->getApiIntegrationType()) {
-            case ApiIntegrationType::AMSI:
+        switch ($holding->getAccountingSystem()) {
+            case AccountingSystem::AMSI:
                 return $holding->getAmsiSettings();
-            case ApiIntegrationType::MRI:
+            case AccountingSystem::MRI:
                 return $holding->getMriSettings();
-            case ApiIntegrationType::RESMAN:
+            case AccountingSystem::RESMAN:
                 return $holding->getResManSettings();
-            case ApiIntegrationType::YARDI_VOYAGER:
+            case AccountingSystem::YARDI_VOYAGER:
                 return $holding->getYardiSettings();
-            case ApiIntegrationType::NONE:
+            case AccountingSystem::NONE:
             default:
                 return null;
         }

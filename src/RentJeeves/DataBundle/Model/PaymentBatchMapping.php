@@ -56,7 +56,7 @@ abstract class PaymentBatchMapping
     /**
      * @ORM\Column(
      *      name="accounting_package_type",
-     *      type="ApiIntegrationType",
+     *      type="AccountingSystem",
      *      nullable=false
      * )
      */

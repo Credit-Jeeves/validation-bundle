@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Command;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,8 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CloseBatchCommand extends ContainerAwareCommand
 {
     protected $availableTypes = [
-        ApiIntegrationType::RESMAN,
-        ApiIntegrationType::YARDI_VOYAGER
+        AccountingSystem::RESMAN,
+        AccountingSystem::YARDI_VOYAGER
     ];
 
     protected function configure()

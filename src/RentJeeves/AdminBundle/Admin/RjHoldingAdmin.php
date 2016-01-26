@@ -3,33 +3,15 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use CreditJeeves\DataBundle\Enum\GroupType;
 
 class RjHoldingAdmin extends Admin
 {
     /**
-     * {@inheritdoc}
+     * @param FormMapper $formMapper
      */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        $query->add(
-            'where',
-            $query->expr()->in(
-                $alias . '_g.type',
-                array(
-                    GroupType::RENT
-                )
-            )
-        );
-
-        return $query;
-    }
-
     public function configureFormFields(FormMapper $formMapper)
     {
         parent::configureFormFields($formMapper);
@@ -61,12 +43,12 @@ class RjHoldingAdmin extends Admin
             )
             ->with('Accounting Settings')
                 ->add(
-                    'apiIntegrationType',
+                    'accountingSystem',
                     'choice',
                     [
                         'choices'           => array_map(
                             'ucwords',
-                            ApiIntegrationType::cachedTitles()
+                            AccountingSystem::cachedTitles()
                         )
                     ]
                 )
@@ -147,6 +129,14 @@ class RjHoldingAdmin extends Admin
                         'label' => 'admin.holding.export_tenant_id',
                     ]
                 )
+            ->with('Profit Stars')
+                ->add(
+                    'profitStarsSettings',
+                    'profit_stars_settings_type',
+                    [
+                        'required' => false,
+                    ]
+                )
             ->end();
     }
 
@@ -191,6 +181,13 @@ class RjHoldingAdmin extends Admin
             $amsiSettings->setHolding($holding);
         } else {
             $holding->setAmsiSettings(null);
+        }
+
+        $profitStarsSettings = $holding->getProfitStarsSettings();
+        if ($profitStarsSettings) {
+            $profitStarsSettings->setHolding($holding);
+        } else {
+            $holding->setProfitStarsSettings(null);
         }
     }
 

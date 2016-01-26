@@ -3,7 +3,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 
@@ -22,7 +22,7 @@ class ImportAMSICase extends ImportBaseAbstract
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
         $this->assertNotNull($landlord, 'Check fixtures, landlord with email "landlord1@example.com" should exist');
         $holding = $landlord->getHolding();
-        $holding->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $holding->setAccountingSystem(AccountingSystem::AMSI);
         /** @var Group $group */
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
         $this->assertNotNull($group, 'Check fixtures, group with name "Test Rent Group" should exist');
