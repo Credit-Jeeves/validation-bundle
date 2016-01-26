@@ -26,10 +26,18 @@
     {{ parent() }}
     <script type="text/javascript">
         document.bussinesDays = {
-            // take greater value for each type
-            heartland : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_BANK') }},
-            aci_pay_direct : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS') }},
-            aci_submerchant : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS') }},
+            heartland : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            },
+            aci_pay_direct : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            },
+            aci_submerchant : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            }
         };
     </script>
 {% endblock %}
