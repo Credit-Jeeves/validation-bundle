@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 
 /**
  * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -408,7 +408,7 @@ EOT;
         $externalUnitId,
         $externalBuildingId = null
     ) {
-        ApiIntegrationType::throwsInvalid($accountingSystem);
+        AccountingSystem::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
@@ -416,7 +416,7 @@ EOT;
             ->innerJoin('units.unitMapping', 'um')
             ->innerJoin('pm.holding', 'h')
             ->andWhere('units.holding = pm.holding')
-            ->andWhere('h.apiIntegrationType = :accountingSystem')
+            ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('um.externalUnitId LIKE :externalUnitMask')
             ->setParameter('accountingSystem', $accountingSystem)
@@ -442,12 +442,12 @@ EOT;
      */
     public function getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId)
     {
-        ApiIntegrationType::throwsInvalid($accountingSystem);
+        AccountingSystem::throwsInvalid($accountingSystem);
 
         return $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
-            ->andWhere('h.apiIntegrationType = :accountingSystem')
+            ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)

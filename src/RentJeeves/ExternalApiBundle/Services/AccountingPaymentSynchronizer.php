@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -106,7 +106,7 @@ class AccountingPaymentSynchronizer
         }
 
         $holding = $contract->getHolding();
-        $integrationType = $holding->getApiIntegrationType();
+        $integrationType = $holding->getAccountingSystem();
         $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
         if ($order->getCustomOperation()) {
             if (false == $postAppFeeAndSecurityDeposit) {
@@ -121,7 +121,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
             // RT-1926: Allow only ResMan non rent payments. Other AS will be allowed later.
-            if (ApiIntegrationType::RESMAN !== $integrationType) {
+            if (AccountingSystem::RESMAN !== $integrationType) {
                 $this->logger->debug(sprintf(
                     'Order ID#%s with custom operation NOT allowed for external payment post. ' .
                     'Api Integration Type of holding %s (ID#%s) is not ResMan. done.',
@@ -134,7 +134,7 @@ class AccountingPaymentSynchronizer
             }
         }
 
-        $isIntegrated = (!empty($integrationType) && $integrationType !== ApiIntegrationType::NONE);
+        $isIntegrated = (!empty($integrationType) && $integrationType !== AccountingSystem::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
             $this->logger->debug('Holding is allowed for external payment post.');
             $group = $contract->getGroup();
@@ -203,7 +203,7 @@ class AccountingPaymentSynchronizer
             if (!($transaction = $order->getCompleteTransaction() and
                 $holding->getExternalSettings() and
                 $paymentBatchId = $transaction->getBatchId() and
-                $apiClient = $this->getApiClient($holding->getApiIntegrationType(), $holding->getExternalSettings()) and
+                $apiClient = $this->getApiClient($holding->getAccountingSystem(), $holding->getExternalSettings()) and
                 $this->existsExternalMapping($order, $apiClient)
             )) {
                 // This should be an alert - mappings are missing!
@@ -211,7 +211,7 @@ class AccountingPaymentSynchronizer
                     sprintf(
                         'Order(%d) can not be sent to accounting system(%s) - potentially due to missing mappings.',
                         $order->getId(),
-                        $holding->getApiIntegrationType()
+                        $holding->getAccountingSystem()
                     )
                 );
 
@@ -222,13 +222,13 @@ class AccountingPaymentSynchronizer
                 sprintf(
                     'Trying to send order(%d) to accounting system(%s)...',
                     $order->getId(),
-                    $holding->getApiIntegrationType()
+                    $holding->getAccountingSystem()
                 )
             );
 
             if ($apiClient->supportsBatches() && !$this->openBatch($order)) {
                 throw new \RuntimeException(
-                    sprintf('Can\'t open batch on accounting system(%s)', $holding->getApiIntegrationType())
+                    sprintf('Can\'t open batch on accounting system(%s)', $holding->getAccountingSystem())
                 );
             }
 
@@ -236,7 +236,7 @@ class AccountingPaymentSynchronizer
             $message = sprintf(
                 'Order(%d) was sent to accounting system(%s) with result: %s',
                 $order->getId(),
-                $holding->getApiIntegrationType(),
+                $holding->getAccountingSystem(),
                 $result
             );
 
@@ -314,7 +314,7 @@ class AccountingPaymentSynchronizer
     {
         $externalPropertyId = null;
         $holding = $order->getContract()->getHolding();
-        $accountingPackageType = $holding->getApiIntegrationType();
+        $accountingPackageType = $holding->getAccountingSystem();
         $paymentBatchId = $order->getCompleteTransaction()->getBatchId();
         $apiClient = $this->getApiClientByOrder($order);
 
@@ -436,7 +436,7 @@ class AccountingPaymentSynchronizer
                 );
             }
 
-            if (!$holding || $holding->getApiIntegrationType() != $accountingType) {
+            if (!$holding || $holding->getAccountingSystem() != $accountingType) {
                 continue;
             }
 
@@ -481,6 +481,6 @@ class AccountingPaymentSynchronizer
      */
     protected function getAccountingType(Order $order)
     {
-        return $order->getContract()->getHolding()->getApiIntegrationType();
+        return $order->getContract()->getHolding()->getAccountingSystem();
     }
 }

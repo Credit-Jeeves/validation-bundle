@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use JMS\JobQueueBundle\Command\RunCommand;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
@@ -28,14 +28,14 @@ class PaymentPushCommandCase extends BaseTestCase
     {
         return [
             [
-                ApiIntegrationType::RESMAN,
+                AccountingSystem::RESMAN,
                 ResManClientCase::RESIDENT_ID,
                 ResManClientCase::EXTERNAL_PROPERTY_ID,
                 ResManClientCase::EXTERNAL_LEASE_ID,
                 ResManClientCase::EXTERNAL_UNIT_ID
             ],
             [
-                ApiIntegrationType::MRI,
+                AccountingSystem::MRI,
                 MRIClientCase::RESIDENT_ID,
                 MRIClientCase::PROPERTY_ID,
                 null,
@@ -45,7 +45,7 @@ class PaymentPushCommandCase extends BaseTestCase
     }
 
     /**
-     * @param string $apiIntegrationType
+     * @param string $accountingSystem
      * @param string $residentId
      * @param string $externalPropertyId
      * @param string $externalLeaseId
@@ -55,7 +55,7 @@ class PaymentPushCommandCase extends BaseTestCase
      * @dataProvider dataForSendPaymentToExternalApi
      */
     public function shouldSendPaymentToExternalApi(
-        $apiIntegrationType,
+        $accountingSystem,
         $residentId,
         $externalPropertyId,
         $externalLeaseId,
@@ -71,7 +71,7 @@ class PaymentPushCommandCase extends BaseTestCase
         $this->assertNotEmpty($holding);
         $this->assertCount(0, $jobs);
         $transaction = $this->createTransaction(
-            $apiIntegrationType,
+            $accountingSystem,
             $residentId,
             $externalPropertyId,
             $externalLeaseId,
@@ -83,7 +83,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType
+            $accountingSystem
         ));
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
@@ -113,7 +113,7 @@ class PaymentPushCommandCase extends BaseTestCase
      */
     public function shouldSendPaymentToYardiApi()
     {
-        $apiIntegrationType = ApiIntegrationType::YARDI_VOYAGER;
+        $accountingSystem = AccountingSystem::YARDI_VOYAGER;
         $residentId = PaymentClientCase::RESIDENT_ID;
         $externalPropertyId = PaymentClientCase::PROPERTY_ID;
         $externalLeaseId = PaymentClientCase::RESIDENT_ID;
@@ -134,7 +134,7 @@ class PaymentPushCommandCase extends BaseTestCase
         $em->flush($holding->getYardiSettings());
 
         $transaction = $this->createTransaction(
-            $apiIntegrationType,
+            $accountingSystem,
             $residentId,
             $externalPropertyId,
             $externalLeaseId,
@@ -146,7 +146,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType
+            $accountingSystem
         ));
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findBy(
@@ -176,7 +176,7 @@ class PaymentPushCommandCase extends BaseTestCase
      */
     public function shouldOpenOnlyOneBatch()
     {
-        $apiIntegrationType = ApiIntegrationType::YARDI_VOYAGER;
+        $accountingSystem = AccountingSystem::YARDI_VOYAGER;
         $residentId = PaymentClientCase::RESIDENT_ID;
         $externalPropertyId = PaymentClientCase::PROPERTY_ID;
         $externalLeaseId = PaymentClientCase::RESIDENT_ID;
@@ -201,7 +201,7 @@ class PaymentPushCommandCase extends BaseTestCase
         $em->flush($holding->getYardiSettings());
 
         $transaction = $this->createTransaction(
-            $apiIntegrationType,
+            $accountingSystem,
             $residentId,
             $externalPropertyId,
             $externalLeaseId,
@@ -209,7 +209,7 @@ class PaymentPushCommandCase extends BaseTestCase
         );
 
         $transaction2 = $this->createTransaction(
-            $apiIntegrationType,
+            $accountingSystem,
             $residentId,
             $externalPropertyId,
             $externalLeaseId,
@@ -223,7 +223,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertFalse($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType
+            $accountingSystem
         ));
 
         /** @var Job[] $jobs */
@@ -253,7 +253,7 @@ class PaymentPushCommandCase extends BaseTestCase
 
         $this->assertTrue($repo->isOpenedBatch(
             $transaction->getBatchId(),
-            $apiIntegrationType
+            $accountingSystem
         ));
 
         $batches = $repo->createQueryBuilder('pbm')
@@ -264,7 +264,7 @@ class PaymentPushCommandCase extends BaseTestCase
             ->andWhere('pbm.status = :status')
             ->setParameters([
                 'paymentBatchId' => $transaction->getBatchId(),
-                'accountingPackageType' => $apiIntegrationType,
+                'accountingPackageType' => $accountingSystem,
                 'externalPropertyId' => $externalPropertyId,
                 'status' => PaymentBatchStatus::OPENED,
             ])

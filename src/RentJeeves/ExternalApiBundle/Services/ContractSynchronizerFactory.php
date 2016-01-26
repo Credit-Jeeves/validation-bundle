@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 
 class ContractSynchronizerFactory
 {
@@ -26,21 +26,21 @@ class ContractSynchronizerFactory
      */
     public function getSynchronizerByHolding(Holding $holding)
     {
-        if (ApiIntegrationType::NONE === $holding->getApiIntegrationType()) {
+        if (AccountingSystem::NONE === $holding->getAccountingSystem()) {
             throw new \LogicException('Accounting system should be set up for holding.');
         }
 
-        return $this->getSynchronizer($holding->getApiIntegrationType());
+        return $this->getSynchronizer($holding->getAccountingSystem());
     }
 
     /**
      * @param string $accountingSystem
-     * @see ApiIntegrationType
+     * @see AccountingSystem
      * @return ContractSynchronizerInterface
      */
     public function getSynchronizer($accountingSystem)
     {
-        ApiIntegrationType::throwsInvalid($accountingSystem);
+        AccountingSystem::throwsInvalid($accountingSystem);
 
         if (!isset($this->contractSynchronizers[$accountingSystem])) {
             throw new \RuntimeException(

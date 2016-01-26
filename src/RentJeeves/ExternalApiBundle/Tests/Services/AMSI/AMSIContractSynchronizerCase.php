@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
 class AMSIContractSynchronizerCase extends Base
@@ -24,7 +24,7 @@ class AMSIContractSynchronizerCase extends Base
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RENT');
         $contract->setRent(123321); // test value
@@ -77,7 +77,7 @@ class AMSIContractSynchronizerCase extends Base
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
         $settings = $contract->getHolding()->getAmsiSettings();
         $settings->setSyncBalance(true);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
@@ -125,7 +125,7 @@ class AMSIContractSynchronizerCase extends Base
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting);
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
-        $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
             $contractWaiting->getGroup()->getHolding()
         );

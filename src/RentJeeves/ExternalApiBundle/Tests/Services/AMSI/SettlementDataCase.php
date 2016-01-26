@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
 
@@ -20,7 +20,7 @@ class SettlementDataCase extends Base
         $this->load(true);
         $this->holding = $this->getEntityManager()->getRepository('DataBundle:Holding')
             ->findOneByName('Rent Holding');
-        $this->holding->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $this->holding->setAccountingSystem(AccountingSystem::AMSI);
         $this->getEntityManager()->flush($this->holding);
     }
 

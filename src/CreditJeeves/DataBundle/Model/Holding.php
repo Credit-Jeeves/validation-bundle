@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -200,9 +200,9 @@ abstract class Holding
     protected $amsiSettings;
 
     /**
-     * @ORM\Column(type="ApiIntegrationType", name="api_integration_type", options={"default"="none"})
+     * @ORM\Column(type="AccountingSystem", name="accounting_system", options={"default"="none"})
      */
-    protected $apiIntegrationType;
+    protected $accountingSystem;
 
     /**
      * @ORM\Column(
@@ -306,7 +306,7 @@ abstract class Holding
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->residentsMapping = new ArrayCollection();
-        $this->apiIntegrationType = ApiIntegrationType::NONE;
+        $this->accountingSystem = AccountingSystem::NONE;
         $this->depositAccounts = new ArrayCollection();
         $this->importApiMapping = new ArrayCollection();
     }
@@ -420,16 +420,16 @@ abstract class Holding
      */
     public function getExternalSettings()
     {
-        switch ($this->getApiIntegrationType()) {
-            case ApiIntegrationType::RESMAN:
+        switch ($this->getAccountingSystem()) {
+            case AccountingSystem::RESMAN:
                 return $this->getResManSettings();
-            case ApiIntegrationType::YARDI_VOYAGER:
+            case AccountingSystem::YARDI_VOYAGER:
                 return $this->getYardiSettings();
-            case ApiIntegrationType::MRI:
+            case AccountingSystem::MRI:
                 return $this->getMriSettings();
-            case ApiIntegrationType::AMSI:
+            case AccountingSystem::AMSI:
                 return $this->getAmsiSettings();
-            case ApiIntegrationType::NONE:
+            case AccountingSystem::NONE:
             default:
                 return null;
         }
@@ -738,17 +738,17 @@ abstract class Holding
     /**
      * @return string
      */
-    public function getApiIntegrationType()
+    public function getAccountingSystem()
     {
-        return $this->apiIntegrationType;
+        return $this->accountingSystem;
     }
 
     /**
-     * @param string $apiIntegrationType
+     * @param string $accountingSystem
      */
-    public function setApiIntegrationType($apiIntegrationType)
+    public function setAccountingSystem($accountingSystem)
     {
-        $this->apiIntegrationType = $apiIntegrationType;
+        $this->accountingSystem = $accountingSystem;
     }
 
     /**

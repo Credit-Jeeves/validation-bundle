@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
@@ -164,7 +164,7 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
-        $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
+        $integrationType = $this->getCurrentGroup()->getHolding()->getAccountingSystem();
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
@@ -180,8 +180,8 @@ class AccountingController extends Controller
         }
 
         $this->getImportLogger()->debug(sprintf('Import requested. Type: %s', $source));
-        $serviceKey = ApiIntegrationType::$importMapping[
-            $this->getCurrentGroup()->getHolding()->getApiIntegrationType()
+        $serviceKey = AccountingSystem::$importMapping[
+            $this->getCurrentGroup()->getHolding()->getAccountingSystem()
         ];
 
         $importStorage = $importFactory->getStorage($serviceKey);

@@ -4,7 +4,7 @@ namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 use Symfony\Component\Form\AbstractType;
@@ -31,7 +31,7 @@ class ImportFileAccountingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $apiIntegrationType = $this->currentGroup->getHolding()->getApiIntegrationType();
+        $accountingSystem = $this->currentGroup->getHolding()->getAccountingSystem();
         $importSettings = $this->currentGroup->getImportSettings();
 
         if ($importSettings->getSource() === ImportSource::CSV &&
@@ -100,7 +100,7 @@ class ImportFileAccountingType extends AbstractType
         }
 
         //@TODO remove it when for resman it's will work
-        if (ApiIntegrationType::RESMAN !== $apiIntegrationType) {
+        if (AccountingSystem::RESMAN !== $accountingSystem) {
             $builder->add(
                 'onlyException',
                 'checkbox',

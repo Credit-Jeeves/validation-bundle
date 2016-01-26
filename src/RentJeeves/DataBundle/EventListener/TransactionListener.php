@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\EventListener;
 use JMS\DiExtraBundle\Annotation as DI;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
@@ -139,7 +139,7 @@ class TransactionListener
     {
         if ($transaction->getStatus() === TransactionStatus::REVERSED) {
             if ($contract = $transaction->getOrder()->getContract()) {
-                if ($contract->getHolding()->getApiIntegrationType() === ApiIntegrationType::AMSI) {
+                if ($contract->getHolding()->getAccountingSystem() === AccountingSystem::AMSI) {
                     return true;
                 }
             }

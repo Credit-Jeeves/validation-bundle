@@ -2,7 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 
@@ -48,7 +48,7 @@ class ImportMRICase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::INTEGRATED_API);
         $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
         $importGroupSettings->setApiPropertyIds('500,503');
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $this->getEntityManager()->flush();
 
         $this->login('landlord1@example.com', 'pass');

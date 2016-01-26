@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -80,7 +80,7 @@ class ReceiptBatchCase extends BaseTestCase
         $em->flush($holding->getYardiSettings());
 
         $transaction = $this->createTransaction(
-            ApiIntegrationType::YARDI_VOYAGER,
+            AccountingSystem::YARDI_VOYAGER,
             PaymentClientCase::RESIDENT_ID,
             PaymentClientCase::PROPERTY_ID,
             PaymentClientCase::RESIDENT_ID,

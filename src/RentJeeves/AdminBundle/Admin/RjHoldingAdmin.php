@@ -3,7 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
@@ -43,12 +43,12 @@ class RjHoldingAdmin extends Admin
             )
             ->with('Accounting Settings')
                 ->add(
-                    'apiIntegrationType',
+                    'accountingSystem',
                     'choice',
                     [
                         'choices'           => array_map(
                             'ucwords',
-                            ApiIntegrationType::cachedTitles()
+                            AccountingSystem::cachedTitles()
                         )
                     ]
                 )

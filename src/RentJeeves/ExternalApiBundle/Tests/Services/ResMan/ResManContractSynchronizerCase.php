@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
@@ -22,7 +22,7 @@ class ResManContractSynchronizerCase extends Base
 
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->setIntegratedBalance(0);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::RESMAN);
         $contract->getGroup()->getGroupSettings()->setIsIntegrated(true);
         $contract->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);
         $settings = $contract->getHolding()->getResManSettings();
@@ -67,7 +67,7 @@ class ResManContractSynchronizerCase extends Base
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->find('RjDataBundle:Contract', 20);
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::RESMAN);
 
         $settings = $contract->getHolding()->getResManSettings();
         $settings->setSyncBalance(true);
@@ -135,7 +135,7 @@ class ResManContractSynchronizerCase extends Base
 
         $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->setRent(123321);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::RESMAN);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::RESMAN);
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getUnit()->setName(ResManClientCase::RESMAN_UNIT_ID);
         $contract->setExternalLeaseId(ResManClientCase::EXTERNAL_LEASE_ID);

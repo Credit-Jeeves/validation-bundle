@@ -2,7 +2,7 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 
@@ -21,7 +21,7 @@ class ImportPermissionCase extends ImportBaseAbstract
             ]
         );
 
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::NONE);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
@@ -31,7 +31,7 @@ class ImportPermissionCase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         $this->getDomElement('.submitImportFile', 'Submit button should exist');
         $this->logout();
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::YARDI_VOYAGER);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $importGroupSettings->setSource(ImportSource::INTEGRATED_API);
         $this->getEntityManager()->flush();
         $this->login('landlord1@example.com', 'pass');
@@ -52,7 +52,7 @@ class ImportPermissionCase extends ImportBaseAbstract
             ]
         );
 
-        $importGroupSettings->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::AMSI);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);

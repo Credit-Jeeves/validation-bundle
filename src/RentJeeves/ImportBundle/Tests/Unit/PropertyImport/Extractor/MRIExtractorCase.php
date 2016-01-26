@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\MRISettings;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -37,7 +37,7 @@ class MRIExtractorCase extends UnitTestBase
     public function shouldThrowImportExtractorExceptionIfResidentDataManagerThrowException()
     {
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $holding->setMriSettings(new MRISettings());
         $group = new Group();
         $group->setHolding($holding);
@@ -57,7 +57,7 @@ class MRIExtractorCase extends UnitTestBase
     public function shouldReturnDataFromMri()
     {
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $holding->setMriSettings(new MRISettings());
         $group = new Group();
         $group->setHolding($holding);
