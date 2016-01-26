@@ -125,6 +125,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit->setUnitMapping($unitMapping);
         $this->getEntityManager()->flush();
 
+        $this->getEntityManager()->getFilters()->disable('softdeleteable');
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
 
@@ -141,6 +142,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var ContractWaiting $contractWaiting
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
+
+        $this->getEntityManager()->getFilters()->enable('softdeleteable');
 
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
         $this->getEntityManager()->clear();
@@ -220,6 +223,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $unitMappingId = $unitMapping->getId();
 
+        $this->getEntityManager()->getFilters()->disable('softdeleteable');
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
 
@@ -237,6 +241,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
 
+        $this->getEntityManager()->getFilters()->enable('softdeleteable');
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
         $this->getEntityManager()->clear();
 

@@ -195,6 +195,8 @@ class UnitDeduplicator
                 )
             );
         }
+
+        $this->em->flush($sourceUnitMapping);
     }
 
     /**
