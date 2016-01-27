@@ -682,6 +682,10 @@
                 <source>checkout.payment.switch_to_one_time</source>
                 <target>You are switching to a one-time payment. Your payment will no longer be recurring.</target>
             </trans-unit>
+            <trans-unit id="checkout.payment.settle_dates">
+                <source>checkout.payment.settle_dates</source>
+                <target><![CDATA[%DATE_FOR_CARD% for Credit or <br/>%DATE_FOR_BANK% for e-Check']]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

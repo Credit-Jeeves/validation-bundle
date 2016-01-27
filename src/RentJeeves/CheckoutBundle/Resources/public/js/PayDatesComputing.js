@@ -35,13 +35,9 @@ function PayDatesComputing(parent) {
     };
 
     /**
-     * @returns int using in AttributeGeneratorWeb
+     * using in AttributeGeneratorWeb, we can`t remove
      */
-    self.settleDays = function () {
-        var businessDays = self.getBusinessDaysForCurrentPaymentProcessor();
-
-        return (businessDays.bank > businessDays.card) ? businessDays.bank : businessDays.card;
-    };
+    self.settleDays = 0;
 
     /**
      * see BusinessDaysCalculator
@@ -84,7 +80,10 @@ function PayDatesComputing(parent) {
             self.shiftBusinessDays(settleDateForBank, shiftsBusinessDay.bank);
             self.shiftBusinessDays(settleDateForCard, shiftsBusinessDay.card);
 
-            return settleDateForCard.toString('M/d/yyyy') + ' for Credit or <br/>' + settleDateForBank.toString('M/d/yyyy') + ' for e-Check';
+            return Translator.trans('checkout.payment.settle_dates', {
+                DATE_FOR_CARD: settleDateForCard.toString('M/d/yyyy'),
+                DATE_FOR_BANK: settleDateForBank.toString('M/d/yyyy')
+            });
         }
     });
 
