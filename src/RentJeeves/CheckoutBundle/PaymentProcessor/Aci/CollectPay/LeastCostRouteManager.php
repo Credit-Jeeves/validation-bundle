@@ -44,13 +44,11 @@ class LeastCostRouteManager
      */
     public function getLeastCostRoute($cardNumber)
     {
-        $requestModel = new LeastCostRoute();
-
-        $requestModel->setCardNumber($cardNumber);
-
-        $request = new CheckLeastCostRoute($requestModel);
-
         try {
+            $requestModel = new LeastCostRoute();
+            $requestModel->setCardNumber($cardNumber);
+            $request = new CheckLeastCostRoute($requestModel);
+
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
             $this->logger->alert(
@@ -60,7 +58,11 @@ class LeastCostRouteManager
                     $e->getMessage()
                 )
             );
-            throw new PaymentProcessorRuntimeException($e->getMessage(), null, $e);
+            throw new PaymentProcessorRuntimeException(
+                AbstractManager::removeDebugInformation($e->getMessage()),
+                null,
+                $e
+            );
         }
 
         if (!$request->getIsSuccessful()) {
@@ -71,7 +73,9 @@ class LeastCostRouteManager
                     $request->getMessages()
                 )
             );
-            throw new PaymentProcessorRuntimeException($request->getMessages());
+            throw new PaymentProcessorRuntimeException(
+                AbstractManager::removeDebugInformation($request->getMessages())
+            );
         }
 
         switch ($request->getModel()->getLeastCostRouting()) {
