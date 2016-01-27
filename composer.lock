@@ -141,7 +141,7 @@
                 "validation"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/APYJsFormValidationBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/APYJsFormValidationBundle/tree/master"
             },
             "time": "2014-02-21 23:43:15"
         },
@@ -229,7 +229,7 @@
                 }
             },
             "support": {
-                "source": "https://github.com/Credit-Jeeves/DoctrineExtensions/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/DoctrineExtensions/tree/master"
             },
             "time": "2014-03-04 20:43:51"
         },
@@ -401,7 +401,7 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/master"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.6"
             },
             "time": "2015-12-25 11:40:10"
         },
@@ -669,7 +669,7 @@
                 "validation"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/validation-bundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/validation-bundle/tree/master"
             },
             "time": "2014-01-31 12:43:56"
         },
@@ -1799,7 +1799,7 @@
                 "exception handler"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BadaBoom/tree/Rj"
+                "source": "https://github.com/Credit-Jeeves/BadaBoom/tree/ton"
             },
             "time": "2013-07-02 10:13:45"
         },
@@ -1861,7 +1861,7 @@
                 "Exception"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/FpBadaBoomBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/FpBadaBoomBundle/tree/ton"
             },
             "time": "2014-01-30 21:03:31"
         },
@@ -2520,7 +2520,7 @@
                 "testing"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/environment/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/environment/tree/ton"
             },
             "time": "2013-12-24 11:17:40"
         },
@@ -2858,7 +2858,7 @@
                 "queue"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/JMSJobQueueBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/JMSJobQueueBundle/tree/ton"
             },
             "time": "2014-02-08 00:01:20"
         },
@@ -3669,7 +3669,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/17ceada8e60a3f6a4afff666b4492bb5053dd0ab",
+                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/68e3df9aafb60e96aefad737e7562c4df849197e",
                 "reference": "4b5c2b366fc429e72c410f7826784e9cbc3fd479",
                 "shasum": ""
             },
@@ -4659,7 +4659,7 @@
             ],
             "description": "This bundle generates code for you",
             "support": {
-                "source": "https://github.com/Credit-Jeeves/SensioGeneratorBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/SensioGeneratorBundle/tree/master"
             },
             "time": "2013-07-08 13:26:00"
         },
@@ -6273,7 +6273,7 @@
             ],
             "description": "Backup and Restore helper classes to run DB vendor's utilities for such tasks",
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BackupRestoreBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/BackupRestoreBundle/tree/composer"
             },
             "time": "2014-03-13 17:31:06"
         },
@@ -6370,7 +6370,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -6665,7 +6667,7 @@
                 "data fixtures doctrine yaml"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/KhepinYamlFixturesBundle/tree/rj"
+                "source": "https://github.com/Credit-Jeeves/KhepinYamlFixturesBundle/tree/v0.8.2"
             },
             "time": "2014-05-30 17:11:24"
         },
@@ -7544,12 +7546,12 @@
             "target-dir": "Ton/EmailBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/66Ton99/EmailBundle.git",
+                "url": "https://github.com/Credit-Jeeves/EmailBundle.git",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/66Ton99/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
+                "url": "https://api.github.com/repos/Credit-Jeeves/EmailBundle/zipball/7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "reference": "7af4d4ecb891d9430f2a29b33aeb1e15f1d4603a",
                 "shasum": ""
             },
