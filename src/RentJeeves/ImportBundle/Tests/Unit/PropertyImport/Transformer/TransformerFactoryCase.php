@@ -57,13 +57,22 @@ class TransformerFactoryCase extends UnitTestBase
     public function shouldThrowExceptionIfDbHasRecordForInputDataButFileWithReturnedNameNotFound()
     {
         $group = new Group();
+        $holding = new Holding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue('ExampleCustomTransformer'));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
@@ -75,20 +84,29 @@ class TransformerFactoryCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportException
-     * @expectedExceptionMessage Custom transformer must be instance of "TransformerInterface".
+     * @expectedExceptionMessage Custom transformer for this Group must be override
      */
-    public function shouldThrowExceptionIfDbHasRecordForInputDataButClassNotImplementInterface()
+    public function shouldThrowExceptionIfDbHasRecordForInputDataButClassNotOverrideBaseTransformer()
     {
         $this->createInvalidCustomTransformerFile();
 
         $group = new Group();
+        $holding = new Holding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue('InvalidCustomTransformer'));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
@@ -107,13 +125,22 @@ class TransformerFactoryCase extends UnitTestBase
         $this->createCustomTransformerWithInvalidNamespace();
 
         $group = new Group();
+        $holding = new Holding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue('CustomTransformerWithInvalidNamespace'));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
@@ -130,16 +157,25 @@ class TransformerFactoryCase extends UnitTestBase
         $this->createCustomTransformerFile();
 
         $group = new Group();
+        $holding = new Holding();
+        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue('ExampleCustomTransformer'));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [ApiIntegrationType::MRI => new MRITransformer($this->getEntityManagerMock(), $this->getLoggerMock())]
         );
 
         $transformer = $factory->getTransformer($group, 'test');
@@ -164,8 +200,14 @@ class TransformerFactoryCase extends UnitTestBase
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue(null));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
@@ -195,8 +237,14 @@ class TransformerFactoryCase extends UnitTestBase
         $repoMock->expects($this->once())
             ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
             ->will($this->returnValue(null));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
         $factory = new TransformerFactory(
-            $repoMock,
+            $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
             [ApiIntegrationType::MRI => $this->getMriTransformerMock()]

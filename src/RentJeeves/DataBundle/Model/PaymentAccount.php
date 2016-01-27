@@ -153,6 +153,15 @@ abstract class PaymentAccount
     protected $bankAccountType;
 
     /**
+     * @ORM\Column(
+     *      name="debit_type",
+     *      type="DebitType",
+     *      nullable=true
+     * )
+     */
+    protected $debitType;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(
@@ -617,5 +626,21 @@ abstract class PaymentAccount
     public function setLastFour($lastFour)
     {
         $this->lastFour = $lastFour;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDebitType()
+    {
+        return $this->debitType;
+    }
+
+    /**
+     * @param string $debitType
+     */
+    public function setDebitType($debitType)
+    {
+        $this->debitType = $debitType;
     }
 }

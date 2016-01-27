@@ -106,6 +106,7 @@ class PropertyMappingRepository extends EntityRepository
 
     /**
      * @param Group $group
+     *
      * @return array
      */
     public function getPropertiesMappingByGroup(Group $group)
@@ -119,5 +120,25 @@ class PropertyMappingRepository extends EntityRepository
             ->groupBy('pm.externalPropertyId')
             ->getQuery()
             ->getArrayResult();
+    }
+
+    /**
+     * @param Group  $group
+     * @param string $externalPropertyId
+     *
+     * @return PropertyMapping[]
+     */
+    public function getPropertyMappingByGroupAndExternalPropertyId(Group $group, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('pm')
+            ->select('pm.externalPropertyId')
+            ->innerJoin('pm.property', 'p')
+            ->innerJoin('p.property_groups', 'g')
+            ->where('g.id = :group')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('group', $group)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->execute();
     }
 }

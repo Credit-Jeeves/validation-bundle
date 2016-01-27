@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Loader;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
@@ -12,12 +13,13 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\Exception\ImportRuntimeException;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Validator;
 
 /**
  * Service`s name "import.property.loader"
@@ -35,6 +37,11 @@ class PropertyLoader
     protected $propertyManager;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -42,49 +49,52 @@ class PropertyLoader
     /**
      * @param EntityManager   $em
      * @param PropertyManager $propertyManager
+     * @param Validator       $validator
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, PropertyManager $propertyManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManager $em,
+        PropertyManager $propertyManager,
+        Validator $validator,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->propertyManager = $propertyManager;
+        $this->validator = $validator;
         $this->logger = $logger;
     }
 
     /**
-     * {@inheritdoc}
+     * @param Import $import
+     * @param string $externalPropertyId
      */
-    public function loadData(Import $import)
+    public function loadData(Import $import, $externalPropertyId)
     {
-        if ($import->getImportType() !== ImportModelType::PROPERTY) {
-            $this->logger->warning(
-                $message = sprintf(
-                    'Invalid import type. Should be "%s" instead "%s"',
-                    ImportModelType::PROPERTY,
-                    $import->getImportType()
-                ),
-                ['group_id' => $import->getGroup()->getId()]
-            );
-            throw new ImportRuntimeException($message);
-        }
-
         $this->logger->info(
-            sprintf('Starting process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Starting process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
 
         $iterableResult = $this->em
             ->getRepository('RjDataBundle:ImportProperty')
-            ->getNotProcessedImportProperties($import);
+            ->getNotProcessedImportProperties($import, $externalPropertyId);
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
             $this->processImportProperty($importProperty);
-            $this->em->flush();
+            $this->em->flush($importProperty);
             $this->em->clear();
         }
 
         $this->logger->info(
-            sprintf('Finished process load property from Import#%d', $import->getId()),
+            sprintf(
+                'Finished process load property from Import#%d for extProperty#%s',
+                $import->getId(),
+                $externalPropertyId
+            ),
             ['group_id' => $import->getGroup()->getId()]
         );
     }
@@ -105,6 +115,10 @@ class PropertyLoader
             if (!$property->isSingle()) {
                 $unit = $this->processUnit($property, $importProperty);
             }
+            $this->em->flush([
+                $property,
+                $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
+            ]);
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
@@ -152,7 +166,7 @@ class PropertyLoader
             $importProperty->getZip()
         );
 
-        if (is_null($property)) {
+        if (null === $property) { // ImportProperty has incorrect address
             $this->logger->alert(
                 $message = sprintf(
                     'Address is invalid for ImportProperty#%d',
@@ -160,31 +174,34 @@ class PropertyLoader
                 ),
                 ['group_id' => $importProperty->getImport()->getGroup()->getId()]
             );
+
             throw new ImportInvalidArgumentException($message);
         }
 
-        if ($property->getId() &&
-            !$property->getPropertyGroups()->isEmpty() &&
-            !$property->getPropertyGroups()->contains($group)
-        ) {
+        if (true === $this->isDifferentPropertyShouldBeCreated($property, $group, $importProperty)) {
             $propertyAddress = $property->getPropertyAddress();
             $property = new Property();
             $property->setPropertyAddress($propertyAddress);
-        } elseif ($property->getPropertyGroups()->isEmpty()) {
+        }
+
+        if ($property->getPropertyGroups()->isEmpty()) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
         }
 
-        if (!$property->getId() ||
-            !$propertyMapping = $property->getPropertyMappingByHolding($group->getHolding())
+        if (null === $property->getId() ||
+            null === $propertyMapping = $property->getPropertyMappingByHolding($group->getHolding())
         ) {
             $propertyMapping = new PropertyMapping();
             $propertyMapping->setExternalPropertyId($importProperty->getExternalPropertyId());
             $propertyMapping->setHolding($group->getHolding());
             $propertyMapping->setProperty($property);
+            $property->addPropertyMapping($propertyMapping);
         }
 
-        if ($propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()) {
+        if (false === $importProperty->isAllowMultipleProperties() &&
+            $propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()
+        ) {
             $this->logger->warning(
                 $message = sprintf(
                     'External property ids do not match for ImportProperty#%d (%s !== %s).',
@@ -194,6 +211,7 @@ class PropertyLoader
                 ),
                 ['group_id' => $importProperty->getImport()->getGroup()->getId()]
             );
+
             throw new ImportInvalidArgumentException($message);
         }
 
@@ -212,9 +230,6 @@ class PropertyLoader
         }
 
         $property->setIsMultipleBuildings($importProperty->isPropertyHasBuildings());
-
-        $this->em->persist($property);
-        $this->em->persist($propertyMapping);
 
         return $property;
     }
@@ -283,12 +298,68 @@ class PropertyLoader
                 $unit->setUnitMapping($unitMapping);
             }
 
+            $this->validateUnit($unit);
+
             $this->em->persist($unit);
             $this->em->persist($unitMapping);
 
             return $unit;
         } catch (NonUniqueResultException $e) {
             throw new ImportRuntimeException('Try to find unit but get non unique result');
+        }
+    }
+
+    /**
+     * @param Property       $property
+     * @param Group          $group
+     * @param ImportProperty $importProperty
+     *
+     * @return bool true if we need create new Property
+     */
+    protected function isDifferentPropertyShouldBeCreated(
+        Property $property,
+        Group $group,
+        ImportProperty $importProperty
+    ) {
+        if ($property->getId() === null) {
+            return false;
+        }
+
+        // found property  but belongs to a different group -- so we need a different property record.
+        if (!$property->getPropertyGroups()->isEmpty() && !$property->getPropertyGroups()->contains($group)) {
+            return true;
+        }
+
+        // typically a given address maps to only one external_property_id within a holding.
+        // However, we will create a different property and mapping at the same address, if explicitly allowed.
+        $propertyMapping = $property->getPropertyMappingByHolding($group->getHolding());
+        if (null !== $propertyMapping && true === $importProperty->isAllowMultipleProperties() &&
+            $propertyMapping->getExternalPropertyId() !== $importProperty->getExternalPropertyId()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Unit $unit
+     *
+     * @throws ImportLogicException if Unit is not valid
+     */
+    protected function validateUnit(Unit $unit)
+    {
+        $unitErrors = $this->validator->validate($unit, ['import']);
+        $errors = [];
+        /** @var ConstraintViolation $constraint */
+        foreach ($unitErrors as $constraint) {
+            $errors[] = sprintf('%s : %s', $constraint->getPropertyPath(), $constraint->getMessage());
+        }
+
+        if (false === empty($errors)) {
+            throw new ImportLogicException(
+                sprintf('Unit is not valid: %s', implode(', ', array_values($errors)))
+            );
         }
     }
 }

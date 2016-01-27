@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use \RuntimeException;
 
 class PaymentAccountsController extends Controller
 {
@@ -254,7 +253,7 @@ class PaymentAccountsController extends Controller
                 }
 
                 return $this->get('response_resource.factory')->getResponse($paymentAccountEntity);
-            } catch (RuntimeException $e) {
+            } catch (\Exception $e) {
                 $form->addError(new FormError($e->getMessage()));
             }
         }

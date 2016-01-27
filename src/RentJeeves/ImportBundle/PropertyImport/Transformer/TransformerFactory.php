@@ -3,8 +3,8 @@
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use RentJeeves\DataBundle\Entity\ImportTransformerRepository;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use Symfony\Component\Finder\Finder;
@@ -15,9 +15,9 @@ class TransformerFactory
     const CUSTOM_NAMESPACE = '\RentJeeves\ImportBundle\PropertyImport\Transformer\Custom\\';
 
     /**
-     * @var ImportTransformerRepository
+     * @var EntityManagerInterface
      */
-    protected $importTransformerRepository;
+    protected $em;
 
     /**
      * @var LoggerInterface
@@ -35,18 +35,18 @@ class TransformerFactory
     protected $pathsToCustomTransformers;
 
     /**
-     * @param ImportTransformerRepository $importTransformerRepository
-     * @param LoggerInterface             $logger
-     * @param array                       $pathsToCustomTransformers
-     * @param array                       $defaultTransformers
+     * @param EntityManagerInterface $em
+     * @param LoggerInterface        $logger
+     * @param array                  $pathsToCustomTransformers
+     * @param array                  $defaultTransformers
      */
     public function __construct(
-        ImportTransformerRepository $importTransformerRepository,
+        EntityManagerInterface $em,
         LoggerInterface $logger,
         array $pathsToCustomTransformers,
         array $defaultTransformers
     ) {
-        $this->importTransformerRepository = $importTransformerRepository;
+        $this->em = $em;
         $this->logger = $logger;
         $this->pathsToCustomTransformers = $pathsToCustomTransformers;
         $this->defaultTransformers = $defaultTransformers;
@@ -73,20 +73,18 @@ class TransformerFactory
      */
     public function getTransformer(Group $group, $externalPropertyId)
     {
-        $customClassName = $this->importTransformerRepository->findClassNameWithPriorityByGroupAndExternalPropertyId(
-            $group,
-            $externalPropertyId
-        );
-
-        if ($customClassName !== null) {
-            return $this->getCustomTransformer($customClassName, $group);
-        }
+        $customClassName = $this->em->getRepository('RjDataBundle:ImportTransformer')
+            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, $externalPropertyId);
 
         $accountingSystemName = $group->getHolding()->getApiIntegrationType();
         if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
             throw new ImportInvalidArgumentException(
                 sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
             );
+        }
+
+        if ($customClassName !== null) {
+            return $this->getCustomTransformer($customClassName, $group);
         }
 
         return $this->defaultTransformers[$accountingSystemName];
@@ -100,7 +98,7 @@ class TransformerFactory
      * can`t create object for custom class or
      * custom transformer not implements TransformerInterface
      *
-     * @return TransformerInterface Instance of custom class
+     * @return TransformerInterface Instance of custom class which overrides base transformer
      */
     protected function getCustomTransformer($className, Group $group)
     {
@@ -109,24 +107,27 @@ class TransformerFactory
             ['group_id' => $group->getId()]
         );
 
-        if (true === class_exists(static::CUSTOM_NAMESPACE . $className, false)) {
-            // if the class exists - there is no sense to register a new class. Just create new instance of this class
-            $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
-            $customTransformer = new $customTransformerClass();
-        } else {
-            $customTransformer = $this->createUnregisteredCustomTransformer($className, $group);
+        $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
+        // if the class exists - there is no sense to register a new class. Just create new instance of this class
+        if (false === class_exists($customTransformerClass, false)) {
+            $this->registerUnregisteredCustomTransformer($className, $group);
         }
 
-        if (!$customTransformer instanceof TransformerInterface) {
+        $accountingSystemName = $group->getHolding()->getApiIntegrationType();
+        $baseTransformer = $this->defaultTransformers[$accountingSystemName];
+        if (get_parent_class($customTransformerClass) !== get_class($baseTransformer)) {
             $this->logger->warning(
-                $message = 'Custom transformer must be instance of "TransformerInterface".',
+                $message = sprintf(
+                    'Custom transformer for this Group must be override "%s".',
+                    get_class($baseTransformer)
+                ),
                 ['group_id' => $group->getId()]
             );
 
             throw new ImportException($message);
         }
 
-        return $customTransformer;
+        return new $customTransformerClass($this->em, $this->logger);
     }
 
     /**
@@ -134,10 +135,8 @@ class TransformerFactory
      * @param Group  $group
      *
      * @throws ImportException custom file not found or custom file incorrect
-     *
-     * @return object
      */
-    protected function createUnregisteredCustomTransformer($className, Group $group)
+    protected function registerUnregisteredCustomTransformer($className, Group $group)
     {
         $finder = new Finder();
         $finder->files()->name($className . '.php');
@@ -176,7 +175,7 @@ class TransformerFactory
         if (false === class_exists($customTransformerClass, false)) {
             $this->logger->warning(
                 $message = sprintf(
-                    'File is found, but can`t create instance of class "%s".' .
+                    'File is found, but it does not contain class "%s".' .
                     ' Pls check name and namespace in custom file "%s".',
                     $customTransformerClass,
                     $customFilePath
@@ -186,7 +185,5 @@ class TransformerFactory
 
             throw new ImportException($message);
         }
-
-        return new $customTransformerClass();
     }
 }

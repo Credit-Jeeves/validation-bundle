@@ -24,6 +24,11 @@ class MRITransformer implements TransformerInterface
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $arrayCache = [];
+
+    /**
      * @param EntityManagerInterface $em
      * @param LoggerInterface        $logger
      */
@@ -38,8 +43,19 @@ class MRITransformer implements TransformerInterface
      */
     public function transformData(array $accountingSystemData, Import $import)
     {
+        $this->logger->info(
+            sprintf(
+                'Starting process transformData for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
+
         /** @var Value $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
+            if (true === $this->checkExistImportPropertyInCache($import, $accountingSystemRecord)) {
+                continue;
+            }
 
             $importProperty = new ImportProperty();
             $importProperty->setImport($import);
@@ -55,11 +71,22 @@ class MRITransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($accountingSystemRecord));
             $importProperty->setState($this->getState($accountingSystemRecord));
             $importProperty->setZip($this->getZip($accountingSystemRecord));
+            $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($accountingSystemRecord));
 
             $this->em->persist($importProperty);
+
+            $this->arrayCache[] = $import->getId() . $this->getExternalUnitId($accountingSystemRecord);
         }
 
         $this->em->flush();
+
+        $this->logger->info(
+            sprintf(
+                'Finished process transformData for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
     }
 
     /**
@@ -163,5 +190,26 @@ class MRITransformer implements TransformerInterface
     protected function getZip(Value $accountingSystemRecord)
     {
         return $accountingSystemRecord->getZipCode();
+    }
+
+    /**
+     * @param Value $accountingSystemRecord
+     *
+     * @return boolean
+     */
+    protected function getAllowMultipleProperties(Value $accountingSystemRecord)
+    {
+        return false;
+    }
+
+    /**
+     * @param Import $import
+     * @param Value  $accountingSystemRecord
+     *
+     * @return bool
+     */
+    protected function checkExistImportPropertyInCache(Import $import, Value $accountingSystemRecord)
+    {
+        return in_array($import->getId() . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
     }
 }

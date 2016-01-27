@@ -2,72 +2,86 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\Job;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use RentJeeves\DataBundle\Enum\ImportModelType;
+use RentJeeves\DataBundle\Enum\ImportStatus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Translation\Translator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/")
  */
-class GroupController extends Controller
+class GroupController extends BaseController
 {
     /**
+     * @param Group   $group
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
      * @Route("import/property/createJob/{group_id}", name="admin_create_import_property_job")
      * @ParamConverter("group", class="DataBundle:Group", options={"id" = "group_id"})
      * @Method({"GET"})
      */
     public function importPropertyCreateJob(Group $group, Request $request)
     {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine')->getManager();
-        /** @var Translator $translator */
-        $translator = $this->get('translator');
-        $propertiesMapping = $em->getRepository('RjDataBundle:PropertyMapping')->getPropertiesMappingByGroup($group);
-        $urlLink = $request->server->get('HTTP_REFERER');
-
-        if (empty($urlLink)) {
-            $urlLink = $this->get('router')->generate('admin_rj_group_list', [], true);
-        }
+        $propertiesMapping = $this->getEntityManager()
+            ->getRepository('RjDataBundle:PropertyMapping')->getPropertiesMappingByGroup($group);
 
         if (empty($propertiesMapping)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
-                $translator->trans(
+                $this->getTranslator()->trans(
                     'admin.import_properties_job.error.empty_external_properties',
                     ['%group_name%' => $group->getName()]
                 )
             );
+        } else {
+            $newImport = new Import();
+            $newImport->setImportType(ImportModelType::PROPERTY);
+            $newImport->setUser($this->getUser());
+            $newImport->setGroup($group);
+            $newImport->setStatus(ImportStatus::RUNNING);
 
-            return new RedirectResponse($urlLink);
-        }
+            $this->getEntityManager()->persist($newImport);
+            $this->getEntityManager()->flush();
 
-        foreach ($propertiesMapping as $propertyMapping) {
-            $job = new Job(
-                'renttrack:import:property',
-                [
-                    '--app=rj',
-                    sprintf('--group-id=%s', $group->getId()),
-                    sprintf('--external-property-id=%s', $propertyMapping['externalPropertyId'])
-                ]
+            foreach ($propertiesMapping as $propertyMapping) {
+                $this->createJobForExternalProperty($newImport, $propertyMapping['externalPropertyId']);
+            }
+
+            $request->getSession()->getFlashBag()->add(
+                'success',
+                $this->getTranslator()->trans(
+                    'admin.import_properties_job.created',
+                    ['%group_name%' => $group->getName()]
+                )
             );
-            $em->persist($job);
         }
-        
-        $em->flush();
 
-        $request->getSession()->getFlashBag()->add(
-            'success',
-            $translator->trans('admin.import_properties_job.created', ['%group_name%' => $group->getName()])
+        return $this->redirectToRoute('admin_rj_group_list');
+    }
+
+    /**
+     * @param Import $import
+     * @param string $externalPropertyId
+     */
+    protected function createJobForExternalProperty(Import $import, $externalPropertyId)
+    {
+        $job = new Job(
+            'renttrack:import:property',
+            [
+                '--import-id=' . $import->getId(),
+                '--external-property-id=' . $externalPropertyId
+            ]
         );
 
-
-        return new RedirectResponse($urlLink);
+        $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->flush();
     }
 }

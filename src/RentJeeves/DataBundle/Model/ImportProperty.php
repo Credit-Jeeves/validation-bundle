@@ -155,6 +155,13 @@ abstract class ImportProperty
     protected $processed = false;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="allow_multiple_properties", type="boolean", options={"default"=0})
+     */
+    protected $allowMultipleProperties = false;
+
+    /**
      * @ORM\ManyToOne(
      *      targetEntity="RentJeeves\DataBundle\Entity\Import",
      *      inversedBy="importProperties",
@@ -400,5 +407,21 @@ abstract class ImportProperty
     public function setProcessed($processed)
     {
         $this->processed = $processed;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowMultipleProperties()
+    {
+        return $this->allowMultipleProperties;
+    }
+
+    /**
+     * @param boolean $allowMultipleProperties
+     */
+    public function setAllowMultipleProperties($allowMultipleProperties)
+    {
+        $this->allowMultipleProperties = $allowMultipleProperties;
     }
 }

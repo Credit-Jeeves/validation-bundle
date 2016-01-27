@@ -143,6 +143,11 @@ class ContractListener
             return;
         }
 
+        $paymentTotal = floatval($payment->getTotal());
+        if ($paymentTotal === $newValue) {
+            return;
+        }
+
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
