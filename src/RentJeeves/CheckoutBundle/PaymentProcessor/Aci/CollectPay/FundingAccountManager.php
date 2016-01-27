@@ -324,15 +324,12 @@ class FundingAccountManager extends AbstractManager
      */
     protected function executeAddFundingRequest($profileId, RequestModel\SubModel\FundingAccount $fundingAccount)
     {
-        $profile = new RequestModel\Profile();
-
-        $profile->setProfileId($profileId);
-
-        $profile->setFundingAccount($fundingAccount);
-
-        $request = new AddFunding($profile);
-
         try {
+            $profile = new RequestModel\Profile();
+            $profile->setProfileId($profileId);
+            $profile->setFundingAccount($fundingAccount);
+            $request = new AddFunding($profile);
+
             $this->paymentProcessor->execute($request);
         } catch (\Exception $e) {
             $this->logger->alert(
@@ -343,7 +340,7 @@ class FundingAccountManager extends AbstractManager
                     $e->getMessage()
                 )
             );
-            throw $e;
+            throw new PaymentProcessorRuntimeException(self::removeDebugInformation($e->getMessage(), null, $e));
         }
 
         if (!$request->getIsSuccessful()) {
