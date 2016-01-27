@@ -634,47 +634,45 @@ class OrderRepository extends EntityRepository
             throw new \LogicException('Must have at least one group');
         }
 
-        $query = $this->createQueryBuilder('o');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->innerJoin('t.tenant', 'ten');
-        $query->innerJoin('t.unit', 'unit');
-        $query->innerJoin('o.transactions', 'transaction');
-        $query->innerJoin('t.group', 'g');
-        $query->innerJoin('g.groupSettings', 'gs');
-
-        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
-            $query->where('o.status IN (:statuses)');
-            $query->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL');
-            $query->andWhere("transaction.status = 'complete'");
-            $query->andWhere("transaction.depositDate BETWEEN :start AND :end");
-            $query->setParameter('statuses', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-        } else {
-            $query->where('o.status IN (:statuses)');
-            $query->andWhere("STR_TO_DATE(o.created_at, '%Y-%c-%e') BETWEEN :start AND :end");
-            $query->setParameter('statuses', [
-                OrderStatus::COMPLETE,
-                OrderStatus::REFUNDED,
-                OrderStatus::RETURNED,
-                OrderStatus::PENDING
-            ]);
-        }
-
-        $query->andWhere('o.paymentType in (:paymentType)');
-        $query->andWhere('g.id in (:groups)');
-        $query->andWhere('gs.isIntegrated = 1');
-        $query->andWhere('t.holding = :holding');
-        $query->setParameter('end', $end);
-        $query->setParameter('start', $start);
-
         $groupsId = [];
         foreach ($groups as $group) {
             $groupsId[] = $group->getId();
         }
-        $query->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
-        $query->setParameter('groups', $groups);
-        $query->setParameter('holding', $group->getHolding());
-        $query->orderBy('transaction.batchId', 'ASC');
+
+        $query = $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->innerJoin('p.contract', 't')
+            ->innerJoin('o.transactions', 'transaction')
+            ->innerJoin('t.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('o.status IN (:statuses)')
+                ->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL')
+                ->andWhere('transaction.status = :complete')
+                ->andWhere('transaction.depositDate BETWEEN :start AND :end')
+                ->setParameter('statuses', [OrderStatus::COMPLETE])
+                ->setParameter('complete', TransactionStatus::COMPLETE);
+        } else {
+            $query->where('o.status IN (:statuses)')
+                ->andWhere('STR_TO_DATE(o.created_at, \'%Y-%c-%e\') BETWEEN :start AND :end')
+                ->setParameter('statuses', [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::PENDING
+                ]);
+        }
+
+        $query->andWhere('o.paymentType in (:paymentType)')
+            ->andWhere('g.id in (:groups)')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('t.holding = :holding')
+            ->setParameter('end', $end)
+            ->setParameter('start', $start)
+            ->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK])
+            ->setParameter('groups', $groups)
+            ->setParameter('holding', $group->getHolding())
+            ->orderBy('transaction.batchId', 'ASC');
+
         $query = $query->getQuery();
 
         return $query->execute();

@@ -1033,10 +1033,10 @@ class ExportCase extends BaseTestCase
     public function exportByBostonCsv()
     {
         return [
-            ['deposits', 14, 'uncheck'],
-            ['payments', 16, 'uncheck'],
-            ['deposits', 14, 'check'],
-            ['payments', 16, 'check'],
+            ['deposits', 12, 'uncheck'],
+            ['payments', 13, 'uncheck'],
+            ['deposits', 12, 'check'],
+            ['payments', 13, 'check'],
         ];
     }
 
@@ -1121,7 +1121,7 @@ class ExportCase extends BaseTestCase
 
         $archive = new ZipArchive();
         $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS), 'Should return true');
-        $this->assertEquals(8, $archive->numFiles, 'Archive should have 8 files');
+        $this->assertEquals(7, $archive->numFiles, 'Archive should have 8 files');
 
         // check file with unit id
         $file = $archive->getFromIndex(1);
