@@ -228,7 +228,12 @@ class ContractListener
 
         if (!$result) {
             $this->container->get('logger')->alert(
-                'Email(payment accounting permission) don\'t send for user: ' . $contract->getTenant()->getEmail()
+                sprintf(
+                    'ContractListener failed to send the "Payment %sAccepted" email to user:%s for contract #%d',
+                    PaymentAccepted::ANY !== $newValue ? 'Not ' : '',
+                    $contract->getTenant()->getEmail(),
+                    $contract->getId()
+                )
             );
         }
     }
