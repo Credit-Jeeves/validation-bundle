@@ -71,6 +71,7 @@
                     <tr class="contracts">
                         <th class="font-helvetica">{{ 'payment_source' | trans() }}</th>
                         <th class="font-helvetica">{{ 'type' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'payment_account.last_four' | trans()}}</th>
                         <th class="font-helvetica">{{ 'expiration' | trans() }}</th>
                         <th style="width: 85px;"></th>
                     </tr>
@@ -87,6 +88,9 @@
                                 {% elseif paymentAccount.getType == 'bank' %}
                                     {{ paymentAccount.getBankAccountType | capitalize }}
                                 {% endif %}
+                            </td>
+                            <td class="font-helvetica">
+                                {{ paymentAccount.lastFour }}
                             </td>
                             <td class="font-helvetica">
                                 {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
