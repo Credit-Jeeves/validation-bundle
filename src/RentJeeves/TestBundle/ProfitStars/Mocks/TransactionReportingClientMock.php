@@ -13,7 +13,7 @@ use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\WSEventReport;
 use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\WSSettlementBatch;
 use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\WSTransactionDetail;
 
-class ProfitStarsClientMocks
+class TransactionReportingClientMock
 {
     /**
      * @return GetCreditandDebitReportsResponse
