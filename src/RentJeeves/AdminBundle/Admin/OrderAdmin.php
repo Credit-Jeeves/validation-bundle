@@ -59,7 +59,7 @@ class OrderAdmin extends Admin
         $listMapper
             ->addIdentifier('id', null, ['route' => ['name' => 'show']])
             ->add('created_at', 'date', ['format' => 'Y-m-d'])
-            ->add('paymentType')
+            ->add('paymentType', 'string', ['template' => 'AdminBundle:CRUD:payments_paymentType_last_four.html.twig'])
             ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
             ->add('transaction_ids', 'string', ['label' => 'Transaction Ids'])
             ->add('sum', 'money')
