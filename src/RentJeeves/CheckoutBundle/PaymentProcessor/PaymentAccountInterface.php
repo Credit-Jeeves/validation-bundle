@@ -21,7 +21,7 @@ interface PaymentAccountInterface
 
     /**
      * @return string
-     * @see RentJeeves\DataBundle\Enum\PaymentAccountType "bank" |"card"
+     * @see RentJeeves\DataBundle\Enum\PaymentAccountType "bank" |"card" | "debit_card"
      */
     public function getType();
 

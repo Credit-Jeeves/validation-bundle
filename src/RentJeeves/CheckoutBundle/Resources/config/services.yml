@@ -144,6 +144,13 @@ services:
         calls:
             - [setVirtualTerminalBusinessId, ["%aci.collect_pay.renttrack_virtual_terminal_account%"]]
 
+    payment_processor.aci.collect_pay.lcr_manager:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\LeastCostRouteManager
+        public: false
+        arguments:
+            - @payum
+            - @logger
+
     payment_processor.aci.pay_anyone.payment_manager:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager
         public: false

@@ -18,6 +18,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount as BillingAccountEntity;
 use RentJeeves\DataBundle\Entity\PaymentAccount as PaymentAccountEntity;
 use Payum\AciCollectPay\Model as RequestModel;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\DebitType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -227,7 +228,10 @@ class FundingAccountManager extends AbstractManager
         $fundingAccount->setNickname($paymentAccount->getName());
         $fundingAccount->setHoldername($fundingAccountData->get('account_name'));
 
-        if (PaymentAccountTypeEnum::CARD == $paymentAccount->getType()) {
+        if (PaymentAccountTypeEnum::CARD === $paymentAccount->getType() ||
+            (PaymentAccountTypeEnum::DEBIT_CARD === $paymentAccount->getType() &&
+                DebitType::DEBIT !== $paymentAccount->getDebitType())
+        ) {
             $expMonth = $fundingAccountData->get('expiration_month');
             $expYear = $fundingAccountData->get('expiration_year');
             $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
@@ -243,7 +247,7 @@ class FundingAccountManager extends AbstractManager
             );
             $account->setSecurityCode($fundingAccountData->get('csc_code'));
 
-        } elseif (PaymentAccountTypeEnum::DEBIT_CARD == $paymentAccount->getType()) {
+        } elseif (PaymentAccountTypeEnum::DEBIT_CARD === $paymentAccount->getType()) {
             $expMonth = $fundingAccountData->get('expiration_month');
             $expYear = $fundingAccountData->get('expiration_year');
             $paymentAccount->setCcExpiration(new \DateTime("last day of {$expYear}-{$expMonth}"));
@@ -252,7 +256,7 @@ class FundingAccountManager extends AbstractManager
             $account->setExpMonth($expMonth);
             $account->setExpYear($expYear);
             $account->setCardNumber($fundingAccountData->get('card_number'));
-        } elseif (PaymentAccountTypeEnum::BANK == $paymentAccount->getType()) {
+        } elseif (PaymentAccountTypeEnum::BANK === $paymentAccount->getType()) {
             $account = new RequestModel\SubModel\BankAccount();
 
             $account->setAccountNumber($fundingAccountData->get('account_number'));

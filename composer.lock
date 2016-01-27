@@ -3665,12 +3665,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ACIClient.git",
-                "reference": "17ceada8e60a3f6a4afff666b4492bb5053dd0ab"
+                "reference": "68e3df9aafb60e96aefad737e7562c4df849197e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/17ceada8e60a3f6a4afff666b4492bb5053dd0ab",
-                "reference": "17ceada8e60a3f6a4afff666b4492bb5053dd0ab",
+                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/68e3df9aafb60e96aefad737e7562c4df849197e",
+                "reference": "68e3df9aafb60e96aefad737e7562c4df849197e",
                 "shasum": ""
             },
             "require": {
@@ -3721,7 +3721,7 @@
                 "source": "https://github.com/Credit-Jeeves/ACIClient/tree/master",
                 "issues": "https://github.com/Credit-Jeeves/ACIClient/issues"
             },
-            "time": "2016-01-20 20:50:37"
+            "time": "2016-01-23 14:49:46"
         },
         {
             "name": "payum/core",
