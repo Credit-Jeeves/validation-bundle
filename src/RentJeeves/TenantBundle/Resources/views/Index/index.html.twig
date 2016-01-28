@@ -21,3 +21,23 @@
     {% include 'RjComponentBundle:PaymentHistory:payments.html.twig' with {'contracts': user.contracts} %}
 
 {% endblock %}
+
+{% block head_javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        document.bussinesDays = {
+            heartland : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            },
+            aci_pay_direct : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            },
+            aci_submerchant : {
+                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
+                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+            }
+        };
+    </script>
+{% endblock %}
