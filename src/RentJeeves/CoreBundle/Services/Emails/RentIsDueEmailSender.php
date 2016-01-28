@@ -336,6 +336,13 @@ class RentIsDueEmailSender
 
         $month = $activePayment->getEndMonth();
         $year = $activePayment->getEndYear();
+
+        // month to month, so payment not ended
+        if (empty($month) || empty($year)) {
+            return false;
+        }
+
+
         $dueDate = $activePayment->getDueDate();
 
         $endDate = new DateTime();

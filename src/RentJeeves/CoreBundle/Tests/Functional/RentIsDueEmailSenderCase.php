@@ -308,4 +308,56 @@ class RentIsDueEmailSenderCase extends BaseTestCase
             'We should NOT send any email for contract which we preparing.'
         );
     }
+
+    /**
+     * @test
+     */
+    public function shouldSendRentIsDueEmailWhenRecurringPaymentEqualsToMonthToMonth()
+    {
+        $this->load(true);
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['externalLeaseId' => 't0012020']
+        );
+        $this->assertNotEmpty($contract, 'We should have this contract in fixtures');
+        $contract->setStatus(ContractStatus::APPROVED);
+        $contract->setFinishAt(new DateTime('+1 year'));
+        /** @var DepositAccount $depositAccount */
+        $depositAccount = $this->getEntityManager()->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+            [
+                'holding' => $contract->getHolding(),
+                'type' => DepositAccountType::RENT
+            ]
+        );
+        $this->assertNotEmpty($depositAccount, 'Deposit account should exist in fixtures');
+        /** @var Payment $payment */
+        $payment = $depositAccount->getPayments()->first();
+        $this->assertNotEmpty($payment, 'Payment should exist in fixtures');
+        $payment->setType(PaymentType::RECURRING);
+        $payment->setEndMonth(null);
+        $payment->setEndYear(null);
+        $contract->addPayment($payment);
+        $this->getEntityManager()->persist($depositAccount);
+        $today = new DateTime('now');
+        $today->modify('+4 days');
+        $contract->setDueDate($today->format('d'));
+        $this->getEntityManager()->flush();
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        /** @var TenantMailer $tenantMailer */
+        $tenantMailer = $this->getContainer()->get('rent.is_due.email_sender');
+        $tenantMailer->modifyShiftedDate('+4 days');
+        $tenantMailer->findContractsAndSendPaymentDueEmails();
+
+        $this->assertCount(
+            1,
+            $plugin->getPreSendMessages(),
+            'We should send one email for contract which we preparing.'
+        );
+
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('Your Rent Is Due', $message->getSubject(), 'We send not correct email');
+    }
 }
