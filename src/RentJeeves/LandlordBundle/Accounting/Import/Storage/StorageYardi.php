@@ -36,7 +36,9 @@ class StorageYardi extends ExternalApiStorage
         19 => Mapping::KEY_UNIT_ID,
         20 => 'Not used',
         21 => 'Not used2',
-        22 => 'Not used3'
+        22 => 'Not used3',
+        23 => 'Not used4',
+        24 => 'Not used5'
     ];
 
     /**
@@ -109,7 +111,9 @@ class StorageYardi extends ExternalApiStorage
             $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
-            $property->getMarketingName()
+            $property->getMarketingName(),
+            $residentData->getUnit()->getUnitAddress()->getUnitAddressLine1(),
+            $residentData->getTenantDetails()->getTenantAddress()->getAddressLine1()
         ];
 
         if ($this->isMultiplePropertyMapping()) {
@@ -140,6 +144,7 @@ class StorageYardi extends ExternalApiStorage
         $leaseEnd = $residentData->getLeaseEnd(true);
         $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
         $ledgerDetails = $this->getLedgerDetails($residentData);
+        $unitName = $residentData->getUnit()->getIdentification()->getUnitName();
 
         $data = [
             $residentId,
@@ -160,10 +165,12 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
-            $property->getExternalUnitId(),
+            $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
-            $property->getMarketingName()
+            $property->getMarketingName(),
+            $residentData->getUnit()->getUnitAddress()->getUnitAddressLine1(),
+            $residentData->getTenantDetails()->getTenantAddress()->getAddressLine1()
         ];
 
         if ($this->isMultiplePropertyMapping()) {

@@ -13,6 +13,12 @@ class LeaseFileTenantDetails
     protected $name;
 
     /**
+     * @Serializer\SerializedName("Address")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileTenantAddress")
+     */
+    protected $address;
+
+    /**
      * @Serializer\SerializedName("Email")
      * @Serializer\Type("string")
      */
@@ -49,4 +55,21 @@ class LeaseFileTenantDetails
     {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
 }

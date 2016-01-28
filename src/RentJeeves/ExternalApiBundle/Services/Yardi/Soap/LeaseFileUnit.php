@@ -19,6 +19,12 @@ class LeaseFileUnit
     protected $unitRent;
 
     /**
+     * @Serializer\SerializedName("Address")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnitAddress")
+     */
+    protected $unitAddress;
+
+    /**
      * @return mixed
      */
     public function getIdentification()
@@ -48,5 +54,21 @@ class LeaseFileUnit
     public function setUnitRent($unitRent)
     {
         $this->unitRent = $unitRent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUnitAddress()
+    {
+        return $this->unitRent;
+    }
+
+    /**
+     * @param mixed $unitAddress
+     */
+    public function setUnitAddress($unitAddress)
+    {
+        $this->unitAddress = $unitAddress;
     }
 }
