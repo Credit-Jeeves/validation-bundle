@@ -19,7 +19,7 @@ class LeaseFileTenant
     protected $dateOfBirth;
 
     /**
-     * @return mixed
+     * @return LeaseFileTenantDetails
      */
     public function getPersonDetails()
     {
@@ -27,9 +27,9 @@ class LeaseFileTenant
     }
 
     /**
-     * @param mixed $personDetails
+     * @param LeaseFileTenantDetails $personDetails
      */
-    public function setPersonDetails($personDetails)
+    public function setPersonDetails(LeaseFileTenantDetails $personDetails)
     {
         $this->personDetails = $personDetails;
     }

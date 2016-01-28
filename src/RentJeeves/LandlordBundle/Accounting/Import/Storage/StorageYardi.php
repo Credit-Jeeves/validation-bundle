@@ -113,7 +113,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getAddressLine3(),
             $property->getMarketingName(),
             $residentData->getUnit()->getUnitAddress()->getUnitAddressLine1(),
-            $residentData->getTenantDetails()->getTenantAddress()->getAddressLine1()
+            $residentData->getTenantDetails()->getPersonDetails()->getAddress()->getAddressLine1()
         ];
 
         if ($this->isMultiplePropertyMapping()) {
@@ -170,7 +170,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getAddressLine3(),
             $property->getMarketingName(),
             $residentData->getUnit()->getUnitAddress()->getUnitAddressLine1(),
-            $residentData->getTenantDetails()->getTenantAddress()->getAddressLine1()
+            $residentData->getTenantDetails()->getPersonDetails()->getAddress()->getAddressLine1()
         ];
 
         if ($this->isMultiplePropertyMapping()) {

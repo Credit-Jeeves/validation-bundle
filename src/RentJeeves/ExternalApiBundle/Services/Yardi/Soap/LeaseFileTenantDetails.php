@@ -57,7 +57,7 @@ class LeaseFileTenantDetails
     }
 
     /**
-     * @return mixed
+     * @return LeaseFileTenantAddress
      */
     public function getAddress()
     {
@@ -65,7 +65,7 @@ class LeaseFileTenantDetails
     }
 
     /**
-     * @param mixed $name
+     * @param LeaseFileTenantAddress $name
      */
     public function setAddress($address)
     {

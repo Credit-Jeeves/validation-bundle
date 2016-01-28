@@ -57,17 +57,17 @@ class LeaseFileUnit
     }
 
     /**
-     * @return mixed
+     * @return LeaseFileUnitAddress
      */
     public function getUnitAddress()
     {
-        return $this->unitRent;
+        return $this->unitAddress;
     }
 
     /**
-     * @param mixed $unitAddress
+     * @param LeaseFileUnitAddress $unitAddress
      */
-    public function setUnitAddress($unitAddress)
+    public function setUnitAddress(LeaseFileUnitAddress $unitAddress)
     {
         $this->unitAddress = $unitAddress;
     }
