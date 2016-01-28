@@ -20,6 +20,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldFindContractsAndSendPaymentDueEmailSayingNoPaymentSetUp()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -56,6 +57,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldNotSendBecauseDoNotHaveOperationsWithin3months()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -89,6 +91,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldFindContractsAndSendPaymentDueSayingYouHaveRecurringPaymentSetUpWithExecutionDateOf()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -139,6 +142,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldSendEmailSayingOneTimePaymentWithExecutionDateOf()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -188,6 +192,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldCheckEmailThatSaysYourRecurringPaymentHasEnded()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -239,6 +244,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldNotSendBecauseNextDueDateIsPastFinishAt()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -282,6 +288,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldNotSendEmailWhenUserDisableEmailNotify()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -315,6 +322,7 @@ class RentIsDueEmailSenderCase extends BaseTestCase
     public function shouldSendRentIsDueEmailWhenRecurringPaymentEqualsToMonthToMonth()
     {
         $this->load(true);
+        $this->updateAllPaymentsToNotSendRentIsDueEmail();
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => 't0012020']
@@ -359,5 +367,19 @@ class RentIsDueEmailSenderCase extends BaseTestCase
 
         $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Your Rent Is Due', $message->getSubject(), 'We send not correct email');
+    }
+
+    /**
+     * @return void
+     */
+    protected function updateAllPaymentsToNotSendRentIsDueEmail()
+    {
+        $this->getEntityManager()->getRepository('RjDataBundle:Payment')
+            ->createQueryBuilder('p')
+            ->update()
+            ->set('p.endMonth', 9)
+            ->set('p.endYear', 2009)
+            ->getQuery()
+            ->execute();
     }
 }
