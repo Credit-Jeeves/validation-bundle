@@ -140,6 +140,7 @@ class StorageYardi extends ExternalApiStorage
         $leaseEnd = $residentData->getLeaseEnd(true);
         $monthToMonth = ($today > $leaseEnd && empty($moveOutDate)) ? 'Y' : 'N';
         $ledgerDetails = $this->getLedgerDetails($residentData);
+        $unitName = $residentData->getUnit()->getIdentification()->getUnitName();
 
         $data = [
             $residentId,
@@ -160,7 +161,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
-            $property->getExternalUnitId(),
+            $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
             $property->getMarketingName()
