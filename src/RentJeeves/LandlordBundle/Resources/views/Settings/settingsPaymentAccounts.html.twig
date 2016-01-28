@@ -17,6 +17,7 @@
                         <thead>
                             <tr class="contracts">
                                 <th class="font-helvetica">{{ 'settings.payment_account.name.title' | trans }}</th>
+                                <th class="font-helvetica">{{ 'payment_account.last_four' | trans }}</th>
                                 <th style="width: 60px;"></th>
                             </tr>
                         </thead>
@@ -25,6 +26,9 @@
                                 <td class="font-helvetica">
                                     <span data-bind="text: nickname"></span>
                                     <em class="default-address" data-bind="visible: isActive()">({{ 'settings.payment_account.active'|trans }})</em>
+                                </td>
+                                <td class="font-helvetica">
+                                    <span data-bind="text: last_four"></span>
                                 </td>
                                 <td class="font-helvetica">
                                     {% if isLocked == false %}
