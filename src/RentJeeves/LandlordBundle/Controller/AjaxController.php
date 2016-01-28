@@ -1108,7 +1108,7 @@ class AjaxController extends Controller
             array('email' => $email)
         );
         $isIntegrated = $this->getUser()->getCurrentGroup()->getGroupSettings()->getIsIntegrated();
-        if ($user &&
+        if ($user instanceof Tenant &&
             $isIntegrated &&
             $residentMapping = $user->getResidentForHolding($this->getUser()->getHolding())
         ) {

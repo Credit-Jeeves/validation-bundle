@@ -100,7 +100,7 @@ class ReportController extends Controller
             $session = $request->getSession();
             /** @var Logger $logger */
             $logger = $this->get('logger');
-            ignore_user_abort();
+            ignore_user_abort(true);
             set_time_limit(90);
             if (false == $session->get('isReportProcessing', false)) {
                 $session->set('isReportProcessing', true);

@@ -68,8 +68,8 @@ class PayAnythingCase extends BaseTestCase
             $form,
             [
                 'rentjeeves_checkoutbundle_payanything_paymenttype_payFor' => DepositAccountType::APPLICATION_FEE,
-                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 100.45,
                 'rentjeeves_checkoutbundle_payanything_paymenttype_start_date' => $startDate,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 100.45,
             ]
         );
 
@@ -242,8 +242,8 @@ class PayAnythingCase extends BaseTestCase
             $form,
             [
                 'rentjeeves_checkoutbundle_payanything_paymenttype_payFor' => DepositAccountType::APPLICATION_FEE,
-                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 100.45,
                 'rentjeeves_checkoutbundle_payanything_paymenttype_start_date' => $startDate,
+                'rentjeeves_checkoutbundle_payanything_paymenttype_amount' => 100.45,
             ]
         );
 

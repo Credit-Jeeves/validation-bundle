@@ -13,6 +13,7 @@ use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorInterfac
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PaymentBalanceOnlyType extends PaymentType
 {
@@ -175,9 +176,11 @@ class PaymentBalanceOnlyType extends PaymentType
 
                 $startDate = $event->getForm()->get('start_date')->getData();
                 $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
-                $paymentEntity->setDueDate($startDate->format('j'));
-                $paymentEntity->setStartMonth($startDate->format('n'));
-                $paymentEntity->setStartYear($startDate->format('Y'));
+                if ($startDate) {
+                    $paymentEntity->setDueDate($startDate->format('j'));
+                    $paymentEntity->setStartMonth($startDate->format('n'));
+                    $paymentEntity->setStartYear($startDate->format('Y'));
+                }
 
                 $event->setData($paymentEntity);
             }
