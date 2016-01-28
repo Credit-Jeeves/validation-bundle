@@ -25,7 +25,10 @@ class PropertyDeduplicateCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getLogger()->info('Start property deduplicating.');
-
+        if (true === $this->getEntityManager()->getFilters()->isEnabled('softdeleteable')) {
+            $this->getEntityManager()->getFilters()->disable('softdeleteable');
+            $this->getLogger()->info('Soft-deleteble filter is disabled.');
+        }
         $addressId = $input->getOption('property-address-id');
         /** @var PropertyAddress $propertyAddress */
         if (null === $propertyAddress = $this->getPropertyAddressRepository()->find($addressId)) {
