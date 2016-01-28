@@ -41,6 +41,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getStatus()
@@ -51,6 +52,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getRent()
@@ -61,6 +63,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getLeaseStart()
@@ -71,6 +74,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getLeaseEnd()
@@ -81,6 +85,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Type("string")
      * @return int|string
      */
     public function getDueDate()
@@ -91,6 +96,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getExperianReporting()
@@ -101,6 +107,7 @@ class Contract extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Type("string")
      * @return string|null
      */
     public function getBalance()
@@ -117,6 +124,7 @@ class Contract extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\SerializedName("fee_cc")
+     * @Serializer\Type("float")
      * @return float
      */
     public function getFeeCC()
@@ -132,6 +140,7 @@ class Contract extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\SerializedName("fee_ach")
+     * @Serializer\Type("float")
      * @return float
      */
     public function getFeeACH()
@@ -149,6 +158,7 @@ class Contract extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\SerializedName("delivery_method")
+     * @Serializer\Type("string")
      * @return string
      */
     public function getDeliveryMethod()
@@ -163,11 +173,13 @@ class Contract extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\SerializedName("mailing_address")
-     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Group")
-     * @return string
+     * @Serializer\Type("RentJeeves\ApiBundle\Response\Group")
+     * @return Group
      */
     public function getMailingAddress()
     {
-        return $this->entity->getGroup();
+        return $this
+            ->resourceFactory
+            ->getResponse($this->entity->getGroup());
     }
 }

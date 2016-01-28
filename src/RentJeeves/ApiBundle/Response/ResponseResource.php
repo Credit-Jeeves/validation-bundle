@@ -31,7 +31,7 @@ abstract class ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"Base"})
-     *
+     * @Serializer\Type("integer")
      * @return int
      */
     public function getId()
@@ -42,7 +42,7 @@ abstract class ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"Base"})
-     *
+     * @Serializer\Type("string")
      * @return string
      */
     public function getUrl()

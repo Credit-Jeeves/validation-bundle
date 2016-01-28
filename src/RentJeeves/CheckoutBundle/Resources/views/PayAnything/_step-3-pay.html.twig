@@ -41,7 +41,7 @@
             <label>{{ 'checkout.method' | trans }}</label>
             <div class="fields-box">
                         <span class="value"
-                              data-bind="text: 'checkout.' + currentPaymentAccount().type(), i18n: {}"
+                              data-bind="text: Translator.trans('checkout.' + currentPaymentAccount().type())"
                               id="checkout-payment-source"
                                 >
 

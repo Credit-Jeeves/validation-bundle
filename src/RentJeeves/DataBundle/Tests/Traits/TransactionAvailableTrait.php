@@ -77,6 +77,7 @@ trait TransactionAvailableTrait
         $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setPaymentType(OrderPaymentType::CARD);
+        $order->setDepositAccount($contract->getGroup()->getDepositAccounts()->first());
         $order->setStatus(OrderStatus::COMPLETE);
 
         $operation = new Operation();
