@@ -1236,7 +1236,7 @@ class TenantCase extends BaseTestCase
 
         $this->session->reload();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
-        $this->assertNotNull($edits = $this->page->findAll('css', '.edit'), 'Can not find contract edit button');
+        $this->assertNotEmpty($edits = $this->page->findAll('css', '.edit'), 'Can not find contract edit button');
         $this->assertArrayHasKey(0, $edits, 'Should have one element');
         $edits[0]->click();
 
@@ -1251,7 +1251,7 @@ class TenantCase extends BaseTestCase
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => $externalLeaseId]
         );
-        $this->assertNotEmpty($contract, 'Should be contract with such rent and lease id');
+        $this->assertNotEmpty($contract, 'Should be contract with such lease id');
     }
 
     /**
