@@ -58,7 +58,6 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([ 'command' => $command->getName() ]);
 
-        $this->assertRegExp('/Preparing daily batch deposit report for/', $commandTester->getDisplay());
         $this->assertCount(1, $plugin->getPreSendMessages());
         $this->assertCount(1, $parts = $plugin->getPreSendMessage(0)->getChildren());
         $crawler = $this->getCrawlerObject($parts[0]->getBody());
