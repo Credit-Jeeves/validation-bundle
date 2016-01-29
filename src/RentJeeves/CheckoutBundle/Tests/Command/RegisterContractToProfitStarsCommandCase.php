@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Command\BaseTestCase;
+use RentJeeves\TestBundle\ProfitStars\Mocks\PaymentVaultClientMock;
 use RentTrack\ProfitStarsClientBundle\PaymentVault\Model\RegisterCustomerResponse;
 use RentTrack\ProfitStarsClientBundle\PaymentVault\Model\ReturnValue;
 use RentTrack\ProfitStarsClientBundle\PaymentVault\Model\WSUpdateResult;
@@ -132,22 +133,7 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
      */
     protected function getContainerMock()
     {
-        $clientResponse = new RegisterCustomerResponse();
-        $registerCustomerResult = new WSUpdateResult();
-        $registerCustomerResult->setReturnValue(ReturnValue::SUCCESS);
-        $clientResponse->setRegisterCustomerResult($registerCustomerResult);
-
-        $clientMock = $this->getMock(
-            '\RentTrack\ProfitStarsClientBundle\PaymentVault\Model\PaymentVaultClient',
-            [],
-            [],
-            '',
-            false
-        );
-        $clientMock
-            ->expects($this->once())
-            ->method('RegisterCustomer')
-            ->will($this->returnValue($clientResponse));
+        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer();
 
         $contractRegistry = new ContractRegistryManager(
             $clientMock,

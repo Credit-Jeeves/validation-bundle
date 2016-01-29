@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\TestBundle\ProfitStars\Mocks\PaymentVaultClientMock;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
@@ -89,16 +90,7 @@ class ContractRegistryManagerCase extends UnitTestBase
      */
     public function shouldThrowPaymentProcessorRuntimeExceptionIfSavingContractThrowsDBALException()
     {
-        $clientResponse = new RegisterCustomerResponse();
-        $clientResult = new WSUpdateResult();
-        $clientResult->setReturnValue(ReturnValue::SUCCESS);
-        $clientResponse->setRegisterCustomerResult($clientResult);
-
-        $clientMock = $this->getProfitStarsClientMock();
-        $clientMock
-            ->expects($this->once())
-            ->method('RegisterCustomer')
-            ->will($this->returnValue($clientResponse));
+        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer();
 
         $emMock = $this->getEntityManagerMock();
         $emMock
@@ -142,16 +134,7 @@ class ContractRegistryManagerCase extends UnitTestBase
      */
     public function shouldThrowPaymentProcessorRuntimeExceptionIfProfitStarsClientReturnsFailedResult()
     {
-        $clientResponse = new RegisterCustomerResponse();
-        $clientResult = new WSUpdateResult();
-        $clientResult->setReturnValue(ReturnValue::ERROR_UNKNOWN);
-        $clientResponse->setRegisterCustomerResult($clientResult);
-
-        $clientMock = $this->getProfitStarsClientMock();
-        $clientMock
-            ->expects($this->once())
-            ->method('RegisterCustomer')
-            ->will($this->returnValue($clientResponse));
+        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer(ReturnValue::ERROR_UNKNOWN);
 
         $registryManager = new ContractRegistryManager(
             $clientMock,
@@ -235,16 +218,7 @@ class ContractRegistryManagerCase extends UnitTestBase
      */
     public function shouldSuccessfullyRegisterContractIfItWasNotRegisteredBefore()
     {
-        $clientResponse = new RegisterCustomerResponse();
-        $clientResult = new WSUpdateResult();
-        $clientResult->setReturnValue(ReturnValue::SUCCESS);
-        $clientResponse->setRegisterCustomerResult($clientResult);
-
-        $clientMock = $this->getProfitStarsClientMock();
-        $clientMock
-            ->expects($this->once())
-            ->method('RegisterCustomer')
-            ->will($this->returnValue($clientResponse));
+        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer();
 
         $emMock = $this->getEntityManagerMock();
         $emMock
