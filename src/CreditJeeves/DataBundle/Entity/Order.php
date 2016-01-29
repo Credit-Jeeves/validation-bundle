@@ -680,6 +680,7 @@ class Order extends Base
             $result['deposit_type'] = $this->getCustomOperation() ? $depositAccountType : '';
         }
         $result['type'] = $this->getOrderPaymentTypes();
+        $result['lastFour'] = $this->getPaymentAccount() ? $this->getPaymentAccount()->getLastFour() : '';
 
         return $result;
     }

@@ -3,7 +3,6 @@ namespace RentJeeves\CoreBundle\Mailer;
 
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
@@ -261,7 +260,8 @@ class Mailer extends BaseMailer
             'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
             'statementDescriptor' => $this->getStatementDescriptor($order),
             'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
-            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null,
+            'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -474,7 +474,8 @@ class Mailer extends BaseMailer
             'type' => $order->getPaymentType(),
             'statementDescriptor' => $this->getStatementDescriptor($order),
             'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
-            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null,
+            'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());

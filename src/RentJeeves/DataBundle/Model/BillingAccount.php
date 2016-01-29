@@ -64,7 +64,6 @@ abstract class BillingAccount
      *     nullable=true
      * )
      * @Type("string")
-     * @Serializer\Exclude
      */
     protected $lastFour;
 

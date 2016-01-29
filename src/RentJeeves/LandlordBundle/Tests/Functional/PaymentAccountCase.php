@@ -91,10 +91,10 @@ class PaymentAccountCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('.processPayment').is(':visible')");
         $this->assertNotNull($accounts = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals(4, count($accounts));
+        $this->assertEquals(6, count($accounts));
 
         $this->assertEquals('mary', $accounts[0]->getText());
-        $this->assertEquals('gary (settings.payment_account.active)', $accounts[2]->getText());
+        $this->assertEquals('gary (settings.payment_account.active)', $accounts[3]->getText());
 
         //createPaymentAccount
         $this->assertNotNull($edit = $this->page->findAll('css', '.properties-table>tbody>tr>td>a'));
@@ -113,10 +113,10 @@ class PaymentAccountCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('.processPayment').is(':visible')");
         $this->assertNotNull($accounts = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals(4, count($accounts));
+        $this->assertEquals(6, count($accounts));
 
         $this->assertEquals('mary less (settings.payment_account.active)', $accounts[0]->getText());
-        $this->assertEquals('gary', $accounts[2]->getText());
+        $this->assertEquals('gary', $accounts[3]->getText());
         // check that billing account has last 4 digits filled
         $billingAccount = $this->getEntityManager()->getRepository('RjDataBundle:BillingAccount')
             ->findOneBy(['isActive' => true, 'paymentProcessor' => PaymentProcessor::HEARTLAND]);

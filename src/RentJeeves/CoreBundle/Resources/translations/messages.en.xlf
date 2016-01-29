@@ -1730,6 +1730,10 @@
                 <source>payment_account_card</source>
                 <target>Credit Card</target>
             </trans-unit>
+            <trans-unit id="payment_account.last_four">
+                <source>payment_account.last_four</source>
+                <target>Last Four</target>
+            </trans-unit>
             <trans-unit id="payment_account.delete.title">
                 <source>payment_account.delete.title</source>
                 <target>Remove Payment Source</target>
