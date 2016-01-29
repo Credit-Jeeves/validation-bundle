@@ -149,13 +149,16 @@ class ImportFactory
         return sprintf('%s.%s', $baseName, $typeService);
     }
 
+    /**
+     * @return string
+     */
     protected function getAccountingSettingType()
     {
         /** @var $user Landlord */
         $user = $this->container->get('security.context')->getToken()->getUser();
         /** @var $holding Holding */
         $holding = $user->getHolding();
-        if ($holding->getAccountingSystem() === AccountingSystem::NONE || $holding->isApiIntegrated() === false) {
+        if ($holding->isApiIntegrated() === false) {
             return AccountingSystem::NONE;
         }
 

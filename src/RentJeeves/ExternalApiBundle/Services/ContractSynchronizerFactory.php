@@ -26,10 +26,6 @@ class ContractSynchronizerFactory
      */
     public function getSynchronizerByHolding(Holding $holding)
     {
-        if (AccountingSystem::NONE === $holding->getAccountingSystem()) {
-            throw new \LogicException('Accounting system should be set up for holding.');
-        }
-
         if ($holding->isApiIntegrated() === false) {
             $message = sprintf('This accounting system (%s) not use api.', $holding->getAccountingSystem());
 

@@ -64,7 +64,7 @@ class TenantCase extends BaseTestCase
             $contractPendings[2]->getHtml(),
             'Check fixtures, third pending contract should have status "contract.statuses.contract_ended"'
         );
-        $this->assertNotNull(
+        $this->assertNotEmpty(
             $approves = $this->page->findAll('css', '.approve'),
             'Button "Approve" for contract doesn\'t found'
         );
@@ -1219,7 +1219,7 @@ class TenantCase extends BaseTestCase
     /**
      * @test
      */
-    public function saveLeaseId()
+    public function editContractAndAddLeaseId()
     {
         $this->loadTenantTab();
         $this->setDefaultSession('selenium2');
@@ -1231,9 +1231,7 @@ class TenantCase extends BaseTestCase
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
         $holding = $group->getHolding();
-        $holding->setAccountingSystem(AccountingSystem::MRI_BOSTON_POST);
-        $em->persist($holding);
-        $em->persist($group);
+        $holding->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
         $em->flush();
 
         $this->session->reload();
@@ -1268,7 +1266,7 @@ class TenantCase extends BaseTestCase
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
-        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTON_POST);
+        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
         $em->flush();
         $em->clear();
         $this->clearEmail();

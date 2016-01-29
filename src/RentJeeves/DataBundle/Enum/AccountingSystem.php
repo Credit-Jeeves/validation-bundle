@@ -10,7 +10,7 @@ class AccountingSystem extends Enum
 
     const AMSI = 'amsi';
     const MRI = 'mri';
-    const MRI_BOSTON_POST = 'mri boston post';
+    const MRI_BOSTONPOST = 'mri bostonpost';
     const PROMAS = 'promas';
     const RESMAN = 'resman';
     const YARDI_VOYAGER = 'yardi voyager';
