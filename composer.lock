@@ -18,7 +18,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/2af32a2ef970067491063bbc6e700dd998ea9d4e",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/b01e953df13052ee172e2521bd5e5b6b21ef7305",
                 "reference": "2af32a2ef970067491063bbc6e700dd998ea9d4e",
                 "shasum": ""
             },
@@ -3669,7 +3669,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/4b5c2b366fc429e72c410f7826784e9cbc3fd479",
+                "url": "https://api.github.com/repos/Credit-Jeeves/ACIClient/zipball/68e3df9aafb60e96aefad737e7562c4df849197e",
                 "reference": "4b5c2b366fc429e72c410f7826784e9cbc3fd479",
                 "shasum": ""
             },
@@ -4304,7 +4304,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "f05b6546b34c94fb13ab02935b9b49b7b5d2b1db"
+                "reference": "a629fdb30a327eca8a219de5630863bd217cff76"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",
@@ -4341,7 +4341,7 @@
                 "soap",
                 "wsdl"
             ],
-            "time": "2015-12-24 09:33:41"
+            "time": "2016-01-23 12:36:55"
         },
         {
             "name": "renttrack/smarty-streets-bundle",

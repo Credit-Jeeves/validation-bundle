@@ -999,4 +999,20 @@ class Contract extends Base
 
         return false;
     }
+
+    /**
+     * @param string $locationId
+     * @return bool
+     */
+    public function hasProfitStarsRegisteredLocation($locationId)
+    {
+        /** @var ProfitStarsRegisteredContract $registeredContract */
+        foreach ($this->getProfitStarsRegisteredContracts() as $registeredContract) {
+            if ($locationId === $registeredContract->getLocationId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
