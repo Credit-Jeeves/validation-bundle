@@ -23,7 +23,7 @@ class ProfitStarsRegisteredContract
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      *
-     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="profitStarsRegisteredContract")
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="profitStarsRegisteredContracts")
      * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=false)
      */
     protected $contract;

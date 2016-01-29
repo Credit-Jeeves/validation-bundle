@@ -4,7 +4,6 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ApiBundle\Services\Encoders\Skip32IdEncoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorRuntimeException;
@@ -39,6 +38,14 @@ class ContractRegistryManager
     /** @var string */
     protected $storeKey;
 
+    /**
+     * @param PaymentVaultClient $client
+     * @param EntityManager $em
+     * @param LoggerInterface $logger
+     * @param Skip32IdEncoder $encoder
+     * @param string $rentTrackStoreId
+     * @param string $rentTrackStoreKey
+     */
     public function __construct(
         PaymentVaultClient $client,
         EntityManager $em,
@@ -64,7 +71,7 @@ class ContractRegistryManager
         if (false === $contract->hasProfitStarsRegisteredLocation($depositAccount->getMerchantName())) {
             $this->logger->debug(
                 sprintf(
-                    '[ProfitStars]: Try to register contract #%d for location #%s',
+                    'Try to register contract #%d for location #%s',
                     $contract->getId(),
                     $depositAccount->getMerchantName()
                 )
@@ -90,7 +97,7 @@ class ContractRegistryManager
                 $response = $this->client->RegisterCustomer($this->storeId, $this->storeKey, $entityId, $customer);
             } catch (\Exception $e) {
                 $this->logger->alert(sprintf(
-                    '[ProfitStars]: Can not register contract #%d. Reason: %s',
+                    'Can not register contract #%d. Reason: %s',
                     $contract->getId(),
                     $e->getMessage()
                 ));
@@ -103,7 +110,7 @@ class ContractRegistryManager
                 $this->saveRegisteredContract($contract, $depositAccount);
             } else {
                 $this->logger->alert($message = sprintf(
-                    '[ProfitStars]: Got failed response when registering contract #%d for location #%s',
+                    'Got failed response when registering contract #%d for location #%s',
                     $contract->getId(),
                     $depositAccount->getMerchantName()
                 ));
@@ -112,7 +119,7 @@ class ContractRegistryManager
         } else {
             $this->logger->debug(
                 sprintf(
-                    '[ProfitStars]: Contract #%d is already registered for location #%d',
+                    'Contract #%d is already registered for location #%d',
                     $contract->getId(),
                     $depositAccount->getMerchantName()
                 )
@@ -144,7 +151,7 @@ class ContractRegistryManager
             $this->em->flush($registeredContract);
         } catch (DBALException $e) {
             $this->logger->alert(sprintf(
-                '[ProfitStars]: Can not save to DB registered contract #%d. Reason: %s',
+                'Can not save to DB registered contract #%d. Reason: %s',
                 $contract->getId(),
                 $e->getMessage()
             ));

@@ -259,7 +259,7 @@ services:
         arguments:
             - @profit_stars.payment_vault.client
             - @doctrine.orm.default_entity_manager
-            - @logger
+            - @monolog.logger.profit_stars
             - @skip32.id_encoder
             - %profit_stars.store_id%
             - %profit_stars.store_key%

@@ -1001,7 +1001,7 @@ class Contract extends Base
     }
 
     /**
-     * @param $locationId
+     * @param string $locationId
      * @return bool
      */
     public function hasProfitStarsRegisteredLocation($locationId)
