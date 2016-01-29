@@ -626,7 +626,7 @@ class OrderRepository extends EntityRepository
      * @param string $start
      * @param string $end
      * @param string $exportBy
-     * @return mixed
+     * @return Order[]
      */
     public function getOrdersForBostonPostReport(array $groups, $start, $end, $exportBy)
     {

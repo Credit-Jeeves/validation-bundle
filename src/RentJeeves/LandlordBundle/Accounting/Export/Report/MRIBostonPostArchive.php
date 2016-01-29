@@ -75,7 +75,6 @@ class MRIBostonPostArchive extends MRIBostonPostReport
     /**
      * @param array $params
      */
-
     protected function generateFilename($params)
     {
         $this->filename = 'batch_report.zip';

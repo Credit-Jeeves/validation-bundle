@@ -115,7 +115,7 @@ class MRIBostonPostReport extends ExportReport
         $endDate = new DateTime($params['end']);
 
         $this->filename = sprintf(
-            'boston_%s_%s.csv',
+            'renttrack_%s_%s.csv',
             $beginDate->format('Ymd'),
             $endDate->format('Ymd')
         );
