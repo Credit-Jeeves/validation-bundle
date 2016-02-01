@@ -137,8 +137,8 @@ class PaymentAccountCase extends BaseTestCase
         $del->click();
         $this->session->wait($this->timeout, "$('.overlay').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
-        $this->assertNotNull($accounts = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals(2, count($accounts));
+        $this->assertNotNull($accounts = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertEquals(1, count($accounts));
 
         $this->logout();
     }
