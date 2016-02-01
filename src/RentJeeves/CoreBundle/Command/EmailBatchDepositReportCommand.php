@@ -3,6 +3,8 @@
 namespace RentJeeves\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\Collection;
+use Monolog\Logger;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
@@ -57,12 +59,15 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $groupid = $input->getOption('groupid');
         $resend = $input->getOption('resend');
 
-        $output->writeln('Preparing daily batch deposit report for ' . $date->format('m/d/Y'));
+        /** @var Logger $logger */
+        $logger = $this->getContainer()->get('logger');
+
+        $logger->info(sprintf('Preparing daily batch deposit report for %s', $date->format('m/d/Y')));
         if ($groupid) {
-            $output->writeln('Only sending emails for group id ' . $groupid);
+            $logger->info(sprintf('Only sending emails for group #%s', $groupid));
         }
         if ($resend) {
-            $output->writeln('Adding RESEND note to top of email.');
+            $logger->info('Adding RESEND note to top of email.');
         }
 
         /** @var Mailer $mailer */
@@ -74,15 +79,19 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         /** @var TransactionRepository $repoTransaction */
         $repoTransaction = $doctrine->getRepository('RjDataBundle:Transaction');
 
-        $output->writeln('Sending emails to holding admins.');
-
+        $logger->info('Sending emails to holding admins. ');
         $holdingAdmins = $repoLandlord->findNotPayDirectHoldingAdmins();
+        /** @var Landlord $holdingAdmin */
         foreach ($holdingAdmins as $holdingAdmin) {
+            $adminGroups = $holdingAdmin->getGroups();
+            if (false === $holdingAdmin->getEmailNotification()) {
+                $this->notifyOfEmailNotSent('BatchDepositReportHolding', $holdingAdmin, $adminGroups);
+                continue;
+            }
             $needSend = false;
-            /** @var Landlord $holdingAdmin */
             $groups = [];
-            foreach ($holdingAdmin->getGroups() as $group) {
-                /** @var Group $group */
+            /** @var Group $group */
+            foreach ($adminGroups as $group) {
                 $batchData = $repoTransaction->getBatchDepositedInfo($group, $date);
                 $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 $groups[] = [
@@ -101,25 +110,42 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 }
             }
             if ($needSend) {
+                $logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
                 if (!$mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend)) {
-                    $output->writeln('Sending email is failed. Check template.');
+                    $logger->info(sprintf('Sending email to %s failed. Check template', $holdingAdmin->getEmail()));
+                } else {
+                    $logger->info(sprintf('%s:BatchDepositReportHolding successfully sent', $holdingAdmin->getEmail()));
                 }
-                $output->write('.');
+            } else {
+                $logger->info(sprintf(
+                    '%s:BatchDepositReportHolding will not be sent -- needSend is false',
+                    $holdingAdmin->getEmail()
+                ));
             }
         }
 
-        $output->writeln('');
-        $output->writeln('Sending emails to non-admins.');
+        $logger->info('Sending emails to non-admins.');
 
         $landlords = $repoLandlord->findNotPayDirectHoldingNotAdmins();
+        /** @var Landlord $landlord */
         foreach ($landlords as $landlord) {
-            /** @var Landlord $landlord */
-            foreach ($landlord->getAgentGroups() as $group) {
-                /** @var Group $group */
+            $agentGroups = $landlord->getAgentGroups();
+            if (false === $landlord->getEmailNotification()) {
+                $this->notifyOfEmailNotSent('BatchDepositReportLandlord', $landlord, $agentGroups);
+                continue;
+            }
+            /** @var Group $group */
+            foreach ($agentGroups as $group) {
                 $batchData = $repoTransaction->getBatchDepositedInfo($group, $date);
                 $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 // only send if no groupid option specified, or if groupid option matches current group
                 if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
+                    $logger->info(sprintf(
+                        'Sending BatchDepositReportLandlord to %s for group #%d "%s"',
+                        $landlord->getEmail(),
+                        $group->getId(),
+                        $group->getName()
+                    ));
                     if (count($batchData) > 0 || count($reversalData) > 0) {
                         if (!$mailer->sendBatchDepositReportLandlord(
                             $landlord,
@@ -130,15 +156,20 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                             $resend
                         )
                         ) {
-                            $output->writeln('Sending email is failed. Check template.');
+                            $logger->info(sprintf('Sending email to %s failed. Check template', $landlord->getEmail()));
+                        } else {
+                            $logger->info(sprintf(
+                                '%s:BatchDepositReportLandlord successfully sent for group %d',
+                                $landlord->getEmail(),
+                                $group->getId()
+                            ));
                         }
-                        $output->write('.');
+                    } else {
+                        $logger->info(sprintf('Will not sent email for group #%d "%s": deposits and reversals empty'));
                     }
                 }
             }
         }
-        $output->writeln('');
-        $output->writeln('Sending batch deposit report for ' . $date->format('m/d/Y') . ' complete.');
     }
 
     protected function prepareBatchReportData($data)
@@ -187,5 +218,24 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         }
 
         return $batches;
+    }
+
+    /**
+     * @param string $mailMethodName
+     * @param Landlord $user
+     * @param Collection $groups
+     */
+    protected function notifyOfEmailNotSent($mailMethodName, Landlord $user, Collection $groups)
+    {
+        $groupNames = [];
+        foreach ($groups as $group) {
+            $groupNames[] = $group->getName();
+        }
+        $this->getContainer()->get('logger')->warning(sprintf(
+            '%s will not be sent to %s (groups %s): email notification choice is NO',
+            $mailMethodName,
+            $user->getEmail(),
+            implode(',', $groupNames)
+        ));
     }
 }
