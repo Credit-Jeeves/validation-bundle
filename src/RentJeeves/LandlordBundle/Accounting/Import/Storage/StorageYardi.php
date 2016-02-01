@@ -165,7 +165,7 @@ class StorageYardi extends ExternalApiStorage
             $property->getState(),
             $property->getPostalCode(),
             $property->getAddressLine1(),
-            $property->getExternalUnitId(),
+            $property->getExternalUnitId($unitName),
             $property->getAddressLine2(),
             $property->getAddressLine3(),
             $property->getMarketingName(),
