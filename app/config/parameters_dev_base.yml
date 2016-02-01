@@ -94,3 +94,6 @@ parameters:
 
     profit_stars.store_id: 765350
     profit_stars.store_key: 'nAfv+O9D5V3i1Pgd3yaUxOAa2D9z'
+    
+    score_track.is_free_enabled: true # enable/disable
+    score_track.free_until: 6 # quantity of month

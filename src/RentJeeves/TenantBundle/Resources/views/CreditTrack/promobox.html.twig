@@ -16,6 +16,22 @@
     </div>
 
     <div class="price">
-      {{ 'credittrack.promo.amount' | trans({"%dollars%": credittrack_payment_per_month_dollars, "%cents%": credittrack_payment_per_month_cents}) | raw }}
+        {% if score_track.is_free_enabled and score_track.free_until > 0 %}
+            {{
+                'credittrack.promo.free'|trans(
+                    {
+                        '%month%': score_track.free_until
+                    }
+                )|raw
+            }}
+        {% else %}
+            {{ 'credittrack.promo.amount' | trans(
+                    {
+                        "%dollars%": credittrack_payment_per_month_dollars,
+                        "%cents%": credittrack_payment_per_month_cents
+                    }
+                ) | raw
+            }}
+        {% endif %}
     </div>
 </div>

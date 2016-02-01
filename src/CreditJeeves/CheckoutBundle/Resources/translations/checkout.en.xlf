@@ -177,6 +177,27 @@
                     <![CDATA[Only <span class="integer">$%dollars%</span><span class="decimal">%cents%</span>/mo]]>
                 </target>
             </trans-unit>
+            <trans-unit id="credittrack.promo.free">
+                <source>credittrack.promo.free</source>
+                <target>
+                    <![CDATA[<div class="free_for_month">Free for<br /> <span class="integer">%month%</span> <br /> month</div>]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="credittrack.message_for_payment.first_step">
+                <source>credittrack.message_for_payment.first_step</source>
+                <target>
+                    Congratulations! You can try ScoreTrack free for %month% months. After %month% months,
+                    we will charge the payment source below $$%dollars%.%cents% per month until cancelled.
+                     You can cancel anytime by going to 'My Plans' in your account settings
+                </target>
+            </trans-unit>
+            <trans-unit id="credittrack.message_for_payment.second_step">
+                <source>credittrack.message_for_payment.second_step</source>
+                <target>
+                    You will get ScoreTrack starting today until cancelled.
+                    It is free for %month% month, and $%dollars%.%cents% afterwards.
+                </target>
+            </trans-unit>
             <trans-unit id="credittrack.box.note">
                 <source>credittrack.box.note</source>
                 <target>ScoreTrack&#8482;</target>

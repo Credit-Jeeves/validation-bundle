@@ -19,7 +19,7 @@ class Version20160129155844 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_user
+            "ALTER TABLE rj_user_settings
                 ADD scoretrack_free_until  DATE DEFAULT NULL"
         );
     }
@@ -36,7 +36,7 @@ class Version20160129155844 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_user
+            "ALTER TABLE rj_user_settings
                 DROP scoretrack_free_until"
         );
     }

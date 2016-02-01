@@ -80,6 +80,12 @@ class CreditTrackController extends Controller
             );
         }
         $settings = $user->getSettings();
+        $isFreeEnabled = $this->container->getParameter('score_track.is_free_enabled');
+        $freeUntilMonth = $this->container->getParameter('score_track.free_until');
+        if ($settings->isCreditTrack() && $isFreeEnabled && $freeUntilMonth > 0) {
+            $settings->setScoreTrackFreeUntil(new \DateTime(sprintf('+%s month', $freeUntilMonth)));
+        }
+
         if ($settings->isCreditTrack()) {
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $em->persist($settings);

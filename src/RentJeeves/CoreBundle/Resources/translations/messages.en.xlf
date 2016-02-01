@@ -3324,6 +3324,14 @@
                 <source>import.error.settings_is_wrong</source>
                 <target>It looks like your import settings have a problem. Please contact and we will get this fixed for you.</target>
             </trans-unit>
+            <trans-unit id="common.free">
+                <source>common.free</source>
+                <target>Free</target>
+            </trans-unit>
+            <trans-unit id="common.tenant.credit_history_dashboard">
+                <source>common.tenant.credit_history_dashboard</source>
+                <target>Tenant Credit History Dashboard</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

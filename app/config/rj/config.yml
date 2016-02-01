@@ -46,8 +46,8 @@ parameters:
     dod_limit_max_payment: 5000
 #parameters for ScoreTrack
     score_track:
-        is_free_enabled: 1 #1 enable 0 disable
-        free_until: 6 # quantity of month
+        is_free_enabled: %score_track.is_free_enabled% #1 enable 0 disable
+        free_until: %score_track.free_until% # quantity of month
 
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side
