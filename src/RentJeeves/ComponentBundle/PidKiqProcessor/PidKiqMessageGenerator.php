@@ -44,10 +44,9 @@ class PidKiqMessageGenerator
         switch ($status) {
             case PidkiqStatus::FAILURE:
                 return $this->translator->trans(
-                    'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
                     [
                         '%SUPPORT_EMAIL%' => $this->supportEmail,
-                        '%MAIN_LINK%' => $this->supportUrl,
                     ]
                 );
             case PidkiqStatus::LOCKED:

@@ -81,7 +81,9 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                     return $this->pidkiqModel = $model;
                 }
 
-                if (PidkiqStatus::FAILURE === $model->getStatus() && 2 == $model->getTryNum()) {
+                if ((PidkiqStatus::BACKOFF === $model->getStatus() || PidkiqStatus::FAILURE === $model->getStatus()) &&
+                    2 < $model->getTryNum()
+                ) {
                     $this->setIsSuccessfull(false);
                     $model->setStatus(PidkiqStatus::LOCKED);
                     $this->em->persist($model);
@@ -96,6 +98,9 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                 // If the last attemt of verification has status FAILURE, the next attempt should be in 1 hour.
                 if (PidkiqStatus::FAILURE === $model->getStatus() && $createdAt->modify('+1 hour') > $currentDate) {
                     $this->setIsSuccessfull(false);
+                    $model->setStatus(PidkiqStatus::BACKOFF);
+                    $this->em->persist($model);
+                    $this->em->flush();
 
                     return $this->pidkiqModel = $model;
                 }
@@ -155,7 +160,10 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
      */
     public function processAnswers(array $answers)
     {
-        if (UserIsVerified::LOCKED === $this->getUser()->getIsVerified()) {
+        if (UserIsVerified::LOCKED === $this->getUser()->getIsVerified() ||
+            (PidkiqStatus::INPROGRESS !== $this->getPidkiqModel()->getStatus() &&
+            PidkiqStatus::FAILURE !== $this->getPidkiqModel()->getStatus())
+        ) {
             return false;
         }
 
