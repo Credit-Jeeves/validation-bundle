@@ -88,7 +88,6 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $this->notifyOfEmailNotSent('BatchDepositReportHolding', $holdingAdmin, $adminGroups);
                 continue;
             }
-            $logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
             $needSend = false;
             $groups = [];
             /** @var Group $group */
@@ -111,6 +110,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 }
             }
             if ($needSend) {
+                $logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
                 if (!$mailer->sendBatchDepositReportHolding($holdingAdmin, $groups, $date, $resend)) {
                     $logger->info(sprintf('Sending email to %s failed. Check template', $holdingAdmin->getEmail()));
                 } else {
@@ -134,13 +134,18 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 $this->notifyOfEmailNotSent('BatchDepositReportLandlord', $landlord, $agentGroups);
                 continue;
             }
-            $logger->info(sprintf('Sending BatchDepositReportLandlord to %s.', $landlord->getEmail()));
             /** @var Group $group */
             foreach ($agentGroups as $group) {
                 $batchData = $repoTransaction->getBatchDepositedInfo($group, $date);
                 $reversalData = $repoTransaction->getReversalDepositedInfo($group, $date);
                 // only send if no groupid option specified, or if groupid option matches current group
                 if ((!$groupid) || ($groupid && ($group->getId() == $groupid))) {
+                    $logger->info(sprintf(
+                        'Sending BatchDepositReportLandlord to %s for group #%d "%s"',
+                        $landlord->getEmail(),
+                        $group->getId(),
+                        $group->getName()
+                    ));
                     if (count($batchData) > 0 || count($reversalData) > 0) {
                         if (!$mailer->sendBatchDepositReportLandlord(
                             $landlord,
