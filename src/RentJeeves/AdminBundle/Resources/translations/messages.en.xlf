@@ -354,6 +354,10 @@
                 <source>admin.attention.payments_automatically_closed</source>
                 <target>Attention! If you set status to "deleted" or "finished", all active payments for this contract will be automatically closed.</target>
             </trans-unit>
+            <trans-unit id="admin.error.empty_merchant_profit_stars">
+                <source>admin.error.empty_merchant_profit_stars</source>
+                <target>You should set ProfitStars merchant ID for holding first.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

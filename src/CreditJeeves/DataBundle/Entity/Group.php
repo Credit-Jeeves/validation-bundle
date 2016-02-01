@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -257,6 +258,31 @@ class Group extends BaseGroup
             }
 
             $alreadyUsedDepositAccounts[] = $key;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks whether holding has ProfitStars merchant ID set when deposit account goes to COMPLETE.
+     *
+     * @Assert\True(message = "admin.error.empty_merchant_profit_stars", groups={"unique_mapping"})
+     * @return boolean
+     */
+    public function isAllowedProfitStarsDepositAccount()
+    {
+        /** @var DepositAccount $account */
+        foreach ($this->getDepositAccounts() as $account) {
+            if (PaymentProcessor::PROFIT_STARS !== $account->getPaymentProcessor() ||
+                DepositAccountStatus::DA_COMPLETE !== $account->getStatus()
+            ) {
+                continue;
+            }
+
+            $profitStarsSettings = $this->getHolding()->getProfitStarsSettings();
+            if (true === empty($profitStarsSettings) || false == $profitStarsSettings->getMerchantId()) {
+                return false;
+            }
         }
 
         return true;

@@ -2,7 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\Tests\Command;
 
-use RentJeeves\CheckoutBundle\Command\RegisterContractToProfitStarsCommand;
+use RentJeeves\CheckoutBundle\Command\RegisterContractsToProfitStarsCommand;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -14,43 +14,30 @@ use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\TestBundle\ProfitStars\Mocks\PaymentVaultClientMock;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
+use RentTrack\ProfitStarsClientBundle\PaymentVault\Model\ReturnValue;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class RegisterContractToProfitStarsCommandCase extends BaseTestCase
+class RegisterContractsToProfitStarsCommandCase extends BaseTestCase
 {
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Contract with id#999 not found
-     */
-    public function shouldThrowExceptionIfContractNotFoundByContractIdArgument()
-    {
-        $this->load(true);
-        $command = new RegisterContractToProfitStarsCommand();
-        $this->executeCommandTester(
-            $command,
-            [
-                'contract-id' => 999,
-                'deposit-account-id' => 1
-            ]
-        );
-    }
+    use CreateSystemMocksExtensionTrait;
 
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage DepositAccount with id#987 not found
+     * @expectedExceptionMessage DepositAccount with id#111 not found
      */
     public function shouldThrowExceptionIfDepositAccountNotFoundByDepositAccountIdArgument()
     {
         $this->load(true);
-        $command = new RegisterContractToProfitStarsCommand();
+        $command = new RegisterContractsToProfitStarsCommand();
         $this->executeCommandTester(
             $command,
             [
-                'contract-id' => 1,
-                'deposit-account-id' => 987
+                'deposit-account-id' => 111,
+                'page' => 1,
+                'limit' => 1,
             ]
         );
     }
@@ -58,17 +45,17 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Can't register contract #2. Holding "Rent Holding" has no ProfitStars merchantId set
      */
     public function shouldThrowExceptionIfHoldingDoesNotHaveProfitStarsSettings()
     {
         $this->load(true);
-        $command = new RegisterContractToProfitStarsCommand();
+        $command = new RegisterContractsToProfitStarsCommand();
         $this->executeCommandTester(
             $command,
             [
-                'contract-id' => 2,
-                'deposit-account-id' => 1
+                'deposit-account-id' => 1,
+                'page' => 1,
+                'limit' => 1,
             ]
         );
     }
@@ -76,7 +63,7 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldRegisterContractToProfitStarsForGivenDepositAccount()
+    public function shouldRegisterContractsOfTheGivenPageToProfitStarsForGivenDepositAccount()
     {
         $this->load(true);
 
@@ -103,25 +90,26 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
         $em->flush();
 
         $application = new Application($this->getKernel());
-        $command = new RegisterContractToProfitStarsCommand();
+        $command = new RegisterContractsToProfitStarsCommand();
         $command->setContainer($this->getContainerMock());
         $application->add($command);
 
-        $testCommand = $application->find('renttrack:payment-processor:profit-stars:register-contract');
+        $testCommand = $application->find('renttrack:payment-processor:profit-stars:register-contracts');
 
         $commandTester = new CommandTester($testCommand);
         $commandTester->execute(
             [
                 'command' => $command->getName(),
-                'contract-id' => $contract->getId(),
-                'deposit-account-id' => $depositAccount->getId()
+                'deposit-account-id' => $depositAccount->getId(),
+                'page' => 1,
+                'limit' => 3,
             ]
         );
 
-        $registeredContracts = $contract->getProfitStarsRegisteredContracts();
-        $this->assertCount(1, $registeredContracts, 'We expect 1 contract to be registered');
+        $registeredContracts = $em->getRepository('RjDataBundle:ProfitStarsRegisteredContract')->findAll();
+        $this->assertCount(3, $registeredContracts, 'We expect 3 contracts to be registered');
         /** @var ProfitStarsRegisteredContract $registeredContract */
-        $registeredContract = $registeredContracts->first();
+        $registeredContract = $registeredContracts[0];
         $this->assertEquals(1023318, $registeredContract->getLocationId(), 'Contract should be registered to 1023318');
     }
 
@@ -130,7 +118,7 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
      */
     protected function getContainerMock()
     {
-        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer();
+        $clientMock = PaymentVaultClientMock::getMockForRegisterCustomer(ReturnValue::SUCCESS, 3);
 
         $contractRegistry = new ContractRegistryManager(
             $clientMock,
@@ -141,13 +129,7 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
             'test'
         );
 
-        $reportLoader = $this->getMock(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader',
-            [],
-            [],
-            '',
-            false
-        );
+        $reportLoader = $this->getBaseMock('\RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader');
 
         $paymentProcessor = new PaymentProcessorProfitStarsRdc($reportLoader, $contractRegistry);
         $this->getContainer()->set('payment_processor.profit_stars.rdc', $paymentProcessor);
