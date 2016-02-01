@@ -716,6 +716,17 @@ abstract class User extends BaseUser
      */
     protected $partner;
 
+    /**
+     * @ORM\Column(
+     *     type = "date",
+     *     name = "scoretrack_free_until ",
+     *     nullable = true
+     * )
+     *
+     * @var \DateTime
+     */
+    protected $scoreTrackFreeUntil;
+
     public function __construct()
     {
         parent::__construct();
@@ -736,6 +747,22 @@ abstract class User extends BaseUser
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new DateTime();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getScoreTrackFreeUntil()
+    {
+        return $this->scoreTrackFreeUntil;
+    }
+
+    /**
+     * @param \DateTime $scoreTrackFreeUntil
+     */
+    public function setScoreTrackFreeUntil(\DateTime $scoreTrackFreeUntil)
+    {
+        $this->scoreTrackFreeUntil = $scoreTrackFreeUntil;
     }
 
     /**
