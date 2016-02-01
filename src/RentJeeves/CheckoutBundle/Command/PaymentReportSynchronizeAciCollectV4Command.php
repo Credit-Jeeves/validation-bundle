@@ -25,7 +25,7 @@ class PaymentReportSynchronizeAciCollectV4Command extends ContainerAwareCommand
     {
         $paymentProcessor = $this->getAciPaymentProcessor();
         $report = $paymentProcessor->loadReport();
-        $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, false);
+        $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, true);
         $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 

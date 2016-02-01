@@ -83,7 +83,7 @@ class ReportSynchronizer
                 $paymentProcessor->getName()
             );
             if ($alertIfEmpty) {
-                $this->logger->alert($message);
+                $this->logger->emergency($message);
             } else {
                 $this->logger->info($message);
             }
