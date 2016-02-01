@@ -5,11 +5,15 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @DI\Service("data.event_listener.contract")
@@ -25,6 +29,13 @@ use RentJeeves\DataBundle\Enum\PaymentAccepted;
  *     attributes = {
  *         "event"="preUpdate",
  *         "method"="preUpdate"
+ *     }
+ * )
+ * @DI\Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="postPersist",
+ *         "method"="postPersist"
  *     }
  * )
  */
@@ -66,6 +77,19 @@ class ContractListener
         $this->checkContract($contract);
         $this->closePaymentByAccounting($contract, $eventArgs);
         $this->sendAccountingPaymentEmail($contract, $eventArgs);
+    }
+
+    /**
+     * @param LifecycleEventArgs $event
+     */
+    public function postPersist(LifecycleEventArgs $event)
+    {
+        $contract = $event->getEntity();
+        if (!$contract instanceof Contract) {
+            return;
+        }
+
+        $this->registerToProfitStars($contract);
     }
 
     /**
@@ -236,5 +260,35 @@ class ContractListener
                 )
             );
         }
+    }
+
+    /**
+     * @param Contract $contract
+     */
+    protected function registerToProfitStars(Contract $contract)
+    {
+        $profitStarsLocations = $contract->getGroup()->getDepositAccounts();
+        /** @var DepositAccount $depositAccount */
+        foreach ($profitStarsLocations as $depositAccount) {
+            if (PaymentProcessor::PROFIT_STARS === $depositAccount->getPaymentProcessor() &&
+                DepositAccountStatus::DA_COMPLETE === $depositAccount->getStatus()
+            ) {
+                $job = new Job(
+                    'renttrack:payment-processor:profit-stars:register-contract',
+                    [$contract->getId(), $depositAccount->getId()]
+                );
+
+                $this->getEntityManager()->persist($job);
+                $this->getEntityManager()->flush($job);
+            }
+        }
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->container->get('doctrine')->getManager();
     }
 }
