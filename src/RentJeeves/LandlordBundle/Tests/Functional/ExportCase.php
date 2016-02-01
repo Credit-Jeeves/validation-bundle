@@ -1116,7 +1116,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('', $csvArrRow[4], 'We should live 4 field empty');
         $this->assertEquals('', $csvArrRow[5], 'We should live 5 field empty');
         $this->assertEquals($checkNumber, $csvArrRow[6], 'CheckNumber should be ' . $checkNumber);
-        $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be AAABBB-7 ' . $sum);
+        $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
         $this->assertEquals(
             $depositDate->format('dmY'),
             $csvArrRow[8],
