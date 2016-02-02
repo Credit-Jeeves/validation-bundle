@@ -21,6 +21,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\TenantBundle\Command\ScoreTrackCommand;
 use Symfony\Component\Config\FileLocator;
 use Ton\EmailBundle\EventListener\EmailListener;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -141,7 +142,7 @@ class PaymentCommandsCase extends BaseTestCase
     public function collectCreditTrackAndPay()
     {
         $application = new Application($this->getKernel());
-        $application->add(new PayCommand());
+        $application->add(new ScoreTrackCommand());
 
         $command = $application->find('score-track:collect-payments');
         $commandTester = new CommandTester($command);

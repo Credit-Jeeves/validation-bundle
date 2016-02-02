@@ -12,6 +12,7 @@ use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\JobRelatedPayment;
@@ -66,8 +67,14 @@ class PaymentJobExecutor
     protected $message = 'OK';
 
     /**
+     * @var Mailer
+     */
+    protected $mailer;
+
+    /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "mailer" = @DI\Inject("project.mailer"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
      *     "creditTrackVendor" = @DI\Inject("%credit_summary_vendor%"),
@@ -76,6 +83,7 @@ class PaymentJobExecutor
      * })
      *
      * @param EntityManager $em
+     * @param Mailer $mailer
      * @param PayRent $payRent
      * @param PayCreditTrack $payCreditTrack
      * @param $creditTrackVendor
@@ -83,6 +91,7 @@ class PaymentJobExecutor
      */
     public function __construct(
         EntityManager $em,
+        Mailer $mailer,
         PayRent $payRent,
         PayCreditTrack $payCreditTrack,
         $creditTrackVendor,
@@ -199,6 +208,18 @@ class PaymentJobExecutor
      */
     protected function executeCreditTrack(PaymentAccount $paymentAccount)
     {
+        if ($paymentAccount->getUser()->getSettings()->isScoreTrackFree()) {
+            $this->logger->debug(
+                sprintf(
+                    'ScoreTrack free until %s',
+                    $paymentAccount->getUser()->getSettings()->getScoreTrackFreeUntil()->format(\DateTime::ISO8601)
+                )
+            );
+            $this->mailer->sendFreeReportReceipt($paymentAccount->getUser());
+
+            return true;
+        }
+
         $order = $this->payCreditTrack->executePaymentAccount($paymentAccount);
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);

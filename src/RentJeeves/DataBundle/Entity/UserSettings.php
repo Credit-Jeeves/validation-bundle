@@ -31,4 +31,26 @@ class UserSettings extends Base
         $uow->propertyChanged($this, 'creditTrackPaymentAccount', $oldValue, null);
         $uow->scheduleExtraUpdate($this, array('creditTrackPaymentAccount' => array($oldValue, null)));
     }
+
+
+    /**
+     * @return bool
+     */
+    public function isScoreTrackFree()
+    {
+        $scoreTrackFreeUntil = $this->getScoreTrackFreeUntil();
+        if (empty($scoreTrackFreeUntil)) {
+            return false;
+        }
+
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
+        $scoreTrackFreeUntil->setTime(0, 0, 0);
+
+        if ($today > $scoreTrackFreeUntil) {
+            return false;
+        }
+
+        return true;
+    }
 }
