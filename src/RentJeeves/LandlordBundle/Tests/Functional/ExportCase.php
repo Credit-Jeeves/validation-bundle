@@ -1033,10 +1033,10 @@ class ExportCase extends BaseTestCase
     public function exportByBostonCsv()
     {
         return [
-            ['deposits', 12, 'uncheck', 1500, '-49 days', '123123', '-49 days'],
-            ['payments', 13, 'uncheck', 1500, '-21 days', '789789', '-21 days'],
-            ['deposits', 12, 'check', 1500, '-49 days', '123123', '-49 days'],
-            ['payments', 13, 'check',  1500, '-21 days', '789789', '-21 days'],
+            ['deposits', 12, 'uncheck', 1500, '-49 days', '-49 days'],
+            ['payments', 13, 'uncheck', 1500, '-21 days', '-21 days'],
+            ['deposits', 12, 'check', 1500, '-49 days', '-49 days'],
+            ['payments', 13, 'check',  1500, '-21 days', '-21 days'],
         ];
     }
 
@@ -1046,7 +1046,6 @@ class ExportCase extends BaseTestCase
      * @param string $methodForAllGroups
      * @param float $sum
      * @param string $dueDate
-     * @param string $checkNumber
      * @param string $depositDate
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      *
@@ -1059,7 +1058,6 @@ class ExportCase extends BaseTestCase
         $methodForAllGroups,
         $sum,
         $dueDate,
-        $checkNumber,
         $depositDate
     ) {
         $dueDate = new DateTime($dueDate);
@@ -1115,7 +1113,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals($dueDate->format('dmY'), $csvArrRow[3], 'DueDate should be ' . $dueDate->format('dmY'));
         $this->assertEquals('', $csvArrRow[4], 'We should live 4 field empty');
         $this->assertEquals('', $csvArrRow[5], 'We should live 5 field empty');
-        $this->assertEquals($checkNumber, $csvArrRow[6], 'CheckNumber should be ' . $checkNumber);
+        $this->assertNotEmpty($csvArrRow[6], 'CheckNumber should be filled in');
         $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
         $this->assertEquals(
             $depositDate->format('dmY'),

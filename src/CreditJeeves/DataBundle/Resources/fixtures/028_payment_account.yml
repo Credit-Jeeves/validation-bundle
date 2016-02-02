@@ -13,14 +13,14 @@ fixtures:
         user: Tenant_1
         type: bank
         name: Bank
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: 'D98BB91F-952B-452C-A929-9FBEF5E1F0F7'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     PaymentAccount_3:
         user: Tenant_2
         type: bank
         name: Bank
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: 'D98BB91F-952B-452C-A929-9FBEF5E1F0F7'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     PaymentAccount_4:
@@ -45,14 +45,14 @@ fixtures:
         user: Tenant_9
         type: bank
         name: Bank account
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: 'D98BB91F-952B-452C-A929-9FBEF5E1F0F7'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     PaymentAccount_12:
         user: Tenant_10
         type: bank
         name: Bank account
-        token: '26232CDD-8A40-471E-91BA-608CDFD7EFB3'
+        token: 'D98BB91F-952B-452C-A929-9FBEF5E1F0F7'
         createdAt: '2014-02-28'
         updatedAt: '2014-02-28'
     PaymentAccount_13:
