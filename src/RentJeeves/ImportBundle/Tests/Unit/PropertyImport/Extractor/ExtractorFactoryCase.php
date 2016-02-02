@@ -5,10 +5,14 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class ExtractorFactoryCase extends UnitTestBase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException
@@ -27,6 +31,7 @@ class ExtractorFactoryCase extends UnitTestBase
     {
         return [
             [AccountingSystem::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
+            [AccountingSystem::YARDI_VOYAGER, '\RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor'],
         ];
     }
 
@@ -39,7 +44,12 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldReturnCorrectExtractor($extractorName, $expectedExtractor)
     {
-        $factory = new ExtractorFactory([AccountingSystem::MRI => $this->getMriExtractorMock()]);
+        $factory = new ExtractorFactory(
+            [
+                AccountingSystem::MRI => $this->getMriExtractorMock(),
+                AccountingSystem::YARDI_VOYAGER => $this->getYardiExtractorMock(),
+            ]
+        );
         $extractor = $factory->getExtractor($extractorName);
 
         $this->assertInstanceOf($expectedExtractor, $extractor, 'Incorrect instance of Extractor.');
@@ -50,12 +60,14 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     protected function getMriExtractorMock()
     {
-        return $this->getMock(
-            '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor',
-            [],
-            [],
-            '',
-            false
-        );
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|YardiExtractor
+     */
+    protected function getYardiExtractorMock()
+    {
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor');
     }
 }

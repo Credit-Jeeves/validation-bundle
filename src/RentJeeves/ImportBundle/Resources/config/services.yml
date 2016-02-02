@@ -26,6 +26,7 @@ services:
             - %import.property.transformer.custom_paths%
             -
               %accounting_system.mri%: @import.property.transformer.mri
+              %accounting_system.yardi%: @import.property.extractor.yardi
 
     # services
     import.property.manager:
@@ -41,6 +42,13 @@ services:
         public: false
         arguments:
             - @mri.resident_data
+            - @monolog.logger.property_import
+
+    import.property.extractor.yardi:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor
+        public: false
+        arguments:
+            - @yardi.resident_data
             - @monolog.logger.property_import
 
     import.property.transformer.mri:
