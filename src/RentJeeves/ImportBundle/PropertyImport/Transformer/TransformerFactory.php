@@ -113,7 +113,7 @@ class TransformerFactory
             $this->registerUnregisteredCustomTransformer($className, $group);
         }
 
-        $accountingSystemName = $group->getHolding()->getApiIntegrationType();
+        $accountingSystemName = $group->getHolding()->getAccountingSystem();
         $baseTransformer = $this->defaultTransformers[$accountingSystemName];
         if (get_parent_class($customTransformerClass) !== get_class($baseTransformer)) {
             $this->logger->warning(
