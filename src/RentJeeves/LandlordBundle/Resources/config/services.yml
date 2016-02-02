@@ -157,3 +157,10 @@ services:
         class: RentJeeves\LandlordBundle\Services\BatchDepositsManager
         arguments:
             - @doctrine.orm.entity_manager
+
+    #validators
+    import.settings.validator:
+         class: RentJeeves\LandlordBundle\Validator\ImportSettingsValidator
+         arguments:
+             - "@translator"
+             - "%support_email%"

@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\Validator;
+namespace RentJeeves\LandlordBundle\Validator;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
