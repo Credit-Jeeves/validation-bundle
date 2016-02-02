@@ -95,9 +95,10 @@ class PidkiqController extends Controller
                 $this->preciseIdQuestions->setError(
                     $this->get('translator')->trans(
                         'pidkiq.error.answers-%SUPPORT_EMAIL%',
-                        array(
-                            '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')
-                        )
+                        [
+                            '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                            '%LIFETIME_MINUTES%' => $this->container->getParameter('pidkiq.lifetime.minutes'),
+                        ]
                     )
                 );
             }

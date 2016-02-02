@@ -75,7 +75,8 @@ class PidKiqProcessorExperianCase extends BaseTestCase
         $this->pidkiqProcessor = new PidKiqExperianProcessor(
             $this->getContainer()->get('security.context'),
             $this->em,
-            $this->getContainer()->get('pidkiq.message_generator')
+            $this->getContainer()->get('pidkiq.message_generator'),
+            $this->getContainer()->getParameter('pidkiq.lifetime.minutes')
         );
 
         $this->pidkiqProcessor->setUser($this->user);
@@ -203,7 +204,9 @@ class PidKiqProcessorExperianCase extends BaseTestCase
         // should send request just after expiration session
         /** @var Pidkiq $pidkiq */
         $pidkiq = $this->user->getPidkiqs()->last();
-        $pidkiq->setCreatedAt(new \DateTime('- 1 hour'));
+        $pidkiq->setCreatedAt(
+            new \DateTime('-' . $this->getContainer()->getParameter('pidkiq.lifetime.minutes') . ' minutes')
+        );
         $this->em->flush($pidkiq);
         // do not send request to 'experian' b/c we do not have questions
         $this->experianMockApi

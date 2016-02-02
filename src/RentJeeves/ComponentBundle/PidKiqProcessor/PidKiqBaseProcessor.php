@@ -43,18 +43,26 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
     protected $messageGenerator;
 
     /**
+     * @var int
+     */
+    protected $lifetimeMinutes = 10;
+
+    /**
      * @param SecurityContext $securityContext
      * @param EntityManager $em
      * @param PidKiqMessageGenerator $messageGenerator
+     * @param int $lifetimeMinutes
      */
     public function __construct(
         SecurityContext $securityContext,
         EntityManager $em,
-        PidKiqMessageGenerator $messageGenerator
+        PidKiqMessageGenerator $messageGenerator,
+        $lifetimeMinutes
     ) {
         $this->securityContext = $securityContext;
         $this->em = $em;
         $this->messageGenerator = $messageGenerator;
+        $this->lifetimeMinutes = (int) $lifetimeMinutes ?: $this->lifetimeMinutes;
     }
 
     /**
@@ -95,8 +103,10 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                 $currentDate = new \DateTime();
                 $createdAt = clone $model->getCreatedAt();
 
-                // If the last attemt of verification has status FAILURE, the next attempt should be in 1 hour.
-                if (PidkiqStatus::FAILURE === $model->getStatus() && $createdAt->modify('+1 hour') > $currentDate) {
+                // If the last attemt of verification has status FAILURE, the next attempt should be in $lifetime min.
+                if (PidkiqStatus::FAILURE === $model->getStatus() &&
+                    $createdAt->modify('+' . $this->lifetimeMinutes . ' minutes') > $currentDate
+                ) {
                     $this->setIsSuccessfull(false);
                     $model->setStatus(PidkiqStatus::BACKOFF);
                     $this->em->persist($model);
