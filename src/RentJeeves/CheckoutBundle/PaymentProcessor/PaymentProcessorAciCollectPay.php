@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\FundingAccountManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\LeastCostRouteManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\PaymentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\ReportLoader;
 use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
@@ -49,6 +50,11 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     protected $paymentManager;
 
     /**
+     * @var LeastCostRouteManager
+     */
+    protected $leastCostRouteManager;
+
+    /**
      * @var ReportLoader
      */
     protected $reportLoader;
@@ -58,6 +64,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
      * @param BillingAccountManager $billingAccountManager
      * @param FundingAccountManager $fundingAccountManager
      * @param PaymentManager $paymentManager
+     * @param LeastCostRouteManager $leastCostRouteManager
      * @param ReportLoader $reportLoader
      *
      * @DI\InjectParams({
@@ -65,6 +72,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
      *     "billingAccountManager" = @DI\Inject("payment_processor.aci.collect_pay.billing_account_manager"),
      *     "fundingAccountManager" = @DI\Inject("payment_processor.aci.collect_pay.funding_account_manager"),
      *     "paymentManager" = @DI\Inject("payment_processor.aci.collect_pay.payment_manager"),
+     *     "leastCostRouteManager" = @DI\Inject("payment_processor.aci.collect_pay.lcr_manager"),
      *     "reportLoader" = @DI\Inject("payment_processor.aci.collect_pay.report_loader")
      * })
      */
@@ -73,12 +81,14 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         BillingAccountManager $billingAccountManager,
         FundingAccountManager $fundingAccountManager,
         PaymentManager $paymentManager,
+        LeastCostRouteManager $leastCostRouteManager,
         ReportLoader $reportLoader
     ) {
         $this->enrollmentManager = $enrollmentManager;
         $this->billingAccountManager = $billingAccountManager;
         $this->fundingAccountManager = $fundingAccountManager;
         $this->paymentManager = $paymentManager;
+        $this->leastCostRouteManager = $leastCostRouteManager;
         $this->reportLoader = $reportLoader;
     }
 
@@ -182,6 +192,14 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     public function calculateDepositDate($paymentType, \DateTime $executeDate)
     {
         return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCardType($cardNumber)
+    {
+        return $this->leastCostRouteManager->getLeastCostRoute($cardNumber);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class ResidentLeaseFile 
+class ResidentLeaseFile
 {
     /**
      * @Serializer\SerializedName("Unit")
@@ -157,7 +157,7 @@ class ResidentLeaseFile
     }
 
     /**
-     * @return mixed
+     * @return LeaseFileTenant
      */
     public function getTenantDetails()
     {
@@ -165,15 +165,15 @@ class ResidentLeaseFile
     }
 
     /**
-     * @param mixed $tenantDetails
+     * @param LeaseFileTenant $tenantDetails
      */
-    public function setTenantDetails($tenantDetails)
+    public function setTenantDetails(LeaseFileTenant $tenantDetails)
     {
         $this->tenantDetails = $tenantDetails;
     }
 
     /**
-     * @return mixed
+     * @return LeaseFileUnit
      */
     public function getUnit()
     {
@@ -181,10 +181,10 @@ class ResidentLeaseFile
     }
 
     /**
-     * @param mixed $unit
+     * @param LeaseFileUnit $unit
      */
-    public function setUnit($unit)
+    public function setUnit(LeaseFileUnit $unit)
     {
         $this->unit = $unit;
     }
-} 
+}

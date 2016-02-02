@@ -65,6 +65,10 @@
             "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git"
         },
         {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/EmailBundle.git"
+        },
+        {
             "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/BeSimpleSoapClient.git"
         },
@@ -271,7 +275,7 @@
         "behat/mink-browserkit-driver": "v1.1.0",
         "doctrine/doctrine-fixtures-bundle": "v2.2.0",
         "comfortablynumb/backup-restore-bundle": "dev-master",
-        "ton/email-bundle": "v1.0.0",
+        "ton/email-bundle": "v1.0.1",
         "fabpot/php-cs-fixer": "v0.5.7",
         "sebastian/diff": "1.1.0"
     },

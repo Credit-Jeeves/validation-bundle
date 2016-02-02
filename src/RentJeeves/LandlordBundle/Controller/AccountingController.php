@@ -753,7 +753,9 @@ class AccountingController extends Controller
             }
         } catch (Exception $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
-            $responseData = ['result' => false];
+            $message = sprintf('EXCEPTION: %s ; TRACEBACK:%s', $e->getMessage(), $e->getTraceAsString());
+            $this->getImportLogger()->addError($message);
+            $responseData = ['result' => false, 'exception' => $message];
         }
 
         if ($isLast) {
