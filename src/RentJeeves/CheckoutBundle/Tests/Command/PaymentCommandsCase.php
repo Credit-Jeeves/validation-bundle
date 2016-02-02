@@ -140,15 +140,24 @@ class PaymentCommandsCase extends BaseTestCase
      */
     public function collectCreditTrackAndPay()
     {
-        $jobs = $this->getContainer()->get('doctrine')
-            ->getRepository('RjDataBundle:PaymentAccount')
-            ->collectCreditTrackToJobs();
+        $application = new Application($this->getKernel());
+        $application->add(new PayCommand());
+
+        $command = $application->find('score-track:collect-payments');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            ['command' => $command->getName()]
+        );
+        $job = $this->getEntityManager()->createQueryBuilder()
+            ->select()
+            ->from('RjDataBundle:JobRelatedCreditTrack')
+            ->getFirstResult();
         // if today is 31, just skip this test (fixtures can't work correctly for 31st)
         $today = new DateTime();
         if (31 == $today->format('j')) {
-            $this->assertCount(0, $jobs);
+            $this->assertEmpty($job);
         } else {
-            $commandTester = $this->executePayCommand($jobs[0]->getId());
+            $commandTester = $this->executePayCommand($job->getId());
 
             $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
 

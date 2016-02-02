@@ -31,9 +31,9 @@ class PaymentAccountRepository extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return PaymentAccount[]
      */
-    public function collectCreditTrackToJobs()
+    public function getCreditTrackPaymentAccountForDueDays()
     {
         $date = new DateTime();
         $query = $this->createQueryBuilder('pa');
@@ -43,22 +43,7 @@ class PaymentAccountRepository extends EntityRepository
         $query->andWhere('DAY(us.creditTrackEnabledAt) IN (:dueDays)');
         $query->setParameter('dueDays', $this->getDueDays(0, $date));
 
-        $paymentAccounts = $query->getQuery()->execute();
-
-        /** @var EntityManager $em */
-        $em = $this->getEntityManager();
-        $jobs = array();
-        /** @var PaymentAccount $paymentAccount */
-        foreach ($paymentAccounts as $paymentAccount) {
-            $job = new Job('payment:pay', array('--app=rj'));
-            $relatedEntity = new JobRelatedCreditTrack();
-            $relatedEntity->setCreditTrackPaymentAccount($paymentAccount);
-            $job->addRelatedEntity($relatedEntity);
-            $em->persist($jobs[] = $job);
-        }
-        $em->flush();
-
-        return $jobs;
+        return $query->getQuery()->execute();
     }
 
     /**

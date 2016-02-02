@@ -593,6 +593,21 @@ class Mailer extends BaseMailer
     }
 
     /**
+     * @return bool
+     */
+    public function sendFreeReportReceipt(Tenant $tenant)
+    {
+        return $this->sendEmail(
+            $tenant,
+            'rjFreeReportReceipt',
+            [
+                'tenantFirstName' => $tenant->getFirstName(),
+                'dashboardLink' => $this->container->get('router')->generate('tenant_summary', [], true)
+            ]
+        );
+    }
+
+    /**
      * @param Landlord $landlord
      * @param array    $data
      *
