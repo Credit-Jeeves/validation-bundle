@@ -24,7 +24,7 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            {% if score_track.is_free_enabled and score_track.free_until > 0 %}
+            {% if score_track.is_free_enabled %}
                 <div class="information-box pie-el">
                     {{
                         'credittrack.message_for_payment.first_step'|trans(
@@ -75,7 +75,7 @@
         </div>
 
         <div data-bind="visible: 'pay' == step()" id="id-pay-step">
-            {% if score_track.is_free_enabled and score_track.free_until > 0 %}
+            {% if score_track.is_free_enabled %}
                 <div class="information-box pie-el">
                     {{
                     'credittrack.message_for_payment.second_step'|trans(
@@ -88,10 +88,11 @@
                     )
                     }}
                 </div>
+            {% else %}
+                <h3 class="italic">
+                    {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
+                </h3>
             {% endif %}
-            <h3 class="italic">
-                {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
-            </h3>
 
             <div class="clearfix halfs-box">
                 <div class="half-box left">
@@ -100,7 +101,7 @@
                         <label>{{ 'credittrack.pay.amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value">
-                                {% if score_track.is_free_enabled  and score_track.free_until > 0 %}
+                                {% if score_track.is_free_enabled %}
                                     {{ 'common.free'|trans }}
                                 {% else %}
                                     {{ credittrack_payment_per_month }}
@@ -108,18 +109,6 @@
                             </span>
                         </div>
                     </div>
-                    {#<div class="form-row clearfix">
-                        <label>{{ 'checkout.fee' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value">$0.00</span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix total-amount">
-                        <label>{{ 'checkout.total' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getTotalAmount()"></span>
-                        </div>
-                    </div>#}
                     <div class="form-row clearfix">
                         <label>{{ 'credittrack.pay.charged_on' | trans }}</label>
                         <div class="fields-box">
@@ -129,7 +118,7 @@
                         </div>
                     </div>
                     <br />
-                    {% if score_track.is_free_enabled == false  and score_track.free_until < 1 %}
+                    {% if score_track.is_free_enabled == false %}
                         <h4>{{ 'note' | trans }}</h4>
                         <p>{{ 'credittrack.pay.note' | trans}}</p>
                     {% endif %}

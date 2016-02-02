@@ -53,17 +53,17 @@ abstract class UserSettings
     /**
      * @ORM\Column(
      *     type = "date",
-     *     name = "scoretrack_free_until ",
+     *     name = "scoretrack_free_until",
      *     nullable = true
      * )
      *
-     * @var \DateTime
+     * @var \DateTime|null
      */
     protected $scoreTrackFreeUntil;
 
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getScoreTrackFreeUntil()
     {

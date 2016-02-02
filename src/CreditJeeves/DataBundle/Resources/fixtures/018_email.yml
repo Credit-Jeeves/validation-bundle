@@ -99,4 +99,4 @@ fixtures:
     email_50:
         name: rjChurnRecapture.html
     email_51:
-        name: rjFreeReportReceipt.html
+        name: rjFreeReportUpdated.html

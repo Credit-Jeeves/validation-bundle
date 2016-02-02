@@ -20,14 +20,14 @@ class Version20160129155844 extends AbstractMigration
 
         $this->addSql(
             "INSERT INTO email
-                SET name = 'rjFreeReportReceipt.html',
+                SET name = 'rjFreeReportUpdated.html',
                     createdAt = now(),
                     updatedAt = now()"
         );
 
         $this->addSql(
             'INSERT INTO email_translation
-            SET translatable_id = (SELECT id FROM email WHERE name = "rjFreeReportReceipt.html"),
+            SET translatable_id = (SELECT id FROM email WHERE name = "rjFreeReportUpdated.html"),
             locale = "en",
             property = "body",
             value = "
@@ -42,10 +42,10 @@ class Version20160129155844 extends AbstractMigration
 
         $this->addSql(
             'INSERT INTO email_translation
-                SET translatable_id = (SELECT id FROM email WHERE name = "rjFreeReportReceipt.html"),
+                SET translatable_id = (SELECT id FROM email WHERE name = "rjFreeReportUpdated.html"),
                 locale = "en",
                 property = "subject",
-                value = "ScoreTrack Receipt"'
+                value = "ScoreTrack Updated"'
         );
 
         $this->addSql(
@@ -68,12 +68,12 @@ class Version20160129155844 extends AbstractMigration
             'DELETE email_translation
                 FROM email_translation, email
                 WHERE email.id = email_translation.translatable_id
-                AND email.name = "rjFreeReportReceipt.html"'
+                AND email.name = "rjFreeReportUpdated.html"'
         );
 
         $this->addSql(
             'DELETE FROM email
-                WHERE name = "rjFreeReportReceipt.html"'
+                WHERE name = "rjFreeReportUpdated.html"'
         );
 
         $this->addSql(

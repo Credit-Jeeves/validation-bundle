@@ -31,22 +31,6 @@ class PaymentAccountRepository extends EntityRepository
     }
 
     /**
-     * @return PaymentAccount[]
-     */
-    public function getCreditTrackPaymentAccountForDueDays()
-    {
-        $date = new DateTime();
-        $query = $this->createQueryBuilder('pa');
-        $query->innerJoin('pa.creditTrackUserSetting', 'us');
-        $query->andWhere('DATE(us.creditTrackEnabledAt) < :date'); //Payment which setup today must not be executed
-        $query->setParameter('date', $date->format('Y-m-d'));
-        $query->andWhere('DAY(us.creditTrackEnabledAt) IN (:dueDays)');
-        $query->setParameter('dueDays', $this->getDueDays(0, $date));
-
-        return $query->getQuery()->execute();
-    }
-
-    /**
      * @todo: After adding replace this function to $repo->findOneBy(['token' => $token]);
      *
      * @param string $token

@@ -12,7 +12,6 @@ use Monolog\Logger;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\JobRelatedPayment;
@@ -77,7 +76,6 @@ class PaymentJobExecutor
      * })
      *
      * @param EntityManager $em
-     * @param Mailer $mailer
      * @param PayRent $payRent
      * @param PayCreditTrack $payCreditTrack
      * @param $creditTrackVendor
@@ -201,17 +199,6 @@ class PaymentJobExecutor
      */
     protected function executeCreditTrack(PaymentAccount $paymentAccount)
     {
-        if ($paymentAccount->getUser()->getSettings()->isScoreTrackFree()) {
-            $this->logger->debug(
-                sprintf(
-                    'ScoreTrack free until %s',
-                    $paymentAccount->getUser()->getSettings()->getScoreTrackFreeUntil()->format(\DateTime::ISO8601)
-                )
-            );
-
-            return true;
-        }
-
         $order = $this->payCreditTrack->executePaymentAccount($paymentAccount);
         $this->job->addRelatedEntity($order);
         $this->em->persist($this->job);

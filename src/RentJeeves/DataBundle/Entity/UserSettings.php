@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="rj_user_settings")
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\UserSettingsRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class UserSettings extends Base

@@ -1682,12 +1682,12 @@ fixtures:
         The RentTrack Team
       {% endblock %}
 
-# rjFreeReportReceipt.html
+# rjFreeReportUpdated.html
   translation_51_subject:
     translatable: email_51
     locale: %locale%
     property: subject
-    value: ScoreTrack Receipt
+    value: ScoreTrack Updated
 
   translation_52_body:
     translatable: email_51
