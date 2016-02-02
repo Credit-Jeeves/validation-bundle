@@ -187,7 +187,7 @@
                 <source>credittrack.message_for_payment.first_step</source>
                 <target>
                     Congratulations! You can try ScoreTrack free for %month% months. After %month% months,
-                    we will charge the payment source below $$%dollars%.%cents% per month until cancelled.
+                    we will charge the payment source below $%dollars%.%cents% per month until cancelled.
                      You can cancel anytime by going to 'My Plans' in your account settings
                 </target>
             </trans-unit>
