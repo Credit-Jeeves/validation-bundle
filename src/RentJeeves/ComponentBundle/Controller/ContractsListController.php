@@ -27,10 +27,8 @@ class ContractsListController extends Controller
      */
     public function indexAction(FormView $form, $searchText = null, $searchColumn = null)
     {
-        /** @var $user Landlord */
-        $user = $this->getUser();
         /** @var $group Group */
-        $group = $user->getCurrentGroup();
+        $group = $this->get('core.session.landlord')->getGroup();
         $canInvite = false;
 
         if (!empty($group)) {
