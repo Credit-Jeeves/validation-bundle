@@ -737,3 +737,17 @@ body{
 .paymentStatusCont{
     width: 200px;position: relative;margin-left:  50%;left: -130px;
 }
+
+#loader{
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    margin-left: -54px;
+    z-index: 1000;
+    width: 100px;
+    background: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 0.9;
+}
