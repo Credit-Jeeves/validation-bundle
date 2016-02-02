@@ -830,7 +830,7 @@ class AjaxController extends Controller
             $errors[] = $translator->trans($error->getMessage());
         }
 
-        if ($contract->getSettings()->getIsIntegrated()) {
+        if ($contract->getGroup()->isAllowedEditResidentId()) {
             $user = $this->getUser();
             $holding = $user->getHolding();
             $residentMapping = $tenant->getResidentForHolding($holding);

@@ -33,6 +33,7 @@ class InviteTenantContractType extends AbstractType
             'contract',
             new ContractType($this->group)
         );
+
         if ($this->group && $this->group->isAllowedEditResidentId()) {
             $builder->add(
                 'resident',
