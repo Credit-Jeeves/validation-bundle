@@ -7,11 +7,15 @@ use CreditJeeves\CoreBundle\Enum;
 class AccountingSystem extends Enum
 {
     const NONE = 'none';
-    const YARDI_VOYAGER = 'yardi voyager';
-    const RESMAN = 'resman';
-    const MRI = 'mri';
+
     const AMSI = 'amsi';
+    const MRI = 'mri';
     const MRI_BOSTON_POST = 'mri boston post';
+    const PROMAS = 'promas';
+    const RESMAN = 'resman';
+    const YARDI_VOYAGER = 'yardi voyager';
+    const YARDI_GENESIS = 'yardi genesis';
+    const YARDI_GENESIS_2 = 'yardi genesis v2';
 
     public static $importMapping = [
         self::NONE          => 'csv',
