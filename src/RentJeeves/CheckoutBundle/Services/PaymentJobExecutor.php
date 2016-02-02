@@ -67,14 +67,8 @@ class PaymentJobExecutor
     protected $message = 'OK';
 
     /**
-     * @var Mailer
-     */
-    protected $mailer;
-
-    /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "mailer" = @DI\Inject("project.mailer"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
      *     "creditTrackVendor" = @DI\Inject("%credit_summary_vendor%"),
@@ -91,7 +85,6 @@ class PaymentJobExecutor
      */
     public function __construct(
         EntityManager $em,
-        Mailer $mailer,
         PayRent $payRent,
         PayCreditTrack $payCreditTrack,
         $creditTrackVendor,
@@ -215,7 +208,6 @@ class PaymentJobExecutor
                     $paymentAccount->getUser()->getSettings()->getScoreTrackFreeUntil()->format(\DateTime::ISO8601)
                 )
             );
-            $this->mailer->sendFreeReportReceipt($paymentAccount->getUser());
 
             return true;
         }
