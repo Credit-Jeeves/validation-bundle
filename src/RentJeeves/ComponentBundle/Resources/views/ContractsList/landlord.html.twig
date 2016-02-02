@@ -232,13 +232,13 @@
                         <span data-bind="text: email"></span>
                     </div>
                 </div>
-                <div class="form-row clearfix" data-bind="if: isIntegrated && isApiIntegrated">
+                <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
                     <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
                     <div class="fields-box width150">
                         <input data-bind="value: residentId" type="text" id="resident-edit" class="half-of-right">
                     </div>
                 </div>
-                <div class="form-row clearfix" data-bind="if: isIntegrated && !isApiIntegrated">
+                <div class="form-row clearfix" data-bind="if: isAllowedEditLeaseId">
                     <label>{{ 'common.lease_id'|trans }}<b>*</b></label>
                     <div class="fields-box width150">
                         <input data-bind="value: leaseId" type="text" id="leaseId-edit" class="half-of-right">
@@ -398,13 +398,13 @@
                         <span class="value" data-bind="text: email"></span>
                     </div>
                 </div>
-                <div class="form-row clearfix width150" data-bind="if: isIntegrated && isApiIntegrated">
+                <div class="form-row clearfix width150" data-bind="if: isAllowedEditResidentId">
                     <label>{{ 'common.resident_id'|trans }}</label>
                     <div class="fields-box width150">
                         <input data-bind="value: residentId" type="text" id="residentId" class="half-of-right">
                     </div>
                 </div>
-                <div class="form-row clearfix width150" data-bind="if: isIntegrated && !isApiIntegrated">
+                <div class="form-row clearfix width150" data-bind="if: isAllowedEditLeaseId">
                     <label>{{ 'common.lease_id'|trans }}</label>
                     <div class="fields-box width150">
                         <input data-bind="value: leaseId" type="text" id="leaseId" class="half-of-right">
@@ -605,7 +605,7 @@
               {{ form_widget(form.tenant.email) }}
             </div>
           </div>
-            {% if isIntegrated and isApiIntegrated == true %}
+            {% if isAllowedEditResidentId %}
                 <div class="form-row clearfix">
                     <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
                     <div class="fields-box width150">
@@ -613,7 +613,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% if isIntegrated and isApiIntegrated == false %}
+            {% if isAllowedEditLeaseId %}
                 <div class="form-row clearfix">
                     <label>{{ 'common.lease_id'|trans }}<b>*</b></label>
                     <div class="fields-box width150">

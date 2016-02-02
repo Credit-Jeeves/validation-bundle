@@ -566,13 +566,25 @@ class Contract
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"Contract"})
-     * @Serializer\SerializedName("isApiIntegrated")
+     * @Serializer\SerializedName("isAllowedEditResidentId")
      *
      * @return boolean
      */
-    public function isApiIntegrated()
+    public function isAllowedEditResidentId()
     {
-        return $this->contract->getGroup()->getHolding()->isApiIntegrated();
+        return $this->contract->getGroup()->isAllowedEditResidentId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("isAllowedEditLeaseId")
+     *
+     * @return boolean
+     */
+    public function isAllowedEditLeaseId()
+    {
+        return $this->contract->getGroup()->isAllowedEditLeaseId();
     }
 
     /**

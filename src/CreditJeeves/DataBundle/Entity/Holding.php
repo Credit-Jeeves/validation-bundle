@@ -70,11 +70,4 @@ class Holding extends BaseHolding
         return array_key_exists($this->getAccountingSystem(), AccountingSystem::$integratedWithApi);
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAllowedEditLeaseId()
-    {
-        return $this->getAccountingSystem() === AccountingSystem::MRI_BOSTONPOST;
-    }
 }

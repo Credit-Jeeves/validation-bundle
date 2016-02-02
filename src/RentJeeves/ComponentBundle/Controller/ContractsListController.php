@@ -44,15 +44,16 @@ class ContractsListController extends Controller
         $end = $date->format('m/d/Y');
 
         return [
-            'form'          => $form,
-            'group'         => $group,
-            'canInvite'     => $canInvite,
-            'start'         => $start,
-            'end'           => $end,
-            'isIntegrated'  => $group->getGroupSettings()->getIsIntegrated(),
-            'isApiIntegrated' => $group->getHolding()->isApiIntegrated(),
-            'searchText'    => $searchText,
-            'searchColumn'  => $searchColumn
+            'form' => $form,
+            'group' => $group,
+            'canInvite' => $canInvite,
+            'start' => $start,
+            'end' => $end,
+            'isAllowedEditResidentId' => $group->isAllowedEditResidentId(),
+            'isAllowedEditLeaseId' => $group->isAllowedEditLeaseId(),
+            'isIntegrated' => $group->getGroupSettings()->getIsIntegrated(),
+            'searchText' => $searchText,
+            'searchColumn' => $searchColumn
         ];
     }
 

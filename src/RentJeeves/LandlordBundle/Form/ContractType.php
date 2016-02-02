@@ -68,7 +68,7 @@ class ContractType extends AbstractType
             ]
         );
 
-        if ($this->group->getHolding()->isAllowedEditLeaseId()) {
+        if ($this->group->isAllowedEditLeaseId()) {
             $builder->add(
                 'externalLeaseId',
                 'text',
