@@ -3,10 +3,10 @@
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom; // Custom Transformer should have this namespace
 
 use RentJeeves\DataBundle\Entity\Import;
-use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface;
+use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
 
 // class name must match the name of the file
-class ExampleCustomTransformer implements TransformerInterface // should implements TransformerInterface
+class ExampleCustomTransformer extends MRITransformer // should override base transformer
 {
     /**
      * {@inheritdoc}

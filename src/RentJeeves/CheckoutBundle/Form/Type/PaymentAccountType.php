@@ -315,20 +315,20 @@ class PaymentAccountType extends AbstractType
                     'help' => 'checkout.csc.help',
                     'data-bind' => 'value: currentPaymentAccount().VerificationCode',
                     'row_attr' => [
-                        'data-bind' => 'visible: \'card\' == currentPaymentAccount().type()'
+                        'data-bind' => 'visible: ["card", "debit_card"].indexOf(currentPaymentAccount().type()) !== -1'
                     ]
                 ],
                 'constraints' => [
                     new NotBlank(
                         [
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.csc.empty',
                         ]
                     ),
                     new Regex(
                         [
                             'pattern' => '/^[0-9]{3}$/',
-                            'groups' => ['card'],
+                            'groups' => ['card', 'debit_card'],
                             'message' => 'checkout.error.csc.type',
                         ]
                     )

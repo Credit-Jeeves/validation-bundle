@@ -16,6 +16,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Heartland\PaymentAccountManager;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -158,6 +159,14 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
         }
 
         return BusinessDaysCalculator::getBusinessDate($executeDate, self::DELIVERY_BUSINESS_DAYS_FOR_CARD);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCardType($cardNumber)
+    {
+        return PaymentAccountType::CARD;
     }
 
     /**

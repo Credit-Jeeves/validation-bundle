@@ -15,6 +15,14 @@ class Customer
     protected $customerId;
 
     /**
+     * address of Customer
+     *
+     * @Serializer\SerializedName("Address")
+     * @Serializer\Type("RentJeeves\ExternalApiBundle\Services\Yardi\Soap\CustomerAddress")
+     */
+    protected $customerAddress;
+
+    /**
      * @return string
      */
     public function getCustomerId()
@@ -33,5 +41,21 @@ class Customer
     public function getResidentId()
     {
         $this->getCustomerId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerAddress()
+    {
+        return $this->customerAddress;
+    }
+
+    /**
+     * @param string $customerAddress
+     */
+    public function setCustomerAddress($customerAddress)
+    {
+        $this->customerAddress = $customerAddress;
     }
 }

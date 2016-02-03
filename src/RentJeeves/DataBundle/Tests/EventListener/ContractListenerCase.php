@@ -88,6 +88,68 @@ class ContractListenerCase extends Base
     /**
      * @test
      */
+    public function shouldNotSendRentAmountAdjustedEmailIfNewRentEqualsPaymentAmount()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Payment $payment */
+        $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(
+            [
+                'status' => PaymentStatus::ACTIVE,
+                'amount' => 1400
+            ]
+        );
+
+        $contract = $payment->getContract();
+        $this->assertEquals(1400, $contract->getRent(), 'Contract rent should be 1400');
+        // change payment amount to differ from rent
+        $payment->setAmount(1000);
+        $payment->setTotal(1435);
+        $em->flush($payment);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $contract->setRent(1000);
+        $em->flush($contract);
+
+        $this->assertCount(0, $plugin->getPreSendMessages(), 'Should not send email if rent = payment amount');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotSendRentAmountAdjustedEmailIfNewRentEqualsPaymentTotal()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Payment $payment */
+        $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(
+            [
+                'status' => PaymentStatus::ACTIVE,
+                'total' => 1400
+            ]
+        );
+
+        $contract = $payment->getContract();
+        $this->assertEquals(1400, $contract->getRent(), 'Contract rent should be 1400');
+        // change payment amount to differ from rent
+        $payment->setAmount(1000);
+        $payment->setTotal(1435);
+        $em->flush($payment);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $contract->setRent(1435);
+        $em->flush($contract);
+
+        $this->assertCount(0, $plugin->getPreSendMessages(), 'Should not send email if rent = payment total');
+    }
+
+    /**
+     * @test
+     */
     public function shouldSendPaymentEmail()
     {
         $this->load(true);

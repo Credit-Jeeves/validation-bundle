@@ -116,8 +116,16 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, C
     /**
      * {@inheritdoc}
      */
+    public function getCardType($cardNumber)
+    {
+        throw new PaymentProcessorLogicException('getCardType is not implemented for ProfitStars');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function registerContract(Contract $contract, DepositAccount $depositAccount)
     {
-        return $this->contractRegistry->registerContract($contract, $depositAccount);
+        $this->contractRegistry->registerContract($contract, $depositAccount);
     }
 }
