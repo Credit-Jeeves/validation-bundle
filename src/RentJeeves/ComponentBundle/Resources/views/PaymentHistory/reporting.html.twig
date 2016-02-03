@@ -14,6 +14,10 @@
                     <input type="checkbox" id="reportTU-{{ contract.id }}" value="trans_union" {% if contract.reporting.trans_union %}checked{% endif %} />
                     <label for="reportTU-{{ contract.id }}">{{ 'bureau.reporting.trans_union'|trans }}</label>
                 </p>
+                <p>
+                    <input type="checkbox" id="equifax-{{ contract.id }}" value="equifax" {% if contract.reporting.equifax %}checked{% endif %} />
+                    <label for="equifax-{{ contract.id }}">{{ 'common.equifax.reporting'|trans }}</label>
+                </p>
             </div>
             <p>{{ 'bureau.reporting.manage.description' | trans({'%link%': link}) | raw }}</p>
         </div>
