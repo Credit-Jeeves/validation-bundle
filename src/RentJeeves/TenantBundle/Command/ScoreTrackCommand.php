@@ -39,6 +39,7 @@ class ScoreTrackCommand extends ContainerAwareCommand
             if ($userSettings->isScoreTrackFree()) {
                 $job = new Job('score-track:get-report', ['--app=rj']);
                 $report = $this->getReport();
+                $report->setRawData('');
                 $report->setUser($userSettings->getUser());
                 $job->addRelatedEntity($report);
                 $em->persist($report);
