@@ -31,6 +31,7 @@ parameters:
         name: 'RENTTRACK'
         address: '4601 EXCELSIOR BLVD # 403A ST. LOUIS PARK MN 55416'
         phone: '8668419090'
+        equifax_subcode: 'V000061387'
 
     external_urls:
         main_site: 'www.renttrack.com'

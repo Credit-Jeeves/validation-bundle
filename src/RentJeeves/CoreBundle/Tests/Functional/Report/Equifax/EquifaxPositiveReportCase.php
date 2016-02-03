@@ -1,60 +1,55 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Tests\Functional\Report\Equifax;
 
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
+use RentJeeves\CoreBundle\Report\Equifax\EquifaxPositiveReport;
 use RentJeeves\CoreBundle\Report\RentalReportData;
-use RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
-class TransUnionNegativeReportCase extends BaseTestCase
+class EquifaxPositiveReportCase extends BaseTestCase
 {
     /**
      * @test
      * @dataProvider provideReport
      */
-    public function shouldMakeNegativeReportForTransUnion(
+    public function shouldMakePositiveReportForEquifax(
         \DateTime $month,
         \DateTime $startDate,
-        \DateTime $endDate
+        \DateTime $endDate,
+        $expectedResultFilename
     ) {
         $this->load(true);
-        $em = $this->getEntityManager();
-
-        $em->getRepository('RjDataBundle:Contract')
-            ->createQueryBuilder('c')
-            ->update()
-            ->set('c.reportToTransUnion', 1)
-            ->set('c.transUnionStartAt', ':date')
-            ->setParameter('date', '2015-01-01')
-            ->getQuery()
-            ->execute();
 
         $params = RentalReportDataManager::getRentalReportData(
             $month,
             $startDate,
             $endDate,
-            CreditBureau::TRANS_UNION,
-            RentalReportType::NEGATIVE
+            CreditBureau::EQUIFAX,
+            RentalReportType::POSITIVE
         );
-        /** @var TransUnionNegativeReport $report */
+        /** @var EquifaxPositiveReport $report */
         $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
-        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport', $report);
+        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Equifax\EquifaxPositiveReport', $report);
         $report->build($params);
 
         $this->assertEquals('rental_1', $report->getSerializationType());
 
         $today = new \DateTime();
-        $expectedReportName = sprintf('transunion-negative_renttrack-%s.txt', $today->format('Ymd'));
+        $expectedReportName = sprintf('equifax-positive_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
+        // check only record, b/c header doesn't contain important info and has changeable data
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'rental_1');
         $reportRecords = explode("\n", trim($report));
-        // header + 1 contract (or 2 contracts if this test runs 1-15 each month)
-        $this->assertGreaterThanOrEqual(2, $reportRecords, 'TU report should contain 2 records');
+        $this->assertCount(2, $reportRecords, 'Equifax report should contain 2 records');
+        $reportRecord = $reportRecords[1];
+        $expectedResult = trim(file_get_contents($expectedResultFilename));
+
+        $this->assertEquals($expectedResult, $reportRecord);
     }
 
     /**
@@ -64,9 +59,10 @@ class TransUnionNegativeReportCase extends BaseTestCase
     {
         return [
             [
-                new \DateTime(),
-                new \DateTime('-1 month'),
-                new \DateTime(),
+                new \DateTime('2014/02/01'),
+                new \DateTime('2014/02/01'),
+                new \DateTime('2014/02/28'),
+                __DIR__.'/../../../Fixtures/Report/equifax.txt'
             ],
         ];
     }

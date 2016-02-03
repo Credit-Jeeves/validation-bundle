@@ -1,21 +1,21 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\Functional\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Tests\Functional\Report\Equifax;
 
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
-use RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport;
+use RentJeeves\CoreBundle\Report\Equifax\EquifaxClosureReport;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Report\RentalReportDataManager;
 
-class TransUnionClosureReportCase extends BaseTestCase
+class EquifaxClosureReportCase extends BaseTestCase
 {
     /**
      * @test
      */
-    public function shouldMakeClosureReportForTransUnion()
+    public function shouldMakeClosureReportForEquifax()
     {
         $this->load(true);
         $em = $this->getEntityManager();
@@ -28,9 +28,9 @@ class TransUnionClosureReportCase extends BaseTestCase
             ]
         );
         $this->assertNotNull($contract, 'No finished contracts found');
-        $contract->setReportToTransUnion(true);
+        $contract->setReportToEquifax(true);
         $oneMonthAgo = new \DateTime('-1 month');
-        $contract->setTransUnionStartAt($oneMonthAgo);
+        $contract->setEquifaxStartAt($oneMonthAgo);
         $today = new \DateTime();
         $contract->setFinishAt($today);
         $em->flush($contract);
@@ -39,22 +39,22 @@ class TransUnionClosureReportCase extends BaseTestCase
             $today,
             $oneMonthAgo,
             $today,
-            CreditBureau::TRANS_UNION,
+            CreditBureau::EQUIFAX,
             RentalReportType::CLOSURE
         );
-        /** @var TransUnionClosureReport $report */
+        /** @var EquifaxClosureReport $report */
         $report = $this->getContainer()->get('rental_report.factory')->getReport($params);
-        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport', $report);
+        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Equifax\EquifaxClosureReport', $report);
         $report->build($params);
 
         $this->assertEquals('rental_1', $report->getSerializationType());
 
-        $expectedReportName = sprintf('transunion-closure_renttrack-%s.txt', $today->format('Ymd'));
+        $expectedReportName = sprintf('equifax-closure_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'rental_1');
         $reportRecords = explode("\n", trim($report));
-        $this->assertCount(2, $reportRecords, 'TU report should contain 2 records: header and 1 finished contract');
+        $this->assertCount(2, $reportRecords, 'Equifax report needs 2 records: header and 1 finished contract');
     }
 }

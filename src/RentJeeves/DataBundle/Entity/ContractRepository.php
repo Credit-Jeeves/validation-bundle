@@ -930,6 +930,76 @@ class ContractRepository extends EntityRepository
     }
 
     /**
+     * @param QueryBuilder $query
+     * @param string $contractAlias
+     * @param \DateTime $reportingStartDate
+     * @return QueryBuilder
+     */
+    protected function whereReportToEquifax(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    {
+        $reportingStartDate->setTime(23, 59, 59);
+
+        $query->andWhere(sprintf(
+            '%s.reportToEquifax = 1 AND %s.equifaxStartAt is not NULL AND %s.equifaxStartAt <= :startDate',
+            $contractAlias,
+            $contractAlias,
+            $contractAlias,
+            $reportingStartDate
+        ));
+        $query->setParameter('startDate', $reportingStartDate);
+
+        return $query;
+    }
+
+    /**
+     * @param \DateTime $month
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForEquifaxPositiveReport(\DateTime $month, \DateTime $startDate, \DateTime $endDate)
+    {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+
+        $query = $this->createQueryBuilder('c');
+        $this->whereReportToEquifax($query, 'c', clone $startDate);
+        $query
+            ->select(
+                'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
+            )
+            ->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0')
+            ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder')
+            ->andWhere('c.status = :current')
+            ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
+            ->andWhere('MONTH(op.paidFor) = :month')
+            ->andWhere('YEAR(op.paidFor) = :year')
+            ->groupBy('c.id, op.paidFor')
+            ->setParameter('current', ContractStatus::CURRENT)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('rent', OperationType::RENT)
+            ->setParameter('completeOrder', OrderStatus::COMPLETE)
+            ->setParameter('month', $month->format('m'))
+            ->setParameter('year', $month->format('Y'));
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return Contract[]
+     */
+    public function getContractsForEquifaxClosureReport(\DateTime $startDate, \DateTime $endDate)
+    {
+        $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
+        $this->whereReportToEquifax($query, 'c', clone $startDate);
+
+        return $query->getQuery()->execute();
+    }
+
+    /**
      * We have test for this query because query not so clear as I want
      * Test name ContractRepositoryCase
      *

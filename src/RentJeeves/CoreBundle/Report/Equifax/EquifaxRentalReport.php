@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Report\Equifax;
 
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Annotation as Serializer;
@@ -8,9 +8,9 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Report\RentalReport;
 use RentJeeves\CoreBundle\Report\RentalReportData;
 
-abstract class TransUnionRentalReport implements RentalReport
+abstract class EquifaxRentalReport implements RentalReport
 {
-    const REPORT_BUREAU = 'transunion';
+    const REPORT_BUREAU = 'equifax';
     const REPORT_TYPE = 'base';
 
     /**
@@ -35,17 +35,18 @@ abstract class TransUnionRentalReport implements RentalReport
     protected $propertyManagementData;
 
     /**
-     * @var TransUnionReportHeader
+     * @var EquifaxReportHeader
      */
     protected $header;
 
     /**
-     * @var array<TransUnionReportRecord>
+     * @var EquifaxReportRecord[]
      */
     protected $records = [];
 
     /**
      * @param EntityManagerInterface $em
+     * @param LoggerInterface $logger
      * @param array $propertyManagementData
      */
     public function __construct(EntityManagerInterface $em, LoggerInterface $logger, array $propertyManagementData = [])
@@ -106,12 +107,15 @@ abstract class TransUnionRentalReport implements RentalReport
     protected function createHeader()
     {
         $lastActivityDate = $this->em->getRepository('RjDataBundle:Contract')->getLastActivityDate();
+        $subCode = isset($this->propertyManagementData['equifax_subcode']) ?
+            $this->propertyManagementData['equifax_subcode'] : '';
         $name = isset($this->propertyManagementData['name']) ? $this->propertyManagementData['name'] : '';
         $address = isset($this->propertyManagementData['address']) ? $this->propertyManagementData['address'] : '';
         $phoneNumber = isset($this->propertyManagementData['phone']) ? $this->propertyManagementData['phone'] : '';
 
-        $this->header = new TransUnionReportHeader();
+        $this->header = new EquifaxReportHeader();
         $this->header->setActivityDate(new \DateTime($lastActivityDate));
+        $this->header->setPropertyManagementSubCode($subCode);
         $this->header->setPropertyManagementName($name);
         $this->header->setPropertyManagementAddress($address);
         $this->header->setPropertyManagementPhone($phoneNumber);
@@ -119,7 +123,6 @@ abstract class TransUnionRentalReport implements RentalReport
 
     /**
      * @param RentalReportData $params
-     * @return void
      */
     abstract protected function createRecords(RentalReportData $params);
 }

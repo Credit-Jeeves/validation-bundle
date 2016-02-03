@@ -21,6 +21,8 @@ fixtures:
         transUnionStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
         paidTo:    'now'
         startAt:   'now'
         finishAt:  '3 months'
@@ -88,6 +90,8 @@ fixtures:
         transUnionStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
         status:   approved
         paidTo:  '-1 days'
         startAt:   '-9 month -5 days'
@@ -106,6 +110,8 @@ fixtures:
         transUnionStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
         paidTo:  '20 days'
         startAt:   '-90 days'
         finishAt: '-20 days'
@@ -299,6 +305,8 @@ fixtures:
         transUnionStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
         paidTo:    '-27 days'
         startAt:   '2015-01-01'
         finishAt:  '2018-01-01'
