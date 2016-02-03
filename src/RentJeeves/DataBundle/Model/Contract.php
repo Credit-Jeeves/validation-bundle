@@ -258,7 +258,6 @@ abstract class Contract
      * @ORM\Column(
      *     name="report_to_equifax",
      *     type="boolean",
-     *     nullable=true,
      *     options={
      *         "default"="0"
      *     }
