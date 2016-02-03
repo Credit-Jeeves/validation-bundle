@@ -4,6 +4,7 @@ namespace RentJeeves\TenantBundle\Command;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\UserSettings;
 use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
@@ -28,7 +29,7 @@ class ScoreTrackCommand extends ContainerAwareCommand
         /** @var $em EntityManager */
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
         $usersSettings = $em->getRepository('RjDataBundle:UserSettings')
-            ->getUsersSettingsForCreditTrackByTodayDueDay();
+            ->getUserSettingsForCreditTrackByTodayDueDay();
 
         $paymentAccounts = 0;
         $reports = 0;
