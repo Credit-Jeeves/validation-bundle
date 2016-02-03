@@ -3,6 +3,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -49,13 +50,16 @@ class CreditTrackController extends Controller
         if ($user->getSettings()->isCreditTrack()) {
             $chargeDay = $user->getSettings()->getCreditTrackEnabledAt()->format('j');
         }
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
 
-        return array(
+        return [
             'paymentGroupJson' => $group,
             'paymentAccountsJson' => $paymentAccounts,
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chargeDay' => $chargeDay,
-        );
+            'scoreTrackFreeUntil' => $projectSettings->getScoreTrackFreeUntil(),
+        ];
     }
 
     /**
@@ -80,10 +84,12 @@ class CreditTrackController extends Controller
             );
         }
         $settings = $user->getSettings();
-        $isFreeEnabled = $this->container->getParameter('score_track.is_free_enabled');
-        $freeUntilMonth = $this->container->getParameter('score_track.free_until');
-        if ($settings->isCreditTrack() && $isFreeEnabled && $freeUntilMonth > 0) {
-            $settings->setScoreTrackFreeUntil(new \DateTime(sprintf('+%s month', $freeUntilMonth)));
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+        if ($settings->isCreditTrack() && $projectSettings->getScoreTrackFreeUntil() > 0) {
+            $settings->setScoreTrackFreeUntil(
+                new \DateTime(sprintf('+%s month', $projectSettings->getScoreTrackFreeUntil()))
+            );
         }
 
         if ($settings->isCreditTrack()) {
@@ -134,7 +140,10 @@ class CreditTrackController extends Controller
      */
     public function promoboxAction()
     {
-        return array();
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+
+        return ['scoreTrackFreeUntil' => $projectSettings->getScoreTrackFreeUntil()];
     }
 
     /**

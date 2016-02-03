@@ -24,12 +24,12 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            {% if score_track.is_free_enabled %}
+            {% if scoreTrackFreeUntil > 0 %}
                 <div class="information-box pie-el">
                     {{
                         'credittrack.message_for_payment.first_step'|trans(
                             {
-                                "%month%": score_track.free_until,
+                                "%month%": scoreTrackFreeUntil,
                                 "%dollars%": credittrack_payment_per_month_dollars,
                                 "%cents%": credittrack_payment_per_month_cents
                             },
@@ -75,12 +75,12 @@
         </div>
 
         <div data-bind="visible: 'pay' == step()" id="id-pay-step">
-            {% if score_track.is_free_enabled %}
+            {% if scoreTrackFreeUntil > 0 %}
                 <div class="information-box pie-el">
                     {{
                     'credittrack.message_for_payment.second_step'|trans(
                         {
-                            "%month%": score_track.free_until,
+                            "%month%": scoreTrackFreeUntil,
                             "%dollars%": credittrack_payment_per_month_dollars,
                             "%cents%": credittrack_payment_per_month_cents
                         },
@@ -101,7 +101,7 @@
                         <label>{{ 'credittrack.pay.amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value">
-                                {% if score_track.is_free_enabled %}
+                                {% if scoreTrackFreeUntil > 0 %}
                                     {{ 'common.free'|trans }}
                                 {% else %}
                                     {{ credittrack_payment_per_month }}
@@ -118,7 +118,7 @@
                         </div>
                     </div>
                     <br />
-                    {% if score_track.is_free_enabled == false %}
+                    {% if scoreTrackFreeUntil == 0 %}
                         <h4>{{ 'note' | trans }}</h4>
                         <p>{{ 'credittrack.pay.note' | trans}}</p>
                     {% endif %}

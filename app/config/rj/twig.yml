@@ -7,6 +7,3 @@ twig:
         serverName: '%server_name_rj%'
         external_urls: %external_urls%
         support_email: '%support_email%'
-        score_track:
-            is_free_enabled: %score_track.is_free_enabled% #1 enable 0 disable
-            free_until: %score_track.free_until% # quantity of month

@@ -12,6 +12,7 @@ use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSt
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -149,15 +150,18 @@ class PaymentCommandsCase extends BaseTestCase
         $commandTester->execute(
             ['command' => $command->getName()]
         );
-        $job = $this->getEntityManager()->createQueryBuilder()
-            ->select()
-            ->from('RjDataBundle:JobRelatedCreditTrack')
-            ->getFirstResult();
+
+        $jobsRelatedCreditTrack = $this->getEntityManager()->getRepository('RjDataBundle:JobRelatedCreditTrack')
+            ->findAll();
+
         // if today is 31, just skip this test (fixtures can't work correctly for 31st)
         $today = new DateTime();
         if (31 == $today->format('j')) {
-            $this->assertEmpty($job);
+            $this->assertEmpty($jobsRelatedCreditTrack);
         } else {
+            /** @var JobRelatedCreditTrack $jobRelatedCreditTrack */
+            $jobRelatedCreditTrack = reset($jobsRelatedCreditTrack);
+            $job = $jobRelatedCreditTrack->getJob();
             $commandTester = $this->executePayCommand($job->getId());
 
             $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
