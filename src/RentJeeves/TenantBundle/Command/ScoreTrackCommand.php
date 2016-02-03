@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
+use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use RentJeeves\DataBundle\Entity\UserSettings;
 use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -40,6 +41,7 @@ class ScoreTrackCommand extends ContainerAwareCommand
                 $report = $this->getReport();
                 $report->setUser($userSettings->getUser());
                 $job->addRelatedEntity($report);
+                $em->persist($report);
                 $em->persist($job);
                 $reports++;
             } else {

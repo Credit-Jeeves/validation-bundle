@@ -86,7 +86,7 @@ class CreditTrackController extends Controller
         $settings = $user->getSettings();
         /** @var Settings $projectSettings */
         $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
-        if ($settings->isCreditTrack() && $projectSettings->getScoreTrackFreeUntil() > 0) {
+        if (!$settings->isCreditTrack() && $projectSettings->getScoreTrackFreeUntil() > 0) {
             $settings->setScoreTrackFreeUntil(
                 new \DateTime(sprintf('+%s month', $projectSettings->getScoreTrackFreeUntil()))
             );
