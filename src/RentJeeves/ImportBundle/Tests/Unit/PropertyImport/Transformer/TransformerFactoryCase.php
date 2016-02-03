@@ -171,11 +171,12 @@ class TransformerFactoryCase extends UnitTestBase
             ->method('getRepository')
             ->will($this->returnValue($repoMock));
 
+        $mriTransformer = new MRITransformer($this->getEntityManagerMock(), $this->getLoggerMock());
         $factory = new TransformerFactory(
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $mriTransformer]
         );
 
         $transformer = $factory->getTransformer($group, 'test');
