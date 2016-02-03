@@ -180,7 +180,7 @@
             <trans-unit id="credittrack.promo.free">
                 <source>credittrack.promo.free</source>
                 <target>
-                    <![CDATA[<div class="free_for_month">Free for<br /> <span class="integer">%month%</span> <br /> month</div>]]>
+                    <![CDATA[{1}Free for<br /> <span class="integer">%month%</span> <br /> Month|[2,Inf]Free for <br /> <span class="integer">%month%</span> <br /> Months]]>
                 </target>
             </trans-unit>
             <trans-unit id="credittrack.message_for_payment.first_step">

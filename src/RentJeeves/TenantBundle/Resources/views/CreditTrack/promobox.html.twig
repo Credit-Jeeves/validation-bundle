@@ -16,14 +16,17 @@
     </div>
 
     <div class="price">
-        {% if score_track.is_free_enabled and score_track.free_until > 0 %}
-            {{
-                'credittrack.promo.free'|trans(
-                    {
-                        '%month%': score_track.free_until
-                    }
-                )|raw
-            }}
+        {% if score_track.is_free_enabled %}
+            <div class="free_for_month">
+                {{
+                    'credittrack.promo.free'|transchoice(
+                        score_track.free_until,
+                        {
+                            '%month%': score_track.free_until
+                        }
+                    )|raw
+                }}
+            </div>
         {% else %}
             {{ 'credittrack.promo.amount' | trans(
                     {
