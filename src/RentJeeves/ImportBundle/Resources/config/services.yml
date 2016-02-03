@@ -59,6 +59,13 @@ services:
             - @amsi.resident_data
             - @monolog.logger.property_import
 
+    import.property.extractor.resman:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor
+        public: false
+        arguments:
+            - @resman.resident_data
+            - @monolog.logger.property_import
+
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
         public: false

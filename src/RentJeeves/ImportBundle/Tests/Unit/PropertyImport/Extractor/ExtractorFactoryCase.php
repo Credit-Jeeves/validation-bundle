@@ -6,6 +6,7 @@ use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -34,6 +35,7 @@ class ExtractorFactoryCase extends UnitTestBase
             [AccountingSystem::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
             [AccountingSystem::YARDI_VOYAGER, '\RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor'],
             [AccountingSystem::AMSI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor'],
+            [AccountingSystem::RESMAN, '\RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor'],
         ];
     }
 
@@ -51,6 +53,7 @@ class ExtractorFactoryCase extends UnitTestBase
                 AccountingSystem::MRI => $this->getMriExtractorMock(),
                 AccountingSystem::YARDI_VOYAGER => $this->getYardiExtractorMock(),
                 AccountingSystem::AMSI => $this->getAMSIExtractorMock(),
+                AccountingSystem::RESMAN => $this->getResmanExtractorMock(),
             ]
         );
         $extractor = $factory->getExtractor($extractorName);
@@ -80,5 +83,13 @@ class ExtractorFactoryCase extends UnitTestBase
     protected function getAMSIExtractorMock()
     {
         return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|ResmanExtractor
+     */
+    protected function getResmanExtractorMock()
+    {
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor');
     }
 }

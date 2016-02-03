@@ -40,7 +40,7 @@ class YardiExtractor implements ExtractorInterface
     {
         $this->logger->info(
             sprintf(
-                'Starting process extractData for extPropertyId#%s',
+                'Starting process Yardi extractData for extPropertyId#%s',
                 $externalPropertyId
             ),
             ['group_id' => $group->getId()]
