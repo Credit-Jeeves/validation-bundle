@@ -3,15 +3,15 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc;
+use RentJeeves\CoreBundle\Command\BaseCommand;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RegisterContractToProfitStarsCommand extends ContainerAwareCommand
+class RegisterContractToProfitStarsCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -77,14 +77,6 @@ class RegisterContractToProfitStarsCommand extends ContainerAwareCommand
     protected function getDepositAccount($depositAccountId)
     {
         return $this->getEntityManager()->find('RjDataBundle:DepositAccount', $depositAccountId);
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    protected function getEntityManager()
-    {
-        return $this->getContainer()->get('doctrine')->getManager();
     }
 
     /**

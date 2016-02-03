@@ -65,7 +65,10 @@ class CreditTrackCase extends BaseTestCase
     {
         $this->enterSignupFlow();
 
-        $this->session->wait($this->timeout, "$('#id-source-step .payment-accounts a.checkout-plus').is(':visible')");
+        $this->session->wait(
+            $this->timeout,
+            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
+        );
         $link = $this->page->find('css', '#id-source-step .payment-accounts a.checkout-plus');
         $link->click();
 
@@ -88,8 +91,16 @@ class CreditTrackCase extends BaseTestCase
     public function existingAccountSignup()
     {
         $this->enterSignupFlow();
-        $this->page->find('css', '#id-source-step .payment-accounts label:nth-of-type(1)')->click();
+        $this->session->wait(
+            $this->timeout,
+            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
+        );
+        $existingAccounts = $this->page->findAll('css', '#id-source-step .payment-accounts label.checkbox.radio');
+        $this->assertCount(2, $existingAccounts, 'Expected 2 existing payment accounts');
+        $existingAccounts[0]->click();
+
         $this->page->pressButton('pay_popup.step.next');
+
         $this->session->wait($this->timeout, "$('#id-pay-step').is(':visible')");
 
         $this->page->pressButton('checkout.make_payment');

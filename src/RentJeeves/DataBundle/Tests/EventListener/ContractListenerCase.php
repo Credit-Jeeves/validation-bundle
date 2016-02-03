@@ -257,6 +257,10 @@ class ContractListenerCase extends Base
         $depositAccount2->setStatus(DepositAccountStatus::DA_COMPLETE);
         $group->addDepositAccount($depositAccount2);
         $em->persist($depositAccount2);
+        $em->flush();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertCount(4, $jobs, 'Should exist 4 jobs in the fixtures');
 
         $contract = new Contract();
         $contract->setGroup($group);
@@ -271,18 +275,15 @@ class ContractListenerCase extends Base
         $contract->setStatus(ContractStatus::APPROVED);
         $em->persist($contract);
 
-        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
-        $this->assertCount(2, $jobs, 'Should exist 2 jobs in the fixtures');
-
         $em->flush();
         $em->clear();
 
         $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
-        $this->assertCount(4, $jobs, 'Should exist 4 jobs: +2 new jobs for 2 ProfitStars deposit accounts');
-        $this->assertNotEmpty($jobs[2], 'Job[2] should exist');
-        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[2]->getCommand());
-        $this->assertNotEmpty($jobs[3], 'Job[3] should exist');
-        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[3]->getCommand());
+        $this->assertCount(6, $jobs, 'Should exist 6 jobs: +2 new jobs for 2 ProfitStars deposit accounts');
+        $this->assertNotEmpty($jobs[4], 'Job[4] should exist');
+        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[4]->getCommand());
+        $this->assertNotEmpty($jobs[5], 'Job[5] should exist');
+        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[5]->getCommand());
     }
 
     /**

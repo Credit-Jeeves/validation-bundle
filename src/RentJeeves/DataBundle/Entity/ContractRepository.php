@@ -1550,4 +1550,42 @@ class ContractRepository extends EntityRepository
 
         return array_map('current', $result);
     }
+
+    /**
+     * @param Group $group
+     * @return int
+     */
+    public function getCountActiveWithGroup(Group $group)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->where('c.group = :group')
+            ->andWhere('c.status not in (:statuses)')
+            ->setParameter('group', $group)
+            ->setParameter('statuses', [ContractStatus::FINISHED, ContractStatus::DELETED])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param Group $group
+     * @param int $page
+     * @param int $limit
+     * @return Contract[]
+     */
+    public function getActiveWithGroup(Group $group, $page, $limit)
+    {
+        $offset = ($page - 1) * $limit;
+        return $this->createQueryBuilder('c')
+            ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
+            ->orderBy('c.id', 'ASC')
+            ->where('c.group = :group')
+            ->andWhere('c.status not in (:statuses)')
+            ->setParameter('group', $group)
+            ->setParameter('statuses', [ContractStatus::FINISHED, ContractStatus::DELETED])
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->execute();
+    }
 }
