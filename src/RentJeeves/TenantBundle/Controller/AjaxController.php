@@ -51,6 +51,7 @@ class AjaxController extends Controller
         $contractId = $request->request->get('contractId');
         $reportToExperian = $request->request->get('experianReporting') === 'true';
         $reportToTransUnion = $request->request->get('transUnionReporting') === 'true';
+        $reportToEquifax = $request->request->get('equifaxReporting') === 'true';
 
         /** @var Contract $contract */
         $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId);
@@ -60,6 +61,7 @@ class AjaxController extends Controller
 
         $contract->setReportToExperian($reportToExperian);
         $contract->setReportToTransUnion($reportToTransUnion);
+        $contract->setReportToEquifax($reportToEquifax);
 
         // if reporting is being turning on for the first time - set start date
         $now = new DateTime();
@@ -69,6 +71,10 @@ class AjaxController extends Controller
 
         if (!$contract->getTransUnionStartAt() && $reportToTransUnion) {
             $contract->setTransUnionStartAt($now);
+        }
+
+        if (!$contract->getEquifaxStartAt() && $reportToEquifax) {
+            $contract->setEquifaxStartAt($now);
         }
 
         $em = $this->getDoctrine()->getManager();

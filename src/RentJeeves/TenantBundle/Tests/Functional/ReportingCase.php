@@ -22,10 +22,11 @@ class ReportingCase extends BaseTestCase
         );
         $this->fillForm(
             $form,
-            array(
+            [
                 'rep-experian'  => true,
                 'rep-tu'    => true,
-            )
+                'rep-equifax' => true
+            ]
         );
 
         $this->assertNotNull($button = $this->page->find('css', '#reporting-form a.button-link'));
@@ -35,8 +36,9 @@ class ReportingCase extends BaseTestCase
         $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));
         $link->click();
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '.reporting-start input[type=checkbox]'));
-        $this->assertEquals(2, count($checkboxes));
+        $this->assertEquals(3, count($checkboxes));
         $this->assertTrue($checkboxes[0]->isChecked());
         $this->assertTrue($checkboxes[1]->isChecked());
+        $this->assertTrue($checkboxes[2]->isChecked());
     }
 }

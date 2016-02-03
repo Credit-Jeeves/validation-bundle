@@ -256,6 +256,17 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     name="report_to_equifax",
+     *     type="boolean",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $reportToEquifax = 0;
+
+    /**
+     * @ORM\Column(
      *     name="experian_start_at",
      *     type="date",
      *     nullable=true
@@ -271,6 +282,15 @@ abstract class Contract
      * )
      */
     protected $transUnionStartAt;
+
+    /**
+     * @ORM\Column(
+     *     name="equifax_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $equifaxStartAt;
 
     /**
      * @ORM\Column(name="due_date", type="integer", nullable=true)
@@ -407,6 +427,38 @@ abstract class Contract
         $this->payments = new ArrayCollection();
         $this->histories = new ArrayCollection();
         $this->profitStarsRegisteredContracts = new ArrayCollection();
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getEquifaxStartAt()
+    {
+        return $this->equifaxStartAt;
+    }
+
+    /**
+     * @param \DateTime|null $equifaxStartAt
+     */
+    public function setEquifaxStartAt($equifaxStartAt)
+    {
+        $this->equifaxStartAt = $equifaxStartAt;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToEquifax()
+    {
+        return $this->reportToEquifax;
+    }
+
+    /**
+     * @param boolean $reportToEquifax
+     */
+    public function setReportToEquifax($reportToEquifax)
+    {
+        $this->reportToEquifax = $reportToEquifax;
     }
 
     /**

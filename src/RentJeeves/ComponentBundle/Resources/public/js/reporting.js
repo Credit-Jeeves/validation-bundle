@@ -11,6 +11,8 @@ $(document).ready(function(){
         var id = this.id.split('-')[2];
         var experianFlag = $('#reportExperian-' + id).is(':checked');
         var transUnionFlag = $('#reportTU-' + id).is(':checked');
+        var equifaxFlag = $('#equifax-' + id).is(':checked');
+
         $.ajax({
             url: Routing.generate('tenant_contract_reporting'),
             type: 'POST',
@@ -18,7 +20,8 @@ $(document).ready(function(){
             data: {
                 contractId : id,
                 experianReporting: experianFlag,
-                transUnionReporting: transUnionFlag
+                transUnionReporting: transUnionFlag,
+                equifaxReporting: equifaxFlag
             },
             success: function() {
                 $('#reporting-start-' + id).dialog('close');

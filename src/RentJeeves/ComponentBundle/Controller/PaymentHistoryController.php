@@ -60,6 +60,7 @@ class PaymentHistoryController extends Controller
             $item['tenant'] = $contract->getTenant()->getFullName();
             $item['reporting']['experian'] = $contract->getReportToExperian();
             $item['reporting']['trans_union'] = $contract->getReportToTransUnion();
+            $item['reporting']['equifax'] = $contract->getReportToEquifax();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
                     $history = $contract->getFuturePaymentHistory($em);
