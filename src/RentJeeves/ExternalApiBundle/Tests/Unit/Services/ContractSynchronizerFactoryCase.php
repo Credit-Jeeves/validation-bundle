@@ -136,6 +136,7 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
     {
         $holding = $this->getMock('CreditJeeves\DataBundle\Entity\Holding');
         $holding->expects($this->any())->method('getAccountingSystem')->willReturn(AccountingSystem::NONE);
+        $holding->expects($this->any())->method('isApiIntegrated')->willReturn(false);
         $this->factory->getSynchronizerByHolding($holding);
     }
 }
