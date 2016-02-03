@@ -49,6 +49,11 @@ class PreciseIDQuestions
     protected $questionsData = array();
 
     /**
+     * @var int
+     */
+    protected $lifetimeMinutes = 10;
+
+    /**
      * @InjectParams({
      *     "preciseIDApi"       = @Inject("experian.net_connect.precise_id"),
      *     "securityContext"    = @Inject("security.context"),
@@ -56,7 +61,8 @@ class PreciseIDQuestions
      *     "translator"         = @Inject("translator"),
      *     "supportEmail"       = @Inject("%support_email%"),
      *     "externalUrls"       = @Inject("%external_urls%"),
-     *     "em"                 = @Inject("doctrine.orm.entity_manager")
+     *     "em"                 = @Inject("doctrine.orm.entity_manager"),
+     *     "lifetimeMinutes"    = @Inject("%pidkiq.lifetime.minutes%")
      * })
      */
     public function __construct(
@@ -66,7 +72,8 @@ class PreciseIDQuestions
         $translator,
         $supportEmail,
         $externalUrls,
-        $em
+        $em,
+        $lifetimeMinutes
     ) {
         $this->preciseIDApi = $preciseIDApi;
         $this->securityContext = $securityContext;
@@ -75,6 +82,7 @@ class PreciseIDQuestions
         $this->options['support_email'] = $supportEmail;
         $this->options['external_urls'] = $externalUrls;
         $this->em = $em;
+        $this->lifetimeMinutes = (int) $lifetimeMinutes ?: $this->lifetimeMinutes;
     }
 
     public function isValidUser()
@@ -196,7 +204,12 @@ class PreciseIDQuestions
                         $this->error = $e->getErrorWsdl();
                         break;
                     case E_USER_ERROR:
-                        $this->error = $this->translator->trans('pidkiq.error.attempts');
+                        $this->error = $this->translator->trans(
+                            'pidkiq.error.attempts',
+                            [
+                                '%LIFETIME_MINUTES%' => $this->lifetimeMinutes,
+                            ]
+                        );
                         break;
                     case E_ERROR:
                         $this->error = $this->translator->trans(
