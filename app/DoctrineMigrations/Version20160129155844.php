@@ -55,7 +55,7 @@ class Version20160129155844 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE cj_settings
-                ADD score_track_free_until INT DEFAULT NULL"
+                ADD scoretrack_free_until INT DEFAULT NULL"
         );
     }
 
@@ -88,7 +88,7 @@ class Version20160129155844 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE cj_settings
-                DROP score_track_free_until"
+                DROP scoretrack_free_until"
         );
     }
 }

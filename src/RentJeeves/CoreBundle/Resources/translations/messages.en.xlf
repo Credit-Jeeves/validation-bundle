@@ -3328,8 +3328,8 @@
                 <source>common.free</source>
                 <target>Free</target>
             </trans-unit>
-            <trans-unit id="common.tenant.credit_history_dashboard">
-                <source>common.tenant.credit_history_dashboard</source>
+            <trans-unit id="tenant.credit_history_dashboard">
+                <source>tenant.credit_history_dashboard</source>
                 <target>Tenant Credit History Dashboard</target>
             </trans-unit>
         </body>

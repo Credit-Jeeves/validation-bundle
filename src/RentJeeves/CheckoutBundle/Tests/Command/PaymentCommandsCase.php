@@ -184,7 +184,7 @@ class PaymentCommandsCase extends BaseTestCase
             'tenant11@example.com'
         );
         $this->assertNotEmpty($tenant, 'Tenant should be in the fixtures');
-        $tenant->getSettings()->setScoreTrackFreeUntil(new \DateTime('+2 month'));
+        $tenant->getSettings()->setScoretrackFreeUntil(new \DateTime('+2 month'));
         $this->getEntityManager()->flush();
 
         $application = new Application($this->getKernel());

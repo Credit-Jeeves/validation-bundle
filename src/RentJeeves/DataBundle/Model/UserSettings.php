@@ -59,23 +59,23 @@ abstract class UserSettings
      *
      * @var \DateTime|null
      */
-    protected $scoreTrackFreeUntil;
+    protected $scoretrackFreeUntil;
 
 
     /**
      * @return \DateTime|null
      */
-    public function getScoreTrackFreeUntil()
+    public function getScoretrackFreeUntil()
     {
-        return $this->scoreTrackFreeUntil;
+        return $this->scoretrackFreeUntil;
     }
 
     /**
-     * @param \DateTime $scoreTrackFreeUntil
+     * @param \DateTime $scoretrackFreeUntil
      */
-    public function setScoreTrackFreeUntil(\DateTime $scoreTrackFreeUntil)
+    public function setScoretrackFreeUntil(\DateTime $scoretrackFreeUntil)
     {
-        $this->scoreTrackFreeUntil = $scoreTrackFreeUntil;
+        $this->scoretrackFreeUntil = $scoretrackFreeUntil;
     }
 
     /**

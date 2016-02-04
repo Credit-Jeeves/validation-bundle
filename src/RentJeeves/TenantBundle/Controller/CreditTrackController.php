@@ -58,7 +58,7 @@ class CreditTrackController extends Controller
             'paymentAccountsJson' => $paymentAccounts,
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chargeDay' => $chargeDay,
-            'scoreTrackFreeUntil' => $projectSettings->getScoreTrackFreeUntil(),
+            'scoreTrackFreeUntil' => $projectSettings->getScoretrackFreeUntil(),
         ];
     }
 
@@ -86,9 +86,9 @@ class CreditTrackController extends Controller
         $settings = $user->getSettings();
         /** @var Settings $projectSettings */
         $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
-        if (!$settings->isCreditTrack() && $projectSettings->getScoreTrackFreeUntil() > 0) {
-            $settings->setScoreTrackFreeUntil(
-                new \DateTime(sprintf('+%s month', $projectSettings->getScoreTrackFreeUntil()))
+        if (!$settings->isCreditTrack() && $projectSettings->getScoretrackFreeUntil() > 0) {
+            $settings->setScoretrackFreeUntil(
+                new \DateTime(sprintf('+%s month', $projectSettings->getScoretrackFreeUntil()))
             );
         }
 
@@ -143,7 +143,7 @@ class CreditTrackController extends Controller
         /** @var Settings $projectSettings */
         $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
 
-        return ['scoreTrackFreeUntil' => $projectSettings->getScoreTrackFreeUntil()];
+        return ['scoreTrackFreeUntil' => $projectSettings->getScoretrackFreeUntil()];
     }
 
     /**

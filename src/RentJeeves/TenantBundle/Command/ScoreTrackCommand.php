@@ -57,7 +57,6 @@ class ScoreTrackCommand extends ContainerAwareCommand
         $em->flush();
         $logger->info(sprintf('%d payments added to queue', $paymentAccounts));
         $logger->info(sprintf('%d get reports added to queue', $paymentAccounts));
-        $logger->info('OK');
     }
 
     /**

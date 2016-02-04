@@ -58,10 +58,10 @@ abstract class Settings
     protected $updatedAt;
 
     /**
-     * @ORM\Column(name="score_track_free_until", type="integer", nullable=true)
+     * @ORM\Column(name="scoretrack_free_until", type="integer", nullable=true)
      * @var integer
      */
-    protected $scoreTrackFreeUntil;
+    protected $scoretrackFreeUntil;
 
     /**
      * @return integer
@@ -74,17 +74,17 @@ abstract class Settings
     /**
      * @return integer
      */
-    public function getScoreTrackFreeUntil()
+    public function getScoretrackFreeUntil()
     {
-        return $this->scoreTrackFreeUntil;
+        return $this->scoretrackFreeUntil;
     }
 
     /**
-     * @param integer $scoreTrackFreeUntil
+     * @param integer $scoretrackFreeUntil
      */
-    public function setScoreTrackFreeUntil($scoreTrackFreeUntil)
+    public function setScoretrackFreeUntil($scoretrackFreeUntil)
     {
-        $this->scoreTrackFreeUntil = $scoreTrackFreeUntil;
+        $this->scoretrackFreeUntil = $scoretrackFreeUntil;
     }
 
     /**

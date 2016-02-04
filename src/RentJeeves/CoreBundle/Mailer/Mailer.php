@@ -595,11 +595,11 @@ class Mailer extends BaseMailer
     /**
      * @return bool
      */
-    public function sendFreeReportReceipt(Tenant $tenant)
+    public function sendFreeReportUpdated(Tenant $tenant)
     {
         return $this->sendEmail(
             $tenant,
-            'rjFreeReportReceipt',
+            'rjFreeReportUpdated',
             [
                 'tenantFirstName' => $tenant->getFirstName(),
                 'dashboardLink' => $this->container->get('router')->generate('tenant_summary', [], true)

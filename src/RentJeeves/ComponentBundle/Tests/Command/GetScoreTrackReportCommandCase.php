@@ -39,7 +39,7 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         $em = $this->getEntityManager();
         /** @var Tenant $user */
         $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('marion@rentrack.com');
-        $user->getSettings()->setScoreTrackFreeUntil($scoreTrackFreeDate);
+        $user->getSettings()->setScoretrackFreeUntil($scoreTrackFreeDate);
         $report = new ReportPrequal();
         $report->setUser($user);
         $report->setRawData('');

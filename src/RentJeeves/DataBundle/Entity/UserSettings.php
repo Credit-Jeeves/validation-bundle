@@ -39,7 +39,7 @@ class UserSettings extends Base
      */
     public function isScoreTrackFree()
     {
-        $scoreTrackFreeUntil = $this->getScoreTrackFreeUntil();
+        $scoreTrackFreeUntil = $this->getScoretrackFreeUntil();
         if (empty($scoreTrackFreeUntil)) {
             return false;
         }

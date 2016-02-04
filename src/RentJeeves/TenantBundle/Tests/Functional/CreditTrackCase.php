@@ -177,11 +177,11 @@ class CreditTrackCase extends BaseTestCase
         $this->load(true);
         /** @var Settings $projectSettings */
         $projectSettings = $this->getEntityManager()->getRepository('DataBundle:Settings')->findOneBy([]);
-        $projectSettings->setScoreTrackFreeUntil(6);
         $this->assertNotEmpty($projectSettings, 'We should have settings');
+        $projectSettings->setScoretrackFreeUntil(3);
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
-        $this->assertEmpty($tenant->getSettings()->getScoreTrackFreeUntil(), 'Should be empty option in fixture');
+        $this->assertEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be empty option in fixture');
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
         $this->setDefaultSession('selenium2');
@@ -210,10 +210,10 @@ class CreditTrackCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
-        $this->assertNotEmpty($tenant->getSettings()->getScoreTrackFreeUntil(), 'Should be filled with Date');
-        $scoreTrackUntil = new \DateTime('+6 month');
+        $this->assertNotEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be filled with Date');
+        $scoreTrackUntil = new \DateTime('+3 month');
         $scoreTrackUntil->setTime(0, 0, 0);
-        $scoreTrackUntilInDb = $tenant->getSettings()->getScoreTrackFreeUntil();
+        $scoreTrackUntilInDb = $tenant->getSettings()->getScoretrackFreeUntil();
         $this->assertEquals(
             $scoreTrackUntil->format(\DateTime::ISO8601),
             $scoreTrackUntilInDb->format(\DateTime::ISO8601),
