@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\ExternalApiBundle\Services\ResMan\ResidentDataManager;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -101,7 +102,7 @@ class ResmanExtractorCase extends UnitTestBase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\ExternalApiBundle\Services\Resman\ResidentDataManager
+     * @return \PHPUnit_Framework_MockObject_MockObject|ResidentDataManager
      */
     protected function getResmanResidentDataManagerMock()
     {
