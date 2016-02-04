@@ -4,17 +4,17 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
-use RentJeeves\DataBundle\Entity\AMSISettings;
-use RentJeeves\ExternalApiBundle\Services\AMSI\ResidentDataManager as AMSIResidentDataManager;
+use RentJeeves\DataBundle\Entity\ResManSettings;
+use RentJeeves\ExternalApiBundle\Services\ResMan\ResidentDataManager as ResmanResidentDataManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 
 /**
- * Service`s name "import.property.extractor.amsi"
+ * Service`s name "import.property.extractor.resman"
  */
-class AMSIExtractor implements ExtractorInterface
+class ResmanExtractor implements ExtractorInterface
 {
     /**
-     * @var AMSIResidentDataManager
+     * @var ResmanResidentDataManager
      */
     protected $residentDataManager;
 
@@ -24,10 +24,10 @@ class AMSIExtractor implements ExtractorInterface
     protected $logger;
 
     /**
-     * @param AMSIResidentDataManager $residentDataManager
-     * @param LoggerInterface         $logger
+     * @param ResmanResidentDataManager $residentDataManager
+     * @param LoggerInterface        $logger
      */
-    public function __construct(AMSIResidentDataManager $residentDataManager, LoggerInterface $logger)
+    public function __construct(ResmanResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
         $this->residentDataManager = $residentDataManager;
         $this->logger = $logger;
@@ -40,15 +40,15 @@ class AMSIExtractor implements ExtractorInterface
     {
         $this->logger->info(
             sprintf(
-                'Starting process AMSI extractData for extPropertyId#%s',
+                'Starting process Resman extractData for extPropertyId#%s',
                 $externalPropertyId
             ),
             ['group_id' => $group->getId()]
         );
 
-        if (!$group->getIntegratedApiSettings() instanceof AMSISettings) {
+        if (!$group->getIntegratedApiSettings() instanceof ResManSettings) {
             $this->logger->warning(
-                $message = 'Group has incorrect settings for AMSIExtractor.',
+                $message = 'Group has incorrect settings for ResmanExtractor.',
                 ['group_id' => $group->getId()]
             );
 
@@ -62,7 +62,7 @@ class AMSIExtractor implements ExtractorInterface
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
-                    'Can`t get data from AMSI for ExternalPropertyId="%s". Details: %s',
+                    'Can`t get data from Resman for ExternalPropertyId="%s". Details: %s',
                     $externalPropertyId,
                     $e->getMessage()
                 ),
