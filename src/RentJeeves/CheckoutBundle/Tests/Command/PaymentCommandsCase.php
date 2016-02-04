@@ -176,7 +176,6 @@ class PaymentCommandsCase extends BaseTestCase
 
     /**
      * @test
-     * @TODO need use User which we have possibility to get report
      */
     public function collectScoreTrackGetReport()
     {
@@ -205,24 +204,16 @@ class PaymentCommandsCase extends BaseTestCase
         if (31 == $today->format('j')) {
             $this->assertEmpty($JobsRelatedReport);
         }
-        /** @var JobRelatedReport $JobRelatedReport */
-        $JobRelatedReport = reset($JobsRelatedReport);
-        $job = $JobRelatedReport->getJob();
-        $this->assertEquals('score-track:get-report', $job->getCommand(), 'Should be equals with get report');
-
-        $application = new Application($this->getKernel());
-        $application->add(new GetScoreTrackReportCommand());
-
-        $command = $application->find($job->getCommand());
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            [
-                'command' => $command->getName(),
-                '--jms-job-id' => $job->getId(),
-            ]
+        /** @var JobRelatedReport $jobRelatedReport */
+        $jobRelatedReport = reset($JobsRelatedReport);
+        $job = $jobRelatedReport->getJob();
+        $this->assertEquals(
+            'tenant11@example.com',
+            $jobRelatedReport->getReport()->getUser()->getEmail(),
+            'By fixture we should get tenant11@example.com'
         );
-
-        $this->assertEquals('Doesn\'t have report for update', $commandTester->getDisplay());
+        $this->assertEquals('', $jobRelatedReport->getReport()->getRawData(), 'Should be empty string.');
+        $this->assertEquals('score-track:get-report', $job->getCommand(), 'Should be equals with get report');
     }
 
     /**
