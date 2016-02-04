@@ -27,6 +27,7 @@ services:
             -
               %accounting_system.mri%: @import.property.transformer.mri
               %accounting_system.yardi%: @import.property.extractor.yardi
+              %accounting_system.amsi%: @import.property.extractor.amsi
 
     # services
     import.property.manager:
@@ -51,6 +52,13 @@ services:
             - @yardi.resident_data
             - @monolog.logger.property_import
 
+    import.property.extractor.amsi:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor
+        public: false
+        arguments:
+            - @amsi.resident_data
+            - @monolog.logger.property_import
+
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
         public: false
@@ -66,10 +74,3 @@ services:
             - @property.manager
             - @validator
             - @monolog.logger.property_import
-
-    #validators
-    import.settings.validator:
-         class: RentJeeves\ImportBundle\Validator\ImportSettingsValidator
-         arguments:
-             - "@translator"
-             - "%support_email%"
