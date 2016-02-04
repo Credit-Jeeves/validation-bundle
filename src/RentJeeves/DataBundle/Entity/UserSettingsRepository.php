@@ -18,12 +18,13 @@ class UserSettingsRepository extends EntityRepository
     public function getUserSettingsForCreditTrackByTodayDueDay()
     {
         $date = new \DateTime();
-        $query = $this->createQueryBuilder('settings');
-        $query->innerJoin('settings.creditTrackPaymentAccount', 'pa');
-        $query->andWhere('DATE(settings.creditTrackEnabledAt) < :date'); //Payment which setup today must not be executed
-        $query->setParameter('date', $date->format('Y-m-d'));
-        $query->andWhere('DAY(settings.creditTrackEnabledAt) IN (:dueDays)');
-        $query->setParameter('dueDays', $this->getDueDays(0, $date));
+        $query = $this->createQueryBuilder('settings')
+            ->innerJoin('settings.creditTrackPaymentAccount', 'pa')
+            //Payment which setup today must not be executed
+            ->andWhere('DATE(settings.creditTrackEnabledAt) < :date')
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->andWhere('DAY(settings.creditTrackEnabledAt) IN (:dueDays)')
+            ->setParameter('dueDays', $this->getDueDays(0, $date));
 
         return $query->getQuery()->execute();
     }
