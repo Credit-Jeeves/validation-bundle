@@ -56,7 +56,10 @@ class ImportSettingsValidator
         $importSettings = $currentGroup->getImportSettings();
 
         if ($accountingSystem !== AccountingSystem::NONE && $importSettings->getSource() === ImportSource::CSV) {
-            $this->errorMessage = $this->translator->trans('import.error.settings_is_wrong');
+            $this->errorMessage = $this->translator->trans(
+                'import.error.settings_is_wrong',
+                ['%support_email%' => $this->supportEmail]
+            );
 
             return false;
         }

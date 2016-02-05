@@ -3322,7 +3322,7 @@
             </trans-unit>
             <trans-unit id="import.error.settings_is_wrong">
                 <source>import.error.settings_is_wrong</source>
-                <target>It looks like your import settings have a problem. Please contact and we will get this fixed for you.</target>
+                <target>It looks like your import settings have a problem. Please contact  %support_email% and we will get this fixed for you.</target>
             </trans-unit>
             <trans-unit id="common.free">
                 <source>common.free</source>
