@@ -348,6 +348,11 @@ class TenantCase extends BaseTestCase
             $resident->setValue('t123457');
         }
         $endAtRadio->click(); // set End of contract to 'When Cancelled'
+
+        $this->getDomElement('#payment_allowed_toggle .toggle-on.active', 'Payments should be allowed');
+        $paymentAllowedToggle = $this->getDomElement('#payment_allowed_toggle .toggle-slide');
+        $paymentAllowedToggle->click();
+
         $this->page->pressButton('savechanges');
         $this->session->reload();
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
@@ -366,6 +371,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should have attr CHECKED');
         $this->assertEquals('monthToMonth', $checkedMonth2Month->getValue(), 'MonthToMonth value is wrong');
         $this->assertEquals('true', $checkedMonth2Month->getAttribute('checked'), 'MonthToMonth should be checked');
+        $this->getDomElement('#payment_allowed_toggle .toggle-off.active', 'Payments should be disallowed');
         if ($isIntegrated) {
             $this->assertNotNull($resident = $this->page->find('css', '#resident-edit'), 'Can not find resident field');
             $this->assertEquals('t123457', $resident->getValue(), 'Wrong edit resident id');
@@ -403,7 +409,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('edit.Info');
-        $this->page->clickLink('remove.tenant');
+        $this->page->clickLink('remove.lease');
         $this->page->pressButton('yes.remove.contract');
         $this->session->wait($this->timeout, "!$('#contract-remove-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");

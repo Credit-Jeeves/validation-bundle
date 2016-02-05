@@ -80,8 +80,8 @@
                             <td class="font-helvetica">{{ contract.due_on | ordinal_number }}</td>
                             <td class="font-helvetica">{{ contract.full_address }}</td>
                             <td class="font-helvetica">
-                                {% if contract.is_integrated and contract.isDeniedOnExternalApi %}
-                                    {{ 'yardi.tenant.property.manager_disabled_payment_description'|trans }}
+                                {% if not contract.isPaymentEditAllowed %}
+                                    {{ 'tenant.property.manager_disabled_payment_description'|trans }}
                                 {% else %}
                                     {% if contract.status == 'pending' %}
                                         {{ 'contract.status.pending.text' | trans }}
@@ -127,10 +127,10 @@
                             </td>
 
                             <td class="font-helvetica">
-                                {% if contract.is_integrated and contract.isDeniedOnExternalApi %}
+                                {% if not contract.isPaymentEditAllowed %}
                                     <button class="button small button-contract-pay floatleft denied"
                                             disabled
-                                            title="{{ 'yardi.tenant.property.manager_disabled_payment'|trans }}"
+                                            title="{{ 'tenant.property.manager_disabled_payment'|trans }}"
                                     >
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>

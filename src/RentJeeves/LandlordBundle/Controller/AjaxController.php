@@ -786,6 +786,7 @@ class AjaxController extends Controller
         $contract->setRent($details['amount']);
         $contract->setDueDate($details['dueDate']);
         $contract->setStartAt(new DateTime($details['start']));
+        $contract->setPaymentAllowed(filter_var($details['isPaymentAllowed'], FILTER_VALIDATE_BOOLEAN));
         if (array_key_exists('leaseId', $details) && $contract->getGroup()->isAllowedEditLeaseId()) {
             $contract->setExternalLeaseId($details['leaseId']);
         }

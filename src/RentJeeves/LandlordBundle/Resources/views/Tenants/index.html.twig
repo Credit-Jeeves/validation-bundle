@@ -19,6 +19,7 @@
 
 {% block javascripts %}
     {% javascripts
+        '@RjCoreBundle/Resources/public/js/toggles.js'
         '@RjComponentBundle/Resources/public/js/contract.js'
         '@RjComponentBundle/Resources/public/js/contracts.js'
         '@RjComponentBundle/Resources/public/js/landlordContract.js'
@@ -36,7 +37,11 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets '@LandlordBundle/Resources/public/css/tenants.css'%}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% stylesheets
+        '@LandlordBundle/Resources/public/css/tenants.css'
+        '@RjCoreBundle/Resources/public/css/toggles.css'
+        '@RjCoreBundle/Resources/public/css/toggles-modern.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}

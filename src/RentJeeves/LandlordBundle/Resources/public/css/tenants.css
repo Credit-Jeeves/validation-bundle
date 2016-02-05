@@ -169,7 +169,7 @@ height: 23px;
     width: 75px;
 }
 .finishAtLabel {
-    margin-left: 33px !important;
+    margin-left: 30px !important;
     width: 175px !important;
 }
 .width150 {
@@ -214,4 +214,26 @@ td .clarification>.one {
 }
 #foundMoreContainer>span {
     font-size: 13px !important;
+}
+
+.toggle {
+    margin-left: 10px;
+    margin-top: -5px;
+    width: 120px;
+    height: 35px;
+}
+
+.toggle-modern .toggle-off, .toggle-modern .toggle-on {
+    font-size: 12px !important;
+    text-transform: uppercase;
+}
+
+#payment_allowed_help {
+    position: absolute;
+    top: 14px;
+    left: 230px;
+    cursor: pointer;
+}
+.hidden {
+    display: none;
 }
