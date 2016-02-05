@@ -98,3 +98,5 @@ fixtures:
         name: rjOrderReissued.html
     email_50:
         name: rjChurnRecapture.html
+    email_51:
+        name: rjFreeReportUpdated.html

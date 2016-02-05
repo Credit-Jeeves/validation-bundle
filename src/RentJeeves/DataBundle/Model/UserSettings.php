@@ -51,6 +51,34 @@ abstract class UserSettings
     protected $creditTrackEnabledAt = null;
 
     /**
+     * @ORM\Column(
+     *     type = "date",
+     *     name = "scoretrack_free_until",
+     *     nullable = true
+     * )
+     *
+     * @var \DateTime|null
+     */
+    protected $scoretrackFreeUntil;
+
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getScoretrackFreeUntil()
+    {
+        return $this->scoretrackFreeUntil;
+    }
+
+    /**
+     * @param \DateTime $scoretrackFreeUntil
+     */
+    public function setScoretrackFreeUntil(\DateTime $scoretrackFreeUntil)
+    {
+        $this->scoretrackFreeUntil = $scoretrackFreeUntil;
+    }
+
+    /**
      * @return mixed
      */
     public function getId()

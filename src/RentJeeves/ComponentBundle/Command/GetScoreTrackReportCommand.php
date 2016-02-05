@@ -58,6 +58,10 @@ class GetScoreTrackReportCommand extends BaseCommand
                 $output->writeln('OK');
                 $this->getLogger()->debug('[Get ScoreTrack Report Command]Report load successfuly');
 
+                if ($report->getUser()->getSettings()->isScoreTrackFree()) {
+                    $this->getContainer()->get('project.mailer')->sendFreeReportUpdated($report->getUser());
+                }
+
                 return 0;
             }
         }

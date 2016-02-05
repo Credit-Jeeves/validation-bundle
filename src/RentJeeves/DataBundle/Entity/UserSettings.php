@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="rj_user_settings")
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\UserSettingsRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class UserSettings extends Base
@@ -30,5 +31,27 @@ class UserSettings extends Base
         $em->persist($this);
         $uow->propertyChanged($this, 'creditTrackPaymentAccount', $oldValue, null);
         $uow->scheduleExtraUpdate($this, array('creditTrackPaymentAccount' => array($oldValue, null)));
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isScoreTrackFree()
+    {
+        $scoreTrackFreeUntil = $this->getScoretrackFreeUntil();
+        if (empty($scoreTrackFreeUntil)) {
+            return false;
+        }
+
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
+        $scoreTrackFreeUntil->setTime(0, 0, 0);
+
+        if ($today > $scoreTrackFreeUntil) {
+            return false;
+        }
+
+        return true;
     }
 }

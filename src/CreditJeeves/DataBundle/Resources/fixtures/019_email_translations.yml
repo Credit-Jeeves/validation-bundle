@@ -1681,3 +1681,23 @@ fixtures:
         Thank you,
         The RentTrack Team
       {% endblock %}
+
+# rjFreeReportUpdated.html
+  translation_51_subject:
+    translatable: email_51
+    locale: %locale%
+    property: subject
+    value: ScoreTrack Updated
+
+  translation_52_body:
+    translatable: email_51
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Dear {{ tenantFirstName }}{% endblock %}
+      {% block email %}
+        Your latest score and credit profile is now available under the "Build Credit History" tab. Log into your
+        <a href="{{ dashboardLink }}">dashboard</a> to view your score. We'll update this monthly for you so you can
+        track how rent reporting and other factors might be affecting your score.
+      {% endblock %}
