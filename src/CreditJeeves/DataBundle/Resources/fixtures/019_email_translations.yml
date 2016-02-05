@@ -638,70 +638,70 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Your Payment is Complete{% endblock %}
-      {% block email %}
-      {% if nameTenant %}
-        Hi {{ nameTenant }}! <br /><br />
-      {% else %}
-        Hello!  <br /><br />
-      {% endif %}
+        {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+        {% block h1 %}Your Payment is Complete{% endblock %}
+        {% block email %}
+        {% if nameTenant %}
+          Hi {{ nameTenant }}! <br /><br />
+        {% else %}
+          Hello!  <br /><br />
+        {% endif %}
 
-      Your {{paymentType | replace({"_": "-"})}} {{ depositType | trans }} payment to {{ groupName }} is complete*.
+        Your {{paymentType | replace({"_": "-"})}} {{ depositType | trans }} payment to {{ groupName }} is complete*.
 
-      The details:
+        The details:
 
-      <table
-        width="100%"
-        style="
-          border: 1px solid #C8C8C8;
-          border-collapse: collapse;
-       "
-      >
-        <tbody>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'common.created_at' | trans }}:</td><td style="padding:5px;">{{ paymentCreatedAt }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'common.charged_at' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'order.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'email.rent_amount' | trans }}:</td><td style="padding:5px;">{{ rentAmount }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'email.other_amount' | trans }}:</td><td style="padding:5px;">{{ otherAmount }}</td>
-          </tr>
-          {% if fee > 0 %}
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
-          </tr>
-          {% else %}
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ 'order.fee.free' | trans }}</td>
-          </tr>
-          {% endif %}
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
-          </tr>
+        <table
+          width="100%"
+          style="
+            border: 1px solid #C8C8C8;
+            border-collapse: collapse;
+         "
+        >
+          <tbody>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "common.charged_at" | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "order.transaction.id" | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "payment_source" | trans }}:</td><td style="padding:5px;">{{ lastFour }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "email.rent_amount" | trans }}:</td><td style="padding:5px;">{{ rentAmount }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "email.other_amount" | trans }}:</td><td style="padding:5px;">{{ otherAmount }}</td>
+            </tr>
+            {% if fee > 0 %}
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "order.fee" | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
+            </tr>
+            {% else %}
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "order.fee" | trans }}:</td><td style="padding:5px;">{{ "order.fee.free" | trans }}</td>
+            </tr>
+            {% endif %}
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "order.total" | trans }}:</td><td style="padding:5px;">{{ total }}</td>
+            </tr>
 
-        </tbody>
-      </table>
-      If you have any questions, please call 866.841.9090 or email help@renttrack.com.
-      <br/>
-      <br/>
-      {% if type == 'bank' %}
-      This payment will appear on your bank statement as RENTTRACK.
-      {% elseif type == 'card' %}
-      This payment will appear on your bank statement as {{ statementDescriptor }}.
-      {% endif %}
-      <br/>
-      <p style="font-size:smaller">
-      * Credit card payments deposited next business day.
-      </p>
-      {% endblock %}
+          </tbody>
+        </table>
+        If you have any questions, please call 866.841.9090 or email help@renttrack.com.
+        <br/>
+        <br/>
+        {% if type == "bank" %}
+        This payment will appear on your bank statement as RENTTRACK.
+        {% elseif type == "card" %}
+        This payment will appear on your bank statement as {{ statementDescriptor }}.
+        {% endif %}
+        <br/>
+        <p style="font-size:smaller">
+        * Credit card payments deposited next business day.
+        </p>
+        {% endblock %}
 
 # rjOrderError.html
   translation_25_subject:
@@ -1039,61 +1039,60 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends 'RjComponentBundle:Mailer:base.html.twig' %}
-      {% block h1 %}Rent Payment Initiated{% endblock %}
-      {% block email %}
-          Hi {{ tenantName }}! <br /><br />
+        {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+        {% block h1 %}Rent Payment Initiated{% endblock %}
+        {% block email %}
+            Hi {{ tenantName }}! <br /><br />
 
-          Your {{paymentType | replace({"_": "-"})}} rent payment to {{ groupName }} was just initiated. Your card or bank account has been charged.
-          You will receive your receipt when the payment is deposited into your property manager's bank - usually in 2-3 business days.
+            Your {{paymentType | replace({"_": "-"})}} rent payment to {{ groupName }} was just initiated. Your card or bank account has been charged.
+            <br /><br />
+            The details:
 
-          The details:
+            <table width="100%" style="border: 1px solid #C8C8C8; border-collapse: collapse;">
+            <tbody>
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "common.charged_at" | trans }}:</td>
+                <td style="padding:5px;">{{ orderTime }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "order.transaction.id" | trans }}:</td>
+                <td style="padding:5px;">{{ transactionID }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "payment_source" | trans }}:</td>
+                <td style="padding:5px;">{{ lastFour }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "email.rent_amount" | trans }}:</td><td style="padding:5px;">{{ rentAmount }}</td>
+            </tr>
+            <tr style="border: 1px solid #C8C8C8;">
+              <td style="padding:5px;">{{ "email.other_amount" | trans }}:</td><td style="padding:5px;">{{ otherAmount }}</td>
+            </tr>
+            {% if fee > 0 %}
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "order.fee" | trans }}:</td>
+                <td style="padding:5px;">{{ fee }}</td>
+            </tr>
+            {% else %}
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "order.fee" | trans }}:</td>
+                <td style="padding:5px;">{{ "order.fee.free" | trans }}</td>
+            </tr>
+            {% endif %}
+            <tr style="border: 1px solid #C8C8C8;">
+                <td style="padding:5px;">{{ "order.total" | trans }}:</td>
+                <td style="padding:5px;">{{ total }}</td>
+            </tr>
 
-          <table width='100%' style='border: 1px solid #C8C8C8; border-collapse: collapse;'>
-          <tbody>
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'common.created_at' | trans }}:</td>
-              <td style='padding:5px;'>{{ paymentCreatedAt }}</td>
-          </tr>
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'common.charged_at' | trans }}:</td>
-              <td style='padding:5px;'>{{ orderTime }}</td>
-          </tr>
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'order.transaction.id' | trans }}:</td>
-              <td style='padding:5px;'>{{ transactionID }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'email.rent_amount' | trans }}:</td><td style="padding:5px;">{{ rentAmount }}</td>
-          </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'email.other_amount' | trans }}:</td><td style="padding:5px;">{{ otherAmount }}</td>
-          </tr>
-          {% if fee > 0 %}
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'order.fee' | trans }}:</td>
-              <td style='padding:5px;'>{{ fee }}</td>
-          </tr>
-          {% else %}
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'order.fee' | trans }}:</td>
-              <td style='padding:5px;'>{{ 'order.fee.free' | trans }}</td>
-          </tr>
-          {% endif %}
-          <tr style='border: 1px solid #C8C8C8;'>
-              <td style='padding:5px;'>{{ 'order.total' | trans }}:</td>
-              <td style='padding:5px;'>{{ total }}</td>
-          </tr>
-
-          </tbody>
-          </table>
-          </br>
-      {% if type == 'bank' %}
-      This payment will appear on your bank statement as RENTTRACK.
-      {% elseif type == 'card' %}
-      This payment will appear on your bank statement as {{ statementDescriptor }}.
-      {% endif %}
-      {% endblock %}
+            </tbody>
+            </table>
+            </br>
+        {% if type == "bank" %}
+        This payment will appear on your bank statement as RENTTRACK.
+        {% elseif type == "card" %}
+        This payment will appear on your bank statement as {{ statementDescriptor }}.
+        {% endif %}
+        {% endblock %}
 
 # rjContractAmountChanged.html
   translation_37_subject:
