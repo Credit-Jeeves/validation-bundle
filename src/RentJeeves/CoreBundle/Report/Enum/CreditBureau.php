@@ -8,4 +8,5 @@ class CreditBureau extends Enum
 {
     const TRANS_UNION = 'trans_union';
     const EXPERIAN = 'experian';
+    const EQUIFAX = 'equifax';
 }

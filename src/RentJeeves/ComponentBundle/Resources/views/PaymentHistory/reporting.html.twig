@@ -16,7 +16,7 @@
                 </p>
                 <p>
                     <input type="checkbox" id="equifax-{{ contract.id }}" value="equifax" {% if contract.reporting.equifax %}checked{% endif %} />
-                    <label for="equifax-{{ contract.id }}">{{ 'common.equifax.reporting'|trans }}</label>
+                    <label for="equifax-{{ contract.id }}">{{ 'bureau.reporting.equifax'|trans }}</label>
                 </p>
             </div>
             <p>{{ 'bureau.reporting.manage.description' | trans({'%link%': link}) | raw }}</p>

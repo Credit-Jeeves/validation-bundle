@@ -6,6 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
+use RentJeeves\CoreBundle\Report\Equifax\EquifaxClosureReport;
+use RentJeeves\CoreBundle\Report\Equifax\EquifaxPositiveReport;
+use RentJeeves\CoreBundle\Report\Equifax\EquifaxRentalReport;
 use RentJeeves\CoreBundle\Report\Experian\ExperianClosureReport;
 use RentJeeves\CoreBundle\Report\Experian\ExperianPositiveReport;
 use RentJeeves\CoreBundle\Report\Experian\ExperianRentalReport;
@@ -40,8 +43,6 @@ class RentalReportFactory
 
     /**
      * @param RentalReportData $data
-     * @param EntityManagerInterface $em
-     * @param array $propertyManagement An array with RentTrack's name, address, phone. Used in report's header.
      * @throws \RuntimeException
      * @return RentalReport
      */
@@ -54,6 +55,9 @@ class RentalReportFactory
             case CreditBureau::EXPERIAN:
                 $report = self::getExperianReport($data->getType());
                 break;
+            case CreditBureau::EQUIFAX:
+                $report = self::getEquifaxReport($data->getType());
+                break;
             default:
                 throw new \RuntimeException(sprintf('Given report bureau \'%s\' does not exist', $data->getBureau()));
         }
@@ -63,8 +67,6 @@ class RentalReportFactory
 
     /**
      * @param string $type
-     * @param EntityManagerInterface $em
-     * @param array $propertyManagement
      * @return TransUnionRentalReport
      */
     protected function getTransUnionReport($type)
@@ -88,7 +90,6 @@ class RentalReportFactory
 
     /**
      * @param string $type
-     * @param EntityManagerInterface $em
      * @return ExperianRentalReport
      */
     protected function getExperianReport($type)
@@ -102,6 +103,26 @@ class RentalReportFactory
                 break;
             default:
                 throw new \RuntimeException(sprintf('Experian report type \'%s\' does not exist', $type));
+        }
+
+        return $report;
+    }
+
+    /**
+     * @param string $type
+     * @return EquifaxRentalReport
+     */
+    protected function getEquifaxReport($type)
+    {
+        switch ($type) {
+            case RentalReportType::POSITIVE:
+                $report = new EquifaxPositiveReport($this->em, $this->logger, $this->propertyManagement);
+                break;
+            case RentalReportType::CLOSURE:
+                $report = new EquifaxClosureReport($this->em, $this->logger, $this->propertyManagement);
+                break;
+            default:
+                throw new \RuntimeException(sprintf('Equifax report type \'%s\' does not exist', $type));
         }
 
         return $report;

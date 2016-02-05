@@ -9,7 +9,7 @@
                     <p>{{ 'bureau.reporting.select'|trans }}</p>
                     <p><input type="checkbox" name="reporting[]" value="experian" id="rep-experian"/><label for="rep-experian">{{ 'bureau.reporting.experian'|trans }}</label></p>
                     <p><input type="checkbox" name="reporting[]" value="trans_union" id="rep-tu"/><label for="rep-tu">{{ 'bureau.reporting.trans_union'|trans }}</label></p>
-                    <p><input type="checkbox" name="reporting[]" value="equifax" id="rep-equifax"/><label for="rep-tu">{{ 'common.equifax.reporting'|trans }}</label></p>
+                    <p><input type="checkbox" name="reporting[]" value="equifax" id="rep-equifax"/><label for="rep-tu">{{ 'bureau.reporting.equifax'|trans }}</label></p>
                 </div>
                 {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
                 <p>{% autoescape false %}{{ 'bureau.reporting.text2' | trans({'%link%': link}) | raw }}{% endautoescape %}</p>

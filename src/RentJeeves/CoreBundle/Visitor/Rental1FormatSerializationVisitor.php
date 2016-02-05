@@ -12,10 +12,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use RuntimeException;
 
 /**
- * @Service("jms_serializer.trans_union_serialization_visitor")
- * @Tag("jms_serializer.serialization_visitor", attributes = {"format" = "trans_union_rental"})
+ * @Service("jms_serializer.rental_1_serialization_visitor")
+ * @Tag("jms_serializer.serialization_visitor", attributes = {"format" = "rental_1"})
  */
-class TransUnionRentalSerializationVisitor extends AbstractVisitor
+class Rental1FormatSerializationVisitor extends AbstractVisitor
 {
     private $content;
     private $navigator;
@@ -27,7 +27,7 @@ class TransUnionRentalSerializationVisitor extends AbstractVisitor
 
     public function visitNull($data, array $type, Context $context)
     {
-        throw new RuntimeException('Trans Union Rental 1 Format can not contain null value.');
+        throw new RuntimeException('Rental 1 Format can not contain null value.');
     }
 
     public function visitString($data, array $type, Context $context)
@@ -37,7 +37,7 @@ class TransUnionRentalSerializationVisitor extends AbstractVisitor
 
     public function visitBoolean($data, array $type, Context $context)
     {
-        throw new RuntimeException('Trans Union Rental 1 Format can not contain boolean value.');
+        throw new RuntimeException('Rental 1 Format can not contain boolean value.');
     }
 
     public function visitDouble($data, array $type, Context $context)

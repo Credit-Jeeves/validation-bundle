@@ -790,8 +790,8 @@
                <source>bureau.reporting.trans_union</source>
                <target>TransUnion</target>
            </trans-unit>
-           <trans-unit id="common.equifax.reporting">
-                <source>common.equifax.reporting</source>
+           <trans-unit id="bureau.reporting.equifax">
+                <source>bureau.reporting.equifax</source>
                 <target>Equifax</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.manage">
