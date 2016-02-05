@@ -51,6 +51,7 @@ class SettingsAdmin extends Admin
             ->end()
             ->with('Other')
             ->add('rights')
+            ->add('scoretrackFreeUntil')
             ->add('loginMessage', 'textarea', ['required' => false])
             ->end();
     }
