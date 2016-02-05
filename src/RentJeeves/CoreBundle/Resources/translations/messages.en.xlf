@@ -1054,7 +1054,7 @@
             </trans-unit>
             <trans-unit id="current_contracts.title">
                 <source>current_contracts.title</source>
-                <target>Contracts</target>
+                <target>Leases</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
