@@ -105,6 +105,12 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
+        if ($contract->getHolding()->isApiIntegrated() === false) {
+            $this->logger->debug(sprintf('This accounting system (%s) not use api.', $holding->getAccountingSystem()));
+
+            return false;
+        }
+
         $holding = $contract->getHolding();
         $integrationType = $holding->getAccountingSystem();
         $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
@@ -133,6 +139,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
         }
+
 
         $isIntegrated = (!empty($integrationType) && $integrationType !== AccountingSystem::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {

@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\Holding as BaseHolding;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\HoldingRepository")
@@ -59,5 +60,13 @@ class Holding extends BaseHolding
         }
 
         return $this->getExternalSettings()->isAllowedToSendRealTimePayments();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isApiIntegrated()
+    {
+        return array_key_exists($this->getAccountingSystem(), AccountingSystem::$integratedWithApi);
     }
 }

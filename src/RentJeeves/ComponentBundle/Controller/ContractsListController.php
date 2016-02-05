@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormView;
 class ContractsListController extends Controller
 {
     /**
-     * @param Group $Group
      * @param FormView $form
      * @param string $searchText
      * @param string $searchColumn
@@ -26,12 +25,10 @@ class ContractsListController extends Controller
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return mixed
      */
-    public function indexAction(Group $Group, FormView $form, $searchText = null, $searchColumn = null)
+    public function indexAction(FormView $form, $searchText = null, $searchColumn = null)
     {
-        /** @var $user Landlord */
-        $user = $this->getUser();
         /** @var $group Group */
-        $group = $user->getCurrentGroup();
+        $group = $this->get('core.session.landlord')->getGroup();
         $canInvite = false;
 
         if (!empty($group)) {
@@ -45,14 +42,16 @@ class ContractsListController extends Controller
         $end = $date->format('m/d/Y');
 
         return [
-            'form'          => $form,
-            'Group'         => $Group,
-            'canInvite'     => $canInvite,
-            'start'         => $start,
-            'end'           => $end,
-            'isIntegrated'  => $Group->getGroupSettings()->getIsIntegrated(),
-            'searchText'    => $searchText,
-            'searchColumn'  => $searchColumn
+            'form' => $form,
+            'group' => $group,
+            'canInvite' => $canInvite,
+            'start' => $start,
+            'end' => $end,
+            'isAllowedEditResidentId' => $group->isAllowedEditResidentId(),
+            'isAllowedEditLeaseId' => $group->isAllowedEditLeaseId(),
+            'isIntegrated' => $group->getGroupSettings()->getIsIntegrated(),
+            'searchText' => $searchText,
+            'searchColumn' => $searchColumn
         ];
     }
 

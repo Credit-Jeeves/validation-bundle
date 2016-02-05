@@ -191,7 +191,8 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
                 'isAllowedToSendRealTimePayments',
                 'isPostAppFeeAndSecurityDeposit',
                 'getName',
-                'getId'
+                'getId',
+                'isApiIntegrated'
             ],
             [],
             '',
@@ -203,7 +204,8 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($isAllowedRealTime));
         $holdingMock->method('isPostAppFeeAndSecurityDeposit')
             ->will($this->returnValue($postNotRent));
-
+        $holdingMock->method('isApiIntegrated')
+            ->will($this->returnValue(true));
         $mock->method('getHolding')
             ->will($this->returnValue($holdingMock));
 

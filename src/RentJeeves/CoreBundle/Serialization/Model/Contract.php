@@ -562,4 +562,40 @@ class Contract
 
         return false;
     }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("isAllowedEditResidentId")
+     *
+     * @return boolean
+     */
+    public function isAllowedEditResidentId()
+    {
+        return $this->contract->getGroup()->isAllowedEditResidentId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("isAllowedEditLeaseId")
+     *
+     * @return boolean
+     */
+    public function isAllowedEditLeaseId()
+    {
+        return $this->contract->getGroup()->isAllowedEditLeaseId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("leaseId")
+     *
+     * @return string
+     */
+    public function getLeaseId()
+    {
+        return $this->contract->getExternalLeaseId();
+    }
 }

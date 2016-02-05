@@ -324,4 +324,34 @@ class Group extends BaseGroup
     {
         return $this->getDepositAccount($type, $this->getGroupSettings()->getPaymentProcessor());
     }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedEditLeaseId()
+    {
+        $accountingSystem = $this->getHolding()->getAccountingSystem();
+        $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
+
+        if ($isIntegrated && $accountingSystem === AccountingSystem::MRI_BOSTONPOST) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedEditResidentId()
+    {
+        $accountingSystem = $this->getHolding()->getAccountingSystem();
+        $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
+
+        if ($isIntegrated && $accountingSystem !== AccountingSystem::MRI_BOSTONPOST) {
+            return true;
+        }
+
+        return false;
+    }
 }
