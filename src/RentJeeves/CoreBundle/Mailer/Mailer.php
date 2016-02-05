@@ -628,7 +628,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendEmailAcceptYardiPayment(Tenant $tenant)
+    public function sendEmailAcceptPayment(Tenant $tenant)
     {
         $context = $this->container->get('router')->getContext();
         $context->setHost($this->container->getParameter('server_name_rj'));
@@ -655,7 +655,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendEmailDoNotAcceptYardiPayment(Tenant $tenant)
+    public function sendEmailDoNotAcceptPayment(Tenant $tenant)
     {
         return $this->sendBaseLetter(
             $template = 'rjYardiPaymentAcceptedTurnOff',
