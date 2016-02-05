@@ -212,18 +212,13 @@
                 <div class="form-row clearfix">
                     <label>{{'name'|trans}}<b>*</b></label>
                     <div class="fields-box">
-                        <span data-bind="text: first_name"></span>
-                        <span data-bind="text: last_name"></span>
+                        <span data-bind="text: tenant"></span>
                     </div>
-                </div>
-                <div class="form-row clearfix">
-                    <label>{{ 'property'|trans }}<b>*</b></label>
-                    <div class="fields-box addressDiv"  data-bind="text: address"></div>
                 </div>
                 <div class="form-row clearfix">
                     <label>{{ 'phone'|trans }}</label>
                     <div class="fields-box">
-                        <span data-bind="text: phone"></span>
+                        <input data-bind="value: phone" type="text" id="phone-edit" class="half-of-right">
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -247,7 +242,7 @@
             </div>
             <div class="col">
                 <h4 class="clearfix">
-                    <span>{{ 'request.payments'|trans }}</span>
+                    <span>{{ 'lease.details'|trans }}</span>
                     <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
@@ -330,23 +325,43 @@
                 </div>
                 {% endif %}
             </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'online.payments.lease'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'common.payment_allowed'|trans }}</label>
+                    <div class="fields-box">
+                        <div id="payment_allowed_toggle" class="toggle toggle-modern"></div>
+                        <i id="payment_allowed_help" class="help pie-el tooltip-link">?</i>
+                    </div>
+                </div>
+                {% if isIntegrated %}
+                <div class="form-row clearfix">
+                    <label>{{ 'common.accounting'|trans }}</label>
+                    <div class="fields-box">
+                        <span data-bind="text: $root.paymentAcceptedMessage()"></span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
         </div>
         <div class="footer-button-box" data-bind="with: contract">
-            <button class="button sendReminder" data-bind="if: reminder_revoke, click: $root.sendReminderInvition">
+            <button class="button sendReminder" data-bind="visible: reminder_revoke, click: $root.sendReminderInvition">
                 <span>{{ 'send.reminder'|trans }}</span>
             </button>
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
             <a href="#" class="link"
-               data-bind="if: (status == 'CURRENT' || status == 'CONTRACT ENDED') && reminder_revoke == false,
+               data-bind="visible: (status == 'CURRENT' || status == 'CONTRACT ENDED') && reminder_revoke == false,
                click: $root.openEndContractPopup"
              >
                 {{'end.br.contract'|trans|raw}}
             </a>
-            <a href="#" class="link" data-bind="if: (status != 'CURRENT' && status != 'CONTRACT ENDED') && !reminder_revoke,  click: $root.removeContractConfirm">
-                {{'remove.tenant'|trans|raw}}
+            <a href="#" class="link" data-bind="visible: (status != 'CURRENT' && status != 'CONTRACT ENDED') && !reminder_revoke,  click: $root.removeContractConfirm">
+                {{'remove.lease'|trans|raw}}
             </a>
-            <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
+            <a href="#" class="link" data-bind="visible: reminder_revoke, click: $root.closeReminderRevoke">
                 {{ 'revoke.inv'|trans|raw}}
             </a>
         </div>
@@ -816,15 +831,15 @@
                       <div class="tenantName" data-bind="text: tenant"></div>
                       <div class="clarification">
                         <i class="csm-icon" data-bind="visible: credit_track_enabled"></i>
-                        <i class="alert" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
-                           data-bind="visible: isIntegrated && isDeniedOnExternalApi"></i>
+                        <i class="alert" title="{{ 'landlord.property.manager_disabled_payment'|trans }}"
+                           data-bind="visible: !isPaymentEditAllowed"></i>
                       </div>
                   </div>
                   <div data-bind="if: !credit_track_enabled">
                     <div class="tenantName" data-bind="text: tenant"></div>
                       <div class="clarification">
-                        <i class="alert one" title="{{ 'yardi.landlord.property.manager_disabled_payment'|trans }}"
-                           data-bind="visible: isIntegrated && isDeniedOnExternalApi"></i>
+                        <i class="alert one" title="{{ 'landlord.property.manager_disabled_payment'|trans }}"
+                           data-bind="visible: !isPaymentEditAllowed"></i>
                       </div>
                   </div>
                 </td>

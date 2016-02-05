@@ -564,6 +564,14 @@
                 <source>request.payments</source>
                 <target>Requested Payment</target>
             </trans-unit>
+            <trans-unit id="lease.details">
+                <source>lease.details</source>
+                <target>Lease Details</target>
+            </trans-unit>
+            <trans-unit id="online.payments.lease">
+                <source>online.payments.lease</source>
+                <target>Online Payments for This Lease</target>
+            </trans-unit>
             <trans-unit id="amount">
                 <source>amount</source>
                 <target>Amount</target>
@@ -588,9 +596,9 @@
                 <source>end</source>
                 <target>End</target>
             </trans-unit>
-            <trans-unit id="remove.tenant">
-                <source>remove.tenant</source>
-                <target><![CDATA[Remove<br>Tenant]]>
+            <trans-unit id="remove.lease">
+                <source>remove.lease</source>
+                <target><![CDATA[Remove<br>Lease]]>
                 </target>
             </trans-unit>
             <trans-unit id="approve.tenant.info">
@@ -1079,6 +1087,34 @@
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
                 <target>Pay Rent</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.help_text">
+                <source>contract.payment_allowed.help_text</source>
+                <target>
+                You can "Block" and "Allow" online payments by toggling this switch.
+                If you are integrated with an accounting system, we will only accept payments
+                 if both RentTrack and your accounting system are set to "Allow"
+                </target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.true">
+                <source>contract.payment_allowed.true</source>
+                <target>Allowed</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.false">
+                <source>contract.payment_allowed.false</source>
+                <target>Blocked</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.0">
+                <source>contract.payment_accepted.0</source>
+                <target>Allowed</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.1">
+                <source>contract.payment_accepted.1</source>
+                <target>Blocked</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.2">
+                <source>contract.payment_accepted.2</source>
+                <target>Cash Equivalent</target>
             </trans-unit>
             <trans-unit id="contract.pay_anything">
                 <source>contract.pay_anything</source>
@@ -2081,23 +2117,23 @@
             </trans-unit>
             <trans-unit id="edit.contract">
                 <source>edit.contract</source>
-                <target>Edit Contract</target>
+                <target>Edit Lease</target>
             </trans-unit>
             <trans-unit id="end.contract">
                 <source>end.contract</source>
-                <target>End Contract</target>
+                <target>End Lease</target>
             </trans-unit>
             <trans-unit id="end.br.contract">
                 <source>end.br.contract</source>
-                <target><![CDATA[End <br />Contract]]></target>
+                <target><![CDATA[End <br />Lease]]></target>
             </trans-unit>
             <trans-unit id="yes.end.contract">
                 <source>yes.end.contract</source>
-                <target>Yes, End Contract</target>
+                <target>Yes, End Lease</target>
             </trans-unit>
             <trans-unit id="yes.remove.contract">
                 <source>yes.remove.contract</source>
-                <target>Yes, Remove Contract</target>
+                <target>Yes, Remove Lease</target>
             </trans-unit>
             <trans-unit id="no.leave.intact">
                 <source>no.leave.intact</source>
@@ -2110,7 +2146,7 @@
             <trans-unit id="end.contract.description">
                 <source>end.contract.description</source>
                 <target>
-                    Are you sure want to end this contract?
+                    Are you sure want to end this lease?
                     Please enter any uncollected balance, or $0 if lease was paid
                     in full. Tenant payment history will be reported to credit service
                     agencies. Any active payments will be cancelled.
@@ -3074,16 +3110,16 @@
                 <source>error.statement_descriptor.empty</source>
                 <target>Statement Descriptor should not be empty.</target>
             </trans-unit>
-            <trans-unit id="yardi.tenant.property.manager_disabled_payment">
-                <source>yardi.tenant.property.manager_disabled_payment</source>
+            <trans-unit id="tenant.property.manager_disabled_payment">
+                <source>tenant.property.manager_disabled_payment</source>
                 <target>Your property manager has disabled online payments.</target>
             </trans-unit>
-            <trans-unit id="yardi.landlord.property.manager_disabled_payment">
-                <source>yardi.landlord.property.manager_disabled_payment</source>
-                <target>Payments have been disabled for this tenant by the integrated accounting software.</target>
+            <trans-unit id="landlord.property.manager_disabled_payment">
+                <source>landlord.property.manager_disabled_payment</source>
+                <target>Payments have been disabled for this tenant.</target>
             </trans-unit>
-            <trans-unit id="yardi.tenant.property.manager_disabled_payment_description">
-                <source>yardi.tenant.property.manager_disabled_payment_description</source>
+            <trans-unit id="tenant.property.manager_disabled_payment_description">
+                <source>tenant.property.manager_disabled_payment_description</source>
                 <target>Payment Disabled Contact Your Property Manager</target>
             </trans-unit>
             <trans-unit id="common.resident_id">

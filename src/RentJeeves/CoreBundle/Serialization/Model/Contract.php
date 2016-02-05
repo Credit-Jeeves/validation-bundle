@@ -297,13 +297,13 @@ class Contract
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"Contract"})
-     * @Serializer\SerializedName("isDeniedOnExternalApi")
+     * @Serializer\SerializedName("isPaymentEditAllowed")
      *
      * @return boolean
      */
-    public function isDeniedOnExternalApi()
+    public function isPaymentEditAllowed()
     {
-        return $this->contract->isDeniedOnExternalApi();
+        return $this->contract->isPaymentEditAllowed();
     }
 
     /**
@@ -597,5 +597,29 @@ class Contract
     public function getLeaseId()
     {
         return $this->contract->getExternalLeaseId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("paymentAccountingAccepted")
+     *
+     * @return int
+     */
+    public function getPaymentAccountingAccepted()
+    {
+        return $this->contract->getPaymentAccepted();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"Contract"})
+     * @Serializer\SerializedName("isPaymentAllowed")
+     *
+     * @return boolean
+     */
+    public function getPaymentAllowed()
+    {
+        return $this->contract->isPaymentAllowed();
     }
 }
