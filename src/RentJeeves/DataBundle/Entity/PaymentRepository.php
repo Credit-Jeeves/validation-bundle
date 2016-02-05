@@ -66,6 +66,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('j.id IS NULL');
         $query->andWhere('p.status = :status');
         $query->andWhere('c.paymentAccepted = :paymentAccepted');
+        $query->andWhere('c.paymentAllowed = :paymentAllowed');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere(
             self::getStartDateDQLString('p') . ' <= :startDate'
@@ -87,6 +88,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('year', $year);
         $query->setParameter('startDate', $date->format('Y-m-d'));
         $query->setParameter('paymentAccepted', (string) PaymentAccepted::ANY);
+        $query->setParameter('paymentAllowed', true);
 
         $query = $query->getQuery();
 

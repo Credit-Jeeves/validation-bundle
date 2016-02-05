@@ -247,12 +247,16 @@ services:
         arguments:
             - %dod_limit_max_payment%
 
+    dod.payment_execution_allowed:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentExecutionAllowed
+
     dod:
         class: RentJeeves\CheckoutBundle\DoD\DodManager
         arguments:
             - @logger
         calls:
             - [addRule, ["@dod.payment_amount_max"]]
+            - [addRule, ["@dod.payment_execution_allowed"]]
 
     payment_processor.profit_stars.rdc.report_loader:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader

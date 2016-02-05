@@ -1,0 +1,42 @@
+<?php
+
+namespace RentJeeves\CheckoutBundle\DoD\Rule;
+
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\PaymentAccepted;
+
+/**
+ * Service name "dod.payment_execution_allowed"
+ */
+class PaymentExecutionAllowed implements DodPaymentRuleInterface
+{
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkPayment(Payment $payment)
+    {
+        $contract = $payment->getContract();
+        if ($contract->getGroupSettings()->getIsIntegrated()) {
+            return $contract->isPaymentAllowed() && PaymentAccepted::ANY == $contract->getPaymentAccepted();
+        }
+
+        return $contract->isPaymentAllowed();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReason()
+    {
+        return 'Execution payment is disallow for this contract';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function support($object)
+    {
+        return $object instanceof Payment;
+    }
+}
