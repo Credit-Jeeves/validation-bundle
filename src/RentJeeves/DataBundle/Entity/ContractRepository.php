@@ -312,8 +312,9 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where('t.id = :tenant');
         $query->andWhere(
-            'c.reportToTransUnion = 1 OR c.reportToExperian = 1
-            OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL'
+            'c.reportToTransUnion = 1 OR c.reportToExperian = 1 OR c.reportToEquifax = 1
+            OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL
+            OR c.equifaxStartAt is not NULL'
         );
         $query->setParameter('tenant', $tenant->getId());
         $query = $query->getQuery();
