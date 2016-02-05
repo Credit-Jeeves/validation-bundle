@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Tests\PidKiqProcessor;
 
+use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\PidkiqStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
@@ -74,7 +75,8 @@ class PidKiqProcessorExperianCase extends BaseTestCase
         $this->pidkiqProcessor = new PidKiqExperianProcessor(
             $this->getContainer()->get('security.context'),
             $this->em,
-            $this->getContainer()->get('pidkiq.message_generator')
+            $this->getContainer()->get('pidkiq.message_generator'),
+            $this->getContainer()->getParameter('pidkiq.lifetime.minutes')
         );
 
         $this->pidkiqProcessor->setUser($this->user);
@@ -170,6 +172,56 @@ class PidKiqProcessorExperianCase extends BaseTestCase
         $this->assertEquals(PidkiqStatus::FAILURE, $this->pidkiqProcessor->getPidkiqModel()->getStatus());
 
         $this->assertEquals(UserIsVerified::FAILED, $this->user->getIsVerified());
+    }
+
+    /**
+     * @test
+     * @depends processAnswersFailure
+     */
+    public function processAnswersFailureAgain()
+    {
+        // should not send request to "experian" until session is not expired
+        $this->experianMockApi
+            ->expects($this->never())
+            ->method('__send');
+
+        $this->pidkiqProcessor->processAnswers(Yaml::parse($this->fixtureLoader->locate('answers.yml')));
+
+        $this->em->refresh($this->user);
+
+        $this->assertEquals(PidkiqStatus::BACKOFF, $this->pidkiqProcessor->getPidkiqModel()->getStatus());
+
+        $this->assertEquals(UserIsVerified::FAILED, $this->user->getIsVerified());
+    }
+
+    /**
+     * @test
+     * @depends processAnswersFailureAgain
+     * after expiration session should retrieve questions again
+     */
+    public function processAnswersUnable()
+    {
+        // should send request just after expiration session
+        /** @var Pidkiq $pidkiq */
+        $pidkiq = $this->user->getPidkiqs()->last();
+        $pidkiq->setCreatedAt(
+            new \DateTime('-' . $this->getContainer()->getParameter('pidkiq.lifetime.minutes') . ' minutes')
+        );
+        $this->em->flush($pidkiq);
+        // do not send request to 'experian' b/c we do not have questions
+        $this->experianMockApi
+            ->expects($this->never())
+            ->method('__send');
+
+        $this->pidkiqProcessor->processAnswers(Yaml::parse($this->fixtureLoader->locate('answers.yml')));
+
+        $this->em->refresh($this->user);
+
+        $this->assertEquals(PidkiqStatus::UNABLE, $this->pidkiqProcessor->getPidkiqModel()->getStatus());
+
+        $this->assertEquals(UserIsVerified::FAILED, $this->user->getIsVerified());
+
+        $this->retrieveQuestionsSuccess();
     }
 
     /**

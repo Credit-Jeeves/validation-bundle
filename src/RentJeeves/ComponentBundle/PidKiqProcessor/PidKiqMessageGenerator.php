@@ -23,15 +23,22 @@ class PidKiqMessageGenerator
     protected $supportUrl;
 
     /**
+     * @var int
+     */
+    protected $lifetimeMinutes = 10;
+
+    /**
      * @param Translator $translator
      * @param string $supportEmail
      * @param array $externalUrls
+     * @param int $lifetimeMinutes
      */
-    public function __construct(Translator $translator, $supportEmail, $externalUrls)
+    public function __construct(Translator $translator, $supportEmail, $externalUrls, $lifetimeMinutes)
     {
         $this->translator = $translator;
         $this->supportEmail = $supportEmail;
         $this->supportUrl = isset($externalUrls['user_voice']) ? $externalUrls['user_voice'] : '';
+        $this->lifetimeMinutes = (int) $lifetimeMinutes ?: $this->lifetimeMinutes;
     }
 
     /**
@@ -44,10 +51,10 @@ class PidKiqMessageGenerator
         switch ($status) {
             case PidkiqStatus::FAILURE:
                 return $this->translator->trans(
-                    'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
                     [
                         '%SUPPORT_EMAIL%' => $this->supportEmail,
-                        '%MAIN_LINK%' => $this->supportUrl,
+                        '%LIFETIME_MINUTES%' => $this->lifetimeMinutes,
                     ]
                 );
             case PidkiqStatus::LOCKED:
@@ -59,7 +66,10 @@ class PidKiqMessageGenerator
                 );
             case PidkiqStatus::BACKOFF:
                 return $this->translator->trans(
-                    'pidkiq.error.attempts'
+                    'pidkiq.error.attempts',
+                    [
+                        '%LIFETIME_MINUTES%' => $this->lifetimeMinutes,
+                    ]
                 );
             case PidkiqStatus::UNABLE:
                 return $this->translator->trans(

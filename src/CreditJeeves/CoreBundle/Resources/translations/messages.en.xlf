@@ -919,7 +919,7 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.attempts">
                 <source>pidkiq.error.attempts</source>
-                <target>You have tried to verify your identity too many times recently. Please wait for an hour and try again. If you still see this message, please try again in 24 hours.</target>
+                <target>You have tried to verify your identity too many times recently. Please wait for %LIFETIME_MINUTES% minutes and try again. If you still see this message, please try again in 24 hours.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.connection">
                 <source>pidkiq.error.connection-%SUPPORT_EMAIL%</source>
@@ -970,7 +970,7 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.answers">
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
-                <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot verify your identity at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+                <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot verify your identity at this time. Please try again in %LIFETIME_MINUTES% minutes, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.lock">
                 <source>pidkiq.error.lock-%SUPPORT_EMAIL%</source>
