@@ -191,8 +191,8 @@
                 <source>common.accounting</source>
                 <target>Accounting</target>
             </trans-unit>
-            <trans-unit id="common.payment_allowed">
-                <source>common.payment_allowed</source>
+            <trans-unit id="common.payment_allowed.label">
+                <source>common.payment_allowed.label</source>
                 <target>Payments are</target>
             </trans-unit>
             <trans-unit id="common.credit.type">

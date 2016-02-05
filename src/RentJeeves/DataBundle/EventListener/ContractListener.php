@@ -297,7 +297,7 @@ class ContractListener
             $this->container->get('logger')->alert(
                 sprintf(
                     'ContractListener failed to send the "Payment %sAccepted" email to user:%s for contract #%d',
-                    (PaymentAccepted::ANY !== $accountingAccepted  && !$paymentAllowed) ? 'Not ' : '',
+                    (PaymentAccepted::ANY === $accountingAccepted  && $paymentAllowed) ? '' : 'Not ',
                     $contract->getTenant()->getEmail(),
                     $contract->getId()
                 )

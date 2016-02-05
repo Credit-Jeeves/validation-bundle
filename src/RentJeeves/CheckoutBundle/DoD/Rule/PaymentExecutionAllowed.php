@@ -29,7 +29,7 @@ class PaymentExecutionAllowed implements DodPaymentRuleInterface
      */
     public function getReason()
     {
-        return 'Execution payment is disallow for this contract';
+        return 'Execution of payment is disallowed for this contract';
     }
 
     /**

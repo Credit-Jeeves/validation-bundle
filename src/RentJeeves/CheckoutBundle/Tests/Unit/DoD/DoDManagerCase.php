@@ -84,6 +84,9 @@ class DoDManagerCase extends UnitTestBase
      */
     protected function getRuleMock()
     {
-        return $this->getMock('\RentJeeves\CheckoutBundle\DoD\Rule\DodRuleInterface', [], [], '', false);
+        $paymentRuleMock = $this->getBaseMock('\RentJeeves\CheckoutBundle\DoD\Rule\DodPaymentRuleInterface');
+        $paymentRuleMock->expects($this->any())->method('support')->willReturn($this->returnValue(true));
+
+        return $paymentRuleMock;
     }
 }

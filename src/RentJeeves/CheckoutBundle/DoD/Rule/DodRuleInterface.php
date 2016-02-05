@@ -13,7 +13,7 @@ interface DodRuleInterface
     public function getReason();
 
     /**
-     * Check that rule can checked this object
+     * Verifies if a given rule can check a passed object
      *
      * @param $object
      * @return boolean

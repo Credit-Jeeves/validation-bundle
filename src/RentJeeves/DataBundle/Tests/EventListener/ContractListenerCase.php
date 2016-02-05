@@ -152,7 +152,7 @@ class ContractListenerCase extends Base
      *
      * @test
      */
-    public function shouldSendPaymentEmail()
+    public function shouldSendPaymentEmailWhenGlobalPaymentAllowedWasChanged()
     {
         $this->load(true);
         $plugin = $this->registerEmailListener();
@@ -160,7 +160,7 @@ class ContractListenerCase extends Base
         $em = $this->getEntityManager();
         /** @var $tenant Tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy([
-            "email" => 'tenant11@example.com',
+            'email' => 'tenant11@example.com',
         ]);
 
         $this->assertNotNull($tenant, 'Check fixtures, tenant with email tenant11@example.com should exist');
@@ -246,7 +246,7 @@ class ContractListenerCase extends Base
     /**
      * @test
      */
-    public function shouldNotSendPaymentEmail()
+    public function shouldNotSendPaymentEmailWhenGlobalPaymentAllowedWasNotChanged()
     {
         $this->load(true);
         $plugin = $this->registerEmailListener();
@@ -254,7 +254,7 @@ class ContractListenerCase extends Base
         $em = $this->getEntityManager();
         /** @var $tenant Tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy([
-            "email" => 'tenant11@example.com',
+            'email' => 'tenant11@example.com',
         ]);
 
         $this->assertNotNull($tenant, 'Check fixtures, tenant with email tenant11@example.com should exist');
