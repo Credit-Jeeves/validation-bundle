@@ -56,7 +56,7 @@ class RegisterContractsToProfitStarsCommand extends BaseCommand
             $input->getArgument('limit')
         );
 
-        $exitCode = 1;
+        $exitCode = 0;
         foreach ($contracts as $contract) {
             try {
                 $this->getProfitStarsPaymentProcessor()->registerContract($contract, $depositAccount);
@@ -67,9 +67,15 @@ class RegisterContractsToProfitStarsCommand extends BaseCommand
                     $depositAccount->getId(),
                     $e->getMessage()
                 ));
-                $exitCode = 0;
+                $exitCode = 1;
             }
         }
+
+        $this->getLogger()->info(sprintf(
+            'Registering contracts to ProfitStars for deposit account #%d finished %s',
+            $depositAccount->getId(),
+            $exitCode === 0 ? 'successfully' : 'with fail'
+        ));
 
         return $exitCode;
     }
