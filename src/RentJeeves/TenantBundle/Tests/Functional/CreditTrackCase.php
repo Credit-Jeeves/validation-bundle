@@ -179,9 +179,22 @@ class CreditTrackCase extends BaseTestCase
         $projectSettings = $this->getEntityManager()->getRepository('DataBundle:Settings')->findOneBy([]);
         $this->assertNotEmpty($projectSettings, 'We should have settings');
         $projectSettings->setScoretrackFreeUntil(3);
+        $orders = $this->getEntityManager()->getRepository('DataBundle:Order')->findAll();
+        $this->assertCount(52, $orders, 'We should have in fixtures 52 orders');
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
-        $this->assertEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be empty option in fixture');
+        $this->assertEmpty(
+            $tenant->getSettings()->getScoretrackFreeUntil(),
+            'ScoreTrack Should be empty option in fixture'
+        );
+        $this->assertEmpty(
+            $tenant->getSettings()->getCreditTrackPaymentAccount(),
+            'PaymentAccount Should empty by default'
+        );
+        $this->assertEmpty(
+            $tenant->getSettings()->getCreditTrackEnabledAt(),
+            'CreditTrack Should empty by default'
+        );
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
         $this->setDefaultSession('selenium2');
@@ -219,5 +232,10 @@ class CreditTrackCase extends BaseTestCase
             $scoreTrackUntilInDb->format(\DateTime::ISO8601),
             'ScoreTrack free was not setup'
         );
+        $this->assertNotEmpty($tenant->getSettings()->getCreditTrackPaymentAccount(), 'Should set payment account');
+        $this->assertNotEmpty($tenant->getSettings()->getCreditTrackEnabledAt(), 'Should be set enabled at');
+        $this->getEntityManager()->clear();
+        $orders = $this->getEntityManager()->getRepository('DataBundle:Order')->findAll();
+        $this->assertCount(52, $orders, 'We should not create order and have exec like in fixtures');
     }
 }

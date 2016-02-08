@@ -86,7 +86,7 @@ class TransunionReportBuilder extends BaseSummaryReportBuilder
      * @param User $user
      * @return ReportTransunionSnapshot
      */
-    protected function createNewReport(User $user)
+    public function createNewReport(User $user)
     {
         $report = new ReportTransunionSnapshot();
         $report->setUser($user);
