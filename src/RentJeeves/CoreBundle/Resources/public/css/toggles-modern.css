@@ -20,13 +20,13 @@
 }
 .toggle-modern .toggle-off,
 .toggle-modern .toggle-off.active {
-  background: -webkit-linear-gradient(#737e8d, #3f454e);
-  background: linear-gradient(#737e8d, #3f454e);
+  background: -webkit-linear-gradient(#970000, #5c0000);
+  background: linear-gradient(#970000, #5c0000);
 }
 .toggle-modern .toggle-on,
 .toggle-modern .toggle-on.active {
-  background: -webkit-linear-gradient(#4894cd, #2852a6);
-  background: linear-gradient(#4894cd, #2852a6);
+  background: -webkit-linear-gradient(#8fc824, #488f12);
+  background: linear-gradient(#8fc824, #488f12);
 }
 .toggle-modern .toggle-blob {
   background: -webkit-linear-gradient(#c0c6c9, #81898f);
