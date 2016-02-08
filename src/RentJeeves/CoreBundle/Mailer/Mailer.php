@@ -298,6 +298,29 @@ class Mailer extends BaseMailer
     }
 
     /**
+     * @param Order $order
+     *
+     * @return boolean
+     */
+    public function sendScoreTrackError(Order $order)
+    {
+        $vars = [
+            'nameTenant' => $order->getUser()->getFullName(),
+            'date' => $order->getUpdatedAt()->format('m/d/Y'),
+            'amount' => $order->getSum(),
+            'number' => $order->getTransactionId(),
+            'error' => $order->getErrorMessage(),
+        ];
+
+        return $this->sendBaseLetter(
+            'rjScoreTrackOrderError',
+            $vars,
+            $order->getUser()->getEmail(),
+            $order->getUser()->getCulture()
+        );
+    }
+
+    /**
      * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
@@ -575,6 +598,11 @@ class Mailer extends BaseMailer
     public function sendReportReceipt(Order $order)
     {
         $dateShortFormat = $this->container->getParameter('date_short');
+        $amout = sprintf(
+            '%s%s',
+            $this->container->getParameter('credittrack_payment_per_month_currency'),
+            number_format($order->getFee(), 2, '.', '')
+        );
 
         return $this->sendEmail(
             $order->getUser(),
@@ -582,8 +610,7 @@ class Mailer extends BaseMailer
             [
                 'tenantName' => $order->getUser()->getFullName(),
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
-                'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
-                    $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
+                'amout' => $amout,
                 'number' => $order->getTransactionId(),
                 'paymentProcessor' => $order->getPaymentProcessor(),
                 'type' => $order->getPaymentType(),

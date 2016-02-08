@@ -1846,6 +1846,10 @@
                 <source>order.error.title</source>
                 <target>We encountered an error when attempting to make your rent payment.</target>
             </trans-unit>
+            <trans-unit id="scoretrack.order.error.title">
+                <source>scoretrack.order.error.title</source>
+                <target>We encountered an error when attempting to make your ScoreTrack payment.</target>
+            </trans-unit>
             <trans-unit id="order.id">
                 <source>order.id</source>
                 <target>RentTrack Order ID</target>

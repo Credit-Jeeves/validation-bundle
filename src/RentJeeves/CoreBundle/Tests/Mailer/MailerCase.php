@@ -174,6 +174,44 @@ class MailerCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldSendScoreTrackError()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $this->getMailer()->sendScoreTrackError($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('ScoreTrack Payment Error', $message->getSubject());
+    }
+
+    /**
+     * @test
+     */
+    public function sendReportReceipt()
+    {
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $em = $this->getEntityManager();
+        $order = $em->find('DataBundle:Order', 2);
+        $order->setFee(3.15);
+        $em->flush($order);
+        $this->getMailer()->sendReportReceipt($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('Receipt from Rent Track', $message->getSubject());
+    }
+
+    /**
      * @return \RentJeeves\CoreBundle\Mailer\Mailer
      */
     protected function getMailer()
