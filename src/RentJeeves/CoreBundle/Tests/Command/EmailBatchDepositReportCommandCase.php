@@ -9,6 +9,9 @@ use RentJeeves\CoreBundle\Command\EmailBatchDepositReportCommand;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use DateTime;
 
+/**
+ * @TODO: we need create new test for this and remove this test (user 3 loop and related with dynamic template)
+ */
 class EmailBatchDepositReportCommandCase extends BaseTestCase
 {
     /**

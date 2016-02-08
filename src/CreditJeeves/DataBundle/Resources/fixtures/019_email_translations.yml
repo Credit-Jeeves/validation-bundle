@@ -1262,7 +1262,7 @@ fixtures:
         Note: Clients with integrated accounting software must post all Security Deposit and Application Fee payments manually.
         <br />
         {% for group in groups %}
-        <br />For group <b>{{ group.groupName }}</b>:<br />
+        <br />For group <b class="group-name">{{ group.groupName }}</b>:<br />
         <br />
         {% if group.batches %}
          {% for batch in group.batches %}
