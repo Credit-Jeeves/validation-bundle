@@ -62,4 +62,29 @@ class ImportSettingsValidatorCase extends BaseTestCase
         );
         $this->assertEmpty($importSettingsValidator->getErrorMessage(), 'We shouldn\'t have any messages here');
     }
+
+    /**
+     * @test
+     */
+    public function shouldCheckIsValidImportSettingsWhenSettingsIncorrect()
+    {
+        $this->load(true);
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => 'Test Rent Group']);
+        $this->assertNotEmpty($group, 'Group not exist in fixtures');
+        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        /** @var ImportSettingsValidator $importSettingsValidator */
+        $importSettingsValidator = $this->getContainer()->get('import.settings.validator');
+        $this->assertFalse(
+            $importSettingsValidator->isValidImportSettings($group),
+            'Result should be false. For yardi we can\'t use source csv'
+        );
+        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $this->assertFalse(
+            $importSettingsValidator->isValidImportSettings($group),
+            'Result should be false. For mri bostonpost we can\'t use source integrated api'
+        );
+    }
 }

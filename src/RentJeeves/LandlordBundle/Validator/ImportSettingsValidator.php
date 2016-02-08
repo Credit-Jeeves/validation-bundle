@@ -55,7 +55,18 @@ class ImportSettingsValidator
         $accountingSystem = $currentGroup->getHolding()->getAccountingSystem();
         $importSettings = $currentGroup->getImportSettings();
 
-        if ($accountingSystem !== AccountingSystem::NONE && $importSettings->getSource() === ImportSource::CSV) {
+        if (in_array($accountingSystem, AccountingSystem::$integratedWithCsv)
+            && $importSettings->getSource() !== ImportSource::CSV) {
+            $this->errorMessage = $this->translator->trans(
+                'import.error.settings_is_wrong',
+                ['%support_email%' => $this->supportEmail]
+            );
+
+            return false;
+        }
+
+        if (in_array($accountingSystem, AccountingSystem::$integratedWithApi)
+            && $importSettings->getSource() !== ImportSource::INTEGRATED_API) {
             $this->errorMessage = $this->translator->trans(
                 'import.error.settings_is_wrong',
                 ['%support_email%' => $this->supportEmail]
