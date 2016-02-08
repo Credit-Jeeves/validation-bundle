@@ -2,6 +2,8 @@
 
 namespace RentJeeves\TenantBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Settings;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -65,7 +67,10 @@ class CreditTrackCase extends BaseTestCase
     {
         $this->enterSignupFlow();
 
-        $this->session->wait($this->timeout, "$('#id-source-step .payment-accounts a.checkout-plus').is(':visible')");
+        $this->session->wait(
+            $this->timeout,
+            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
+        );
         $link = $this->page->find('css', '#id-source-step .payment-accounts a.checkout-plus');
         $link->click();
 
@@ -88,8 +93,16 @@ class CreditTrackCase extends BaseTestCase
     public function existingAccountSignup()
     {
         $this->enterSignupFlow();
-        $this->page->find('css', '#id-source-step .payment-accounts label:nth-of-type(1)')->click();
+        $this->session->wait(
+            $this->timeout,
+            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
+        );
+        $existingAccounts = $this->page->findAll('css', '#id-source-step .payment-accounts label.checkbox.radio');
+        $this->assertCount(2, $existingAccounts, 'Expected 2 existing payment accounts');
+        $existingAccounts[0]->click();
+
         $this->page->pressButton('pay_popup.step.next');
+
         $this->session->wait($this->timeout, "$('#id-pay-step').is(':visible')");
 
         $this->page->pressButton('checkout.make_payment');
@@ -154,5 +167,57 @@ class CreditTrackCase extends BaseTestCase
 
         $this->assertNotNull($plan = $this->page->find('css', '#current-plan'));
         $this->assertEquals('settings.plans.free', $plan->getText());
+    }
+
+    /**
+     * @test
+     */
+    public function scoreTrackFreeUntil3Month()
+    {
+        $this->load(true);
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getEntityManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+        $this->assertNotEmpty($projectSettings, 'We should have settings');
+        $projectSettings->setScoretrackFreeUntil(3);
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
+        $this->assertEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be empty option in fixture');
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+        $this->setDefaultSession('selenium2');
+        $this->login('transU@example.com', 'pass');
+
+        $this->page->clickLink('tabs.summary');
+        $this->assertNotEmpty(
+            $freeForMonth = $this->page->find('css', '.free_for_month'),
+            'Should see element where we show: how long scoretrack should be free'
+        );
+        $this->assertEquals('credittrack.promo.free', $freeForMonth->getText(), 'Text for trans should be free');
+        $this->page->clickLink('credittrack.buy.link');
+        $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
+        $this->page->pressButton('popup.sign.up.today');
+        $this->assertNotEmpty(
+            $informationBoxes = $this->page->findAll('css', '.information-box'),
+            'Should see element where we show: info message about free'
+        );
+        $this->assertCount(2, $informationBoxes, 'We should have two boxes with info message.');
+        $this->assertEquals('credittrack.message_for_payment.first_step', $informationBoxes[0]->getText());
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+        $this->makeNew();
+        $this->assertCount(2, $informationBoxes, 'We should have two boxes with info message.');
+        $this->assertEquals('credittrack.message_for_payment.second_step', $informationBoxes[1]->getText());
+        $this->page->pressButton('checkout.make_payment');
+        $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
+        $this->assertNotEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be filled with Date');
+        $scoreTrackUntil = new \DateTime('+3 month');
+        $scoreTrackUntil->setTime(0, 0, 0);
+        $scoreTrackUntilInDb = $tenant->getSettings()->getScoretrackFreeUntil();
+        $this->assertEquals(
+            $scoreTrackUntil->format(\DateTime::ISO8601),
+            $scoreTrackUntilInDb->format(\DateTime::ISO8601),
+            'ScoreTrack free was not setup'
+        );
     }
 }

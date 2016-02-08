@@ -125,6 +125,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
         $unit->setUnitMapping($unitMapping);
         $this->getEntityManager()->flush();
 
+        $this->getEntityManager()->getFilters()->disable('softdeleteable');
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
 
@@ -141,6 +142,8 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var ContractWaiting $contractWaiting
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
+
+        $this->getEntityManager()->getFilters()->enable('softdeleteable');
 
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
         $this->getEntityManager()->clear();
@@ -220,6 +223,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $unitMappingId = $unitMapping->getId();
 
+        $this->getEntityManager()->getFilters()->disable('softdeleteable');
         $lastUnit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findOneBy([], ['id' => 'desc']);
         $contracts = $unit->getContracts();
 
@@ -237,6 +241,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          */
         $contractWaiting = $unit->getContractsWaiting()->first();
 
+        $this->getEntityManager()->getFilters()->enable('softdeleteable');
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
         $this->getEntityManager()->clear();
 
@@ -336,6 +341,45 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $unit->getId(),
             $contractWaiting->getUnit()->getId(),
             'contractWaiting is updated in dryRun mode.'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldDeduplicateAndMoveAllEntitiesToExistUnitIfPropertyHaveUnitWithSameNameAndSrcUnitIsDeleted()
+    {
+        $this->load(true);
+
+        $unitWithSameName = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
+        $property = $unitWithSameName->getProperty();
+        $property->getPropertyAddress()->setIsSingle(false);
+        // sql because we need disable SoftDelete filter in command
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare("UPDATE rj_contract set unit_id = 34 WHERE id = 1");
+        $statement->execute();
+
+        $this->getEntityManager()->flush();
+
+        $this->executeCommandTester(
+            new UnitDeduplicateCommand(),
+            [
+                '--src-unit-id' => 34, // deleted unit
+                '--dst-property-id' => 1
+            ]
+        );
+
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(1);
+        $this->assertEquals($unitWithSameName, $contract->getUnit(), 'Contract is not updated.');
+
+        $this->assertFalse(
+            $this->getEntityManager()->getFilters()->isEnabled('softdeleteable'),
+            'SoftDelete filter should be disabled in UnitDeduplicateCommand.'
+        );
+
+        $this->assertNull(
+            $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(34),
+            'Unit is not deleted.'
         );
     }
 }

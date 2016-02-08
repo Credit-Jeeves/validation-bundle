@@ -35,6 +35,8 @@ debug=false;
 
 payAccounts=[]
 
+lastHistory=-1;
+
 $(document).ready(function(){
 
     h=$.mobile.getScreenHeight();
@@ -45,6 +47,7 @@ $(document).ready(function(){
             payAccounts=d
             init() //we need payAccounts first
             $.each(historyIds,function(key,value){
+                lastHistory=value;
                 getHistory(value) //this eventually calls deposit date, which needs payAccounts
             })
         })
@@ -52,6 +55,7 @@ $(document).ready(function(){
 })
 
 function init(){
+
 
     //load main page payments info
 
@@ -913,7 +917,10 @@ function getHistory(historyId) {
 
             $(".loadingPaymentHistory").hide()
 
-
+            if(historyId==lastHistory) {
+                $("#loader").hide()
+                $("#payments").show()
+            }
         })
     }
 }
@@ -936,7 +943,7 @@ function loadOrderTable(tenantPayments,address,contractId){ //HISTORICAL
         date = date[2]+"-"+date[0]+"-"+date[1]
         if(new Date(curDate - entryDate).getTime() < 259200000) { //check for within 3 days
             if (entry.status.toString() == "pending") {
-                orderBox("Payment En Route - $" + entry.total, address, entry.status.toString(),date,contractId,paymentType)
+                orderBox("<b>Payment En Route</b> - $" + entry.total, address, entry.status.toString(),date,contractId,paymentType)
             }
             if (entry.status.toString() == "complete") {
                 orderBox("Payment Received - $" + entry.total, address, entry.status.toString(),date,contractId,paymentType)

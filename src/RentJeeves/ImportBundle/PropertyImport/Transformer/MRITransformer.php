@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
@@ -14,7 +14,7 @@ use RentJeeves\ExternalApiBundle\Model\MRI\Value;
 class MRITransformer implements TransformerInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var EntityManager
      */
     protected $em;
 
@@ -29,10 +29,10 @@ class MRITransformer implements TransformerInterface
     protected $arrayCache = [];
 
     /**
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface        $logger
+     * @param EntityManager   $em
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(EntityManager $em, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -200,6 +200,14 @@ class MRITransformer implements TransformerInterface
     protected function getAllowMultipleProperties(Value $accountingSystemRecord)
     {
         return false;
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\ImportPropertyRepository
+     */
+    protected function getImportPropertyRepository()
+    {
+        return $this->em->getRepository('RjDataBundle:ImportProperty');
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -25,8 +25,8 @@ class ExternalApiClientFactory
      * @var array
      */
     protected $externalSoapClients = [
-        ApiIntegrationType::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
-        ApiIntegrationType::AMSI => SoapClientEnum::AMSI_LEDGER
+        AccountingSystem::YARDI_VOYAGER => SoapClientEnum::YARDI_PAYMENT,
+        AccountingSystem::AMSI => SoapClientEnum::AMSI_LEDGER
     ];
 
     /**
@@ -38,8 +38,8 @@ class ExternalApiClientFactory
      */
     public function __construct(ResManClient $resManClient, MRIClient $mriClient, SoapClientFactory $soapClientFactory)
     {
-        $this->accountingServiceClientMap[ApiIntegrationType::RESMAN] = $resManClient;
-        $this->accountingServiceClientMap[ApiIntegrationType::MRI] = $mriClient;
+        $this->accountingServiceClientMap[AccountingSystem::RESMAN] = $resManClient;
+        $this->accountingServiceClientMap[AccountingSystem::MRI] = $mriClient;
         $this->soapClientFactory = $soapClientFactory;
     }
 

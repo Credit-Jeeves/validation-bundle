@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
-use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Entity\Contract;
 use Sonata\AdminBundle\Admin\Admin;
@@ -31,6 +30,7 @@ class ContractAdmin extends Admin
             $query->andWhere($alias.'.tenant = :tenant');
             $query->setParameter('tenant', $tenant);
         }
+
         return $query;
     }
 
@@ -124,6 +124,7 @@ class ContractAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
             )
         );
+
         return $this->breadcrumbs[$action] = $menu;
     }
 
@@ -241,6 +242,11 @@ class ContractAdmin extends Admin
                 'payment_accepted',
                 'choice',
                 ['choices' => PaymentAccepted::getValues($this->getSubject()->getPaymentAccepted())]
+            )
+            ->add(
+                'paymentAllowed',
+                'checkbox',
+                ['required' => false]
             )
             ->add('paidTo')
             ->add('reportToExperian')

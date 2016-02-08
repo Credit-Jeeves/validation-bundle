@@ -17,7 +17,11 @@
   {% if features.allow_score_track %}
     <div class="credittrack-teaser font-helvetica">
       {% if creditTrackEnabled %}
-        <i><span class="text enrolled">{{ 'credittrack.active.message' | trans | raw }}</span></i>
+        <i>
+          <span class="text enrolled">
+            {{ 'credittrack.active.message' | trans | raw }}
+          </span>
+        </i>
       {% else %}
         <i><a href="#" class="text show-credittrack-pricing-popup">{{ 'credittrack.teaser.link' | trans | raw }}</a></i>
       {% endif %}

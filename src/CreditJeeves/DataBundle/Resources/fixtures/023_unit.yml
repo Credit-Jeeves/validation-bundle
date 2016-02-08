@@ -226,3 +226,20 @@ fixtures:
         holding:   rjHolding_1
         group:     RentGroup_1
         name:      301
+
+    Unit_1_1_deleted:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+        deletedAt: '-60 days'
+    Unit_2_13_deleted:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+        deletedAt: '-60 days'

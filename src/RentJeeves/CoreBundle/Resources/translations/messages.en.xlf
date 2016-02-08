@@ -564,6 +564,14 @@
                 <source>request.payments</source>
                 <target>Requested Payment</target>
             </trans-unit>
+            <trans-unit id="lease.details">
+                <source>lease.details</source>
+                <target>Lease Details</target>
+            </trans-unit>
+            <trans-unit id="online.payments.lease">
+                <source>online.payments.lease</source>
+                <target>Online Payments for This Lease</target>
+            </trans-unit>
             <trans-unit id="amount">
                 <source>amount</source>
                 <target>Amount</target>
@@ -588,9 +596,9 @@
                 <source>end</source>
                 <target>End</target>
             </trans-unit>
-            <trans-unit id="remove.tenant">
-                <source>remove.tenant</source>
-                <target><![CDATA[Remove<br>Tenant]]>
+            <trans-unit id="remove.lease">
+                <source>remove.lease</source>
+                <target><![CDATA[Remove<br>Lease]]>
                 </target>
             </trans-unit>
             <trans-unit id="approve.tenant.info">
@@ -789,6 +797,10 @@
            <trans-unit id="bureau.reporting.trans_union">
                <source>bureau.reporting.trans_union</source>
                <target>TransUnion</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.equifax">
+                <source>bureau.reporting.equifax</source>
+                <target>Equifax</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.manage">
                <source>bureau.reporting.manage</source>
@@ -1042,7 +1054,7 @@
             </trans-unit>
             <trans-unit id="current_contracts.title">
                 <source>current_contracts.title</source>
-                <target>Contracts</target>
+                <target>Leases</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -1075,6 +1087,34 @@
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
                 <target>Pay Rent</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.help_text">
+                <source>contract.payment_allowed.help_text</source>
+                <target>
+                You can "Block" and "Allow" online payments by toggling this switch.
+                If you are integrated with an accounting system, we will only accept payments
+                 if both RentTrack and your accounting system are set to "Allow"
+                </target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.true">
+                <source>contract.payment_allowed.true</source>
+                <target>Allowed</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_allowed.false">
+                <source>contract.payment_allowed.false</source>
+                <target>Blocked</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.0">
+                <source>contract.payment_accepted.0</source>
+                <target>Allowed</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.1">
+                <source>contract.payment_accepted.1</source>
+                <target>Blocked</target>
+            </trans-unit>
+            <trans-unit id="contract.payment_accepted.2">
+                <source>contract.payment_accepted.2</source>
+                <target>Cash Equivalent</target>
             </trans-unit>
             <trans-unit id="contract.pay_anything">
                 <source>contract.pay_anything</source>
@@ -1730,6 +1770,10 @@
                 <source>payment_account_card</source>
                 <target>Credit Card</target>
             </trans-unit>
+            <trans-unit id="payment_account.last_four">
+                <source>payment_account.last_four</source>
+                <target>Last Four</target>
+            </trans-unit>
             <trans-unit id="payment_account.delete.title">
                 <source>payment_account.delete.title</source>
                 <target>Remove Payment Source</target>
@@ -2073,23 +2117,23 @@
             </trans-unit>
             <trans-unit id="edit.contract">
                 <source>edit.contract</source>
-                <target>Edit Contract</target>
+                <target>Edit Lease</target>
             </trans-unit>
             <trans-unit id="end.contract">
                 <source>end.contract</source>
-                <target>End Contract</target>
+                <target>End Lease</target>
             </trans-unit>
             <trans-unit id="end.br.contract">
                 <source>end.br.contract</source>
-                <target><![CDATA[End <br />Contract]]></target>
+                <target><![CDATA[End <br />Lease]]></target>
             </trans-unit>
             <trans-unit id="yes.end.contract">
                 <source>yes.end.contract</source>
-                <target>Yes, End Contract</target>
+                <target>Yes, End Lease</target>
             </trans-unit>
             <trans-unit id="yes.remove.contract">
                 <source>yes.remove.contract</source>
-                <target>Yes, Remove Contract</target>
+                <target>Yes, Remove Lease</target>
             </trans-unit>
             <trans-unit id="no.leave.intact">
                 <source>no.leave.intact</source>
@@ -2102,17 +2146,18 @@
             <trans-unit id="end.contract.description">
                 <source>end.contract.description</source>
                 <target>
-                    Are you sure want to end this contract?
+                    Are you sure want to end this lease?
                     Please enter any uncollected balance, or $0 if lease was paid
                     in full. Tenant payment history will be reported to credit service
-                    agencies.
+                    agencies. Any active payments will be cancelled.
                 </target>
             </trans-unit>
             <trans-unit id="remove.contract.description">
                 <source>remove.contract.description</source>
-                <target>
-                    Are you sure want to remove this contract?
-                </target>
+                <target><![CDATA[
+                    Are you sure want to remove this contract?<br />
+                    Any active payments will be cancelled.
+                ]]></target>
             </trans-unit>
             <trans-unit id="remove.contract">
                 <source>remove.contract</source>
@@ -2869,6 +2914,10 @@
                 <source>order.report.type.yardi_genesis_v2</source>
                 <target>Yardi Genesis V2 (CSV)</target>
             </trans-unit>
+            <trans-unit id="order.report.type.mri_boston_post">
+                <source>order.report.type.mri_boston_post</source>
+                <target>MRI Boston Post (CSV)</target>
+            </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
                 <target>Include Transactions from All Groups</target>
@@ -3061,16 +3110,16 @@
                 <source>error.statement_descriptor.empty</source>
                 <target>Statement Descriptor should not be empty.</target>
             </trans-unit>
-            <trans-unit id="yardi.tenant.property.manager_disabled_payment">
-                <source>yardi.tenant.property.manager_disabled_payment</source>
+            <trans-unit id="tenant.property.manager_disabled_payment">
+                <source>tenant.property.manager_disabled_payment</source>
                 <target>Your property manager has disabled online payments.</target>
             </trans-unit>
-            <trans-unit id="yardi.landlord.property.manager_disabled_payment">
-                <source>yardi.landlord.property.manager_disabled_payment</source>
-                <target>Payments have been disabled for this tenant by the integrated accounting software.</target>
+            <trans-unit id="landlord.property.manager_disabled_payment">
+                <source>landlord.property.manager_disabled_payment</source>
+                <target>Payments have been disabled for this tenant.</target>
             </trans-unit>
-            <trans-unit id="yardi.tenant.property.manager_disabled_payment_description">
-                <source>yardi.tenant.property.manager_disabled_payment_description</source>
+            <trans-unit id="tenant.property.manager_disabled_payment_description">
+                <source>tenant.property.manager_disabled_payment_description</source>
                 <target>Payment Disabled Contact Your Property Manager</target>
             </trans-unit>
             <trans-unit id="common.resident_id">
@@ -3298,6 +3347,26 @@
             <trans-unit id="entity_hidden.invalid_message">
                 <source>entity_hidden.invalid_message</source>
                 <target>The entity does not exist.</target>
+            </trans-unit>
+            <trans-unit id="common.lease_id">
+                <source>common.lease_id</source>
+                <target>Lease ID</target>
+            </trans-unit>
+            <trans-unit id="import.error.settings_missing">
+                <source>import.error.settings_missing</source>
+                <target>The import settings for this account are not configured. Please contact %support_email% and we can set these up for you.</target>
+            </trans-unit>
+            <trans-unit id="import.error.settings_is_wrong">
+                <source>import.error.settings_is_wrong</source>
+                <target>It looks like your import settings have a problem. Please contact  %support_email% and we will get this fixed for you.</target>
+            </trans-unit>
+            <trans-unit id="common.free">
+                <source>common.free</source>
+                <target>Free</target>
+            </trans-unit>
+            <trans-unit id="tenant.credit_history_dashboard">
+                <source>tenant.credit_history_dashboard</source>
+                <target>Tenant Credit History Dashboard</target>
             </trans-unit>
         </body>
     </file>

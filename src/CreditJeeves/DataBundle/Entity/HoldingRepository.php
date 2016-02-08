@@ -3,7 +3,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 
 class HoldingRepository extends EntityRepository
 {
@@ -15,8 +15,8 @@ class HoldingRepository extends EntityRepository
         return $this->createQueryBuilder('holding')
             ->innerJoin('holding.resManSettings', 'resManSettings')
             ->innerJoin('holding.propertyMapping', 'propertyMapping')
-            ->where('holding.apiIntegrationType = :resManSettings')
-            ->setParameter('resManSettings', ApiIntegrationType::RESMAN);
+            ->where('holding.accountingSystem = :resManSettings')
+            ->setParameter('resManSettings', AccountingSystem::RESMAN);
     }
 
     /**
@@ -27,8 +27,8 @@ class HoldingRepository extends EntityRepository
         return $this->createQueryBuilder('holding')
             ->innerJoin('holding.mriSettings', 'mriSettings')
             ->innerJoin('holding.propertyMapping', 'propertyMapping')
-            ->where('holding.apiIntegrationType = :mri')
-            ->setParameter('mri', ApiIntegrationType::MRI);
+            ->where('holding.accountingSystem = :mri')
+            ->setParameter('mri', AccountingSystem::MRI);
     }
 
     /**
@@ -39,8 +39,8 @@ class HoldingRepository extends EntityRepository
         return $this->createQueryBuilder('h')
             ->innerJoin('h.yardiSettings', 'ys')
             ->where('ys.syncBalance = 1')
-            ->andWhere('h.apiIntegrationType = :yardi')
-            ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER)
+            ->andWhere('h.accountingSystem = :yardi')
+            ->setParameter('yardi', AccountingSystem::YARDI_VOYAGER)
             ->getQuery()
             ->iterate();
     }
@@ -52,8 +52,8 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('holding')
             ->innerJoin('holding.mriSettings', 'mriSettings')
-            ->where('holding.apiIntegrationType = :mri')
-            ->setParameter('mri', ApiIntegrationType::MRI)
+            ->where('holding.accountingSystem = :mri')
+            ->setParameter('mri', AccountingSystem::MRI)
             ->getQuery()
             ->iterate();
     }
@@ -65,9 +65,9 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.amsiSettings', 's')
-            ->where('h.apiIntegrationType = :amsi')
+            ->where('h.accountingSystem = :amsi')
             ->andWhere('s.syncBalance = 1')
-            ->setParameter('amsi', ApiIntegrationType::AMSI)
+            ->setParameter('amsi', AccountingSystem::AMSI)
             ->getQuery()
             ->iterate();
     }
@@ -79,9 +79,9 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.resManSettings', 's')
-            ->where('h.apiIntegrationType = :resman')
+            ->where('h.accountingSystem = :resman')
             ->andWhere('s.syncBalance = 1')
-            ->setParameter('resman', ApiIntegrationType::RESMAN)
+            ->setParameter('resman', AccountingSystem::RESMAN)
             ->getQuery()
             ->iterate();
     }
@@ -93,9 +93,9 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('holding')
             ->innerJoin('holding.mriSettings', 'mriSettings')
-            ->where('holding.apiIntegrationType = :mri')
+            ->where('holding.accountingSystem = :mri')
             ->andWhere('holding.useRecurringCharges = 1')
-            ->setParameter('mri', ApiIntegrationType::MRI)
+            ->setParameter('mri', AccountingSystem::MRI)
             ->getQuery()
             ->iterate();
     }
@@ -107,9 +107,9 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.amsiSettings', 's')
-            ->where('h.apiIntegrationType = :amsi')
+            ->where('h.accountingSystem = :amsi')
             ->andWhere('h.useRecurringCharges = 1')
-            ->setParameter('amsi', ApiIntegrationType::AMSI)
+            ->setParameter('amsi', AccountingSystem::AMSI)
             ->getQuery()
             ->iterate();
     }
@@ -122,8 +122,8 @@ class HoldingRepository extends EntityRepository
         return $this->createQueryBuilder('h')
             ->innerJoin('h.yardiSettings', 'ys')
             ->where('h.useRecurringCharges = 1')
-            ->andWhere('h.apiIntegrationType = :yardi')
-            ->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER)
+            ->andWhere('h.accountingSystem = :yardi')
+            ->setParameter('yardi', AccountingSystem::YARDI_VOYAGER)
             ->getQuery()
             ->iterate();
     }
@@ -135,9 +135,9 @@ class HoldingRepository extends EntityRepository
     {
         return $this->createQueryBuilder('h')
             ->innerJoin('h.resManSettings', 's')
-            ->where('h.apiIntegrationType = :resman')
+            ->where('h.accountingSystem = :resman')
             ->andWhere('h.useRecurringCharges = 1')
-            ->setParameter('resman', ApiIntegrationType::RESMAN)
+            ->setParameter('resman', AccountingSystem::RESMAN)
             ->getQuery()
             ->iterate();
     }
@@ -152,9 +152,9 @@ class HoldingRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('holding');
         $query->innerJoin('holding.yardiSettings', 'yardiSetting');
-        $query->where('holding.apiIntegrationType = :yardi');
+        $query->where('holding.accountingSystem = :yardi');
         $query->andWhere('yardiSetting.postPayments = 1');
-        $query->setParameter('yardi', ApiIntegrationType::YARDI_VOYAGER);
+        $query->setParameter('yardi', AccountingSystem::YARDI_VOYAGER);
 
         if ($strategy) {
             $query->andWhere('yardiSetting.synchronizationStrategy = :strategy');
@@ -169,19 +169,19 @@ class HoldingRepository extends EntityRepository
     }
 
     /**
-     * @param string $apiIntegrationType
+     * @param string $accountingSystem
      *
      * @return Holding[]
      */
-    public function findAllByApiIntegration($apiIntegrationType)
+    public function findAllByAccountingSystem($accountingSystem)
     {
-        if (false === ApiIntegrationType::isValid($apiIntegrationType)) {
-            throw new \InvalidArgumentException(sprintf('Incorrect API integration type "%s"', $apiIntegrationType));
+        if (false === AccountingSystem::isValid($accountingSystem)) {
+            throw new \InvalidArgumentException(sprintf('Incorrect API integration type "%s"', $accountingSystem));
         }
 
         return $this->createQueryBuilder('holding')
-            ->where('holding.apiIntegrationType = :apiIntegrationType')
-            ->setParameter('apiIntegrationType', $apiIntegrationType)
+            ->where('holding.accountingSystem = :accountingSystem')
+            ->setParameter('accountingSystem', $accountingSystem)
             ->getQuery()
             ->execute();
     }

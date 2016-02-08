@@ -5,6 +5,11 @@
 
 </script>
 
+<div id="loader">
+    <img src="/images/7f134fa_ajax_1.gif"><br>
+    LOADING
+</div>
+
         <div data-role="page" id="main"> {# have it on this page for now since we use contracts data #}
             <div data-role="panel" id="panelMain" class="sideMenu">
                 <ul data-role="listview">
@@ -39,7 +44,7 @@
                     </table>
                 </a>
 
-                <div id="payments">
+                <div id="payments" style="display: none;">
                     <div class="paymentBox" id="intro">
                         <div class="addressBox">
                             Once you set up a payment,
@@ -89,7 +94,7 @@
                 <script>
                     paidDates=[{% for contract in contracts %}
                         {% if contract.payment_type == 'recurring' or contract.payment_type == 'one_time' %}
-                        [{{contract.id}},"{{ contract.payment_due_date }}"]
+                        [{{contract.id}},"{{ contract.payment_due_date }}"],
                         {% endif %}
                         {% endfor %}]
                     $.each(paidDates,function(a,b){

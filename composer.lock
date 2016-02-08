@@ -4304,7 +4304,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "f05b6546b34c94fb13ab02935b9b49b7b5d2b1db"
+                "reference": "a629fdb30a327eca8a219de5630863bd217cff76"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",
@@ -4341,7 +4341,7 @@
                 "soap",
                 "wsdl"
             ],
-            "time": "2015-12-24 09:33:41"
+            "time": "2016-01-23 12:36:55"
         },
         {
             "name": "renttrack/smarty-streets-bundle",
@@ -7951,7 +7951,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.12,<5.5.0",
+        "php": ">=5.4.12",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",

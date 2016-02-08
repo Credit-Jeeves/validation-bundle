@@ -258,6 +258,10 @@
                 <source>admin.error.debit_fee_should_be_filled</source>
                 <target>If Allowed Debit Fee checked, you should fill Debit fee</target>
             </trans-unit>
+            <trans-unit id="admin.error.holding_does_not_have_property">
+                <source>admin.error.holding_does_not_have_property</source>
+                <target>This Property does not belong to this Holding</target>
+            </trans-unit>
             <trans-unit id="admin.error.debit_payment_processor">
                 <source>admin.error.debit_payment_processor</source>
                 <target>Allowed Debit Fee works only for ACI</target>
@@ -345,6 +349,14 @@
             <trans-unit id="admin.import_properties_job.error.empty_external_properties">
                 <source>admin.import_properties_job.error.empty_external_properties</source>
                 <target>Group %group_name% doesn't have externalPropertiesID</target>
+            </trans-unit>
+            <trans-unit id="admin.attention.payments_automatically_closed">
+                <source>admin.attention.payments_automatically_closed</source>
+                <target>Attention! If you set status to "deleted" or "finished", all active payments for this contract will be automatically closed.</target>
+            </trans-unit>
+            <trans-unit id="admin.error.empty_merchant_profit_stars">
+                <source>admin.error.empty_merchant_profit_stars</source>
+                <target>You should set ProfitStars merchant ID for holding first.</target>
             </trans-unit>
         </body>
     </file>

@@ -44,7 +44,6 @@ class TenantsController extends Controller
             'LandlordBundle:Tenants:index.html.twig',
             [
                 'nGroups' => $this->getGroups()->count(),
-                'Group' => $this->getCurrentGroup(),
                 'form' => $form->createView(),
                 'searchText' => $searchText,
                 'searchColumn' => $searchColumn

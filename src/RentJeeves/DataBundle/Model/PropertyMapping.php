@@ -144,4 +144,21 @@ abstract class PropertyMapping
     {
         return $this->holding;
     }
+
+    /**
+     * @Assert\True(
+     *     message="admin.error.holding_does_not_have_property",
+     *     groups={"admin_part"}
+     * )
+     */
+    public function isHoldingContainsProperty()
+    {
+        foreach ($this->getProperty()->getPropertyGroups() as $group) {
+            if ($group->getHolding() === $this->getHolding()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

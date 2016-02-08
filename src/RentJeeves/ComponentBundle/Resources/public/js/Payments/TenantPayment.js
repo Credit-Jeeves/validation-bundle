@@ -8,6 +8,7 @@ function TenantPayment(data) {
     this.other = ko.observable(null);
     this.total = ko.observable(null);
     this.type = ko.observable(null);
+    this.lastFour = ko.observable(null);
 
     ko.mapping.fromJS(data, {}, this);
 }

@@ -75,3 +75,5 @@ parameters:
     monolog.alert.email_to: escalations@renttrack.com
     monolog.emergency.email_to: emergency-email-alerts@renttrack.pagerduty.com
 
+    profit_stars.store_id: 765350
+    profit_stars.store_key: 'nAfv+O9D5V3i1Pgd3yaUxOAa2D9z'

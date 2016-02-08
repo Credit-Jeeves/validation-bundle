@@ -142,7 +142,7 @@ class RentIsDueEmailSender
      */
     public function findContractsAndSendPaymentDueEmails()
     {
-        $this->logger->info(sprintf('Starting work %s', $this->isDryRunMode()? 'in DRY RUN MODE' : ''));
+        $this->logger->info(sprintf('Starting work %s', $this->isDryRunMode() ? 'in DRY RUN MODE' : ''));
 
         $this->softDeleteableControl->disable();
         $totalContracts = $this->em->getRepository('RjDataBundle:Contract')->countContractsForSendTenantEmail(
@@ -153,6 +153,7 @@ class RentIsDueEmailSender
 
         if ($totalContracts === 0) {
             $this->logger->info('Finished work');
+
             return;
         }
 
@@ -341,7 +342,6 @@ class RentIsDueEmailSender
         if (empty($month) || empty($year)) {
             return false;
         }
-
 
         $dueDate = $activePayment->getDueDate();
 

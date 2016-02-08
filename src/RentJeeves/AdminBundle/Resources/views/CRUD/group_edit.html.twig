@@ -55,6 +55,12 @@
                             {% else %}
                                 <fieldset>
                                     <div class="sonata-ba-collapsed-fields">
+                                        {% if name == 'Virtual terminal' and object.getActiveBillingAccount %}
+                                            <p>
+                                                Paid from account: "{{ object.getActiveBillingAccount.name }}"
+                                                {{ object.getActiveBillingAccount.lastFour ? '(' ~ object.getActiveBillingAccount.lastFour ~ ')' : '' }}
+                                            </p>
+                                        {% endif %}
                                         {% if form_group.description != false %}
                                             <p>{{ form_group.description|raw }}</p>
                                         {% endif %}

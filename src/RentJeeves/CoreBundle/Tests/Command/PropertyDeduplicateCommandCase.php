@@ -190,4 +190,41 @@ class PropertyDeduplicateCommandCase extends BaseTestCase
             'isSingle Property should be deleted.'
         );
     }
+    /**
+     * @test
+     */
+    public function shouldDeduplicatePropertyAndRelatedDeletedUnit()
+    {
+        $this->load(true);
+
+        $dstProperty = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(1);
+        $srcProperty1 = $this->getEntityManager()->getRepository('RjDataBundle:Property')->find(2);
+        $propertyAddress = $this->getEntityManager()->getRepository('RjDataBundle:PropertyAddress')->find(1);
+        $propertyAddress->setIsSingle(false);
+
+        $this->assertNotEquals(
+            $propertyAddress,
+            $srcProperty1->getPropertyAddress(),
+            'srcProperty1 should have not PropertyAddress#1'
+        );
+        // set identity ExternalPropertyId
+        $srcProperty1->setPropertyAddress($propertyAddress);
+        $dstExternalPropertyId = $dstProperty->getPropertyMappings()->first()->getExternalPropertyId();
+        $srcProperty1->getPropertyMappings()->first()->setExternalPropertyId($dstExternalPropertyId);
+
+        $this->writeAttribute($srcProperty1, 'property_groups', $dstProperty->getPropertyGroups());
+
+        $this->getEntityManager()->flush();
+
+        $this->executeCommandTester(new PropertyDeduplicateCommand(), ['--property-address-id' => 1]);
+
+        $this->assertFalse(
+            $this->getEntityManager()->getFilters()->isEnabled('softdeleteable'),
+            'SoftDelete filter should be disabled in UnitDeduplicateCommand.'
+        );
+        $this->assertNull(
+            $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(35),
+            'Unit is not deleted.'
+        );
+    }
 }

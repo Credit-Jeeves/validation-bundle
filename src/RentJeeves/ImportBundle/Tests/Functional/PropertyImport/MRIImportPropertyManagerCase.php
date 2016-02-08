@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\Tests\Functional\PropertyImport;
 use Guzzle\Http\Message\Response;
 use RentJeeves\CoreBundle\HttpClient\HttpClient;
 use RentJeeves\DataBundle\Entity\Import;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -41,7 +41,7 @@ class MRIImportPropertyManagerCase extends BaseTestCase
         $admin = $this->getEntityManager()->getRepository('DataBundle:Admin')->find(1);
         $holding = $group->getHolding();
 
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
 
         $newImport = new Import();
         $newImport->setGroup($group);

@@ -68,6 +68,19 @@ class ContractType extends AbstractType
             ]
         );
 
+        if ($this->group->isAllowedEditLeaseId()) {
+            $builder->add(
+                'externalLeaseId',
+                'text',
+                [
+                    'label' => 'common.lease_id',
+                    'error_bubbling' => true,
+                    'required' => true,
+                ]
+            );
+        }
+
+
         $builder->add(
             'finishAtType',
             'choice',

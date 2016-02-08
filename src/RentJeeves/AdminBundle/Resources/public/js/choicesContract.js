@@ -2,6 +2,7 @@ $( document ).ready(function() {
     var group = $($('select').get(2));
     var property = $($('select').get(3));
     var unit = $($('select').get(4));
+    var status = $('select[name$="[status]"]');
 
     function choice(object, route, callback)
     {
@@ -77,5 +78,11 @@ $( document ).ready(function() {
 
     property.change(function() {
         runProperty();
+    });
+
+    status.change(function() {
+        if ($(this).val() === 'finished' || $(this).val() === 'deleted') {
+            alert(Translator.trans('admin.attention.payments_automatically_closed'));
+        }
     });
 });

@@ -24,6 +24,20 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
+            {% if scoreTrackFreeUntil > 0 %}
+                <div class="information-box pie-el">
+                    {{
+                        'credittrack.message_for_payment.first_step'|trans(
+                            {
+                                "%month%": scoreTrackFreeUntil,
+                                "%dollars%": credittrack_payment_per_month_dollars,
+                                "%cents%": credittrack_payment_per_month_cents
+                            },
+                            'checkout'
+                        )
+                    }}
+                </div>
+            {% endif %}
             <div data-bind="visible: paymentAccounts().length > 0" class="form-row clearfix" >
                 <label>{{ 'payment.account' | trans }}*</label>
                 <div class="fields-box payment-accounts">
@@ -61,9 +75,24 @@
         </div>
 
         <div data-bind="visible: 'pay' == step()" id="id-pay-step">
-            <h3 class="italic">
-                {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
-            </h3>
+            {% if scoreTrackFreeUntil > 0 %}
+                <div class="information-box pie-el">
+                    {{
+                    'credittrack.message_for_payment.second_step'|trans(
+                        {
+                            "%month%": scoreTrackFreeUntil,
+                            "%dollars%": credittrack_payment_per_month_dollars,
+                            "%cents%": credittrack_payment_per_month_cents
+                        },
+                        'checkout'
+                    )
+                    }}
+                </div>
+            {% else %}
+                <h3 class="italic">
+                    {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
+                </h3>
+            {% endif %}
 
             <div class="clearfix halfs-box">
                 <div class="half-box left">
@@ -71,21 +100,15 @@
                     <div class="form-row clearfix">
                         <label>{{ 'credittrack.pay.amount' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">{{ credittrack_payment_per_month }}</span>
+                            <span class="value">
+                                {% if scoreTrackFreeUntil > 0 %}
+                                    {{ 'common.free'|trans }}
+                                {% else %}
+                                    {{ credittrack_payment_per_month }}
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
-                    {#<div class="form-row clearfix">
-                        <label>{{ 'checkout.fee' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value">$0.00</span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix total-amount">
-                        <label>{{ 'checkout.total' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getTotalAmount()"></span>
-                        </div>
-                    </div>#}
                     <div class="form-row clearfix">
                         <label>{{ 'credittrack.pay.charged_on' | trans }}</label>
                         <div class="fields-box">
@@ -95,8 +118,10 @@
                         </div>
                     </div>
                     <br />
-                    <h4>{{ 'note' | trans }}</h4>
-                    <p>{{ 'credittrack.pay.note' | trans }}</p>
+                    {% if scoreTrackFreeUntil == 0 %}
+                        <h4>{{ 'note' | trans }}</h4>
+                        <p>{{ 'credittrack.pay.note' | trans}}</p>
+                    {% endif %}
                 </div>
                 <div class="half-box right">
                     <h4>{{ 'checkout.how_paying' | trans }}</h4>

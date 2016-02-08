@@ -17,7 +17,7 @@ use RentJeeves\CoreBundle\DateTime;
 trait TransactionAvailableTrait
 {
     /**
-     * @param string $apiIntegrationType
+     * @param string $accountingSystem
      * @param string $residentId
      * @param string $externalPropertyId
      * @param string $externalLeaseId
@@ -26,7 +26,7 @@ trait TransactionAvailableTrait
      * @return Transaction
      */
     public function createTransaction(
-        $apiIntegrationType,
+        $accountingSystem,
         $residentId,
         $externalPropertyId,
         $externalLeaseId = null,
@@ -58,7 +58,7 @@ trait TransactionAvailableTrait
         }
 
         $holding = $contract->getHolding();
-        $holding->setApiIntegrationType($apiIntegrationType);
+        $holding->setAccountingSystem($accountingSystem);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($holding);
         $propertyMapping->setExternalPropertyId($externalPropertyId);
 

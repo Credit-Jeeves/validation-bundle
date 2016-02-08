@@ -63,12 +63,52 @@ class PaymentCase extends BaseTestCase
     /**
      * @test
      */
-    public function prePersist()
+    public function shouldCloseActiveRentPaymentOnFinishedContract()
     {
         $this->load(true);
-        $doctrineManager = $this->getContainer()->get('doctrine')->getManager();
+        $em = $this->getEntityManager();
         /** @var Contract $contract */
-        $contract = $doctrineManager->getRepository('RjDataBundle:Contract')
+        $contract = $em->getRepository('RjDataBundle:Contract')
+            ->createQueryBuilder('c')
+            ->innerJoin('c.payments', 'p', Expr\Join::WITH, 'p.status = :paymentStatus')
+            ->setParameter(':paymentStatus', PaymentStatus::ACTIVE)
+            ->andWhere('c.status = :contractStatus')
+            ->setParameter('contractStatus', ContractStatus::APPROVED)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+        $this->assertNotNull($contract);
+        $this->assertNotNull($payment = $contract->getActiveRentPayment());
+        $paymentId = $payment->getId();
+        $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
+
+        $contract->setStatus(ContractStatus::FINISHED);
+        $em->persist($contract);
+        $em->flush($contract);
+        $em->clear();
+        /** @var Payment $payment */
+        $payment = $em->getRepository('RjDataBundle:Payment')->find($paymentId);
+        $this->assertNotNull($payment, 'Payment should not be deleted');
+        $this->assertCount(2, $payment->getCloseDetails(), 'Close details should contains "Class" and "Reason"');
+        $this->assertContains(
+            PaymentCloseReason::CONTRACT_FINISHED,
+            $payment->getCloseDetails()[1],
+            'Reason should be ' . PaymentCloseReason::CONTRACT_FINISHED
+        );
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus(), 'Payment should be closed');
+        $today = new DateTime();
+        $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCloseActiveRentPaymentOnDeletedContract()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')
             ->createQueryBuilder('c')
             ->innerJoin('c.payments', 'p', Expr\Join::WITH, 'p.status = :paymentStatus')
             ->setParameter(':paymentStatus', PaymentStatus::ACTIVE)
@@ -83,15 +123,19 @@ class PaymentCase extends BaseTestCase
         $this->assertEquals(PaymentStatus::ACTIVE, $payment->getStatus());
 
         $contract->setStatus(ContractStatus::DELETED);
-        $doctrineManager->persist($contract);
-        $doctrineManager->flush($contract);
-        $this->getEntityManager()->clear();
+        $em->persist($contract);
+        $em->flush($contract);
+        $em->clear();
         /** @var Payment $payment */
-        $payment = $doctrineManager->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
-        $this->assertNotNull($payment);
-        $this->assertCount(2, $payment->getCloseDetails());
-        $this->assertContains(PaymentCloseReason::CONTRACT_DELETED, $payment->getCloseDetails()[1]);
-        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
+        $payment = $em->getRepository('RjDataBundle:Payment')->find($paymentId);
+        $this->assertNotNull($payment, 'Payment should not be deleted');
+        $this->assertCount(2, $payment->getCloseDetails(), 'Close details should contains "Class" and "Reason"');
+        $this->assertContains(
+            PaymentCloseReason::CONTRACT_DELETED,
+            $payment->getCloseDetails()[1],
+            'Reason should be ' . PaymentCloseReason::CONTRACT_DELETED
+        );
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus(), 'Payment should be closed');
         $today = new DateTime();
         $this->assertEquals($today->format('Y-m-d'), $payment->getUpdatedAt()->format('Y-m-d'));
     }

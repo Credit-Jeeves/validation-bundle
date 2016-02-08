@@ -3,6 +3,7 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -49,13 +50,16 @@ class CreditTrackController extends Controller
         if ($user->getSettings()->isCreditTrack()) {
             $chargeDay = $user->getSettings()->getCreditTrackEnabledAt()->format('j');
         }
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
 
-        return array(
+        return [
             'paymentGroupJson' => $group,
             'paymentAccountsJson' => $paymentAccounts,
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chargeDay' => $chargeDay,
-        );
+            'scoreTrackFreeUntil' => $projectSettings->getScoretrackFreeUntil(),
+        ];
     }
 
     /**
@@ -80,6 +84,14 @@ class CreditTrackController extends Controller
             );
         }
         $settings = $user->getSettings();
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+        if (!$settings->isCreditTrack() && $projectSettings->getScoretrackFreeUntil() > 0) {
+            $settings->setScoretrackFreeUntil(
+                new \DateTime(sprintf('+%s month', $projectSettings->getScoretrackFreeUntil()))
+            );
+        }
+
         if ($settings->isCreditTrack()) {
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $em->persist($settings);
@@ -128,7 +140,10 @@ class CreditTrackController extends Controller
      */
     public function promoboxAction()
     {
-        return array();
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+
+        return ['scoreTrackFreeUntil' => $projectSettings->getScoretrackFreeUntil()];
     }
 
     /**

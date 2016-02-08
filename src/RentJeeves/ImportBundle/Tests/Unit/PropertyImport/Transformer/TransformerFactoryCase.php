@@ -4,7 +4,7 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Transformer;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -58,7 +58,7 @@ class TransformerFactoryCase extends UnitTestBase
     {
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -75,7 +75,7 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()]
         );
 
         $factory->getTransformer($group, 'test');
@@ -92,7 +92,7 @@ class TransformerFactoryCase extends UnitTestBase
 
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -109,7 +109,7 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()]
         );
 
         $factory->getTransformer($group, 'test');
@@ -126,7 +126,7 @@ class TransformerFactoryCase extends UnitTestBase
 
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -143,7 +143,7 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()]
         );
 
         $factory->getTransformer($group, 'test');
@@ -158,7 +158,7 @@ class TransformerFactoryCase extends UnitTestBase
 
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -171,11 +171,12 @@ class TransformerFactoryCase extends UnitTestBase
             ->method('getRepository')
             ->will($this->returnValue($repoMock));
 
+        $mriTransformer = new MRITransformer($this->getEntityManagerMock(), $this->getLoggerMock());
         $factory = new TransformerFactory(
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [ApiIntegrationType::MRI => new MRITransformer($this->getEntityManagerMock(), $this->getLoggerMock())]
+            [AccountingSystem::MRI => $mriTransformer]
         );
 
         $transformer = $factory->getTransformer($group, 'test');
@@ -193,7 +194,7 @@ class TransformerFactoryCase extends UnitTestBase
     {
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType(ApiIntegrationType::MRI);
+        $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -210,7 +211,7 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()]
         );
 
         $transformer = $factory->getTransformer($group, 'test');
@@ -230,7 +231,7 @@ class TransformerFactoryCase extends UnitTestBase
     {
         $group = new Group();
         $holding = new Holding();
-        $holding->setApiIntegrationType('none');
+        $holding->setAccountingSystem('none');
         $group->setHolding($holding);
 
         $repoMock = $this->getImportTransformerRepositoryMock();
@@ -247,7 +248,7 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [ApiIntegrationType::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()]
         );
 
         $factory->getTransformer($group, 'test');

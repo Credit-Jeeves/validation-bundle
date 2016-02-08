@@ -5,7 +5,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class UnitCase extends BaseTestCase
@@ -16,16 +16,16 @@ class UnitCase extends BaseTestCase
     public function providerForGetActualName()
     {
         return [
-            [ApiIntegrationType::YARDI_VOYAGER, 'A1', 'A1', 'U1|23|99', false],
-            [ApiIntegrationType::MRI, 'A123', '23A123', 'U1|23|99', true],
-            [ApiIntegrationType::MRI, 'A123', 'A123', 'U1|23|99', false],
-            [ApiIntegrationType::MRI, 'A_123', 'A_123', 'U1|23|99', false],
-            [ApiIntegrationType::MRI, 'A_123', '23A_123', 'U1|23|99', true],
-            [ApiIntegrationType::YARDI_VOYAGER, 'A123', 'A123', 'U1|23|99', false],
-            [ApiIntegrationType::RESMAN, 'A123', '23A123', 'U1|23|99', true],
-            [ApiIntegrationType::RESMAN, 'A123', 'A123', 'U1|23|99', false],
-            [ApiIntegrationType::RESMAN, 'A_123', 'A_123', 'U1|23|99', false],
-            [ApiIntegrationType::RESMAN, 'A_123', '23A_123', 'U1|23|99', true],
+            [AccountingSystem::YARDI_VOYAGER, 'A1', 'A1', 'U1|23|99', false],
+            [AccountingSystem::MRI, 'A123', '23A123', 'U1|23|99', true],
+            [AccountingSystem::MRI, 'A123', 'A123', 'U1|23|99', false],
+            [AccountingSystem::MRI, 'A_123', 'A_123', 'U1|23|99', false],
+            [AccountingSystem::MRI, 'A_123', '23A_123', 'U1|23|99', true],
+            [AccountingSystem::YARDI_VOYAGER, 'A123', 'A123', 'U1|23|99', false],
+            [AccountingSystem::RESMAN, 'A123', '23A123', 'U1|23|99', true],
+            [AccountingSystem::RESMAN, 'A123', 'A123', 'U1|23|99', false],
+            [AccountingSystem::RESMAN, 'A_123', 'A_123', 'U1|23|99', false],
+            [AccountingSystem::RESMAN, 'A_123', '23A_123', 'U1|23|99', true],
         ];
     }
 
@@ -33,13 +33,13 @@ class UnitCase extends BaseTestCase
      * @test
      * @dataProvider providerForGetActualName
      *
-     * @param string $apiIntegrationType
+     * @param string $accountingSystem
      * @param string $unitName
      * @param string $unitNameResult
      * @param string $externalUnitId
      * @param boolean $isMultipleBildings
      */
-    public function getActualName($apiIntegrationType, $unitName, $unitNameResult, $externalUnitId, $isMultipleBildings)
+    public function getActualName($accountingSystem, $unitName, $unitNameResult, $externalUnitId, $isMultipleBildings)
     {
         $unit = new Unit();
         $property = new Property();
@@ -55,7 +55,7 @@ class UnitCase extends BaseTestCase
         $unitMapping->setExternalUnitId($externalUnitId);
         $unit->setUnitMapping($unitMapping);
 
-        $unit->getGroup()->getHolding()->setApiIntegrationType($apiIntegrationType);
+        $unit->getGroup()->getHolding()->setAccountingSystem($accountingSystem);
 
         $this->assertEquals($unitNameResult, $unit->getName());
     }

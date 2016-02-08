@@ -44,14 +44,14 @@ class TransUnionNegativeReportCase extends BaseTestCase
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionNegativeReport', $report);
         $report->build($params);
 
-        $this->assertEquals('trans_union_rental', $report->getSerializationType());
+        $this->assertEquals('rental_1', $report->getSerializationType());
 
         $today = new \DateTime();
         $expectedReportName = sprintf('transunion-negative_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
-        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
+        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'rental_1');
         $reportRecords = explode("\n", trim($report));
         // header + 1 contract (or 2 contracts if this test runs 1-15 each month)
         $this->assertGreaterThanOrEqual(2, $reportRecords, 'TU report should contain 2 records');

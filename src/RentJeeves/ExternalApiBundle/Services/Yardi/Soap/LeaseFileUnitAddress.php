@@ -27,4 +27,4 @@ class LeaseFileUnitAddress
     {
         $this->unitAddressLine1 = $unitAddressLine1;
     }
-} 
+}

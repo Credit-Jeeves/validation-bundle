@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Soap;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class ResidentLeaseFile 
+class ResidentLeaseFile
 {
     /**
      * @Serializer\SerializedName("Unit")
@@ -187,4 +187,4 @@ class ResidentLeaseFile
     {
         $this->unit = $unit;
     }
-} 
+}

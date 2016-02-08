@@ -31,37 +31,6 @@ class PaymentAccountRepository extends EntityRepository
     }
 
     /**
-     * @return array
-     */
-    public function collectCreditTrackToJobs()
-    {
-        $date = new DateTime();
-        $query = $this->createQueryBuilder('pa');
-        $query->innerJoin('pa.creditTrackUserSetting', 'us');
-        $query->andWhere('DATE(us.creditTrackEnabledAt) < :date'); //Payment which setup today must not be executed
-        $query->setParameter('date', $date->format('Y-m-d'));
-        $query->andWhere('DAY(us.creditTrackEnabledAt) IN (:dueDays)');
-        $query->setParameter('dueDays', $this->getDueDays(0, $date));
-
-        $paymentAccounts = $query->getQuery()->execute();
-
-        /** @var EntityManager $em */
-        $em = $this->getEntityManager();
-        $jobs = array();
-        /** @var PaymentAccount $paymentAccount */
-        foreach ($paymentAccounts as $paymentAccount) {
-            $job = new Job('payment:pay', array('--app=rj'));
-            $relatedEntity = new JobRelatedCreditTrack();
-            $relatedEntity->setCreditTrackPaymentAccount($paymentAccount);
-            $job->addRelatedEntity($relatedEntity);
-            $em->persist($jobs[] = $job);
-        }
-        $em->flush();
-
-        return $jobs;
-    }
-
-    /**
      * @todo: After adding replace this function to $repo->findOneBy(['token' => $token]);
      *
      * @param string $token

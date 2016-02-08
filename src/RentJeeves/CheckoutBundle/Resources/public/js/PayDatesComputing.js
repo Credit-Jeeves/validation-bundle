@@ -21,25 +21,70 @@ function PayDatesComputing(parent) {
         return parent.contract() ? parent.contract().payToName : '';
     });
 
-    self.settleDays = 3; // All logic logic in "settle" method depends on this value
-    self.settle = ko.computed(function() {
-        var settleDate = new Date(parent.payment.startDate());
-        var startDayOfWeek = (0 == settleDate.getDay() ? 7 : settleDate.getDay()); // Move Sunday from 0 to 7
-        /* logic: skip weekends */
-        var daysAdd = (4 == startDayOfWeek || 6 == startDayOfWeek ? 1 : 0);
-        if (0 == daysAdd) {
-            daysAdd = (5 == startDayOfWeek ? 2 : 0);
+    /**
+     * @returns array which contains 2 fields 'bank' and 'card'
+     */
+    self.getBusinessDaysForCurrentPaymentProcessor = function () {
+        if (parent.contract().groupSetting.payment_processor === 'heartland') {
+            return document.bussinesDays.heartland;
+        } else if (parent.contract().groupSetting.payment_processor === 'aci') {
+            return document.bussinesDays['aci_' + parent.contract().groupSetting.orderAlgorithm];
+        } else {
+            return {card: 1, bank: 1};
         }
-        /* end of logic: skip weekends */
+    };
 
-        settleDate.add(self.settleDays).days();// see comment of this.settleDays
-        var dayOfWeek = (0 == settleDate.getDay() ? 7 : settleDate.getDay()); // Move Sunday from 0 to 7
-        var daysShift = 8 - dayOfWeek; // Settle day can't be weekend
-        if (2 < daysShift) {
-            daysShift = 0;
+    /**
+     * using in AttributeGeneratorWeb, we can`t remove
+     */
+    self.settleDays = 0;
+
+    /**
+     * see BusinessDaysCalculator
+     */
+    self.shiftToNextBusinessDay = function(date){
+        switch (date.getDay()) {
+            case 6:
+                date.add(2).day();
+                break;
+            case 5:
+                date.add(3).day();
+                break;
+            default:
+                date.add(1).day();
+                break;
         }
-        settleDate.add(daysShift + daysAdd).days();
-        return settleDate.toString('M/d/yyyy');
+    };
+
+    self.shiftBusinessDays = function(date, targetShift){
+        var businessDate = date;
+        var shiftedDays = 0;
+
+        while (shiftedDays < targetShift) {
+            businessDate = self.shiftToNextBusinessDay(date);
+            shiftedDays++;
+        }
+    };
+
+    self.settle = ko.computed(function () {
+        var shiftsBusinessDay = self.getBusinessDaysForCurrentPaymentProcessor();
+
+        if (shiftsBusinessDay.bank === shiftsBusinessDay.card) {
+            var settleDate = new Date(parent.payment.startDate());
+            self.shiftBusinessDays(settleDate, shiftsBusinessDay.bank);
+
+            return settleDate.toString('M/d/yyyy');
+        } else { // https://credit.atlassian.net/browse/RT-1909
+            var settleDateForBank = new Date(parent.payment.startDate());
+            var settleDateForCard = new Date(parent.payment.startDate());
+            self.shiftBusinessDays(settleDateForBank, shiftsBusinessDay.bank);
+            self.shiftBusinessDays(settleDateForCard, shiftsBusinessDay.card);
+
+            return Translator.trans('checkout.payment.settle_dates', {
+                DATE_FOR_CARD: settleDateForCard.toString('M/d/yyyy'),
+                DATE_FOR_BANK: settleDateForBank.toString('M/d/yyyy')
+            });
+        }
     });
 
     self.getLastPaymentDay = ko.computed(function() {

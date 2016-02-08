@@ -58,11 +58,33 @@ abstract class Settings
     protected $updatedAt;
 
     /**
+     * @ORM\Column(name="scoretrack_free_until", type="integer", nullable=true)
+     * @var integer
+     */
+    protected $scoretrackFreeUntil;
+
+    /**
      * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getScoretrackFreeUntil()
+    {
+        return $this->scoretrackFreeUntil;
+    }
+
+    /**
+     * @param integer $scoretrackFreeUntil
+     */
+    public function setScoretrackFreeUntil($scoretrackFreeUntil)
+    {
+        $this->scoretrackFreeUntil = $scoretrackFreeUntil;
     }
 
     /**

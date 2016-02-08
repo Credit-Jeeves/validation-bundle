@@ -48,6 +48,13 @@ services:
         tags:
             - { name: kernel.event_listener, event: console.terminate }
 
+    data.event_listener.deposit_account:
+        class: RentJeeves\CoreBundle\EventListener\DepositAccountListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist, method: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
+            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
+
     rental_report.factory:
         class: '%rental_report.factory.class%'
         arguments:

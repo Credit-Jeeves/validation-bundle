@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
@@ -115,7 +115,7 @@ class ResManClientCase extends Base
         $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
-            ApiIntegrationType::RESMAN,
+            AccountingSystem::RESMAN,
             self::RESIDENT_ID,
             self::EXTERNAL_PROPERTY_ID,
             self::EXTERNAL_LEASE_ID,
@@ -150,7 +150,7 @@ class ResManClientCase extends Base
         $settings->setUrl('https://api.myresman.com/MITS/');
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
-            ApiIntegrationType::RESMAN,
+            AccountingSystem::RESMAN,
             self::RESIDENT_ID,
             self::EXTERNAL_PROPERTY_ID,
             self::EXTERNAL_LEASE_ID,
