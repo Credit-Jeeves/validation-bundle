@@ -23,7 +23,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("household_id")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -35,7 +35,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("unit_id")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -51,7 +51,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("total_pmt_amt")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      *
      * @return float
@@ -64,7 +64,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("due_date")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -73,7 +73,7 @@ class MRIBostonPostExport
         $completeTransaction = $this->order->getCompleteTransaction();
 
         if ($completeTransaction && $completeTransaction->getDepositDate()) {
-            return $this->order->getTransaction()->getDepositDate()->format('dmY');
+            return $this->order->getTransaction()->getDepositDate()->format('mdY');
         }
 
         return '';
@@ -82,7 +82,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Route Number")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -94,7 +94,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Account Number")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -106,7 +106,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Check Number")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return int
      */
@@ -118,7 +118,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Check Amount")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return float
      */
@@ -130,7 +130,7 @@ class MRIBostonPostExport
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Deposit Date")
-     * @Serializer\Groups({"mri_boston_post"})
+     * @Serializer\Groups({"mri_bostonpost"})
      *
      * @return string
      */
@@ -139,7 +139,7 @@ class MRIBostonPostExport
         $completeTransaction = $this->order->getCompleteTransaction();
 
         if ($completeTransaction && $completeTransaction->getDepositDate()) {
-            return $this->order->getTransaction()->getDepositDate()->format('dmY');
+            return $this->order->getTransaction()->getDepositDate()->format('mdY');
         }
 
         return '';
