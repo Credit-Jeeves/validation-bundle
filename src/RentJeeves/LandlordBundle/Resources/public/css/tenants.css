@@ -36,9 +36,9 @@
     padding-left: 10px;
 }
 
-#tenant-edit-property-popup .fields-box>span {
+#tenant-edit-property-popup .fields-box > span {
     margin-left: 10px;
-    padding-top: 5px;
+    padding-top: 6px;
     display: block;
 }
 .pie-el>span {
@@ -169,7 +169,7 @@ height: 23px;
     width: 75px;
 }
 .finishAtLabel {
-    margin-left: 30px !important;
+    margin-left: 35px !important;
     width: 175px !important;
 }
 .width150 {
