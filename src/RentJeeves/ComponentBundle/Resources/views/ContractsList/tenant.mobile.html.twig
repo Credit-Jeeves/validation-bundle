@@ -111,7 +111,7 @@
                             <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                             <br>
-                            <span style="font-size: 14;">Rent: {{ contract.rent }}</span>
+                            <span style="font-size: 14;">Base Rent: {{ contract.rent }}</span>
                             <br>
                             {% if contract.status == 'pending' %}
                                 <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
@@ -144,7 +144,7 @@
             <div data-role="page" id="contract{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
+                    <a href="#contracts" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Payment</h1>
                     {% if contract.status != 'pending' %}
                         <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">

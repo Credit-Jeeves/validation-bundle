@@ -758,6 +758,18 @@ function updateTotal(){
 
 //submit form with ajax to display dialog when completed
 
+errorMsgs=[];
+function traverseErrorMsgs(o) {
+    for (i in o) {
+        if (typeof(o[i])=="object") {
+            traverseErrorMsgs(o[i] );
+        }else{
+            errorMsgs.push(o[i]);
+            //w(o[i])
+        }
+    }
+}
+
 function addNewPaymentSource(formObj){
 
     if(!saving) {   //it's a new account
@@ -774,11 +786,12 @@ function addNewPaymentSource(formObj){
                 }
                 if (result.success != true) {   //handle error message and take user back to pay/edit page
                     msg = "";
-                    $.each(result, function (i, k) {
-                        $.each(k, function (h, j) {
-                            msg += j + "<br>"
-                        })
+                    errorMsgs=[];
+                    traverseErrorMsgs(result)
+                    $.each(errorMsgs, function (i, k) {
+                            msg += k + "<br>"
                     })
+
                     $("#sourceErrorMsg").html(msg)
                     $("#sourceErrorMsg").show()
                 } else {                      //we are successful! display dialog, refresh page to update information
@@ -867,11 +880,10 @@ function submitForm(){
             }
             if(result.success!=true){   //handle error message and take user back to pay/edit page
                 $.mobile.changePage('#pay')
-                msg="";
-                $.each(result,function(i,k){
-                    $.each(k,function(h,j){
-                        msg+=j+"<br>"
-                    })
+                errorMsgs=[];
+                traverseErrorMsgs(result)
+                $.each(errorMsgs, function (i, k) {
+                    msg += k + "<br>"
                 })
                 $("#errorMsg").html(msg)
                 $("#errorMsg").show()
