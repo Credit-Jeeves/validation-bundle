@@ -144,7 +144,7 @@
             <div data-role="page" id="contract{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
+                    <a href="#contracts" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Payment</h1>
                     {% if contract.status != 'pending' %}
                         <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
