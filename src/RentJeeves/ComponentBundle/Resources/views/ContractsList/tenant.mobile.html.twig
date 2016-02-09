@@ -111,7 +111,7 @@
                             <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                             <br>
-                            <span style="font-size: 14;">Rent: {{ contract.rent }}</span>
+                            <span style="font-size: 14;">Base Rent: {{ contract.rent }}</span>
                             <br>
                             {% if contract.status == 'pending' %}
                                 <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
