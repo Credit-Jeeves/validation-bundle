@@ -1658,6 +1658,10 @@
                 <source>contract.status.processing.text</source>
                 <target>Payment Submitted</target>
             </trans-unit>
+            <trans-unit id="duplicate.payment.description">
+                <source>duplicate.payment.description</source>
+                <target><![CDATA[Please contact <a href="mailto:%support_email%">%support_email%</a> about this payment]]></target>
+            </trans-unit>
             <trans-unit id="landlord.alert.title">
                 <source>landlord.alert.title</source>
                 <target>You have incomplete tasks</target>
