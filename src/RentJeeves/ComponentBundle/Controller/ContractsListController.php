@@ -131,6 +131,16 @@ class ContractsListController extends Controller
             if (!$allowPayAnything && end($contractsArr)['is_allowed_to_pay_anything']) {
                 $allowPayAnything = true;
             }
+            // TODO Fixed inside RT-2125
+            if (end($contractsArr)['payment_status'] == 'duplicated') {
+                $this->get('logger')->alert(
+                    sprintf(
+                        'Detected more than one active payments for a contract (#%d).' .
+                        ' Please resolve ASAP or the tenant could be charged twice!',
+                        $contract->getId()
+                    )
+                );
+            }
         }
 
         /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
