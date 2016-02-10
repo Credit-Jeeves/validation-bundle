@@ -2,7 +2,6 @@
 namespace RentJeeves\CheckoutBundle\Payment;
 
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
-use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Entity\User;
@@ -13,8 +12,8 @@ use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderSt
 use RentJeeves\CheckoutBundle\PaymentProcessor\PayDirectProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
+use RentJeeves\ComponentBundle\CreditSummaryReport\CreditSummaryReportVendorFactory;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
-use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 use RentJeeves\DataBundle\Enum\PaymentGroundType;
 
 class PayCreditTrack
@@ -40,6 +39,11 @@ class PayCreditTrack
     protected $paymentProcessorFactory;
 
     /**
+     * @var CreditSummaryReportVendorFactory
+     */
+    protected $creditSummaryReportVendorFactory;
+
+    /**
      * @var string
      */
     protected $creditSummaryVendor;
@@ -48,17 +52,19 @@ class PayCreditTrack
      * @param OrderCreationManager $orderCreationManager
      * @param OrderStatusManagerInterface $orderStatusManager
      * @param EntityManager $em
-     * @param string $creditSummaryVendor
+     * @param CreditSummaryReportVendorFactory $creditSummaryReportVendorFactory
      */
     public function __construct(
         OrderCreationManager $orderCreationManager,
         OrderStatusManagerInterface $orderStatusManager,
         EntityManager $em,
+        CreditSummaryReportVendorFactory $creditSummaryReportVendorFactory,
         $creditSummaryVendor
     ) {
         $this->orderCreationManager = $orderCreationManager;
         $this->orderStatusManager = $orderStatusManager;
         $this->em = $em;
+        $this->creditSummaryReportVendorFactory = $creditSummaryReportVendorFactory;
         $this->creditSummaryVendor = $creditSummaryVendor;
     }
 
@@ -130,19 +136,8 @@ class PayCreditTrack
      */
     protected function createReport(User $user)
     {
-        switch ($this->creditSummaryVendor) {
-            case CreditSummaryVendor::TRANSUNION:
-                $report = new ReportTransunionSnapshot();
-                break;
-            case CreditSummaryVendor::EXPERIAN:
-                $report = new ReportPrequal();
-                break;
-            default:
-                throw new \Exception(sprintf('Unsupported credit summary vendor "%s"', $this->creditSummaryVendor));
-        }
-        $report->setUser($user);
-        $report->setRawData('');
-
-        return $report;
+        return $this->creditSummaryReportVendorFactory
+            ->getReportBuilder($this->creditSummaryVendor)
+            ->createNewReport($user);
     }
 }

@@ -33,6 +33,7 @@ services:
             - @payment_processor.order_creation_manager
             - @payment_processor.order_status_manager
             - @doctrine.orm.default_entity_manager
+            - @credit_summary.report_builder_factory
             - %credit_summary_vendor%
         calls:
             - [setFactory, ["@payment_processor.factory"]]

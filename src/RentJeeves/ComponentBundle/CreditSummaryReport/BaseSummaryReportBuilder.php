@@ -96,5 +96,5 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
      * @param User $user
      * @return Report
      */
-    abstract protected function createNewReport(User $user);
+    abstract public function createNewReport(User $user);
 }

@@ -83,15 +83,8 @@ class CreditTrackController extends Controller
                 "PaymentAccount with id '{$paymentAccountId}' not found for user"
             );
         }
-        $settings = $user->getSettings();
-        /** @var Settings $projectSettings */
-        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
-        if (!$settings->isCreditTrack() && $projectSettings->getScoretrackFreeUntil() > 0) {
-            $settings->setScoretrackFreeUntil(
-                new \DateTime(sprintf('+%s month', $projectSettings->getScoretrackFreeUntil()))
-            );
-        }
 
+        $settings = $user->getSettings();
         if ($settings->isCreditTrack()) {
             $settings->setCreditTrackPaymentAccount($paymentAccount);
             $em->persist($settings);
@@ -103,6 +96,28 @@ class CreditTrackController extends Controller
                     'success' => true,
                     'url' => $this->generateUrl('user_plans'),
                 )
+            );
+        }
+
+        /** @var Settings $projectSettings */
+        $projectSettings = $this->getDoctrine()->getManager()->getRepository('DataBundle:Settings')->findOneBy([]);
+        if ($projectSettings->getScoretrackFreeUntil() > 0) {
+            $settings->setScoretrackFreeUntil(
+                new \DateTime(sprintf('+%s month', $projectSettings->getScoretrackFreeUntil()))
+            );
+            $settings->setCreditTrackPaymentAccount($paymentAccount);
+            $settings->setCreditTrackEnabledAt(new \DateTime('now'));
+            $report = $this->container->get('credit_summary.report_builder_factory')
+                ->getReportBuilder($this->container->getParameter('credit_summary_vendor'))
+                ->createNewReport($settings->getUser());
+            $em->persist($report);
+            $em->flush();
+
+            return new JsonResponse(
+                [
+                    'success' => true,
+                    'url' => $this->generateUrl('tenant_summary'),
+                ]
             );
         }
 
