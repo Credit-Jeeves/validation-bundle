@@ -29,19 +29,6 @@ class ImportPropertyCommand extends BaseCommand
             throw new \InvalidArgumentException(sprintf('Entity Import#%s not found', $importId));
         }
 
-        $externalPropertyId = $input->getOption('external-property-id');
-        $propertyMappings = $this->getEntityManager()->getRepository('RjDataBundle:PropertyMapping')
-            ->getPropertyMappingByGroupAndExternalPropertyId($import->getGroup(), $externalPropertyId);
-        if (null == $propertyMappings) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'PropertyMapping for Group#%d and extPropertyId#%s not found',
-                    $import->getGroup()->getId(),
-                    $externalPropertyId
-                )
-            );
-        }
-
         $this->getImportPropertyManager()->import($import, $input->getOption('external-property-id'));
     }
 
