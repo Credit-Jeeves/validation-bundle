@@ -307,7 +307,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return Address
+     * @return MailingAddress
      */
     public function getDefaultAddress()
     {
