@@ -113,7 +113,9 @@ class ContractsListController extends Controller
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $contractsArr[] = $contract->getDatagridRow($em);
-            if (!in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING])) {
+            if (!in_array($contract->getStatus(), [ContractStatus::FINISHED, ContractStatus::PENDING]) &&
+                end($contractsArr)['payment_status'] != 'duplicated'
+            ) {
                 $activeContracts[] = $contract;
                 $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
             }
@@ -124,7 +126,8 @@ class ContractsListController extends Controller
                 $shouldShowRent = true;
             }
             if (($contract->getStatus() !== ContractStatus::FINISHED) &&
-                end($contractsArr)['is_allowed_to_pay_anything']
+                end($contractsArr)['is_allowed_to_pay_anything'] &&
+                end($contractsArr)['payment_status'] != 'duplicated'
             ) {
                 $activeContracts[] = $contract;
             }
