@@ -76,7 +76,7 @@ class PaymentType extends AbstractType
     {
         $builder->add(
             'amount',
-            null,
+            'number',
             array(
                 'required' => false,
                 'label' => 'checkout.amount',

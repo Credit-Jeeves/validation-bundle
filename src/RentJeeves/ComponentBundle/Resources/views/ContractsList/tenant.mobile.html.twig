@@ -14,7 +14,7 @@
             <div data-role="panel" id="panelMain" class="sideMenu">
                 <ul data-role="listview">
                     <li><a href="#main" style="color: #666 !important;" class="selectedMenuOptions">Home</a></li>
-                    <li><a href="#contracts" class="menuOptions">Current Payments</a></li>
+                    <li><a href="#contracts" class="menuOptions">Current Leases</a></li>
                     <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
                     <li><a href="#sources" class="menuOptions">Payment Sources</a></li>
                     <li><a href="logout" class="menuOptions" data-ajax="false">Logout</a></li>
@@ -73,7 +73,7 @@
             <div data-role="panel" id="panelContracts" class="sideMenu">
                 <ul data-role="listview">
                     <li><a href="#main" class="menuOptions">Home</a></li>
-                    <li><a href="#contracts" style="color: #666 !important;" class="selectedMenuOptions">Current Payments</a></li>
+                    <li><a href="#contracts" style="color: #666 !important;" class="selectedMenuOptions">Current Leases</a></li>
                     <li><a href="#paymentHistory" class="menuOptions">Payment History</a></li>
                     <li><a href="#sources" class="menuOptions">Payment Sources</a></li>
                     <li><a href="logout" class="menuOptions" data-ajax="false">Logout</a></li>
@@ -89,7 +89,7 @@
             <div class="ui-content" role="main" style='background-image: url(/bundles/rjcore/images/mobile/darkblur-bgnd.png); background-size: cover;'>
 
                 <div style="color: white; font-size: 18pt; font-weight: normal; text-shadow: none;">
-                    Contracts
+                    Leases
                 </div>
                 <script>
                     paidDates=[{% for contract in contracts %}
