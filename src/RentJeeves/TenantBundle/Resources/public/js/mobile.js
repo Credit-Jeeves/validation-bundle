@@ -232,6 +232,7 @@ function renderPayAccounts(contract){
     })
 
     //add "Add new payment source"
+    $("#"+prefix+"paymentAccount").append("<option value='-2'>----</option>")
     $("#"+prefix+"paymentAccount").append("<option value='-1'>Add new payment source</option>")
     $("#"+prefix+"paymentAccount").bind( "change", function(event, ui) {
         if(this.value==-1){
