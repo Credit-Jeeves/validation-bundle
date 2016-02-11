@@ -41,9 +41,9 @@ class SecurityController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-//
-//    protected function renderLogin(array $data)
-//    {
+
+    protected function renderLogin(array $data)
+    {
 //        if (isset($_SERVER["HTTP_USER_AGENT"])) {
 //            $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
 //            $logger = $this->container->get('logger');
@@ -59,18 +59,18 @@ class SecurityController extends BaseController
 //                    );
 //            }
 //        }
-//        if (!isset($template)) {
-//            $template =
-//                sprintf(
-//                    'FOSUserBundle:Security:login.html.%s',
-//                    $this->container->getParameter('fos_user.template.engine')
-//                );
-//        }
-//
-//        $data['loginMessage'] = $this->getLoginMessage();
-//
-//        return $this->container->get('templating')->renderResponse($template, $data);
-//    }
+        if (!isset($template)) {
+            $template =
+                sprintf(
+                    'FOSUserBundle:Security:login.html.%s',
+                    $this->container->getParameter('fos_user.template.engine')
+                );
+        }
+
+        $data['loginMessage'] = $this->getLoginMessage();
+
+        return $this->container->get('templating')->renderResponse($template, $data);
+    }
 
     /**
      * @return string|null
