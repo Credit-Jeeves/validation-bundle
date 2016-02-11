@@ -41,36 +41,36 @@ class SecurityController extends BaseController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-
-    protected function renderLogin(array $data)
-    {
-        if (isset($_SERVER["HTTP_USER_AGENT"])) {
-            $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
-            $logger = $this->container->get('logger');
-            $logger->debug("new controller user agent: " . $userAgent);
-            $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
-            $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
-            $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
-            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $userAgent)) {
-                $template =
-                    sprintf(
-                        'FOSUserBundle:Security:login.mobile.html.%s',
-                        $this->container->getParameter('fos_user.template.engine')
-                    );
-            }
-        }
-        if (!isset($template)) {
-            $template =
-                sprintf(
-                    'FOSUserBundle:Security:login.html.%s',
-                    $this->container->getParameter('fos_user.template.engine')
-                );
-        }
-
-        $data['loginMessage'] = $this->getLoginMessage();
-
-        return $this->container->get('templating')->renderResponse($template, $data);
-    }
+//
+//    protected function renderLogin(array $data)
+//    {
+//        if (isset($_SERVER["HTTP_USER_AGENT"])) {
+//            $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+//            $logger = $this->container->get('logger');
+//            $logger->debug("new controller user agent: " . $userAgent);
+//            $commonPhones="/phone|iphone|itouch|ipod|symbian|android|htc_|htc-";
+//            $commonOrganizersAndBrowsers="|palmos|blackberry|opera mini|iemobile|windows ce|";
+//            $uncommonDevices="nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/";
+//            if (preg_match($commonPhones.$commonOrganizersAndBrowsers.$uncommonDevices, $userAgent)) {
+//                $template =
+//                    sprintf(
+//                        'FOSUserBundle:Security:login.mobile.html.%s',
+//                        $this->container->getParameter('fos_user.template.engine')
+//                    );
+//            }
+//        }
+//        if (!isset($template)) {
+//            $template =
+//                sprintf(
+//                    'FOSUserBundle:Security:login.html.%s',
+//                    $this->container->getParameter('fos_user.template.engine')
+//                );
+//        }
+//
+//        $data['loginMessage'] = $this->getLoginMessage();
+//
+//        return $this->container->get('templating')->renderResponse($template, $data);
+//    }
 
     /**
      * @return string|null
