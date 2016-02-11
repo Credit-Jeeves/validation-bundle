@@ -10,7 +10,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="cj_lead")
  * @ORM\HasLifecycleCallbacks()
  *
- * @Gedmo\Loggable(logEntryClass="CreditJeeves\DataBundle\Entity\LeadHistory")
  */
 class Lead extends BaseLead
 {

@@ -1,12 +1,10 @@
 {% extends 'SonataAdminBundle:CRUD:edit.html.twig' %}
 
-{% block form %}
+{% block javascripts %}
     {{ parent() }}
-    {% javascripts
-        '@CoreBundle/Resources/public/js/jquery.overlay.js'
-        '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
-        '@RjAdminBundle/Resources/public/js/choicesContract.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script src="{{ asset('bundles/core/js/jquery.overlay.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.overlay-ext.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/rjadmin/js/choicesContract.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/bazingajstranslation/js/translator.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages' }) }}"></script>
 {% endblock %}

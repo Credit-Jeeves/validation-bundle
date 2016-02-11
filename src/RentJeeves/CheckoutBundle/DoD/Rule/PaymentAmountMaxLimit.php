@@ -23,8 +23,7 @@ class PaymentAmountMaxLimit implements DodRuleInterface
     }
 
     /**
-     * @param Payment $payment
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkPayment(Payment $payment)
     {
@@ -41,5 +40,13 @@ class PaymentAmountMaxLimit implements DodRuleInterface
     public function getReason()
     {
         return sprintf('Payment amount exceeds MAX limit of %s', $this->paymentMaxLimit);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function support($object)
+    {
+        return $object instanceof Payment;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\ContractSynchronizerFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
@@ -17,22 +17,22 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
     {
         parent::setUp();
         $this->factory = new ContractSynchronizerFactory([
-            ApiIntegrationType::MRI => $this->getMockBuilder(
+            AccountingSystem::MRI => $this->getMockBuilder(
                 'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'
             )
             ->disableOriginalConstructor()
             ->getMock(),
-            ApiIntegrationType::RESMAN => $this->getMockBuilder(
+            AccountingSystem::RESMAN => $this->getMockBuilder(
                 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'
             )
             ->disableOriginalConstructor()
             ->getMock(),
-            ApiIntegrationType::YARDI_VOYAGER => $this->getMockBuilder(
+            AccountingSystem::YARDI_VOYAGER => $this->getMockBuilder(
                 'RentJeeves\ExternalApiBundle\Services\Yardi\ContractSynchronizer'
             )
             ->disableOriginalConstructor()
             ->getMock(),
-            ApiIntegrationType::AMSI => $this->getMockBuilder(
+            AccountingSystem::AMSI => $this->getMockBuilder(
                 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'
             )
             ->disableOriginalConstructor()
@@ -46,10 +46,10 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
     public function mappingServiceByAccountingNameDataProvider()
     {
         return [
-            [ApiIntegrationType::MRI, 'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'],
-            [ApiIntegrationType::RESMAN, 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'],
-            [ApiIntegrationType::YARDI_VOYAGER, 'RentJeeves\ExternalApiBundle\Services\Yardi\ContractSynchronizer'],
-            [ApiIntegrationType::AMSI, 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'],
+            [AccountingSystem::MRI, 'RentJeeves\ExternalApiBundle\Services\MRI\ContractSynchronizer'],
+            [AccountingSystem::RESMAN, 'RentJeeves\ExternalApiBundle\Services\ResMan\ContractSynchronizer'],
+            [AccountingSystem::YARDI_VOYAGER, 'RentJeeves\ExternalApiBundle\Services\Yardi\ContractSynchronizer'],
+            [AccountingSystem::AMSI, 'RentJeeves\ExternalApiBundle\Services\AMSI\ContractSynchronizer'],
         ];
     }
 
@@ -90,7 +90,7 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
     public function shouldReturnServiceByHolding($accountingSystem, $contractSynchronizerClass)
     {
         $holding = $this->getMock('CreditJeeves\DataBundle\Entity\Holding');
-        $holding->expects($this->any())->method('getApiIntegrationType')->willReturn($accountingSystem);
+        $holding->expects($this->any())->method('getAccountingSystem')->willReturn($accountingSystem);
 
         $this->assertInstanceOf(
             'RentJeeves\ExternalApiBundle\Services\ContractSynchronizerInterface',
@@ -125,7 +125,7 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionNonSupportAccountingSystem()
     {
-        $this->factory->getSynchronizer(ApiIntegrationType::NONE);
+        $this->factory->getSynchronizer(AccountingSystem::NONE);
     }
 
     /**
@@ -135,7 +135,8 @@ class ContractSynchronizerFactoryCase extends UnitTestBase
     public function shouldThrowExceptionHoldingNoneAccountSystem()
     {
         $holding = $this->getMock('CreditJeeves\DataBundle\Entity\Holding');
-        $holding->expects($this->any())->method('getApiIntegrationType')->willReturn(ApiIntegrationType::NONE);
+        $holding->expects($this->any())->method('getAccountingSystem')->willReturn(AccountingSystem::NONE);
+        $holding->expects($this->any())->method('isApiIntegrated')->willReturn(false);
         $this->factory->getSynchronizerByHolding($holding);
     }
 }

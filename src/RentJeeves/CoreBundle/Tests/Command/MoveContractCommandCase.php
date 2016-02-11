@@ -35,7 +35,7 @@ class MoveContractCommandCase extends BaseTestCase
         $this->load(true);
         // Prepare data
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(17);
-        $unit = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(1);
+        $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
 
         $contract->getUnit()->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
         $unit->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
@@ -75,7 +75,7 @@ class MoveContractCommandCase extends BaseTestCase
         $this->load(true);
         // Prepare data
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(17);
-        $unit = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(1);
+        $unit = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->find(1);
         $activePayment = $this->getEntityManager()->getRepository('RjDataBundle:Payment')->find(1);
         $activePayment->setContract($contract);
 
@@ -99,6 +99,36 @@ class MoveContractCommandCase extends BaseTestCase
             $unit->getId(),
             $contract->getUnit()->getId(),
             'Contract`s Unit is updated'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateContractIfSendValidDataAndDstUnitIsDeleted()
+    {
+        $this->load(true);
+        // Prepare data
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(17);
+
+        $contract->getUnit()->getGroup()->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
+        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::ACI);
+
+        $this->executeCommandTester(
+            new MoveContractCommand(),
+            [
+                '--contract-id' => $contract->getId(),
+                '--dst-unit-id' => 34 // deleted unit
+            ]
+        );
+
+        $this->getEntityManager()->refresh($contract);
+
+        $this->assertEquals(
+            34,
+            $contract->getUnit()->getId(),
+            'Contract`s Unit is not updated'
         );
     }
 }

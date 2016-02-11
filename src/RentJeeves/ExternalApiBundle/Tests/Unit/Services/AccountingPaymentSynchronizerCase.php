@@ -2,7 +2,7 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services;
 
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
 
 class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
@@ -29,7 +29,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldAllowToSendIfIntegrated()
     {
-        $apiType = ApiIntegrationType::AMSI;
+        $apiType = AccountingSystem::AMSI;
         $isIntegrated = true;
         $orderMock = $this->getOrderMock($apiType, $isIntegrated);
 
@@ -44,7 +44,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotAllowToSendIfNotIntegrated()
     {
-        $apiType = ApiIntegrationType::AMSI;
+        $apiType = AccountingSystem::AMSI;
         $isIntegrated = false;
         $orderMock = $this->getOrderMock($apiType, $isIntegrated);
 
@@ -59,7 +59,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotAllowToSendIfUnsupportedType()
     {
-        $apiType = ApiIntegrationType::NONE;
+        $apiType = AccountingSystem::NONE;
         $isIntegrated = true;
         $orderMock = $this->getOrderMock($apiType, $isIntegrated);
 
@@ -74,7 +74,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotAllowToSendIfNotAllowedToSendRealTime()
     {
-        $apiType = ApiIntegrationType::YARDI_VOYAGER;
+        $apiType = AccountingSystem::YARDI_VOYAGER;
         $isIntegrated = true;
         $isAllowedRealTime = false;
         $orderMock = $this->getOrderMock($apiType, $isIntegrated, $isAllowedRealTime);
@@ -90,7 +90,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotAllowToSendCustomOperationIfPostAppFeeSecurityDepositInHoldingSwitchedOff()
     {
-        $apiType = ApiIntegrationType::RESMAN;
+        $apiType = AccountingSystem::RESMAN;
         $isIntegrated = true;
         $isAllowedRealTime = true;
         $hasCustomOperation = true;
@@ -109,7 +109,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldNotAllowToSendCustomOperationIfPostAppFeeSecurityDepositInHoldingSwitchedOnButASNotResMan()
     {
-        $apiType = ApiIntegrationType::YARDI_VOYAGER;
+        $apiType = AccountingSystem::YARDI_VOYAGER;
         $isIntegrated = true;
         $isAllowedRealTime = true;
         $hasCustomOperation = true;
@@ -128,7 +128,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      */
     public function shouldAllowToSendCustomOperationIfPostAppFeeSecurityDepositInHoldingSwitchedOnAndASIsResMan()
     {
-        $apiType = ApiIntegrationType::RESMAN;
+        $apiType = AccountingSystem::RESMAN;
         $isIntegrated = true;
         $isAllowedRealTime = true;
         $hasCustomOperation = true;
@@ -187,23 +187,25 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $holdingMock = $this->getMock(
             '\RentJeeves\DataBundle\Entity\Holding',
             [
-                'getApiIntegrationType',
+                'getAccountingSystem',
                 'isAllowedToSendRealTimePayments',
                 'isPostAppFeeAndSecurityDeposit',
                 'getName',
-                'getId'
+                'getId',
+                'isApiIntegrated'
             ],
             [],
             '',
             false
         );
-        $holdingMock->method('getApiIntegrationType')
+        $holdingMock->method('getAccountingSystem')
             ->will($this->returnValue($integrationType));
         $holdingMock->method('isAllowedToSendRealTimePayments')
             ->will($this->returnValue($isAllowedRealTime));
         $holdingMock->method('isPostAppFeeAndSecurityDeposit')
             ->will($this->returnValue($postNotRent));
-
+        $holdingMock->method('isApiIntegrated')
+            ->will($this->returnValue(true));
         $mock->method('getHolding')
             ->will($this->returnValue($holdingMock));
 

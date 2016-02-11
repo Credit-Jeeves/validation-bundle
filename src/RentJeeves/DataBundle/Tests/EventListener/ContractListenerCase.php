@@ -2,11 +2,18 @@
 
 namespace RentJeeves\DataBundle\Tests\EventListener;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\TestBundle\BaseTestCase as Base;
@@ -141,45 +148,183 @@ class ContractListenerCase extends Base
     }
 
     /**
+     * Should send email to tenant if changed access for created payment
+     *
      * @test
      */
-    public function shouldSendPaymentEmail()
+    public function shouldSendPaymentEmailWhenGlobalPaymentAllowedWasChanged()
     {
         $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                "email" => 'tenant11@example.com',
-            )
-        );
-        /**
-         * @var $contract Contract
-         */
+        $em = $this->getEntityManager();
+        /** @var $tenant Tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy([
+            'email' => 'tenant11@example.com',
+        ]);
+
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email tenant11@example.com should exist');
+        /** @var $contract Contract */
         $contract = $tenant->getContracts()->first();
-        $this->assertEquals($contract->getPaymentAccepted(), PaymentAccepted::ANY);
+
+        $this->assertEquals(
+            $contract->getPaymentAccepted(),
+            PaymentAccepted::ANY,
+            sprintf('Check fixtures, contract with id#%d should have paymentAccepted = "0"', $contract->getId())
+        );
+        $this->assertTrue(
+            $contract->isPaymentAllowed(),
+            sprintf('Check fixtures, contract with id#%d should have paymentAllowed = "true"', $contract->getId())
+        );
 
         $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
         $em->flush($contract);
-        $this->assertCount(1, $message = $plugin->getPreSendMessages());
-        $this->assertEquals('Online Payments Disabled', $message[0]->getSubject());
+        $this->assertCount(
+            1,
+            $message = $plugin->getPreSendMessages(),
+            'Should send email if paymentAccepted changed from "0" to "1" and paymentAllowed stay "true"'
+        );
+        $this->assertEquals(
+            'Online Payments Disabled',
+            $message[0]->getSubject(),
+            'Should be sent email that online payment get disabled'
+        );
 
         $contract->setPaymentAccepted(PaymentAccepted::ANY);
         $em->flush($contract);
-        $this->assertCount(2, $message = $plugin->getPreSendMessages());
-        $this->assertEquals('Online Payments Enabled', $message[1]->getSubject());
+        $this->assertCount(
+            2,
+            $message = $plugin->getPreSendMessages(),
+            'Should send email if paymentAccepted changed from "1" to "0" and paymentAllowed stay "true"'
+        );
+        $this->assertEquals(
+            'Online Payments Enabled',
+            $message[1]->getSubject(),
+            'Should be sent email that online payment get enabled'
+        );
+
+        $contract->setPaymentAllowed(false);
+        $em->flush($contract);
+        $this->assertCount(
+            3,
+            $message = $plugin->getPreSendMessages(),
+            'Should send email if paymentAllowed changed from "true" to "false" and paymentAccepted stay "0"'
+        );
+        $this->assertEquals(
+            'Online Payments Disabled',
+            $message[2]->getSubject(),
+            'Should be sent email that online payment get disabled'
+        );
+
+        $contract->setPaymentAllowed(true);
+        $em->flush($contract);
+        $this->assertCount(
+            4,
+            $message = $plugin->getPreSendMessages(),
+            'Should send email if paymentAllowed changed from "false" to "true" and paymentAccepted stay "0"'
+        );
+        $this->assertEquals(
+            'Online Payments Enabled',
+            $message[3]->getSubject(),
+            'Should be sent email that online payment get enabled'
+        );
 
         $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
         $em->flush($contract);
-        $this->assertCount(3, $message = $plugin->getPreSendMessages());
-        $this->assertEquals('Online Payments Disabled', $message[2]->getSubject());
+        $this->assertCount(
+            5,
+            $message = $plugin->getPreSendMessages(),
+            'Should send email if paymentAccepted changed from "0" to "2" and paymentAllowed stay "true"'
+        );
+        $this->assertEquals(
+            'Online Payments Disabled',
+            $message[4]->getSubject(),
+            'Should be sent email that online payment get disabled'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotSendPaymentEmailWhenGlobalPaymentAllowedWasNotChanged()
+    {
+        $this->load(true);
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        $em = $this->getEntityManager();
+        /** @var $tenant Tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy([
+            'email' => 'tenant11@example.com',
+        ]);
+
+        $this->assertNotNull($tenant, 'Check fixtures, tenant with email tenant11@example.com should exist');
+        /** @var $contract Contract */
+        $contract = $tenant->getContracts()->first();
+
+        $this->assertEquals(
+            $contract->getPaymentAccepted(),
+            PaymentAccepted::ANY,
+            sprintf('Check fixtures, contract with id#%d should have paymentAccepted = "0"', $contract->getId())
+        );
+        $this->assertTrue(
+            $contract->isPaymentAllowed(),
+            sprintf('Check fixtures, contract with id#%d should have paymentAllowed = "true"', $contract->getId())
+        );
+
+        $contract->setStatus(ContractStatus::FINISHED);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Should not send any emails if do not change paymentAllowed nor paymentAccepted'
+        );
+
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
+        $contract->setPaymentAllowed(true);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Should not send any emails if do not change paymentAllowed nor paymentAccepted'
+        );
+
+        // update contract and set that payment accepted is denied
+        $contract->setPaymentAccepted(PaymentAccepted::DO_NOT_ACCEPT);
+        $em->flush($contract);
+        $plugin->clean();
+
+        $contract->setPaymentAllowed(false);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Should not send email if paymentAllowed changed from "true" to "false" and paymentAccepted stay "1"'
+        );
+
+        $contract->setPaymentAllowed(true);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Should not send email if paymentAllowed changed from "false" to "true" and paymentAccepted stay "1"'
+        );
+
+        $contract->setPaymentAccepted(PaymentAccepted::CASH_EQUIVALENT);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Should not send email if paymentAccepted changed from "1" to "2" and paymentAllowed stay "true"'
+        );
+
+        $contract->setPaymentAllowed(false);
+        $contract->setPaymentAccepted(PaymentAccepted::ANY);
+        $em->flush($contract);
+        $this->assertCount(
+            0,
+            $message = $plugin->getPreSendMessages(),
+            'Should not send email if paymentAccepted changed from "2" to "0" and paymentAllowed changed to "false"'
+        );
     }
 
     /**
@@ -211,5 +356,112 @@ class ContractListenerCase extends Base
         $em->refresh($contract);
         $activePayment = $contract->getActiveRentPayment();
         $this->assertNull($activePayment);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateNewJobToRegisterContractInProfitStarsIfNewContractCreatedWithValidDepositAccount()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        /** @var Group $group */
+        $group = $em->find('DataBundle:Group', 24);
+        $this->assertNotNull($group, 'Group #24 should exist');
+        $holding = $group->getHolding();
+        $profitStarsSettings = new ProfitStarsSettings();
+        $profitStarsSettings->setHolding($holding);
+        $profitStarsSettings->setMerchantId(223586);
+        $holding->setProfitStarsSettings($profitStarsSettings);
+        $em->persist($profitStarsSettings);
+
+        $depositAccount = new DepositAccount();
+        $depositAccount->setHolding($holding);
+        $depositAccount->setGroup($group);
+        $depositAccount->setMerchantName(1023318);
+        $depositAccount->setType(DepositAccountType::RENT);
+        $depositAccount->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+        $depositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
+        $group->addDepositAccount($depositAccount);
+        $em->persist($depositAccount);
+
+        $depositAccount2 = new DepositAccount();
+        $depositAccount2->setHolding($holding);
+        $depositAccount2->setGroup($group);
+        $depositAccount2->setMerchantName(1023318);
+        $depositAccount2->setType(DepositAccountType::APPLICATION_FEE);
+        $depositAccount2->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+        $depositAccount2->setStatus(DepositAccountStatus::DA_COMPLETE);
+        $group->addDepositAccount($depositAccount2);
+        $em->persist($depositAccount2);
+        $em->flush();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertCount(4, $jobs, 'Should exist 4 jobs in the fixtures');
+
+        $contract = new Contract();
+        $contract->setGroup($group);
+        $contract->setHolding($holding);
+        /** @var Tenant $tenant */
+        $tenant = $em->find('RjDataBundle:Tenant', 42);
+        $this->assertNotNull($tenant, 'Tenant #42 should exist');
+        $contract->setTenant($tenant);
+        $contract->setRent(100);
+        $contract->setUnit($tenant->getContracts()->first()->getUnit());
+        $contract->setProperty($tenant->getContracts()->first()->getProperty());
+        $contract->setStatus(ContractStatus::APPROVED);
+        $em->persist($contract);
+
+        $em->flush();
+        $em->clear();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertCount(6, $jobs, 'Should exist 6 jobs: +2 new jobs for 2 ProfitStars deposit accounts');
+        $this->assertNotEmpty($jobs[4], 'Job[4] should exist');
+        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[4]->getCommand());
+        $this->assertNotEmpty($jobs[5], 'Job[5] should exist');
+        $this->assertEquals('renttrack:payment-processor:profit-stars:register-contract', $jobs[5]->getCommand());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotCreateNewJobToRegisterContractInProfitStarsIfNewContractCreatedWithInvalidDepositAccount()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        /** @var Group $group */
+        $group = $em->find('DataBundle:Group', 24);
+        $this->assertNotNull($group, 'Group #24 should exist');
+        $holding = $group->getHolding();
+        $profitStarsSettings = new ProfitStarsSettings();
+        $profitStarsSettings->setHolding($holding);
+        $profitStarsSettings->setMerchantId(223586);
+        $holding->setProfitStarsSettings($profitStarsSettings);
+        $em->persist($profitStarsSettings);
+
+        $contract = new Contract();
+        $contract->setGroup($group);
+        $contract->setHolding($holding);
+        /** @var Tenant $tenant */
+        $tenant = $em->find('RjDataBundle:Tenant', 42);
+        $this->assertNotNull($tenant, 'Tenant #42 should exist');
+        $contract->setTenant($tenant);
+        $contract->setRent(100);
+        $contract->setUnit($tenant->getContracts()->first()->getUnit());
+        $contract->setProperty($tenant->getContracts()->first()->getProperty());
+        $contract->setStatus(ContractStatus::APPROVED);
+        $em->persist($contract);
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertCount(2, $jobs, 'Should exist 2 jobs in the fixtures');
+
+        $em->flush();
+        $em->clear();
+
+        $jobs = $em->getRepository('RjDataBundle:Job')->findAll();
+        $this->assertCount(2, $jobs, 'Should exist 2 jobs (the same as before creating a contract)');
     }
 }

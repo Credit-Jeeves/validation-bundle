@@ -1,7 +1,7 @@
 $( document ).ready(function() {
     $.reject({
         reject: {
-            msie: 9,
+            msie: 10,
             safari: 5
         },
         imagePath: '/bundles/user/img/',

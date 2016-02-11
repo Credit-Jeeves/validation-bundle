@@ -187,6 +187,14 @@
                 <source>common.balance</source>
                 <target>Balance</target>
             </trans-unit>
+            <trans-unit id="common.accounting">
+                <source>common.accounting</source>
+                <target>Accounting</target>
+            </trans-unit>
+            <trans-unit id="common.payment_allowed.label">
+                <source>common.payment_allowed.label</source>
+                <target>Payments are</target>
+            </trans-unit>
             <trans-unit id="common.credit.type">
                 <source>common.credit.type</source>
                 <target>Credit Type</target>

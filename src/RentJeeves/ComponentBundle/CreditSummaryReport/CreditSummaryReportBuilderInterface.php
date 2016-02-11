@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\CreditSummaryReport;
 
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\User;
 
 interface CreditSummaryReportBuilderInterface
@@ -11,4 +12,10 @@ interface CreditSummaryReportBuilderInterface
      * @param bool $shouldUpdateReport
      */
     public function build(User $user, $shouldUpdateReport = false);
+
+    /**
+     * @param User $user
+     * @return Report
+     */
+    public function createNewReport(User $user);
 }

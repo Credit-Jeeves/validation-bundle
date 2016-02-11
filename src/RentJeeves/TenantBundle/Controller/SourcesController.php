@@ -9,9 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
@@ -31,8 +29,6 @@ class SourcesController extends BaseController
      */
     public function indexAction($mobile = false)
     {
-        $paymentAccounts = $this->getUser()->getPaymentAccounts();
-
         $pageVars = array(
             'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'needDisplayGroups' => false,

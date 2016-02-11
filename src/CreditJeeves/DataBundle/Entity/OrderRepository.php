@@ -620,4 +620,61 @@ class OrderRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $groups
+     * @param string $start
+     * @param string $end
+     * @param string $exportBy
+     * @return Order[]
+     */
+    public function getOrdersForBostonPostReport(array $groups, $start, $end, $exportBy)
+    {
+        if (empty($groups)) {
+            throw new \LogicException('Must have at least one group');
+        }
+
+        $groupsId = [];
+        foreach ($groups as $group) {
+            $groupsId[] = $group->getId();
+        }
+
+        $query = $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->innerJoin('p.contract', 't')
+            ->innerJoin('o.transactions', 'transaction')
+            ->innerJoin('t.group', 'g')
+            ->innerJoin('g.groupSettings', 'gs');
+
+        if ($exportBy === ExportReport::EXPORT_BY_DEPOSITS) {
+            $query->where('o.status IN (:statuses)')
+                ->andWhere('transaction.isSuccessful = 1 AND transaction.depositDate IS NOT NULL')
+                ->andWhere('transaction.status = :complete')
+                ->andWhere('transaction.depositDate BETWEEN :start AND :end')
+                ->setParameter('statuses', [OrderStatus::COMPLETE])
+                ->setParameter('complete', TransactionStatus::COMPLETE);
+        } else {
+            $query->where('o.status IN (:statuses)')
+                ->andWhere('STR_TO_DATE(o.created_at, \'%Y-%c-%e\') BETWEEN :start AND :end')
+                ->setParameter('statuses', [
+                    OrderStatus::COMPLETE,
+                    OrderStatus::PENDING
+                ]);
+        }
+
+        $query->andWhere('o.paymentType in (:paymentType)')
+            ->andWhere('g.id in (:groups)')
+            ->andWhere('gs.isIntegrated = 1')
+            ->andWhere('t.holding = :holding')
+            ->setParameter('end', $end)
+            ->setParameter('start', $start)
+            ->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK])
+            ->setParameter('groups', $groups)
+            ->setParameter('holding', $group->getHolding())
+            ->orderBy('transaction.batchId', 'ASC');
+
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
 }

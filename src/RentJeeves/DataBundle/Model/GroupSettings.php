@@ -38,6 +38,7 @@ abstract class GroupSettings
      *     name="payment_processor",
      *     nullable=false
      * )
+     * @Serializer\Groups({"payRent"})
      * @var string
      */
     protected $paymentProcessor = PaymentProcessor::HEARTLAND;
@@ -686,5 +687,17 @@ abstract class GroupSettings
     public function setExternalResidentFollowsUnit($externalResidentFollowsUnit)
     {
         $this->externalResidentFollowsUnit = $externalResidentFollowsUnit;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("orderAlgorithm")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return string
+     */
+    public function getOrderAlgorithm()
+    {
+        return $this->getGroup()->getOrderAlgorithm();
     }
 }

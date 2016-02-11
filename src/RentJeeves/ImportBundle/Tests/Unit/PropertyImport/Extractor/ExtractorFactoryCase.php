@@ -2,13 +2,19 @@
 
 namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class ExtractorFactoryCase extends UnitTestBase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException
@@ -16,7 +22,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGetNotExistExtractor()
     {
-        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
+        $factory = new ExtractorFactory([AccountingSystem::MRI => $this->getMriExtractorMock()]);
         $factory->getExtractor('test');
     }
 
@@ -26,7 +32,10 @@ class ExtractorFactoryCase extends UnitTestBase
     public function getExtractors()
     {
         return [
-            [ApiIntegrationType::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
+            [AccountingSystem::MRI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor'],
+            [AccountingSystem::YARDI_VOYAGER, '\RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor'],
+            [AccountingSystem::AMSI, '\RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor'],
+            [AccountingSystem::RESMAN, '\RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor'],
         ];
     }
 
@@ -39,7 +48,14 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldReturnCorrectExtractor($extractorName, $expectedExtractor)
     {
-        $factory = new ExtractorFactory([ApiIntegrationType::MRI => $this->getMriExtractorMock()]);
+        $factory = new ExtractorFactory(
+            [
+                AccountingSystem::MRI => $this->getMriExtractorMock(),
+                AccountingSystem::YARDI_VOYAGER => $this->getYardiExtractorMock(),
+                AccountingSystem::AMSI => $this->getAMSIExtractorMock(),
+                AccountingSystem::RESMAN => $this->getResmanExtractorMock(),
+            ]
+        );
         $extractor = $factory->getExtractor($extractorName);
 
         $this->assertInstanceOf($expectedExtractor, $extractor, 'Incorrect instance of Extractor.');
@@ -50,12 +66,30 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     protected function getMriExtractorMock()
     {
-        return $this->getMock(
-            '\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor',
-            [],
-            [],
-            '',
-            false
-        );
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|YardiExtractor
+     */
+    protected function getYardiExtractorMock()
+    {
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|AMSIExtractor
+     */
+    protected function getAMSIExtractorMock()
+    {
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|ResmanExtractor
+     */
+    protected function getResmanExtractorMock()
+    {
+        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor');
     }
 }

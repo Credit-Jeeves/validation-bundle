@@ -2,15 +2,17 @@
 
 namespace RentJeeves\CoreBundle\Tests\Unit\Report;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Monolog\Logger;
 use RentJeeves\CoreBundle\Report\Enum\CreditBureau;
 use RentJeeves\CoreBundle\Report\Enum\RentalReportType;
 use RentJeeves\CoreBundle\Report\RentalReportData;
 use RentJeeves\CoreBundle\Report\RentalReportFactory;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
+class RentalReportFactoryCase extends UnitTestBase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      */
@@ -115,6 +117,41 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldGetEquifaxPositiveReport()
+    {
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EQUIFAX, RentalReportType::POSITIVE);
+
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
+
+        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Equifax\EquifaxPositiveReport', $report);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldGetEquifaxClosureReport()
+    {
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EQUIFAX, RentalReportType::CLOSURE);
+        $report = $this->getRentalReportFactory()->getReport($rentalReportData);
+
+        $this->assertInstanceOf('RentJeeves\CoreBundle\Report\Equifax\EquifaxClosureReport', $report);
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Equifax report type 'Unknown Equifax type' does not exist
+     */
+    public function shouldThrowExceptionIfUnknownEquifaxReportTypeSpecified()
+    {
+        $rentalReportData = $this->getRentalReportData(CreditBureau::EQUIFAX, 'Unknown Equifax type');
+
+        $this->getRentalReportFactory()->getReport($rentalReportData);
+    }
+
+    /**
      * @return RentalReportFactory
      */
     protected function getRentalReportFactory()
@@ -134,21 +171,5 @@ class RentalReportFactoryCase extends \PHPUnit_Framework_TestCase
         $rentalReportData->setType($type);
 
         return $rentalReportData;
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|EntityManagerInterface
-     */
-    protected function getEntityManagerMock()
-    {
-        return $this->getMock('Doctrine\ORM\EntityManagerInterface', [], [], '', false);
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Logger
-     */
-    protected function getLoggerMock()
-    {
-        return $this->getMock('Monolog\Logger', [], [], '', false);
     }
 }

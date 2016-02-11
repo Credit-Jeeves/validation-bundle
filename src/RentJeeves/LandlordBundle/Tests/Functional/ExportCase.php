@@ -1026,4 +1026,158 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('t0013534', (string) $personId);
         $this->assertEquals('770 Broadway, New York, NY 10003 #2-a', (string) $notes);
     }
+
+    /**
+     * @return array
+     */
+    public function exportByBostonCsv()
+    {
+        return [
+            ['deposits', 13, 'uncheck', 1500, '-49 days', '-49 days'],
+            ['payments', 14, 'uncheck', 1500, '-21 days', '-21 days'],
+            ['deposits', 13, 'check', 1500, '-49 days', '-49 days'],
+            ['payments', 14, 'check',  1500, '-21 days', '-21 days'],
+        ];
+    }
+
+    /**
+     * @param string $exportBy
+     * @param integer $countRows
+     * @param string $methodForAllGroups
+     * @param float $sum
+     * @param string $dueDate
+     * @param string $depositDate
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     *
+     * @test
+     * @dataProvider exportByBostonCsv
+     */
+    public function exportBostonCsv(
+        $exportBy,
+        $countRows,
+        $methodForAllGroups,
+        $sum,
+        $dueDate,
+        $depositDate
+    ) {
+        $dueDate = new DateTime($dueDate);
+        $depositDate = new DateTime($depositDate);
+
+        $this->load(true);
+        $this->createPayment();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('accounting.menu.export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->getEntityManager()->getRepository('RjDataBundle:Contract')
+            ->createQueryBuilder('c')
+            ->update()
+            ->set('c.externalLeaseId', '777777777')
+            ->getQuery()
+            ->execute();
+
+
+        $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'), 'This option should be');
+        $type->selectOption('boston');
+        $this->selectExportBy($exportBy);
+        $this->assertNotNull(
+            $begin = $this->page->find('css', '#base_order_report_type_begin'),
+            'Field "begin" should be'
+        );
+        $this->assertNotNull(
+            $end = $this->page->find('css', '#base_order_report_type_end'),
+            'Field "end" should be'
+        );
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $this->assertNotNull(
+            $forAllGroups = $this->page->find('css', '#base_order_report_type_includeAllGroups'),
+            'Option "include for all groups" should be'
+        );
+        $forAllGroups->$methodForAllGroups();
+        $this->page->pressButton('order.report.download');
+
+        $csv = $this->page->getContent();
+        $csvArr = explode("\n", $csv);
+
+        $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
+
+        // check file with unit id
+        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[3]), 'Row #2 should exist');
+        $this->assertEquals('777777777', $csvArrRow[0], 'External Lease ID should be 777777777');
+        $this->assertEquals('AAABBB-7', $csvArrRow[1], 'External unit id should be AAABBB-7');
+        $this->assertEquals($sum, $csvArrRow[2], 'Sum id should be ' . $sum);
+        $this->assertEquals($dueDate->format('mdY'), $csvArrRow[3], 'DueDate should be ' . $dueDate->format('mdY'));
+        $this->assertEquals('', $csvArrRow[4], 'We should live 4 field empty');
+        $this->assertEquals('', $csvArrRow[5], 'We should live 5 field empty');
+        $this->assertNotEmpty($csvArrRow[6], 'CheckNumber should be filled in');
+        $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
+        $this->assertEquals(
+            $depositDate->format('mdY'),
+            $csvArrRow[8],
+            'DepositDate id should be ' . $depositDate->format('mdY')
+        );
+
+    }
+
+    /**
+     * @test
+     */
+    public function bostonBatchReport()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('accounting.menu.export');
+        $beginD = new DateTime();
+        $beginD->modify('-1 year');
+        $endD = new DateTime();
+
+        $this->getEntityManager()->getRepository('RjDataBundle:Contract')
+            ->createQueryBuilder('c')
+            ->update()
+            ->set('c.externalLeaseId', '777777777')
+            ->getQuery()
+            ->execute();
+
+        $this->assertNotNull(
+            $type = $this->page->find('css', '#base_order_report_type_type'),
+            'Option should be'
+        );
+        $type->selectOption('boston');
+        $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'), 'Field should be');
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'), 'Field should be');
+        $this->assertNotNull(
+            $makeZip = $this->page->find('css', '#base_order_report_type_makeZip'),
+            'Option should be'
+        );
+        $begin->setValue($beginD->format('m/d/Y'));
+        $end->setValue($endD->format('m/d/Y'));
+        $makeZip->check();
+
+        $this->page->pressButton('order.report.download');
+
+        $csvZip = $this->session->getDriver()->getContent();
+
+        $testFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'export.zip';
+        file_put_contents($testFile, $csvZip);
+
+        $archive = new ZipArchive();
+        $this->assertTrue($archive->open($testFile, ZipArchive::CHECKCONS), 'Should return true');
+        $this->assertEquals(7, $archive->numFiles, 'Archive should have 7 files');
+
+        // check file with unit id
+        $file = $archive->getFromIndex(1);
+        $rows = explode("\n", trim($file));
+        $this->assertCount(2, $rows, 'Should be two row');
+        $columns = explode(",", $rows[1]);
+
+        $this->assertEquals('777777777', $columns[0], 'Unit id should be 777777777');
+        $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');
+        $this->assertEquals(1500, $columns[2], 'Amount should be 1500');
+        $this->assertEquals('123123', $columns[6], 'Transaction ID should be');
+    }
 }

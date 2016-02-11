@@ -91,14 +91,7 @@ class PaymentType extends AbstractType
                 array(
                     'label' => 'paidFor',
                     'choices' => $this->paidFor,
-                    'attr' => $this->attributes->paidForAttrs(),
-                    'constraints' => array(
-                        new NotBlank(
-                            array(
-                                'message' => 'checkout.error.paidFor.invalid'
-                            )
-                        )
-                    )
+                    'attr' => $this->attributes->paidForAttrs()
                 )
             )->addModelTransformer(new DateTimeToStringTransformer())
         );

@@ -207,7 +207,7 @@ class IndexCase extends BaseTestCase
         $this->assertEquals(5, count($denied));
         for ($i = 0; $i <= 3; $i++) {
             $this->assertEquals(
-                'yardi.tenant.property.manager_disabled_payment',
+                'tenant.property.manager_disabled_payment',
                 $denied[0]->getAttribute('title')
             );
         }

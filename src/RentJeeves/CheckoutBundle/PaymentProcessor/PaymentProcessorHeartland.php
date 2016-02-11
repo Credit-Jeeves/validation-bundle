@@ -25,6 +25,9 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
  */
 class PaymentProcessorHeartland implements SubmerchantProcessorInterface
 {
+    const DELIVERY_BUSINESS_DAYS_FOR_BANK = 3;
+    const DELIVERY_BUSINESS_DAYS_FOR_CARD = 1;
+
     /** @var PaymentAccountManager */
     protected $paymentAccountManager;
 
@@ -152,10 +155,10 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
     public function calculateDepositDate($paymentType, \DateTime $executeDate)
     {
         if ($paymentType === OrderPaymentType::BANK) {
-            return BusinessDaysCalculator::getBusinessDate($executeDate, 3);
+            return BusinessDaysCalculator::getBusinessDate($executeDate, self::DELIVERY_BUSINESS_DAYS_FOR_BANK);
         }
 
-        return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
+        return BusinessDaysCalculator::getBusinessDate($executeDate, self::DELIVERY_BUSINESS_DAYS_FOR_CARD);
     }
 
     /**

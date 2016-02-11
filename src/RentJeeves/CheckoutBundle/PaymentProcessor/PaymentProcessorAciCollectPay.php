@@ -26,6 +26,9 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
  */
 class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
 {
+    const DELIVERY_BUSINESS_DAYS_FOR_BANK = 1;
+    const DELIVERY_BUSINESS_DAYS_FOR_CARD = 1;
+
     /**
      * @var EnrollmentManager
      */

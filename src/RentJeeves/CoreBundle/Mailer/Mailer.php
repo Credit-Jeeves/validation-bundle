@@ -3,7 +3,6 @@ namespace RentJeeves\CoreBundle\Mailer;
 
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
@@ -11,6 +10,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -30,7 +30,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -50,10 +50,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string $isImported
+     * @param string   $isImported
      *
      * @return bool
      */
@@ -75,7 +75,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -97,7 +97,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -119,9 +119,9 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param string $paymentType
-     * @param boolean $isRecurringPaymentEnded
-     * @param float $paymentTotal
+     * @param string   $paymentType
+     * @param boolean  $isRecurringPaymentEnded
+     * @param float    $paymentTotal
      *
      * @return bool
      */
@@ -150,7 +150,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -168,8 +168,8 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param float $amount
-     * @param string $sTemplate
+     * @param float    $amount
+     * @param string   $sTemplate
      *
      * @return bool
      */
@@ -185,7 +185,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param $report
+     * @param          $report
      *
      * @return bool
      */
@@ -200,9 +200,9 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Contract $contract
-     * @param string $diff
+     * @param string   $diff
      *
      * @return bool
      */
@@ -219,7 +219,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param array $tenants
+     * @param array    $tenants
      *
      * @return bool
      */
@@ -261,7 +261,8 @@ class Mailer extends BaseMailer
             'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
             'statementDescriptor' => $this->getStatementDescriptor($order),
             'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
-            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null,
+            'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
         return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -297,7 +298,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -332,7 +333,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -356,7 +357,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -382,7 +383,7 @@ class Mailer extends BaseMailer
     /**
      * @param Contract $contract
      * @param Landlord $landlord
-     * @param Tenant $tenant
+     * @param Tenant   $tenant
      *
      * @return bool
      */
@@ -474,7 +475,8 @@ class Mailer extends BaseMailer
             'type' => $order->getPaymentType(),
             'statementDescriptor' => $this->getStatementDescriptor($order),
             'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
-            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null
+            'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null,
+            'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
         return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -482,7 +484,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param Payment $payment
+     * @param Payment  $payment
      *
      * @return bool
      */
@@ -501,20 +503,22 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord $landlord
-     * @param array $groups
+     * @param Landlord  $landlord
+     * @param array     $groups
      * @param \DateTime $date
-     * @param string $resend
+     * @param string    $resend
      *
      * @return bool
      */
     public function sendBatchDepositReportHolding(Landlord $landlord, $groups, \DateTime $date, $resend = null)
     {
+        $currentAccountingSystem = $landlord->getHolding()->getAccountingSystem();
         $vars = [
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
             'groups' => $groups,
             'resend' => $resend,
+            'info' => $this->getInfoForAccountingSystem($currentAccountingSystem),
         ];
 
         return $this->sendBaseLetter(
@@ -526,12 +530,12 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord $landlord
-     * @param Group $group
+     * @param Landlord  $landlord
+     * @param Group     $group
      * @param \DateTime $date
-     * @param array $batches
-     * @param $returns
-     * @param $resend
+     * @param array     $batches
+     * @param           $returns
+     * @param           $resend
      *
      * @return bool
      */
@@ -543,6 +547,7 @@ class Mailer extends BaseMailer
         $returns,
         $resend = null
     ) {
+        $currentAccountingSystem = $landlord->getHolding()->getAccountingSystem();
         $vars = [
             'landlordFirstName' => $landlord->getFirstName(),
             'date' => $date,
@@ -551,6 +556,7 @@ class Mailer extends BaseMailer
             'batches' => $batches,
             'returns' => $returns,
             'resend' => $resend,
+            'info' => $this->getInfoForAccountingSystem($currentAccountingSystem),
         ];
 
         return $this->sendBaseLetter(
@@ -587,8 +593,23 @@ class Mailer extends BaseMailer
     }
 
     /**
+     * @return bool
+     */
+    public function sendFreeReportUpdated(Tenant $tenant)
+    {
+        return $this->sendEmail(
+            $tenant,
+            'rjFreeReportUpdated',
+            [
+                'tenantFirstName' => $tenant->getFirstName(),
+                'dashboardLink' => $this->container->get('router')->generate('tenant_summary', [], true)
+            ]
+        );
+    }
+
+    /**
      * @param Landlord $landlord
-     * @param array $data
+     * @param array    $data
      *
      * @return bool
      */
@@ -607,7 +628,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendEmailAcceptYardiPayment(Tenant $tenant)
+    public function sendEmailAcceptPayment(Tenant $tenant)
     {
         $context = $this->container->get('router')->getContext();
         $context->setHost($this->container->getParameter('server_name_rj'));
@@ -634,7 +655,7 @@ class Mailer extends BaseMailer
      *
      * @return bool
      */
-    public function sendEmailDoNotAcceptYardiPayment(Tenant $tenant)
+    public function sendEmailDoNotAcceptPayment(Tenant $tenant)
     {
         return $this->sendBaseLetter(
             $template = 'rjYardiPaymentAcceptedTurnOff',
@@ -645,9 +666,9 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Landlord $landlord
+     * @param Landlord   $landlord
      * @param Contract[] $contracts
-     * @param string $month
+     * @param string     $month
      *
      * @return bool
      */
@@ -823,5 +844,50 @@ class Mailer extends BaseMailer
             $order->getUser()->getEmail(),
             $order->getUser()->getCulture()
         );
+    }
+
+    /**
+     * Use for sendBatchDepositReportLandlord and sendBatchDepositReportLandlord
+     *
+     * @var string $accountingSystem
+     *
+     * @return array|null
+     */
+    protected function getInfoForAccountingSystem($accountingSystem)
+    {
+        switch ($accountingSystem) {
+            case AccountingSystem::YARDI_VOYAGER:
+                return [
+                    'title' => 'How to Post Your Batch in Yardi',
+                    'link' => 'http://help.renttrack.com/knowledgebase/' .
+                        'articles/647266-how-does-the-yardi-integration-work',
+                ];
+                break;
+            case AccountingSystem::YARDI_GENESIS:
+            case AccountingSystem::YARDI_GENESIS_2:
+                return [
+                    'title' => 'How do I export payments for Yardi Genesis and Yardi Genesis V2',
+                    'link' => 'http://help.renttrack.com/knowledgebase/' .
+                        'articles/436072-how-do-i-export-payments-for-yardi-genesis-and-yar',
+                ];
+                break;
+            case AccountingSystem::MRI:
+                return [
+                    'title' => 'How to Post Your Batch in MRI',
+                    'link' => 'http://help.renttrack.com/knowledgebase' .
+                        '/articles/559914-how-does-the-mri-integration-work',
+                ];
+                break;
+            case AccountingSystem::PROMAS:
+                return [
+                    'title' => 'How to export payments for ProMas',
+                    'link' => 'http://help.renttrack.com/knowledgebase/' .
+                        'articles/389562-how-do-i-export-payments-for-promas',
+                ];
+                break;
+            default:
+                return null;
+                break;
+        }
     }
 }

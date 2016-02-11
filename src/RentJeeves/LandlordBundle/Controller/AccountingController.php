@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportSummary;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
@@ -19,7 +19,6 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageMRI;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageResman;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageYardi;
 use RentJeeves\LandlordBundle\Model\Import;
-use RentJeeves\LandlordBundle\Services\ImportSummaryManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
@@ -147,6 +146,15 @@ class AccountingController extends Controller
      */
     public function importFileAction()
     {
+        /** @var ImportSettingsValidator $importSettingsValidator */
+        $importSettingsValidator = $this->get('import.settings.validator');
+        if ($importSettingsValidator->isValidImportSettings($this->getUser()->getCurrentGroup()) === false) {
+            return $this->render(
+                'LandlordBundle:Accounting:import_error.html.twig',
+                ['message' => $importSettingsValidator->getErrorMessage()]
+            );
+        }
+
         $this->getImportLogger()->debug("Enter: importFileAction");
 
         $this->checkAccessToAccounting();
@@ -156,21 +164,24 @@ class AccountingController extends Controller
         $importFactory = $this->get('accounting.import.factory');
         $importFactory->clearSessionAllImports();
 
-        $integrationType = $this->getCurrentGroup()->getHolding()->getApiIntegrationType();
+        $integrationType = $this->getCurrentGroup()->getHolding()->getAccountingSystem();
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         if (!$form->isValid()) {
-            return [
-                'form'            => $form->createView(),
-                'nGroups'         => $this->getGroups()->count(),
-                'integrationType' => $integrationType,
-                'source'          => $source
-            ];
+            return $this->render(
+                'LandlordBundle:Accounting:importFile.html.twig',
+                [
+                    'form'            => $form->createView(),
+                    'nGroups'         => $this->getGroups()->count(),
+                    'integrationType' => $integrationType,
+                    'source'          => $source
+                ]
+            );
         }
 
         $this->getImportLogger()->debug(sprintf('Import requested. Type: %s', $source));
-        $serviceKey = ApiIntegrationType::$importMapping[
-            $this->getCurrentGroup()->getHolding()->getApiIntegrationType()
+        $serviceKey = AccountingSystem::$importMapping[
+            $this->getCurrentGroup()->getHolding()->getAccountingSystem()
         ];
 
         $importStorage = $importFactory->getStorage($serviceKey);

@@ -33,6 +33,7 @@ services:
             - @payment_processor.order_creation_manager
             - @payment_processor.order_status_manager
             - @doctrine.orm.default_entity_manager
+            - @credit_summary.report_builder_factory
             - %credit_summary_vendor%
         calls:
             - [setFactory, ["@payment_processor.factory"]]
@@ -247,12 +248,16 @@ services:
         arguments:
             - %dod_limit_max_payment%
 
+    dod.payment_execution_allowed:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentExecutionAllowed
+
     dod:
         class: RentJeeves\CheckoutBundle\DoD\DodManager
         arguments:
             - @logger
         calls:
             - [addRule, ["@dod.payment_amount_max"]]
+            - [addRule, ["@dod.payment_execution_allowed"]]
 
     payment_processor.profit_stars.rdc.report_loader:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader
@@ -260,7 +265,19 @@ services:
         arguments:
             - @profit_stars.transaction_reporting.client
 
+    payment_processor.profit_stars.rdc.contract_registry:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager
+        public: false
+        arguments:
+            - @profit_stars.payment_vault.client
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.profit_stars
+            - @skip32.id_encoder
+            - %profit_stars.store_id%
+            - %profit_stars.store_key%
+
     payment_processor.profit_stars.rdc:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
         arguments:
             - @payment_processor.profit_stars.rdc.report_loader
+            - @payment_processor.profit_stars.rdc.contract_registry

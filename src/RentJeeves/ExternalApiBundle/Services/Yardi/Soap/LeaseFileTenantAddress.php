@@ -30,7 +30,6 @@ class LeaseFileTenantAddress
      */
     protected $postalCode;
 
-
     /**
      * @return mixed
      */

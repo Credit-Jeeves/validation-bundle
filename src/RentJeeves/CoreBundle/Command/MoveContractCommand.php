@@ -25,6 +25,10 @@ class MoveContractCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getLogger()->info('Start moving.');
+        if (true === $this->getEntityManager()->getFilters()->isEnabled('softdeleteable')) {
+            $this->getEntityManager()->getFilters()->disable('softdeleteable');
+            $this->getLogger()->info('Soft-deleteble filter is disabled.');
+        }
 
         if (null === $contract = $this->getContractRepository()->find($input->getOption('contract-id'))) {
             throw new \InvalidArgumentException(

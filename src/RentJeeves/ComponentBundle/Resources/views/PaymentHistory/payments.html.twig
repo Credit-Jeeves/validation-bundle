@@ -46,7 +46,11 @@
                             <div data-bind="visible: deposit_type, text: deposit_type, i18n: {}"></div>
                         </td>
                         <td data-bind="text: total"></td>
-                        <td class="type-box"><span data-bind="css: 'clarification ' + type()"><i></i></span></td>
+                        <td class="type-box">
+                            <span data-bind="css: 'clarification ' + type(), attr: {title: lastFour()}">
+                                <i></i>
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
             </table>

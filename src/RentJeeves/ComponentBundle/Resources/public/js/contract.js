@@ -28,6 +28,14 @@ function Contract() {
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
 
+    this.paymentAcceptedMessage = ko.pureComputed(function () {
+        if (this.contract()) {
+            return Translator.trans('contract.payment_accepted.' + this.contract().paymentAccountingAccepted);
+        }
+
+        return '';
+    }, this);
+
     this.debug = false;
 
     this.cancelEdit = function (data) {
@@ -177,6 +185,7 @@ function Contract() {
                 $('#contractEditFinish').DatePickerHide();
             }
         });
+        self.initControllers();
     };
 
     this.approveContract = function (contract) {
@@ -329,6 +338,7 @@ function Contract() {
 
 
         self.contract(contract);
+        self.initControllers();
         $.ajax({
             url: Routing.generate('landlord_contract_save'),
             type: 'POST',
@@ -481,5 +491,34 @@ function Contract() {
         });
 
         return false;
+    };
+
+    this.initControllers = function () {
+        $('#payment_allowed_help')
+            .tooltip({
+                items: 'i',
+                content: Translator.trans('contract.payment_allowed.help_text'),
+                position: { my: 'left center', at: 'right+30 center' }
+            })
+            .off("mouseover")
+            .on("click", function () {
+                $(this).tooltip("open");
+
+                return false;
+            });
+        $('.toggle').toggles({
+            text: {
+                on: Translator.trans('contract.payment_allowed.true'),
+                off: Translator.trans('contract.payment_allowed.false')
+            },
+            on: self.contract().isPaymentAllowed
+        });
+        $('.toggle').on('toggle', function(e, active) {
+            if (active) {
+                self.contract().isPaymentAllowed = true;
+            } else {
+                self.contract().isPaymentAllowed = false;
+            }
+        });
     };
 }

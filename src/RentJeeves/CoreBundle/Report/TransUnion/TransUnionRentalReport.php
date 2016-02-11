@@ -68,7 +68,7 @@ abstract class TransUnionRentalReport implements RentalReport
      */
     public function getSerializationType()
     {
-        return 'trans_union_rental';
+        return 'rental_1';
     }
 
     /**

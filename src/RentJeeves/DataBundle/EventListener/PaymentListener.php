@@ -109,13 +109,18 @@ class PaymentListener
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if (($entity instanceof Contract) &&
-            ContractStatus::DELETED == $entity->getStatus() &&
             ($payment = $entity->getActiveRentPayment()) &&
             PaymentStatus::CLOSE != $payment->getStatus()
         ) {
-            $payment->setClosed($this, PaymentCloseReason::CONTRACT_DELETED);
-            $em->persist($payment);
-            $em->flush($payment);
+            if (ContractStatus::DELETED === $entity->getStatus()) {
+                $payment->setClosed($this, PaymentCloseReason::CONTRACT_DELETED);
+            } elseif (ContractStatus::FINISHED === $entity->getStatus()) {
+                $payment->setClosed($this, PaymentCloseReason::CONTRACT_FINISHED);
+            }
+            if (PaymentStatus::CLOSE === $payment->getStatus()) {
+                $em->persist($payment);
+                $em->flush($payment);
+            }
         }
     }
 

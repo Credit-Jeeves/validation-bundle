@@ -173,16 +173,18 @@ class Contract extends Base
         return $holdingName;
     }
 
-    public function isDeniedOnExternalApi()
+    /**
+     * Method check that payment can be edit and create for this contract
+     *
+     * @return bool
+     */
+    public function isPaymentEditAllowed()
     {
-        if (in_array(
-            $this->getPaymentAccepted(),
-            PaymentAccepted::getDeniedValues()
-        )) {
-            return true;
+        if ($this->getGroupSettings()->getIsIntegrated()) {
+            return $this->isPaymentAllowed() && PaymentAccepted::ANY == $this->getPaymentAccepted();
         }
 
-        return false;
+        return $this->isPaymentAllowed();
     }
 
     public function getLateDays()
@@ -591,18 +593,24 @@ class Contract extends Base
             }
         }
 
-        if ($payment = $this->getActiveRentPayment()) {
-            $result['isPayment'] = true;
-            $result['payment_type'] = $payment->getType();
-            $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
-            $result['payment_amount'] = $payment->getTotal();
+        try {
+            // TODO Fixed inside RT-2125
+            if ($payment = $this->getActiveRentPayment()) {
+                $result['isPayment'] = true;
+                $result['payment_type'] = $payment->getType();
+                $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
+                $result['payment_amount'] = $payment->getTotal();
 
-            $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
-            if (10 < strlen($result['row_payment_source'])) {
-                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
-                $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+                $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
+                if (10 < strlen($result['row_payment_source'])) {
+                    $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
+                    $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+                }
             }
+        } catch (\RuntimeException $e) {
+            $result['payment_status'] = 'duplicated';
         }
+
 
         $result['hasCustomPayments'] = false;
 
@@ -631,7 +639,7 @@ class Contract extends Base
         $isIntegrated = $groupSettings->getIsIntegrated();
         $result['is_shown_rent'] = $groupSettings->isShowRentOnDashboard();
         $result['is_integrated'] = $isIntegrated;
-        $result['isDeniedOnExternalApi'] = $this->isDeniedOnExternalApi();
+        $result['isPaymentEditAllowed'] = $this->isPaymentEditAllowed();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
         $result['is_allowed_to_pay_anything'] =
@@ -760,7 +768,7 @@ class Contract extends Base
             }
         );
         if (1 < $collection->count()) {
-            throw new RuntimeException(sprintf('Contract "%s" have more ten one active payments', $this->getId()));
+            throw new RuntimeException(sprintf('Contract "%s" have more then one active payments', $this->getId()));
         }
         if (0 == $collection->count()) {
             return null;
@@ -994,6 +1002,22 @@ class Contract extends Base
                 }
 
                 return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $locationId
+     * @return bool
+     */
+    public function hasProfitStarsRegisteredLocation($locationId)
+    {
+        /** @var ProfitStarsRegisteredContract $registeredContract */
+        foreach ($this->getProfitStarsRegisteredContracts() as $registeredContract) {
+            if ($locationId === $registeredContract->getLocationId()) {
+                return true;
             }
         }
 

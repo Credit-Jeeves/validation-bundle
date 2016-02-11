@@ -4,7 +4,9 @@ $( document ).ready(function() {
             msie5: true,
             msie6: true,
             msie7: true,
-            msie8: true
+            msie8: true,
+            msie9: true,
+            msie10: true
         },
         imagePath: '/bundles/user/img/',
         closeCookie: true,

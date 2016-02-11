@@ -285,3 +285,8 @@ services:
         class: RentJeeves\AdminBundle\Form\ImportGroupSettingsType
         tags:
             - { name: form.type, alias: import_group_settings }
+
+    profit_stars_settings_type:
+        class: RentJeeves\AdminBundle\Form\ProfitStarsSettingsType
+        tags:
+            - { name: form.type, alias: profit_stars_settings_type }

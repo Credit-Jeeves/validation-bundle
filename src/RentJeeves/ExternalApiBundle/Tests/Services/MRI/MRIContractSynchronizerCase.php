@@ -5,7 +5,7 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\MRI;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
 
 class MRIContractSynchronizerCase extends Base
@@ -37,8 +37,8 @@ class MRIContractSynchronizerCase extends Base
         );
         $contract->setPaymentAccepted(null);
         $contract2->setPaymentAccepted(null);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
-        $contract2->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::MRI);
+        $contract2->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping2 = $contract2->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
@@ -111,7 +111,7 @@ class MRIContractSynchronizerCase extends Base
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
         $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be 0');
         $contractWaiting->setPaymentAccepted(null);
-        $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
+        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
             $contractWaiting->getGroup()->getHolding()
         );
@@ -159,7 +159,7 @@ class MRIContractSynchronizerCase extends Base
         $contract = $repo->find(20);
         $this->assertNotNull($contract, 'Should have contract in fixtures');
         $contract->setRent(0);
-        $contract->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
+        $contract->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RNT, YY');
@@ -205,7 +205,7 @@ class MRIContractSynchronizerCase extends Base
         $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
         $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
         $contractWaiting->setRent(0);
-        $contractWaiting->getGroup()->getHolding()->setApiIntegrationType(ApiIntegrationType::MRI);
+        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $contractWaiting->getGroup()->getHolding()->setUseRecurringCharges(true);
         $contractWaiting->getGroup()->getHolding()->setRecurringCodes('RNT, YY');
         $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(

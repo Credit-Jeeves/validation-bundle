@@ -27,7 +27,14 @@ class ReportController extends Controller
         $vendor = $this->container->getParameter('credit_summary_vendor');
 
         if ($shouldUpdateReport) {
-            return (bool) $this->getUser()->getLastCompleteReportOperation()->getReportByVendor($vendor);
+            $lastCompleteReportOperation = $this->getUser()->getLastCompleteReportOperation();
+            if ($lastCompleteReportOperation) {
+                $report = $lastCompleteReportOperation->getReportByVendor($vendor);
+            } else {
+                $report = $this->getUser()->getLastReportByVendor($vendor);
+            }
+
+            return empty($report) ? false : true;
         } else {
             return !$this->getUser()->getLastReportByVendor($vendor);
         }

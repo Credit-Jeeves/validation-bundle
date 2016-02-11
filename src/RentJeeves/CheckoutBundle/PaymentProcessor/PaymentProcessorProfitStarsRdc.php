@@ -4,8 +4,10 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -14,17 +16,21 @@ use RentJeeves\DataBundle\Enum\PaymentGroundType;
 /**
  * Service name "payment_processor.profit_stars.rdc"
  */
-class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface
+class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, CheckScanPaymentProcessorInterface
 {
     /** @var ReportLoader */
     protected $reportLoader;
 
+    /** @var  ContractRegistryManager */
+    protected $contractRegistry;
+
     /**
      * @param ReportLoader $reportLoader
      */
-    public function __construct(ReportLoader $reportLoader)
+    public function __construct(ReportLoader $reportLoader, ContractRegistryManager $contractRegistry)
     {
         $this->reportLoader = $reportLoader;
+        $this->contractRegistry = $contractRegistry;
     }
 
     /**
@@ -113,5 +119,13 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface
     public function getCardType($cardNumber)
     {
         throw new PaymentProcessorLogicException('getCardType is not implemented for ProfitStars');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function registerContract(Contract $contract, DepositAccount $depositAccount)
+    {
+        $this->contractRegistry->registerContract($contract, $depositAccount);
     }
 }

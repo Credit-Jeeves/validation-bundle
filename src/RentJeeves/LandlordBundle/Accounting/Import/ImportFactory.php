@@ -4,7 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\ApiIntegrationType;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Exception;
@@ -34,7 +34,10 @@ class ImportFactory
 
     protected $importType;
 
-    protected $availableImportType = array(self::CSV, self::INTEGRATED_API);
+    /**
+     * @var array
+     */
+    protected $availableImportType = [self::CSV, self::INTEGRATED_API];
 
     /**
      * @InjectParams({
@@ -108,7 +111,7 @@ class ImportFactory
     public function clearSessionAllImports()
     {
         foreach ($this->availableImportType as $type) {
-            if ($this->getAccountingSettingType() === ApiIntegrationType::NONE && $type === self::INTEGRATED_API) {
+            if ($this->getAccountingSettingType() === AccountingSystem::NONE && $type === self::INTEGRATED_API) {
                 continue;
             }
 
@@ -146,16 +149,19 @@ class ImportFactory
         return sprintf('%s.%s', $baseName, $typeService);
     }
 
+    /**
+     * @return string
+     */
     protected function getAccountingSettingType()
     {
         /** @var $user Landlord */
         $user = $this->container->get('security.context')->getToken()->getUser();
         /** @var $holding Holding */
         $holding = $user->getHolding();
-        if ($holding->getApiIntegrationType() === ApiIntegrationType::NONE) {
-            return ApiIntegrationType::NONE;
+        if ($holding->isApiIntegrated() === false) {
+            return AccountingSystem::NONE;
         }
 
-        return ApiIntegrationType::$importMapping[$holding->getApiIntegrationType()];
+        return AccountingSystem::$importMapping[$holding->getAccountingSystem()];
     }
 }

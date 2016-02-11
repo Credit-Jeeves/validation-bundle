@@ -11,7 +11,11 @@ use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
+use RentJeeves\ComponentBundle\Command\GetScoreTrackReportCommand;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
+use RentJeeves\DataBundle\Entity\JobRelatedReport;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -21,6 +25,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\TenantBundle\Command\ScoreTrackCommand;
 use Symfony\Component\Config\FileLocator;
 use Ton\EmailBundle\EventListener\EmailListener;
 use RentJeeves\DataBundle\Entity\Payment;
@@ -140,21 +145,75 @@ class PaymentCommandsCase extends BaseTestCase
      */
     public function collectCreditTrackAndPay()
     {
-        $jobs = $this->getContainer()->get('doctrine')
-            ->getRepository('RjDataBundle:PaymentAccount')
-            ->collectCreditTrackToJobs();
+        $application = new Application($this->getKernel());
+        $application->add(new ScoreTrackCommand());
+
+        $command = $application->find('score-track:collect-payments');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            ['command' => $command->getName()]
+        );
+
+        $jobsRelatedCreditTrack = $this->getEntityManager()->getRepository('RjDataBundle:JobRelatedCreditTrack')
+            ->findAll();
+
         // if today is 31, just skip this test (fixtures can't work correctly for 31st)
         $today = new DateTime();
         if (31 == $today->format('j')) {
-            $this->assertCount(0, $jobs);
+            $this->assertEmpty($jobsRelatedCreditTrack);
         } else {
-            $commandTester = $this->executePayCommand($jobs[0]->getId());
+            /** @var JobRelatedCreditTrack $jobRelatedCreditTrack */
+            $jobRelatedCreditTrack = reset($jobsRelatedCreditTrack);
+            $job = $jobRelatedCreditTrack->getJob();
+            $commandTester = $this->executePayCommand($job->getId());
 
             $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
 
             $this->assertCount(1, $this->plugin->getPreSendMessages());
             $this->assertEquals('Receipt from Rent Track', $this->plugin->getPreSendMessage(0)->getSubject());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function collectScoreTrackGetReport()
+    {
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail(
+            'tenant11@example.com'
+        );
+        $this->assertNotEmpty($tenant, 'Tenant should be in the fixtures');
+        $tenant->getSettings()->setScoretrackFreeUntil(new \DateTime('+2 month'));
+        $this->getEntityManager()->flush();
+
+        $application = new Application($this->getKernel());
+        $application->add(new ScoreTrackCommand());
+
+        $command = $application->find('score-track:collect-payments');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            ['command' => $command->getName()]
+        );
+
+        $JobsRelatedReport = $this->getEntityManager()->getRepository('RjDataBundle:JobRelatedReport')
+            ->findAll();
+
+        // if today is 31, just skip this test (fixtures can't work correctly for 31st)
+        $today = new DateTime();
+        if (31 == $today->format('j')) {
+            $this->assertEmpty($JobsRelatedReport);
+        }
+        /** @var JobRelatedReport $jobRelatedReport */
+        $jobRelatedReport = reset($JobsRelatedReport);
+        $job = $jobRelatedReport->getJob();
+        $this->assertEquals(
+            'tenant11@example.com',
+            $jobRelatedReport->getReport()->getUser()->getEmail(),
+            'By fixture we should get tenant11@example.com'
+        );
+        $this->assertEquals('', $jobRelatedReport->getReport()->getRawData(), 'Should be empty string.');
+        $this->assertEquals('score-track:get-report', $job->getCommand(), 'Should be equals with get report');
     }
 
     /**

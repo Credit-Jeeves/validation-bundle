@@ -47,13 +47,13 @@ class TransUnionClosureReportCase extends BaseTestCase
         $this->assertInstanceOf('RentJeeves\CoreBundle\Report\TransUnion\TransUnionClosureReport', $report);
         $report->build($params);
 
-        $this->assertEquals('trans_union_rental', $report->getSerializationType());
+        $this->assertEquals('rental_1', $report->getSerializationType());
 
         $expectedReportName = sprintf('transunion-closure_renttrack-%s.txt', $today->format('Ymd'));
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
-        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
+        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'rental_1');
         $reportRecords = explode("\n", trim($report));
         $this->assertCount(2, $reportRecords, 'TU report should contain 2 records: header and 1 finished contract');
     }

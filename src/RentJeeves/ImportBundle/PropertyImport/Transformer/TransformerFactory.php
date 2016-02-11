@@ -76,7 +76,7 @@ class TransformerFactory
         $customClassName = $this->em->getRepository('RjDataBundle:ImportTransformer')
             ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, $externalPropertyId);
 
-        $accountingSystemName = $group->getHolding()->getApiIntegrationType();
+        $accountingSystemName = $group->getHolding()->getAccountingSystem();
         if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
             throw new ImportInvalidArgumentException(
                 sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
@@ -113,7 +113,7 @@ class TransformerFactory
             $this->registerUnregisteredCustomTransformer($className, $group);
         }
 
-        $accountingSystemName = $group->getHolding()->getApiIntegrationType();
+        $accountingSystemName = $group->getHolding()->getAccountingSystem();
         $baseTransformer = $this->defaultTransformers[$accountingSystemName];
         if (get_parent_class($customTransformerClass) !== get_class($baseTransformer)) {
             $this->logger->warning(

@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\DoD;
 
 use Psr\Log\LoggerInterface;
+use RentJeeves\CheckoutBundle\DoD\Rule\DodPaymentRuleInterface;
 use RentJeeves\CheckoutBundle\DoD\Rule\DodRuleInterface;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -40,23 +41,25 @@ class DodManager
      */
     public function checkPayment(Payment $payment)
     {
-        /** @var DodRuleInterface $rule */
+        /** @var DodPaymentRuleInterface $rule */
         foreach ($this->rules as $rule) {
-            $isValid = $rule->checkPayment($payment);
-            if (!$isValid) {
-                $this->logger->alert(sprintf(
-                    'Payment failed DoD checking. Moved to FLAGGED state. Reason: %s . Payment details: ' .
-                    'Tenant: %s, Amount: %s, Contract: %s, Type: %s, DepositType: %s.',
-                    $rule->getReason(),
-                    $payment->getContract()->getTenant()->getEmail(),
-                    $payment->getTotal(),
-                    $payment->getContract()->getId(),
-                    $payment->getType(),
-                    $payment->getDepositAccount()->getType()
-                ));
-                $payment->setStatus(PaymentStatus::FLAGGED);
+            if ($rule->support($payment)) {
+                $isValid = $rule->checkPayment($payment);
+                if (!$isValid) {
+                    $this->logger->alert(sprintf(
+                        'Payment failed DoD checking. Moved to FLAGGED state. Reason: %s . Payment details: ' .
+                        'Tenant: %s, Amount: %s, Contract: %s, Type: %s, DepositType: %s.',
+                        $rule->getReason(),
+                        $payment->getContract()->getTenant()->getEmail(),
+                        $payment->getTotal(),
+                        $payment->getContract()->getId(),
+                        $payment->getType(),
+                        $payment->getDepositAccount()->getType()
+                    ));
+                    $payment->setStatus(PaymentStatus::FLAGGED);
 
-                return false;
+                    return false;
+                }
             }
         }
 

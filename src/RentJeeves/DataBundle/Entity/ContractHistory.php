@@ -42,5 +42,8 @@ class ContractHistory extends Base
         if (isset($data['paymentAccepted'])) {
             $this->setPaymentAccepted($data['paymentAccepted']);
         }
+        if (isset($data['paymentAllowed'])) {
+            $this->setPaymentAllowed($data['paymentAllowed']);
+        }
     }
 }
