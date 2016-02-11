@@ -68,8 +68,12 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
     }
 
     /**
+     *
+     * Get or create a report record from database
+     *
      * @param User $user
-     * @param bool $shouldUpdateReport
+     * @param bool $shouldUpdateReport Set to true to ensure we only pull reports once per payment.
+     *                                 Set to false to pull a new (e.g. 'free') report
      * @return Report
      * @throws \Exception
      */
