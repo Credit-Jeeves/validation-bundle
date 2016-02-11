@@ -1,9 +1,9 @@
 <?php
+
 namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
-use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
@@ -46,11 +46,6 @@ class PaymentJobExecutor
     protected $payCreditTrack;
 
     /**
-     * @var string
-     */
-    protected $creditTrackVendor;
-
-    /**
      * @var Job
      */
     protected $job;
@@ -66,33 +61,37 @@ class PaymentJobExecutor
     protected $message = 'OK';
 
     /**
+     * @var string
+     */
+    protected $creditSummaryVendor;
+
+    /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
-     *     "creditTrackVendor" = @DI\Inject("%credit_summary_vendor%"),
-     *     "logger" = @DI\Inject("logger")
-     *
+     *     "logger" = @DI\Inject("logger"),
+     *     "creditSummaryVendor" = @DI\Inject("%credit_summary_vendor%")
      * })
      *
      * @param EntityManager $em
      * @param PayRent $payRent
      * @param PayCreditTrack $payCreditTrack
-     * @param $creditTrackVendor
      * @param Logger $logger
+     * @param string $creditSummaryVendor
      */
     public function __construct(
         EntityManager $em,
         PayRent $payRent,
         PayCreditTrack $payCreditTrack,
-        $creditTrackVendor,
-        Logger $logger
+        Logger $logger,
+        $creditSummaryVendor
     ) {
         $this->em = $em;
         $this->payRent = $payRent;
         $this->payCreditTrack = $payCreditTrack;
         $this->logger = $logger;
-        $this->creditTrackVendor = $creditTrackVendor;
+        $this->creditSummaryVendor = $creditSummaryVendor;
     }
 
     public function getMessage()
@@ -208,26 +207,13 @@ class PaymentJobExecutor
         if ($isSuccessful) {
             /** @var Operation $operation */
             $operation = $order->getOperations()->last();
-            $report = $operation->getReportByVendor($this->creditTrackVendor);
-            $this->em->persist($this->scheduleReportJob($report));
+            $job = new Job('score-track:get-report');
+            $job->addRelatedEntity($operation->getReportByVendor($this->creditSummaryVendor));
+            $this->em->persist($job);
         }
 
         $this->em->flush();
 
         return $isSuccessful;
-    }
-
-    /**
-     * Creates a job to load report.
-     *
-     * @param Report $report
-     * @return Job
-     */
-    protected function scheduleReportJob(Report $report)
-    {
-        $job = new Job('score-track:get-report', ['--app=rj']);
-        $job->addRelatedEntity($report);
-
-        return $job;
     }
 }

@@ -79,8 +79,11 @@
                             {% endif %}
                             <td class="font-helvetica">{{ contract.due_on | ordinal_number }}</td>
                             <td class="font-helvetica">{{ contract.full_address }}</td>
-                            <td class="font-helvetica">
-                                {% if not contract.isPaymentEditAllowed %}
+                            <td class="font-helvetica" {% if contract.payment_status == 'duplicated'  %} colspan="2" {% endif %}>
+                                {# TODO Fixed inside RT-2125 #}
+                                {% if contract.payment_status == 'duplicated'  %}
+                                    {{ 'duplicate.payment.description' | trans({'%support_email%': support_email}) | raw }}
+                                {% elseif not contract.isPaymentEditAllowed %}
                                     {{ 'tenant.property.manager_disabled_payment_description'|trans }}
                                 {% else %}
                                     {% if contract.status == 'pending' %}
@@ -125,7 +128,8 @@
                                     {% endif %}
                                 {% endif %}
                             </td>
-
+                            {# TODO Fixed inside RT-2125 #}
+                            {% if not contract.payment_status == 'duplicated'  %}
                             <td class="font-helvetica">
                                 {% if not contract.isPaymentEditAllowed %}
                                     <button class="button small button-contract-pay floatleft denied"
@@ -140,6 +144,7 @@
                                     ) }}
                                 {% endif %}
                             </td>
+                            {% endif %}
                         </tr>
                     {% endif %}
                 {% endfor %}

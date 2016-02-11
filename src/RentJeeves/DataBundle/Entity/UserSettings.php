@@ -48,7 +48,7 @@ class UserSettings extends Base
         $today->setTime(0, 0, 0);
         $scoreTrackFreeUntil->setTime(0, 0, 0);
 
-        if ($today > $scoreTrackFreeUntil) {
+        if ($today >= $scoreTrackFreeUntil) {
             return false;
         }
 

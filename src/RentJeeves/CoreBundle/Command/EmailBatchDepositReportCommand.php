@@ -165,7 +165,11 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                             ));
                         }
                     } else {
-                        $logger->info(sprintf('Will not sent email for group #%d "%s": deposits and reversals empty'));
+                        $logger->info(sprintf(
+                            'Will not sent email for group #%d "%s": deposits and reversals empty',
+                            $group->getId(),
+                            $group->getName()
+                        ));
                     }
                 }
             }

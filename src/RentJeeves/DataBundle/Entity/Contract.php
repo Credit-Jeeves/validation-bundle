@@ -593,18 +593,24 @@ class Contract extends Base
             }
         }
 
-        if ($payment = $this->getActiveRentPayment()) {
-            $result['isPayment'] = true;
-            $result['payment_type'] = $payment->getType();
-            $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
-            $result['payment_amount'] = $payment->getTotal();
+        try {
+            // TODO Fixed inside RT-2125
+            if ($payment = $this->getActiveRentPayment()) {
+                $result['isPayment'] = true;
+                $result['payment_type'] = $payment->getType();
+                $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
+                $result['payment_amount'] = $payment->getTotal();
 
-            $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
-            if (10 < strlen($result['row_payment_source'])) {
-                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
-                $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+                $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
+                if (10 < strlen($result['row_payment_source'])) {
+                    $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10) . '...';
+                    $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+                }
             }
+        } catch (\RuntimeException $e) {
+            $result['payment_status'] = 'duplicated';
         }
+
 
         $result['hasCustomPayments'] = false;
 
@@ -762,7 +768,7 @@ class Contract extends Base
             }
         );
         if (1 < $collection->count()) {
-            throw new RuntimeException(sprintf('Contract "%s" have more ten one active payments', $this->getId()));
+            throw new RuntimeException(sprintf('Contract "%s" have more then one active payments', $this->getId()));
         }
         if (0 == $collection->count()) {
             return null;

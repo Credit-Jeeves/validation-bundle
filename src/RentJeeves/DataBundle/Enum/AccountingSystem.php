@@ -23,6 +23,10 @@ class AccountingSystem extends Enum
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',
         self::AMSI          => 'amsi',
+        self::MRI_BOSTONPOST => 'csv',
+        self::YARDI_GENESIS  => 'csv',
+        self::YARDI_GENESIS_2 => 'csv',
+        self::PROMAS         => 'csv',
     ];
 
     public static $integratedWithApi = [
@@ -30,5 +34,13 @@ class AccountingSystem extends Enum
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',
         self::AMSI          => 'amsi',
+    ];
+
+    public static $integratedWithCsv = [
+        self::NONE,
+        self::MRI_BOSTONPOST,
+        self::YARDI_GENESIS,
+        self::YARDI_GENESIS_2,
+        self::PROMAS,
     ];
 }

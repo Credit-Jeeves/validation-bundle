@@ -1033,10 +1033,10 @@ class ExportCase extends BaseTestCase
     public function exportByBostonCsv()
     {
         return [
-            ['deposits', 12, 'uncheck', 1500, '-49 days', '-49 days'],
-            ['payments', 13, 'uncheck', 1500, '-21 days', '-21 days'],
-            ['deposits', 12, 'check', 1500, '-49 days', '-49 days'],
-            ['payments', 13, 'check',  1500, '-21 days', '-21 days'],
+            ['deposits', 13, 'uncheck', 1500, '-49 days', '-49 days'],
+            ['payments', 14, 'uncheck', 1500, '-21 days', '-21 days'],
+            ['deposits', 13, 'check', 1500, '-49 days', '-49 days'],
+            ['payments', 14, 'check',  1500, '-21 days', '-21 days'],
         ];
     }
 
@@ -1106,19 +1106,19 @@ class ExportCase extends BaseTestCase
         $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
 
         // check file with unit id
-        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[2]), 'Row #2 should exist');
+        $this->assertNotNull($csvArrRow = str_getcsv($csvArr[3]), 'Row #2 should exist');
         $this->assertEquals('777777777', $csvArrRow[0], 'External Lease ID should be 777777777');
         $this->assertEquals('AAABBB-7', $csvArrRow[1], 'External unit id should be AAABBB-7');
         $this->assertEquals($sum, $csvArrRow[2], 'Sum id should be ' . $sum);
-        $this->assertEquals($dueDate->format('dmY'), $csvArrRow[3], 'DueDate should be ' . $dueDate->format('dmY'));
+        $this->assertEquals($dueDate->format('mdY'), $csvArrRow[3], 'DueDate should be ' . $dueDate->format('mdY'));
         $this->assertEquals('', $csvArrRow[4], 'We should live 4 field empty');
         $this->assertEquals('', $csvArrRow[5], 'We should live 5 field empty');
         $this->assertNotEmpty($csvArrRow[6], 'CheckNumber should be filled in');
         $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
         $this->assertEquals(
-            $depositDate->format('dmY'),
+            $depositDate->format('mdY'),
             $csvArrRow[8],
-            'DepositDate id should be ' . $depositDate->format('dmY')
+            'DepositDate id should be ' . $depositDate->format('mdY')
         );
 
     }
@@ -1172,8 +1172,8 @@ class ExportCase extends BaseTestCase
         // check file with unit id
         $file = $archive->getFromIndex(1);
         $rows = explode("\n", trim($file));
-        $this->assertCount(1, $rows, 'Should be one row');
-        $columns = explode(",", $rows[0]);
+        $this->assertCount(2, $rows, 'Should be two row');
+        $columns = explode(",", $rows[1]);
 
         $this->assertEquals('777777777', $columns[0], 'Unit id should be 777777777');
         $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');

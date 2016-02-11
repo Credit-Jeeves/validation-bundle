@@ -68,8 +68,12 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
     }
 
     /**
+     *
+     * Get or create a report record from database
+     *
      * @param User $user
-     * @param bool $shouldUpdateReport
+     * @param bool $shouldUpdateReport Set to true to ensure we only pull reports once per payment.
+     *                                 Set to false to pull a new (e.g. 'free') report
      * @return Report
      * @throws \Exception
      */
@@ -77,7 +81,13 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
     {
         if ($shouldUpdateReport) {
             $lastReportOperation = $user->getLastCompleteReportOperation();
-            if (!$lastReportOperation || !($report = $lastReportOperation->getReportByVendor(static::VENDOR))) {
+            if ($lastReportOperation) {
+                $report = $lastReportOperation->getReportByVendor(static::VENDOR);
+            } else {
+                $report = $user->getLastReportByVendor(static::VENDOR);
+            }
+
+            if (!$report) {
                 $this->logger->alert(static::LOGGER_PREFIX . 'Doesn\'t have report for update');
                 throw new \RuntimeException('Doesn\'t have report for update');
             }
@@ -96,5 +106,5 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
      * @param User $user
      * @return Report
      */
-    abstract protected function createNewReport(User $user);
+    abstract public function createNewReport(User $user);
 }

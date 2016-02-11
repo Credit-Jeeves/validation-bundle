@@ -57,7 +57,7 @@ class ExperianReportBuilder extends BaseSummaryReportBuilder
      * @param User $user
      * @return ReportPrequal
      */
-    protected function createNewReport(User $user)
+    public function createNewReport(User $user)
     {
         $report = new ReportPrequal();
         $report->setUser($user);
