@@ -34,7 +34,6 @@ if [ ! -f $DIR/vendor/autoload.php ]; then
 fi
 
 php bin/environment.php --$BUILD || exit 1
-php bin/console.php renttrack:validate-mapping --app=rj || exit 1
 
 # Code coverage disabled since it triples build time
 #if [ "master" = $BUILD ]; then

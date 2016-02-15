@@ -10,7 +10,7 @@ use Doctrine\ORM\Tools\SchemaValidator;
  * This command part of ValidateSchemaCommand from Doctrine
  * We use this command for validate mapping because our db not sync with our schema
  */
-class ValidateMappingCommand extends BaseCommand
+class ValidateDoctrineMappingCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class ValidateMappingCommand extends BaseCommand
     protected function configure()
     {
         $this
-        ->setName('renttrack:validate-mapping')
+        ->setName('renttrack:validate-doctrine-mapping')
         ->setDescription('Validate the mapping files.')
         ->setHelp(<<<EOT
 'Validate that the mapping files are correct.'
