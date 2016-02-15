@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -676,5 +677,20 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return int
+     */
+    public function countOrdersByContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('COUNT(DISTINCT o.id)')
+            ->innerJoin('o.operations', 'op')
+            ->where('op.contract = :contract')
+            ->setParameter('contract', $contract)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }
