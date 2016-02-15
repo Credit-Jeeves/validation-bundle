@@ -25,17 +25,6 @@ class ImportPropertyCommandCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage PropertyMapping for Group#24 and extPropertyId#1 not found
-     */
-    public function shouldThrowExceptionIfExtPropertyIdNotFoundForGroupFromImport()
-    {
-        $this->load(true);
-        $this->executeCommandTester(new ImportPropertyCommand(), ['--import-id' => 1, '--external-property-id' => '1']);
-    }
-
-    /**
-     * @test
      */
     public function shouldCallImportIfInputDataIsValid()
     {
