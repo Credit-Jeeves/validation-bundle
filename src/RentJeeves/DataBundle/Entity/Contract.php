@@ -355,26 +355,25 @@ class Contract extends Base
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
-        $payments = $this->createHistoryArray();
+        $repo = $em->getRepository('DataBundle:Order');
+        $lastPaidMonth = $repo->getLastPaidMonthForContract($this);
+        if (null !== $lastPaidMonth) {
+            $lastPaidMonth = \DateTime::createFromFormat('Y-m-d H:i:s', sprintf('%s 00:00:00', $lastPaidMonth));
+        }
+        $payments = $this->createHistoryArray($lastPaidMonth);
         $currentDate = new DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
-        $repo = $em->getRepository('DataBundle:Order');
         $orders = $repo->getContractHistory($this);
         /** @var Order $order */
         foreach ($orders as $order) {
             foreach ($order->getRentOperations() as $operation) {
                 $paidFor = $operation->getPaidFor();
                 $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
-                $late = $operation->getDaysLate();
                 $nYear = $paidFor->format('Y');
                 $nMonth = $paidFor->format('n');
                 $interval = $currentDate->diff($paidFor)->format('%r%a');
                 $status = $order->getStatus();
                 switch ($status) {
-                    case OrderStatus::NEWONE:
-                        $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
-                        $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
-                        break;
                     case OrderStatus::COMPLETE:
                         if ($interval >= $lastDate) {
                             $result['last_amount'] = $operation->getAmount();
@@ -382,11 +381,7 @@ class Contract extends Base
                         }
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                         $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                        if ($late >= 30) {
-                            $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                            $lateText = floor($late / 30) * 30;
-                            $payments[$nYear][$nMonth]['text'] = $lateText;
-                        }
+
                         if (!isset($payments[$nYear][$nMonth]['amount'])) {
                             $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
                         } else {
@@ -408,7 +403,7 @@ class Contract extends Base
     /**
      * @return array
      */
-    private function createHistoryArray()
+    private function createHistoryArray(\DateTime $lastPaidMonth = null)
     {
         $startDate = $this->getStartAt();
         if (null === $startDate) {
@@ -439,8 +434,10 @@ class Contract extends Base
                 $amount = 0;
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
-                // if month is between startDate and createDate
-                if ($date <= $createDate && $startDate <= $date) {
+                // if month is between startDate and createDate or date is before 1st paid month
+                if ($date <= $createDate && $startDate <= $date ||
+                    (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth)
+                ) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
                     $text   = self::PAYMENT_OK;
