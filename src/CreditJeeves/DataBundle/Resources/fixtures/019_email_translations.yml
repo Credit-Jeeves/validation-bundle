@@ -1588,22 +1588,22 @@ fixtures:
     translatable: email_47
     locale: %locale%
     property: subject
-    value: Your Rent Check is in the Mail!
+    value: Your Rent Check has been Ordered!
 
   translation_47_body:
     translatable: email_47
     locale: %locale%
     property: body
     value:  |
-      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block email %}
-        Hi {{ firstName }},
-
-        Your rent check to {{ groupName }} in the amount of {{ checkAmount }} was mailed on {{ sendDate }} and
-        should arrive within 1-3 business days via USPS first-class mail. The check was mailed to {{ mailingAddress }}.
-        If there is anything incorrect in your order, please contact us immediately at help@renttrack.com.
-        Thank you for choosing to pay rent with RentTrack!
-      {% endblock %}
+        {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+        {% block h1 %}Rent Check Ordered!{% endblock %}
+        {% block email %}
+            Hi {{ firstName }},
+            <br /><br />
+            Your rent check to {{ groupName }} in the amount of ${{ checkAmount }} was ordered on {{ sendDate }}. It will get mailed soon and
+            should arrive by {{ estimatedDelivery }} via first-class mail. The check will be mailed to {{ mailingAddress }}.
+            If there is anything incorrect in your order, please contact us immediately at help@renttrack.com.
+        {% endblock %}
 
 # rjOrderRefunding.html
   translation_48_subject:

@@ -6,6 +6,8 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -722,9 +724,15 @@ class Mailer extends BaseMailer
             $group->getZip()
         );
 
+        $estimatedDeliveryDate = BusinessDaysCalculator::getBusinessDate(
+            $order->getCreatedAt(),
+            PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK
+        );
+
         $vars = [
             'firstName' => $tenant->getFirstName(),
             'groupName' => $order->getGroupName(),
+            'estimatedDelivery' => $estimatedDeliveryDate->format('m/d/Y'),
             'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
             'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
             'mailingAddress' => $mailingAddress,
