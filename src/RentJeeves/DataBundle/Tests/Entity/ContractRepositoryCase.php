@@ -171,6 +171,8 @@ class ContractRepositoryCase extends BaseTestCase
         $contract->setProperty($unit->getProperty());
         $contract->setStatus($statusOfContract);
 
+        $em->persist($contract);
+        $em->flush();
         if ($typePayment !== null) {
             $payment = new Payment();
             $payment->setContract($contract);
@@ -189,9 +191,8 @@ class ContractRepositoryCase extends BaseTestCase
             $payment->setPaymentAccount($tenant->getPaymentAccounts()->first());
 
             $em->persist($payment);
+            $em->flush();
         }
-        $em->persist($contract);
-        $em->flush();
         $contractId = $contract->getId();
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getPotentialLateContract(new DateTime());

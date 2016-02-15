@@ -7,8 +7,9 @@ use RentJeeves\DataBundle\Entity\ContractHistory;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\BaseTestCase;
-use DateTime;
 
 class LoggableListenerCase extends BaseTestCase
 {
@@ -27,8 +28,8 @@ class LoggableListenerCase extends BaseTestCase
         $contract = new Contract();
         $contract->setTenant($tenant);
         $contract->setRent(1000);
-        $contract->setFinishAt(new DateTime());
-        $contract->setStartAt(new DateTime());
+        $contract->setFinishAt(new \DateTime());
+        $contract->setStartAt(new \DateTime());
         $contract->setStatus(ContractStatus::INVITE);
         $contract->setGroup($group);
         $contract->setDueDate($group->getGroupSettings()->getDueDate());
@@ -119,5 +120,81 @@ class LoggableListenerCase extends BaseTestCase
         );
         $this->assertNotNull($contractsHistory, 'We should have objects in DB');
         $this->assertCount(1, $contractsHistory, 'We should have 1 objects in DB');
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForPaymentFields()
+    {
+        return [
+            ['type', PaymentType::ONE_TIME],
+            ['status', PaymentStatus::FLAGGED],
+            ['amount', 937],
+            ['total', 9992],
+            ['paidFor', new \DateTime()],
+            ['dueDate', 5],
+            ['startMonth', 2],
+            ['startYear', 2222],
+            ['updatedAt', new \DateTime()],
+        ];
+    }
+
+    /**
+     * @param string $field
+     * @param mixed  $value
+     *
+     * @test
+     * @dataProvider dataProviderForPaymentFields
+     */
+    public function shouldCreatePaymentHistoryAfterUpdatePayment($field, $value)
+    {
+        $this->load(true);
+        $payment = $this->getEntityManager()->find('RjDataBundle:Payment', 1);
+        $paymentHistory = $this->getEntityManager()->getRepository('RjDataBundle:PaymentHistory')->findAll();
+        $oldCount = count($paymentHistory);
+        $method = 'set' . ucfirst($field);
+        $payment->$method($value);
+        $this->getEntityManager()->flush();
+
+        $paymentHistory = $this->getEntityManager()->getRepository('RjDataBundle:PaymentHistory')->findAll();
+        $newCount = count($paymentHistory);
+        $this->assertEquals($oldCount + 1, $newCount, 'PaymentHistory is not created.');
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForPaymentRelations()
+    {
+        return [
+            ['contract', 'RjDataBundle:Contract', 1],
+            ['paymentAccount', 'RjDataBundle:PaymentAccount', 2],
+            ['depositAccount', 'RjDataBundle:DepositAccount', 3],
+        ];
+    }
+
+    /**
+     * @param string $field
+     * @param string $class
+     * @param mixed  $value
+     *
+     * @test
+     * @dataProvider dataProviderForPaymentRelations
+     */
+    public function shouldCreatePaymentHistoryAfterUpdateRelationsForPayment($field, $class, $value)
+    {
+        $this->load(true);
+        $payment = $this->getEntityManager()->find('RjDataBundle:Payment', 1);
+        $newRelatedObject = $this->getEntityManager()->find($class, $value);
+        $paymentHistory = $this->getEntityManager()->getRepository('RjDataBundle:PaymentHistory')->findAll();
+        $oldCount = count($paymentHistory);
+        $method = 'set' . ucfirst($field);
+        $payment->$method($newRelatedObject);
+        $this->getEntityManager()->flush();
+
+        $paymentHistory = $this->getEntityManager()->getRepository('RjDataBundle:PaymentHistory')->findAll();
+        $newCount = count($paymentHistory);
+        $this->assertEquals($oldCount + 1, $newCount, 'PaymentHistory is not created.');
     }
 }

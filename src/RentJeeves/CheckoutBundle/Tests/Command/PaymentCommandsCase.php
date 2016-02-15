@@ -11,7 +11,6 @@ use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
-use RentJeeves\ComponentBundle\Command\GetScoreTrackReportCommand;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
 use RentJeeves\DataBundle\Entity\JobRelatedReport;
@@ -431,6 +430,8 @@ class PaymentCommandsCase extends BaseTestCase
     protected function prepareFixturesCollectAndPayAciCollectPay(EntityManager $em)
     {
         /* Remove all payments */
+        $query = $em->createQuery('DELETE FROM RjDataBundle:PaymentHistory');
+        $query->execute();
         $query = $em->createQuery('DELETE FROM RjDataBundle:Payment');
         $query->execute();
         /** @var Contract $contract */
