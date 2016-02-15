@@ -601,7 +601,7 @@ class Mailer extends BaseMailer
         $amout = sprintf(
             '%s%s',
             $this->container->getParameter('credittrack_payment_per_month_currency'),
-            number_format($order->getFee(), 2, '.', '')
+            number_format($order->getSum(), 2, '.', '')
         );
 
         return $this->sendEmail(

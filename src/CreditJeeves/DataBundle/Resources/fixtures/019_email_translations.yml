@@ -1723,7 +1723,7 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
-        {{ 'scoretrack.order.error.title'|trans }}.
+        {{ 'scoretrack.order.error.title'|trans }}
         <br /><br />
         {{ 'order.error.message'|trans }}: {{ error }}
         <br />
@@ -1731,7 +1731,9 @@ fixtures:
         <hr />
         Payment Date & Time:&nbsp; {{ date }}<br />
         Payment Amount: {{ amount }}<br />
-        Reference Number: {{ number }}<br />
+        {% if number %}
+          Reference Number: {{ number }}<br />
+        {% endif %}
         <br />
         </br>
         </br>
