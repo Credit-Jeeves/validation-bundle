@@ -36,7 +36,7 @@ class Version20160215122444 extends AbstractMigration
                 <br />
                 <br />
                 <hr />
-                Payment Date & Time:&nbsp; {{ date }}<br />
+                Payment Date:&nbsp; {{ date }}<br />
                 Payment Amount: {{ amount }}<br />
                 {% if number %}
                   Reference Number: {{ number }}<br />

@@ -307,7 +307,7 @@ class Mailer extends BaseMailer
         $vars = [
             'nameTenant' => $order->getUser()->getFullName(),
             'date' => $order->getUpdatedAt()->format('m/d/Y'),
-            'amount' => $order->getSum(),
+            'amount' => $this->container->getParameter('credittrack_payment_per_month_currency').$order->getSum(),
             'number' => $order->getTransactionId(),
             'error' => $order->getErrorMessage(),
         ];
