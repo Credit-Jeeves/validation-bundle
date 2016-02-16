@@ -23,7 +23,7 @@ abstract class PropertyMapping
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="propertyMapping"
+     *     inversedBy="propertyMappings"
      * )
      * @ORM\JoinColumn(
      *     name="property_id",
