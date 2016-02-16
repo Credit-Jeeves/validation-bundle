@@ -58,7 +58,7 @@ class YardiExtractor implements ExtractorInterface
         $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getResidentTransactions($externalPropertyId);
+            $data = $this->residentDataManager->getFullResidentsList($externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(

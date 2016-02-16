@@ -13,7 +13,7 @@ class PropertyResidents
     protected $residents = [];
 
     /**
-     * @return mixed
+     * @return Residents
      */
     public function getResidents()
     {
@@ -21,7 +21,7 @@ class PropertyResidents
     }
 
     /**
-     * @param mixed $residents
+     * @param Residents $residents
      */
     public function setResidents($residents)
     {

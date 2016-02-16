@@ -203,14 +203,6 @@ class MRITransformer implements TransformerInterface
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity\ImportPropertyRepository
-     */
-    protected function getImportPropertyRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:ImportProperty');
-    }
-
-    /**
      * @param Import $import
      * @param Value  $accountingSystemRecord
      *

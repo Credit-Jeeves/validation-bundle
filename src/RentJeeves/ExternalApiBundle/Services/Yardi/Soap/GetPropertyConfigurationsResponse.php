@@ -18,7 +18,7 @@ class GetPropertyConfigurationsResponse
     protected $property = array();
 
     /**
-     * @param mixed $property
+     * @param Property $property
      */
     public function setProperty($property)
     {
@@ -26,7 +26,7 @@ class GetPropertyConfigurationsResponse
     }
 
     /**
-     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property[]
+     * @return Property[]
      */
     public function getProperty()
     {

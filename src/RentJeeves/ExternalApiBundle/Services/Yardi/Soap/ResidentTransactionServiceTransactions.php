@@ -14,7 +14,7 @@ class ResidentTransactionServiceTransactions
     protected $transactions = [];
 
     /**
-     * @param mixed $transactions
+     * @param ResidentTransactionTransactions $transactions
      */
     public function setTransactions($transactions)
     {
@@ -22,7 +22,7 @@ class ResidentTransactionServiceTransactions
     }
 
     /**
-     * @return mixed
+     * @return ResidentTransactionTransactions
      */
     public function getTransactions()
     {
