@@ -788,7 +788,7 @@
            </trans-unit>
             <trans-unit id="bureau.reporting.select.for">
                 <source>bureau.reporting.select.for</source>
-                <target>You are currently reporting to the checked bureaus for:</target>
+                <target>You are currently reporting to the following checked bureaus:</target>
             </trans-unit>
            <trans-unit id="bureau.reporting.experian">
                <source>bureau.reporting.experian</source>
@@ -808,9 +808,15 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.manage.description">
                <source>bureau.reporting.manage.description</source>
-               <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
-                                and you may not receive credit for your payments. Note that stopping and subsequently
-                                starting reporting again may have a negative impact on your credit history.]]></target>
+               <target><![CDATA[
+                                Please check all the bureau you wish to report to.
+                                <br />
+                                <br />
+                                If you uncheck a bureau above, your payments will no longer be reported to that bureau
+                                and you may not receive credit for your payments. The entry will go 'stale' and will be
+                                deleted from your credit record after some time. Note that stopping and subsequently
+                                starting reporting again may have a negative impact on your credit history.]]>
+               </target>
            </trans-unit>
            <trans-unit id="bureau.reporting.save">
                <source>bureau.reporting.save</source>
@@ -3371,6 +3377,10 @@
             <trans-unit id="tenant.credit_history_dashboard">
                 <source>tenant.credit_history_dashboard</source>
                 <target>Tenant Credit History Dashboard</target>
+            </trans-unit>
+            <trans-unit id="reported.lease">
+                <source>reported.lease</source>
+                <target>Reported Lease</target>
             </trans-unit>
         </body>
     </file>

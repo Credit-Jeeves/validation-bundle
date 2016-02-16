@@ -57,7 +57,7 @@
         <b>{{ 'bureau.reporting.experian.title' | trans }}:</b>&nbsp;{{ (aContract.reporting.experian ? 'common.on':'common.off')|trans }}
         <b>{{ 'bureau.reporting.trans_union.title' | trans }}:</b>&nbsp;{{ (aContract.reporting.trans_union ? 'common.on':'common.off')|trans }}
         <b>{{ 'bureau.reporting.equifax' | trans }}:</b>&nbsp;{{ (aContract.reporting.equifax ? 'common.on':'common.off')|trans }}
-        <br /><b><a><span class="reporting-action" id="id-{{ aContract.id }}">{{ 'bureau.reporting.manage' | trans }}</span></a></b>
+        <br /><b><a><span class="reporting-action {% if aContract.isNeedOpenTUReportPopUp %}isNeedOpenTUReportPopUp{% endif %}" id="id-{{ aContract.id }}">{{ 'bureau.reporting.manage' | trans }}</span></a></b>
     </div>
     <div class="clearboth"></div>
 </div>

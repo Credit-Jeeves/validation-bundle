@@ -35,4 +35,8 @@ $(document).ready(function(){
         modal: true,
         width:'520px'
     });
+
+    if ($('.isNeedOpenTUReportPopUp').length > 0) {
+        $('.isNeedOpenTUReportPopUp').click();
+    }
 });
