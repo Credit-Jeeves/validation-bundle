@@ -499,6 +499,29 @@ class Order extends Base
     }
 
     /**
+     * @return Operations|null
+     */
+    public function getReportOperations()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::REPORT == $operation->getType()) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            );
+
+        if (0 == $operationCollection->count()) {
+            return null;
+        }
+
+        return $operationCollection;
+    }
+
+    /**
      * @return Operation|null
      */
     public function getCustomOperation()

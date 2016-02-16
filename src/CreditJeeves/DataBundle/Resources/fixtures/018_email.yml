@@ -100,3 +100,5 @@ fixtures:
         name: rjChurnRecapture.html
     email_51:
         name: rjFreeReportUpdated.html
+    email_52:
+        name: rjScoreTrackOrderError.html
