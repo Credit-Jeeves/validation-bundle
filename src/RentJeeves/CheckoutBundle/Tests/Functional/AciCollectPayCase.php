@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use ACI\Utils\OldProfilesStorage;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Payum\AciCollectPay\Model\Profile;
 use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -13,8 +14,10 @@ use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\DebitType;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\ExternalApiBundle\Services\Binlist\BinlistCard;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
@@ -571,6 +574,95 @@ class AciCollectPayCase extends BaseTestCase
             md5($this->contractForCreate->getTenant()->getId()),
             $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
         );
+        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetPaymentToFlaggedWhenTenantSetsAmountGreaterThanMaxLimit()
+    {
+        // prepare fixtures
+        $em = $this->getEntityManager();
+        $group = $em->getRepository('DataBundle:Group')->find(24);
+        $this->assertNotNull($group, 'Check fixtures, group with id 24 should exist');
+        $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $this->assertNotEmpty($tenant, 'tenant11@example.com not found');
+        $tenant->setIsVerified(UserIsVerified::PASSED);
+        $em->flush();
+        $this->assertCount(6, $em->getRepository('RjDataBundle:Payment')->findAll(), 'Expected 6 payments in fixtures');
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+        $this->page->pressButton($this->payButtonNameForCreate);
+        $this->getDomElement('#pay-popup');
+        $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
+        );
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '10999',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 3,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1
+            ]
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#id-source-step:visible').length"
+        );
+
+        $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5110200200001115',
+                'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
+                'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
+                'rentjeeves_checkoutbundle_paymentaccounttype_address_choice_53' => true,
+            ]
+        );
+        $this->page->pressButton('pay_popup.step.next');
+
+
+        $this->session->wait($this->timeout, "jQuery('.pay-step:visible').length");
+
+        $em->refresh($this->contractForCreate->getTenant());
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(pay_popup.close)').is(':visible')"
+        );
+        $this->page->pressButton('pay_popup.close');
+
+        $em->clear();
+        $this->assertCount(7, $em->getRepository('RjDataBundle:Payment')->findAll(), 'Expected 6 payments in fixtures');
+        $this->assertNotNull($payment = $em->getRepository('RjDataBundle:Payment')->find(7), 'Payment #7 should exist');
+
+        $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be FLAGGED');
+
+
         $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 }
