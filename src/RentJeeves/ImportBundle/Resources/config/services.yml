@@ -38,6 +38,12 @@ services:
             - @import.property.loader
             - @monolog.logger.property_import
 
+    import.property.settings_provider:
+        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+        arguments:
+            - @soap.client.yardi.resident_transactions
+            - @monolog.logger.property_import
+
     import.property.extractor.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
         public: false

@@ -26,7 +26,7 @@ class GetPropertyConfigurationsResponse
     }
 
     /**
-     * @return mixed
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property[]
      */
     public function getProperty()
     {
