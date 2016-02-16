@@ -20,10 +20,7 @@ class ValidateDoctrineMappingCommand extends BaseCommand
         $this
         ->setName('renttrack:validate-doctrine-mapping')
         ->setDescription('Validate the mapping files.')
-        ->setHelp(<<<EOT
-'Validate that the mapping files are correct.'
-EOT
-        );
+        ->setHelp('Validate that the mapping files are correct.');
     }
 
     /**
@@ -39,7 +36,10 @@ EOT
         $exit = 0;
         if ($errors) {
             foreach ($errors as $className => $errorMessages) {
-                $output->writeln("<error>[Mapping]  FAIL - The entity-class '" . $className . "' mapping is invalid:</error>");
+                $output->writeln(
+                    "<error>[Mapping]  FAIL - The entity-class '" . $className .
+                    "' mapping is invalid:</error>"
+                );
 
                 foreach ($errorMessages as $errorMessage) {
                     $output->writeln('* ' . $errorMessage);
