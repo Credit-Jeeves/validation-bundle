@@ -14,7 +14,6 @@ class ImportAMSICase extends ImportBaseAbstract
      */
     public function shouldImportAMSI()
     {
-        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
@@ -32,7 +31,7 @@ class ImportAMSICase extends ImportBaseAbstract
             'Check fixtures, group with name "Test Rent Group" should belong to holding with id ' . $holding->getId()
         );
         $importSettings = $group->getImportSettings();
-        $importSettings->setApiPropertyIds('001, 002');
+        $importSettings->setApiPropertyIds('001');
         $importSettings->setImportType(ImportType::MULTI_PROPERTIES);
         $importSettings->setSource(ImportSource::INTEGRATED_API);
         $em->flush();
@@ -53,21 +52,18 @@ class ImportAMSICase extends ImportBaseAbstract
             80000,
             "$('table').is(':visible')"
         );
-        $this->waitReviewAndPost();
+
         //First page
         $submitImport->click();
         $this->waitReviewAndPost();
         //Second page
         $submitImport->click();
         $this->waitReviewAndPost();
-        //Third page
-        $submitImport->click();
-        $this->waitReviewAndPost();
 
         // We must make sure the data saved into DB, so we count before import and after
-        $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertGreaterThan(23, count($contracts));
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertGreaterThan(1, count($contractsWaiting)); // by @tobur
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(['externalLeaseId' => 21]);
+        $this->assertCount(2, $contracts);
+        $contracts = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(['externalLeaseId' => 13]);
+        $this->assertCount(1, $contracts);
     }
 }

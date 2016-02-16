@@ -36,12 +36,18 @@ class ImportContractType extends AbstractType
     protected $sendInvite;
 
     /**
+     * @var boolean
+     */
+    protected $isSupportResidentId;
+
+    /**
      * @param EntityManager $em
      * @param Translator $translator
      * @param Import $import
      * @param bool $token
      * @param bool $isMultipleProperty
      * @param bool $sendInvite
+     * @param bool $isSupportResidentId
      */
     public function __construct(
         EntityManager $em,
@@ -49,7 +55,8 @@ class ImportContractType extends AbstractType
         Import $import,
         $token = true,
         $isMultipleProperty = false,
-        $sendInvite = true
+        $sendInvite = true,
+        $isSupportResidentId = true
     ) {
         $this->isUseToken =  $token;
         $this->em = $em;
@@ -57,6 +64,7 @@ class ImportContractType extends AbstractType
         $this->import = $import;
         $this->isMultipleProperty = $isMultipleProperty;
         $this->sendInvite = $sendInvite;
+        $this->isSupportResidentId = $isSupportResidentId;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -153,13 +161,15 @@ class ImportContractType extends AbstractType
             new ImportUnitType()
         );
 
-        $builder->add(
-            'residentMapping',
-            new ImportResidentMappingType(),
-            array(
-                'mapped' => false,
-            )
-        );
+        if ($this->isSupportResidentId) {
+            $builder->add(
+                'residentMapping',
+                new ImportResidentMappingType(),
+                array(
+                    'mapped' => false,
+                )
+            );
+        }
 
         if ($this->isUseToken) {
             $builder->add(
@@ -173,9 +183,11 @@ class ImportContractType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($self) {
-                $self->setUnitName($event);
-                $self->setResidentId($event);
+            function (FormEvent $event) {
+                $this->setUnitName($event);
+                if ($this->isSupportResidentId) {
+                    $this->setResidentId($event);
+                }
             }
         );
 

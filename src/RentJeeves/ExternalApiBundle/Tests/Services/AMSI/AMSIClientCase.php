@@ -49,12 +49,11 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyResidentsWithRequiredData()
     {
-        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C');
         $leases = $propertyResidents->getLeases();
-        $this->assertCount(41, $leases);
+        $this->assertCount(53, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];
         $this->assertInstanceOf(
@@ -93,12 +92,11 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyResidentsWithRecurringCharges()
     {
-        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $propertyResidents = $client->getPropertyResidents(self::EXTERNAL_PROPERTY_ID, 'C', true);
         $leases = $propertyResidents->getLeases();
-        $this->assertCount(41, $leases);
+        $this->assertCount(53, $leases);
         /** @var Lease $lease */
         $lease = $leases[0];
         $this->assertInstanceOf(
@@ -132,7 +130,7 @@ class AMSIClientCase extends Base
         $this->assertNotEmpty($openItem->getOccuLastName());
 
         $recurringCharges = $lease->getRecurringCharges();
-        $this->assertCount(2, $recurringCharges);
+        $this->assertCount(1, $recurringCharges);
         /** @var RecurringCharge $recurringCharge */
         $recurringCharge = $recurringCharges[0];
         $this->assertInstanceOf(
@@ -141,7 +139,7 @@ class AMSIClientCase extends Base
         );
         $this->assertEquals(RecurringCharge::RENT_INCOME_CODE_ID, $recurringCharge->getIncCode());
         $this->assertEquals(RecurringCharge::FREQUENCY_MONTH, $recurringCharge->getFreqCode());
-        $this->assertEquals(1480, $recurringCharge->getAmount());
+        $this->assertEquals(1605.0, $recurringCharge->getAmount());
     }
 
     /**
@@ -149,11 +147,10 @@ class AMSIClientCase extends Base
      */
     public function shouldGetPropertyUnits()
     {
-        $this->markTestSkipped('AMSI sandbox expired. Skipping all AMSI functional tests.');
         $client = $this->getClient();
         $client->setDebug(false);
         $units = $client->getPropertyUnits(self::EXTERNAL_PROPERTY_ID);
-        $this->assertCount(65, $units);
+        $this->assertCount(67, $units);
         /** @var Unit $unit */
         $unit = $units[0];
         $this->assertInstanceOf(

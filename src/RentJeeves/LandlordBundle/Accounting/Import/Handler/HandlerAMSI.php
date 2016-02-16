@@ -16,6 +16,11 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageAMSI;
 class HandlerAMSI extends HandlerAbstract
 {
     /**
+     * {@inheritdoc}
+     */
+    public $isSupportResidentId = false;
+
+    /**
      * @InjectParams({
      *     "translator" = @Inject("translator"),
      *     "sessionUser" = @Inject("core.session.landlord"),

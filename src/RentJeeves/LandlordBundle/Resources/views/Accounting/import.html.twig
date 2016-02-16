@@ -51,9 +51,13 @@
                             <th class="pie-el unit"><span>{{ 'import.unit'|trans }}*</span></th>
                             <th class="pie-el resident">
                                 <span>
-                                    {{ 'import.residentId'|trans }}*
-                                    {% if isMultipleProperty == 'true' %}
+                                    {% if isSupportResidentId %}
+                                        {{ 'import.residentId'|trans }}*
+                                    {% endif %}
+                                    {% if isSupportResidentId and isMultipleProperty == 'true' %}
                                         <hr />
+                                    {% endif %}
+                                    {% if isMultipleProperty == 'true' %}
                                         {{ 'import.unit_id'|trans }}*
                                     {% endif %}
                                 </span>
