@@ -111,9 +111,12 @@ class MailerCase extends BaseTestCase
         $order = $em->find('DataBundle:Order', 2);
         $this->getMailer()->sendOrderSendingNotification($order);
 
+        $template = $this->getEntityManager()->getRepository('RjEmailBundle:EmailTemplate')
+            ->findOneBy(['name' => 'rjOrderSending.html']);
+        $subject = $template->translate('test')->getSubject();
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);
-        $this->assertEquals('Your Rent Check is in the Mail!', $message->getSubject());
+        $this->assertEquals($subject, $message->getSubject());
     }
 
     /**
