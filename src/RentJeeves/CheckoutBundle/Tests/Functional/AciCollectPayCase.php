@@ -398,10 +398,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
 
@@ -431,6 +431,11 @@ class AciCollectPayCase extends BaseTestCase
         $this->getEntityManager()->refresh($this->contractForCreate);
         $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
 
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+
         $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
 
         $merchantName = $this->contractForCreate
@@ -454,11 +459,6 @@ class AciCollectPayCase extends BaseTestCase
             $paymentAccount->getDebitType(),
             'Created Payment Account should be have debit_type "debit"'
         );
-        $this->setOldProfileId(
-            md5($this->contractForCreate->getTenant()->getId()),
-            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
-        );
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -503,10 +503,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
 

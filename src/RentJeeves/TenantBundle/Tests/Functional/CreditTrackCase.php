@@ -32,7 +32,10 @@ class CreditTrackCase extends BaseTestCase
     {
         $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
         $this->session->wait($this->timeout * 3, "$('#summary_page p.credit-balance-title').is(':visible')");
-        $this->assertNotNull($title = $this->page->find('css', '#summary_page p.credit-balance-title span.floatright'));
+        $title = $this->getDomElement(
+            '#summary_page p.credit-balance-title span.floatright',
+            'Summary report title should be visible'
+        );
         $dateUpdating = new \DateTime();
         $this->assertEquals('common.date ' . $dateUpdating->format('M j, Y'), $title->getText());
     }
@@ -97,7 +100,7 @@ class CreditTrackCase extends BaseTestCase
         $this->enterSignupFlow();
 
         $this->session->wait($this->timeout, '!$(".overlay").is(":visible");');
-        $existingAccounts = $this->getDomElement('#id-source-step .payment-accounts label.checkbox.radio');
+        $existingAccounts = $this->getDomElements('#id-source-step .payment-accounts label.checkbox.radio');
         $this->assertCount(2, $existingAccounts, 'Expected 2 existing payment accounts');
         $existingAccounts[0]->click();
 
@@ -229,7 +232,7 @@ class CreditTrackCase extends BaseTestCase
         $this->assertCount(2, $informationBoxes, 'We should have two boxes with info message.');
         $this->assertEquals('credittrack.message_for_payment.second_step', $informationBoxes[1]->getText());
         $this->page->pressButton('checkout.make_payment');
-        $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
+        $this->checkReport();
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
         $this->assertNotEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be filled with Date');
