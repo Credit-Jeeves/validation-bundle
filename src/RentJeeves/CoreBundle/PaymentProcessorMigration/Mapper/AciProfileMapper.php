@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\MailingAddress;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
@@ -19,6 +20,9 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class AciProfileMapper
 {
+    const MIN_LENGTH_USERNAME = 8;
+    const MAX_LENGTH_USERNAME = 32;
+
     /**
      * @var AciImportProfileMap
      */
@@ -45,8 +49,8 @@ class AciProfileMapper
     protected $merchantAccountRepo;
 
     /**
-     * @param string $businessId
-     * @param string $virtualTerminalDivisionId
+     * @param string           $businessId
+     * @param string           $virtualTerminalDivisionId
      * @param EntityRepository $repository
      */
     public function __construct($businessId, $virtualTerminalDivisionId, EntityRepository $repository)
@@ -62,7 +66,7 @@ class AciProfileMapper
      * return these models
      *
      * @param AciImportProfileMap $profileMap
-     * @param array $holdings
+     * @param array               $holdings
      *
      * @return array
      */
@@ -114,14 +118,16 @@ class AciProfileMapper
         $consumerRecord = new ConsumerRecord();
         $consumerRecord->setProfileId($this->profile->getId());
         $consumerRecord->setBusinessId($this->rentTrackApplicaitonBusinessId);
-        $consumerRecord->setUserName(substr($user->getUsername(), 0, 32));
-        $consumerRecord->setPassword(substr($user->getUsername(), 0, 32)); // Any value
+        $userName = $this->formatUserName($user->getUsername());
+        $consumerRecord->setUserName($userName);
+        $consumerRecord->setPassword($userName);
         $consumerRecord->setConsumerFirstName($user->getFirstName());
         $consumerRecord->setConsumerLastName($user->getLastName());
         $consumerRecord->setPrimaryEmailAddress($user->getEmail());
-
+        /** @var MailingAddress $address */
         if (null !== $address = $user->getDefaultAddress()) {
-            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress((string) $address, 64));
+            $address1 = $address->getNumber() . ' ' . $address->getStreet();
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
             $consumerRecord->setCity(substr($address->getCity(), 0, 12));
             $consumerRecord->setState($address->getArea());
             $consumerRecord->setZipCode($address->getZip());
@@ -182,7 +188,7 @@ class AciProfileMapper
              * then do nothing.
              */
             if (null === $merchantAccountMigration || (null !== $profile = $user->getAciCollectPayProfile() and
-                $profile->hasBillingAccountForDivisionId($merchantAccountMigration->getAciDivisionId()))
+                    $profile->hasBillingAccountForDivisionId($merchantAccountMigration->getAciDivisionId()))
             ) {
                 continue;
             }
@@ -260,7 +266,9 @@ class AciProfileMapper
             return null;
         }
 
-        $address = $landlord->getDefaultAddress();
+        if (null === $address = $landlord->getDefaultAddress()) {
+            return null;
+        }
 
         $consumerRecord = new ConsumerRecord();
         $consumerRecord->setProfileId($this->profile->getId());
@@ -270,7 +278,8 @@ class AciProfileMapper
         $consumerRecord->setConsumerFirstName($landlord->getFirstName());
         $consumerRecord->setConsumerLastName($landlord->getLastName());
         $consumerRecord->setPrimaryEmailAddress($landlord->getEmail());
-        $consumerRecord->setAddress1((string) $address);
+        $address1 = $address->getNumber() . ' ' . $address->getStreet();
+        $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
         $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
         $consumerRecord->setState($address ? $address->getArea() : '');
         $consumerRecord->setZipCode($address ? $address->getZip() : '');
@@ -350,5 +359,22 @@ class AciProfileMapper
         }
 
         return array_values($result);
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return string
+     */
+    protected function formatUserName($username)
+    {
+        $username = preg_replace('/[^A-Za-z0-9]/', '', $username); // remove "bad" characters
+        if (strlen($username) < static::MIN_LENGTH_USERNAME) {
+            $username = str_pad($username, static::MIN_LENGTH_USERNAME, 'a'); // any letter
+        } else {
+            $username = substr($username, 0, static::MAX_LENGTH_USERNAME);
+        }
+
+        return $username;
     }
 }

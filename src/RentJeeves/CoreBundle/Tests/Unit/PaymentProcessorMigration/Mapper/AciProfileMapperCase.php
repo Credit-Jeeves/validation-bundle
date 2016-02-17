@@ -29,6 +29,7 @@ class AciProfileMapperCase extends BaseTestCase
     public function shouldMapObjectIfItHasRelationWithUser()
     {
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
+        $user->setUsername('my@test.1'); // less than 8 with "bad" characters
         $holding = $user->getActiveContracts()[0]->getGroup()->getHolding();
 
         $address = $user->getDefaultAddress();
@@ -56,12 +57,13 @@ class AciProfileMapperCase extends BaseTestCase
 
         $this->assertEquals(1, $consumerRecord->getProfileId());
         $this->assertEquals('testBusinessId', $consumerRecord->getBusinessId());
-        $this->assertEquals($user->getUsername(), $consumerRecord->getUserName());
-        $this->assertEquals($user->getUsername(), $consumerRecord->getPassword());
+        $this->assertEquals('mytest1a', $consumerRecord->getUserName()); // formatted string
+        $this->assertEquals('mytest1a', $consumerRecord->getPassword()); // formatted string
         $this->assertEquals($user->getFirstName(), $consumerRecord->getConsumerFirstName());
         $this->assertEquals($user->getLastName(), $consumerRecord->getConsumerLastName());
         $this->assertEquals($user->getEmail(), $consumerRecord->getPrimaryEmailAddress());
-        $this->assertEquals((string) $address, $consumerRecord->getAddress1());
+        $address1 = $address->getNumber() . ' ' . $address->getStreet();
+        $this->assertEquals($address1, $consumerRecord->getAddress1());
         $this->assertEquals('123456789012', $consumerRecord->getCity());
         $this->assertEquals($address->getArea(), $consumerRecord->getState());
         $this->assertEquals($address->getZip(), $consumerRecord->getZipCode());
@@ -268,7 +270,8 @@ class AciProfileMapperCase extends BaseTestCase
         $this->assertEquals($landlord->getFirstName(), $consumerRecord->getConsumerFirstName());
         $this->assertEquals($landlord->getLastName(), $consumerRecord->getConsumerLastName());
         $this->assertEquals($landlord->getEmail(), $consumerRecord->getPrimaryEmailAddress());
-        $this->assertEquals((string) $address, $consumerRecord->getAddress1());
+        $address1 = $address->getNumber() . ' ' . $address->getStreet();
+        $this->assertEquals($address1, $consumerRecord->getAddress1());
         $this->assertEquals($address->getCity(), $consumerRecord->getCity());
         $this->assertEquals($address->getArea(), $consumerRecord->getState());
         $this->assertEquals($address->getZip(), $consumerRecord->getZipCode());
