@@ -172,7 +172,7 @@
                         Due on: <span id="contractDueNext{{ contract.id }}"></span> {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}
                     </div>
 
-                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAYMENT AMOUNT</div>
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;" id="contractTotalLabel{{ contract.id }}">PAYMENT AMOUNT</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractTotal{{ contract.id }}"></div>
 
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>

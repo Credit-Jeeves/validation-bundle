@@ -103,6 +103,10 @@ function init() {
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
+        if(contract.groupSetting.is_integrated){
+            $("#contractTotalLabel" + contract.id).html("BALANCE")
+            $("#contractTotal" + contract.id).html(contract.integrated_balance)
+        }
         var dueDate = contract.startAt.substr(5, 2)
         if (dueDate.charAt(0) == "0") {
             dueDate = dueDate.charAt(1);
