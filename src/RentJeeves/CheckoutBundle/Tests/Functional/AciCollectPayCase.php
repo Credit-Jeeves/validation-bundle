@@ -657,7 +657,11 @@ class AciCollectPayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.close');
 
         $em->clear();
-        $this->assertCount(7, $em->getRepository('RjDataBundle:Payment')->findAll(), 'Should be created one new payment.');
+        $this->assertCount(
+            7,
+            $em->getRepository('RjDataBundle:Payment')->findAll(),
+            'Should be created one new payment'
+        );
         $this->assertNotNull($payment = $em->getRepository('RjDataBundle:Payment')->find(7), 'Payment #7 should exist');
 
         $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be FLAGGED');
