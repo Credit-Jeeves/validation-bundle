@@ -227,12 +227,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2)) // it checks creating Unit and UnitMapping
-            ->method('persist')
+        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
+        ->method('persist')
             ->withConsecutive(
-                    $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                    $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
-                );
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+            );
 
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|PropertyManager $propertyManagerMock
@@ -337,7 +337,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2)) // it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
         ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
@@ -453,8 +453,8 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2)) // it checks creating Unit and UnitMapping
-            ->method('persist')
+        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
+        ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
@@ -695,7 +695,7 @@ class PropertyLoaderCase extends UnitTestBase
         $validator->expects($this->once())
             ->method('validate')
             ->willReturn(new ConstraintViolationList(
-                [new ConstraintViolation('test','test',[], 'test', 'test','test')]
+                [new ConstraintViolation('test', 'test', [], 'test', 'test', 'test')]
             ));
 
         $loader = new PropertyLoader(
