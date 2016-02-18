@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use Doctrine\ORM\EntityManager;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -207,5 +208,15 @@ class OrderAdmin extends Admin
             ->add('transactions', null, array('route' => array('name' => 'show')))
             ->add('operations', null, array('route' => array('name' => 'show')))
             ->add('jobs', null, array('template' => 'AdminBundle:CRUD:orders_show_jobs.html.twig'));
+    }
+
+    /**
+     * @param EntityManager $em
+     */
+    public function disableSoftDeleteable(EntityManager $em)
+    {
+        if (true === $em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
     }
 }
