@@ -243,6 +243,34 @@ services:
             - %rt_group_code%
             - %credittrack_payment_per_month%
 
+    pidkiq.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - CreditJeeves\DataBundle\Entity\Pidkiq
+
+    payment.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - RentJeeves\DataBundle\Entity\Payment
+
+    order.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - CreditJeeves\DataBundle\Entity\Order
+
+    dod.payment_first_time_dtr:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentFirstTimeDTR
+        arguments:
+            - @pidkiq.repository
+            - @payment.repository
+            - @order.repository
+
     dod.payment_amount_max:
         class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentAmountMaxLimit
         arguments:
@@ -258,6 +286,7 @@ services:
         calls:
             - [addRule, ["@dod.payment_amount_max"]]
             - [addRule, ["@dod.payment_execution_allowed"]]
+            - [addRule, ["@dod.payment_first_time_dtr"]]
 
     payment_processor.profit_stars.rdc.report_loader:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader
