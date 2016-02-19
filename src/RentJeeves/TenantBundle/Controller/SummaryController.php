@@ -131,6 +131,8 @@ class SummaryController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 if ($pidkiqQuestions->processForm($form)) {
+                    $request->getSession()->getFlashBag()->set('isNeedOpenTUReportPopUp', true);
+
                     return $this->redirect($this->generateUrl('tenant_summary'));
                 }
                 //Setup not valid answer

@@ -3,8 +3,9 @@
     <h1>{{ 'bureau.reporting.manage' | trans }}</h1>
     <div class="clearfix col-box reporting-box">
         <div class="select-bureaus">
+            <h4 class="lease">{{ 'reported.lease'|trans }}: {{ contract.address }}</h4>
+            <br/>
             <p>{{ 'bureau.reporting.select.for'|trans }}</p>
-            <p>{{ contract.address }}</p>
             <div class="select-bureaus">
                 <p>
                     <input type="checkbox" id="reportExperian-{{ contract.id }}" value="experian" {% if contract.reporting.experian %}checked{% endif %} />
