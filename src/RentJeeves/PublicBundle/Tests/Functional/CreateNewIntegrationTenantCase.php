@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -56,6 +57,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $group2 = $em->find('DataBundle:Group', 24);
         $this->assertNotNull($group2, 'Check fixtures, should exist group with id 24');
         $group2->getGroupSettings()->setAllowPayAnything(true);
+        $group2->getHolding()->setAccountingSystem(AccountingSystem::RESMAN);
         $depositAccount = clone $group2->getDepositAccountForCurrentPaymentProcessor(
             DepositAccountType::APPLICATION_FEE
         );
@@ -76,7 +78,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $parameters = $this->requestParameters;
         $this->setDefaultSession('selenium2');
 
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new/2/property';
@@ -292,7 +294,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         unset($parameters['unitid']);
         unset($parameters['rent']);
         unset($parameters['appfee']);
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new/2/property';
@@ -397,7 +399,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $parameters['unitid'] = null;
         $this->setDefaultSession('selenium2');
 
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new';
@@ -557,7 +559,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         unset($parameters['appfee']);
         unset($parameters['secdep']);
         unset($parameters['redirect']);
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
         $redirectedUrl = $this->getUrl() . 'user/new/2/property';
@@ -748,7 +750,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->setDefaultSession('goutte');
 
         unset($parameters[$parameterName]);
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
 
         $this->assertEquals(
             400,
@@ -787,7 +789,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->setDefaultSession('goutte');
 
         unset($parameters[$parameterName]);
-        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
 
         $this->assertEquals(
             200,
@@ -812,14 +814,24 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
     public function shouldCheckPropertyBelongOneGroup()
     {
         $this->load(true);
-        $this->setDefaultSession('goutte');
+        $em = $this->getEntityManager();
+        $property = $em->find('RjDataBundle:Property', 2);
+        $this->assertNotNull($property, 'Check fixtures, should exist property with id 2');
+        $this->assertCount(2, $property->getPropertyGroups(), 'Check fixtures, property #2 should belong to 2 groups');
+        $holding = $em->find('DataBundle:Holding', 5);
+        $this->assertNotNull($holding, 'Check fixtures, should exist holding with id 5');
+        $holding->setAccountingSystem(AccountingSystem::RESMAN);
+        $em->flush($holding);
         $property = $this->getEntityManager()->find('RjDataBundle:Property', 2);
         $this->assertNotNull($property, 'Check fixtures, should exist property with id 2');
         $this->assertCount(2, $property->getPropertyGroups(), 'Check fixtures, property #2 should belong to 2 groups');
+
+        $this->setDefaultSession('goutte');
+
         $parameters = $this->requestParameters;
         unset($parameters['unitid']); // should remove unitid b/c we do not have unit mapping
         $this->session->visit(
-            $this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters)
+            $this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters)
         );
         $this->assertEquals(
             412,
@@ -860,7 +872,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $em->flush();
 
         $this->session->visit(
-            $this->getUrl() . 'user/integration/new/yardi?' . http_build_query($this->requestParameters)
+            $this->getUrl() . 'user/integration/new/resman?' . http_build_query($this->requestParameters)
         );
         $this->assertEquals(
             412,
