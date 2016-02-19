@@ -65,6 +65,7 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+            - [disableSoftDeleteable, [@doctrine.orm.default_entity_manager]]
 
 #Credit jeeves application
     sonata.admin.cj_group:
