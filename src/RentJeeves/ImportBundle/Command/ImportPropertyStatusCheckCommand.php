@@ -14,7 +14,7 @@ class ImportPropertyStatusCheckCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('renttrack:import:property:check_status')
+            ->setName('renttrack:import:property:check-status')
             ->addOption('import-id', null, InputOption::VALUE_REQUIRED, 'Import ID')
             ->addOption('jms-job-id', null, InputOption::VALUE_OPTIONAL, 'Job ID')
             ->setDescription('Check status for Import of Group.');
