@@ -13,6 +13,8 @@ use RentJeeves\ImportBundle\Exception\ImportLogicException;
  */
 class ImportPropertySettingsProvider
 {
+    const YARDI_ALL_EXTERNAL_PROPERTY_IDS = '*';
+
     /**
      * @var ResidentTransactionsClient
      */
@@ -49,12 +51,13 @@ class ImportPropertySettingsProvider
                 return $this->getExternalPropertyIdsFromDb($group);
                 break;
             case AccountingSystem::YARDI_VOYAGER:
-                return $this->getExternalPropertyIdsFromYardiApi($group);
+                return $this->getExternalPropertyIdsForYardi($group);
                 break;
             default:
                 throw new ImportLogicException(
                     sprintf(
-                        'AccountingSystem "%s" doesn`t support Import 2.0.',
+                        'Function "%s" doesn`t support AccountingSystem "%s".',
+                        __FUNCTION__,
                         $group->getHolding()->getAccountingSystem()
                     )
                 );
@@ -77,6 +80,21 @@ class ImportPropertySettingsProvider
         }
 
         return $result;
+    }
+
+    /**
+     * @param Group $group
+     *
+     * @return array
+     */
+    protected function getExternalPropertyIdsForYardi(Group $group)
+    {
+        // @see https://credit.atlassian.net/browse/RT-1765
+        if ($group->getImportSettings()->getApiPropertyIds() === self::YARDI_ALL_EXTERNAL_PROPERTY_IDS) {
+            return $this->getExternalPropertyIdsFromYardiApi($group);
+        } else {
+            return $this->getExternalPropertyIdsFromDb($group);
+        }
     }
 
     /**

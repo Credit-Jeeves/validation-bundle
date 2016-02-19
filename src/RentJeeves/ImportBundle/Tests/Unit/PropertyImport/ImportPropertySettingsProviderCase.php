@@ -22,7 +22,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportLogicException
-     * @expectedExceptionMessage AccountingSystem "test" doesn`t support Import 2.0.
+     * @expectedExceptionMessage Function "provideExternalPropertyIds" doesn`t support AccountingSystem "test".
      */
     public function shouldThrowExceptionIfGroupHasNotSupportedAccountingSystem()
     {
@@ -51,6 +51,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
             [AccountingSystem::AMSI],
             [AccountingSystem::MRI],
             [AccountingSystem::RESMAN],
+            [AccountingSystem::YARDI_VOYAGER],
         ];
     }
 
@@ -92,6 +93,9 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $group = new Group();
         $group->setHolding($holding);
+        $importSettings = new ImportGroupSettings();
+        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
         $property = new Property();
@@ -118,13 +122,16 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportLogicException
      * @expectedExceptionMessage U can`t run Yardi import for Group#1 without YardiSettings.
      */
-    public function shouldThrowExceptionForYardiGroupWithoutYardiSettings()
+    public function shouldThrowExceptionForYardiGroupWithoutYardiSettingsIfGetIdsFromApi()
     {
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $group = new Group();
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
+        $importSettings = new ImportGroupSettings();
+        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
         $property = new Property();
@@ -151,6 +158,9 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $group = new Group();
         $group->setHolding($holding);
+        $importSettings = new ImportGroupSettings();
+        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
         $property = new Property();
