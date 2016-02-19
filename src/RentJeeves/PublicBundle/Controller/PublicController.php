@@ -214,6 +214,10 @@ class PublicController extends Controller
             $integrationDataManager = $this->get('accounting_system.integration.data_manager');
             $integrationDataManager->processRequestData($accountingSystem, $request);
 
+            if ($integrationDataManager->hasMultiProperties()) {
+                return $this->redirectToRoute('iframe_new');
+            }
+
             $property = $integrationDataManager->getProperty();
 
             if (!$property) {
@@ -387,7 +391,9 @@ class PublicController extends Controller
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($integrationDataManager->hasIntegrationData()) {
             $unitId = Unit::SEARCH_UNIT_UNASSIGNED;
-            if ($integrationDataManager->getUnit()) {
+            if ($integrationDataManager->hasMultiProperties()) {
+                $parameters['propertyList'] = $integrationDataManager->getMultiProperties();
+            } elseif ($integrationDataManager->getUnit()) {
                 $unitId = $integrationDataManager->getUnit()->getId();
             }
             $parameters['unitId'] = $unitId;
