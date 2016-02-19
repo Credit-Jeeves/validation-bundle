@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class GroupCase extends BaseTestCase
@@ -215,7 +216,7 @@ class GroupCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                $uniqueId.'_groupSettings_allowedDebitFee' => 1
+                $uniqueId . '_groupSettings_allowedDebitFee' => 1
             ]
         );
         $submit = $this->getDomElement('.btn-primary', 'Can not find main submit btn');
@@ -227,8 +228,8 @@ class GroupCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                $uniqueId.'_groupSettings_paymentProcessor' => 'aci',
-                $uniqueId.'_groupSettings_allowedDebitFee' => 1
+                $uniqueId . '_groupSettings_paymentProcessor' => 'aci',
+                $uniqueId . '_groupSettings_allowedDebitFee' => 1
             ]
         );
         $submit->click();
@@ -239,9 +240,9 @@ class GroupCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                $uniqueId.'_groupSettings_paymentProcessor' => 'aci',
-                $uniqueId.'_groupSettings_allowedDebitFee' => 1,
-                $uniqueId.'_groupSettings_debitFee' => 20
+                $uniqueId . '_groupSettings_paymentProcessor' => 'aci',
+                $uniqueId . '_groupSettings_allowedDebitFee' => 1,
+                $uniqueId . '_groupSettings_debitFee' => 20
             ]
         );
         $submit->click();
@@ -440,6 +441,10 @@ class GroupCase extends BaseTestCase
     public function shouldCreateImportPropertiesJobsForGroupWithExtProperties()
     {
         $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $this->getEntityManager()->flush();
+
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');

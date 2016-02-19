@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ImportBundle\Tests\Functional\PropertyImport;
 
+use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
@@ -24,6 +25,9 @@ class ImportPropertySettingsProviderCase extends BaseTestCase
         $yardiSettings->setDatabaseName('afqoml_70dev');
         $yardiSettings->setDatabaseServer('sdb17\SQL2k8_R2');
         $yardiSettings->setPlatform('SQL Server');
+
+        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+
         $this->getEntityManager()->flush();
         // mocking response
         $soapClient = $this->getBaseMock('\RentJeeves\ExternalApiBundle\Soap\SoapClient');
