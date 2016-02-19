@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "14746cd64584a505c4b7c9d44fc06493",
-    "content-hash": "ab86eb047068fcdbc7d95db694df5477",
+    "hash": "0dc85a4337fa716318395046047402da",
+    "content-hash": "f6f87e504ed4464b9177ce73c0e8f8fc",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -8131,8 +8131,6 @@
         "beberlei/doctrineextensions": 20,
         "besimple/soap-common": 20,
         "sensio/generator-bundle": 20,
-        "doctrine/cache": 20,
-        "doctrine/common": 20,
         "comfortablynumb/backup-restore-bundle": 20
     },
     "prefer-stable": false,
