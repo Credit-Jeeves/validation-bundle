@@ -73,7 +73,8 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
         $this->assertCount(2, $errors, 'Wrong number of errors');
@@ -85,7 +86,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_failed.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertEquals('csv.file.too.small1', $error->getHtml());
@@ -95,7 +95,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -106,7 +105,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             5000,
@@ -132,7 +130,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertCount(2, $errorFields);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
         $this->waitReviewAndPost();
@@ -288,12 +285,11 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             20000,
@@ -308,7 +304,6 @@ class ImportCsvCase extends ImportBaseAbstract
             '<span data-bind="text:$root.getResidentId($data)">t0000020</span>'
         );
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
         $this->waitRedirectToSummaryPage();
@@ -354,7 +349,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $filePath = $this->getFilePathByName('import_waiting_room.csv');
             $attFile->attachFile($filePath);
 
-            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+            $submitImportFile = $this->getDomElement('.submitImportFile');
             $submitImportFile->click();
 
             $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -368,7 +363,6 @@ class ImportCsvCase extends ImportBaseAbstract
                 }
             }
             //Map Payment
-            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
             $submitImportFile->click();
             $this->session->wait(
                 5000,
@@ -388,7 +382,6 @@ class ImportCsvCase extends ImportBaseAbstract
                 "Skip contract on first page is wrong number " . $i
             );
 
-            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
             $submitImportFile->click();
             $this->waitRedirectToSummaryPage();
             $this->logout();
@@ -516,7 +509,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         //Second step
@@ -525,7 +518,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->fillCsvMapping($this->mapFile, 14);
 
         //Map Payment
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             5000,
@@ -541,7 +533,6 @@ class ImportCsvCase extends ImportBaseAbstract
         );
         $this->assertEquals(1, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         $this->logout();
@@ -573,7 +564,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->setPropertyFirst();
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $submitImportFile->click();
         //Second step
@@ -581,7 +572,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             5000,
@@ -638,14 +628,13 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_multiple.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         //second step
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         $this->fillCsvMapping($this->mapMultiplePropertyFile, 17);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             5000,
@@ -667,8 +656,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertEquals(1, count($trs), "Should only have 1 type of status");
         $this->assertEquals(9, count($trs['import.status.waiting']), "All contracts should be waiting");
-
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
         // first page: fix errors and continue
         $this->assertNotNull($firstName1 = $this->page->find('css', 'input.1_first_name'));
@@ -695,7 +682,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
         $this->assertEquals(0, count($errorFields));
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
 
         $submitImportFile->click();
 
@@ -704,7 +690,6 @@ class ImportCsvCase extends ImportBaseAbstract
         // third page: verify no errors and finish
         $submitImportFile->click();
 
-        $this->waitReviewAndPost();
         $this->waitRedirectToSummaryPage();
 
         //Check notify tenant invite for new user
@@ -840,7 +825,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -848,16 +833,12 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
         $this->waitReviewAndPost(false);
         $this->assertNotNull($invite = $this->page->find('css', '.0_sendInvite'));
         $invite->check();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-
-        $this->waitReviewAndPost(false);
 
         $this->waitRedirectToSummaryPage();
         $this->logout();
@@ -905,7 +886,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -913,7 +894,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
@@ -946,7 +926,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -968,7 +948,6 @@ class ImportCsvCase extends ImportBaseAbstract
         ];
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
@@ -978,7 +957,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $firstName1->setValue('Logan');
         $this->assertNotNull($lastName1 = $this->page->find('css', 'input.0_last_name'));
         $lastName1->setValue('Cooper');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         //after that check mathced status
@@ -989,20 +967,17 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
     }
@@ -1042,7 +1017,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1060,7 +1035,6 @@ class ImportCsvCase extends ImportBaseAbstract
         ];
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
@@ -1070,7 +1044,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $email->setValue('');
         $this->assertNotNull($balance = $this->page->find('css', 'input.0_balance'));
         $balance->setValue($balanceIn);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         //after that check mathced status
@@ -1083,7 +1056,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1101,7 +1073,6 @@ class ImportCsvCase extends ImportBaseAbstract
         );
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
@@ -1109,7 +1080,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract is wrong number");
         $this->assertNotNull($balance = $this->page->find('css', 'input.0_balance'));
         $balance->setValue($balanceIn);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
 
@@ -1151,7 +1121,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_multiple_group.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1161,7 +1131,6 @@ class ImportCsvCase extends ImportBaseAbstract
             $choice->selectOption($choiceOption);
         }
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $this->assertNull($errorFields = $this->page->find('css', 'input.errorField'));
@@ -1175,11 +1144,8 @@ class ImportCsvCase extends ImportBaseAbstract
             "One contract should be skipped, because we don't have such account number and 3 isn't integrated"
         );
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
-
         $submitImportFile->click();
 
-        $this->waitReviewAndPost(false);
         $this->waitRedirectToSummaryPage();
         $em = $this->getEntityManager();
 
@@ -1220,7 +1186,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_only_exception.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
         $exceptionOnly->check();
         $submitImportFile->click();
@@ -1230,7 +1196,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
         $this->session->wait(
@@ -1251,9 +1216,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $email = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_email')
         );
         $email->setValue('2test@mail.com');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->waitReviewAndPost();
 
         $this->waitRedirectToSummaryPage();
     }
@@ -1305,7 +1268,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
 
         $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
         $propertySelector->selectOption($property->getId());
@@ -1316,20 +1279,17 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
 
         $this->assertNotNull($informationBox = $this->page->find('css', '.information-box>span'));
         $this->assertEquals('import.description_exception', $informationBox->getHtml());
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
-        $this->waitReviewAndPost(false);
+        $this->waitReview();
 
         $this->assertNotNull($informationBox = $this->page->find('css', '.information-box>span'));
         $this->assertEquals('import.description_exception', $informationBox->getHtml());
         $this->assertNotNull($skipException = $this->page->find('css', '.skipException'));
         $skipException->click();
-        $this->waitReviewAndPost(false);
 
         $this->waitRedirectToSummaryPage();
     }
@@ -1377,7 +1337,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $filePath = $this->getFilePathByName('promas_extra_field.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         //Second Step
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1400,7 +1360,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($mapFile, 13);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
@@ -1408,7 +1367,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertCount(1, $trs, "Count statuses is wrong");
         $this->assertCount(3, $trs['import.status.new'], "Count of new contracts is wrong");
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
 
@@ -1481,7 +1439,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_waiting_only_exception.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
         $exceptionOnly->check();
         $submitImportFile->click();
@@ -1491,13 +1449,11 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(2, count($trs), "Count statuses is wrong");
         $submitImportFile->click();
-        $this->waitReviewAndPost(false);
 
         $this->waitRedirectToSummaryPage();
 
@@ -1529,7 +1485,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_current_tenant.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1540,7 +1496,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($mapFile, 16);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(1000, "$('table').is(':visible')");
 
@@ -1549,7 +1504,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertCount(1, $importContractStatuses, '1 contract status should be found: "new"');
         $this->assertCount(2, $importContractStatuses['import.status.new'], '2 new contracts should be imported');
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
 
         $this->waitRedirectToSummaryPage();
@@ -1578,7 +1532,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import_two_user.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1586,7 +1540,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($this->mapFile, 14);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(
             5000,
@@ -1595,7 +1548,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
         $this->assertEquals(1, count($errorFields));
         $this->assertEquals($errorFields[0]->getHtml(), '15test@mail.com');
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         $em = $this->getEntityManager();
@@ -1637,7 +1589,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('skipped_message_and_date_notice.csv');
         $attFile->attachFile($filePath);
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -1659,7 +1611,6 @@ class ImportCsvCase extends ImportBaseAbstract
         );
         $this->fillCsvMapping($mapFile, 15);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
@@ -1710,7 +1661,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $filePath = $this->getFilePathByName('import_lease_id.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($this->page->find('css', '.error_list>li'), 'Error should not be on this page.');
         $this->assertNotNull($this->page->find('css', 'table'), 'We should see mapping table.');
@@ -1721,7 +1672,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->fillCsvMapping($mapFile, 16);
 
-        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->session->wait(1000, "$('table').is(':visible')");
         $trs = $this->getParsedTrsByStatus();

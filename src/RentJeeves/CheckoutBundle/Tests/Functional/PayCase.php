@@ -456,15 +456,11 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'), 'PayPopup should exist');
         $this->assertNotNull($payPopup = $payPopup->getParent(), 'PayPopup->getParent() should exist');
 
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentbalanceonlytype');
         $startDate = new DateTime();
         $startDate->modify('+1 month');
-        $this->fillForm(
-            $form,
-            [
-                'rentjeeves_checkoutbundle_paymentbalanceonlytype_start_date' => $startDate->format('m/d/Y'),
-            ]
-        );
+        $this
+            ->getDomElement('#rentjeeves_checkoutbundle_paymentbalanceonlytype_start_date')
+            ->setValue($startDate->format('m/d/Y'));
 
         $this->page->pressButton('pay_popup.step.next');
 
@@ -1043,6 +1039,8 @@ class PayCase extends BaseTestCase
 
         $addNewAccount = $this->page->find('css', '.checkout-plus');
         $this->assertEquals($isPaymentProcessorLocked, empty($addNewAccount));
+        $closeBtn = $this->getDomElement('button.ui-dialog-titlebar-close');
+        $closeBtn->click();
         $paymentSource = $this->page->find('css', '#rent-menu .last a');
         $this->assertNotEmpty($paymentSource);
         $paymentSource->click();

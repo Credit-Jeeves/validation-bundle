@@ -77,8 +77,6 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         $this->load(true);
 
         $em = $this->getEntityManager();
-        $allReports = $em->getRepository('DataBundle:ReportPrequal')->findAll();
-        $this->assertCount(5, $allReports, 'We should check how many reports we will add, so count default number');
         /** @var Tenant $user */
         $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('marion@rentrack.com');
         $report = new ReportPrequal();
@@ -116,14 +114,7 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         );
 
         $em->clear();
-        /** @var ReportPrequal $report */
-        $allReports = $em->getRepository('DataBundle:ReportPrequal')->findAll();
-        $this->assertCount(
-            7,
-            $allReports,
-            'We added 2 reports, 1 because we should create command, 1 because it is free.'
-        );
-        $report = $em->getRepository('DataBundle:ReportPrequal')->findOneBy([]);
+        $report = $em->getRepository('DataBundle:ReportPrequal')->find($report->getId());
         $this->assertNotEmpty($report->getRawData(), 'Command should load and save report data.');
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
         $this->assertCount(2, $scores, 'Command should add new score record');

@@ -9,6 +9,9 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class CreditTrackCase extends BaseTestCase
 {
+    // should set more b/c a lot of operations for waiting
+    protected $timeout = 20000; // 20 s
+
     protected function enterSignupFlow()
     {
         $this->load(true);
@@ -29,7 +32,10 @@ class CreditTrackCase extends BaseTestCase
     {
         $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
         $this->session->wait($this->timeout * 3, "$('#summary_page p.credit-balance-title').is(':visible')");
-        $this->assertNotNull($title = $this->page->find('css', '#summary_page p.credit-balance-title span.floatright'));
+        $title = $this->getDomElement(
+            '#summary_page p.credit-balance-title span.floatright',
+            'Summary report title should be visible'
+        );
         $dateUpdating = new \DateTime();
         $this->assertEquals('common.date ' . $dateUpdating->format('M j, Y'), $title->getText());
     }
@@ -67,16 +73,15 @@ class CreditTrackCase extends BaseTestCase
     {
         $this->enterSignupFlow();
 
-        $this->session->wait(
-            $this->timeout,
-            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
-        );
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible");');
         $link = $this->page->find('css', '#id-source-step .payment-accounts a.checkout-plus');
         $link->click();
 
         $this->makeNew();
 
         $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible");');
 
         $this->checkReport();
 
@@ -93,13 +98,12 @@ class CreditTrackCase extends BaseTestCase
     public function existingAccountSignup()
     {
         $this->enterSignupFlow();
-        $this->session->wait(
-            $this->timeout,
-            "$('#id-source-step .payment-accounts label.checkbox.radio input').is(':visible')"
-        );
-        $existingAccounts = $this->page->findAll('css', '#id-source-step .payment-accounts label.checkbox.radio');
+
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible");');
+        $existingAccounts = $this->getDomElements('#id-source-step .payment-accounts label.checkbox.radio');
         $this->assertCount(2, $existingAccounts, 'Expected 2 existing payment accounts');
         $existingAccounts[0]->click();
+
 
         $this->page->pressButton('pay_popup.step.next');
 
@@ -128,15 +132,23 @@ class CreditTrackCase extends BaseTestCase
         $payment->setStatus(PaymentStatus::CLOSE);
         $this->getEntityManager()->flush($payment);
 
-        $rows[0]->clickLink('delete');
-        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
-        $this->page->clickLink('payment_account.delete.yes');
-        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+        $rows = $this->getDomElements('#payment-account-table tbody tr');
+
+        $this->assertCount(2, $rows, "Should be exist 2 payment accounts");
 
         $rows[0]->clickLink('delete');
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
         $this->page->clickLink('payment_account.delete.yes');
         $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+
+        $rows = $this->getDomElements('#payment-account-table tbody tr');
+
+        $this->assertCount(1, $rows, "Should be removed 1 payment account");
+
+        $rows[0]->clickLink('delete');
+        $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
+        $this->page->clickLink('payment_account.delete.yes');
+        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table').length");
 
         $this->page->clickLink('common.account');
         $this->page->clickLink('settings.plans');
@@ -220,7 +232,7 @@ class CreditTrackCase extends BaseTestCase
         $this->assertCount(2, $informationBoxes, 'We should have two boxes with info message.');
         $this->assertEquals('credittrack.message_for_payment.second_step', $informationBoxes[1]->getText());
         $this->page->pressButton('checkout.make_payment');
-        $this->session->wait($this->timeout, '$("h4:contains(\'common.loading.text\')").length');
+        $this->checkReport();
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()->getRepository('RjDataBundle:Tenant')->findOneByEmail('transU@example.com');
         $this->assertNotEmpty($tenant->getSettings()->getScoretrackFreeUntil(), 'Should be filled with Date');

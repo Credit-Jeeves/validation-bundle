@@ -22,8 +22,7 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
 
-        $this->session->wait(5000, "$('#processPayment').is(':visible')");
-        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         $this->assertNotNull($span = $this->page->findAll('css', '#payments-block-tbody td>span'));
         $this->assertEquals(
             'order.status.text.cancelled',
@@ -34,16 +33,14 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
 
-        $this->session->wait(5000, "$('#processPayment').is(':visible')");
-        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         $this->assertNotNull($span = $this->page->findAll('css', '#payments-block-tbody td>span'));
         $this->assertEquals('order.status.text.returned', $span[0]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($propertyA = $this->page->find('css', '#propertyA'));
         $propertyA->click();
 
-        $this->session->wait(5000, "$('#processPayment').is(':visible')");
-        $this->session->wait(5000, "$('#processPayment').is(':hidden')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#actions-block td'));
     }
 
@@ -56,8 +53,7 @@ class DashboardCase extends BaseTestCase
         $this->load();
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $allh2->getText(), 'Wrong count');
@@ -70,8 +66,7 @@ class DashboardCase extends BaseTestCase
         $searchField->setValue('John2');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', 'h3.processPayment'));
         $this->assertEquals('donthavedata', $allh2->getText(), 'Wrong count');
@@ -79,8 +74,7 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($delete = $this->page->find('css', '#payments-block .pie-el'));
         $delete->click();
 
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
@@ -95,8 +89,7 @@ class DashboardCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
         $this->assertNotNull($searchPaymentsStatus = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchPaymentsStatus->click();
@@ -115,8 +108,7 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
 
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         /*
          * Get first TD with status
          */
@@ -138,16 +130,14 @@ class DashboardCase extends BaseTestCase
         $em->flush($order);
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
 
         $this->assertEquals('payments.total (38)', $title->getHtml());
         $this->assertNotNull($searchPaymentsLink = $this->page->find('css', '.externalPaymentsBlock>input'));
         $searchPaymentsLink->click();
 
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $title->getHtml());

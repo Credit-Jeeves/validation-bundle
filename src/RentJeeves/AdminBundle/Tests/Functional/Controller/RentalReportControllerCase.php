@@ -74,30 +74,28 @@ class RentalReportControllerCase extends BaseTestCase
         );
 
         $btnSendNotification->click();
-        $this->session->wait($this->timeout, "$('#form_send_notification.overlay').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#form_send_notification.overlay').is(':visible')");
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible")');
         $this->assertCount(1, $emails = $this->getEmails());
-        $landlordMessage = $this->getEmailReader()->getEmail($emails[0]);
+        $landlordMessage = $this->getEmailReader()->getEmail($emails[0])->getMessage('text/html');
         $this->assertEquals(
             'Action Required for Rent Reporting',
-            $landlordMessage->getHeaders()->get('Subject')->getFieldValue()
+            $landlordMessage->getSubject()
         );
-        $this->assertContains('TIMOTHY APPLEGATE, t0013534', $landlordMessage->getContent());
+        $this->assertContains('TIMOTHY APPLEGATE, t0013534', $landlordMessage->getBody());
 
         // Send notification to tenant
         $actionSendEmail->setValue(RentalReportController::NOTIFICATION_TENANT);
         $btnSendNotification->click();
-        $this->session->wait($this->timeout, "$('#rental_report.overlay').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#rental_report.overlay').is(':visible')");
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible")');
         $this->assertCount(2, $emails = $this->getEmails());
-        $tenantMessage = $this->getEmailReader()->getEmail($emails[1]);
+        $tenantMessage = $this->getEmailReader()->getEmail($emails[1])->getMessage('text/html');
         $this->assertEquals(
             'Action Required for Rent Reporting',
-            $tenantMessage->getHeaders()->get('Subject')->getFieldValue()
+            $tenantMessage->getSubject()
         );
         $this->assertContains(
             sprintf('you are missing a payment for ', $today->format('F')),
-            $tenantMessage->getContent()
+            $tenantMessage->getBody()
         );
         $this->logout();
     }

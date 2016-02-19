@@ -178,7 +178,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.12",
+        "php": ">=5.6.17",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",
@@ -272,6 +272,8 @@
         "behat/mink-goutte-driver": "v1.0.8",
         "behat/mink-selenium2-driver": "v1.1.1",
         "doctrine/data-fixtures": "v1.0.2 as dev-master",
+        "doctrine/cache": "1.7.x-dev",
+        "doctrine/common": "2.7.x-dev",
         "behat/mink-browserkit-driver": "v1.1.0",
         "doctrine/doctrine-fixtures-bundle": "v2.2.0",
         "comfortablynumb/backup-restore-bundle": "dev-master",
