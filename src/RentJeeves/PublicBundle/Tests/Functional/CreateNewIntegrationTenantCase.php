@@ -3,6 +3,7 @@
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -365,6 +366,65 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             $amount->getValue(),
             'Should be clean prefilled amount'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowPropertyListIfHasExternalMultiPropertyMapping()
+    {
+        $this->load(true);
+        $this->prepareFixtures();
+
+        $em = $this->getEntityManager();
+        $group = $em->find('DataBundle:Group', 24);
+        $property = $em->find('RjDataBundle:Property', 20);
+        $this->assertNotNull($group, 'Check fixtures, should exist group with id 24');
+        $this->assertNotNull($property, 'Check fixtures, should exist property with id 20');
+
+        $propertyMapping = new PropertyMapping();
+        $propertyMapping->setHolding($group->getHolding());
+        $propertyMapping->setProperty($property);
+        $propertyMapping->setExternalPropertyId($this->requestParameters['propid']);
+
+        $property->addPropertyMapping($propertyMapping);
+
+        $em->persist($propertyMapping);
+        $em->persist($property);
+        $em->flush();
+
+        $parameters = $this->requestParameters;
+        $parameters['unitid'] = null;
+        $this->setDefaultSession('selenium2');
+
+        $this->session->visit($this->getUrl() . 'user/integration/new/yardi?' . http_build_query($parameters));
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $redirectedUrl = $this->getUrl() . 'user/new';
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirection to ' . $redirectedUrl
+        );
+
+        $rentalAddresses = $this->getDomElements(
+            '.search-result-text li.addressText',
+            'Should be show rental addresses'
+        );
+
+        $this->assertCount(2, $rentalAddresses, 'Should de displayed 2 rental addresses for both properties');
+
+        $selectedUnit2 = $this->getDomElement(
+            '#idUnit2 option.unassignedUnit',
+            'Unit select should be present on the page.'
+        );
+        $this->assertTrue((bool) $selectedUnit2->getAttribute('selected'), 'Unassigned unit should be selected');
+
+        $selectedUnit20 = $this->getDomElement(
+            '#idUnit20 option.unassignedUnit',
+            'Unit select should be present on the page.'
+        );
+        $this->assertTrue((bool) $selectedUnit20->getAttribute('selected'), 'Unassigned unit should be selected');
     }
 
     /**
