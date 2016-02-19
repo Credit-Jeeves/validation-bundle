@@ -3,6 +3,8 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\CheckoutBundle\Constraint\StartDate; // use in annotation
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -11,13 +13,14 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @Assert\Callback(methods={"validate"}, groups={"Default", "pay_anything"})
+ *
+ * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\PaymentHistory")
  */
 class Payment extends Base
 {
