@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\DoD\Rule;
 
 use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * Service name "dod.payment_amount_max"
@@ -27,7 +28,9 @@ class PaymentAmountMaxLimit implements DodRuleInterface
      */
     public function checkPayment(Payment $payment)
     {
-        if ($payment->getTotal() > $this->paymentMaxLimit) {
+        if ($payment->getContract()->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+            $payment->getTotal() > $this->paymentMaxLimit
+        ) {
             return false;
         }
 

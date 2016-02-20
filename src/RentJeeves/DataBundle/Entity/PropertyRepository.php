@@ -456,6 +456,26 @@ EOT;
     }
 
     /**
+     * @param  string $accountingSystem
+     * @param  string $externalPropertyId
+     * @return Property[]
+     */
+    public function getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId)
+    {
+        AccountingSystem::throwsInvalid($accountingSystem);
+
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('pm.holding', 'h')
+            ->andWhere('h.accountingSystem = :accountingSystem')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('accountingSystem', $accountingSystem)
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param Property $property
      * @return boolean
      * @throws NonUniqueResultException|NoResultException
