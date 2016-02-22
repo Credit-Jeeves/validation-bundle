@@ -17,6 +17,9 @@ services:
         arguments:
             -
               %accounting_system.mri%: @import.property.extractor.mri
+              %accounting_system.resman%: @import.property.extractor.resman
+              %accounting_system.yardi%: @import.property.extractor.yardi
+              %accounting_system.amsi%: @import.property.extractor.amsi
 
     import.property.transformer_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory
@@ -26,8 +29,7 @@ services:
             - %import.property.transformer.custom_paths%
             -
               %accounting_system.mri%: @import.property.transformer.mri
-              %accounting_system.yardi%: @import.property.extractor.yardi
-              %accounting_system.amsi%: @import.property.extractor.amsi
+              %accounting_system.resman%: @import.property.transformer.resman
 
     # services
     import.property.manager:
@@ -68,6 +70,13 @@ services:
 
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.transformer.resman:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\ResmanTransformer
         public: false
         arguments:
             - @doctrine.orm.default_entity_manager
