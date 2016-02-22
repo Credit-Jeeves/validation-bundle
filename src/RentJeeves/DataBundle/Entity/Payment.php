@@ -45,7 +45,7 @@ class Payment extends Base
      * @Serializer\Groups({"payRent"})
      * @Serializer\Accessor(getter="getOther",setter="setOther")
      *
-     * @return double
+     * @var double
      */
     protected $other;
 
