@@ -44,6 +44,7 @@ trait Forms
                 $this->currentImportModel,
                 $isUseToken,
                 $isMultipleProperty = $this->storage->isMultipleProperty(),
+                true,
                 $this->isSupportResidentId
             )
         );

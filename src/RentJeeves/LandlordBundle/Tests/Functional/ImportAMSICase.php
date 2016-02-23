@@ -52,7 +52,7 @@ class ImportAMSICase extends ImportBaseAbstract
             80000,
             "$('table').is(':visible')"
         );
-
+        $this->waitReviewAndPost();
         //First page
         $submitImport->click();
         $this->waitReviewAndPost();

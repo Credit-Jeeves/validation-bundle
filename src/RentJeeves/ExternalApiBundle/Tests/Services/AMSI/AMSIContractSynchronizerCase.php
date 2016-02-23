@@ -27,7 +27,7 @@ class AMSIContractSynchronizerCase extends Base
         $contract->getHolding()->setUseRecurringCharges(true);
         $contract->getHolding()->setRecurringCodes('RENT');
         $contract->setRent(123321); // test value
-        $contract->setExternalLeaseId(17);
+        $contract->setExternalLeaseId(21);
 
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
@@ -41,6 +41,7 @@ class AMSIContractSynchronizerCase extends Base
         $residentMapping->setResidentId('296455');
 
         $em->flush();
+        $em->clear();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
         $balanceSynchronizer->syncRent();
@@ -56,10 +57,9 @@ class AMSIContractSynchronizerCase extends Base
 
         $this->runSyncRentCommand($contract->getHolding(), $externalPropertyId);
 
-        $updatedContract = $repo->find($contract->getId());
 
-        $this->assertGreaterThan(0, $updatedContract->getRent(), 'Rent should be greater than 0');
-        $this->assertNotEquals(123321, $updatedContract->getRent(), 'Rent should be updated');
+        $updatedContract = $repo->find($contract->getId());
+        $this->assertEquals('1605.00', $updatedContract->getRent(), 'Rent should be updated');
     }
 
     /**
@@ -74,21 +74,18 @@ class AMSIContractSynchronizerCase extends Base
         /** @var Contract $contract */
         $contract = $repo->find(20);
         $this->assertNotNull($contract);
-        $this->assertEquals(0, $contract->getIntegratedBalance());
         $contract->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
         $settings = $contract->getHolding()->getAmsiSettings();
         $settings->setSyncBalance(true);
+        $contract->setExternalLeaseId(21);
+        $contract->setIntegratedBalance(0);
+        $unit = $contract->getUnit();
         $propertyMapping = $contract->getProperty()->getPropertyMappingByHolding($contract->getHolding());
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
-        $unit = $contract->getUnit();
         $unitExternalMapping = new UnitMapping();
         $unitExternalMapping->setExternalUnitId('001|01|101');
         $unitExternalMapping->setUnit($unit);
         $unit->setUnitMapping($unitExternalMapping);
-        $tenant = $contract->getTenant();
-        $residentMapping = $tenant->getResidentForHolding($contract->getHolding());
-        $residentMapping->setResidentId('296455');
-
         $em->flush();
 
         $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
@@ -106,7 +103,7 @@ class AMSIContractSynchronizerCase extends Base
         $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
 
         $updatedContract = $repo->find($contract->getId());
-        $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
+        $this->assertEquals('1605.00', $updatedContract->getIntegratedBalance(), 'Balance should update');
     }
 
     /**
@@ -128,11 +125,11 @@ class AMSIContractSynchronizerCase extends Base
         );
         $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
         $unit = $contractWaiting->getUnit();
+        $contractWaiting->setExternalLeaseId(21);
         $unitExternalMapping = new UnitMapping();
         $unitExternalMapping->setExternalUnitId('001|01|101');
         $unitExternalMapping->setUnit($unit);
         $unit->setUnitMapping($unitExternalMapping);
-        $contractWaiting->setResidentId('296455');
         $settings = $contractWaiting->getGroup()->getHolding()->getAmsiSettings();
         $settings->setSyncBalance(true);
         $em->flush();
@@ -152,6 +149,6 @@ class AMSIContractSynchronizerCase extends Base
         $this->runSyncBalanceCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
 
         $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
-        $this->assertLessThan(-4500, $updatedContract->getIntegratedBalance());
+        $this->assertEquals('1605.00', $updatedContract->getIntegratedBalance(), 'Balance should update');
     }
 }
