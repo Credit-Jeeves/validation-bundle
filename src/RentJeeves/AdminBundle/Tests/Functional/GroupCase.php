@@ -458,7 +458,7 @@ class GroupCase extends BaseTestCase
         $importProperties[2]->click();
         $this->getDomElement('.alert-success', 'Should get successful message');
         $this->assertCount(
-            $jobsCount + 3, // Yardi returned 3 extPropertyIds
+            $jobsCount + 6, //6 because 3 for import and 3 for check status
             $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
             'Job not created'
         );

@@ -79,7 +79,7 @@ class GroupController extends BaseController
      */
     protected function createJobForExternalProperty(Import $import, $externalPropertyId)
     {
-        $job = new Job(
+        $dependentJob = new Job(
             'renttrack:import:property',
             [
                 '--import-id=' . $import->getId(),
@@ -87,7 +87,14 @@ class GroupController extends BaseController
             ]
         );
 
+        $job = new Job(
+            'renttrack:import:property:check-status',
+            ['--import-id=' . $import->getId()]
+        );
+        $job->addDependency($dependentJob);
+
         $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->persist($dependentJob);
         $this->getEntityManager()->flush();
     }
 
