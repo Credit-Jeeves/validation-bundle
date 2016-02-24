@@ -45,7 +45,7 @@ class ResmanTransformer implements TransformerInterface
         );
 
         /** @var RtCustomer $accountingSystemRecord */
-        foreach (current($accountingSystemData) as $accountingSystemRecord) {
+        foreach ($accountingSystemData as $accountingSystemRecord) {
             $rtUnit = $accountingSystemRecord->getRtUnit();
             if ($accountingSystemRecord->getCustomers()->getCustomer()->count() === 0) {
                 continue;
@@ -73,18 +73,18 @@ class ResmanTransformer implements TransformerInterface
                 $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($customer));
 
                 $this->em->persist($importProperty);
-                $this->arrayCache[] = $import->getId() . $extUnitId;
+                $this->arrayCache[] = $import->getId() . '|' . $extUnitId;
             }
             $this->em->flush();
-
-            $this->logger->info(
-                sprintf(
-                    'Finished process transformData for Import#%d',
-                    $import->getId()
-                ),
-                ['group_id' => $import->getGroup()->getId()]
-            );
         }
+
+        $this->logger->info(
+            sprintf(
+                'Finished process transformData for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
     }
 
     /**
@@ -200,12 +200,12 @@ class ResmanTransformer implements TransformerInterface
 
     /**
      * @param Import $import
-     * @param string  $extUnitId
+     * @param string $extUnitId
      *
      * @return bool
      */
     protected function checkExistImportPropertyInCache(Import $import, $extUnitId)
     {
-        return in_array($import->getId() . $extUnitId, $this->arrayCache);
+        return in_array($import->getId() . '|' . $extUnitId, $this->arrayCache);
     }
 }

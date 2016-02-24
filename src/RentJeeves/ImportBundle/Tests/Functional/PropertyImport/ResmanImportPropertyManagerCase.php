@@ -97,7 +97,7 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
             'All Units are not created.'
         );
         $this->assertEquals(
-            $countAllUnitMappingsBeforeImport + 260, // 260 new Units
+            $countAllUnitMappingsBeforeImport + 260, // 260 new Unit Mappings
             $countAllUnitMappingsAfterImport,
             'All UnitMappings is not created.'
         );
