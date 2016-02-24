@@ -149,7 +149,7 @@ class YardiTransformer implements TransformerInterface
      */
     protected function getAddress1(FullResident $accountingSystemRecord)
     {
-        return $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
+        return $accountingSystemRecord->getProperty()->getAddressLine1();
     }
 
     /**

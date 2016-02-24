@@ -73,7 +73,7 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $this->assertEquals('Santa Barbara', $importProperty->getCity(), 'City should map');
         $this->assertEquals('CA', $importProperty->getState(), 'State should map');
         $this->assertEquals('rnttrk01', $importProperty->getExternalPropertyId(), 'ExternalProperyId should map');
-        $this->assertEquals('50 Milky Way 103', $importProperty->getAddress1(), 'Address should map');
+        $this->assertEquals('4447 Hollister Ave', $importProperty->getAddress1(), 'Address should map');
         $this->assertEquals('103', $importProperty->getUnitName(), 'Unit name should map');
         $this->assertEquals('rnttrk01||103', $importProperty->getExternalUnitId(), 'Unit ID should map');
         $this->assertEquals('93110', $importProperty->getZip(), 'Zip should map');
