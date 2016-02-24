@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -676,5 +677,32 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return string|null
+     */
+    public function getLastPaidMonthForContract(Contract $contract)
+    {
+        $result = $this->createQueryBuilder('o')
+            ->select('op.paidFor as paid_for')
+            ->innerJoin('o.operations', 'op')
+            ->where('op.contract = :contract')
+            ->andWhere('op.type = :rent')
+            ->andWhere('o.status = :complete')
+            ->orderBy('op.paidFor', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('contract', $contract)
+            ->setParameter('rent', OperationType::RENT)
+            ->setParameter('complete', OrderStatus::COMPLETE)
+            ->getQuery()
+            ->getScalarResult();
+
+        if (isset($result[0]['paid_for'])) {
+            return $result[0]['paid_for'];
+        }
+
+        return null;
     }
 }

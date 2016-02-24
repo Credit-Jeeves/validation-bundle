@@ -830,6 +830,10 @@
                <source>bureau.reporting.trans_union.title</source>
                <target>TransUnion</target>
            </trans-unit>
+           <trans-unit id="bureau.reporting.faq">
+               <source>bureau.reporting.faq</source>
+               <target>Read Reporting FAQs</target>
+           </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
                 <target>Payment Reporting</target>
