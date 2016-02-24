@@ -690,10 +690,12 @@ class OrderRepository extends EntityRepository
             ->innerJoin('o.operations', 'op')
             ->where('op.contract = :contract')
             ->andWhere('op.type = :rent')
+            ->andWhere('o.status = :complete')
             ->orderBy('op.paidFor', 'DESC')
             ->setMaxResults(1)
             ->setParameter('contract', $contract)
             ->setParameter('rent', OperationType::RENT)
+            ->setParameter('complete', OrderStatus::COMPLETE)
             ->getQuery()
             ->getScalarResult();
 
