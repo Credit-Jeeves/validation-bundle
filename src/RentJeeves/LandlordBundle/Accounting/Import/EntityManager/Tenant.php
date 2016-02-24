@@ -56,7 +56,12 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        $residentId = $row[Mapping::KEY_RESIDENT_ID];
+        if ($this->isSupportResidentId) {
+            $residentId = $row[Mapping::KEY_RESIDENT_ID];
+        } else {
+            $residentId = null;
+        }
+
         $email = $row[Mapping::KEY_EMAIL];
         $this->checkTenantStatus($row);
         $this->logger->debug(
@@ -180,6 +185,10 @@ trait Tenant
     protected function fillUsersEmailAndResident(EntityTenant $tenant, $row)
     {
         if ($this->mapping->isSkipped($row)) {
+            return;
+        }
+
+        if (!$this->isSupportResidentId) {
             return;
         }
 

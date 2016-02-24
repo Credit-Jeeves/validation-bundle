@@ -2688,6 +2688,10 @@
               <source>import.error.invalid_property</source>
               <target>Property address is invalid.</target>
             </trans-unit>
+            <trans-unit id="import.error.empty_unique_id">
+              <source>import.error.empty_unique_id</source>
+              <target>This user/contract doesn't have residentId or leaseId. One of it always required.</target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>

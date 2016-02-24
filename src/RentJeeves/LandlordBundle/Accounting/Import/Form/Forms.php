@@ -2,14 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting\Import\Form;
 
-use RentJeeves\DataBundle\Entity\ResidentMapping;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
-use RentJeeves\LandlordBundle\Model\Import;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 
 /**
@@ -47,7 +43,9 @@ trait Forms
                 $this->translator,
                 $this->currentImportModel,
                 $isUseToken,
-                $isMultipleProperty = $this->storage->isMultipleProperty()
+                $isMultipleProperty = $this->storage->isMultipleProperty(),
+                true,
+                $this->isSupportResidentId
             )
         );
     }
@@ -64,7 +62,8 @@ trait Forms
                 $this->em,
                 $this->translator,
                 $this->currentImportModel,
-                $isMultipleProperty = $this->storage->isMultipleProperty()
+                $isMultipleProperty = $this->storage->isMultipleProperty(),
+                $this->isSupportResidentId
             )
         );
     }
@@ -119,7 +118,9 @@ trait Forms
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
-            $form->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
+            if ($this->isSupportResidentId) {
+                $form->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
+            }
             if ($this->storage->isMultipleProperty()) {
                 $form->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }
@@ -135,7 +136,12 @@ trait Forms
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-            $form->get('contract')->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
+            if ($this->isSupportResidentId) {
+                $form->get('contract')->get('residentMapping')->setData(
+                    $this->currentImportModel->getResidentMapping()
+                );
+            }
+
             if ($this->storage->isMultipleProperty()) {
                 $form->get('contract')->get('unitMapping')->setData($this->currentImportModel->getUnitMapping());
             }

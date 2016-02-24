@@ -29,21 +29,29 @@ class ImportNewUserWithContractType extends AbstractType
     protected $isMultipleProperty;
 
     /**
+     * @var boolean
+     */
+    protected $isSupportResidentId;
+
+    /**
      * @param EntityManager $em
      * @param Translator $translator
      * @param Import $import
      * @param bool $isMultipleProperty
+     * @param bool $isSupportResidentId
      */
     public function __construct(
         EntityManager $em,
         Translator $translator,
         Import $import,
-        $isMultipleProperty = false
+        $isMultipleProperty = false,
+        $isSupportResidentId = true
     ) {
         $this->import = $import;
         $this->em = $em;
         $this->translator = $translator;
         $this->isMultipleProperty = $isMultipleProperty;
+        $this->isSupportResidentId = $isSupportResidentId;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -62,7 +70,8 @@ class ImportNewUserWithContractType extends AbstractType
                 $this->import,
                 $token = false,
                 $this->isMultipleProperty,
-                $sendInvite = false
+                $sendInvite = false,
+                $this->isSupportResidentId
             ),
             array()
         );

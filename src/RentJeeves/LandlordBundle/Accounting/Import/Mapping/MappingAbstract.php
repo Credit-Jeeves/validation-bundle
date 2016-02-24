@@ -173,7 +173,7 @@ abstract class MappingAbstract implements MappingInterface
     public function createContractWaiting(
         Tenant $tenant,
         Contract $contract,
-        ResidentMapping $residentMapping
+        ResidentMapping $residentMapping = null
     ) {
         $waitingRoom = new ContractWaiting();
         $waitingRoom->setStartAt($contract->getStartAt());
@@ -193,7 +193,9 @@ abstract class MappingAbstract implements MappingInterface
         $waitingRoom->setLastName($tenant->getLastName());
         !$contract->getGroup() || $waitingRoom->setGroup($contract->getGroup());
 
-        $waitingRoom->setResidentId($residentMapping->getResidentId());
+        if ($residentMapping) {
+            $waitingRoom->setResidentId($residentMapping->getResidentId());
+        }
 
         return $waitingRoom;
     }

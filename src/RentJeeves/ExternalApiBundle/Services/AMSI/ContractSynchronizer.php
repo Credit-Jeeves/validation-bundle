@@ -43,33 +43,31 @@ class ContractSynchronizer extends AbstractContractSynchronizer
         $lease,
         $externalPropertyId
     ) {
-        $occupants = $lease->getOccupants();
         $externalUnitId = $lease->getExternalUnitId();
+        $externalLeaseId =  $lease->getResiId();
         $allContracts = [];
-        /** @var Occupant $occupant */
-        foreach ($occupants as $occupant) {
-            $residentId =  $occupant->getOccuSeqNo();
-            $contracts = $this
-                ->getContractRepository()
-                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
-                    $holding,
-                    $externalPropertyId,
-                    $residentId,
-                    $externalUnitId
-                );
-            empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
-            $contractsWaiting = $this
-                ->getContractWaitingRepository()
-                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
-                    $holding,
-                    $externalPropertyId,
-                    $residentId,
-                    $externalUnitId
-                );
+        $contracts = $this
+            ->getContractRepository()
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $externalLeaseId,
+                $externalUnitId
+            );
 
-            empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
-        }
+        empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
+
+        $contractsWaiting = $this
+            ->getContractWaitingRepository()
+            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
+                $holding,
+                $externalPropertyId,
+                $externalLeaseId,
+                $externalUnitId
+            );
+
+        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
 
         $count = count($allContracts);
         $this->logger->debug(
@@ -80,7 +78,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                 $externalPropertyId,
                 $holding->getName(),
                 $holding->getId(),
-                $occupant->getResiId()
+                $lease->getResiId()
             )
         );
 

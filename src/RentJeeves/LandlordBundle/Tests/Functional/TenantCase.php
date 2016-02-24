@@ -1221,10 +1221,23 @@ class TenantCase extends BaseTestCase
         $this->logout();
     }
 
+
+    /**
+     * @return array
+     */
+    public function providerForEditExternalLeaseId()
+    {
+        return [
+            [AccountingSystem::MRI_BOSTONPOST],
+            [AccountingSystem::AMSI]
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider providerForEditExternalLeaseId
      */
-    public function editContractAndAddLeaseId()
+    public function editContractAndAddLeaseId($accountingSystem)
     {
         $this->loadTenantTab();
         $this->setDefaultSession('selenium2');
@@ -1236,7 +1249,7 @@ class TenantCase extends BaseTestCase
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
         $holding = $group->getHolding();
-        $holding->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $holding->setAccountingSystem($accountingSystem);
         $em->flush();
 
         $this->session->reload();
@@ -1259,10 +1272,12 @@ class TenantCase extends BaseTestCase
         $this->assertNotEmpty($contract, 'Should be contract with such lease id');
     }
 
+
     /**
      * @test
+     * @dataProvider providerForEditExternalLeaseId
      */
-    public function inviteNewTenantWithExternalLeaseId()
+    public function inviteNewTenantWithExternalLeaseId($accountingSystem)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -1271,7 +1286,7 @@ class TenantCase extends BaseTestCase
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
-        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $group->getHolding()->setAccountingSystem($accountingSystem);
         $em->flush();
         $em->clear();
         $this->clearEmail();

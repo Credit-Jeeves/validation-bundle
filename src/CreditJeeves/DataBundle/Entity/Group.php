@@ -333,7 +333,7 @@ class Group extends BaseGroup
         $accountingSystem = $this->getHolding()->getAccountingSystem();
         $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
 
-        if ($isIntegrated && $accountingSystem === AccountingSystem::MRI_BOSTONPOST) {
+        if ($isIntegrated && in_array($accountingSystem, [AccountingSystem::MRI_BOSTONPOST, AccountingSystem::AMSI])) {
             return true;
         }
 
@@ -348,7 +348,7 @@ class Group extends BaseGroup
         $accountingSystem = $this->getHolding()->getAccountingSystem();
         $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
 
-        if ($isIntegrated && $accountingSystem !== AccountingSystem::MRI_BOSTONPOST) {
+        if ($isIntegrated && !in_array($accountingSystem, [AccountingSystem::MRI_BOSTONPOST, AccountingSystem::AMSI])) {
             return true;
         }
 

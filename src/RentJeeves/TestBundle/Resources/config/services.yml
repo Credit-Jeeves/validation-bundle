@@ -5,3 +5,4 @@ parameters:
     payment_account.heartland.class: RentJeeves\TestBundle\Heartland\PaymentAccountManagerTest
     payment_processor.aci.collect_pay.report_loader.class: RentJeeves\TestBundle\Aci\CollectPayReportLoaderTest
     soap.client.yardi.resident_transactions.class: RentJeeves\TestBundle\Services\Yardi\Clients\ResidentTransactionsClient
+    soap.client.amsi.leasing.class: 'RentJeeves\TestBundle\Services\AMSI\AMSILeasingClient'

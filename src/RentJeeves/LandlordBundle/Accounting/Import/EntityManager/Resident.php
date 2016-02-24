@@ -78,6 +78,10 @@ trait Resident
      */
     public function isUsedResidentId()
     {
+        if (!$this->isSupportResidentId) {
+            return false;
+        }
+
         $residentMapping = $this->currentImportModel->getResidentMapping();
         $id = $residentMapping->getResidentId();
 
@@ -90,6 +94,10 @@ trait Resident
      */
     public function setResident(array $row)
     {
+        if (!$this->isSupportResidentId) {
+            return;
+        }
+
         if (is_null($this->currentImportModel->getTenant()->getId())) {
             $this->createNewResidentMapping($row);
 
