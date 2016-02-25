@@ -469,7 +469,7 @@ class PaymentCommandsCase extends BaseTestCase
             ->set('expiration_month', '12')
             ->set('expiration_year', '2025')
             ->set('address_choice', null)
-            ->set('card_number', '5110200200001115')
+            ->set('card_number', '5110200200001164')
             ->set('routing_number', '063113057')
             ->set('account_number', '123245678')
             ->set('csc_code', '123');
@@ -515,6 +515,7 @@ class PaymentCommandsCase extends BaseTestCase
         $bankPayment = clone $cardPayment;
 
         $cardPayment->setAmount(-200);
+        $cardPayment->setTotal(-200);
 
         $bankPayment->setPaymentAccount($bankPaymentAccount);
         // should create another payment for another contract
