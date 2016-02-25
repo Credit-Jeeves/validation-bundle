@@ -37,7 +37,7 @@ class ExtractorFactory
     {
         if (false === in_array($accountingSystemName, array_keys($this->supportedAccountingSystems))) {
             throw new ImportInvalidArgumentException(
-                sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
+                sprintf('ExtractorFactory: Accounting System with name "%s" is not supported.', $accountingSystemName)
             );
         }
 

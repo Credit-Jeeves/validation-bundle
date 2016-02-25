@@ -75,7 +75,7 @@ class MRITransformer implements TransformerInterface
 
             $this->em->persist($importProperty);
 
-            $this->arrayCache[] = $import->getId() . $this->getExternalUnitId($accountingSystemRecord);
+            $this->arrayCache[] = $import->getId() . '|' . $this->getExternalUnitId($accountingSystemRecord);
         }
 
         $this->em->flush();
@@ -218,6 +218,6 @@ class MRITransformer implements TransformerInterface
      */
     protected function checkExistImportPropertyInCache(Import $import, Value $accountingSystemRecord)
     {
-        return in_array($import->getId() . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
+        return in_array($import->getId() . '|' . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
     }
 }

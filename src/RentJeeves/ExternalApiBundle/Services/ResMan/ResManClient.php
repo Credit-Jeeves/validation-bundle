@@ -20,6 +20,8 @@ use JMS\Serializer\DeserializationContext;
 use Monolog\Logger;
 
 /**
+ * Service`s name "resman.client"
+ *
  * @method ResManSettings getSettings
  */
 class ResManClient implements ClientInterface
@@ -81,19 +83,21 @@ class ResManClient implements ClientInterface
      * @param Logger           $logger
      * @param string           $integrationPartnerId
      * @param string           $apiKey
+     * @param HttpClient       $client
      */
     public function __construct(
         ExceptionCatcher $exceptionCatcher,
         Serializer $serializer,
         Logger $logger,
         $integrationPartnerId,
-        $apiKey
+        $apiKey,
+        HttpClient $client
     ) {
         $this->exceptionCatcher = $exceptionCatcher;
         $this->integrationPartnerId = $integrationPartnerId;
         $this->apiKey = $apiKey;
         $this->serializer = $serializer;
-        $this->httpClient = new HttpClient();
+        $this->httpClient = $client;
         $this->logger = $logger;
         $this->setDefaultGroupDeserialize();
     }

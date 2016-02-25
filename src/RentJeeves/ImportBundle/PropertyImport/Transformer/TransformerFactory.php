@@ -79,7 +79,7 @@ class TransformerFactory
         $accountingSystemName = $group->getHolding()->getAccountingSystem();
         if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
             throw new ImportInvalidArgumentException(
-                sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
+                sprintf('TransformerFactory: Accounting System with name "%s" is not supported.', $accountingSystemName)
             );
         }
 
