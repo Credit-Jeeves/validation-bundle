@@ -107,7 +107,7 @@ class CsvImporter
         if (null !== $aciProfileMap->getUser()) {
             $newAciProfile = new AciCollectPayUserProfile();
             $newAciProfile->setUser($aciProfileMap->getUser());
-            $newAciProfile->setProfileId($record->getProfileId());
+            $newAciProfile->setProfileId($record->getConsumerProfileId());
             $aciProfileMap->getUser()->setAciCollectPayProfile($newAciProfile);
         } else {
             $group = $aciProfileMap->getGroup();
@@ -116,7 +116,7 @@ class CsvImporter
 
             $newAciProfile = new AciCollectPayGroupProfile();
             $newAciProfile->setGroup($group);
-            $newAciProfile->setProfileId($record->getProfileId());
+            $newAciProfile->setProfileId($record->getConsumerProfileId());
             $newAciProfile->setBillingAccountNumber(
                 $this->getGroupBillingAccountNumber($group, $aciDepositAccountId)
             );
