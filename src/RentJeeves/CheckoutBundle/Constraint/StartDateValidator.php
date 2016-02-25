@@ -13,14 +13,23 @@ class StartDateValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $nowDateTime = new \DateTime();
         $dateValidation = ($value instanceof \DateTime) ? $value : \DateTime::createFromFormat('Y-m-d', $value);
 
         if (!$dateValidation) {
             return $this->context->addViolation($constraint->messageEmptyStartDate);
         }
 
-        if ($dateValidation > $nowDateTime) {
+        $nowDateTime = new \DateTime();
+        $nowDateTime->setTime(0, 0);
+
+        if ($minDate = $constraint->minDate) {
+            $minDateTime = ($minDate instanceof \DateTime) ? $minDate : new \DateTime($minDate);
+            $minDateTime->setTime(0, 0);
+        } else {
+            $minDateTime = $nowDateTime;
+        }
+
+        if ($dateValidation > $minDateTime) {
             return;
         }
 
@@ -35,7 +44,9 @@ class StartDateValidator extends ConstraintValidator
             return;
         }
 
-        return $this->context->addViolation($constraint->messageDateInPast);
+        return $minDateTime > $nowDateTime ?
+            $this->context->addViolation($constraint->messageDateOutsideRollingWindow) :
+            $this->context->addViolation($constraint->messageDateInPast);
     }
 
     /**

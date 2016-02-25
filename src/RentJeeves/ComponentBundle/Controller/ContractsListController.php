@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -86,6 +87,7 @@ class ContractsListController extends Controller
         $tenant = $this->getUser();
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
+        $orderRepo = $em->getRepository('DataBundle:Order');
         $contracts = $em->getRepository('RjDataBundle:Contract')
             ->findByTenantIdInvertedStatusesForPayments($tenant->getId());
         $contractsArr = [];
@@ -125,6 +127,17 @@ class ContractsListController extends Controller
             if (!$shouldShowRent && $contract->getGroupSettings()->isShowRentOnDashboard()) {
                 $shouldShowRent = true;
             }
+
+            if ($contract->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+                $lastDTROrder = $orderRepo->getLastDTRPaymentByContract($contract)
+            ) {
+                $lastPaymentDate = clone $lastDTROrder->getCreatedAt();
+                $lastPaymentDate->modify(
+                    '+' . (int) $this->container->getParameter('dod_dtr_payment_rolling_window') . ' days'
+                );
+                $contract->setPaymentMinStartDate($lastPaymentDate);
+            }
+
             if (($contract->getStatus() !== ContractStatus::FINISHED) &&
                 end($contractsArr)['is_allowed_to_pay_anything'] &&
                 end($contractsArr)['payment_status'] != 'duplicated'

@@ -193,9 +193,9 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @param Contract $contract
      */
-    public function getContractHistory(\RentJeeves\DataBundle\Entity\Contract $contract)
+    public function getContractHistory(Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p', Expr\Join::WITH, "p.type = :rent");
@@ -209,9 +209,9 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @param Contract $contract
      */
-    public function getLastContractPayment(\RentJeeves\DataBundle\Entity\Contract $contract)
+    public function getLastContractPayment(Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -224,6 +224,26 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return Order
+     */
+    public function getLastDTRPaymentByContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->where('p.contract = :contract')
+            ->andWhere('o.status in (:status)')
+            ->andWhere('p.type = :rentType')
+            ->setParameter('contract', $contract)
+            ->setParameter('status', OrderStatus::getDTRSuccessStatuses())
+            ->setParameter('rentType', OperationType::RENT)
+            ->orderBy('o.created_at', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

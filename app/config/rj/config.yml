@@ -45,6 +45,7 @@ parameters:
     paydirect_fee_ach: 2.50
 
     dod_limit_max_payment: 5000
+    dod_dtr_payment_rolling_window: 15
 
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side

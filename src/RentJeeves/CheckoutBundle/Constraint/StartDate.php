@@ -12,7 +12,11 @@ class StartDate extends Constraint
 {
     public $oneTimeUntilValue;
 
+    public $minDate;
+
     public $messageDateInPast = 'payment.start_date.error.past';
+
+    public $messageDateOutsideRollingWindow = 'payment.start_date.error.outside.rolling_window';
 
     public $messageDateCutoffTime = 'payment.start_date.error.cutoff.time';
 

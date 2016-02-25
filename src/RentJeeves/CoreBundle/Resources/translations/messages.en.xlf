@@ -2243,6 +2243,10 @@
                 <source>payment.start_date.error.past</source>
                 <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
             </trans-unit>
+            <trans-unit id="payment.start_date.error.outside.rolling_window">
+                <source>payment.start_date.error.outside.rolling_window</source>
+                <target>Payment date should be inside rolling window.</target>
+            </trans-unit>
             <trans-unit id="payment.year.error.past">
                 <source>payment.year.error.past</source>
                 <target>Please check your dates. The year cannot be in the past.</target>

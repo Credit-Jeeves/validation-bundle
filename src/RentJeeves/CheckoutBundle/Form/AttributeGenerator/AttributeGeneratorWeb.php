@@ -104,7 +104,7 @@ class AttributeGeneratorWeb extends AttributeGenerator
                     // green message box for empty start_date
                     '<div class="tooltip-box type3 pie-el" data-bind="visible: !payment.startDate()">' .
                     '<h4 data-bind="text: Translator.trans(\'checkout.payment.choose_date.title\')"></h4>' .
-                    '<p data-bind="text: Translator.trans(\'checkout.payment.choose_date.text\')"></p>' .
+                    '<p data-bind="text: payment.getChooseDateText()"></p>' .
                     '</div>' .
                     // green message box for one_time payment
                     '<div class="tooltip-box type3 pie-el" ' .
@@ -207,12 +207,12 @@ class AttributeGeneratorWeb extends AttributeGenerator
     /**
      * {@inheritdoc}
      */
-    public static function startDateAttrs($isPastCutoffTime = false)
+    public static function startDateAttrs($isPastCutoffTime = false, $minDate = null)
     {
-        $minDate = $isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime();
+        $minDate = $minDate ?: ($isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime());
 
         return array_merge(
-            parent::startDateAttrs($isPastCutoffTime),
+            parent::startDateAttrs($isPastCutoffTime, $minDate),
             [
                 'class' => 'datepicker-field',
                 'row_attr' => [
@@ -221,7 +221,7 @@ class AttributeGeneratorWeb extends AttributeGenerator
                 ],
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: {
-                        minDate: \'' . $minDate->format('m/d/Y') . '\',
+                        minDate: payment.getMinStartDate(\'' . $minDate->format('m/d/Y') . '\'),
                         dateFormat: \'m/d/yy\',
                         beforeShowDay: isDueDay
                     }',
