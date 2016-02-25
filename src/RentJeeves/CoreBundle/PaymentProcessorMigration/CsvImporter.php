@@ -4,6 +4,8 @@ namespace RentJeeves\CoreBundle\PaymentProcessorMigration;
 
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountResponseRecord;
@@ -15,6 +17,7 @@ use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\BillingAccountMigration;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\PaymentAccountMigration;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -107,14 +110,56 @@ class CsvImporter
             $newAciProfile->setProfileId($record->getProfileId());
             $aciProfileMap->getUser()->setAciCollectPayProfile($newAciProfile);
         } else {
+            $group = $aciProfileMap->getGroup();
+            $aciDepositAccount = $this->getAciDepositAccount($group);
+            $aciDepositAccountId = $aciDepositAccount->getId();
+
             $newAciProfile = new AciCollectPayGroupProfile();
-            $newAciProfile->setGroup($aciProfileMap->getGroup());
+            $newAciProfile->setGroup($group);
             $newAciProfile->setProfileId($record->getProfileId());
+            $newAciProfile->setBillingAccountNumber(
+                $this->getGroupBillingAccountNumber($group, $aciDepositAccountId)
+            );
             $aciProfileMap->getGroup()->setAciCollectPayProfile($newAciProfile);
+
         }
 
         $this->em->persist($newAciProfile);
         $this->em->flush($newAciProfile);
+    }
+
+    /**
+     * @param Group $group
+     * @param string $divisionId
+     * @return string
+     */
+    protected function getGroupBillingAccountNumber(Group $group, $divisionId)
+    {
+        return sprintf('%s%s', $divisionId, $group->getId());
+    }
+
+    /**
+     * @param Group $group
+     * @return DepositAccount
+     */
+    protected function getAciDepositAccount(Group $group) {
+        $accounts = $group->getDepositAccounts();
+        $aciAccounts = [];
+        /** @var DepositAccount $account */
+        foreach ($accounts as $account) {
+            if ($account->getPaymentProcessor() == PaymentProcessor::ACI) {
+                $aciAccounts[] = $account;
+            }
+        }
+
+        $accountsFound = count($aciAccounts);
+        if ($accountsFound < 1) {
+            throw new \Exception('No ACI Deposit Account found for ' . $group->getName());
+        } elseif ($accountsFound > 1) {
+            throw new \Exception('More than one ACI Deposit Account found for ' . $group->getName());
+        }
+
+        return $aciAccounts[0];
     }
 
     /**
