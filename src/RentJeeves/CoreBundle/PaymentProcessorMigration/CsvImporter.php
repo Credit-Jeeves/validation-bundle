@@ -5,9 +5,10 @@ namespace RentJeeves\CoreBundle\PaymentProcessorMigration;
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer;
+use RentJeeves\CoreBundle\PaymentProcessorMigration\Exception\CsvImportException;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingResponseRecord;
@@ -26,6 +27,9 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
 
+/**
+ * Service`s name "aci_profiles_importer"
+ */
 class CsvImporter
 {
     /**
@@ -44,6 +48,11 @@ class CsvImporter
     protected $deserializer;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @var array
      */
     protected $errors = [];
@@ -54,26 +63,30 @@ class CsvImporter
     protected $holding;
 
     /**
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface             $em
      * @param EnrollmentResponseFileDeserializer $deserializer
-     * @param Validator $validator
+     * @param Validator                          $validator
+     * @param LoggerInterface                    $logger
      */
     public function __construct(
         EntityManagerInterface $em,
         EnrollmentResponseFileDeserializer $deserializer,
-        Validator $validator
+        Validator $validator,
+        LoggerInterface $logger
     ) {
         $this->em = $em;
         $this->validator = $validator;
         $this->deserializer = $deserializer;
+        $this->logger = $logger;
     }
 
     /**
-     * @param string $pathToFile
+     * @param string  $pathToFile
      * @param Holding $holding
      */
     public function import($pathToFile, Holding $holding = null)
     {
+        $this->logger->debug(sprintf('Start Import for file "%s" and Holding#%d', $pathToFile, $holding->getId()));
         $this->holding = $holding;
         $records = $this->deserializer->deserialize($pathToFile);
         /** @var ConsumerResponseRecord|FundingResponseRecord|AccountResponseRecord $record */
@@ -82,28 +95,41 @@ class CsvImporter
             if (false === $this->isValidRecord($record, $aciProfileMap)) {
                 continue;
             }
-            switch (true) {
-                case ($record instanceof ConsumerResponseRecord):
-                    $this->importConsumerResponseRecord($record, $aciProfileMap);
-                    break;
-                case ($record instanceof AccountResponseRecord):
-                    $this->importAccountResponseRecord($record, $aciProfileMap);
-                    break;
-                case ($record instanceof FundingResponseRecord):
-                    $this->importFundingResponseRecord($record, $aciProfileMap);
-                    break;
-                default:
-                    break;
+            try {
+                switch (true) {
+                    case ($record instanceof ConsumerResponseRecord):
+                        $this->importConsumerResponseRecord($record, $aciProfileMap);
+                        break;
+                    case ($record instanceof AccountResponseRecord):
+                        $this->importAccountResponseRecord($record, $aciProfileMap);
+                        break;
+                    case ($record instanceof FundingResponseRecord):
+                        $this->importFundingResponseRecord($record, $aciProfileMap);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (CsvImportException $e) {
+                $message = sprintf(
+                    'Can`t import %s: %s',
+                    end(explode('\\', get_class($record))),
+                    $e->getMessage()
+                );
+                $this->logger->error($message);
+                $this->errors[] = $message;
+
+                continue;
             }
         }
     }
 
     /**
      * @param ConsumerResponseRecord $record
-     * @param AciImportProfileMap $aciProfileMap
+     * @param AciImportProfileMap    $aciProfileMap
      */
     protected function importConsumerResponseRecord(ConsumerResponseRecord $record, AciImportProfileMap $aciProfileMap)
     {
+        $this->logger->debug(sprintf('Importing Consumer record for AciImportProfileMap#%d', $aciProfileMap->getId()));
         if (null !== $aciProfileMap->getUser()) {
             $newAciProfile = new AciCollectPayUserProfile();
             $newAciProfile->setUser($aciProfileMap->getUser());
@@ -121,7 +147,6 @@ class CsvImporter
                 $this->getGroupBillingAccountNumber($group, $aciDepositAccountId)
             );
             $aciProfileMap->getGroup()->setAciCollectPayProfile($newAciProfile);
-
         }
 
         $this->em->persist($newAciProfile);
@@ -129,8 +154,9 @@ class CsvImporter
     }
 
     /**
-     * @param Group $group
+     * @param Group  $group
      * @param string $divisionId
+     *
      * @return string
      */
     protected function getGroupBillingAccountNumber(Group $group, $divisionId)
@@ -140,23 +166,25 @@ class CsvImporter
 
     /**
      * @param Group $group
+     *
+     * @throws CsvImportException when group has 0 or more then 1 DAs
+     *
      * @return DepositAccount
      */
-    protected function getAciDepositAccount(Group $group) {
-        $accounts = $group->getDepositAccounts();
+    protected function getAciDepositAccount(Group $group)
+    {
         $aciAccounts = [];
-        /** @var DepositAccount $account */
-        foreach ($accounts as $account) {
-            if ($account->getPaymentProcessor() == PaymentProcessor::ACI) {
+        foreach ($group->getDepositAccounts() as $account) {
+            if ($account->getPaymentProcessor() === PaymentProcessor::ACI) {
                 $aciAccounts[] = $account;
             }
         }
 
         $accountsFound = count($aciAccounts);
         if ($accountsFound < 1) {
-            throw new \Exception('No ACI Deposit Account found for ' . $group->getName());
+            throw new CsvImportException('No ACI Deposit Account found for ' . $group->getName());
         } elseif ($accountsFound > 1) {
-            throw new \Exception('More than one ACI Deposit Account found for ' . $group->getName());
+            throw new CsvImportException('More than one ACI Deposit Account found for ' . $group->getName());
         }
 
         return $aciAccounts[0];
@@ -164,22 +192,33 @@ class CsvImporter
 
     /**
      * @param AccountResponseRecord $record
-     * @param AciImportProfileMap $aciProfileMap
+     * @param AciImportProfileMap   $aciProfileMap
      */
     protected function importAccountResponseRecord(AccountResponseRecord $record, AciImportProfileMap $aciProfileMap)
     {
+        $this->logger->debug(sprintf('Importing Account record for AciImportProfileMap#%d', $aciProfileMap->getId()));
         if (null !== $user = $aciProfileMap->getUser()) {
             /** AciCollectPayUserProfile $userProfile */
             if (null === $userProfile = $user->getAciCollectPayProfile()) {
-                $this->errors[] = sprintf(
+                $message = sprintf(
                     'AccountResponseRecord: UserProfile for user #%d does not exist',
                     $user->getId()
                 );
+                $this->errors[] = $message;
+                $this->logger->debug($message);
 
                 return;
             }
 
             if ($userProfile->hasBillingAccountForDivisionId($record->getDivisionId())) {
+                $message = sprintf(
+                    'AccountResponseRecord: UserProfile#%d has BillingAccount for DivisionId = "%s"',
+                    $userProfile->getId(),
+                    $record->getDivisionId()
+                );
+                $this->errors[] = $message;
+                $this->logger->debug($message);
+
                 return;
             }
 
@@ -201,10 +240,11 @@ class CsvImporter
 
     /**
      * @param FundingResponseRecord $record
-     * @param AciImportProfileMap $aciProfileMap
+     * @param AciImportProfileMap   $aciProfileMap
      */
     protected function importFundingResponseRecord(FundingResponseRecord $record, AciImportProfileMap $aciProfileMap)
     {
+        $this->logger->debug(sprintf('Importing Funding record for AciImportProfileMap#%d', $aciProfileMap->getId()));
         if (null !== $aciProfileMap->getUser()) {
             $this->importUserFundingResponseRecord($record);
         } else {
@@ -220,10 +260,12 @@ class CsvImporter
         $token = $record->getFundingAccountHolderAddress2();
         /** @var PaymentAccount $paymentAccount */
         if (null === $paymentAccount = $this->getPaymentAccountRepository()->findOneOrNullByToken($token)) {
-            $this->errors[] = sprintf(
+            $message = sprintf(
                 'FundingResponseRecord: PaymentAccount with token#%s not found',
                 $token
             );
+            $this->errors[] = $message;
+            $this->logger->debug($message);
 
             return;
         }
@@ -231,6 +273,12 @@ class CsvImporter
         $newPaymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
         $newPaymentAccount->setUser($paymentAccount->getUser());
         if (null === $address = $paymentAccount->getAddress()) {
+            $this->logger->debug(
+                sprintf(
+                    'FundingResponseRecord: PaymentAccount#%d doesn`t have MailingAddress.Creating new MailingAddress.',
+                    $paymentAccount->getId()
+                )
+            );
             /** @TODO: need example for fundingAccountHolderAddress1 */
             $address = new Address();
             $address->setUser($paymentAccount->getUser());
@@ -271,16 +319,18 @@ class CsvImporter
 
     /**
      * @param FundingResponseRecord $record
-     * @param AciImportProfileMap $aciProfile
+     * @param AciImportProfileMap   $aciProfile
      */
     protected function importGroupFundingResponseRecord(FundingResponseRecord $record, AciImportProfileMap $aciProfile)
     {
         $token = $record->getFundingAccountHolderAddress2();
         if (null === $billingAccount = $this->getBillingAccountRepository()->findOneOrNullByToken($token)) {
-            $this->errors[] = sprintf(
+            $message = sprintf(
                 'FundingResponseRecord: BillingAccount with token#%s not found',
                 $token
             );
+            $this->errors[] = $message;
+            $this->logger->debug($message);
 
             return;
         }
@@ -305,7 +355,7 @@ class CsvImporter
 
     /**
      * @param ConsumerResponseRecord|FundingResponseRecord|AccountResponseRecord $record
-     * @param AciImportProfileMap $aciProfileMap
+     * @param AciImportProfileMap                                                $aciProfileMap
      *
      * @return bool
      */
@@ -313,37 +363,48 @@ class CsvImporter
     {
         $classNameParts = explode('\\', get_class($record));
         $className = end($classNameParts);
+
+        $this->logger->debug(sprintf('Validating %s with profileId#%s', $className, $record->getProfileId()));
+
         if (null === $aciProfileMap) {
-            $this->errors[] = sprintf(
+            $message = sprintf(
                 '%s: AciImportProfileMap with id#%d not found',
                 $className,
                 $record->getProfileId()
             );
+            $this->errors[] = $message;
+            $this->logger->debug($message);
 
             return false;
         }
+        $this->logger->debug(sprintf('Found AciImportProfileMap#%d', $aciProfileMap->getId()));
+
         /** @var Tenant $tenant */
         if (null !== $tenant = $aciProfileMap->getUser()) {
             if (false == $this->findContractsByTenant($tenant)) {
-                $this->errors[] = sprintf(
+                $message = sprintf(
                     'AciImportProfileMap#%d: %s: contracts for Holding#%s and Tenant#%d not found',
                     $aciProfileMap->getId(),
                     $className,
                     $this->holding ? $this->holding->getId() : 'all',
                     $tenant->getId()
                 );
+                $this->errors[] = $message;
+                $this->logger->debug($message);
 
                 return false;
             }
         } else {
             if ($this->holding !== null && $this->holding !== $aciProfileMap->getGroup()->getHolding()) {
-                $this->errors[] = sprintf(
+                $message = sprintf(
                     'AciImportProfileMap#%d: %s: group#%d not related with Holding#%d',
                     $aciProfileMap->getId(),
                     $className,
                     $aciProfileMap->getGroup()->getId(),
                     $this->holding->getId()
                 );
+                $this->errors[] = $message;
+                $this->logger->debug($message);
 
                 return false;
             }
@@ -353,18 +414,20 @@ class CsvImporter
         $errors = $this->validator->validate($record);
         if ($errors->count() > 0) {
             foreach ($errors as $error) {
-
-                $this->errors[] = sprintf(
+                $message = sprintf(
                     'AciImportProfileMap#%d :%s#%s : %s',
                     $aciProfileMap->getId(),
                     $className,
                     $error->getPropertyPath(),
                     $error->getMessage()
                 );
+                $this->errors[] = $message;
+                $this->logger->debug($message);
             }
 
             return false;
         }
+        $this->logger->debug(sprintf('AciImportProfileMap#%d is valid', $aciProfileMap->getId()));
 
         return true;
     }
