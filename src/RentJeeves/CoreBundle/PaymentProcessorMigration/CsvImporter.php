@@ -244,8 +244,9 @@ class CsvImporter
         }
         $newPaymentAccount->setAddress($address);
         $newPaymentAccount->setType($paymentAccount->getType());
-        $newPaymentAccount->setName($record->getFundingAccountNickname());
-        $newPaymentAccount->setToken($record->getFundingAccountId()); // PLS CHECK
+        $newPaymentAccount->setName($paymentAccount->getName());
+        $newPaymentAccount->setLastFour($paymentAccount->getLastFour());
+        $newPaymentAccount->setToken($record->getFundingAccountId());
         $newPaymentAccount->setBankAccountType($paymentAccount->getBankAccountType());
 
         if ($newPaymentAccount->getType() === PaymentAccountType::CARD) {
@@ -287,7 +288,8 @@ class CsvImporter
         $newBillingAccount->setPaymentProcessor(PaymentProcessor::ACI);
         $newBillingAccount->setGroup($aciProfile->getGroup());
         $newBillingAccount->setToken($record->getFundingAccountId());
-        $newBillingAccount->setNickname($record->getFundingAccountNickname());
+        $newBillingAccount->setNickname($billingAccount->getName());
+        $newBillingAccount->setLastFour($billingAccount->getLastFour());
         $newBillingAccount->setBankAccountType($billingAccount->getBankAccountType());
         $newBillingAccount->setIsActive($billingAccount->getIsActive());
 
