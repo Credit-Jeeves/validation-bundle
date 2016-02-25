@@ -248,7 +248,7 @@ class CsvImporter
         $newPaymentAccount->setToken($record->getFundingAccountId()); // PLS CHECK
         $newPaymentAccount->setBankAccountType($paymentAccount->getBankAccountType());
 
-        if ($newPaymentAccount->getType() === PaymentAccountType::BANK) {
+        if ($newPaymentAccount->getType() === PaymentAccountType::CARD) {
             $expirationDate = new \DateTime(sprintf(
                 '%s-%s-28',
                 $record->getCardExpirationYear(),
