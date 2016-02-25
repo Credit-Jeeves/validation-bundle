@@ -93,7 +93,7 @@ class YardiTransformer implements TransformerInterface
      *
      * @return bool
      */
-    public function isAllowedMultipleProperties($fullResident)
+    public function isAllowedMultipleProperties(FullResident $fullResident)
     {
         return true;
     }
@@ -103,7 +103,7 @@ class YardiTransformer implements TransformerInterface
      *
      * @return null
      */
-    public function getExternalBuildingId($fullResident)
+    public function getExternalBuildingId(FullResident $fullResident)
     {
         return null;
     }
@@ -113,15 +113,17 @@ class YardiTransformer implements TransformerInterface
      *
      * @return bool
      */
-    protected function isPropertyHasBuildings($fullResident)
+    protected function isPropertyHasBuildings(FullResident $fullResident)
     {
         return false;
     }
 
     /**
+     * @param FullResident $accountingSystemRecord
+     *
      * @return bool
      */
-    protected function isAddressHasUnits($fullResident)
+    protected function isAddressHasUnits(FullResident $fullResident)
     {
         return true;
     }
