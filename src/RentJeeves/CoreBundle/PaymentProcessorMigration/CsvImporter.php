@@ -95,30 +95,18 @@ class CsvImporter
             if (false === $this->isValidRecord($record, $aciProfileMap)) {
                 continue;
             }
-            try {
-                switch (true) {
-                    case ($record instanceof ConsumerResponseRecord):
-                        $this->importConsumerResponseRecord($record, $aciProfileMap);
-                        break;
-                    case ($record instanceof AccountResponseRecord):
-                        $this->importAccountResponseRecord($record, $aciProfileMap);
-                        break;
-                    case ($record instanceof FundingResponseRecord):
-                        $this->importFundingResponseRecord($record, $aciProfileMap);
-                        break;
-                    default:
-                        break;
-                }
-            } catch (CsvImportException $e) {
-                $message = sprintf(
-                    'Can`t import %s: %s',
-                    end(explode('\\', get_class($record))),
-                    $e->getMessage()
-                );
-                $this->logger->error($message);
-                $this->errors[] = $message;
-
-                continue;
+            switch (true) {
+                case ($record instanceof ConsumerResponseRecord):
+                    $this->importConsumerResponseRecord($record, $aciProfileMap);
+                    break;
+                case ($record instanceof AccountResponseRecord):
+                    $this->importAccountResponseRecord($record, $aciProfileMap);
+                    break;
+                case ($record instanceof FundingResponseRecord):
+                    $this->importFundingResponseRecord($record, $aciProfileMap);
+                    break;
+                default:
+                    break;
             }
         }
     }
