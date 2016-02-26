@@ -1,0 +1,15 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+<div class="container-content">
+    <h1>{{ 'title.scanning'|trans }}</h1>
+    <br/>
+    <div>
+        <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
+            <button class="button small">
+                <span>{{ 'button_title.scanning'|trans }}</span>
+            </button>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -54,6 +54,13 @@ class Builder extends ContainerAware
             }
         }
 
+        $menu->addChild(
+            'tabs.scanning',
+            array(
+                'route' => 'landlord_scanning'
+            )
+        );
+
         switch ($sRoute) {
             case 'landlord_homepage':
                 $menu['tabs.dashboard']->setAttribute('class', 'active');
@@ -64,6 +71,9 @@ class Builder extends ContainerAware
             case 'landlord_tenants_filter':
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
+                break;
+            case 'landlord_scanning':
+                $menu['tabs.scanning']->setAttribute('class', 'active');
                 break;
             case 'accounting_import':
             case 'accounting_match_file':
