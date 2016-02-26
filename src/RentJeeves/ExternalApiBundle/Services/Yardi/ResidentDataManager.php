@@ -4,8 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Psr\Log\LoggerInterface as Logger;
-use RentJeeves\DataBundle\Entity\Property;
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -15,7 +13,6 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property as YardiProperty;
 
 /**
  * DI\Service("yardi.resident_data")
@@ -183,79 +180,18 @@ class ResidentDataManager implements ResidentDataManagerInterface
 
         return $transactionData->getProperty()->getCustomers();
     }
-    /**
-     * @param string $externalPropertyId
-     * @return array
-     */
-    public function getFullResidentsList($externalPropertyId)
-    {
-        list($property, $residents) = $this->getResidentsAndPropertyByExternalPropertyId($externalPropertyId);
-
-        $listOfFullResident = [];
-        /** @var ResidentsResident $resident */
-        foreach ($residents as $resident) {
-            try {
-                $residentData = $this->getResidentData(
-                    $resident->getCode(),
-                    $property->getCode()
-                );
-            } catch (\Exception $e) {
-                $this->logger->alert(
-                    sprintf(
-                        'Can\'t get resident data for residentID:%s externalPropetyID: %s',
-                        $resident->getCode(),
-                        $property->getCode()
-                    )
-                );
-            }
-
-            $fullResident = new FullResident();
-            $fullResident->setProperty($property);
-            $fullResident->setResident($resident);
-            $fullResident->setResidentData($residentData);
-
-            $listOfFullResident[] = $fullResident;
-        }
-
-        return $listOfFullResident;
-    }
 
     /**
-     * @param string $externalPropertyId
-     * @return array
+     * @return array|Soap\Property[]
      */
-    protected function getResidentsAndPropertyByExternalPropertyId($externalPropertyId)
+    public function getProperties()
     {
         $response = $this->getApiClient(SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS)->getPropertyConfigurations();
-        $properties = $response->getProperty();
-
-        if (empty($properties)) {
-            throw new \LogicException('Empty property configurations response');
+        if ($response) {
+            return $response->getProperty();
         }
 
-        $filteredProperties = array_filter(
-            $properties,
-            function(YardiProperty $property) use ($externalPropertyId) {
-                return $externalPropertyId === $property->getCode();
-            }
-        );
-
-        if (empty($properties)) {
-            throw new \LogicException(
-                sprintf('Can\'t find external property "%s" in property configurations', $externalPropertyId)
-            );
-        }
-
-        /** @var YardiProperty $property */
-        $property = reset($filteredProperties);
-        $residents = $this->getResidents($property->getCode());
-        if (empty($residents)) {
-            throw new \LogicException(
-                sprintf('Can\'t find residents "%s" by external property id', $externalPropertyId)
-            );
-        }
-
-        return [$property, $residents];
+        return [];
     }
 
     /**

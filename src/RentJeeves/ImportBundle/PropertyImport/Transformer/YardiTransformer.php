@@ -26,7 +26,7 @@ class YardiTransformer implements TransformerInterface
     /**
      * @var array
      */
-    protected $arrayCacheForTransformedUnit = [];
+    protected $arrayCache = [];
 
     /**
      * @param EntityManager $em
@@ -43,17 +43,26 @@ class YardiTransformer implements TransformerInterface
      */
     public function transformData(array $accountingSystemData, Import $import)
     {
+        $this->logger->info(
+            sprintf(
+                'Started transform data for Import#%d',
+                $import->getId()
+            ),
+            ['group_id' => $import->getGroup()->getId()]
+        );
+
         /** @var FullResident $residentTransactionServiceTransactions */
         foreach ($accountingSystemData as $fullResident) {
             if ($this->checkExistImportPropertyInCache($import, $fullResident) === true) {
                 continue;
             }
             $importProperty = new ImportProperty();
-            $importProperty->setExternalBuildingId($this->setExternalBuildingId());
-            $importProperty->setAddressHasUnits($this->isAddressHasUnits());
-            $importProperty->setPropertyHasBuildings($this->isPropertyHasBuildings());
             $importProperty->setImport($import);
             $import->addImportProperty($importProperty);
+
+            $importProperty->setExternalBuildingId($this->getExternalBuildingId($fullResident));
+            $importProperty->setAddressHasUnits($this->isAddressHasUnits($fullResident));
+            $importProperty->setPropertyHasBuildings($this->isPropertyHasBuildings($fullResident));
             $importProperty->setExternalPropertyId($this->getExternalPropertyId($fullResident));
             $importProperty->setUnitName($this->getUnitName($fullResident));
             $importProperty->setExternalUnitId($this->getExternalUnitId($fullResident));
@@ -61,13 +70,12 @@ class YardiTransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($fullResident));
             $importProperty->setState($this->getState($fullResident));
             $importProperty->setZip($this->getZip($fullResident));
-            $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties());
+            $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties($fullResident));
 
             $this->em->persist($importProperty);
 
-            $this->arrayCacheForTransformedUnit[] = $this->getUniqueCacheKey($import, $fullResident);
+            $this->arrayCache[] = $this->getUniqueCacheKey($import, $fullResident);
         }
-
 
         $this->em->flush();
 
@@ -81,25 +89,31 @@ class YardiTransformer implements TransformerInterface
     }
 
     /**
+     * @param FullResident $accountingSystemRecord
+     *
      * @return bool
      */
-    public function isAllowedMultipleProperties()
+    public function isAllowedMultipleProperties($fullResident)
     {
         return true;
     }
 
     /**
+     * @param FullResident $accountingSystemRecord
+     *
      * @return null
      */
-    public function setExternalBuildingId()
+    public function getExternalBuildingId($fullResident)
     {
        return null;
     }
 
     /**
+     * @param FullResident $accountingSystemRecord
+     *
      * @return bool
      */
-    protected function isPropertyHasBuildings()
+    protected function isPropertyHasBuildings($fullResident)
     {
         return false;
     }
@@ -107,7 +121,7 @@ class YardiTransformer implements TransformerInterface
     /**
      * @return bool
      */
-    protected function isAddressHasUnits()
+    protected function isAddressHasUnits($fullResident)
     {
         return true;
     }
@@ -192,7 +206,7 @@ class YardiTransformer implements TransformerInterface
     {
         return in_array(
             $this->getUniqueCacheKey($import, $accountingSystemRecord),
-            $this->arrayCacheForTransformedUnit
+            $this->arrayCache
         );
     }
 

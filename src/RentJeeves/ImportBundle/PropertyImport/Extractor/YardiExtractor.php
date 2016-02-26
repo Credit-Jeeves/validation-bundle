@@ -5,7 +5,10 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\YardiSettings;
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager as YardiResidentDataManager;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 
 /**
@@ -25,7 +28,7 @@ class YardiExtractor implements ExtractorInterface
 
     /**
      * @param YardiResidentDataManager $residentDataManager
-     * @param LoggerInterface        $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(YardiResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
@@ -58,7 +61,7 @@ class YardiExtractor implements ExtractorInterface
         $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getFullResidentsList($externalPropertyId);
+            $data = $this->getFullResidentsList($externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
@@ -91,5 +94,96 @@ class YardiExtractor implements ExtractorInterface
         );
 
         return $data;
+    }
+
+    /**
+     * @param $externalPropertyId
+     * @return array
+     * @throws ImportExtractorException
+     */
+    protected function getFullResidentsList($externalPropertyId)
+    {
+        $property = $this->getProperty($externalPropertyId);
+        $residents = $this->getResidents($property);
+        $listOfFullResident = [];
+        /** @var ResidentsResident $resident */
+        foreach ($residents as $resident) {
+
+            $fullResident = new FullResident();
+            $fullResident->setProperty($property);
+            $fullResident->setResident($resident);
+            $fullResident->setResidentData($this->getResidentData($property, $resident));
+
+            $listOfFullResident[] = $fullResident;
+        }
+
+        return $listOfFullResident;
+    }
+
+    /**
+     * @param string $externalPropertyId
+     * @return Property
+     * @throws ImportExtractorException
+     */
+    protected function getProperty($externalPropertyId)
+    {
+        $properties = $this->residentDataManager->getProperties();
+        $filteredProperties = array_filter(
+            $properties,
+            function (Property $property) use ($externalPropertyId) {
+                return $externalPropertyId === $property->getCode();
+            }
+        );
+
+        if (empty($filteredProperties)) {
+            throw new ImportExtractorException(
+                sprintf('Can\'t find external property "%s" in property configurations', $externalPropertyId)
+            );
+        }
+
+        /** @var Property $property */
+        return reset($filteredProperties);
+    }
+
+    /**
+     * @param Property $property
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident[]
+     * @throws ImportExtractorException
+     */
+    protected function getResidents(Property $property)
+    {
+        $residents = $this->residentDataManager->getResidents($property->getCode());
+        if (empty($residents)) {
+            throw new ImportExtractorException(
+                sprintf('Can\'t find residents "%s" by external property id', $property->getCode())
+            );
+        }
+
+        return $residents;
+    }
+
+    /**
+     * @param Property $property
+     * @param ResidentsResident $resident
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile
+     * @throws ImportExtractorException
+     */
+    protected function getResidentData(Property $property, ResidentsResident $resident)
+    {
+        try {
+            return $this->residentDataManager->getResidentData(
+                $resident->getCode(),
+                $property->getCode()
+            );
+        } catch (\Exception $e) {
+            $message = sprintf(
+                'Can\'t get resident data for residentID:%s externalPropetyID: %s',
+                $resident->getCode(),
+                $property->getCode()
+            );
+            $this->logger->alert($message);
+
+            throw new ImportExtractorException($message, $e);
+        }
     }
 }
