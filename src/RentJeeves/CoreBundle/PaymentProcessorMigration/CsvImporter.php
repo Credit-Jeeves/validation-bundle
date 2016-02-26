@@ -86,7 +86,7 @@ class CsvImporter
      */
     public function import($pathToFile, Holding $holding = null)
     {
-        $this->logger->debug(sprintf('Start Import for file "%s" and Holding#%d', $pathToFile, $holding->getId()));
+        $this->logger->debug(sprintf('Start Import for file "%s"', $pathToFile));
         $this->holding = $holding;
         $records = $this->deserializer->deserialize($pathToFile);
         /** @var ConsumerResponseRecord|FundingResponseRecord|AccountResponseRecord $record */
