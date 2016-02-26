@@ -96,12 +96,6 @@ class PaymentBalanceOnlyType extends PaymentType
                             'closeDay' => $options['close_day']
                         ]
                     ),
-                    new Assert\Callback(
-                        [
-                            'groups'  => ['one_time'],
-                            'methods' => [[$this, 'isLaterOrEqualNow']]
-                        ]
-                    ),
                 ]
             ]
         );

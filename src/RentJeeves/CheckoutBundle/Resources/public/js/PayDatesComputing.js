@@ -100,4 +100,38 @@ function PayDatesComputing(parent) {
         );
         return finishDate.toString('M/d/yyyy');
     });
+
+    self.getChooseDateText = ko.computed(function () {
+        if (parent && parent.contract) {
+            var contract = ko.unwrap(parent.contract);
+            if (contract && contract.paymentMinStartDate) {
+                var minStartDate = new Date(contract.paymentMinStartDate);
+                var now = new Date();
+                if (minStartDate.valueOf() > now.valueOf()) {
+                    return Translator.trans('checkout.payment.choose_date_limit.text');
+                }
+            }
+        }
+
+        return Translator.trans('checkout.payment.choose_date.text');
+    });
+
+    self.defaultMinStartDateString = ko.observable((new Date()).toString('M/d/yyyy'));
+
+    self.getMinStartDate = function (contract) {
+        var defaultMinStartDate = new Date(self.defaultMinStartDateString());
+        contract = contract ? contract : parent.contract();
+        if (contract && contract.paymentMinStartDate) {
+            var minStartDate = new Date(contract.paymentMinStartDate);
+            if (minStartDate.valueOf() > defaultMinStartDate.valueOf()) {
+                return minStartDate.toString('M/d/yyyy');
+            }
+        }
+
+        return defaultMinStartDate.toString('M/d/yyyy');
+    };
+
+    self.calcMinStartDate = function (contract) {
+        $('.datepicker-field').trigger('updateOptions', {'minDate' : self.getMinStartDate(contract)});
+    };
 }

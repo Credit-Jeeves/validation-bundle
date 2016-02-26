@@ -142,30 +142,6 @@ function Payment(parent) {
         parent.infoMessage(null);
     };
 
-    this.getMinStartDate = function (defaultMinStartDateString) {
-        if (parent.contract() && parent.contract().paymentMinStartDate) {
-            var defaultMinStartDate = new Date(defaultMinStartDateString);
-            var minStartDate = new Date(parent.contract().paymentMinStartDate);
-            if (minStartDate.valueOf() > defaultMinStartDate.valueOf()) {
-                return (minStartDate.getMonth() + 1) + '/' + minStartDate.getDate() + '/' + minStartDate.getFullYear();
-            }
-        }
-
-        return defaultMinStartDateString;
-    };
-
-    this.getChooseDateText = function () {
-        if (parent.contract() && parent.contract().paymentMinStartDate) {
-            var minStartDate = new Date(parent.contract().paymentMinStartDate);
-            var now = new Date();
-            if (minStartDate.valueOf() > now.valueOf()) {
-                return Translator.trans('checkout.payment.choose_date_limit.text');
-            }
-        }
-
-        return Translator.trans('checkout.payment.choose_date.text');
-    };
-
     this.initData = function () {
         for (var i = 0; i < 12; i++) {
             var tempDate = new Date(2000, i, 1);

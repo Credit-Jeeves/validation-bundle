@@ -2245,7 +2245,7 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.outside.rolling_window">
                 <source>payment.start_date.error.outside.rolling_window</source>
-                <target>Payment date should be inside rolling window.</target>
+                <target>Another payment cannot be made until the %day%.</target>
             </trans-unit>
             <trans-unit id="payment.year.error.past">
                 <source>payment.year.error.past</source>

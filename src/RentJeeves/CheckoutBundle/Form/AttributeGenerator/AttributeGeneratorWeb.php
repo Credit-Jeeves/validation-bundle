@@ -104,7 +104,7 @@ class AttributeGeneratorWeb extends AttributeGenerator
                     // green message box for empty start_date
                     '<div class="tooltip-box type3 pie-el" data-bind="visible: !payment.startDate()">' .
                     '<h4 data-bind="text: Translator.trans(\'checkout.payment.choose_date.title\')"></h4>' .
-                    '<p data-bind="text: payment.getChooseDateText()"></p>' .
+                    '<p data-bind="text: getChooseDateText()"></p>' .
                     '</div>' .
                     // green message box for one_time payment
                     '<div class="tooltip-box type3 pie-el" ' .
@@ -221,7 +221,10 @@ class AttributeGeneratorWeb extends AttributeGenerator
                 ],
                 'data-bind' => 'datepicker: payment.startDate, ' .
                     'datepickerOptions: {
-                        minDate: payment.getMinStartDate(\'' . $minDate->format('m/d/Y') . '\'),
+                        minDate: (
+                            defaultMinStartDateString(\'' . $minDate->format('m/d/Y') . '\'),
+                            getMinStartDate()
+                        ),
                         dateFormat: \'m/d/yy\',
                         beforeShowDay: isDueDay
                     }',
