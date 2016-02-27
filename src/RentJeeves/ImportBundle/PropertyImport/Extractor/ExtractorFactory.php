@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
 
 /**
@@ -21,19 +21,18 @@ class ExtractorFactory
     protected $supportedApiExtractors;
 
     /**
-     * @var ApiExtractorInterface
+     * @var CsvExtractorInterface
      */
     protected $csvExtractor;
 
     /**
-     * @param array $supportedApiExtractors
+     * @param array                 $supportedApiExtractors
+     * @param CsvExtractorInterface $csvExtractor
      */
-    public function __construct(array $supportedApiExtractors)
-        //@TODO: uncomment in RT-2034
-//            public function __construct(array $supportedApiExtractors, CsvExtractorInterface $csvExtractor)
+    public function __construct(array $supportedApiExtractors, CsvExtractorInterface $csvExtractor)
     {
         $this->supportedApiExtractors = $supportedApiExtractors;
-//        $this->csvExtractor = $csvExtractor;
+        $this->csvExtractor = $csvExtractor;
     }
 
     /**

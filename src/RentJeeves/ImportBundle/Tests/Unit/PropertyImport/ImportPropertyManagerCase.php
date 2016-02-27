@@ -8,7 +8,7 @@ use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager;
-use RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader;
+use RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -106,7 +106,7 @@ class ImportPropertyManagerCase extends UnitTestBase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|PropertyLoader
+     * @return \PHPUnit_Framework_MockObject_MockObject|MappedLoader
      */
     protected function getPropertyLoaderMock()
     {

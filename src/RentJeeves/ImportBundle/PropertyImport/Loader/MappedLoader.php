@@ -22,9 +22,9 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
 
 /**
- * Service`s name "import.property.loader"
+ * Service`s name "import.property.loader.mapped"
  */
-class PropertyLoader
+class MappedLoader implements PropertyLoaderInterface
 {
     /**
      * @var EntityManager
@@ -67,9 +67,17 @@ class PropertyLoader
     /**
      * @param Import $import
      * @param string $externalPropertyId
+     *
+     * @throws ImportInvalidArgumentException
      */
-    public function loadData(Import $import, $externalPropertyId)
+    public function loadData(Import $import, $externalPropertyId = null)
     {
+        if (null === $externalPropertyId) {
+            throw new ImportInvalidArgumentException(
+                sprintf('ExternalPropertyId cant be "null" for "%s"', __CLASS__)
+            );
+        }
+
         $this->logger->info(
             sprintf(
                 'Starting process load property from Import#%d for extProperty#%s',
