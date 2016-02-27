@@ -41,7 +41,7 @@ class OrderStatus extends Enum
     /**
      * @return array
      */
-    public static function getDTRSuccessStatuses()
+    public static function getDTRSuccessfulStatuses()
     {
         return [
             self::COMPLETE,

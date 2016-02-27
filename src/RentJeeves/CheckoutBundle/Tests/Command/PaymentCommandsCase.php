@@ -188,13 +188,8 @@ class PaymentCommandsCase extends BaseTestCase
         $jobs = $em->getRepository('RjDataBundle:Payment')->collectToJobs();
         $this->assertCount(1, $jobs, 'Should be collected last payment');
 
-        $commandTester = $this->executePayCommand($jobs[0]->getId());
+        $this->executePayCommand($jobs[0]->getId());
 
-        $this->assertRegExp(
-            "/Start\nDod checking is failed/",
-            $commandTester->getDisplay(),
-            'Incorrect command displaying'
-        );
         $em->refresh($payment);
         $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be flagged');
         $this->assertCount(
@@ -404,6 +399,7 @@ class PaymentCommandsCase extends BaseTestCase
 
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
+        exit;
     }
 
     /**

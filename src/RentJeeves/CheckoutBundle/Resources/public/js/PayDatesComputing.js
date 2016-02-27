@@ -131,7 +131,7 @@ function PayDatesComputing(parent) {
         return defaultMinStartDate.toString('M/d/yyyy');
     };
 
-    self.calcMinStartDate = function (contract) {
+    self.updateMinStartDate = function (contract) {
         $('.datepicker-field').trigger('updateOptions', {'minDate' : self.getMinStartDate(contract)});
     };
 }

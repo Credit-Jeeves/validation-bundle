@@ -302,7 +302,7 @@ function Pay(parent, contract) {
         if (newContract) {
             self.prepareDialog();
             self.mapPayment(newContract);
-            self.calcMinStartDate(newContract);
+            self.updateMinStartDate(newContract);
         }
     });
 

@@ -129,7 +129,7 @@ class ContractsListController extends Controller
             }
 
             if ($contract->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
-                $lastDTROrder = $orderRepo->getLastDTRPaymentByContract($contract)
+                $lastDTROrder = $orderRepo->getLastPaidOrderByContract($contract)
             ) {
                 $lastPaymentDate = clone $lastDTROrder->getCreatedAt();
                 $lastPaymentDate->modify(

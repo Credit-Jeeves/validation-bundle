@@ -90,7 +90,7 @@ class PayController extends Controller
 
         $orderRepo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
         if ($contract->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
-            $lastDTROrder = $orderRepo->getLastDTRPaymentByContract($contract)
+            $lastDTROrder = $orderRepo->getLastPaidOrderByContract($contract)
         ) {
             $lastPaymentDate = clone $lastDTROrder->getCreatedAt();
             $lastPaymentDate->modify(

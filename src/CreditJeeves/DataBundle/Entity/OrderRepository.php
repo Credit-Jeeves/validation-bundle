@@ -230,16 +230,16 @@ class OrderRepository extends EntityRepository
      * @param Contract $contract
      * @return Order
      */
-    public function getLastDTRPaymentByContract(Contract $contract)
+    public function getLastPaidOrderByContract(Contract $contract)
     {
         return $this->createQueryBuilder('o')
             ->innerJoin('o.operations', 'p')
             ->where('p.contract = :contract')
             ->andWhere('o.status in (:status)')
-            ->andWhere('p.type = :rentType')
+            ->andWhere('p.type in (:operationsType)')
             ->setParameter('contract', $contract)
-            ->setParameter('status', OrderStatus::getDTRSuccessStatuses())
-            ->setParameter('rentType', OperationType::RENT)
+            ->setParameter('status', OrderStatus::getDTRSuccessfulStatuses())
+            ->setParameter('operationsType', [OperationType::RENT, OperationType::OTHER])
             ->orderBy('o.created_at', 'DESC')
             ->setMaxResults(1)
             ->getQuery()

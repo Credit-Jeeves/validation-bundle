@@ -38,12 +38,12 @@ class PaymentRollingWindowDTR implements DodPaymentRuleInterface
     {
         $contract = $payment->getContract();
         if ($contract->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
-            $lastDTROrder = $this->orderRepository->getLastDTRPaymentByContract($contract)
+            $lastDTROrder = $this->orderRepository->getLastPaidOrderByContract($contract)
         ) {
-            $lastPaymentDate = clone $lastDTROrder->getCreatedAt();
-            $lastPaymentDate->modify('+' . $this->rollingWindow . ' days');
+            $minStartDate = clone $lastDTROrder->getCreatedAt();
+            $minStartDate->modify('+' . $this->rollingWindow . ' days');
 
-            return $payment->getStartDate() > $lastPaymentDate;
+            return $payment->getStartDate() > $minStartDate;
         }
 
         return true;

@@ -90,7 +90,7 @@ class PaymentRollingWindowDTRCase extends UnitTestBase
         $order->method('getCreatedAt')->willReturn($orderCreatedAt);
 
         $orderRepo = $this->getBaseMock('CreditJeeves\DataBundle\Entity\OrderRepository');
-        $orderRepo->expects($this->any())->method('getLastDTRPaymentByContract')->willReturn($order);
+        $orderRepo->expects($this->any())->method('getLastPaidOrderByContract')->willReturn($order);
 
         return $orderRepo;
     }

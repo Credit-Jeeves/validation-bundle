@@ -2243,8 +2243,8 @@
                 <source>payment.start_date.error.past</source>
                 <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
             </trans-unit>
-            <trans-unit id="payment.start_date.error.outside.rolling_window">
-                <source>payment.start_date.error.outside.rolling_window</source>
+            <trans-unit id="payment.start_date.error.outside_rolling_window">
+                <source>payment.start_date.error.outside_rolling_window</source>
                 <target>Another payment cannot be made until the %day%.</target>
             </trans-unit>
             <trans-unit id="payment.year.error.past">

@@ -1573,14 +1573,14 @@ class PayCase extends BaseTestCase
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
         $this->assertNotNull($tenant, 'tenant11@example.com not found');
-        $contact = $em->getRepository('RjDataBundle:Contract')->find('9');
+        $contract = $em->getRepository('RjDataBundle:Contract')->find('9');
         $this->assertEquals(
             $tenant->getId(),
-            $contact->getTenant()->getId(),
+            $contract->getTenant()->getId(),
             'Check fixtures, contract #9 should belong tenant with email "tenant11@example.com"'
         );
-        $contact->getGroup()->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
-        $em->flush($contact->getGroup());
+        $contract->getGroup()->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+        $em->flush($contract->getGroup());
 
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
@@ -1607,7 +1607,7 @@ class PayCase extends BaseTestCase
         $firstAvailableDay = $this->getDomElement('#ui-datepicker-div .ui-datepicker-days-cell-over');
         $firstAvailableDay->click();
 
-        $lastOrder = $em->getRepository('DataBundle:Order')->getLastDTRPaymentByContract($contact);
+        $lastOrder = $em->getRepository('DataBundle:Order')->getLastPaidOrderByContract($contract);
         $firstAvailableStartDate = clone $lastOrder->getCreatedAt();
         $firstAvailableStartDate->modify(
             '+' . $this->getContainer()->getParameter('dod_dtr_payment_rolling_window') . ' days'
@@ -1627,9 +1627,9 @@ class PayCase extends BaseTestCase
 
         $errors = $this->getDomElements('#pay-popup .attention-box li', 'Should be displayed error');
         $this->assertEquals(
-            'payment.start_date.error.outside.rolling_window',
+            'payment.start_date.error.outside_rolling_window',
             $errors[0]->getText(),
-            'Should be displayed error with text "payment.start_date.error.outside.rolling_window"'
+            'Should be displayed error with text "payment.start_date.error.outside_rolling_window"'
         );
     }
 
