@@ -18,6 +18,22 @@
                 <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
+            <trans-unit id="create.csv.mapping">
+                <source>create.csv.mapping</source>
+                <target>Create CSV mapping</target>
+            </trans-unit>
+            <trans-unit id="group.edit">
+                <source>group.edit</source>
+                <target>Edit Group</target>
+            </trans-unit>
+            <trans-unit id="upload.csv.file">
+                <source>upload.csv.file</source>
+                <target>Upload CSV file</target>
+            </trans-unit>
+            <trans-unit id="map.csv.file">
+                <source>map.csv.file</source>
+                <target>Map CSV file</target>
+            </trans-unit>
             <trans-unit id="admin.butch.run.success">
                 <source>admin.butch.run.success-%NUMBER%</source>
                 <target>%NUMBER% payments added to job list</target>

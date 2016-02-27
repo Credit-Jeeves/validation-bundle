@@ -1,0 +1,31 @@
+{% extends 'RjAdminBundle::standard_layout.html.twig' %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a>
+        <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{{ url('admin_rj_group_edit', {'id': group.id }) }}">{{ 'group.edit'|trans }}</a>
+        <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{{ url('admin_upload_csv', {'id': group.id }) }}">{{ 'upload.csv.file'|trans }}</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ 'map.csv.file'|trans }}</h1>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{
+        include(
+            'LandlordBundle:Accounting:matchFileTable.html.twig',
+            {
+                'data': data,
+                'form': form,
+            }
+        )
+    }}
+    {{ form_rest(form) }}
+{% endblock %}
