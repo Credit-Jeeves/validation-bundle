@@ -80,11 +80,10 @@ class MappedLoader implements PropertyLoaderInterface
 
         $this->logger->info(
             sprintf(
-                'Starting process load property from Import#%d for extProperty#%s',
-                $import->getId(),
-                $externalPropertyId
+                'Starting process load property from Import#%d.',
+                $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup(), 'additional_parameter' => $externalPropertyId]
         );
 
         $iterableResult = $this->em
@@ -99,11 +98,10 @@ class MappedLoader implements PropertyLoaderInterface
 
         $this->logger->info(
             sprintf(
-                'Finished process load property from Import#%d for extProperty#%s',
-                $import->getId(),
-                $externalPropertyId
+                'Finished process load property from Import#%d.',
+                $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup(), 'additional_parameter' => $externalPropertyId]
         );
     }
 
@@ -114,7 +112,10 @@ class MappedLoader implements PropertyLoaderInterface
     {
         $this->logger->debug(
             sprintf('Start processing ImportProperty#%d', $importProperty->getId()),
-            ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
         );
 
         try {
@@ -138,7 +139,10 @@ class MappedLoader implements PropertyLoaderInterface
         } catch (ImportException $e) {
             $this->logger->error(
                 sprintf('%s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()),
-                ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                [
+                    'group' => $importProperty->getImport()->getGroup(),
+                    'additional_parameter' => $importProperty->getExternalPropertyId()
+                ]
             );
             $importProperty->setStatus(ImportPropertyStatus::ERROR);
             $importProperty->setErrorMessages([
@@ -152,7 +156,10 @@ class MappedLoader implements PropertyLoaderInterface
                 $importProperty->getId(),
                 $importProperty->getStatus()
             ),
-            ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
         );
         $importProperty->setProcessed(true);
     }
@@ -180,7 +187,10 @@ class MappedLoader implements PropertyLoaderInterface
                     'Address is invalid for ImportProperty#%d',
                     $importProperty->getId()
                 ),
-                ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                [
+                    'group' => $importProperty->getImport()->getGroup(),
+                    'additional_parameter' => $importProperty->getExternalPropertyId()
+                ]
             );
 
             throw new ImportInvalidArgumentException($message);
@@ -217,7 +227,10 @@ class MappedLoader implements PropertyLoaderInterface
                     $propertyMapping->getExternalPropertyId(),
                     $importProperty->getExternalPropertyId()
                 ),
-                ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                [
+                    'group' => $importProperty->getImport()->getGroup(),
+                    'additional_parameter' => $importProperty->getExternalPropertyId()
+                ]
             );
 
             throw new ImportInvalidArgumentException($message);
@@ -231,7 +244,10 @@ class MappedLoader implements PropertyLoaderInterface
             } catch (\RuntimeException $e) {
                 $message = $this->logger->warning(
                     $e->getMessage(),
-                    ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                    [
+                        'group' => $importProperty->getImport()->getGroup(),
+                        'additional_parameter' => $importProperty->getExternalPropertyId()
+                    ]
                 );
                 throw new ImportLogicException($message);
             }
@@ -265,7 +281,10 @@ class MappedLoader implements PropertyLoaderInterface
                         'Unit#%d found by external unit id and group but do not belong to processing property',
                         $unitMapping->getUnit()->getId()
                     ),
-                    ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                    [
+                        'group' => $importProperty->getImport()->getGroup(),
+                        'additional_parameter' => $importProperty->getExternalPropertyId()
+                    ]
                 );
                 throw new ImportLogicException($message);
             }
@@ -282,7 +301,10 @@ class MappedLoader implements PropertyLoaderInterface
                             'Unit#%d found by group and name should have corresponding mapping',
                             $unit->getId()
                         ),
-                        ['group_id' => $importProperty->getImport()->getGroup()->getId()]
+                        [
+                            'group' => $importProperty->getImport()->getGroup(),
+                            'additional_parameter' => $importProperty->getExternalPropertyId()
+                        ]
                     );
                     throw new ImportLogicException($message);
                 }

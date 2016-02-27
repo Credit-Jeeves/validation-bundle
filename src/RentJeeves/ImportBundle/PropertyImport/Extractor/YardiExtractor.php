@@ -40,7 +40,7 @@ class YardiExtractor implements ApiExtractorInterface
 
     /**
      * @param YardiResidentDataManager $residentDataManager
-     * @param LoggerInterface $logger
+     * @param LoggerInterface          $logger
      */
     public function __construct(YardiResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
@@ -59,17 +59,14 @@ class YardiExtractor implements ApiExtractorInterface
             );
         }
         $this->logger->info(
-            sprintf(
-                'Starting process Yardi extractData for extPropertyId#%s',
-                $this->externalPropertyId
-            ),
-            ['group_id' => $this->group->getId()]
+            'Starting process Yardi extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
         if (!$this->group->getIntegratedApiSettings() instanceof YardiSettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for YardiExtractor.',
-                ['group_id' => $this->group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
@@ -86,7 +83,7 @@ class YardiExtractor implements ApiExtractorInterface
                     $externalPropertyId,
                     $e->getMessage()
                 ),
-                ['group_id' => $this->group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);

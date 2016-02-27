@@ -31,7 +31,7 @@ class ResmanExtractor implements ApiExtractorInterface
 
     /**
      * @param ResmanResidentDataManager $residentDataManager
-     * @param LoggerInterface        $logger
+     * @param LoggerInterface           $logger
      */
     public function __construct(ResmanResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
@@ -50,17 +50,14 @@ class ResmanExtractor implements ApiExtractorInterface
             );
         }
         $this->logger->info(
-            sprintf(
-                'Starting process Resman extractData for extPropertyId#%s',
-                $this->externalPropertyId
-            ),
-            ['group_id' => $this->group->getId()]
+            'Starting process Resman extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
         if (!$this->group->getIntegratedApiSettings() instanceof ResManSettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for ResmanExtractor.',
-                ['group_id' => $this->group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
@@ -73,11 +70,10 @@ class ResmanExtractor implements ApiExtractorInterface
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
-                    'Can`t get data from Resman for ExternalPropertyId="%s". Details: %s',
-                    $this->externalPropertyId,
+                    'Can`t get data from Resman. Details: %s',
                     $e->getMessage()
                 ),
-                ['group_id' => $this->group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
@@ -85,20 +81,14 @@ class ResmanExtractor implements ApiExtractorInterface
 
         if (empty($data)) {
             $this->logger->info(
-                sprintf(
-                    'Returned response for extPropertyId#%s is empty.',
-                    $this->externalPropertyId
-                ),
-                ['group_id' => $this->group->getId()]
+                'Returned response is empty.',
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
         }
 
         $this->logger->info(
-            sprintf(
-                'Finished process extractData for extPropertyId#%s',
-                $this->externalPropertyId
-            ),
-            ['group_id' => $this->group->getId()]
+            'Finished process extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
         return $data;

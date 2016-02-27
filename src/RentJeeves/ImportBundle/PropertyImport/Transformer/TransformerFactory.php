@@ -128,7 +128,7 @@ class TransformerFactory
     {
         $this->logger->debug(
             sprintf('Found className for custom Transformer : "%s".', $className),
-            ['group_id' => $group->getId()]
+            ['group' => $group->getId()]
         );
 
         $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
@@ -145,7 +145,7 @@ class TransformerFactory
                     'Custom transformer for this Group must be override "%s".',
                     get_class($baseTransformer)
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);
@@ -174,7 +174,7 @@ class TransformerFactory
                     'Not found any files with name "%s.php" in all directories for custom transformers.',
                     $className
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);
@@ -190,7 +190,7 @@ class TransformerFactory
                 $customFilePath,
                 $className
             ),
-            ['group_id' => $group->getId()]
+            ['group' => $group]
         );
 
         include_once $customFilePath;
@@ -204,7 +204,7 @@ class TransformerFactory
                     $customTransformerClass,
                     $customFilePath
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);

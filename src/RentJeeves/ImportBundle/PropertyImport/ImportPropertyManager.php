@@ -70,14 +70,14 @@ class ImportPropertyManager
                     ImportModelType::PROPERTY,
                     $import->getImportType()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
             throw new ImportLogicException($message);
         }
 
         $this->logger->info(
-            sprintf('Start import data for Import#%d and extPropertyId#%s.', $import->getId(), $additionalParameter),
-            ['group_id' => $group->getId()]
+            sprintf('Start import data for Import#%d.', $import->getId()),
+            ['group' => $group, 'additional_parameter' => $additionalParameter]
         );
         try {
             $extractor = $this->extractorBuilder
@@ -86,24 +86,22 @@ class ImportPropertyManager
                 ->build();
             $this->logger->info(
                 sprintf(
-                    'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for extract data.',
+                    'ImportPropertyManager for Import#%d will use "%s" for extract data.',
                     $import->getId(),
-                    $additionalParameter,
                     get_class($extractor)
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
             $extractedData = $extractor->extractData();
             if (false === empty($extractedData)) {
                 $transformer = $this->transformerFactory->getTransformer($group, $additionalParameter);
                 $this->logger->info(
                     sprintf(
-                        'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for transform data.',
+                        'ImportPropertyManager for Import#%d will use "%s" for transform data.',
                         $import->getId(),
-                        $additionalParameter,
                         get_class($transformer)
                     ),
-                    ['group_id' => $group->getId()]
+                    ['group' => $group, 'additional_parameter' => $additionalParameter]
                 );
                 $transformer->transformData($extractedData, $import);
 
@@ -112,22 +110,20 @@ class ImportPropertyManager
                     sprintf(
                         'ImportPropertyManager for Import#%d will use "%s" for load data.',
                         $import->getId(),
-                        $additionalParameter,
                         get_class($loader)
                     ),
-                    ['group_id' => $group->getId()]
+                    ['group' => $group, 'additional_parameter' => $additionalParameter]
                 );
                 $loader->loadData($import, $additionalParameter);
             }
         } catch (ImportException $e) {
             $this->logger->info(
                 sprintf(
-                    'Import data for Import#%d and extPropertyId#%s is finished with error : %s.',
+                    'Import data for Import#%d is finished with error : %s.',
                     $import->getId(),
-                    $additionalParameter,
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
 
             return;
@@ -135,11 +131,10 @@ class ImportPropertyManager
 
         $this->logger->info(
             sprintf(
-                'Import data for Import#%d and extPropertyId#%s is finished.',
-                $import->getId(),
-                $additionalParameter
+                'Import data for Import#%d is finished.',
+                $import->getId()
             ),
-            ['group_id' => $group->getId()]
+            ['group' => $group, 'additional_parameter' => $additionalParameter]
         );
     }
 }

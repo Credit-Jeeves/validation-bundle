@@ -48,7 +48,7 @@ class MRITransformer implements TransformerInterface
                 'Starting process transformData for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
 
         /** @var Value $accountingSystemRecord */
@@ -85,7 +85,7 @@ class MRITransformer implements TransformerInterface
                 'Finished process transformData for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
     }
 
