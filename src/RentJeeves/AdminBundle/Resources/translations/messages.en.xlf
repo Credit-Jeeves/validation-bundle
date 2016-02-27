@@ -302,6 +302,10 @@
                 <source>admin.group_settings.label.show_rent_wizard</source>
                 <target>Fill Rent on Wizard</target>
             </trans-unit>
+            <trans-unit id="admin.group_settings.label.max_limit_per_month">
+                <source>admin.group_settings.label.max_limit_per_month</source>
+                <target>Max Limit per month</target>
+            </trans-unit>
             <trans-unit id="admin.import_group_settings.label.source">
                 <source>admin.import_group_settings.label.source</source>
                 <target>Source</target>
