@@ -2,9 +2,11 @@
 
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as AccountData;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -21,16 +23,23 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, C
     /** @var ReportLoader */
     protected $reportLoader;
 
-    /** @var  ContractRegistryManager */
+    /** @var ContractRegistryManager */
     protected $contractRegistry;
+
+    /** @var RemoteDepositLoader */
+    protected $remoteDepositLoader;
 
     /**
      * @param ReportLoader $reportLoader
      */
-    public function __construct(ReportLoader $reportLoader, ContractRegistryManager $contractRegistry)
-    {
+    public function __construct(
+        ReportLoader $reportLoader,
+        ContractRegistryManager $contractRegistry,
+        RemoteDepositLoader $remoteDepositLoader
+    ) {
         $this->reportLoader = $reportLoader;
         $this->contractRegistry = $contractRegistry;
+        $this->remoteDepositLoader = $remoteDepositLoader;
     }
 
     /**
@@ -127,5 +136,13 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, C
     public function registerContract(Contract $contract, DepositAccount $depositAccount)
     {
         $this->contractRegistry->registerContract($contract, $depositAccount);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadScannedChecks(Group $group, \DateTime $date)
+    {
+        return $this->remoteDepositLoader->loadScannedChecks($group, $date);
     }
 }

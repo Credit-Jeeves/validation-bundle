@@ -19,6 +19,12 @@ div.error-message {
     color: red;
 }
 
+div.info-message {
+    margin: 5px 0 5px 0;
+    color: green;
+    font-weight: bold;
+}
+
 .search-button {
     background-image: url("/bundles/rjpublic/images/sprite-icons.png");
     margin: 5px 0 5px 0;

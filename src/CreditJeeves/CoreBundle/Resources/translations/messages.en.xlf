@@ -1632,6 +1632,18 @@
                 <source>landlord.scanning.lease_list.fields_error</source>
                 <target>Fields 'email' and 'address' should contain 3 or more characters.</target>
             </trans-unit>
+            <trans-unit id="landlord.scanning.process_scan">
+                <source>landlord.scanning.process_scan</source>
+                <target>Process Scan</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.process_scan.result">
+                <source>landlord.scanning.process_scan.result</source>
+                <target>%COUNT% checks have been successfully loaded.</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.process_scan.error">
+                <source>landlord.scanning.process_scan.error</source>
+                <target>An error occurred while processing scanned checks.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

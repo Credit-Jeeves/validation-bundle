@@ -9,6 +9,10 @@ function LeaseListViewModel() {
     self.errorMessage = ko.observable('');
     self.isUpdatingData = ko.observable(false);
 
+    self.processedInfoMessage = ko.observable('');
+    self.processedErrorMessage = ko.observable('');
+    self.isProcessingScans = ko.observable(false);
+
     self.contracts = ko.observableArray([]);
 
     /**
@@ -44,6 +48,30 @@ function LeaseListViewModel() {
             },
             complete: function (data) {
                 self.isUpdatingData(false);
+            }
+        });
+    }
+
+    /**
+     * Load ProfitStars scans
+     */
+    self.processScan = function () {
+        self.processedErrorMessage('');
+        self.processedInfoMessage('');
+        self.isProcessingScans(true);
+
+        $.ajax({
+            url: Routing.generate('landlord_scanning_process_scan'),
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                self.processedInfoMessage(Translator.trans('landlord.scanning.process_scan.result', {'COUNT': data.count}));
+            },
+            error: function (data) {
+                self.processedErrorMessage(Translator.trans('landlord.scanning.process_scan.error'));
+            },
+            complete: function (data) {
+                self.isProcessingScans(false);
             }
         });
     }
