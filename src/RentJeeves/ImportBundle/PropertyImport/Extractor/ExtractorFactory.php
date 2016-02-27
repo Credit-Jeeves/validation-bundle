@@ -2,7 +2,11 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
 
 /**
  * Service`s name "import.property.extractor_factory"
@@ -10,16 +14,26 @@ use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 class ExtractorFactory
 {
     /**
-     * @var array
+     * @var array Assoc array, where
+     *  key = AccountingSystem`s name
+     *  value = service which implements ApiExtractorInterface
      */
-    protected $supportedAccountingSystems;
+    protected $supportedApiExtractors;
 
     /**
-     * @param array $supportedAccountingSystems
+     * @var ApiExtractorInterface
      */
-    public function __construct(array $supportedAccountingSystems)
+    protected $csvExtractor;
+
+    /**
+     * @param array $supportedApiExtractors
+     */
+    public function __construct(array $supportedApiExtractors)
+        //@TODO: uncomment in RT-2034
+//            public function __construct(array $supportedApiExtractors, CsvExtractorInterface $csvExtractor)
     {
-        $this->supportedAccountingSystems = $supportedAccountingSystems;
+        $this->supportedApiExtractors = $supportedApiExtractors;
+//        $this->csvExtractor = $csvExtractor;
     }
 
     /**
@@ -27,20 +41,32 @@ class ExtractorFactory
      *
      * This interface is used in the property import
      *
-     * @param string $accountingSystemName
+     * @param Group $group
      *
-     * @throws ImportInvalidArgumentException if accountingSystem`s name is not supported
+     * @throws ImportInvalidArgumentException group has incorrect settings for import
      *
      * @return ExtractorInterface
      */
-    public function getExtractor($accountingSystemName)
+    public function getExtractor(Group $group)
     {
-        if (false === in_array($accountingSystemName, array_keys($this->supportedAccountingSystems))) {
+        if (null === $importSettings = $group->getImportSettings()) {
             throw new ImportInvalidArgumentException(
-                sprintf('ExtractorFactory: Accounting System with name "%s" is not supported.', $accountingSystemName)
+                sprintf('Group#%d doesn`t have settings for import.', $group->getId())
             );
         }
 
-        return $this->supportedAccountingSystems[$accountingSystemName];
+        if (ImportSource::CSV === $importSettings->getSource()) {
+            return $this->csvExtractor;
+        } else {
+            $accountingSystemName = $group->getHolding()->getAccountingSystem();
+
+            if (false === in_array($accountingSystemName, array_keys($this->supportedApiExtractors))) {
+                throw new ImportInvalidArgumentException(
+                    sprintf('ExtractorFactory: Accounting System with name "%s" is not supported.', $accountingSystemName)
+                );
+            }
+
+            return $this->supportedApiExtractors[$accountingSystemName];
+        }
     }
 }

@@ -2,17 +2,23 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Services\MRI\ResidentDataManager as MRIResidentDataManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.mri"
  */
-class MRIExtractor implements ExtractorInterface
+class MRIExtractor implements ApiExtractorInterface
 {
+    use SetUpGroupTrait;
+    use SetUpExternalPropertyIdTrait;
+
     /**
      * @var MRIResidentDataManager
      */
@@ -36,37 +42,42 @@ class MRIExtractor implements ExtractorInterface
     /**
      * {@inheritdoc}
      */
-    public function extractData(Group $group, $externalPropertyId)
+    public function extractData()
     {
+        if (null === $this->group || null === $this->externalPropertyId) {
+            throw new ImportLogicException(
+                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+            );
+        }
         $this->logger->info(
             sprintf(
                 'Starting process MRI extractData for extPropertyId#%s',
-                $externalPropertyId
+                $this->externalPropertyId
             ),
-            ['group_id' => $group->getId()]
+            ['group_id' => $this->group->getId()]
         );
 
-        if (!$group->getIntegratedApiSettings() instanceof MRISettings) {
+        if (!$this->group->getIntegratedApiSettings() instanceof MRISettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for MRIExtractor.',
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
 
             throw new ImportExtractorException($message);
         }
 
-        $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
+        $this->residentDataManager->setSettings($this->group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getResidentTransactions($externalPropertyId);
+            $data = $this->residentDataManager->getResidentTransactions($this->externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
                     'Can`t get data from MRI for ExternalPropertyId="%s". Details: %s',
-                    $externalPropertyId,
+                    $this->externalPropertyId,
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
 
             throw new ImportExtractorException($message);
@@ -76,18 +87,18 @@ class MRIExtractor implements ExtractorInterface
             $this->logger->info(
                 sprintf(
                     'Returned response for extPropertyId#%s is empty.',
-                    $externalPropertyId
+                    $this->externalPropertyId
                 ),
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
         }
 
         $this->logger->info(
             sprintf(
                 'Finished process extractData for extPropertyId#%s',
-                $externalPropertyId
+                $this->externalPropertyId
             ),
-            ['group_id' => $group->getId()]
+            ['group_id' => $this->group->getId()]
         );
 
         return $data;

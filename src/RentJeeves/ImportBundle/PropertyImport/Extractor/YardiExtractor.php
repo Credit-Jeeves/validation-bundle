@@ -10,12 +10,19 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager as YardiResi
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.yardi"
  */
-class YardiExtractor implements ExtractorInterface
+class YardiExtractor implements ApiExtractorInterface
 {
+    use SetUpGroupTrait;
+    use SetUpExternalPropertyIdTrait;
+
     /**
      * @var YardiResidentDataManager
      */
@@ -44,27 +51,31 @@ class YardiExtractor implements ExtractorInterface
     /**
      * {@inheritdoc}
      */
-    public function extractData(Group $group, $externalPropertyId)
+    public function extractData()
     {
-        $this->group = $group;
+        if (null === $this->group || null === $this->externalPropertyId) {
+            throw new ImportLogicException(
+                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+            );
+        }
         $this->logger->info(
             sprintf(
-                'Starting process Yardi extractData for externalPropertyID#%s',
-                $externalPropertyId
+                'Starting process Yardi extractData for extPropertyId#%s',
+                $this->externalPropertyId
             ),
             ['group_id' => $this->group->getId()]
         );
 
-        if (!$group->getIntegratedApiSettings() instanceof YardiSettings) {
+        if (!$this->group->getIntegratedApiSettings() instanceof YardiSettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for YardiExtractor.',
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
 
             throw new ImportExtractorException($message);
         }
 
-        $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
+        $this->residentDataManager->setSettings($this->group->getIntegratedApiSettings());
 
         try {
             $data = $this->getFullResidentsList($externalPropertyId);
