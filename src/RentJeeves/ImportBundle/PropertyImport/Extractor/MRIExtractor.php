@@ -8,16 +8,16 @@ use RentJeeves\ExternalApiBundle\Services\MRI\ResidentDataManager as MRIResident
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpExternalPropertyIdTrait;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetUpGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.mri"
  */
 class MRIExtractor implements ApiExtractorInterface
 {
-    use SetUpGroupTrait;
-    use SetUpExternalPropertyIdTrait;
+    use SetupGroupTrait;
+    use SetupExternalPropertyIdTrait;
 
     /**
      * @var MRIResidentDataManager
