@@ -130,6 +130,31 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\Groups({"payRent"})
+     * @Serializer\SerializedName("paymentMinStartDate")
+     * @Serializer\Type("DateTime<'m/d/Y'>")
+     *
+     * @var \DateTime
+     */
+    protected $paymentMinStartDate;
+
+    /**
+     * @param \DateTime $paymentMinStartDate
+     */
+    public function setPaymentMinStartDate(\DateTime $paymentMinStartDate)
+    {
+        $this->paymentMinStartDate = $paymentMinStartDate;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getPaymentMinStartDate()
+    {
+        return $this->paymentMinStartDate;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getDueDate()

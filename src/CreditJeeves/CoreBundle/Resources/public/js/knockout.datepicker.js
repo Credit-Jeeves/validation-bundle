@@ -26,6 +26,15 @@ ko.bindingHandlers.datepicker = {
             el.datepicker("destroy");
         });
 
+        //handle the options changing
+        ko.utils.registerEventHandler(element, "updateOptions", function (event, newOptions) {
+            for (var option in newOptions) {
+                if (newOptions.hasOwnProperty(option)) {
+                    el.datepicker("option", option, newOptions[option]);
+                }
+            }
+        });
+
         el.datepicker(options);
     },
     update: function(element, valueAccessor) {

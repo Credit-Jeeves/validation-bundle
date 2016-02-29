@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -161,7 +162,7 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(2, $errors);
+        $this->assertCount(1, $errors);
         $this->assertEquals('payment.start_date.error.past', $errors[0]->getText());
 
         // correct case
@@ -1560,6 +1561,76 @@ class PayCase extends BaseTestCase
             ->findOneByName('Test card payment');
         $this->assertNotNull($paymentSource, 'Payment source is not created');
         $this->assertEquals('8769', $paymentSource->getLastFour(), 'Payment source last 4 digits should equal 8769');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldDisabledRollingWindowAndAssertManualInputStartDateForDTRPayments()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+        $this->assertNotNull($tenant, 'tenant11@example.com not found');
+        $contract = $em->getRepository('RjDataBundle:Contract')->find('9');
+        $this->assertEquals(
+            $tenant->getId(),
+            $contract->getTenant()->getId(),
+            'Check fixtures, contract #9 should belong tenant with email "tenant11@example.com"'
+        );
+        $contract->getGroup()->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+        $em->flush($contract->getGroup());
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton($this->payButtonName);
+        $popupDialog = $this->getDomElement('#pay-popup');
+        $this->assertTrue($popupDialog->isVisible(), 'Popup dialog should be visible');
+
+        $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype', 'Payment type form should exist');
+
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '10999',
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+            ]
+        );
+
+        $startDateInput = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_start_date');
+        $startDateInput->click();
+        $datePicker = $this->getDomElement('#ui-datepicker-div');
+        $this->assertTrue($datePicker->isVisible(), 'Datepicker should be visible');
+        $firstAvailableDay = $this->getDomElement('#ui-datepicker-div .ui-datepicker-days-cell-over');
+        $firstAvailableDay->click();
+
+        $lastOrder = $em->getRepository('DataBundle:Order')->getLastPaidOrderByContract($contract);
+        $firstAvailableStartDate = clone $lastOrder->getCreatedAt();
+        $firstAvailableStartDate->modify(
+            '+' . $this->getContainer()->getParameter('dod_dtr_payment_rolling_window') . ' days'
+        );
+        $this->assertEquals(
+            $firstAvailableStartDate->format('n/j/Y'),
+            $startDateInput->getValue()
+        );
+        $startDateInput->setValue($firstAvailableStartDate->modify('-1 day')->format('n/j/Y'));
+
+        $form->click();
+        $this->session->wait(100);
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
+
+        $errors = $this->getDomElements('#pay-popup .attention-box li', 'Should be displayed error');
+        $this->assertEquals(
+            'payment.start_date.error.outside_rolling_window',
+            $errors[0]->getText(),
+            'Should be displayed error with text "payment.start_date.error.outside_rolling_window"'
+        );
     }
 
     /**

@@ -1,56 +1,36 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
-use RentJeeves\CheckoutBundle\Constraint\DayRange;
-use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Constraint as CheckoutAssert;
 use RentJeeves\CheckoutBundle\Constraint\StartDateValidator;
 use RentJeeves\CoreBundle\DateTime;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolver;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorInterface;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PaymentBalanceOnlyType extends PaymentType
 {
     const NAME = 'rentjeeves_checkoutbundle_paymentbalanceonlytype';
 
-    protected $em;
-
-    public function __construct(
-        $oneTimeUntilValue,
-        array $paidFor,
-        $dueDays,
-        $em,
-        $openDay,
-        $closeDay,
-        AttributeGeneratorInterface $attributes
-    ) {
-        parent::__construct(
-            $oneTimeUntilValue,
-            $paidFor,
-            $dueDays,
-            $openDay,
-            $closeDay,
-            $attributes
-        );
-
-        $this->em = $em;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilder $builder, array $options)
     {
-        if ($this->attributes->isMobile()) {
+        /** @var AttributeGeneratorInterface $attributes */
+        $attributes = $options['attributes'];
+
+        if ($attributes->isMobile()) {
             $builder->add(
                 'paymentAccount',
                 'choice',
                 [
                     'choices' => [],
-                    'attr' => $this->attributes->paymentAccountAttrs(),
+                    'attr' => $attributes->paymentAccountAttrs(),
                     'required' => false,
                 ]
             );
@@ -86,40 +66,34 @@ class PaymentBalanceOnlyType extends PaymentType
                 'widget'          => 'single_text',
                 'format'          => 'MM/dd/yyyy',
                 'empty_data'      => '',
-                'attr'            => $this->attributes->startDateAttrs(
-                    StartDateValidator::isPastCutoffTime(new \DateTime(), $this->oneTimeUntilValue)
+                'attr'            => $attributes->startDateAttrs(
+                    StartDateValidator::isPastCutoffTime(new \DateTime(), $options['one_time_until_value'])
                 ),
                 'invalid_message' => 'checkout.error.date.valid',
                 'constraints'     => [
-                    new Date(
+                    new Assert\Date(
                         [
                             'groups'  => ['one_time'],
                             'message' => 'checkout.error.date.valid',
                         ]
                     ),
-                    new StartDate(
+                    new CheckoutAssert\StartDate(
                         [
                             'groups'            => [
                                 'recurring',
                                 'one_time'
                             ],
-                            'oneTimeUntilValue' => $this->oneTimeUntilValue,
+                            'oneTimeUntilValue' => $options['one_time_until_value'],
                         ]
                     ),
-                    new DayRange(
+                    new CheckoutAssert\DayRange(
                         [
                             'groups' =>[
                                 'recurring',
                                 'one_time'
                             ],
-                            'openDay' => $this->openDay,
-                            'closeDay' => $this->closeDay
-                        ]
-                    ),
-                    new Callback(
-                        [
-                            'groups'  => ['one_time'],
-                            'methods' => [[$this, 'isLaterOrEqualNow']]
+                            'openDay' => $options['open_day'],
+                            'closeDay' => $options['close_day']
                         ]
                     ),
                 ]
@@ -130,43 +104,44 @@ class PaymentBalanceOnlyType extends PaymentType
             'next',
             'submit',
             [
-                'attr' => $this->attributes->submitAttrs()
+                'attr' => $attributes->submitAttrs()
             ]
         );
 
         $builder->add(
             'paymentAccountId',
             'hidden',
-            array(
+            [
                 'mapped' => false,
-                'attr' => $this->attributes->paymentAccountIdAttrs()
-            )
+                'attr' => $attributes->paymentAccountIdAttrs()
+            ]
         );
         $builder->add(
             'contractId',
             'hidden',
-            array(
+            [
                 'mapped' => false,
-                'attr' => $this->attributes->contractIdAttrs()
-            )
+                'attr' => $attributes->contractIdAttrs()
+            ]
         );
         $builder->add(
             'id',
             'hidden',
-            array(
-                'attr' => $this->attributes->idAttrs()
-            )
+            [
+                'attr' => $attributes->idAttrs()
+            ]
         );
 
         $builder->remove('ends');
 
-        $self = $this;
+        $em = $options['em'];
+
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($self) {
+            function (FormEvent $event) use ($em) {
 
                 $contractId = $event->getForm()->get('contractId')->getData();
-                $contract = $self->em->getRepository('RjDataBundle:Contract')
+                $contract = $em->getRepository('RjDataBundle:Contract')
                     ->find($contractId);
 
                 $paymentEntity = $event->getForm()->getData();
@@ -188,16 +163,20 @@ class PaymentBalanceOnlyType extends PaymentType
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        parent::setDefaultOptions($resolver);
+
+        $resolver->setDefaults([
                 'cascade_validation'    => true,
                 'data_class'            => 'RentJeeves\DataBundle\Entity\Payment',
                 'validation_groups'     => [PaymentTypeEnum::ONE_TIME],
-            ]
-        );
+        ]);
+
+        $resolver->setRequired(['em']);
+
+        $resolver->setAllowedTypes(['em' => 'Doctrine\Common\Persistence\ObjectManager']);
     }
 }
