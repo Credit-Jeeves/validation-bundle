@@ -6,8 +6,11 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Enum\ImportModelType;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
 use RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager;
+use RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory;
 use RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -28,9 +31,9 @@ class ImportPropertyManagerCase extends UnitTestBase
         $import->setImportType(ImportModelType::CONTRACT);
 
         $propertyManager = new ImportPropertyManager(
-            $this->getExtractorFactoryMock(),
+            $this->getExtractorBuilderMock(),
             $this->getTransformerFactoryMock(),
-            $this->getPropertyLoaderMock(),
+            $this->getLoaderFactoryMock(),
             $this->getLoggerMock()
         );
         $propertyManager->import($import, 'test');
@@ -51,17 +54,18 @@ class ImportPropertyManagerCase extends UnitTestBase
         $import->setGroup($group);
         $import->setImportType(ImportModelType::PROPERTY);
 
-        $extractorMock = $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorInterface');
+        $extractorMock = $this->getBaseMock(ExtractorInterface::class);
         $extractorMock->expects($this->once())
             ->method('extractData')
-            ->with($this->equalTo($group), $this->equalTo('testExtPropertyId'))
             ->will($this->returnValue($extData = ['testKey' => 'testValue']));
 
         $extractorFactoryMock = $this->getExtractorFactoryMock();
         $extractorFactoryMock->expects($this->once())
             ->method('getExtractor')
-            ->with($this->equalTo('testType'))
+            ->with($this->equalTo($group))
             ->will($this->returnValue($extractorMock));
+
+        $extractorBuilder = new ExtractorBuilder($extractorFactoryMock, $this->getLoggerMock());
 
         $transformerMock = $this->getBaseMock(
             '\RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface'
@@ -75,15 +79,20 @@ class ImportPropertyManagerCase extends UnitTestBase
             ->with($this->equalTo($group), $this->equalTo('testExtPropertyId'))
             ->will($this->returnValue($transformerMock));
 
-        $propertyLoaderMock = $this->getPropertyLoaderMock();
+        $propertyLoaderMock = $this->getMappedLoaderMock();
         $propertyLoaderMock->expects($this->once())
             ->method('loadData')
             ->with($this->equalTo($import), $this->equalTo('testExtPropertyId'));
 
+        $loaderFactory = $this->getLoaderFactoryMock();
+        $loaderFactory->expects($this->once())
+            ->method('getLoader')
+            ->willReturn($propertyLoaderMock);
+
         $propertyManager = new ImportPropertyManager(
-            $extractorFactoryMock,
+            $extractorBuilder,
             $transformerFactoryMock,
-            $propertyLoaderMock,
+            $loaderFactory,
             $this->getLoggerMock()
         );
         $propertyManager->import($import, 'testExtPropertyId');
@@ -94,7 +103,15 @@ class ImportPropertyManagerCase extends UnitTestBase
      */
     protected function getExtractorFactoryMock()
     {
-        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory');
+        return $this->getBaseMock(ExtractorFactory::class);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|ExtractorBuilder
+     */
+    protected function getExtractorBuilderMock()
+    {
+        return $this->getBaseMock(ExtractorBuilder::class);
     }
 
     /**
@@ -102,14 +119,22 @@ class ImportPropertyManagerCase extends UnitTestBase
      */
     protected function getTransformerFactoryMock()
     {
-        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory');
+        return $this->getBaseMock(TransformerFactory::class);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|LoaderFactory
+     */
+    protected function getLoaderFactoryMock()
+    {
+        return $this->getBaseMock(LoaderFactory::class);
     }
 
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject|MappedLoader
      */
-    protected function getPropertyLoaderMock()
+    protected function getMappedLoaderMock()
     {
-        return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader');
+        return $this->getBaseMock(MappedLoader::class);
     }
 }

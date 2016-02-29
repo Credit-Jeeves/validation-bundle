@@ -40,7 +40,7 @@ class LoaderFactory
      */
     public function getLoader(Group $group)
     {
-        if (null === $importSettings = $group->getImportSettings()) {
+        if (null === $importSettings = $group->getCurrentImportSettings()) {
             throw new ImportInvalidArgumentException(
                 sprintf('Group#%d doesn`t have settings for import.', $group->getId())
             );

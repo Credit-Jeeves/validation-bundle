@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface as Extractor;
 
 /**
  * Service`s name "import.property.extractor_factory"
@@ -44,11 +44,11 @@ class ExtractorFactory
      *
      * @throws ImportInvalidArgumentException group has incorrect settings for import
      *
-     * @return ExtractorInterface
+     * @return Extractor
      */
     public function getExtractor(Group $group)
     {
-        if (null === $importSettings = $group->getImportSettings()) {
+        if (null === $importSettings = $group->getCurrentImportSettings()) {
             throw new ImportInvalidArgumentException(
                 sprintf('Group#%d doesn`t have settings for import.', $group->getId())
             );
@@ -61,7 +61,10 @@ class ExtractorFactory
 
             if (false === in_array($accountingSystemName, array_keys($this->supportedApiExtractors))) {
                 throw new ImportInvalidArgumentException(
-                    sprintf('ExtractorFactory: Accounting System with name "%s" is not supported.', $accountingSystemName)
+                    sprintf(
+                        'ExtractorFactory: Accounting System with name "%s" is not supported.',
+                        $accountingSystemName
+                    )
                 );
             }
 

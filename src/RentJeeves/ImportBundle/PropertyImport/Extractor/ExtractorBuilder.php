@@ -6,7 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface as Extractor;
 
 /**
  * Service`s name "import.property.extractor_builder"
@@ -44,7 +44,7 @@ class ExtractorBuilder
     }
 
     /**
-     * @return ExtractorInterface
+     * @return Extractor
      */
     public function build()
     {

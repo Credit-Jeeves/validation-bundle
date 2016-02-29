@@ -26,13 +26,15 @@ class MRIExtractorCase extends UnitTestBase
         $group->setHolding($holding);
 
         $mriExtractor = new MRIExtractor($this->getMRIResidentDataManagerMock(), $this->getLoggerMock());
-        $mriExtractor->extractData($group, 'test');
+        $mriExtractor->setGroup($group);
+        $mriExtractor->setExtPropertyId('test');
+        $mriExtractor->extractData();
     }
 
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from MRI for ExternalPropertyId="test". Details: testMessage
+     * @expectedExceptionMessage Can`t get data from MRI. Details: testMessage
      */
     public function shouldThrowImportExtractorExceptionIfResidentDataManagerThrowException()
     {
@@ -48,7 +50,9 @@ class MRIExtractorCase extends UnitTestBase
             ->with($this->equalTo('test'))
             ->willThrowException(new \Exception('testMessage'));
         $mriExtractor = new MRIExtractor($dataManager, $this->getLoggerMock());
-        $mriExtractor->extractData($group, 'test');
+        $mriExtractor->setGroup($group);
+        $mriExtractor->setExtPropertyId('test');
+        $mriExtractor->extractData();
     }
 
     /**
@@ -68,7 +72,9 @@ class MRIExtractorCase extends UnitTestBase
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = ['test']));
         $mriExtractor = new MRIExtractor($dataManager, $this->getLoggerMock());
-        $actualResponse = $mriExtractor->extractData($group, 'test');
+        $mriExtractor->setGroup($group);
+        $mriExtractor->setExtPropertyId('test');
+        $actualResponse = $mriExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from MRIExtractor.');
     }
