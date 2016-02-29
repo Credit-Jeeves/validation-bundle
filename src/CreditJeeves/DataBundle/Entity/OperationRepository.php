@@ -197,17 +197,17 @@ class OperationRepository extends EntityRepository
     public function getSumPaymentsByGroupInDateMonth(Group $group, \DateTime $date)
     {
         $startDate = clone $date;
-        $startDate->modify('first day of this month')->setTime(0,0,0);
+        $startDate->modify('first day of this month')->setTime(0, 0, 0);
         $endDate = clone $date;
-        $endDate->modify('last day of this month')->setTime(23,59,59);
+        $endDate->modify('last day of this month')->setTime(23, 59, 59);
 
         $result = $this->createQueryBuilder('op')
             ->select('SUM(op.amount) AS sum_payments')
             ->innerJoin('op.contract', 'c')
             ->innerJoin('op.order', 'o')
             ->where('c.group = :group')
-            ->andWhere("op.type IN (:operationTypes)")
-            ->andWhere("o.status IN (:orderSuccessfulStatuses)")
+            ->andWhere('op.type IN (:operationTypes)')
+            ->andWhere('o.status IN (:orderSuccessfulStatuses)')
             ->andWhere('o.created_at >= :startDate')
             ->andWhere('o.created_at <= :endDate')
             ->setParameter('group', $group)

@@ -36,7 +36,7 @@ class PaymentSumLimitPerMonthDTR implements DodPaymentRuleInterface
             $this->operationRepository->getSumPaymentsByGroupInDateMonth(
                 $group,
                 $payment->getStartDate() ?: new \DateTime()
-            ) > $group->getGroupSettings()->getMaxLimitPerMonth()
+            ) + $payment->getTotal() > $group->getGroupSettings()->getMaxLimitPerMonth()
         ) {
             return false;
         }

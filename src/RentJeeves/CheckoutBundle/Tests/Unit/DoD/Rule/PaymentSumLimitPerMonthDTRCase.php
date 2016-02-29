@@ -26,6 +26,7 @@ class PaymentSumLimitPerMonthDTRCase extends UnitTestBase
         $contract->setGroup($group);
         $payment = new Payment();
         $payment->setContract($contract);
+        $payment->setTotal(100);
         $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(100));
         $this->assertTrue(
             $paymentRule->checkPayment($payment),
@@ -45,6 +46,7 @@ class PaymentSumLimitPerMonthDTRCase extends UnitTestBase
         $contract->setGroup($group);
         $payment = new Payment();
         $payment->setContract($contract);
+        $payment->setTotal(100);
         $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(100));
         $this->assertTrue(
             $paymentRule->checkPayment($payment),
@@ -59,11 +61,12 @@ class PaymentSumLimitPerMonthDTRCase extends UnitTestBase
     {
         $group = new Group();
         $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
-        $group->getGroupSettings()->setMaxLimitPerMonth(101);
+        $group->getGroupSettings()->setMaxLimitPerMonth(201);
         $contract = new Contract();
         $contract->setGroup($group);
         $payment = new Payment();
         $payment->setContract($contract);
+        $payment->setTotal(100);
         $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(100));
         $this->assertTrue(
             $paymentRule->checkPayment($payment),
@@ -78,11 +81,12 @@ class PaymentSumLimitPerMonthDTRCase extends UnitTestBase
     {
         $group = new Group();
         $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
-        $group->getGroupSettings()->setMaxLimitPerMonth(100);
+        $group->getGroupSettings()->setMaxLimitPerMonth(200);
         $contract = new Contract();
         $contract->setGroup($group);
         $payment = new Payment();
         $payment->setContract($contract);
+        $payment->setTotal(100);
         $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(100));
         $this->assertTrue(
             $paymentRule->checkPayment($payment),
@@ -102,7 +106,8 @@ class PaymentSumLimitPerMonthDTRCase extends UnitTestBase
         $contract->setGroup($group);
         $payment = new Payment();
         $payment->setContract($contract);
-        $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(101));
+        $payment->setTotal(100);
+        $paymentRule = new PaymentSumLimitPerMonthDTR($this->getOperationRepository(1));
         $this->assertFalse(
             $paymentRule->checkPayment($payment),
             'Should return false if payment\'s sum limit for current month more then limited.'
