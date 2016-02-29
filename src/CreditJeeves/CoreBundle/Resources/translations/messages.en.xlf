@@ -743,6 +743,10 @@
                 <source>tabs.rent</source>
                 <target>Pay Rent</target>
             </trans-unit>
+            <trans-unit id="tabs.scanning">
+                <source>tabs.scanning</source>
+                <target>Scanning</target>
+            </trans-unit>
             <trans-unit id="tabs.action_plan">
                 <source>tabs.action_plan</source>
                 <target>Action Plan</target>
@@ -1583,6 +1587,18 @@
             <trans-unit id="error.summary.sorry">
                 <source>error.summary.sorry</source>
                 <target>Sorry for the inconvenience :(</target>
+            </trans-unit>
+            <trans-unit id="title.scanning">
+                <source>title.scanning</source>
+                <target>Check Scanning</target>
+            </trans-unit>
+            <trans-unit id="button_title.scanning">
+                <source>button_title.scanning</source>
+                <target>Open Check Scanner</target>
+            </trans-unit>
+            <trans-unit id="waiting_for_redirect_to_scanning">
+                <source>waiting_for_redirect_to_scanning</source>
+                <target>Redirect to scanning check</target>
             </trans-unit>
         </body>
     </file>
