@@ -9,8 +9,6 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\DataBundle\Enum\ImportSource;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
