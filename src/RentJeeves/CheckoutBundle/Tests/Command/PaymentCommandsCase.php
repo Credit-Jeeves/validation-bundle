@@ -399,7 +399,6 @@ class PaymentCommandsCase extends BaseTestCase
 
         $contract = $this->getContract($em);
         $this->assertEquals(0, $contract->getIntegratedBalance());
-        exit;
     }
 
     /**
