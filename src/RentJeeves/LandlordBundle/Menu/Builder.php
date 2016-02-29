@@ -54,12 +54,14 @@ class Builder extends ContainerAware
             }
         }
 
-        $menu->addChild(
-            'tabs.scanning',
-            array(
-                'route' => 'landlord_scanning'
-            )
-        );
+        if (null !== $permission->getUser()->getHolding()->getProfitStarsSettings()) {
+            $menu->addChild(
+                'tabs.scanning',
+                array(
+                    'route' => 'landlord_scanning'
+                )
+            );
+        }
 
         switch ($sRoute) {
             case 'landlord_homepage':
