@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
 
 /**
- * @Service("form.upload_csv_file")
+ * form.upload_csv_file
  */
 class UploadCsvFileType extends Base
 {

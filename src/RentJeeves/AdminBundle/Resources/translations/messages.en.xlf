@@ -30,6 +30,14 @@
                 <source>upload.csv.file</source>
                 <target>Upload CSV file</target>
             </trans-unit>
+            <trans-unit id="csv.mapping.error.file_empty">
+                <source>csv.mapping.error.file_empty</source>
+                <target>Empty csv file</target>
+            </trans-unit>
+            <trans-unit id="csv.mapping.success">
+                <source>csv.mapping.success</source>
+                <target>You are successfully create/update csv mapping</target>
+            </trans-unit>
             <trans-unit id="map.csv.file">
                 <source>map.csv.file</source>
                 <target>Map CSV file</target>
