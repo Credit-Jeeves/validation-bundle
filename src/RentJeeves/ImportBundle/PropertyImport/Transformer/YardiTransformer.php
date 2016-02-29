@@ -105,7 +105,7 @@ class YardiTransformer implements TransformerInterface
      */
     public function getExternalBuildingId($fullResident)
     {
-       return null;
+        return null;
     }
 
     /**

@@ -27,6 +27,11 @@ class YardiExtractor implements ExtractorInterface
     protected $logger;
 
     /**
+     * @var Group
+     */
+    protected $group;
+
+    /**
      * @param YardiResidentDataManager $residentDataManager
      * @param LoggerInterface $logger
      */
@@ -41,12 +46,13 @@ class YardiExtractor implements ExtractorInterface
      */
     public function extractData(Group $group, $externalPropertyId)
     {
+        $this->group = $group;
         $this->logger->info(
             sprintf(
-                'Starting process Yardi extractData for extPropertyId#%s',
+                'Starting process Yardi extractData for externalPropertyID#%s',
                 $externalPropertyId
             ),
-            ['group_id' => $group->getId()]
+            ['group_id' => $this->group->getId()]
         );
 
         if (!$group->getIntegratedApiSettings() instanceof YardiSettings) {
@@ -65,11 +71,11 @@ class YardiExtractor implements ExtractorInterface
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
-                    'Can`t get data from Yardi for ExternalPropertyId="%s". Details: %s',
+                    'Can`t get data from Yardi for externalPropertyID "%s". Details: %s',
                     $externalPropertyId,
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
 
             throw new ImportExtractorException($message);
@@ -78,19 +84,19 @@ class YardiExtractor implements ExtractorInterface
         if (empty($data)) {
             $this->logger->info(
                 sprintf(
-                    'Returned response for extPropertyId#%s is empty.',
+                    'Returned response for externalPropertyID#%s is empty.',
                     $externalPropertyId
                 ),
-                ['group_id' => $group->getId()]
+                ['group_id' => $this->group->getId()]
             );
         }
 
         $this->logger->info(
             sprintf(
-                'Finished process extractData for extPropertyId#%s',
+                'Finished process extractData for externalPropertyID#%s',
                 $externalPropertyId
             ),
-            ['group_id' => $group->getId()]
+            ['group_id' => $this->group->getId()]
         );
 
         return $data;
@@ -137,11 +143,10 @@ class YardiExtractor implements ExtractorInterface
 
         if (empty($filteredProperties)) {
             throw new ImportExtractorException(
-                sprintf('Can\'t find external property "%s" in property configurations', $externalPropertyId)
+                sprintf('Can\'t find property by externalPropertyID "%s" in property configurations', $externalPropertyId)
             );
         }
 
-        /** @var Property $property */
         return reset($filteredProperties);
     }
 
@@ -155,7 +160,7 @@ class YardiExtractor implements ExtractorInterface
         $residents = $this->residentDataManager->getResidents($property->getCode());
         if (empty($residents)) {
             throw new ImportExtractorException(
-                sprintf('Can\'t find residents "%s" by external property id', $property->getCode())
+                sprintf('Can\'t find residents by externalPropertyID "%s"', $property->getCode())
             );
         }
 
@@ -177,13 +182,14 @@ class YardiExtractor implements ExtractorInterface
             );
         } catch (\Exception $e) {
             $message = sprintf(
-                'Can\'t get resident data for residentID:%s externalPropetyID: %s',
+                'Can\'t get resident data for residentID:%s externalPropertyID: %s error: %s',
                 $resident->getCode(),
-                $property->getCode()
+                $property->getCode(),
+                $e->getMessage()
             );
-            $this->logger->alert($message);
+            $this->logger->alert($message, ['group_id' => $this->group->getId()]);
 
-            throw new ImportExtractorException($message, $e);
+            throw new ImportExtractorException($message);
         }
     }
 }
