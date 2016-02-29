@@ -1317,9 +1317,6 @@ abstract class User extends BaseUser
     public function setIsVerified($isVerified)
     {
         $this->is_verified = $isVerified;
-        if ($isVerified === UserIsVerified::NONE) {
-            $this->verifyAttempts = 0;
-        }
 
         return $this;
     }
