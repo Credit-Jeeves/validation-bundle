@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -126,6 +127,18 @@ abstract class User extends BaseUser
     public function setSsn($ssn)
     {
         return parent::setSsn(SocialSecurityNumberFormatter::formatToDigitsOnly($ssn));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIsVerified($isVerified)
+    {
+        if ($isVerified === UserIsVerified::NONE) {
+            $this->verifyAttempts = 0;
+        }
+
+        return parent::setIsVerified($isVerified);
     }
 
     /**

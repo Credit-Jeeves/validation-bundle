@@ -33,11 +33,6 @@ abstract class Pidkiq
     protected $questions;
 
     /**
-     * @ORM\Column(type="bigint", options={"default"="0"})
-     */
-    protected $try_num = 0;
-
-    /**
      * @ORM\Column(type="string", nullable=true)
      */
     protected $session_id;
@@ -156,29 +151,6 @@ abstract class Pidkiq
     public function getCreatedAt()
     {
         return $this->created_at;
-    }
-
-    /**
-     * Set try_num
-     *
-     * @param integer $tryNum
-     * @return Pidkiq
-     */
-    public function setTryNum($tryNum)
-    {
-        $this->try_num = $tryNum;
-
-        return $this;
-    }
-
-    /**
-     * Get try_num
-     *
-     * @return integer
-     */
-    public function getTryNum()
-    {
-        return $this->try_num;
     }
 
     /**
