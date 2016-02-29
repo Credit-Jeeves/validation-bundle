@@ -420,6 +420,18 @@ abstract class User extends BaseUser
     protected $is_verified = UserIsVerified::NONE;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(
+     *     name="verify_attempts",
+     *     type="integer",
+     *     nullable=false,
+     *     options={"default"=0}
+     * )
+     */
+    protected $verifyAttempts = 0;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     protected $has_report;
@@ -1305,6 +1317,9 @@ abstract class User extends BaseUser
     public function setIsVerified($isVerified)
     {
         $this->is_verified = $isVerified;
+        if ($isVerified === UserIsVerified::NONE) {
+            $this->verifyAttempts = 0;
+        }
 
         return $this;
     }
@@ -1317,6 +1332,22 @@ abstract class User extends BaseUser
     public function getIsVerified()
     {
         return $this->is_verified;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVerifyAttempts()
+    {
+        return $this->verifyAttempts;
+    }
+
+    /**
+     * @param int $verifyAttempts
+     */
+    public function setVerifyAttempts($verifyAttempts)
+    {
+        $this->verifyAttempts = $verifyAttempts;
     }
 
     /**

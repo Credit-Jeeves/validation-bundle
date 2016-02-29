@@ -90,7 +90,7 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
                 }
 
                 if ((PidkiqStatus::BACKOFF === $model->getStatus() || PidkiqStatus::FAILURE === $model->getStatus()) &&
-                    2 < $model->getTryNum()
+                    2 < $this->getUser()->getVerifyAttempts()
                 ) {
                     $this->setIsSuccessfull(false);
                     $model->setStatus(PidkiqStatus::LOCKED);
@@ -154,7 +154,7 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
             }
         }
 
-        $this->getPidkiqModel()->setTryNum($this->getPidkiqModel()->getTryNum() + 1);
+        $this->getUser()->setVerifyAttempts($this->getUser()->getVerifyAttempts() + 1);
         $this->getPidkiqModel()->setQuestions($questions);
         $this->getPidkiqModel()->setCheckSumm($this->getPidkiqCheckSum());
         $this->getPidkiqModel()->setUser($this->getUser());

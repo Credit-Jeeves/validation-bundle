@@ -2,6 +2,7 @@
 namespace CreditJeeves\ExperianBundle\NetConnect;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Model\User;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID as PreciseIDApi;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -105,6 +106,9 @@ class PreciseIDQuestions
         return $this->questionsData;
     }
 
+    /**
+     * @return null|User
+     */
     private function getUser()
     {
         if (null === $token = $this->securityContext->getToken()) {
@@ -154,14 +158,16 @@ class PreciseIDQuestions
 
         if (!$pidiqModel->getQuestions()) {
             $pidiqModel->setUser($this->getUser());
-            if (2 < ($try = $pidiqModel->getTryNum())) {
-                $pidiqModel->setTryNum(0);
+            if (2 < ($try = $this->getUser()->getVerifyAttempts())) {
+                $this->getUser()->setVerifyAttempts(0);
                 $this->em->persist($pidiqModel);
+                $this->em->persist($this->getUser());
                 $this->em->flush();
 
                 return false;
             }
-            $pidiqModel->setTryNum($try + 1);
+            $this->getUser()->setVerifyAttempts($try + 1);
+            $this->em->persist($this->getUser());
             $this->em->persist($pidiqModel);
             $this->em->flush();
 
