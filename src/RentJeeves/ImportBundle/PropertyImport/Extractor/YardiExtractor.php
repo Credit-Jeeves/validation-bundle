@@ -143,7 +143,10 @@ class YardiExtractor implements ExtractorInterface
 
         if (empty($filteredProperties)) {
             throw new ImportExtractorException(
-                sprintf('Can\'t find property by externalPropertyID "%s" in property configurations', $externalPropertyId)
+                sprintf(
+                    'Can\'t find property by externalPropertyID "%s" in property configurations',
+                    $externalPropertyId
+                )
             );
         }
 

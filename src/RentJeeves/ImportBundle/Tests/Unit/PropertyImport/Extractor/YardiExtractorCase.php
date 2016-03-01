@@ -35,7 +35,6 @@ class YardiExtractorCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from Yardi for externalPropertyID "test". Details: Can't find property by externalPropertyID "test" in property configurations
      */
     public function shouldThrowImportExtractorExceptionIfGetPropertyConfigurationWillBeEmpty()
     {
@@ -57,7 +56,6 @@ class YardiExtractorCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from Yardi for externalPropertyID "test". Details: Can't find residents by externalPropertyID "test"
      */
     public function shouldThrowImportExtractorExceptionIfGetResidentsWillBeEmpty()
     {
@@ -84,7 +82,6 @@ class YardiExtractorCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from Yardi for externalPropertyID "test". Details: Can't get resident data for residentID: externalPropertyID: test error: Test
      */
     public function shouldThrowImportExtractorExceptionIfGetResidentDataWillBeEmpty()
     {
