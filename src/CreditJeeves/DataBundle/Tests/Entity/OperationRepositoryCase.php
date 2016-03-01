@@ -34,7 +34,7 @@ class OperationRepositoryCase extends BaseTestCase
         $operationRepo = $em->getRepository('DataBundle:Operation');
         $this->assertEquals(
             0,
-            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime()),
+            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime('2016-02-26 16:58:01')),
             'Sum should be 0 b/c we do not have any orders for this date month'
         );
         $operationsForContract9 = $em->getRepository('DataBundle:Operation')->findBy(['contract' => 9]);
@@ -67,7 +67,7 @@ class OperationRepositoryCase extends BaseTestCase
 
         $this->assertEquals(
             500,
-            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime()),
+            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime('2016-02-26 16:58:02')),
             'Sum should be 500 we have 5 operations that belongs to contracts with group#24' .
             ' and has completed orders that was created date in February of 2016'
         );
@@ -82,7 +82,7 @@ class OperationRepositoryCase extends BaseTestCase
 
         $this->assertEquals(
             400,
-            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime()),
+            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime('2016-02-26 16:58:03')),
             'Sum should be 400 we have just 4 operations that belongs to contracts with group#24' .
             ' and has completed orders that was created date in February of 2016'
         );
@@ -106,7 +106,7 @@ class OperationRepositoryCase extends BaseTestCase
 
         $this->assertEquals(
             300,
-            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime()),
+            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime('2016-02-26 16:58:04')),
             'Sum should be 300 we have 3 correct operations that belongs to contracts with group#24' .
             ' and has successfull orders that was created date in February of 2016'
         );
@@ -132,7 +132,7 @@ class OperationRepositoryCase extends BaseTestCase
 
         $this->assertEquals(
             0,
-            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime()),
+            $operationRepo->getSumPaymentsByGroupInDateMonth($group24, new \DateTime('2016-02-26 16:58:05')),
             'Sum should be 0 b/c we do not have any success orders that was created date in February of 2016'
         );
     }
