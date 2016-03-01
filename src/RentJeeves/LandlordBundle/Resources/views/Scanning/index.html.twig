@@ -28,7 +28,7 @@
         <div class="error-message" data-bind="visible: errorMessage !== null">
             <span data-bind="text: errorMessage"></span>
         </div>
-        <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isUpdatingData">
+        <img id="loading-gif" src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isUpdatingData">
         <div class="lease-table">
             <table class="properties-table zebra-grid">
                 <thead>

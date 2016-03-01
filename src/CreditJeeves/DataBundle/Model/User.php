@@ -20,6 +20,7 @@ use RentJeeves\DataBundle\Entity\UserSettings;
 use RentJeeves\DataBundle\Entity\PartnerCode;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
+use CreditJeeves\DataBundle\Entity\Holding as HoldingEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -1893,7 +1894,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return Holding
+     * @return HoldingEntity
      */
     public function getHolding()
     {
