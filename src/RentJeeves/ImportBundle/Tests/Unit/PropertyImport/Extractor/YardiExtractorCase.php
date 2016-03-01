@@ -6,6 +6,9 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -32,9 +35,8 @@ class YardiExtractorCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from Yardi for ExternalPropertyId="test". Details: testMessage
      */
-    public function shouldThrowImportExtractorExceptionIfResidentDataManagerThrowException()
+    public function shouldThrowImportExtractorExceptionIfGetPropertyConfigurationWillBeEmpty()
     {
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
@@ -44,9 +46,64 @@ class YardiExtractorCase extends UnitTestBase
 
         $dataManager = $this->getYardiResidentDataManagerMock();
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
-            ->with($this->equalTo('test'))
-            ->willThrowException(new \Exception('testMessage'));
+            ->method('getProperties')
+            ->willReturn([]);
+
+        $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
+        $yardiExtractor->extractData($group, 'test');
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
+     */
+    public function shouldThrowImportExtractorExceptionIfGetResidentsWillBeEmpty()
+    {
+        $holding = new Holding();
+        $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
+        $holding->setYardiSettings(new YardiSettings());
+        $group = new Group();
+        $group->setHolding($holding);
+        $property = new Property();
+        $property->setCode('test');
+        $dataManager = $this->getYardiResidentDataManagerMock();
+        $dataManager->expects($this->once())
+            ->method('getProperties')
+            ->willReturn([$property]);
+
+        $dataManager->expects($this->once())
+            ->method('getResidents')
+            ->willReturn([]);
+
+        $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
+        $yardiExtractor->extractData($group, 'test');
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
+     */
+    public function shouldThrowImportExtractorExceptionIfGetResidentDataWillBeEmpty()
+    {
+        $holding = new Holding();
+        $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
+        $holding->setYardiSettings(new YardiSettings());
+        $group = new Group();
+        $group->setHolding($holding);
+        $property = new Property();
+        $property->setCode('test');
+        $resident = new ResidentsResident();
+        $dataManager = $this->getYardiResidentDataManagerMock();
+        $dataManager->expects($this->once())
+            ->method('getProperties')
+            ->willReturn([$property]);
+        $dataManager->expects($this->once())
+            ->method('getResidents')
+            ->willReturn([$resident]);
+        $dataManager->expects($this->once())
+            ->method('getResidentData')
+            ->willThrowException(new \Exception('Test'));
+
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
         $yardiExtractor->extractData($group, 'test');
     }
@@ -61,43 +118,30 @@ class YardiExtractorCase extends UnitTestBase
         $holding->setYardiSettings(new YardiSettings());
         $group = new Group();
         $group->setHolding($holding);
-
+        $property = new Property();
+        $property->setCode('test');
+        $resident = new ResidentsResident();
+        $residentData = new ResidentLeaseFile();
         $dataManager = $this->getYardiResidentDataManagerMock();
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
-            ->with($this->equalTo('test'))
-            ->will($this->returnValue($expectedResponse = ['test']));
+            ->method('getProperties')
+            ->willReturn([$property]);
+        $dataManager->expects($this->once())
+            ->method('getResidents')
+            ->willReturn([$resident]);
+        $dataManager->expects($this->once())
+            ->method('getResidentData')
+            ->willReturn($residentData);
+
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $actualResponse = $yardiExtractor->extractData($group, 'test');
-
-        $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from YardiExtractor.');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldReturnEmptyResultFromYardiAndLogMessage()
-    {
-        $holding = new Holding();
-        $holding->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
-        $holding->setYardiSettings(new YardiSettings());
-        $group = new Group();
-        $group->setHolding($holding);
-
-        $dataManager = $this->getYardiResidentDataManagerMock();
-        $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
-            ->with($this->equalTo('test'))
-            ->will($this->returnValue($expectedResponse = []));
-        $logger = $this->getLoggerMock();
-        $logger->expects($this->at(1))
-            ->method('info')
-            ->with($this->equalTo('Returned response for extPropertyId#test is empty.'));
-
-        $yardiExtractor = new YardiExtractor($dataManager, $logger);
-        $actualResponse = $yardiExtractor->extractData($group, 'test');
-
-        $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from YardiExtractor.');
+        $response = $yardiExtractor->extractData($group, 'test');
+        $this->assertCount(1, $response, 'Incorrect Response from YardiExtractor.');
+        $fullResident = reset($response);
+        $this->assertInstanceOf(
+            'RentJeeves\ExternalApiBundle\Model\Yardi\FullResident',
+            $fullResident,
+            'Incorrect class inside response'
+        );
     }
 
     /**

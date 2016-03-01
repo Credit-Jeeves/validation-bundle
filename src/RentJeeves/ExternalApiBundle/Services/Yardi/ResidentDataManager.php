@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Psr\Log\LoggerInterface as Logger;
-use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient;
@@ -105,9 +104,8 @@ class ResidentDataManager implements ResidentDataManagerInterface
      * @return ResidentLeaseFile
      * @throws \Exception
      */
-    public function getResidentData(Holding $holding, $residentId, $externalPropertyId)
+    public function getResidentData($residentId, $externalPropertyId)
     {
-        $this->setSettings($holding->getExternalSettings());
         $residentClient = $this->getApiClient();
         $resident = $residentClient->getResidentData($externalPropertyId, $residentId);
 
@@ -181,6 +179,19 @@ class ResidentDataManager implements ResidentDataManagerInterface
         }
 
         return $transactionData->getProperty()->getCustomers();
+    }
+
+    /**
+     * @return array|Soap\Property[]
+     */
+    public function getProperties()
+    {
+        $response = $this->getApiClient(SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS)->getPropertyConfigurations();
+        if ($response) {
+            return $response->getProperty();
+        }
+
+        return [];
     }
 
     /**
