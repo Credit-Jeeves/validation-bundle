@@ -135,7 +135,7 @@ class MatchFileType extends AbstractType
         }
 
         if (!empty($this->defaultValue)) {
-            $builder->add('update', 'submit');
+            $builder->add('update', 'submit', ['attr' => ['class' => 'btn']]);
         } else {
             $builder->add('save', 'submit');
         }

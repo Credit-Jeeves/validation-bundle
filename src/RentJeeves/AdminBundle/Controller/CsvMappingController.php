@@ -69,20 +69,20 @@ class CsvMappingController extends BaseController
 
         if ($csvMappingCreator->isError()) {
             $request->getSession()->getFlashBag()->add(
-                'error',
+                'sonata_flash_error',
                 implode(',', $csvMappingCreator->getErrors())
             );
-            var_dump(implode(',', $csvMappingCreator->getErrors()));exit;
-            //return new RedirectResponse(
-            //    $this->generateUrl('admin_rj_group_edit', ['id' => $group->getId()])
-            //);
+
+            return new RedirectResponse(
+                $this->generateUrl('admin_upload_csv', ['id' => $group->getId()])
+            );
         }
 
         $form->handleRequest($request);
         if ($form->isValid()) {
             $csvMappingCreator->saveForm($form, $group);
             $request->getSession()->getFlashBag()->add(
-                'success',
+                'sonata_flash_success',
                 $this->getTranslator()->trans('csv.mapping.success')
             );
 
