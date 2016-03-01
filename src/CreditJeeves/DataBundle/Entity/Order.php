@@ -965,25 +965,27 @@ class Order extends Base
      */
     public function getResManUnitId()
     {
-        $unitMapping = $this->getContract()->getUnit()->getUnitMapping();
+        if (null !== $unit = $this->getContract()->getUnit()) {
+            $unitMapping = $unit->getUnitMapping();
 
-        if ($unitMapping) {
-            $externalUnitId = $unitMapping->getExternalUnitId();
-            $exceptionMessage = sprintf(
-                'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
-                $this->getId(),
-                $externalUnitId
-            );
-            if (substr_count($externalUnitId, '|') !== 2) {
-                throw new \RuntimeException($exceptionMessage);
+            if ($unitMapping) {
+                $externalUnitId = $unitMapping->getExternalUnitId();
+                $exceptionMessage = sprintf(
+                    'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
+                    $this->getId(),
+                    $externalUnitId
+                );
+                if (substr_count($externalUnitId, '|') !== 2) {
+                    throw new \RuntimeException($exceptionMessage);
+                }
+
+                list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
+                if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
+                    throw new \RuntimeException($exceptionMessage);
+                }
+
+                return $unitId;
             }
-
-            list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
-            if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
-                throw new \RuntimeException($exceptionMessage);
-            }
-
-            return $unitId;
         }
 
         return null;
