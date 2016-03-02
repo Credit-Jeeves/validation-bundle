@@ -31,6 +31,7 @@ services:
               %accounting_system.mri%: @import.property.transformer.mri
               %accounting_system.yardi%: @import.property.transformer.yardi
               %accounting_system.resman%: @import.property.transformer.resman
+              %accounting_system.amsi%: @import.property.transformer.amsi
 
     # services
     import.property.manager:
@@ -91,6 +92,13 @@ services:
 
     import.property.transformer.yardi:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.transformer.amsi:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\AMSITransformer
         public: false
         arguments:
             - @doctrine.orm.default_entity_manager
