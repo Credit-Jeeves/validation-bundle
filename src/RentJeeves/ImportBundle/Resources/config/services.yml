@@ -121,6 +121,12 @@ services:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer
         public: false
 
+    import.property.loader_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory
+        arguments:
+            - @import.property.loader.mapped
+            - @import.property.loader.unmapped
+
     import.property.loader.mapped:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader
         public: false
