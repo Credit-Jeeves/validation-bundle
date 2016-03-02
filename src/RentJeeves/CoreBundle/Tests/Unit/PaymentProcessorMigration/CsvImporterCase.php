@@ -11,10 +11,13 @@ use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 class CsvImporterCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      */
@@ -83,7 +86,7 @@ class CsvImporterCase extends BaseTestCase
                 [$this->isInstanceOf('\RentJeeves\DataBundle\Entity\AciCollectPayProfileBilling')]
             );
 
-        $importer = new CsvImporter($em, $deserializer, $validator);
+        $importer = new CsvImporter($em, $deserializer, $validator, $this->getLoggerMock());
         $importer->import('/1.csv', $holding);
 
         $errors = $importer->getErrors();
@@ -96,20 +99,6 @@ class CsvImporterCase extends BaseTestCase
     protected function getEmMock()
     {
         return $this->getMock('\Doctrine\ORM\EntityManager', [], [], '', false);
-    }
-
-    /**
-     * @return \Symfony\Component\Validator\Validator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getValidatorMock()
-    {
-        return $this->getMock(
-            '\Symfony\Component\Validator\Validator',
-            [],
-            [],
-            '',
-            false
-        );
     }
 
     /**

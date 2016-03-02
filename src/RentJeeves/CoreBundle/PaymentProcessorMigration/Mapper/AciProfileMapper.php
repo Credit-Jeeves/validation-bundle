@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\MailingAddress;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
@@ -19,6 +20,9 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class AciProfileMapper
 {
+    const MIN_LENGTH_USERNAME = 8;
+    const MAX_LENGTH_USERNAME = 32;
+
     /**
      * @var AciImportProfileMap
      */
@@ -45,8 +49,8 @@ class AciProfileMapper
     protected $merchantAccountRepo;
 
     /**
-     * @param string $businessId
-     * @param string $virtualTerminalDivisionId
+     * @param string           $businessId
+     * @param string           $virtualTerminalDivisionId
      * @param EntityRepository $repository
      */
     public function __construct($businessId, $virtualTerminalDivisionId, EntityRepository $repository)
@@ -62,7 +66,7 @@ class AciProfileMapper
      * return these models
      *
      * @param AciImportProfileMap $profileMap
-     * @param array $holdings
+     * @param array               $holdings
      *
      * @return array
      */
@@ -88,21 +92,19 @@ class AciProfileMapper
      */
     protected function mapUser()
     {
-        try {
-            return array_merge(
-                [$this->mapUserConsumerRecord()],
-                $this->mapUserAccountRecords(),
-                $this->mapUserFundingRecords()
-            );
-        } catch (CsvMapException $e) {
-            return [];
+        if (null === $cRecord = $this->mapUserConsumerRecord()) {
+            return [];  // we cannot have A or F records without a C record
         }
+
+        return array_merge(
+            [$cRecord],
+            $this->mapUserAccountRecords(),
+            $this->mapUserFundingRecords()
+        );
     }
 
     /**
      * @return null|ConsumerRecord
-     *
-     * @throws CsvMapException if we can`t get address for User
      */
     protected function mapUserConsumerRecord()
     {
@@ -114,28 +116,39 @@ class AciProfileMapper
         $consumerRecord = new ConsumerRecord();
         $consumerRecord->setProfileId($this->profile->getId());
         $consumerRecord->setBusinessId($this->rentTrackApplicaitonBusinessId);
-        $consumerRecord->setUserName(substr($user->getUsername(), 0, 32));
-        $consumerRecord->setPassword(substr($user->getUsername(), 0, 32)); // Any value
+        $userName = $this->formatUserName($user->getUsername());
+        $consumerRecord->setUserName($userName);
+        $consumerRecord->setPassword($userName);
         $consumerRecord->setConsumerFirstName($user->getFirstName());
         $consumerRecord->setConsumerLastName($user->getLastName());
         $consumerRecord->setPrimaryEmailAddress($user->getEmail());
-
+        /** @var MailingAddress $address */
         if (null !== $address = $user->getDefaultAddress()) {
-            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress((string) $address, 64));
+            // try using the default address
+            $address1 = $address->getNumber() . ' ' . $address->getStreet();
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
             $consumerRecord->setCity(substr($address->getCity(), 0, 12));
             $consumerRecord->setState($address->getArea());
             $consumerRecord->setZipCode($address->getZip());
         } else {
-            if (null === $contract = $this->getContractForUser($user)) {
-                throw new CsvMapException();
-            }
-            $property = $contract->getProperty();
-            $propertyAddress = $property->getPropertyAddress();
+            if (null !== $contract = $this->getContractForUser($user)) {
+                // otherwise use the lease address
+                $property = $contract->getProperty();
+                $propertyAddress = $property->getPropertyAddress();
 
-            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($propertyAddress->getAddress(), 64));
-            $consumerRecord->setCity(substr($propertyAddress->getCity(), 0, 12));
-            $consumerRecord->setState($propertyAddress->getState());
-            $consumerRecord->setZipCode($propertyAddress->getZip());
+                $consumerRecord->setAddress1(
+                    ShorteningAddressUtility::shrinkAddress($propertyAddress->getAddress(), 64)
+                );
+                $consumerRecord->setCity(substr($propertyAddress->getCity(), 0, 12));
+                $consumerRecord->setState($propertyAddress->getState());
+                $consumerRecord->setZipCode($propertyAddress->getZip());
+            } else {
+                // last resort, fill in a bogus address
+                $consumerRecord->setAddress1('1234 Nowhere Street');
+                $consumerRecord->setCity(substr('Santa Barbara', 0, 12));
+                $consumerRecord->setState('CA');
+                $consumerRecord->setZipCode('93101');
+            }
         }
 
         return $consumerRecord;
@@ -182,7 +195,7 @@ class AciProfileMapper
              * then do nothing.
              */
             if (null === $merchantAccountMigration || (null !== $profile = $user->getAciCollectPayProfile() and
-                $profile->hasBillingAccountForDivisionId($merchantAccountMigration->getAciDivisionId()))
+                    $profile->hasBillingAccountForDivisionId($merchantAccountMigration->getAciDivisionId()))
             ) {
                 continue;
             }
@@ -239,8 +252,12 @@ class AciProfileMapper
      */
     protected function mapGroup()
     {
+        if (null === $cRecord = $this->mapGroupConsumerRecord()) {
+            return [];  // we cannot have A or F records without a C record
+        }
+
         return array_merge(
-            [$this->mapGroupConsumerRecord()],
+            [$cRecord],
             [$this->mapGroupAccountRecord()],
             $this->mapGroupFundingRecords()
         );
@@ -257,10 +274,10 @@ class AciProfileMapper
         }
         /** @var Landlord $landlord */
         if (false == $landlord = $group->getGroupAgents()->first()) {
-            return null;
+            if (false == $landlord = $group->getHolding()->getLandlords()->first()) {
+                return null;
+            }
         }
-
-        $address = $landlord->getDefaultAddress();
 
         $consumerRecord = new ConsumerRecord();
         $consumerRecord->setProfileId($this->profile->getId());
@@ -270,10 +287,21 @@ class AciProfileMapper
         $consumerRecord->setConsumerFirstName($landlord->getFirstName());
         $consumerRecord->setConsumerLastName($landlord->getLastName());
         $consumerRecord->setPrimaryEmailAddress($landlord->getEmail());
-        $consumerRecord->setAddress1((string) $address);
-        $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
-        $consumerRecord->setState($address ? $address->getArea() : '');
-        $consumerRecord->setZipCode($address ? $address->getZip() : '');
+
+        if (null !== $address = $landlord->getDefaultAddress()) {
+            // try using the default address
+            $address1 = $address->getNumber() . ' ' . $address->getStreet();
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
+            $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
+            $consumerRecord->setState($address ? $address->getArea() : '');
+            $consumerRecord->setZipCode($address ? $address->getZip() : '');
+        } else {
+            // last resort, fill in a bogus address
+            $consumerRecord->setAddress1('1234 Nowhere Street');
+            $consumerRecord->setCity(substr('Santa Barbara', 0, 12));
+            $consumerRecord->setState('CA');
+            $consumerRecord->setZipCode('93101');
+        }
 
         return $consumerRecord;
     }
@@ -350,5 +378,22 @@ class AciProfileMapper
         }
 
         return array_values($result);
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return string
+     */
+    protected function formatUserName($username)
+    {
+        $username = preg_replace('/[^A-Za-z0-9]/', '', $username); // remove "bad" characters
+        if (strlen($username) < static::MIN_LENGTH_USERNAME) {
+            $username = str_pad($username, static::MIN_LENGTH_USERNAME, 'a'); // any letter
+        } else {
+            $username = substr($username, 0, static::MAX_LENGTH_USERNAME);
+        }
+
+        return $username;
     }
 }
