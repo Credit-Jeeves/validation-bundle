@@ -1626,7 +1626,7 @@
             </trans-unit>
             <trans-unit id="landlord.scanning.lease_list.limit_error">
                 <source>landlord.scanning.lease_list.limit_error</source>
-                <target>We found over 100 records. Please provide more precise search data.</target>
+                <target>We found over %%LIMIT%% records. Please provide more precise search data.</target>
             </trans-unit>
             <trans-unit id="landlord.scanning.lease_list.fields_error">
                 <source>landlord.scanning.lease_list.fields_error</source>

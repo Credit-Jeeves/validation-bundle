@@ -97,11 +97,12 @@ class ScanningController extends LandlordController
         );
 
         if (count($data) > self::LEASE_LIMIT) {
-            return new JsonResponse(
-                [
-                    'errorMessage' => $this->getTranslator()->trans('landlord.scanning.lease_list.limit_error')
-                ]
+            $message = $this->getTranslator()->trans(
+                'landlord.scanning.lease_list.limit_error',
+                ['%%LIMIT%%' => self::LEASE_LIMIT]
             );
+
+            return new JsonResponse(['errorMessage' => $message]);
         }
 
         $contracts = [];
