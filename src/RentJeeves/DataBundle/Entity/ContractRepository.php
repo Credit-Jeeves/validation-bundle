@@ -1700,7 +1700,7 @@ class ContractRepository extends EntityRepository
         }
         if ($address !== null) {
             $query
-                ->andWhere('CONCAT(CONCAT(propertyAddress.number, " "), propertyAddress.street) LIKE :address')
+                ->andWhere("CONCAT(CONCAT(propertyAddress.number, ' '), propertyAddress.street) LIKE :address")
                 ->setParameter('address', '%' . $address . '%');
         }
         if ($unit !== null) {
