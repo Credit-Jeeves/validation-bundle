@@ -79,7 +79,6 @@ class AMSITransformer implements TransformerInterface
             }
         }
 
-
         $this->em->flush();
 
         $this->logger->info(
@@ -237,4 +236,3 @@ class AMSITransformer implements TransformerInterface
         return sprintf('%s|%s', $import->getId(), $this->getExternalUnitId($lease, $occupant));
     }
 }
-
