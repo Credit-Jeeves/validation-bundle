@@ -46,7 +46,7 @@ class AMSITransformer implements TransformerInterface
                 'Started transform data for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
 
         /** @var Lease $lease */
@@ -86,7 +86,7 @@ class AMSITransformer implements TransformerInterface
                 'Finished transform data for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
     }
 
