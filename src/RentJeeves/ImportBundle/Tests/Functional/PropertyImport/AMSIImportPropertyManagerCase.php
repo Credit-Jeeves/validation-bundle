@@ -13,7 +13,7 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldImportDataFromAMSI()
+    public function shouldImportData()
     {
         $this->load(true);
 

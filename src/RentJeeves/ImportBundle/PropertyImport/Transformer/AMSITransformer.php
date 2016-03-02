@@ -75,7 +75,7 @@ class AMSITransformer implements TransformerInterface
 
                 $this->em->persist($importProperty);
 
-                $this->arrayCacheForTransformedUnit[] = $this->getUniqueCacheKey($import, $lease, $occupant);
+                $this->arrayCache[] = $this->getUniqueCacheKey($import, $lease, $occupant);
             }
         }
 
