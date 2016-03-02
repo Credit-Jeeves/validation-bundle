@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
-use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CoreBundle\DateTime;
@@ -159,7 +159,7 @@ class ContractsListController extends Controller
             }
         }
 
-        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        /** @var DataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($allowPayAnything && $integrationDataManager->hasIntegrationData()) {
             $isInPayAnythingWindow  = true;

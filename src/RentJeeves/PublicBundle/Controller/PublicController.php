@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager;
 use RentJeeves\PublicBundle\Services\TenantProcessor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -203,7 +203,7 @@ class PublicController extends Controller
      * @Route(
      *     "/user/integration/new/{accountingSystem}",
      *     requirements={
-     *         "accountingSystem" = "mri|resman|yardi|amsi"
+     *         "accountingSystem" = "mri|resman"
      *     },
      *     name="new_integration_user"
      * )
@@ -341,6 +341,7 @@ class PublicController extends Controller
             } catch (\InvalidArgumentException $e) {
                 throw new BadRequestHttpException($e->getMessage());
             } catch (\LogicException $e) {
+                var_dump($e->getMessage());exit;
                 throw new HttpException(412, 'We are scrambling our robots...');
             }
 
@@ -492,7 +493,7 @@ class PublicController extends Controller
     {
         /** @var TenantProcessor $tenantProcessor */
         $tenantProcessor = $this->get('tenant.processor');
-        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        /** @var DataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         /** @var Property $property */
         $property = $form->get('propertyId')->getData();

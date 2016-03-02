@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use RentJeeves\CheckoutBundle\Form\Type\PayAnythingPaymentType;
@@ -138,14 +138,18 @@ class PayAnythingController extends BaseController
             $depositAccountType
         );
 
-        $redirectUrl = null;
-        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
+        $redirection = null;
+        /** @var DataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($integrationDataManager->hasIntegrationData()) {
             $integrationDataManager->removePayment($depositAccountType);
             $amounts = $integrationDataManager->getAmounts();
             if (!$integrationDataManager->hasPayments() && !empty($amounts)) {
-                $redirectUrl = $integrationDataManager->getRedirectUrl(['success' => 'true']);
+                $redirection = [
+                    'url' => $integrationDataManager->getReturnUrl(),
+                    'method' => $integrationDataManager->getReturnMethod(),
+                    'params' => $integrationDataManager->getReturnParams(),
+                ];
                 $integrationDataManager->removeIntegrationData();
             } elseif (!empty($amounts)) {
                 DepositAccountType::setTranslator([$this->get('translator'), 'trans']);
@@ -170,7 +174,7 @@ class PayAnythingController extends BaseController
 
         return new JsonResponse([
             'success' => true,
-            'redirectUrl' => $redirectUrl,
+            'redirection' => $redirection,
         ]);
     }
 

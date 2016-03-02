@@ -9,6 +9,17 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
+    hmac.generator:
+        abstract: true
+        class: RentJeeves\CoreBundle\Services\HMACGenerator
+
+    mri.hmac.generator:
+        parent: hmac.generator
+        arguments:
+            - "%mri.digest_key%"
+            - "sha256"
+            - "Digest"
+
     renttrack.email_canonicalizer:
         class: RentJeeves\CoreBundle\Services\EmailCanonicalizer
         public: false
