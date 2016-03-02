@@ -58,7 +58,7 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
         $this->assertEquals(
-            $countImportPropertyBeforeImport + 138, // 138 unique records(unique extUnitId) from response
+            $countImportPropertyBeforeImport + 53, // 138 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
