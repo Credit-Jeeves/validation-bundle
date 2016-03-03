@@ -666,8 +666,5 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertNotNull($payment = $em->getRepository('RjDataBundle:Payment')->find(7), 'Payment #7 should exist');
 
         $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be FLAGGED');
-
-
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 }
