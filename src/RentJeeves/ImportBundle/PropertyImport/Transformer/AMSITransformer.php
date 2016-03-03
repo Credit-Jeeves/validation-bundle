@@ -54,9 +54,14 @@ class AMSITransformer implements TransformerInterface
             $occupants = $lease->getOccupants();
             /** @var Occupant $occupant */
             foreach ($occupants as $occupant) {
+                if ($this->isSkipped($lease, $occupant)) {
+                    continue;
+                }
+
                 if ($this->checkExistImportPropertyInCache($import, $lease, $occupant) === true) {
                     continue;
                 }
+
                 $importProperty = new ImportProperty();
                 $importProperty->setImport($import);
                 $import->addImportProperty($importProperty);
@@ -88,6 +93,22 @@ class AMSITransformer implements TransformerInterface
             ),
             ['group' => $import->getGroup()]
         );
+    }
+
+    /**
+     * @param Lease $lease
+     * @param Occupant $occupant
+     * @return bool
+     */
+    protected function isSkipped(Lease $lease, Occupant $occupant)
+    {
+        // we don't have unit details -- skip.
+        $unit = $lease->getUnit();
+        if ($unit === null) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
