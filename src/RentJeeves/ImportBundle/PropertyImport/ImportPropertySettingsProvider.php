@@ -72,7 +72,7 @@ class ImportPropertySettingsProvider
      */
     protected function getExternalPropertyIdsFromDb(Group $group)
     {
-        $this->logger->info('Getting External Property Ids from db.', ['group_id' => $group->getId()]);
+        $this->logger->info('Getting External Property Ids from db.', ['group' => $group]);
         $allExtPropertyIds = $group->getImportSettings()->getApiPropertyIds();
         $result = [];
         foreach (explode(',', $allExtPropertyIds) as $extPropertyId) {
@@ -106,11 +106,11 @@ class ImportPropertySettingsProvider
      */
     protected function getExternalPropertyIdsFromYardiApi(Group $group)
     {
-        $this->logger->info('Getting External Property Ids from Yardi Api.', ['group_id' => $group->getId()]);
+        $this->logger->info('Getting External Property Ids from Yardi Api.', ['group' => $group]);
         if (null === $settings = $group->getHolding()->getYardiSettings()) {
             $this->logger->error(
                 $message = sprintf('U can`t run Yardi import for Group#%d without YardiSettings.', $group->getId()),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
             throw new ImportLogicException($message);
         }
@@ -130,7 +130,7 @@ class ImportPropertySettingsProvider
                     'Yardi import is failed, pls check YardiSettings. Details : %s',
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
             throw new ImportLogicException($message);
         }

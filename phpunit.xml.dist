@@ -42,6 +42,9 @@
             <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/*</directory>
         </testsuite>
 
+        <testsuite name="Import2">
+            <directory suffix="Case.php">src/RentJeeves/ImportBundle/Tests</directory>
+        </testsuite>
     </testsuites>
 
     <php>

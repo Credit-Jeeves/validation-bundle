@@ -29,7 +29,9 @@ class YardiExtractorCase extends UnitTestBase
         $group->setHolding($holding);
 
         $yardiExtractor = new YardiExtractor($this->getYardiResidentDataManagerMock(), $this->getLoggerMock());
-        $yardiExtractor->extractData($group, 'test');
+        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setGroup($group);
+        $yardiExtractor->extractData();
     }
 
     /**
@@ -50,7 +52,9 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->extractData($group, 'test');
+        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setGroup($group);
+        $yardiExtractor->extractData();
     }
 
     /**
@@ -76,7 +80,9 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->extractData($group, 'test');
+        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setGroup($group);
+        $yardiExtractor->extractData();
     }
 
     /**
@@ -105,7 +111,9 @@ class YardiExtractorCase extends UnitTestBase
             ->willThrowException(new \Exception('Test'));
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->extractData($group, 'test');
+        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setGroup($group);
+        $yardiExtractor->extractData();
     }
 
     /**
@@ -134,7 +142,9 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn($residentData);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $response = $yardiExtractor->extractData($group, 'test');
+        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setGroup($group);
+        $response = $yardiExtractor->extractData();
         $this->assertCount(1, $response, 'Incorrect Response from YardiExtractor.');
         $fullResident = reset($response);
         $this->assertInstanceOf(

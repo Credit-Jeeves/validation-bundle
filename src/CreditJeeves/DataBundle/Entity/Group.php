@@ -153,6 +153,14 @@ class Group extends BaseGroup
     }
 
     /**
+     * @return ImportGroupSettings|null
+     */
+    public function getCurrentImportSettings()
+    {
+        return $this->importSettings;
+    }
+
+    /**
      * @return GroupSettings
      */
     public function getGroupSettings()

@@ -40,7 +40,7 @@ services:
     monolog.formatter.import:
         class: Monolog\Formatter\LineFormatter
         arguments:
-            - "[%%datetime%%] %%channel%%.Group#%%extra.group_id%%.%%level_name%%: %%message%%\n"
+            - "[%%datetime%%] %%channel%%.Group#%%extra.group_id%%.%%level_name%%: %%message%% [type = %%extra.import_type%%; additional_parameter = %%extra.additional_parameter%%]\n"
 
     monolog.processor.import:
         class: RentJeeves\ImportBundle\Logger\LoggerProcessor

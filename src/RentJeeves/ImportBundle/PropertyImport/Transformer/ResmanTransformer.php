@@ -41,7 +41,7 @@ class ResmanTransformer implements TransformerInterface
                 'Starting process transformData for Import#%d via ResmanTransformer.',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
 
         /** @var RtCustomer $accountingSystemRecord */
@@ -83,7 +83,7 @@ class ResmanTransformer implements TransformerInterface
                 'Finished process transformData for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
     }
 

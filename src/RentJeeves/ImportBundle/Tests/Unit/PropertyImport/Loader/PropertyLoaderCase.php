@@ -14,7 +14,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Entity\UnitMappingRepository;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
-use RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader;
+use RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
@@ -63,7 +63,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('flush')
             ->with($this->equalTo($importProperty));
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $this->getPropertyManagerMock(),
             $this->getValidatorMock(),
@@ -144,7 +144,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('getOrCreatePropertyByAddress')
             ->willReturn($property);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $this->getValidatorMock(),
@@ -253,7 +253,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
@@ -363,7 +363,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
@@ -479,7 +479,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
@@ -590,7 +590,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
@@ -698,7 +698,7 @@ class PropertyLoaderCase extends UnitTestBase
                 [new ConstraintViolation('test', 'test', [], 'test', 'test', 'test')]
             ));
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
@@ -797,7 +797,7 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('getOrCreatePropertyByAddress')
             ->willReturn($property);
 
-        $loader = new PropertyLoader(
+        $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator = $this->getValidatorMock(),

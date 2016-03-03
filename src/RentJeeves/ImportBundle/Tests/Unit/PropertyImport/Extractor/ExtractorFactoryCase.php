@@ -2,8 +2,13 @@
 
 namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\AMSIExtractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor;
@@ -22,8 +27,19 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGetNotExistExtractor()
     {
-        $factory = new ExtractorFactory([AccountingSystem::MRI => $this->getMriExtractorMock()]);
-        $factory->getExtractor('test');
+        $holding = new Holding();
+        $holding->setAccountingSystem('test');
+        $group = new Group();
+        $group->setHolding($holding);
+        $importGroupSettings = new ImportGroupSettings();
+        $importGroupSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($importGroupSettings);
+
+        $factory = new ExtractorFactory(
+            [AccountingSystem::MRI => $this->getMriExtractorMock()],
+            $this->getCsvExtractorMock()
+        );
+        $factory->getExtractor($group);
     }
 
     /**
@@ -48,15 +64,24 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldReturnCorrectExtractor($extractorName, $expectedExtractor)
     {
+        $holding = new Holding();
+        $holding->setAccountingSystem($extractorName);
+        $group = new Group();
+        $group->setHolding($holding);
+        $importGroupSettings = new ImportGroupSettings();
+        $importGroupSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($importGroupSettings);
+
         $factory = new ExtractorFactory(
             [
                 AccountingSystem::MRI => $this->getMriExtractorMock(),
                 AccountingSystem::YARDI_VOYAGER => $this->getYardiExtractorMock(),
                 AccountingSystem::AMSI => $this->getAMSIExtractorMock(),
                 AccountingSystem::RESMAN => $this->getResmanExtractorMock(),
-            ]
+            ],
+            $this->getCsvExtractorMock()
         );
-        $extractor = $factory->getExtractor($extractorName);
+        $extractor = $factory->getExtractor($group);
 
         $this->assertInstanceOf($expectedExtractor, $extractor, 'Incorrect instance of Extractor.');
     }
@@ -91,5 +116,13 @@ class ExtractorFactoryCase extends UnitTestBase
     protected function getResmanExtractorMock()
     {
         return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Extractor\ResmanExtractor');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|CsvExtractor
+     */
+    protected function getCsvExtractorMock()
+    {
+        return $this->getBaseMock(CsvExtractor::class);
     }
 }

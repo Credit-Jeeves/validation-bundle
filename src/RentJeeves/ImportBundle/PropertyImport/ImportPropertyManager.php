@@ -7,8 +7,8 @@ use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
-use RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder;
+use RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 
 /**
@@ -17,9 +17,9 @@ use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 class ImportPropertyManager
 {
     /**
-     * @var ExtractorFactory
+     * @var ExtractorBuilder
      */
-    protected $extractorFactory;
+    protected $extractorBuilder;
 
     /**
      * @var TransformerFactory
@@ -27,9 +27,9 @@ class ImportPropertyManager
     protected $transformerFactory;
 
     /**
-     * @var PropertyLoader
+     * @var LoaderFactory
      */
-    protected $propertyLoader;
+    protected $loaderFactory;
 
     /**
      * @var LoggerInterface
@@ -37,30 +37,30 @@ class ImportPropertyManager
     protected $logger;
 
     /**
-     * @param ExtractorFactory   $extractorFactory
+     * @param ExtractorBuilder   $extractorBuilder
      * @param TransformerFactory $transformerFactory
-     * @param PropertyLoader     $propertyLoader
+     * @param LoaderFactory      $loaderFactory
      * @param LoggerInterface    $logger
      */
     public function __construct(
-        ExtractorFactory $extractorFactory,
+        ExtractorBuilder $extractorBuilder,
         TransformerFactory $transformerFactory,
-        PropertyLoader $propertyLoader,
+        LoaderFactory $loaderFactory,
         LoggerInterface $logger
     ) {
-        $this->extractorFactory = $extractorFactory;
+        $this->extractorBuilder = $extractorBuilder;
         $this->transformerFactory = $transformerFactory;
-        $this->propertyLoader = $propertyLoader;
+        $this->loaderFactory = $loaderFactory;
         $this->logger = $logger;
     }
 
     /**
      * @param Import $import
-     * @param string $externalPropertyId
+     * @param string $additionalParameter pathForFile or extPropertyId
      *
      * @throws ImportLogicException when U use this service for Import with type != property
      */
-    public function import(Import $import, $externalPropertyId)
+    public function import(Import $import, $additionalParameter)
     {
         $group = $import->getGroup();
         if ($import->getImportType() !== ImportModelType::PROPERTY) {
@@ -70,52 +70,60 @@ class ImportPropertyManager
                     ImportModelType::PROPERTY,
                     $import->getImportType()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
             throw new ImportLogicException($message);
         }
 
         $this->logger->info(
-            sprintf('Start import data for Import#%d and extPropertyId#%s.', $import->getId(), $externalPropertyId),
-            ['group_id' => $group->getId()]
+            sprintf('Start import data for Import#%d.', $import->getId()),
+            ['group' => $group, 'additional_parameter' => $additionalParameter]
         );
         try {
-            $extractor = $this->extractorFactory->getExtractor($group->getHolding()->getAccountingSystem());
+            $extractor = $this->extractorBuilder
+                ->setGroup($group)
+                ->setAdditionalParameter($additionalParameter)
+                ->build();
             $this->logger->info(
                 sprintf(
-                    'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for extract data.',
+                    'ImportPropertyManager for Import#%d will use "%s" for extract data.',
                     $import->getId(),
-                    $externalPropertyId,
                     get_class($extractor)
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
-
-            $extractedData = $extractor->extractData($group, $externalPropertyId);
-
+            $extractedData = $extractor->extractData();
             if (false === empty($extractedData)) {
-                $transformer = $this->transformerFactory->getTransformer($group, $externalPropertyId);
+                $transformer = $this->transformerFactory->getTransformer($group, $additionalParameter);
                 $this->logger->info(
                     sprintf(
-                        'ImportPropertyManager for Import#%d and extPropertyId#%s will use "%s" for transform data.',
+                        'ImportPropertyManager for Import#%d will use "%s" for transform data.',
                         $import->getId(),
-                        $externalPropertyId,
                         get_class($transformer)
                     ),
-                    ['group_id' => $group->getId()]
+                    ['group' => $group, 'additional_parameter' => $additionalParameter]
                 );
                 $transformer->transformData($extractedData, $import);
-                $this->propertyLoader->loadData($import, $externalPropertyId);
+
+                $loader = $this->loaderFactory->getLoader($group);
+                $this->logger->info(
+                    sprintf(
+                        'ImportPropertyManager for Import#%d will use "%s" for load data.',
+                        $import->getId(),
+                        get_class($loader)
+                    ),
+                    ['group' => $group, 'additional_parameter' => $additionalParameter]
+                );
+                $loader->loadData($import, $additionalParameter);
             }
         } catch (ImportException $e) {
             $this->logger->info(
                 sprintf(
-                    'Import data for Import#%d and extPropertyId#%s is finished with error : %s.',
+                    'Import data for Import#%d is finished with error : %s.',
                     $import->getId(),
-                    $externalPropertyId,
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
 
             return;
@@ -123,11 +131,10 @@ class ImportPropertyManager
 
         $this->logger->info(
             sprintf(
-                'Import data for Import#%d and extPropertyId#%s is finished.',
-                $import->getId(),
-                $externalPropertyId
+                'Import data for Import#%d is finished.',
+                $import->getId()
             ),
-            ['group_id' => $group->getId()]
+            ['group' => $group, 'additional_parameter' => $additionalParameter]
         );
     }
 }

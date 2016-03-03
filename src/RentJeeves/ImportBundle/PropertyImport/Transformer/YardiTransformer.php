@@ -48,7 +48,7 @@ class YardiTransformer implements TransformerInterface
                 'Started transform data for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
 
         /** @var FullResident $residentTransactionServiceTransactions */
@@ -84,7 +84,7 @@ class YardiTransformer implements TransformerInterface
                 'Finished transform data for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
     }
 
