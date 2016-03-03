@@ -686,6 +686,13 @@
                 <source>checkout.payment.settle_dates</source>
                 <target><![CDATA[%DATE_FOR_CARD% for Credit or <br/>%DATE_FOR_BANK% for e-Check]]></target>
             </trans-unit>
+
+            <!-- Mobile translation -->
+
+            <trans-unit id="mobile.contract.payments.blocked">
+                <source>mobile.contract.payments.blocked</source>
+                <target>Payments blocked for this lease.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

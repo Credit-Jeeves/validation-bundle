@@ -106,14 +106,18 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-                        <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" class="contractBox">
+                        <div {% if contract.isPaymentEditAllowed %}onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );"{% endif %} class="contractBox">
                             <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
-                            <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                            {% if contract.isPaymentEditAllowed %}
+                                <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                            {% endif %}
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                             <br>
                             <span style="font-size: 14;">Base Rent: {{ contract.rent }}</span>
                             <br>
-                            {% if contract.status == 'pending' %}
+                            {% if not contract.isPaymentEditAllowed %}
+                                <span style="color: red;">{{ 'mobile.contract.payments.blocked' | trans }}</span>
+                            {% elseif contract.status == 'pending' %}
                                 <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
                             {% elseif contract.payment_status == 'processing' %}
                                 <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
