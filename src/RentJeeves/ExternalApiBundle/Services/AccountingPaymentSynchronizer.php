@@ -291,7 +291,8 @@ class AccountingPaymentSynchronizer
     {
         if ($apiClient->supportsProperties()) {
             $holding = $order->getContract()->getHolding();
-            if ($property = $order->getProperty()) {
+            // get property from contract b/c there may be no unit
+            if ($property = $order->getContract()->getProperty()) {
                 $externalPropertyMapping = $property->getPropertyMappingByHolding($holding);
             }
 

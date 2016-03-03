@@ -262,4 +262,18 @@ class PaymentRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param Contract $contract
+     * @return int
+     */
+    public function countPaymentsByContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(DISTINCT p.id)')
+            ->where('p.contract = :contract')
+            ->setParameter('contract', $contract)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

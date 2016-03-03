@@ -725,4 +725,19 @@ class OrderRepository extends EntityRepository
 
         return null;
     }
+
+    /**
+     * @param Contract $contract
+     * @return int
+     */
+    public function countOrdersByContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('COUNT(DISTINCT o.id)')
+            ->innerJoin('o.operations', 'op')
+            ->where('op.contract = :contract')
+            ->setParameter('contract', $contract)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

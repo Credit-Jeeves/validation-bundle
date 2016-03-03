@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\PidkiqStatus;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -23,6 +24,22 @@ class PidkiqRepository extends EntityRepository
             ->andWhere("p.user = :user")
             ->andWhere("STR_TO_DATE(p.created_at, '%Y-%c-%e %T') > STR_TO_DATE(:datetime, '%Y-%c-%e %T')")
             ->setParameters([':id' => $id, ':user' => $user, ':datetime' => $datetime])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param User $user
+     * @return Pidkiq|null
+     */
+    public function findLastSuccessSessionByUser(User $user)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->andWhere('p.status = :successStatus')
+            ->setParameters([':user' => $user, ':successStatus' => PidkiqStatus::SUCCESS])
+            ->orderBy('p.updated_at', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

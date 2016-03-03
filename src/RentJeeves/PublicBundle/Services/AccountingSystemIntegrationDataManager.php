@@ -112,6 +112,42 @@ class AccountingSystemIntegrationDataManager
     }
 
     /**
+     * @return bool
+     */
+    public function hasMultiProperties()
+    {
+        if ($this->get('unitid')) {
+            return false;
+        }
+
+        $properties = $this->getPropertiesByExternalParameters(
+            $this->get('accsys'),
+            $this->get('propid')
+        );
+
+        if (count($properties) <= 1) {
+            return false;
+        }
+        foreach ($properties as $property) {
+            $this->checkPropertyBelongOneGroup($property);
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws \LogicException
+     * @return Property|null
+     */
+    public function getMultiProperties()
+    {
+        return $this->getPropertiesByExternalParameters(
+            $this->get('accsys'),
+            $this->get('propid')
+        );
+    }
+
+    /**
      * @throws \LogicException
      * @return Property|null
      */
@@ -361,6 +397,17 @@ class AccountingSystemIntegrationDataManager
             );
             throw new \LogicException('Should be found just 1 property by external parameters');
         }
+    }
+
+    /**
+     * @param string $accountingSystem
+     * @param string $externalPropertyId
+     * @return Property[]
+     */
+    protected function getPropertiesByExternalParameters($accountingSystem, $externalPropertyId)
+    {
+        return $this->em->getRepository('RjDataBundle:Property')
+            ->getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId);
     }
 
     /**
