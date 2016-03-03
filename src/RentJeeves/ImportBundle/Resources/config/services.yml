@@ -88,6 +88,9 @@ services:
     import.property.extractor.csv:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor
         public: false
+        arguments:
+            - @reader.csv
+            - @monolog.logger.property_import
 
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
