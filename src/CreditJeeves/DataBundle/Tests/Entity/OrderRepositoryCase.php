@@ -12,13 +12,31 @@ use \DateTime;
 
 class OrderRepositoryCase extends BaseTestCase
 {
+    /**
+     * @var bool
+     */
+    protected static $initialized = false;
 
     protected function setUp()
     {
+        $this->init();
         /**
          * @var $em EntityManager
          */
         $this->em = $this->getContainer()->get('doctrine')->getManager();
+    }
+
+    /**
+     * For this test fixtures should load just one tim before test started
+     * if load each time  - 32 s
+     * if load one time - 7 s
+     */
+    protected function init()
+    {
+        if (!static::$initialized) {
+            $this->load(true);
+            static::$initialized = true;
+        }
     }
 
     public static function getUserOrdersDataProvider()

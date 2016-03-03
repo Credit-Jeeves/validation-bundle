@@ -314,6 +314,22 @@ abstract class GroupSettings
     protected $externalResidentFollowsUnit = false;
 
     /**
+     * Option work just with PayDirect (DTR) groups
+     * "0" - means unlimited
+     * @var float
+     *
+     * @ORM\Column(
+     *      name="max_limit_per_month",
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=false,
+     *      options={"default":0}
+     * )
+     */
+    protected $maxLimitPerMonth = 0;
+
+    /**
      * @param float $feeACH
      */
     public function setFeeACH($feeACH)
@@ -687,6 +703,22 @@ abstract class GroupSettings
     public function setExternalResidentFollowsUnit($externalResidentFollowsUnit)
     {
         $this->externalResidentFollowsUnit = $externalResidentFollowsUnit;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaxLimitPerMonth()
+    {
+        return $this->maxLimitPerMonth;
+    }
+
+    /**
+     * @param float $maxLimitPerMonth
+     */
+    public function setMaxLimitPerMonth($maxLimitPerMonth)
+    {
+        $this->maxLimitPerMonth = $maxLimitPerMonth;
     }
 
     /**
