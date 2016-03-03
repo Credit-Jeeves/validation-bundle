@@ -1600,6 +1600,38 @@
                 <source>waiting_for_redirect_to_scanning</source>
                 <target>Redirect to scanning check</target>
             </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.title">
+                <source>landlord.scanning.lease_list.title</source>
+                <target>Lease Lookup</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.text">
+                <source>landlord.scanning.lease_list.text</source>
+                <target>Enter the Lease ID into the scanning interface for any unknown account scanned.</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.name.title">
+                <source>landlord.scanning.lease_list.name.title</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.email.title">
+                <source>landlord.scanning.lease_list.email.title</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.address.title">
+                <source>landlord.scanning.lease_list.address.title</source>
+                <target>Address</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.lease_id.title">
+                <source>landlord.scanning.lease_list.lease_id.title</source>
+                <target>Lease ID</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.limit_error">
+                <source>landlord.scanning.lease_list.limit_error</source>
+                <target>We found over %%LIMIT%% records. Please provide more precise search data.</target>
+            </trans-unit>
+            <trans-unit id="landlord.scanning.lease_list.fields_error">
+                <source>landlord.scanning.lease_list.fields_error</source>
+                <target>Fields 'email' and 'address' should contain 3 or more characters.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,0 +1,39 @@
+.container-content>div {
+    margin: 10px 0 10px 0;
+}
+div.filter{
+    height: 40px;
+}
+
+div.filter input {
+    margin: 5px 10px 5px 0;
+    float: left;
+}
+
+div.lease-table {
+    margin-top: 14px;
+}
+
+div.error-message {
+    margin: 5px 0 5px 0;
+    color: red;
+}
+
+.search-button {
+    background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    margin: 5px 0 5px 0;
+    background-repeat: no-repeat;
+    border-radius: 4px 4px 4px 4px;
+    float: left;
+    display: block;
+    height: 22px;
+    width: 22px;
+    background-position: -48px -97px;
+}
+.search-button:hover {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
