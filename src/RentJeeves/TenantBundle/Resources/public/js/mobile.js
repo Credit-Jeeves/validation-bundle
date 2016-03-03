@@ -590,26 +590,40 @@ function createReview(){
         for (i = 0; i < contractsArr.length; i++) {
             if (contractsArr[i].id == globalContractId) {
 
-                var contract = contractsArr[i]
-                var method = ""
+                var contract = contractsArr[i];
+                var method = "";
                 var fee = 0.00;
 
                 $.each(payAccounts, function (i, localPaymentAccountId) {
                     if (localPaymentAccountId.id == parseInt($("#" + prefix + "paymentAccount").val())) {
                         method = localPaymentAccountId.type;
                     }
-                })
+                });
 
                 if ('card' == method) {
-                    fee = parseFloat(2.95) / 100 * total;
-                    $("#revTechFeeCont").show()
+                    fee = parseFloat(contract.groupSettings.feeCC) / 100 * total;
+                    $("#revTechFeeCont").show();
+                } else if ('bank' == method) {
+                    if (contract.groupSettings.isPassedACH) {
+                        fee = parseFloat(contract.groupSettings.feeACH);
+                        $("#revTechFeeCont").show();
+                    } else {
+                        fee = parseFloat(0);
+                        $("#revTechFeeCont").hide();
+                    }
+                } else if ('debit_card' == method) {
+                    fee = parseFloat(contract.groupSettings.feeDC);
+                    var feeType = contract.groupSettings.typeFeeDC;
+                    if ('percentage' == feeType) {
+                        fee = fee / 100 * total;
+                    }
+                    $("#revTechFeeCont").show();
                 } else {
                     fee = parseFloat(0);
-                    $("#revTechFeeCont").hide()
+                    $("#revTechFeeCont").hide();
                 }
 
-                $("#revTechFee").html(accounting.formatNumber(fee, 2))
-
+                $("#revTechFee").html(accounting.formatNumber(fee, 2));
             }
         }
 
