@@ -282,6 +282,31 @@ class TransformerFactoryCase extends UnitTestBase
     }
 
     /**
+     * @test
+     */
+    public function shouldReturnCsvTransformerIfGroupSettingsHaveCsvSource()
+    {
+        $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::CSV);
+        $group->setImportSettings($groupImportSettings);
+        $holding = new Holding();
+        $holding->setAccountingSystem('none');
+        $group->setHolding($holding);
+
+        $factory = new TransformerFactory(
+            $this->getEntityManagerMock(),
+            $this->getLoggerMock(),
+            [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
+        );
+
+        $transformer = $factory->getTransformer($group, 'test');
+        $this->assertInstanceOf(CsvTransformer::class, $transformer);
+    }
+
+    /**
      * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\DataBundle\Entity\ImportTransformerRepository
      */
     protected function getImportTransformerRepositoryMock()

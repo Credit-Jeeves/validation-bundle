@@ -122,7 +122,11 @@ services:
             
     import.property.transformer.csv:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer
-        public: false
+#        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @address_lookup_service
+            - @monolog.logger.property_import
 
     import.property.loader_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory
