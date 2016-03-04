@@ -132,8 +132,7 @@ class Mailer extends BaseMailer
         $paymentType = null,
         $isRecurringPaymentEnded = true,
         $paymentTotal = null
-    )
-    {
+    ) {
         $vars = [
             'nameHolding' => $contract->getHolding()->getName(),
             'nameTenant' => $contract->getTenant()->getFullName(),
