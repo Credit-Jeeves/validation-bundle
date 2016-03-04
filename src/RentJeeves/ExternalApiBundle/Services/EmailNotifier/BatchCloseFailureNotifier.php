@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailure;
+use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailureDetail;
 
 class BatchCloseFailureNotifier
 {
@@ -106,14 +106,14 @@ class BatchCloseFailureNotifier
      * @param Holding $holding
      * @param array $failureJobs
      * @param string $accountingSystemBatchNumber
-     * @return BatchCloseFailure
+     * @return BatchCloseFailureDetail
      */
     protected function mapJobsToBatchCloseFailure(Holding $holding, $failureJobs, $accountingSystemBatchNumber = null)
     {
         $result = [];
         /** @var JobRelatedOrder $job */
         foreach ($failureJobs as $job) {
-            $batchCloseFailure = new BatchCloseFailure();
+            $batchCloseFailure = new BatchCloseFailureDetail();
             $batchCloseFailure->setPaymentDate($job->getOrder()->getCreatedAt());
             $batchCloseFailure->setRentTrackBatchNumber($job->getOrder()->getTransactionBatchId());
             $batchCloseFailure->setResidentId(
@@ -131,7 +131,7 @@ class BatchCloseFailureNotifier
 
     /**
      * @param Holding $holding
-     * @param BatchCloseFailure[] $batchCloseFailureModels
+     * @param BatchCloseFailureDetail[] $batchCloseFailureModels
      * @param string $fileContent
      */
     protected function sendEmail(Holding $holding, $batchCloseFailureModels, $fileContent)

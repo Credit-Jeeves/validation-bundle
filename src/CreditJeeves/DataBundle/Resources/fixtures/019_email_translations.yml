@@ -1739,3 +1739,49 @@ fixtures:
         </br>
       {{ 'order.contact.us' | trans }}
       {% endblock %}
+
+# rjPostPaymentError.html
+  translation_52_subject:
+    translatable: email_53
+    locale: %locale%
+    property: subject
+    value: Unable to Post Payment to Accounting System
+  translation_52_body:
+    translatable: email_53
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ landlordName }}!{% endblock %}
+      {% block email %}
+         Here are the details:
+         <br />
+         {% for detail in details %}
+         <ul>
+              <li>Resident ID: {{ detail.residentId }} </li>
+              <li>Resident Name: {{ detail.residentName }}</li>
+              <li>Payment Date: {{ detail.paymentDateFormatted }}</li>
+              <li>Transaction ID: {{ detail.transactionId }}</li>
+              <li>RentTrack Batch Number: {{ detail.transactionId }}</li>
+              {% if detail.accountingSystemBatchNumber %}
+                <li>Accounting System Batch Number: {{ detail.accountingSystemBatchNumber }}</li>
+              {% endif %}
+         </ul>
+         <br />
+         {% endfor %}
+
+         <br />
+         You will need to: <br />
+         <ul>
+            <li>* Enter the payment and post the batch manually using the attached CSV which contains
+                all the payments in the batch.
+            </li>
+            <li>* If the resident ID was incorrect in RentTrack, please update this by editing the
+                tenant in RentTrack.
+            </li>
+            <li>* If payments should be blocked, please view the tenant in RentTrack and make sure
+                we are blocking payments - either using your accounting system status, or by blocking them
+                within RentTrack.
+            </li>
+         </ul>
+      {% endblock %}

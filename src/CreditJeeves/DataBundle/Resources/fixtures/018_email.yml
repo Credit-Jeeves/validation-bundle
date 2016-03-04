@@ -102,3 +102,5 @@ fixtures:
         name: rjFreeReportUpdated.html
     email_52:
         name: rjScoreTrackOrderError.html
+    email_53:
+        name: rjPostPaymentError.html

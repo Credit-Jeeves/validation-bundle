@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\EmailNotifier;
 
-class BatchCloseFailure
+class BatchCloseFailureDetail
 {
     /**
      * @var string
@@ -128,5 +128,13 @@ class BatchCloseFailure
     public function setTransactionId($transactionId)
     {
         $this->transactionId = $transactionId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentDateFormatted()
+    {
+        return $this->getPaymentDate()->format('m/d/Y');
     }
 }
