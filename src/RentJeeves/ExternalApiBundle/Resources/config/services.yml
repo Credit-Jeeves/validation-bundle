@@ -173,3 +173,4 @@ services:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
             - "@renttrack.export.report"
+            - "@project.mailer"

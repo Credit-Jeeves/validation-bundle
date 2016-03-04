@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
@@ -452,8 +453,28 @@ class AccountingPaymentSynchronizer
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
                 $this->em->flush();
+                $this->logger->debug('Batch ID:%s closed', $mappingBatch->getId());
+            } else {
+                $this->createNotifyJobAboutFailure($holding, $mappingBatch);
+                $this->logger->debug('Batch ID:%s failed to close', $mappingBatch->getId());
             }
         }
+    }
+
+    /**
+     * @param Holding $holding
+     * @param PaymentBatchMapping $paymentBatchMapping
+     */
+    protected function createNotifyJobAboutFailure(Holding $holding, PaymentBatchMapping $paymentBatchMapping)
+    {
+        $parameters = ['--holding-id' => $holding->getId()];
+        if ($holding->getAccountingSystem() === AccountingSystem::YARDI_VOYAGER) {
+            $parameters['accounting-batch-id'] = $paymentBatchMapping->getAccountingBatchId();
+        }
+
+        $job = new Job('renttrack:notify:batch-close-failure', $parameters);
+        $this->em->persist($job);
+        $this->em->flush();
     }
 
     /**

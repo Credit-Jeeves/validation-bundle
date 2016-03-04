@@ -5,9 +5,11 @@ namespace RentJeeves\ExternalApiBundle\Services;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailureDetail;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\Exception\NotifierException;
 
 class BatchCloseFailureNotifier
 {
@@ -27,18 +29,26 @@ class BatchCloseFailureNotifier
     protected $exporter;
 
     /**
+     * @var Mailer
+     */
+    protected $mailer;
+
+    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param RentTrackExportReport $rentTrackExportReport
+     * @param Mailer $mailer
      */
     public function __construct(
         EntityManager $em,
         LoggerInterface $logger,
-        RentTrackExportReport $rentTrackExportReport
+        RentTrackExportReport $rentTrackExportReport,
+        Mailer $mailer
     ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->exporter = $rentTrackExportReport;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -55,17 +65,27 @@ class BatchCloseFailureNotifier
         );
 
         $failureJobs = $this->getFailureJobs($holding);
-        $batchCloseFailureModels = $this->mapJobsToBatchCloseFailure(
+        if (empty($failureJobs)) {
+            $this->logger->debug('We don\'t have failure jobs, so nothing to send');
+
+            return;
+        }
+
+        $batchCloseFailureModels = $this->mapJobsToBatchCloseFailureDetail(
             $holding,
             $failureJobs,
             $accountingSystemBatchNumber
         );
 
+        $pathToCsvFileReport = $this->getPathToCsvFileReport($holding);
+
         $this->sendEmail(
             $holding,
             $batchCloseFailureModels,
-            $this->getRentTrackExportContent($holding)
+            $pathToCsvFileReport
         );
+
+        unlink($pathToCsvFileReport);
 
         $this->logger->debug(
             sprintf(
@@ -89,6 +109,23 @@ class BatchCloseFailureNotifier
 
     /**
      * @param Holding $holding
+     * @return string
+     * @throws \RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException
+     */
+    protected function getPathToCsvFileReport(Holding $holding)
+    {
+        $tmpFilePath = tempnam(sys_get_temp_dir(), $this->exporter->getFilename());
+
+        $handle = fopen($tmpFilePath, "w");
+        fwrite($handle, $this->getRentTrackExportContent());
+        fclose($handle);
+
+        return $tmpFilePath;
+    }
+
+
+    /**
+     * @param Holding $holding
      * @return \Doctrine\Common\Collections\ArrayCollection|mixed
      */
     protected function getRentTrackExportContent(Holding $holding)
@@ -106,9 +143,9 @@ class BatchCloseFailureNotifier
      * @param Holding $holding
      * @param array $failureJobs
      * @param string $accountingSystemBatchNumber
-     * @return BatchCloseFailureDetail
+     * @return BatchCloseFailureDetail[]
      */
-    protected function mapJobsToBatchCloseFailure(Holding $holding, $failureJobs, $accountingSystemBatchNumber = null)
+    protected function mapJobsToBatchCloseFailureDetail(Holding $holding, $failureJobs, $accountingSystemBatchNumber = null)
     {
         $result = [];
         /** @var JobRelatedOrder $job */
@@ -126,17 +163,34 @@ class BatchCloseFailureNotifier
             $result[] = $batchCloseFailure;
         }
 
-        return $batchCloseFailure;
+        return $result;
     }
 
     /**
      * @param Holding $holding
-     * @param BatchCloseFailureDetail[] $batchCloseFailureModels
-     * @param string $fileContent
+     * @param BatchCloseFailureDetail[] $batchCloseFailureDetail
+     * @param string $filePath
      */
-    protected function sendEmail(Holding $holding, $batchCloseFailureModels, $fileContent)
+    protected function sendEmail(Holding $holding, $batchCloseFailureDetail, $filePath)
     {
-        $this->logger->debug('Send email about failed push per holding#%s to landlord %s');
+        $this->logger->debug('Send email about failed push per holding#%s');
+
+        /** @var Landlord $landlord */
+        foreach ($holding->getLandlords() as $landlord) {
+            $result = $this->mailer->sendPostPaymentError($landlord, $batchCloseFailureDetail, $filePath);
+
+            if ($result === false) {
+                $this->logger->debug(
+                    sprintf('Don\'t send email to %s about failure batch close', $landlord->getEmail())
+                );
+            } else {
+                $this->logger->debug(
+                    sprintf('Send email to %s about failure batch close', $landlord->getEmail())
+                );
+            }
+        }
+
+        $this->logger->debug('Finish send email about failed push per holding#%s');
     }
 }
 

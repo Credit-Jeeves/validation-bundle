@@ -3,6 +3,7 @@
 namespace RentJeeves\ExternalApiBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\RentTrackReport;
 
@@ -28,6 +29,18 @@ class RentTrackExportReport extends RentTrackReport
             $endDate,
             ExportReport::EXPORT_BY_PAYMENTS
         );
+    }
+
+    /**
+     * @param array $settings
+     * @throws ExportException
+     */
+    protected function validateSettings(array $settings)
+    {
+        if (!isset($settings['holding']) || !isset($settings['begin']) || !isset($settings['end']))
+        {
+            throw new ExportException('Not enough parameters for RentTrack report');
+        }
     }
 }
 
