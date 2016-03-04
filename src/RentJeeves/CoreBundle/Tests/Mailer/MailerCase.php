@@ -5,8 +5,10 @@ namespace RentJeeves\CoreBundle\Tests\Mailer;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PartnerUser;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
+use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailureDetail;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class MailerCase extends BaseTestCase
@@ -249,6 +251,36 @@ class MailerCase extends BaseTestCase
         $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Receipt from Rent Track', $message->getSubject());
     }
+
+    /**
+     * @test
+     */
+    public function shouldSendPaymentFailreEmail()
+    {
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $mailer = $this->getMailer();
+        $landlord = new Landlord();
+        $landlord->setCulture('test');
+        $landlord->setEmail('test@email.com');
+        $failureDetail = new BatchCloseFailureDetail();
+        $failureDetail->setPaymentDate(new \DateTime());
+        $failureDetail->setResidentId('123141');
+        $failureDetail->setResidentName('Hello Hello');
+        $failureDetail->setRentTrackBatchNumber('BatchNumber');
+
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'Temp file content');
+
+        $mailer->sendPostPaymentError($landlord, [$failureDetail], $tempFilePath);
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('Unable to Post Payment to Accounting System', $message->getSubject());
+        $this->assertArrayHasKey(0, $message->getChildren(), 'Attachment should be');
+        $this->assertArrayHasKey(1, $message->getChildren(), 'Body should be');
+    }
+
 
     /**
      * @return \RentJeeves\CoreBundle\Mailer\Mailer

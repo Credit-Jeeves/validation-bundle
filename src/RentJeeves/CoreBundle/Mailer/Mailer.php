@@ -161,7 +161,7 @@ class Mailer extends BaseMailer
     public function sendPostPaymentError(Landlord $landlord, array $failureBatchDetails, $filePath)
     {
         return $this->sendBaseLetter(
-            'rjPaymentDue',
+            'rjPostPaymentError',
             [
                 'landlordName' => $landlord->getFullName(),
                 'details' => $failureBatchDetails,
