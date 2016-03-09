@@ -291,7 +291,7 @@ class TransformerFactoryCase extends UnitTestBase
         $groupImportSettings->setSource(ImportSource::CSV);
         $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
-        $holding->setAccountingSystem('none');
+        $holding->setAccountingSystem(AccountingSystem::PROMAS);
         $group->setHolding($holding);
 
         $factory = new TransformerFactory(

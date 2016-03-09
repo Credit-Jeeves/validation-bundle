@@ -151,9 +151,7 @@ class CsvTransformerCase extends UnitTestBase
         $em->expects($this->once())
             ->method('persist')
             ->with(
-                $this->callback(function ($subject) {
-                    /** @var ImportProperty $subject */
-
+                $this->callback(function (ImportProperty $subject) {
                     return
                         $subject->isAddressHasUnits() == true &&
                         $subject->getUnitName() == 'ssUnit' && // only unit name from SS response

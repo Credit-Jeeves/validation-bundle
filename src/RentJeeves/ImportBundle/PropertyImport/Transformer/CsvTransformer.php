@@ -69,7 +69,7 @@ class CsvTransformer implements TransformerInterface
 
         if (empty($accountingSystemData['hashHeader'])) {
             throw new ImportTransformerException(
-                sprintf('Input array should contains not empty "hashHeader".')
+                sprintf('Input array should contain not empty "hashHeader".')
             );
         }
 

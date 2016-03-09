@@ -55,7 +55,7 @@ class CsvExtractor implements CsvExtractorInterface
             );
         }
 
-        if (false === file_exists($this->pathToFile) && false === is_readable($this->pathToFile)) {
+        if (false === is_file($this->pathToFile) && false === is_readable($this->pathToFile)) {
             throw new ImportExtractorException(sprintf('File "%s" not found or not readable.', $this->pathToFile));
         }
 
