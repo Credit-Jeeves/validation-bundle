@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Services;
+namespace RentJeeves\ExternalApiBundle\Services\EmailNotifier;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;

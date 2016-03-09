@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Services;
+namespace RentJeeves\ExternalApiBundle\Services\EmailNotifier;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
@@ -89,7 +89,7 @@ class BatchCloseFailureNotifier
 
         $this->logger->debug(
             sprintf(
-                'Finish notify about batch close failed per holding#%s for email: %s',
+                'Finish notify about batch close failed per holding#%s',
                 $holding->getId()
             )
         );
@@ -114,10 +114,17 @@ class BatchCloseFailureNotifier
      */
     protected function getPathToCsvFileReport(Holding $holding)
     {
-        $tmpFilePath = tempnam(sys_get_temp_dir(), $this->exporter->getFilename());
+        $content = $this->getRentTrackExportContent($holding);
+        $tmpFilePath = sprintf(
+            '%s%s%s_%s',
+            sys_get_temp_dir(),
+            DIRECTORY_SEPARATOR,
+            uniqid(),
+            $this->exporter->getFilename()
+        );
 
         $handle = fopen($tmpFilePath, "w");
-        fwrite($handle, $this->getRentTrackExportContent());
+        fwrite($handle, $content);
         fclose($handle);
 
         return $tmpFilePath;

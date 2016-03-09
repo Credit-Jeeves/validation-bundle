@@ -164,11 +164,11 @@ services:
             - "@binlist.debit_card_repo"
 
     renttrack.export.report:
-        class: RentJeeves\ExternalApiBundle\Services\RentTrackExportReport
+        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\RentTrackExportReport
         parent: "accounting.export.renttrack"
 
     batch.close.failure.notifier:
-        class: RentJeeves\ExternalApiBundle\Services\BatchCloseFailureNotifier
+        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
