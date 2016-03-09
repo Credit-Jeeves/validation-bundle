@@ -26,13 +26,15 @@ class AMSIExtractorCase extends UnitTestBase
         $group->setHolding($holding);
 
         $amsiExtractor = new AMSIExtractor($this->getAMSIResidentDataManagerMock(), $this->getLoggerMock());
-        $amsiExtractor->extractData($group, 'test');
+        $amsiExtractor->setGroup($group);
+        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->extractData();
     }
 
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from AMSI for ExternalPropertyId="test". Details: testMessage
+     * @expectedExceptionMessage Can`t get data from AMSI. Details: testMessage
      */
     public function shouldThrowImportExtractorExceptionIfResidentDataManagerThrowException()
     {
@@ -48,7 +50,9 @@ class AMSIExtractorCase extends UnitTestBase
             ->with($this->equalTo('test'))
             ->willThrowException(new \Exception('testMessage'));
         $amsiExtractor = new AMSIExtractor($dataManager, $this->getLoggerMock());
-        $amsiExtractor->extractData($group, 'test');
+        $amsiExtractor->setGroup($group);
+        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->extractData();
     }
 
     /**
@@ -68,7 +72,9 @@ class AMSIExtractorCase extends UnitTestBase
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = ['test']));
         $amsiExtractor = new AMSIExtractor($dataManager, $this->getLoggerMock());
-        $actualResponse = $amsiExtractor->extractData($group, 'test');
+        $amsiExtractor->setGroup($group);
+        $amsiExtractor->setExtPropertyId('test');
+        $actualResponse = $amsiExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from AMSIExtractor.');
     }
@@ -91,9 +97,11 @@ class AMSIExtractorCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $logger->expects($this->at(1))
             ->method('info')
-            ->with($this->equalTo('Returned response for extPropertyId#test is empty.'));
+            ->with($this->equalTo('Returned response is empty.'));
         $amsiExtractor = new AMSIExtractor($dataManager, $logger);
-        $actualResponse = $amsiExtractor->extractData($group, 'test');
+        $amsiExtractor->setGroup($group);
+        $amsiExtractor->setExtPropertyId('test');
+        $actualResponse = $amsiExtractor->extractData();
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from AMSIExtractor.');
     }
 

@@ -125,7 +125,7 @@ class UsersController extends Controller
                 $holding = $form->get('holding_id')->getData();
                 $residentId = $form->get('resident_id')->getData();
 
-                if ($em->getRepository('RjDataBundle:Tenant')->findOneByEmail($tenant->getEmail()) ||
+                if ($em->getRepository('DataBundle:User')->findOneByEmail($tenant->getEmail()) ||
                     ($holding && $residentId && $em->getRepository('RjDataBundle:ResidentMapping')->findOneBy([
                         'holding' => $holding,
                         'residentId' => $residentId

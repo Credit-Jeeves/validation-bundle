@@ -119,7 +119,7 @@ class AciProfileMapperCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldNotMapToConsumerRecordIfUserHasAciCollectPayProfile()
+    public function shouldNotMapToAnyRecordsIfUserHasAciCollectPayProfile()
     {
         $user = $this->getEntityManager()->find('RjDataBundle:Tenant', 42);
         $aciProfile = new AciCollectPayUserProfile();
@@ -136,28 +136,7 @@ class AciProfileMapperCase extends BaseTestCase
         $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
-        $this->assertCount(
-            4,
-            $result,
-            '4 records expected: 1 Account records, 3 Funding Account records'
-        );
-
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord',
-            $result[0]
-        );
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord',
-            $result[1]
-        );
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord',
-            $result[2]
-        );
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord',
-            $result[3]
-        );
+        $this->assertCount(0, $result, "result should not have any records");
     }
 
     /**
@@ -310,7 +289,7 @@ class AciProfileMapperCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldNotMapToConsumerAndAccountRecordsIfGroupHasAciCollectPayProfile()
+    public function shouldNotMapToAnyRecordsIfGroupHasAciCollectPayProfile()
     {
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $aciProfile = new AciCollectPayGroupProfile();
@@ -333,16 +312,7 @@ class AciProfileMapperCase extends BaseTestCase
         $mapper = $this->createAciProfileMapper();
         $result = $mapper->map($profile, [$holding]);
 
-        $this->assertEquals(1, count($result));
-
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord',
-            $result[0]
-        );
-        $this->assertNotInstanceOf(
-            'RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord',
-            $result[0]
-        );
+        $this->assertCount(0, $result, "result should not have any records");
     }
 
     /**
@@ -381,7 +351,7 @@ class AciProfileMapperCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldReturnEmptyArrayIfRelationUserDoesNotHaveAddressAndContracts()
+    public function shouldReturnNonEmptyArrayIfRelationUserDoesNotHaveAddressAndContracts()
     {
         /** @var AciProfileMapper|\PHPUnit_Framework_MockObject_MockObject $aciProfileMapper */
         $aciProfileMapper = $this->getMock(
@@ -404,9 +374,10 @@ class AciProfileMapperCase extends BaseTestCase
         $result = $aciProfileMapper->map($profile, [$holding]);
 
         $this->assertTrue(is_array($result), 'Result of AciProfileMapper::map must be array');
-        $this->assertTrue(
-            empty($result),
-            'Result of AciProfileMapper::map for User without Addresses and without Contracts must be empty'
+        $this->assertCount(
+            5,
+            $result,
+            'Should always have a result for User without Addresses and without Contracts'
         );
     }
 

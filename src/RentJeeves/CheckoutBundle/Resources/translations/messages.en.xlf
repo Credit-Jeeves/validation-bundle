@@ -598,10 +598,6 @@
                 <source>checkout.payment.cancel.no</source>
                 <target>No, Do Nothing</target>
             </trans-unit>
-            <trans-unit id="checkout.error.date.is_in_past">
-                <source>checkout.error.date.is_in_past</source>
-                <target>You cannot specify a date in the past</target>
-            </trans-unit>
             <trans-unit id="checkout.billing_address">
                 <source>checkout.billing_address</source>
                 <target>Billing address</target>
@@ -633,6 +629,10 @@
             <trans-unit id="checkout.payment.choose_date.text">
                 <source>checkout.payment.choose_date.text</source>
                 <target>Please select a date for your payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.choose_date_limit.text">
+                <source>checkout.payment.choose_date_limit.text</source>
+                <target>Please select a date for your payment. Check payments are limited to one per month - nearby days will be disabled since you have made a payment recently.</target>
             </trans-unit>
             <trans-unit id="checkout.thankyou_message">
                 <source>checkout.thankyou_message</source>
@@ -685,6 +685,13 @@
             <trans-unit id="checkout.payment.settle_dates">
                 <source>checkout.payment.settle_dates</source>
                 <target><![CDATA[%DATE_FOR_CARD% for Credit or <br/>%DATE_FOR_BANK% for e-Check]]></target>
+            </trans-unit>
+
+            <!-- Mobile translation -->
+
+            <trans-unit id="mobile.contract.payments.blocked">
+                <source>mobile.contract.payments.blocked</source>
+                <target>Payments blocked for this lease.</target>
             </trans-unit>
         </body>
     </file>

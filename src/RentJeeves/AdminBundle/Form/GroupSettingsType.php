@@ -206,6 +206,16 @@ class GroupSettingsType extends Base
         );
 
         $builder->add(
+            'maxLimitPerMonth',
+            'money',
+            [
+                'label' => 'admin.group_settings.label.max_limit_per_month',
+                'required' => true,
+                'currency' => 'USD'
+            ]
+        );
+
+        $builder->add(
             'externalResidentFollowsUnit',
             'checkbox',
             ['label' => 'External Resident Follows Unit?', 'required' => false]

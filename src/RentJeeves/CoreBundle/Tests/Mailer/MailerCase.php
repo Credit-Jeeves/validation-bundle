@@ -2,7 +2,11 @@
 
 namespace RentJeeves\CoreBundle\Tests\Mailer;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\PartnerUser;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class MailerCase extends BaseTestCase
@@ -111,9 +115,12 @@ class MailerCase extends BaseTestCase
         $order = $em->find('DataBundle:Order', 2);
         $this->getMailer()->sendOrderSendingNotification($order);
 
+        $template = $this->getEntityManager()->getRepository('RjEmailBundle:EmailTemplate')
+            ->findOneBy(['name' => 'rjOrderSending.html']);
+        $subject = $template->translate('test')->getSubject();
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);
-        $this->assertEquals('Your Rent Check is in the Mail!', $message->getSubject());
+        $this->assertEquals($subject, $message->getSubject());
     }
 
     /**
@@ -171,6 +178,76 @@ class MailerCase extends BaseTestCase
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Did you miss a rent payment?', $message->getSubject());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSendScoreTrackError()
+    {
+        $this->load(true);
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $orders = $this->getEntityManager()->getRepository('DataBundle:Order')
+            ->createQueryBuilder('o')
+            ->select()
+            ->leftJoin('o.operations', 'p')
+            ->where('p.type = :report')
+            ->setParameter('report', OperationType::REPORT)
+            ->getQuery()
+            ->execute();
+        $this->assertNotEmpty($orders, 'Orders should exist in fixtures');
+        /** @var Order $order */
+        $order = reset($orders);
+        $transaction = $this->getEntityManager()->getRepository('RjDataBundle:Transaction')->findOneBy(
+            [
+                'isSuccessful' => 0
+            ]
+        );
+        $this->assertNotEmpty($transaction, 'Transaction should exist in fixtures');
+        $transaction->setOrder($order);
+        $transaction->setStatus(TransactionStatus::COMPLETE);
+        $transaction->getTransactionId(12143);
+        $transaction->setIsSuccessful(0);
+        $transaction->setMessages('Test error message.');
+        $order->setStatus(OrderStatus::ERROR);
+        $order->addTransaction($transaction);
+        $this->getEntityManager()->flush();
+
+        $this->getMailer()->sendScoreTrackError($order);
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('ScoreTrack Payment Error', $message->getSubject());
+        $this->assertArrayHasKey(0, $message->getChildren(), 'Should have content');
+        $this->assertContains('Test error message.', $message->getChildren()[0]->getBody());
+    }
+
+    /**
+     * @test
+     */
+    public function sendReportReceipt()
+    {
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $orders = $this->getEntityManager()->getRepository('DataBundle:Order')
+            ->createQueryBuilder('o')
+            ->select()
+            ->leftJoin('o.operations', 'p')
+            ->where('p.type = :report')
+            ->setParameter('report', OperationType::REPORT)
+            ->getQuery()
+            ->execute();
+
+        $this->assertNotEmpty($orders, 'Orders should exist in fixtures');
+        $this->getMailer()->sendReportReceipt(reset($orders));
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
+        $message = $plugin->getPreSendMessage(0);
+        $this->assertEquals('Receipt from Rent Track', $message->getSubject());
     }
 
     /**

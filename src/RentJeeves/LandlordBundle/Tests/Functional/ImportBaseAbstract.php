@@ -144,6 +144,16 @@ class ImportBaseAbstract extends BaseTestCase
 
     protected function waitReviewAndPost()
     {
+        $this->waitReview();
+
+        $this->session->wait(
+            10000,
+            "$('.submitImportFile>span').is(':visible')"
+        );
+    }
+
+    protected function waitReview()
+    {
         $this->session->wait(
             10000,
             "$('.overlay-trigger').length > 0"
@@ -153,17 +163,15 @@ class ImportBaseAbstract extends BaseTestCase
             21000,
             "$('.overlay-trigger').length <= 0"
         );
-
-        $this->session->wait(
-            10000,
-            "$('.submitImportFile>span').is(':visible')"
-        );
     }
 
-    protected function waitRedirectToSummaryPage()
+    /**
+     * @param int $timeout  on ms
+     */
+    protected function waitRedirectToSummaryPage($timeout = 30000)
     {
         $this->session->wait(
-            1500000,
+            $timeout,
             "$('#summaryList').length > 0"
         );
     }

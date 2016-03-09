@@ -12,6 +12,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
     protected $exceptionCatcherMock;
     protected $serializerMock;
     protected $loggerMock;
+    protected $httpClient;
 
     protected function setUp()
     {
@@ -19,6 +20,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
         $this->exceptionCatcherMock = $this->systemsMocks->getExceptionCatcherMock();
         $this->serializerMock = $this->systemsMocks->getSerializerMock();
         $this->loggerMock = $this->systemsMocks->getLoggerMock();
+        $this->httpClient = $this->getHttpClientMock();
     }
 
     /**
@@ -32,7 +34,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
             $this->loggerMock,
             "integrationPartnerId",
             "apiKey",
-            "apiUrl"
+            $this->httpClient
         );
     }
 
@@ -110,7 +112,7 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
                     $this->loggerMock,
                     "integrationPartnerId",
                     "apiKey",
-                    "apiUrl"
+                    $this->httpClient
                 ]
             )
             ->setMethods(["sendRequest", "manageResponse", "getResidentTransactionXml", "getSettings"])
@@ -127,5 +129,13 @@ class ResManClientCase extends \PHPUnit_Framework_TestCase
             ->with($this->matchesRegularExpression($alertRegex));
 
         return $stubClient;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Guzzle\Http\Client
+     */
+    protected function getHttpClientMock()
+    {
+        return $this->getMock('\Guzzle\Http\Client', [], [], '', false);
     }
 }

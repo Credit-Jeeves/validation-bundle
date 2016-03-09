@@ -2,15 +2,32 @@
 
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer;
 
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingResponseRecord;
 
+/**
+ * Service`s name "aci_enrollment_file_deserializer"
+ */
 class EnrollmentResponseFileDeserializer
 {
     const ACCOUNT_TYPE_SYMBOL = 'A';
     const CONSUMER_TYPE_SYMBOL = 'C';
     const FUNDING_TYPE_SYMBOL = 'F';
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @var array
@@ -112,10 +129,12 @@ class EnrollmentResponseFileDeserializer
      */
     public function deserialize($pathToFile)
     {
+        $this->logger->debug(sprintf('Start deserialize file "%s"', $pathToFile));
         $data = [];
-        foreach ($this->getDataFromFile($pathToFile) as $row) {
+        foreach ($this->getDataFromFile($pathToFile) as $key => $row) {
             switch ($row[0]) {
                 case self::CONSUMER_TYPE_SYMBOL:
+                    $this->logger->debug(sprintf('Creating ConsumerResponseRecord for %d row', $key));
                     $record = $this->rowToObject(
                         $row,
                         $this->consumerResponseRecordOrder,
@@ -123,6 +142,7 @@ class EnrollmentResponseFileDeserializer
                     );
                     break;
                 case self::ACCOUNT_TYPE_SYMBOL:
+                    $this->logger->debug(sprintf('Creating AccountResponseRecord for %d row', $key));
                     $record = $this->rowToObject(
                         $row,
                         $this->accountResponseRecordOrder,
@@ -130,6 +150,7 @@ class EnrollmentResponseFileDeserializer
                     );
                     break;
                 case self::FUNDING_TYPE_SYMBOL:
+                    $this->logger->debug(sprintf('Creating FundingResponseRecord for %d row', $key));
                     $record = $this->rowToObject(
                         $row,
                         $this->fundingResponseRecordOrder,
@@ -190,6 +211,7 @@ class EnrollmentResponseFileDeserializer
             }
         }
         fclose($file);
+        $this->logger->debug(sprintf('Got %d row(s) from file', count($data)));
 
         return $data;
     }

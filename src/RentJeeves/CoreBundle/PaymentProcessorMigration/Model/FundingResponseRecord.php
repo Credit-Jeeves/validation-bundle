@@ -143,9 +143,7 @@ class FundingResponseRecord
     /**
      * @var string
      *
-     * @Assert\NotBlank()
      * @Assert\Length(min = 1, max = 20)
-     * @Assert\Choice(choices = {"VISA", "MC", "AMEX", "DISC"})
      */
     protected $creditCardSubType;
 

@@ -15,6 +15,7 @@ imports:
     - { resource: ../base/apy_js_form_validation.yml }
     - { resource: ../base/fos_oauth_server.yml }
     - { resource: ../base/aci.yml }
+    - { resource: ../base/profit_stars.yml }
     - { resource: ../base/monolog.yml }
 
 parameters:
@@ -41,10 +42,11 @@ parameters:
         price: 0
         product: 'registration'
 # parameters for landlord import
-    paydirect_fee_cc: 2.79
-    paydirect_fee_ach: 2.50
+    paydirect_fee_cc: 2.99
+    paydirect_fee_ach: 2.99
 
-    dod_limit_max_payment: 5000
+    dod_limit_max_payment: 3000
+    dod_dtr_payment_rolling_window: 15
 
 # parameters for twig
     payment_bank_fee: 0 # feeACH would be processed on heartland side

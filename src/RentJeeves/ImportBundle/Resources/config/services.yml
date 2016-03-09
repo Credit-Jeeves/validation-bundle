@@ -11,12 +11,23 @@ services:
         arguments:
             - RentJeeves\DataBundle\Entity\ImportTransformer
 
+    # builders
+    import.property.extractor_builder:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder
+        arguments:
+            - @import.property.extractor_factory
+            - @monolog.logger.property_import
+
     # factories
     import.property.extractor_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory
         arguments:
             -
               %accounting_system.mri%: @import.property.extractor.mri
+              %accounting_system.resman%: @import.property.extractor.resman
+              %accounting_system.yardi%: @import.property.extractor.yardi
+              %accounting_system.amsi%: @import.property.extractor.amsi
+            - @import.property.extractor.csv
 
     import.property.transformer_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory
@@ -26,16 +37,24 @@ services:
             - %import.property.transformer.custom_paths%
             -
               %accounting_system.mri%: @import.property.transformer.mri
-              %accounting_system.yardi%: @import.property.extractor.yardi
-              %accounting_system.amsi%: @import.property.extractor.amsi
+              %accounting_system.yardi%: @import.property.transformer.yardi
+              %accounting_system.resman%: @import.property.transformer.resman
+              %accounting_system.amsi%: @import.property.transformer.amsi
+            - @import.property.transformer.csv
 
     # services
     import.property.manager:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager
         arguments:
-            - @import.property.extractor_factory
+            - @import.property.extractor_builder
             - @import.property.transformer_factory
-            - @import.property.loader
+            - @import.property.loader_factory
+            - @monolog.logger.property_import
+
+    import.property.settings_provider:
+        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+        arguments:
+            - @soap.client.yardi.resident_transactions
             - @monolog.logger.property_import
 
     import.property.extractor.mri:
@@ -66,6 +85,10 @@ services:
             - @resman.resident_data
             - @monolog.logger.property_import
 
+    import.property.extractor.csv:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor
+        public: false
+
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
         public: false
@@ -73,11 +96,46 @@ services:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
 
-    import.property.loader:
-        class: RentJeeves\ImportBundle\PropertyImport\Loader\PropertyLoader
+    import.property.transformer.resman:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\ResmanTransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.transformer.yardi:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.transformer.amsi:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\AMSITransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+            
+    import.property.transformer.csv:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer
+        public: false
+
+    import.property.loader_factory:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory
+        arguments:
+            - @import.property.loader.mapped
+            - @import.property.loader.unmapped
+
+    import.property.loader.mapped:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader
         public: false
         arguments:
             - @doctrine.orm.default_entity_manager
             - @property.manager
             - @validator
             - @monolog.logger.property_import
+
+    import.property.loader.unmapped:
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\UnmappedLoader
+        public: false

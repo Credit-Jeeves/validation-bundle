@@ -28,10 +28,11 @@ class ReportController extends Controller
 
         if ($shouldUpdateReport) {
             $lastCompleteReportOperation = $this->getUser()->getLastCompleteReportOperation();
-            if ($lastCompleteReportOperation) {
-                $report = $lastCompleteReportOperation->getReportByVendor($vendor);
-            } else {
+
+            if ($this->getUser()->getSettings()->isScoreTrackFree()) {
                 $report = $this->getUser()->getLastReportByVendor($vendor);
+            } elseif ($lastCompleteReportOperation) {
+                $report = $lastCompleteReportOperation->getReportByVendor($vendor);
             }
 
             return empty($report) ? false : true;
@@ -100,7 +101,7 @@ class ReportController extends Controller
             $session = $request->getSession();
             /** @var Logger $logger */
             $logger = $this->get('logger');
-            ignore_user_abort();
+            ignore_user_abort(true);
             set_time_limit(90);
             if (false == $session->get('isReportProcessing', false)) {
                 $session->set('isReportProcessing', true);

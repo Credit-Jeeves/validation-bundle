@@ -5,6 +5,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use Gedmo\Loggable\LoggableListener as Base;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use RentJeeves\DataBundle\Entity\Payment;
 
 class LoggableListener extends Base
 {
@@ -14,9 +15,12 @@ class LoggableListener extends Base
             return true;
         }
 
+        if ($object instanceof Payment) {
+            return true;
+        }
+
         return false;
     }
-
 
     /**
      * {@inheritdoc}

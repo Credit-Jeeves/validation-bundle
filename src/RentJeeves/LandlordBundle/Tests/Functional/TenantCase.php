@@ -689,8 +689,6 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
 
-        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
-
         $formFields = [
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
             'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name' => 'Sharamko',
@@ -701,6 +699,9 @@ class TenantCase extends BaseTestCase
         ];
 
         $this->fillForm($form, $formFields);
+
+        $this->chooseLinkSelect('rentjeeves_landlordbundle_invitetenantcontracttype_contract_property', '1');
+
         $this->session->wait(1000, "false"); // wait filling form from DB
 
         $this->page->pressButton('invite.tenant');
@@ -990,21 +991,26 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals(self::ALL, $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
-        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(1, $errorList, 'Wrong number of errors');
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible")');
+        $errors = $this->getDomElements('.attention-box.pie-el li', 'List of error should be shown');
+        $this->assertCount(5, $errors);
         $this->fillForm(
             $form,
-            array(
+            [
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email' => 'landlord1@example.com'
-            )
+            ]
         );
-        $this->session->wait($this->timeout, "$('#userExistMessageLanlord').is(':visible')");
+        $this->page->pressButton('invite.tenant');
+        $this->session->wait($this->timeout, '!$(".overlay").is(":visible")');
+        $userExistMsgBox = $this->getDomElement('#userExistMessageLanlord');
+        $this->assertTrue($userExistMsgBox->isVisible(), 'User exist message box should be visible');
+        $this->assertEquals('user.itslandlord', $userExistMsgBox->getText());
         $this->logout();
     }
 
@@ -1133,15 +1139,12 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
         //Check created contracts
-        $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
-        $search->click();
-        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $inviteStatus->click();
+        $this->chooseLinkSelect('searchPaymentsStatus', 'invite');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
 
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
@@ -1152,12 +1155,8 @@ class TenantCase extends BaseTestCase
         $this->page->clickLink('revoke.inv');
         $this->page->pressButton('yes.revoke.inv');
 
-        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
+        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
         //Check created contracts
-        $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
-        $search->click();
-        $this->assertNotNull($inviteStatus = $this->page->find('css', '#searchPaymentsStatus_li_2'));
-        $inviteStatus->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#contracts-block .notHaveData').length > 0");
@@ -1222,10 +1221,23 @@ class TenantCase extends BaseTestCase
         $this->logout();
     }
 
+
+    /**
+     * @return array
+     */
+    public function providerForEditExternalLeaseId()
+    {
+        return [
+            [AccountingSystem::MRI_BOSTONPOST],
+            [AccountingSystem::AMSI]
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider providerForEditExternalLeaseId
      */
-    public function editContractAndAddLeaseId()
+    public function editContractAndAddLeaseId($accountingSystem)
     {
         $this->loadTenantTab();
         $this->setDefaultSession('selenium2');
@@ -1237,7 +1249,7 @@ class TenantCase extends BaseTestCase
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
         $holding = $group->getHolding();
-        $holding->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $holding->setAccountingSystem($accountingSystem);
         $em->flush();
 
         $this->session->reload();
@@ -1260,10 +1272,12 @@ class TenantCase extends BaseTestCase
         $this->assertNotEmpty($contract, 'Should be contract with such lease id');
     }
 
+
     /**
      * @test
+     * @dataProvider providerForEditExternalLeaseId
      */
-    public function inviteNewTenantWithExternalLeaseId()
+    public function inviteNewTenantWithExternalLeaseId($accountingSystem)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -1272,7 +1286,7 @@ class TenantCase extends BaseTestCase
         $group = $em->getRepository('DataBundle:Group')->findOneByName('Sea side Rent Group');
         $setting = $group->getGroupSettings();
         $setting->setIsIntegrated(true);
-        $group->getHolding()->setAccountingSystem(AccountingSystem::MRI_BOSTONPOST);
+        $group->getHolding()->setAccountingSystem($accountingSystem);
         $em->flush();
         $em->clear();
         $this->clearEmail();

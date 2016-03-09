@@ -55,9 +55,11 @@ interface AttributeGeneratorInterface
     public static function startYearAttrs();
 
     /**
+     * @param bool $isPastCutoffTime
+     * @param null $minDate
      * @return array
      */
-    public static function startDateAttrs($isPastCutoffTime = false);
+    public static function startDateAttrs($isPastCutoffTime = false, $minDate = null);
 
     /**
      * @return array

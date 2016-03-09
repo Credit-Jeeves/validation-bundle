@@ -303,7 +303,7 @@ class PaymentsControllerCase extends BaseApiTestCase
             [
                 'day' => '0',
                 'month' => '0',
-                'year' => '- 2',
+                'year' => '- 4',
                 'paid_for' => null
             ],
             [

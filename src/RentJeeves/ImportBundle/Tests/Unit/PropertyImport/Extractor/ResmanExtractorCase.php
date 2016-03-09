@@ -26,14 +26,16 @@ class ResmanExtractorCase extends UnitTestBase
         $group = new Group();
         $group->setHolding($holding);
 
-        $ResmanExtractor = new ResmanExtractor($this->getResmanResidentDataManagerMock(), $this->getLoggerMock());
-        $ResmanExtractor->extractData($group, 'test');
+        $resmanExtractor = new ResmanExtractor($this->getResmanResidentDataManagerMock(), $this->getLoggerMock());
+        $resmanExtractor->setGroup($group);
+        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->extractData();
     }
 
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage Can`t get data from Resman for ExternalPropertyId="test". Details: testMessage
+     * @expectedExceptionMessage Can`t get data from Resman. Details: testMessage
      */
     public function shouldThrowImportExtractorExceptionIfResidentDataManagerThrowException()
     {
@@ -48,8 +50,11 @@ class ResmanExtractorCase extends UnitTestBase
             ->method('getResidentTransactions')
             ->with($this->equalTo('test'))
             ->willThrowException(new \Exception('testMessage'));
-        $ResmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
-        $ResmanExtractor->extractData($group, 'test');
+
+        $resmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
+        $resmanExtractor->setGroup($group);
+        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->extractData();
     }
 
     /**
@@ -68,8 +73,10 @@ class ResmanExtractorCase extends UnitTestBase
             ->method('getResidentTransactions')
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = ['test']));
-        $ResmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
-        $actualResponse = $ResmanExtractor->extractData($group, 'test');
+        $resmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
+        $resmanExtractor->setGroup($group);
+        $resmanExtractor->setExtPropertyId('test');
+        $actualResponse = $resmanExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from ResmanExtractor.');
     }
@@ -93,10 +100,12 @@ class ResmanExtractorCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $logger->expects($this->at(1))
             ->method('info')
-            ->with($this->equalTo('Returned response for extPropertyId#test is empty.'));
+            ->with($this->equalTo('Returned response is empty.'));
 
-        $ResmanExtractor = new ResmanExtractor($dataManager, $logger);
-        $actualResponse = $ResmanExtractor->extractData($group, 'test');
+        $resmanExtractor = new ResmanExtractor($dataManager, $logger);
+        $resmanExtractor->setGroup($group);
+        $resmanExtractor->setExtPropertyId('test');
+        $actualResponse = $resmanExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from ResmanExtractor.');
     }

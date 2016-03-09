@@ -317,6 +317,7 @@ class AccountingController extends Controller
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return array(
+            'isSupportResidentId'     => $handler->isSupportResidentId,
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),

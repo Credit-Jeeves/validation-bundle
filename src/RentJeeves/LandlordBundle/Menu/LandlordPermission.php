@@ -8,8 +8,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\DataBundle\Enum\ImportSource;
+use RentJeeves\DataBundle\Entity\Landlord;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -87,5 +86,13 @@ class LandlordPermission
         }
 
         return false;
+    }
+
+    /**
+     * @return Landlord
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

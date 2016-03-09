@@ -78,6 +78,7 @@ services:
             - "@jms_serializer"
             - "@http_client"
             - "@logger"
+
     resman.client:
         class: "%resman.client.class%"
         arguments:
@@ -86,6 +87,8 @@ services:
             - "@logger"
             - "%resman.integration_partner_id%"
             - "%resman.api_key%"
+            - "@guzzle_client"
+
     soap.client.factory:
         class: "%soap.client.factory.class%"
         arguments:

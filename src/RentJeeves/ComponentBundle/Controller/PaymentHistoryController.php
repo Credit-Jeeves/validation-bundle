@@ -26,6 +26,8 @@ class PaymentHistoryController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
+        $isNeedOpenTUReportPopUp = $this->get('session')->getFlashBag()->get('isNeedOpenTUReportPopUp');
+        $isFilled = false;
         /**
          * @var $contract Contract
          */
@@ -43,7 +45,15 @@ class PaymentHistoryController extends Controller
             }
 
             $interval = $startDate->diff($currentDate)->format('%r%a');
-            $item = array();
+            $item = ['isNeedOpenTUReportPopUp' => false];
+
+            if ($isFilled === false && $isNeedOpenTUReportPopUp
+                && in_array($contract->getStatus(), [ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ) {
+                $isFilled = true;
+                $item['isNeedOpenTUReportPopUp'] = true;
+            }
+
             $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
             $item['rent'] = $contract->getRent();

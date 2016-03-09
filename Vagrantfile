@@ -122,7 +122,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      chef.chef_server_url = "https://api.opscode.com/organizations/renttrack"
      chef.validation_client_name = "renttrack-validator"
      chef.validation_key_path = "~/.chef/renttrack-validator.pem"
-     chef.environment = "development"
+     chef.environment = "devops-stage"
      chef.json = chef_attrs
      chef.run_list = run_list
      chef.log_level = :info # use :debug for troubleshooting

@@ -101,6 +101,8 @@ services:
     aci_enrollment_file_deserializer:
         class: RentJeeves\CoreBundle\PaymentProcessorMigration\Deserializer\EnrollmentResponseFileDeserializer
         public: false
+        arguments:
+            - @logger
 
     aci_profiles_importer:
         class: RentJeeves\CoreBundle\PaymentProcessorMigration\CsvImporter
@@ -108,6 +110,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @aci_enrollment_file_deserializer
             - @validator
+            - @logger
 
     guzzle_client:
         class: Guzzle\Http\Client

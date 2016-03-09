@@ -138,10 +138,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
 
@@ -168,6 +168,8 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
 
+        $this->setOldProfileId(md5($this->contractForCreate->getTenant()->getId()), $profile->getProfileId());
+
         $merchantName = $this->contractForCreate
             ->getGroup()->getRentDepositAccountForCurrentPaymentProcessor()->getMerchantName();
 
@@ -190,19 +192,21 @@ class AciCollectPayCase extends BaseTestCase
             "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length"
         );
 
-        $this->assertNotEmpty($forms = $this->page->findAll('css', 'form'));
-        $this->assertCount(4, $forms);
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
-        $forms[0]->find('css', 'select[name="rentjeeves_checkoutbundle_paymenttype[type]"]')->selectOption(
-            PaymentTypeEnum::ONE_TIME
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForUpdate,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+            ]
         );
-        $forms[0]->find('css', 'select[name="rentjeeves_checkoutbundle_paymenttype[paidFor]"]')->setValue(
-            $this->paidForStringForUpdate
-        );
-        $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[amount]"]')->setValue('1000');
-        $forms[0]->find('css', 'input[name="rentjeeves_checkoutbundle_paymenttype[start_date]"]')->setValue(
-            (new \DateTime('+2 day'))->format('n/j/Y')
-        );
+
+        $this->getDomElement('table.ui-datepicker-calendar a.ui-state-active')->click();
+
+        $this->session->wait(100);
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
@@ -220,13 +224,6 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->getEntityManager()->refresh($this->contractForUpdate);
         $this->assertNotEmpty($this->contractForUpdate->getTenant()->getAciCollectPayProfileId());
-
-        $this->setOldProfileId(
-            md5($this->contractForCreate->getTenant()->getId()),
-            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
-        );
-
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -362,10 +359,7 @@ class AciCollectPayCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.next');
 
-        $this->session->wait(
-            $this->timeout,
-            "!jQuery('#id-source-step').is(':visible')"
-        );
+        $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
 
         $this->assertNotEmpty($errors = $this->page->findAll('css', '.attention-box li'));
         $this->assertCount(2, $errors);
@@ -407,10 +401,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
 
@@ -440,6 +434,11 @@ class AciCollectPayCase extends BaseTestCase
         $this->getEntityManager()->refresh($this->contractForCreate);
         $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
 
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+
         $this->assertNotEmpty($profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile());
 
         $merchantName = $this->contractForCreate
@@ -463,11 +462,6 @@ class AciCollectPayCase extends BaseTestCase
             $paymentAccount->getDebitType(),
             'Created Payment Account should be have debit_type "debit"'
         );
-        $this->setOldProfileId(
-            md5($this->contractForCreate->getTenant()->getId()),
-            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
-        );
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 
     /**
@@ -512,10 +506,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
                 'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
                 'rentjeeves_checkoutbundle_paymenttype_start_date' => (new \DateTime('+2 day'))->format('n/j/Y'),
-                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForStringForCreate,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1000',
             ]
         );
 
@@ -544,6 +538,11 @@ class AciCollectPayCase extends BaseTestCase
         $this->getEntityManager()->refresh($this->contractForCreate);
         $this->getEntityManager()->refresh($this->contractForCreate->getTenant());
 
+        $this->setOldProfileId(
+            md5($this->contractForCreate->getTenant()->getId()),
+            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
+        );
+
         $this->assertNotEmpty(
             $profile = $this->contractForCreate->getTenant()->getAciCollectPayProfile(),
             'Profile should be created'
@@ -570,11 +569,13 @@ class AciCollectPayCase extends BaseTestCase
             $paymentAccount->getDebitType(),
             'Created Payment Account should be have debit_type "signature_non_exempt"'
         );
-        $this->setOldProfileId(
-            md5($this->contractForCreate->getTenant()->getId()),
-            $this->contractForCreate->getTenant()->getAciCollectPayProfileId()
-        );
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
+    }
+
+    protected function tearDown()
+    {
+        if ($this->contractForCreate && $this->contractForCreate->getTenant()->getAciCollectPayProfileId()) {
+            $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
+        }
     }
 
     /**
@@ -665,8 +666,5 @@ class AciCollectPayCase extends BaseTestCase
         $this->assertNotNull($payment = $em->getRepository('RjDataBundle:Payment')->find(7), 'Payment #7 should exist');
 
         $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be FLAGGED');
-
-
-        $this->deleteProfile($this->contractForCreate->getTenant()->getAciCollectPayProfileId());
     }
 }

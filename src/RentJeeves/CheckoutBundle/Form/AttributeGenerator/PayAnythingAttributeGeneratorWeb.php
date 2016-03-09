@@ -38,9 +38,9 @@ class PayAnythingAttributeGeneratorWeb extends AttributeGeneratorWeb implements 
     /**
      * {@inheritdoc}
      */
-    public static function startDateAttrs($isPastCutoffTime = false)
+    public static function startDateAttrs($isPastCutoffTime = false, $minDate = null)
     {
-        $minDate = $isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime();
+        $minDate = $minDate ?: ($isPastCutoffTime ? new \DateTime('+1 day') : new \DateTime());
 
         return [
             'class' => 'datepicker-field',

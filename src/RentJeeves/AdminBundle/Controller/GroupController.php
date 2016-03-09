@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportStatus;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -30,10 +31,15 @@ class GroupController extends BaseController
      */
     public function importPropertyCreateJob(Group $group, Request $request)
     {
-        $propertiesMapping = $this->getEntityManager()
-            ->getRepository('RjDataBundle:PropertyMapping')->getPropertiesMappingByGroup($group);
+        try {
+            $extPropertyIds = $this->getImportSettingsProvider()->provideExternalPropertyIds($group);
+        } catch (ImportLogicException $e) {
+            $request->getSession()->getFlashBag()->add('error', $e->getMessage());
 
-        if (empty($propertiesMapping)) {
+            return $this->redirectToRoute('admin_rj_group_list');
+        }
+
+        if (empty($extPropertyIds)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $this->getTranslator()->trans(
@@ -51,8 +57,8 @@ class GroupController extends BaseController
             $this->getEntityManager()->persist($newImport);
             $this->getEntityManager()->flush();
 
-            foreach ($propertiesMapping as $propertyMapping) {
-                $this->createJobForExternalProperty($newImport, $propertyMapping['externalPropertyId']);
+            foreach ($extPropertyIds as $extPropertyId) {
+                $this->createJobForExternalProperty($newImport, $extPropertyId);
             }
 
             $request->getSession()->getFlashBag()->add(
@@ -73,7 +79,7 @@ class GroupController extends BaseController
      */
     protected function createJobForExternalProperty(Import $import, $externalPropertyId)
     {
-        $job = new Job(
+        $dependentJob = new Job(
             'renttrack:import:property',
             [
                 '--import-id=' . $import->getId(),
@@ -81,7 +87,22 @@ class GroupController extends BaseController
             ]
         );
 
+        $job = new Job(
+            'renttrack:import:property:check-status',
+            ['--import-id=' . $import->getId()]
+        );
+        $job->addDependency($dependentJob);
+
         $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->persist($dependentJob);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return \RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+     */
+    protected function getImportSettingsProvider()
+    {
+        return $this->get('import.property.settings_provider');
     }
 }

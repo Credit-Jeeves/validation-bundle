@@ -186,7 +186,7 @@ class ImportYardiCase extends ImportBaseAbstract
 
         $submitImport->click();
 
-        $this->waitRedirectToSummaryPage();
+        $this->waitRedirectToSummaryPage(90000); // 1.5 m
         $this->getEntityManager()->refresh($contracts[1]);
         $rent = $contracts[1]->getRent();
         $this->assertGreaterThan(1, $rent, sprintf('Should be update, but got %s', $rent));

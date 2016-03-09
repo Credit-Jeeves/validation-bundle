@@ -50,9 +50,14 @@
              )
         }
     ">
-        <span data-bind="text:$root.getResidentId($data)"> </span>
-        {% if isMultipleProperty == 'true' %}
+        {% if isSupportResidentId %}
+            <span data-bind="text:$root.getResidentId($data)"> </span>
+        {% endif %}
+        {% if isSupportResidentId and isMultipleProperty == 'true' %}
             <hr />
+        {% endif %}
+        {% if isMultipleProperty == 'true' %}
+
             <span data-bind="html: unit_mapping.external_unit_id"></span>
         {% endif %}
     </td>

@@ -33,6 +33,17 @@ class UsersControllerCase extends BaseApiTestCase
                 409
             ],
             [
+                // duplicate by landlord email
+                [
+                    'type' => 'tenant',
+                    'first_name' => 'Tenant',
+                    'last_name' => 'Epic',
+                    'email' => 'landlord1@example.com',
+                    'password' => 'pass111aaaa',
+                ],
+                409
+            ],
+            [
                 // duplicate by resident mapping
                 [
                     'type' => 'tenant',

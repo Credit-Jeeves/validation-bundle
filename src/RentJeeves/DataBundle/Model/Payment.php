@@ -39,6 +39,8 @@ class Payment
      *      nullable=false
      * )
      *
+     * @Gedmo\Versioned
+     *
      * @var Contract
      */
     protected $contract;
@@ -59,6 +61,8 @@ class Payment
      * @Serializer\Accessor(getter="getPaymentAccountId")
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var PaymentAccount
      */
     protected $paymentAccount;
@@ -75,6 +79,8 @@ class Payment
      * )
      * @Serializer\Exclude
      *
+     * @Gedmo\Versioned
+     *
      * @var DepositAccountEntity
      */
     protected $depositAccount;
@@ -86,6 +92,8 @@ class Payment
      * )
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var PaymentType
      */
     protected $type;
@@ -95,6 +103,8 @@ class Payment
      * @Assert\NotBlank(
      *      message="checkout.error.status.empty"
      * )
+     *
+     * @Gedmo\Versioned
      *
      * @var PaymentStatus
      */
@@ -114,6 +124,8 @@ class Payment
      *      groups={"Default", "pay_anything"}
      * )
      * @Serializer\Groups({"payRent"})
+     *
+     * @Gedmo\Versioned
      *
      * @var double
      */
@@ -137,6 +149,8 @@ class Payment
      * )
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var double
      */
     protected $total;
@@ -146,6 +160,8 @@ class Payment
      * @Serializer\SerializedName("paidFor")
      * @Serializer\Type("DateTime<'Y-m-d'>")
      * @Serializer\Groups({"payRent"})
+     *
+     * @Gedmo\Versioned
      *
      * @var DateTime
      */
@@ -162,6 +178,8 @@ class Payment
      * @Serializer\SerializedName("dueDate")
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var int
      */
     protected $dueDate;
@@ -176,6 +194,8 @@ class Payment
      * @Serializer\SerializedName("startMonth")
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var int
      */
     protected $startMonth;
@@ -188,6 +208,8 @@ class Payment
      * )
      * @Serializer\SerializedName("startYear")
      * @Serializer\Groups({"payRent"})
+     *
+     * @Gedmo\Versioned
      *
      * @var int
      */
@@ -203,6 +225,8 @@ class Payment
      * @Serializer\SerializedName("endMonth")
      * @Serializer\Groups({"payRent"})
      *
+     * @Gedmo\Versioned
+     *
      * @var int
      */
     protected $endMonth = null;
@@ -215,6 +239,8 @@ class Payment
      * )
      * @Serializer\SerializedName("endYear")
      * @Serializer\Groups({"payRent"})
+     *
+     * @Gedmo\Versioned
      *
      * @var int
      */
@@ -232,6 +258,8 @@ class Payment
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      *
+     * @Gedmo\Versioned
+     *
      * @var DateTime
      */
     protected $updatedAt;
@@ -243,6 +271,8 @@ class Payment
 
     /**
      * @ORM\Column(name="close_details", type="array", nullable=true)
+     *
+     * @Gedmo\Versioned
      */
     protected $closeDetails;
 

@@ -37,4 +37,17 @@ class OrderStatus extends Enum
             $restrictedStatuses
         );
     }
+
+    /**
+     * @return array
+     */
+    public static function getDTRSuccessfulStatuses()
+    {
+        return [
+            self::COMPLETE,
+            self::PENDING,
+            self::REISSUED,
+            self::SENDING,
+        ];
+    }
 }

@@ -1,0 +1,87 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+<div class="container-content">
+    <div class="check-scanning">
+        <h1>{{ 'title.scanning'|trans }}</h1>
+        <br/>
+        <div>
+            <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
+                <button class="button small">
+                    <span>{{ 'button_title.scanning'|trans }}</span>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="lease-lookup">
+        <h1>{{ 'landlord.scanning.lease_list.title'|trans }}</h1>
+        <br/>
+        <p>{{ 'landlord.scanning.lease_list.text'|trans }}</p>
+        <div class="filter">
+            {{ form_widget(form.name, {'attr': {'data-bind': 'value: nameFilter'}}) }}
+            {{ form_widget(form.email, {'attr': {'data-bind': 'value: emailFilter'}}) }}
+            {{ form_widget(form.address, {'attr': {'data-bind': 'value: addressFilter'}}) }}
+            {{ form_widget(form.unit, {'attr': {'data-bind': 'value: unitFilter'}}) }}
+            <div class="search-button"></div>
+        </div>
+        <div class="error-message" data-bind="visible: errorMessage !== null">
+            <span data-bind="text: errorMessage"></span>
+        </div>
+        <img id="loading-gif" src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isUpdatingData">
+        <div class="lease-table">
+            <table class="properties-table zebra-grid">
+                <thead>
+                    <tr class="properties-th">
+                        <th class="pie-el">{{ 'landlord.scanning.lease_list.name.title'|trans }}</th>
+                        <th class="pie-el">{{ 'landlord.scanning.lease_list.email.title'|trans }}</th>
+                        <th class="pie-el">{{ 'landlord.scanning.lease_list.address.title'|trans }}</th>
+                        <th class="pie-el">{{ 'landlord.scanning.lease_list.lease_id.title'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: contracts">
+                    <tr>
+                        <td data-bind="text: name"></td>
+                        <td data-bind="text: email"></td>
+                        <td data-bind="text: address"></td>
+                        <td data-bind="text: leaseId"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '@LandlordBundle/Resources/public/css/scanning.css'
+        '@RjCoreBundle/Resources/public/css/toggles.css'
+        '@RjCoreBundle/Resources/public/css/toggles-modern.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@LandlordBundle/Resources/public/js/leaseListViewModel.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    <script type="text/javascript">
+        var viewModel = new LeaseListViewModel();
+        ko.applyBindings(viewModel);
+
+        $('.search-button').click(function(){
+            viewModel.loadData();
+        });
+
+        $('div.filter>input').keypress(function(e) {
+            if(e.which == 13) {
+                viewModel.loadData();
+            }
+        });
+    </script>
+{% endblock %}

@@ -20,6 +20,7 @@ use RentJeeves\DataBundle\Entity\UserSettings;
 use RentJeeves\DataBundle\Entity\PartnerCode;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
+use CreditJeeves\DataBundle\Entity\Holding as HoldingEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -418,6 +419,18 @@ abstract class User extends BaseUser
      * @ORM\Column(type="UserIsVerified", options={"default"="none"})
      */
     protected $is_verified = UserIsVerified::NONE;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(
+     *     name="verify_attempts",
+     *     type="integer",
+     *     nullable=false,
+     *     options={"default"=0}
+     * )
+     */
+    protected $verifyAttempts = 0;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -1320,6 +1333,22 @@ abstract class User extends BaseUser
     }
 
     /**
+     * @return int
+     */
+    public function getVerifyAttempts()
+    {
+        return $this->verifyAttempts;
+    }
+
+    /**
+     * @param int $verifyAttempts
+     */
+    public function setVerifyAttempts($verifyAttempts)
+    {
+        $this->verifyAttempts = $verifyAttempts;
+    }
+
+    /**
      * Set has_report
      *
      * @param  boolean $hasReport
@@ -1865,7 +1894,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return Holding
+     * @return HoldingEntity
      */
     public function getHolding()
     {

@@ -1591,18 +1591,18 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
     public function shouldSendPendingInfoEmailDataProviderACI()
     {
         return [
-            [OrderPaymentType::BANK, OperationType::RENT],
-            [OrderPaymentType::BANK, OperationType::REPORT],
-            [OrderPaymentType::BANK, OperationType::OTHER],
-            [OrderPaymentType::BANK, OperationType::CHARGE],
-            [OrderPaymentType::CASH, OperationType::RENT],
-            [OrderPaymentType::CASH, OperationType::OTHER],
-            [OrderPaymentType::CASH, OperationType::CHARGE],
-            [OrderPaymentType::CASH, OperationType::REPORT],
-            [OrderPaymentType::CARD, OperationType::RENT],
-            [OrderPaymentType::CARD, OperationType::OTHER],
-            [OrderPaymentType::CARD, OperationType::CHARGE],
-            [OrderPaymentType::CARD, OperationType::REPORT],
+            [OrderPaymentType::BANK, OperationType::RENT, 'sendRentError'],
+            [OrderPaymentType::BANK, OperationType::REPORT, 'sendScoreTrackError'],
+            [OrderPaymentType::BANK, OperationType::OTHER, 'sendRentError'],
+            [OrderPaymentType::BANK, OperationType::CHARGE, 'sendRentError'],
+            [OrderPaymentType::CASH, OperationType::RENT, 'sendRentError'],
+            [OrderPaymentType::CASH, OperationType::OTHER, 'sendRentError'],
+            [OrderPaymentType::CASH, OperationType::CHARGE, 'sendRentError'],
+            [OrderPaymentType::CASH, OperationType::REPORT, 'sendScoreTrackError'],
+            [OrderPaymentType::CARD, OperationType::RENT, 'sendRentError'],
+            [OrderPaymentType::CARD, OperationType::OTHER, 'sendRentError'],
+            [OrderPaymentType::CARD, OperationType::CHARGE, 'sendRentError'],
+            [OrderPaymentType::CARD, OperationType::REPORT, 'sendScoreTrackError'],
         ];
     }
 
@@ -1760,11 +1760,11 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
      * @dataProvider shouldSendErrorEmailDataProvider
      * Should send rent error email for any orders and operations
      */
-    public function setErrorShouldSendEmails($orderPaymentType, $operationType)
+    public function setErrorShouldSendEmails($orderPaymentType, $operationType, $emailMethod)
     {
         $mailerMock = $this->getMailerMock();
         $mailerMock->expects($this->once())
-            ->method('sendRentError');
+            ->method($emailMethod);
         $statusManager = new OrderSubmerchantStatusManager(
             $this->getEntityManager(),
             $this->getLoggerMock(),
