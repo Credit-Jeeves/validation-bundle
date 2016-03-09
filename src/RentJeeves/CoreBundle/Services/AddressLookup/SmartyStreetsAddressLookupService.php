@@ -122,6 +122,8 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         $address->setCity($addressComponents->getCityName());
         $address->setCountry(self::DEFAULT_COUNTRY);
         $address->setState($addressComponents->getStateAbbreviation());
+        $address->setUnitName($addressComponents->getSecondaryNumber());
+        $address->setUnitDesignator($addressComponents->getSecondaryDesignator());
 
         return $address;
     }
