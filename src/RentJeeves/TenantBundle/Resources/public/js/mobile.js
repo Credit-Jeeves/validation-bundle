@@ -102,9 +102,9 @@ function init(){
     for (i = 0; i < contractsArr.length;i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
-        var dueDate=contract.startAt.substr(5,2)
-        if(dueDate.charAt(0)=="0"){
-            dueDate=dueDate.charAt(1);
+        var dueDate = contract.startAt.substr(5, 2)
+        if (dueDate.charAt(0) == "0") {
+            dueDate = dueDate.charAt(1);
         }
         dueDate=getOrdinal(dueDate);
         $("#contractDueNext" + contract.id).html(dueDate);
@@ -122,6 +122,10 @@ function init(){
             $("#contractFromAccLabel" + contract.id).hide()
             $("#contractTotal" + contract.id).html(contract.rent)
 
+        }
+        if(contract.groupSetting.is_integrated){
+            $("#contractTotalLabel" + contract.id).html("BALANCE")
+            $("#contractTotal" + contract.id).html(contract.integrated_balance)
         }
         /*
          contract object does not have payToName
