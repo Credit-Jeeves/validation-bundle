@@ -456,7 +456,7 @@ class AccountingPaymentSynchronizer
                 $this->logger->debug('Batch ID:%s closed', $mappingBatch->getId());
             } else {
                 $this->createNotifyJobAboutFailure($holding, $mappingBatch);
-                $this->logger->debug('Batch ID:%s failed to close', $mappingBatch->getId());
+                $this->logger->debug(sprintf('Batch ID:%s failed to close', $mappingBatch->getId()));
             }
         }
     }

@@ -1,26 +1,28 @@
 <?php
 namespace RentJeeves\ExternalApiBundle\Tests\Unit\Services;
 
+use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /** @var AccountingPaymentSynchronizer $synchronizer */
     protected $synchronizer;
 
     protected function setUp()
     {
-        $systemsMocks = new CommonSystemMocks();
-
         $this->synchronizer = new AccountingPaymentSynchronizer(
-            $systemsMocks->getEntityManagerMock(),
+            $this->getEntityManagerMock(),
             $this->getExternalApiClientFactoryMock(),
             $this->getSoapClientFactoryMock(),
-            $systemsMocks->getSerializerMock(),
-            $systemsMocks->getExceptionCatcherMock(),
-            $systemsMocks->getLoggerMock()
+            $this->getSerializerMock(),
+            $this->getExceptionCatcherMock(),
+            $this->getLoggerMock()
         );
     }
 
@@ -140,6 +142,133 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $this->synchronizer->isAllowedToSend($orderMock),
             'Order should be allowed to send custom operation if Post App Fee for holding switched on & AS = ResMan'
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderForCloseBatchFailure()
+    {
+        return [
+            [
+                AccountingSystem::YARDI_VOYAGER,
+                'RentJeeves\DataBundle\Entity\YardiSettings',
+                'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient',
+                'setYardiSettings',
+                ',555,--app=rj'
+            ],
+            [
+                AccountingSystem::RESMAN,
+                'RentJeeves\DataBundle\Entity\ResManSettings',
+                'RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient',
+                'setResManSettings',
+                ',--app=rj'
+            ]
+        ];
+    }
+
+    /**
+     * @param string $accountingSystem
+     * @param string $externalSettingsClassName
+     * @param string $paymentClient
+     * @param string $setterSettings
+     * @param string $argumentsInCommand
+     *
+     * @test
+     * @dataProvider dataProviderForCloseBatchFailure
+     */
+    public function closeBatchFailureShouldCreateJobNotify(
+        $accountingSystem,
+        $externalSettingsClassName,
+        $paymentClient,
+        $setterSettings,
+        $argumentsInCommand
+    ) {
+        $em = $this->getEntityManagerMock();
+        $paymentBatchMappingRep = $this->getBaseMock('RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository');
+        $transactionRepository = $this->getBaseMock('RentJeeves\DataBundle\Entity\TransactionRepository');
+        $paymentClient = $this->getBaseMock($paymentClient);
+
+        $paymentClient->expects($this->at(0))
+            ->method('setDebug');
+
+        $paymentClient->expects($this->at(1))
+            ->method('closeBatch')
+            ->with('555', '777')
+            ->will($this->returnValue(false));
+
+        $holding = new Holding();
+        $holding->setAccountingSystem($accountingSystem);
+        $holding->$setterSettings(new $externalSettingsClassName());
+
+        $clientFactory = $this->getExternalApiClientFactoryMock();
+        $clientFactory->expects($this->at(0))
+            ->method('createClient')
+            ->will($this->returnValue($paymentClient));
+
+        $transactionRepository->expects($this->at(0))
+            ->method('getMerchantHoldingByBatchId')
+            ->with('666')
+            ->will($this->returnValue($holding));
+
+        $paymentBatchMapping = new PaymentBatchMapping();
+        $paymentBatchMapping->setPaymentBatchId('666');
+        $paymentBatchMapping->setAccountingBatchId('555');
+        $paymentBatchMapping->setExternalPropertyId('777');
+        $paymentBatchMapping->setAccountingPackageType($accountingSystem);
+        $paymentBatchMapping->setOpenedAt(new \DateTime());
+
+        $paymentBatchMappingRep->expects($this->once())
+            ->method('getTodayBatches')
+            ->with($this->equalTo($accountingSystem))
+            ->will($this->returnValue([$paymentBatchMapping]));
+
+        $em->expects($this->at(0))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:PaymentBatchMapping'))
+            ->will($this->returnValue($paymentBatchMappingRep));
+
+        $em->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Transaction'))
+            ->will($this->returnValue($transactionRepository));
+
+        $em->expects($this->at(2))
+            ->method('persist')
+            ->willReturnCallback(function ($job) use ($argumentsInCommand) {
+                $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Job', $job, 'Job should create');
+                $this->assertEquals(
+                    $job->getCommand(),
+                    'renttrack:notify:batch-close-failure',
+                    'Command should be failure'
+                );
+                $this->assertEquals(
+                    implode(',', $job->getArgs()),
+                    $argumentsInCommand,
+                    'Command should have arguments'
+                );
+
+                return null;
+            });
+
+        $em->expects($this->at(3))
+            ->method('flush');
+
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->at(0))
+            ->method('debug')
+            ->with('Batch ID: failed to close');
+
+        $synchronizer = new AccountingPaymentSynchronizer(
+            $em,
+            $clientFactory,
+            $this->getSoapClientFactoryMock(),
+            $this->getSerializerMock(),
+            $this->getExceptionCatcherMock(),
+            $logger
+        );
+
+        $synchronizer->closeBatches($accountingSystem);
     }
 
     /**
