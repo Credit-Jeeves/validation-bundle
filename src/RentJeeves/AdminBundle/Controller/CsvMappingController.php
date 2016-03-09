@@ -24,7 +24,7 @@ class CsvMappingController extends BaseController
      * @param Request $request
      * @return Response
      */
-    public function fileAction(Request $request, Group $group)
+    public function uploadFileAction(Request $request, Group $group)
     {
         $form = $this->createForm($this->get('form.upload_csv_file'));
         $form->handleRequest($request);
@@ -45,7 +45,7 @@ class CsvMappingController extends BaseController
         }
 
         return $this->render(
-            'AdminBundle:CsvMapping:file.html.twig',
+            'AdminBundle:CsvMapping:uploadFile.html.twig',
             [
                 'group' => $group,
                 'form' => $form->createView()
@@ -100,7 +100,4 @@ class CsvMappingController extends BaseController
             ]
         );
     }
-
-
-
 }

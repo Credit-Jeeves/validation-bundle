@@ -44,6 +44,11 @@ class CsvMappingCreator
     protected $errors = [];
 
     /**
+     * @var array
+     */
+    protected $csvDataCache = [];
+
+    /**
      * @param EntityManager $em
      * @param CsvFileReaderImport $csvReader
      * @param Translator $translator
@@ -124,7 +129,6 @@ class CsvMappingCreator
     public function saveForm(Form $form, Group $group)
     {
         $data = $this->getCsvData();
-        $headerHash = $this->generateHash($data);
         $importMappingChoice = $this->getImportMappingChoice($group);
 
         $result = [];
@@ -140,7 +144,7 @@ class CsvMappingCreator
 
         if (!$importMappingChoice) {
             $importMappingChoice = new ImportMappingChoice();
-            $importMappingChoice->setHeaderHash($headerHash);
+            $importMappingChoice->setHeaderHash($this->generateHash($data));
             $importMappingChoice->setGroup($group);
         }
 
@@ -159,14 +163,14 @@ class CsvMappingCreator
     {
         $data = $this->getCsvData();
         $headers = array_keys($data[1]);
-        $dataView = array();
+        $dataView = [];
         for ($i=1; $i < count($data[1])+1; $i++) {
-            $dataView[] = array(
+            $dataView[] = [
                 'name' => $headers[$i-1],
                 'row1' => $data[1][$headers[$i-1]],
                 'row2' => (isset($data[2]) && isset($data[2][$headers[$i-1]])) ? $data[2][$headers[$i-1]] : null,
                 'form' => MatchFileType::getFieldNameByNumber($i),
-            );
+            ];
         }
 
         return $dataView;
@@ -181,7 +185,14 @@ class CsvMappingCreator
             return [];
         }
 
-        return $this->csvReader->read($this->csvPath, 0, 3);
+        if (array_key_exists($this->csvPath, $this->csvDataCache)) {
+            return $this->csvDataCache[$this->csvPath];
+        }
+
+        $data = $this->csvReader->read($this->csvPath, 0, 3);
+        $this->csvDataCache[$this->csvPath] = $data;
+
+        return $data;
     }
 
     /**
@@ -226,4 +237,3 @@ class CsvMappingCreator
         }
     }
 }
-

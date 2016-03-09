@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="csv.mapping.success">
                 <source>csv.mapping.success</source>
-                <target>You are successfully create/update csv mapping</target>
+                <target>You have successfully created/updated csv mapping</target>
             </trans-unit>
             <trans-unit id="map.csv.file">
                 <source>map.csv.file</source>
