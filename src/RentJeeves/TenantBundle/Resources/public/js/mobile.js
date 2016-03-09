@@ -798,6 +798,8 @@ function addNewPaymentSource(formObj){
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
+
+                $('body').animate({ scrollTop: '0' }, 0)
             }
         });
 
@@ -837,6 +839,7 @@ function addNewPaymentSource(formObj){
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
                 */
+                $('body').animate({ scrollTop: '0' }, 0)
             }
         });
 
