@@ -21,12 +21,26 @@
 
         </div><br/>
 
-        <form {{ form_enctype(paymentType) }} method="post" id="rentForm" name="rentForm" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
+        <div id="integratedBalanceBox" class="form-row clearfix">
+            <label>{{ 'checkout.total' | trans }}</label>
+            <div class="fields-box">
+                <span id="integratedBalanceValue" class="value big left">
+                </span>
+            </div>
+        </div>
+
+        <form {{ form_enctype(paymentType) }} method="post" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
             {{ form_widget(paymentType) }}
             {{ JSFV(paymentType) }}
 
             <input type="hidden" id="contract_id" name="contract_id">
         </form>
+
+        <form {{ form_enctype(paymentBalanceOnlyType) }} method="post" action="checkout/exec" data-ajax="false" style="line-height: 32px;" novalidate>
+            {{ form_widget(paymentBalanceOnlyType) }}
+            {{ JSFV(paymentBalanceOnlyType) }}
+        </form>
+
 
         <a href="#" onclick="createReview()" style="text-decoration: none;"><button style="background: #eb6024; color: white; font-weight: normal;">NEXT</button></a>
 
@@ -60,15 +74,19 @@
 
     </span><br/><br/>
 
+        <div id="revRentAmountBox">
         <b>
             Rent Amount:
         </b>
 
-        $<span id="revRentAmount"></span><br/>
-
+        $<span id="revRentAmount"></span>
+        </div>
+        <div id="revOtherAmountBox">
         <b>Other Amount:</b>
 
-        $<span id="revOtherAmount"></span><br/>
+        $<span id="revOtherAmount"></span>
+        </div>
+
 
         <div id="revTechFeeCont">
             <b>Technology Fee: </b>

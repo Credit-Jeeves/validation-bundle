@@ -1,6 +1,9 @@
 //mobile page init
-prefix = "rentjeeves_checkoutbundle_paymenttype_";
-accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_"
+var paymentForm = '#rentjeeves_checkoutbundle_paymenttype';
+var paymentBalanceForm = '#rentjeeves_checkoutbundle_paymentbalanceonlytype';
+var currentPaymentForm = paymentForm;
+var prefix = currentPaymentForm;
+var accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_";
 
 //since we aren't using KO, list those visible= when card or bank and use Jquery to set
 bankVisibleFields = [
@@ -74,7 +77,7 @@ function init() {
     ];
 
     $.each(subs, function(i, label) {
-        $("#" + prefix + label[0]).html(label[1])
+        $(prefix + label[0]).html(label[1])
     });
 
     //create event listener for cancel payment box
@@ -143,11 +146,11 @@ function init() {
     //Misc. HTML fixes
 
 
-    $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($("#" + prefix + "amountOther"))
-    $("#" + prefix + "total_row").hide()
-    $("#" + prefix + "amount").onchange = updateTotal;
-    $("#" + prefix + "amountOther").onchange = updateTotal
-    $("#" + prefix + "type_label").html("One-Time or Recurring<sup>*</sup>");
+    $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($(prefix + "amountOther"))
+    $(prefix + "total_row").hide()
+    $(prefix + "amount").onchange = updateTotal;
+    $(prefix + "amountOther").onchange = updateTotal
+    $(prefix + "type_label").html("One-Time or Recurring<sup>*</sup>");
 
 
     //Add new payment source page*************
@@ -207,8 +210,8 @@ function init() {
 
     var ua = navigator.userAgent.toLowerCase();
     var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
-    if (isAndroid) {
-        $("#" + prefix + "amount").attr("type", "numberDecimal") //address weird bug on samsung devices where decimal point is missing
+    if(isAndroid) {
+        $(prefix + "amount").attr("type","numberDecimal") //address weird bug on samsung devices where decimal point is missing
     }
 
 
@@ -229,17 +232,17 @@ function renderPayAccounts(contract) {
         $("#" + accountPrefix + "type_2").hide()
     }
 
-    $("#" + prefix + "paymentAccount").html("")
-    $.each(payAccounts, function(index, payAccount) {
-        if ((payAccount.type == "debit_card" && contract.allowDebitCard) || payAccount.type != "debit_Card") {
-            $("#" + prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>")
+    $(prefix + "paymentAccount").html("")
+    $.each(payAccounts, function(index, payAccount){
+        if((payAccount.type == "debit_card" && contract.allowDebitCard) || payAccount.type != "debit_Card") {
+            $(prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>")
         }
     })
 
     //add "Add new payment source"
-    $("#" + prefix + "paymentAccount").append("<option value='-2'>----</option>") //we need this as to bind something to onchange
-    $("#" + prefix + "paymentAccount").append("<option value='-1'>Add new payment source</option>")
-    $("#" + prefix + "paymentAccount").bind("change", function(event, ui) {
+    $(prefix + "paymentAccount").append("<option value='-2'>----</option>") //we need this as to bind something to onchange
+    $(prefix + "paymentAccount").append("<option value='-1'>Add new payment source</option>")
+    $(prefix+"paymentAccount").bind( "change", function(event, ui) {
         if (this.value == -1) {
             $("#" + accountPrefix + "groupId").val(contract.groupId)
             //get contractId
@@ -359,7 +362,7 @@ function setupPayForm(id) {
 
     //reset 'other' amount
 
-    $("#" + prefix + "amountOther").val("0.00")
+    $(prefix + "amountOther").val("0.00");
     contractsArr = $.map(contractsJson, function(el) {
         return el
     });
@@ -368,7 +371,22 @@ function setupPayForm(id) {
 
             var contract = contractsArr[i]
 
-            renderPayAccounts(contract)
+            if (contract.groupSetting.pay_balance_only) {
+                currentPaymentForm = paymentBalanceForm;
+                $('#integratedBalanceBox').show();
+                $('#integratedBalanceValue').html('$'+ contract.integrated_balance);
+                $(paymentForm).hide();
+                $(paymentBalanceForm).show();
+            } else {
+                currentPaymentForm = paymentForm;
+                $('#integratedBalanceBox').hide();
+                $(paymentBalanceForm).hide();
+                $(paymentForm).show();
+            }
+
+            prefix = currentPaymentForm + '_';
+
+            renderPayAccounts(contract);
 
             //check that user is verified
 
@@ -387,7 +405,7 @@ function setupPayForm(id) {
                 payableDays.push([-1, -1, contract.groupSetting.dueDays[j]])
             }
 
-            $("#" + prefix + "start_date").datebox({
+            $(prefix + "start_date").datebox({
                 mode: "calbox",
                 afterToday: true,
                 blackDatesRec: [payableDays],
@@ -399,7 +417,7 @@ function setupPayForm(id) {
 
             //css fix for calendar widget positioning
 
-            $(document).on("click", "#" + prefix + "start_date", function() {
+            $(document).on("click", prefix + "start_date", function() {
                 var viewportwidth = $(window).width();
                 var datepickerwidth = $("#ui-datepicker-div").width();
                 var leftpos = (viewportwidth - datepickerwidth) / 2; //Standard centering method
@@ -411,8 +429,8 @@ function setupPayForm(id) {
 
             //input contract id into hidden field
 
-            jQuery("#" + prefix + "contractId").val(id);
-
+            jQuery(prefix + "contractId").val(id);
+            
             if (debug) {
                 console.log(contract)
             }
@@ -420,7 +438,7 @@ function setupPayForm(id) {
             //get paid for array dates to setup select box
 
             var paidFor = paidForArr[contract.id]
-            $("#" + prefix + "paidFor").html("");
+            $(prefix + "paidFor").html("");
             $.each(paidFor, function(index, value) {
                 if (contract.payment) {
                     var a = ""
@@ -428,19 +446,19 @@ function setupPayForm(id) {
                         a = "selected"
                     }
                 }
-                $("#" + prefix + "paidFor").append("<option value='" + index + "'" + a + ">" + value + "</option>")
+                $(prefix + "paidFor").append("<option value='" + index + "'" + a + ">" + value + "</option>")
             })
 
             //fill in payToName, rent amount, and address
 
-            $("#" + prefix + "amount").val(contract.rent)
+            $(prefix + "amount").val(contract.rent)
             $("#payTo").html(contract.payToName);
             $("#contractAddress").html((contract.property.propertyAddress.number + " " + contract.property.propertyAddress.street + " " + contract.property.propertyAddress.district).replace("undefined", "").replace(/  /g, ' '))
 
 
             //get due date
 
-            $("#" + prefix + "dueDate").html("")
+            $(prefix + "dueDate").html("")
             for (i = 1; i < 32; i++) {
                 a = "";
                 if (contract.payment) {
@@ -450,7 +468,7 @@ function setupPayForm(id) {
                 } else if (i == (new Date()).getDate()) {
                     a = " selected"
                 }
-                $("#" + prefix + "dueDate").append("<option value='" + i + "' " + a + ">" + i + "</option>")
+                $(prefix + "dueDate").append("<option value='" + i + "' " + a + ">" + i + "</option>")
             }
 
 
@@ -458,88 +476,88 @@ function setupPayForm(id) {
 
                 //different button text
 
-                $("#" + prefix + "id").val(contract.payment.id); //make sure we edit an existing payment
+                $(prefix + "id").val(contract.payment.id); //make sure we edit an existing payment
 
                 $("#payRentBttn").html("SAVE CHANGES")
 
-                $("#" + prefix + "paymentAccount").val(contract.payment.paymentAccountId)
+                $(prefix + "paymentAccount").val(contract.payment.paymentAccountId)
 
                 if (contract.payment.status == "active") {
                     if (contract.payment.type == "recurring") {
-                        $("#" + prefix + "type").val("recurring")
+                        $(prefix + "type").val("recurring")
                         formType(false)
                     } else {
-                        $("#" + prefix + "type").val("one_time")
+                        $(prefix + "type").val("one_time")
                         formType(true);
                     }
                 }
 
-                $("#" + prefix + "type").selectmenu("refresh")
+                $(prefix + "type").selectmenu("refresh")
 
 
-                $("#" + prefix + "startMonth").val(contract.payment.startMonth);
-                $("#" + prefix + "startYear").val(contract.payment.startYear);
+                $(prefix + "startMonth").val(contract.payment.startMonth);
+                $(prefix + "startYear").val(contract.payment.startYear);
 
-                $("#" + prefix + "ends_0").attr("checked", true)
-                $("#" + prefix + "ends_1").attr("checked", false)
+                $(prefix + "ends_0").attr("checked", true)
+                $(prefix + "ends_1").attr("checked", false)
 
                 if (contract.payment.endMonth) {
-                    $("#" + prefix + "endMonth").val(contract.payment.endMonth);
-                    $("#" + prefix + "endYear").val(contract.payment.endYear);
+                    $(prefix + "endMonth").val(contract.payment.endMonth);
+                    $(prefix + "endYear").val(contract.payment.endYear);
                     whenCancelled(true)
-                    $("#" + prefix + "ends_0").attr("checked", false)
-                    $("#" + prefix + "ends_1").attr("checked", true)
+                    $(prefix + "ends_0").attr("checked", false)
+                    $(prefix + "ends_1").attr("checked", true)
                 } else {
                     whenCancelled(false)
-                    $("#" + prefix + "ends_0").attr("checked", true)
-                    $("#" + prefix + "ends_1").attr("checked", false)
+                    $(prefix + "ends_0").attr("checked", true)
+                    $(prefix + "ends_1").attr("checked", false)
                 }
 
 
-                $("#" + prefix + "start_date").val(mm + "/" + (contract.payment.dueDate) + "/" + yyyy)
+                $(prefix + "start_date").val(mm + "/" + (contract.payment.dueDate) + "/" + yyyy)
 
 
             } else {
 
-                $("#" + prefix + "paymentAccount").val($("#" + prefix + "paymentAccount option:first").val())
+                $(prefix + "paymentAccount").val($(prefix + "paymentAccount option:first").val())
 
                 $("#payRentBttn").html("PAY RENT")
 
 
-                $("#" + prefix + "start_date").val(mm + "/" + ((new Date()).getDate()) + "/" + yyyy)
+                $(prefix + "start_date").val(mm + "/" + ((new Date()).getDate()) + "/" + yyyy)
 
                 formType(true)
-                $("#" + prefix + "type").val("one_time")
-                $("#" + prefix + "startMonth").val((new Date()).getMonth() + 1)
-                $("#" + prefix + "startYear").val((new Date()).getFullYear())
+                $(prefix + "type").val("one_time")
+                $(prefix + "startMonth").val((new Date()).getMonth() + 1)
+                $(prefix + "startYear").val((new Date()).getFullYear())
 
-                $("#" + prefix + "endMonth").val((new Date()).getMonth() + 1)
-                $("#" + prefix + "endYear").val((new Date()).getFullYear())
+                $(prefix + "endMonth").val((new Date()).getMonth() + 1)
+                $(prefix + "endYear").val((new Date()).getFullYear())
 
-                $("#" + prefix + "ends_0").attr("checked", true)
-                $("#" + prefix + "ends_1").attr("checked", false)
+                $(prefix + "ends_0").attr("checked", true)
+                $(prefix + "ends_1").attr("checked", false)
                 whenCancelled(false)
 
                 if (payAccounts.length > 0) {
-                    $("#" + prefix + "paymentAccount").val(payAccounts[0].id)
+                    $(prefix + "paymentAccount").val(payAccounts[0].id)
                 }
             }
 
             //refresh all form items since jQM doesn't do this automatically
 
-            $("#" + prefix + "type").selectmenu("refresh");
-            $("#" + prefix + "startYear").selectmenu("refresh");
-            $("#" + prefix + "startMonth").selectmenu("refresh");
-            $("#" + prefix + "paidFor").selectmenu("refresh")
-            $("#" + prefix + "endMonth").selectmenu("refresh");
-            $("#" + prefix + "endYear").selectmenu("refresh");
-            $("#" + prefix + "dueDate").selectmenu("refresh")
-            $("#" + prefix + "paymentAccount").selectmenu("refresh")
-            $("#" + prefix + "ends_0").checkboxradio("refresh");
-            $("#" + prefix + "ends_1").checkboxradio("refresh");
+            $(prefix + "type").selectmenu("refresh");
+            $(prefix + "startYear").selectmenu("refresh");
+            $(prefix + "startMonth").selectmenu("refresh");
+            $(prefix + "paidFor").selectmenu("refresh")
+            $(prefix + "endMonth").selectmenu("refresh");
+            $(prefix + "endYear").selectmenu("refresh");
+            $(prefix + "dueDate").selectmenu("refresh")
+            $(prefix + "paymentAccount").selectmenu("refresh")
+            $(prefix + "ends_0").checkboxradio("refresh");
+            $(prefix + "ends_1").checkboxradio("refresh");
 
 
-            $("#" + prefix + "paidTo").val(contract.paidTo)
+            $(prefix + "paidTo").val(contract.paidTo)
 
 
             $("#revEnds").html(contract.finishAt)
@@ -558,7 +576,7 @@ function reddenInput(o) {
 
 function clearRedFields() {
     $.each(fields, function(index, value) {
-        $("#" + prefix + value).css("border", "0px")
+        $(prefix + value).css("border", "0px")
     })
 }
 
@@ -568,17 +586,17 @@ function validatePayment() {
     clearRedFields()
     var passed = true;
     var msg = "";
-    if ($("#" + prefix + fields[0]).val() <= 0) {
+    if ($(prefix + fields[0]).val() <= 0) {
         passed = false;
-        reddenInput($("#" + prefix + "amount"))
+        reddenInput($(prefix + "amount"))
         msg += "Amount should be greater than zero."
     }
-    if ($("#" + prefix + fields[1]).val() < 0) {
+    if ($(prefix + fields[1]).val() < 0) {
         passed = false;
-        reddenInput($("#" + prefix + "amountOther"))
+        reddenInput($(prefix + "amountOther"))
         msg += "Other amount should not be less than zero."
     }
-    //if($("#"+prefix+"paymentAccount").val)
+    //if($(prefix+"paymentAccount").val)
     if (!passed) {
         msg = "Please check that all fields are filled correctly. " + msg
         $("#errorMsg").html(msg)
@@ -603,8 +621,10 @@ function createReview() {
                 var method = "";
                 var fee = 0.00;
 
+                total = updateTotal(contract);
+
                 $.each(payAccounts, function(i, localPaymentAccountId) {
-                    if (localPaymentAccountId.id == parseInt($("#" + prefix + "paymentAccount").val())) {
+                    if (localPaymentAccountId.id == parseInt($(prefix + "paymentAccount").val())) {
                         method = localPaymentAccountId.type;
                     }
                 });
@@ -636,60 +656,67 @@ function createReview() {
             }
         }
 
-        var total = accounting.formatNumber((total + fee), 2);
+        $(prefix + "paymentAccountId").val($(prefix + "paymentAccount").val());
+        $("#contract_id").val($(prefix + "contractId").val());
+        if (currentPaymentForm === paymentBalanceForm) {
+            $("#revRentAmountBox").hide();
+            $("#revOtherAmountBox").hide();
+        } else {
+            $("#revRentAmount").html(accounting.formatNumber($(prefix + "amount").val(), 2));
+            $("#revRentAmountBox").show();
 
+            $("#revOtherAmount").html(accounting.formatNumber($(prefix + "amountOther").val(), 2));
+            $("#revOtherAmountBox").show();
+        }
+        var sum = accounting.formatNumber((total + fee), 2);
 
-        $("#" + prefix + "paymentAccountId").val($("#" + prefix + "paymentAccount").val());
-        $("#contract_id").val($("#" + prefix + "contractId").val());
-        $("#revRentAmount").html(accounting.formatNumber($("#" + prefix + "amount").val(), 2));
-        $("#revOtherAmount").html(accounting.formatNumber($("#" + prefix + "amountOther").val(), 2));
-        $("#revTotalAmount").html(total);
-        $("#revMethod").html($("#" + prefix + "paymentAccount option:selected").html());
+        $("#revTotalAmount").html(sum);
+        $("#revMethod").html($(prefix + "paymentAccount option:selected").html());
 
-        if ($("#" + prefix + "type").val() == "one_time") {
+        if ($(prefix + "type").val() == "one_time") {
             var a = "One time"
             $('#revEndsLabel').hide()
             $('#revEnds').hide()
 
             //convert to readable date
-            $("#revSendOn").html(new Date($("#" + prefix + "start_date").val()).toDateString());
+            $("#revSendOn").html(new Date($(prefix + "start_date").val()).toDateString());
 
             //fix some things-- if one time, change start month/day to match startdate
-            d = $("#" + prefix + "start_date").val().split("/")
-            $("#" + prefix + "frequency").val("monthly")
-            $("#" + prefix + "dueDate").val(parseInt(d[1]))
+            d = $(prefix + "start_date").val().split("/")
+            $(prefix + "frequency").val("monthly")
+            $(prefix + "dueDate").val(parseInt(d[1]))
             if (d[1].charAt(0) == "0" && d[1].length == 2) {
-                $("#" + prefix + "dueDate").val(d[1].charAt(1))
+                $(prefix + "dueDate").val(d[1].charAt(1))
             }
-            $("#" + prefix + "startMonth").val(d[0].replace("0", ""))
-            $("#" + prefix + "startYear").val(d[2]);
-            $("#" + prefix + "startYear").selectmenu("refresh");
+            $(prefix + "startMonth").val(d[0].replace("0", ""))
+            $(prefix + "startYear").val(d[2]);
+            $(prefix + "startYear").selectmenu("refresh");
 
 
-            $("#" + prefix + "ends").val('cancelled');
+            $(prefix + "ends").val('cancelled');
         } else {
 
 
-            if ($("#" + prefix + "frequency").val() == "monthly") {
-                $("#revSendOn").html("Day " + $("#" + prefix + "dueDate").val() + " of Each Month");
+            if ($(prefix + "frequency").val() == "monthly") {
+                $("#revSendOn").html("Day " + $(prefix + "dueDate").val() + " of Each Month");
             } else {
                 $("#revSendOn").html("Last Day of Each Month");
-                $("#" + prefix + "dueDate").val(31)
+                $(prefix + "dueDate").val(31)
             }
 
-            d = $("#" + prefix + "startMonth").val() + "/" + $("#" + prefix + "dueDate").val() + "/" + $("#" + prefix + "startYear").val();
-            $("#" + prefix + "start_date").val(d)
+            d = $(prefix + "startMonth").val() + "/" + $(prefix + "dueDate").val() + "/" + $(prefix + "startYear").val();
+            $(prefix + "start_date").val(d)
 
-            if ($("#" + prefix + "ends_0").is(':checked')) {
+            if ($(prefix + "ends_0").is(':checked')) {
                 $('#revEnds').html(" When Cancelled")
             } else {
-                $('#revEnds').html($("#" + prefix + "endMonth").val() + "/" + $("#" + prefix + "endYear").val())
+                $('#revEnds').html($(prefix + "endMonth").val() + "/" + $(prefix + "endYear").val())
             }
             a = "Recurring"
         }
 
         $("#revRecurring").html(a);
-        $("#" + prefix + "paymentAccount").prop('disabled', true); //w/o submission will fail
+        $(prefix + "paymentAccount").prop('disabled', true); //w/o submission will fail
         $.mobile.changePage('#review')
     }
 }
@@ -698,57 +725,56 @@ function createReview() {
 
 
 recurringFormIds = [
-    "" + prefix + "frequency_row",
-    "" + prefix + "startMonth_row",
-    "" + prefix + "ends_row",
-    "" + prefix + "endMonth",
-    "" + prefix + "endYear"
-]
-onetimeFormIds = [
-    "" + prefix + "start_date_row"
-]
+    prefix + "frequency_row",
+    prefix + "startMonth_row",
+    prefix + "ends_row",
+    prefix + "endMonth",
+    prefix + "endYear"
+];
+onetimeFormIds=[
+    prefix + "start_date_row"
+];
 
 function formType(isRecurring) {
     $.each(recurringFormIds, function(index, value) {
         if (isRecurring) {
-            $('#' + value).hide();
-            $('#' + value).prop("disabled", true);
+            $(value).hide();
+            $(value).prop("disabled", true);
         } else {
-            $('#' + value).show();
-            $('#' + value).prop("disabled", false);
+            $(value).show();
+            $(value).prop("disabled", false);
         }
-    })
-    $.each(onetimeFormIds, function(index, value) {
+    });
+    $.each(onetimeFormIds,function(index,value){
         if (!isRecurring) {
-            $('#' + value).hide();
-            $('#' + value).prop("disabled", true);
-        } else {
-            $('#' + value).show();
-            $('#' + value).prop("disabled", false);
+            $(value).hide();
+            $(value).prop( "disabled", true);
+        }else{
+            $(value).show();
+            $(value).prop( "disabled", false);
         }
-    })
+    });
 
-    $("#" + prefix + "ends_0").attr("checked", true)
-    $("#" + prefix + "ends_1").attr("checked", false)
-    whenCancelled(false)
+    $(prefix + "ends_0").attr("checked", true);
+    $(prefix + "ends_1").attr("checked", false);
+    whenCancelled(false);
 
-    $("#" + prefix + "ends_0").checkboxradio("refresh");
-    $("#" + prefix + "ends_1").checkboxradio("refresh");
+    $(prefix + "ends_0").checkboxradio("refresh");
+    $(prefix + "ends_1").checkboxradio("refresh");
 }
 
 //hide month/year selection if recurring payment set to complete when cancelled
-
-cancelled = [
-    "" + prefix + "endMonth",
-    "" + prefix + "endYear"
-]
+cancelled=[
+    prefix + "endMonth",
+    prefix + "endYear"
+];
 
 function whenCancelled(isCancelled) { //isCancelled is recurring event set to when cancelled
     $.each(cancelled, function(index, value) {
         if (isCancelled) {
-            $('#' + value).selectmenu('enable');
+            $(value).selectmenu('enable');
         } else {
-            $('#' + value).selectmenu('disable')
+            $(value).selectmenu('disable');
         }
     })
 }
@@ -757,28 +783,33 @@ function whenCancelled(isCancelled) { //isCancelled is recurring event set to wh
 
 function freqHide(isOneTime) {
     if (!isOneTime) { //hide
-        $("#" + prefix + "dueDate_box").hide()
+        $(prefix + "dueDate_box").hide()
     } else {
-        $("#" + prefix + "dueDate_box").show()
+        $(prefix + "dueDate_box").show()
     }
 }
 
 
 //update rent/other total
 
-var total = 0;
+var total=0;
+function updateTotal(contract) {
+    if (currentPaymentForm === paymentBalanceForm && contract) {
+        total = parseFloat(contract.integrated_balance);
+    } else {
+        var amount = parseFloat($(prefix+"amount").val())
+        var other = parseFloat($(prefix+"amountOther").val())
+        total=0;
+        if(!isNaN(amount))
+            total+=amount;
+        if(!isNaN(other))
+            total+=other;
+        total=amount+other
+    }
 
-function updateTotal() {
-    amount = parseFloat($("#" + prefix + "amount").val())
-    other = parseFloat($("#" + prefix + "amountOther").val())
-    total = 0;
-    if (!isNaN(amount))
-        total += amount;
-    if (!isNaN(other))
-        total += other;
-    total = amount + other
     $("#total").html(accounting.formatNumber(total, 2))
-    $("#" + prefix + "total").val(total)
+    $(prefix + "total").val(total)
+
     return total;
 }
 
@@ -824,8 +855,8 @@ function addNewPaymentSource(formObj) {
                 } else { //we are successful! display dialog, refresh page to update information
                     $("#sourceErrorMsg").hide()
                     $.mobile.changePage('#pay')
-                    $("#" + prefix + "paymentAccount").append("<option value='" + result.paymentAccount.id + "' selected>" + result.paymentAccount.name + "</option>")
-                    $("#" + prefix + "paymentAccount").selectmenu("refresh")
+                    $(prefix + "paymentAccount").append("<option value='" + result.paymentAccount.id + "' selected>" + result.paymentAccount.name + "</option>")
+                    $(prefix + "paymentAccount").selectmenu("refresh")
                     updateLocalPaymentSource(result.paymentAccount)
 
                 }
@@ -881,7 +912,7 @@ function addNewPaymentSource(formObj) {
 }
 
 function unlockPaymentSource() {
-    $('#' + prefix + 'paymentAccount').prop('disabled', false);
+    $(prefix + 'paymentAccount').prop('disabled', false);
 }
 
 function updateLocalPaymentSource(entry) {
@@ -894,9 +925,15 @@ function updateLocalPaymentSource(entry) {
 
 function submitForm() {
 
+    var data =  $(currentPaymentForm).serializeArray();
+    data.push({
+        'name': 'contract_id',
+        'value': $("#contract_id").val()
+    });
+
     $.ajax({
         url: 'checkout/exec',
-        data: $('#rentjeeves_checkoutbundle_paymenttype').serialize(),
+        data: data,
         type: 'post',
         async: 'true',
 
@@ -907,9 +944,10 @@ function submitForm() {
             }
             if (result.success != true) { //handle error message and take user back to pay/edit page
                 $.mobile.changePage('#pay')
+                msg = "";
                 errorMsgs = [];
-                traverseErrorMsgs(result)
-                $.each(errorMsgs, function(i, k) {
+                traverseErrorMsgs(result);
+                $.each(errorMsgs, function (i, k) {
                     msg += k + "<br>"
                 })
                 $("#errorMsg").html(msg)
