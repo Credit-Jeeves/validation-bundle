@@ -47,11 +47,11 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $holding = $em->getRepository('DataBundle:Holding')->find($input->getArgument('holding-id'));
+        $holding = $em->getRepository('DataBundle:Holding')->find($input->getOption('holding-id'));
 
         $this->getContainer()
             ->get('batch.close.failure.notifier')
-            ->notify($holding, $input->getArgument('accounting-batch-id'));
+            ->notify($holding, $input->getOption('accounting-batch-id'));
     }
 }
 

@@ -39,7 +39,7 @@ class RentTrackExportReport extends RentTrackReport
     {
         if (!isset($settings['holding']) || !isset($settings['begin']) || !isset($settings['end']))
         {
-            throw new ExportException('Not enough parameters for RentTrack report');
+            throw new ExportException('Not enough parameters for RentTrackExportReport report');
         }
     }
 }

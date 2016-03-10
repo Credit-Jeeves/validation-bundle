@@ -66,7 +66,9 @@ class BatchCloseFailureNotifier
 
         $failureJobs = $this->getFailureJobs($holding);
         if (empty($failureJobs)) {
-            $this->logger->debug('We don\'t have failure jobs, so nothing to send');
+            $this->logger->debug(
+                sprintf('We don\'t have failure jobs per holding#%s, so nothing to send', $holding->getId())
+            );
 
             return;
         }
