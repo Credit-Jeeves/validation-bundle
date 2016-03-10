@@ -52,6 +52,7 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                 $apiClient = $this->getContainer()->get('soap.client.factory')
                     ->getClient($holding->getAmsiSettings(), SoapClientEnum::AMSI_LEDGER);
                 $batches = $settlementData->getBatchesToClose($date, $holding);
+                $hasFailedUpdate = false;
                 foreach ($batches as $batch) {
                     $settlementDate = $this->getSettlementDate($batch['batchDate'], $batch['depositDate']);
                     $result = $apiClient->updateSettlementData(
@@ -61,12 +62,18 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                         $settlementDate
                     );
 
-                    if ($result === false) {
-                        $logger->debug('Can\'t close batch, create job for notify about failure');
-                        $job = new Job('renttrack:notify:batch-close-failure', ['--holding-id' => $holding->getId()]);
-                        $this->em->persist($job);
-                        $this->em->flush();
+                    if ($result === false && $hasFailedUpdate === false) {
+                        $hasFailedUpdate = true;
                     }
+                }
+
+                if ($hasFailedUpdate === true) {
+                    $logger->debug(
+                        'Can\'t close batch(s), create job for notify about failure for holding#' . $holding->getId()
+                    );
+                    $job = new Job('renttrack:notify:batch-close-failure', ['--holding-id' => $holding->getId()]);
+                    $this->getContainer()->get('doctrine.orm.entity_manager')->persist($job);
+                    $this->getContainer()->get('doctrine.orm.entity_manager')->flush($job);
                 }
             }
         } catch (\Exception $e) {
