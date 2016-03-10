@@ -669,8 +669,6 @@ function createReview() {
             $("#revOtherAmountBox").show();
         }
         var sum = accounting.formatNumber((total + fee), 2);
-        console.log(fee);
-        console.log(sum);
 
         $("#revTotalAmount").html(sum);
         $("#revMethod").html($(prefix + "paymentAccount option:selected").html());
