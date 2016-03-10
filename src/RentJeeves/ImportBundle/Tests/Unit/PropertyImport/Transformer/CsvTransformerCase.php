@@ -21,7 +21,7 @@ class CsvTransformerCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportTransformerException
-     * @expectedExceptionMessage Input array should contains not empty "hashHeader".
+     * @expectedExceptionMessage Input array should contain not empty "hashHeader".
      */
     public function shouldThrowExceptionIfInputDataDoesNotContainHeadHash()
     {
