@@ -2099,7 +2099,7 @@
             </trans-unit>
             <trans-unit id="landlord.hps.contact_us_message">
                 <source>landlord.hps.contact_us_message</source>
-                <target>Please contact us at help@renttrack.com or call 866-841-9090 x2 to set up your merchant account.</target>
+                <target>Please contact us at sales@renttrack.com or call 866-841-9090 x1 to set up your merchant account.</target>
             </trans-unit>
             <trans-unit id="landlord.payment_account.set_up_message">
                 <source>landlord.payment_account.set_up_message</source>

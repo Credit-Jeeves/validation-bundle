@@ -16,8 +16,11 @@ class FooterController extends Controller
     public function indexAction()
     {
         $sHost = $this->container->getParameter('server_name');
-        return array(
+        $today = new \DateTime();
+
+        return [
             'sHost' => $sHost,
-        );
+            'currentYear' => $today->format('Y'),
+        ];
     }
 }
