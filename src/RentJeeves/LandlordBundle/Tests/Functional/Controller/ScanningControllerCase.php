@@ -95,7 +95,7 @@ class ScanningControllerCase extends BaseTestCase
         $emailFilter->setValue('@');
         $searchButton->click();
 
-        $errorMessage = $this->getDomElement('div.error-message>span');
-        $this->assertNotEmpty($errorMessage->getText(), 'Error message should contains message');
+        $errorMessage = $this->getDomElement('div.lease-lookup .error-message>span');
+        $this->assertNotEmpty($errorMessage->getText(), 'Error message should contain message');
     }
 }

@@ -225,6 +225,17 @@ abstract class Order
      */
     protected $payment;
 
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     name="check_number",
+     *     nullable=true
+     * )
+     *
+     * @var string
+     */
+    protected $checkNumber;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -613,6 +624,22 @@ abstract class Order
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckNumber()
+    {
+        return $this->checkNumber;
+    }
+
+    /**
+     * @param string $checkNumber
+     */
+    public function setCheckNumber($checkNumber)
+    {
+        $this->checkNumber = $checkNumber;
     }
 
     /**

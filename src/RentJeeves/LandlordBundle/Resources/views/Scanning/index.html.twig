@@ -13,6 +13,19 @@
             </a>
         </div>
     </div>
+    <div>
+        <div class="info-message" data-bind="visible: processedInfoMessage !== null">
+            <span data-bind="text: processedInfoMessage"></span>
+        </div>
+        <div class="error-message" data-bind="visible: processedErrorMessage !== null">
+            <span data-bind="text: processedErrorMessage"></span>
+        </div>
+        <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
+            <button class="button small" data-bind="click: processScan">
+                <span>{{ 'landlord.scanning.process_scan'|trans }}</span>
+            </button>
+        </a>
+    </div>
 
     <div class="lease-lookup">
         <h1>{{ 'landlord.scanning.lease_list.title'|trans }}</h1>

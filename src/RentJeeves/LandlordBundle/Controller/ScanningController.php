@@ -8,9 +8,9 @@ use RentJeeves\CoreBundle\Controller\LandlordController;
 use RentJeeves\LandlordBundle\Form\LeaseFinderType;
 use RentJeeves\LandlordBundle\Form\ScanningCheckType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/scanning")
@@ -121,6 +121,22 @@ class ScanningController extends LandlordController
                 'contracts' => $contracts,
             ]
         );
+    }
+
+    /**
+     * @Route("/process-scan", name="landlord_scanning_process_scan", options={"expose"=true})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function processScanAction(Request $request)
+    {
+        $date = new \DateTime();
+        $countChecks = $this->get('payment_processor.profit_stars.rdc')
+            ->loadScannedChecks($this->getCurrentGroup(), $date);
+
+        return new JsonResponse(['count' => $countChecks]);
     }
 
     /**
