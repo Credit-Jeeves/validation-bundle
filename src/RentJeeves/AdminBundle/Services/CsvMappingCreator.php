@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\AdminBundle\Form\MatchFileType;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
+use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Form\FormFactory;
@@ -216,7 +217,7 @@ class CsvMappingCreator
      */
     protected function generateHash($data)
     {
-        return md5(implode(array_keys($data[1])));
+        return HashHeaderCreator::createHashHeader(array_keys($data[1]));
     }
 
     /**
