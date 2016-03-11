@@ -132,7 +132,7 @@ class ScanningController extends LandlordController
      */
     public function processScanAction(Request $request)
     {
-        $date = new \DateTime('2016-03-01'); // use this temporarily
+        $date = new \DateTime();
         $countChecks = $this->get('payment_processor.profit_stars.rdc')
             ->loadScannedChecks($this->getCurrentGroup(), $date);
 
