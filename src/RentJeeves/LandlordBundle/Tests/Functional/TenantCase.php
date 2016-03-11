@@ -754,12 +754,12 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_type'        => PaymentTypeEnum::RECURRING,
-                'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '28',
-                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
-                'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1,
-                'rentjeeves_checkoutbundle_paymenttype_amount'      => '1500',
-                'rentjeeves_checkoutbundle_paymenttype_paidFor'     => $paidFor,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '28',
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $paidFor,
             )
         );
 
@@ -1037,10 +1037,10 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
         $this->assertNotNull($sendReminder = $this->page->find('css', '.sendReminder'));
-//        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
+        //        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
         $sendReminder->click();
-//        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
+        //        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
         $sendReminder->click();
 
@@ -1135,35 +1135,36 @@ class TenantCase extends BaseTestCase
     public function revoke()
     {
         $this->clearEmail();
+
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
+
         $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
+        $this->session->wait($this->timeout, '$("img.processLoading").length == 0');
         //Check created contracts
         $this->chooseLinkSelect('searchPaymentsStatus', 'invite');
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit = $this->getDomElement('#search-submit-payments-status');
         $searchSubmit->click();
-        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
 
-        $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
+        $this->session->wait($this->timeout, '$("img.processLoading").length == 0');
 
-        $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
-        $review->click();
+        $h2 = $this->getDomElement('.title-box>h2');
+        $this->assertEquals('All (1)', $h2->getText(), 'Wrong count. Count should be 1, not ' . $h2->getText());
+
+        $editLink = $this->getDomElement('a.edit');
+        $editLink->click();
 
         $this->page->clickLink('revoke.inv');
         $this->page->pressButton('yes.revoke.inv');
 
-        $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
+        $this->session->wait($this->timeout, '$("img.processLoading").length == 0');
         //Check created contracts
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit = $this->getDomElement('#search-submit-payments-status');
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#contracts-block .notHaveData').length > 0");
 
-        $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (0)', $all->getText(), 'Wrong count');
-        $this->logout();
+        $h2 = $this->getDomElement('.title-box>h2');
+        $this->assertEquals('All (0)', $h2->getText(), 'Wrong count. Count should be 0, not ' . $h2->getText());
         //Check email notify tenant about removed contract by landlord
         $this->assertCount(1, $this->getEmails(), 'Wrong number of emails');
     }
@@ -1221,7 +1222,6 @@ class TenantCase extends BaseTestCase
         $this->logout();
     }
 
-
     /**
      * @return array
      */
@@ -1271,7 +1271,6 @@ class TenantCase extends BaseTestCase
         );
         $this->assertNotEmpty($contract, 'Should be contract with such lease id');
     }
-
 
     /**
      * @test
