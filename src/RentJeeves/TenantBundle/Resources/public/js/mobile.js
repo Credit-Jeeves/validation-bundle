@@ -306,15 +306,9 @@ function editSource(name) {
 
 }
 
-function deleteSource(name){
+function deleteSource(id){
     //hit http://dev-nr.renttrack.com/sources/del/
 
-    id=-1;
-    $.each(payAccounts, function (i, localPaymentAccountId) {
-        if (localPaymentAccountId.name == name) {
-            id = localPaymentAccountId.id;
-        }
-    })
 
     //check it we still need this source
 
@@ -327,6 +321,9 @@ function deleteSource(name){
             }
         }
     }
+
+    if(!confirm("Are you sure you want to delete this payment source?"))
+        return
 
     //use the ID to hit our source
     $.ajax({

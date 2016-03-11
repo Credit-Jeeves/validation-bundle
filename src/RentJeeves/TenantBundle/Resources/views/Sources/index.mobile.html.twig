@@ -60,10 +60,10 @@
             </tr>
                 #}
                 {% if paymentAccount.deletedAt == NULL %}
-                <div onclick="if(confirm('Are you sure you want to delete this payment source?')){deleteSource('{{ paymentAccount.getName }}')}; return false;" style="background: white; opacity: 0.8; color: black; border-radius: 4px; padding: 15px; margin-top: 7px; position: relative;">
+                <div onclick="deleteSource('{{ paymentAccount.getId }}'); return false;" style="background: white; opacity: 0.8; color: black; border-radius: 4px; padding: 15px; margin-top: 7px; position: relative;">
                     {% if paymentAccount.getType=='card' %}<i class="fa fa-credit-card"></i>{% else %}<i class="fa fa-university"></i>{% endif %}
                     <span style="margin-left: 10px; font-weight: 600;">{{ paymentAccount.getName }}</span> - <span style="font-weight: 300;">{{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}</span>
-                    <a href="#" onclick="if(confirm('Are you sure you want to delete this payment source?')){deleteSource('{{ paymentAccount.getName }}')}; return false;" style="position: absolute; top: 16px; right: 18px;background: none;border: none; color: #eb6024;" class="ui-link">
+                    <a href="#" onclick="deleteSource('{{ paymentAccount.getName }}'); return false;" style="position: absolute; top: 16px; right: 18px;background: none;border: none; color: #eb6024;" class="ui-link">
                         <i class="fa fa-trash-o"></i>
                     </a>
                 </div><br>
