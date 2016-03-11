@@ -52,7 +52,6 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                 $apiClient = $this->getContainer()->get('soap.client.factory')
                     ->getClient($holding->getAmsiSettings(), SoapClientEnum::AMSI_LEDGER);
                 $batches = $settlementData->getBatchesToClose($date, $holding);
-                $hasFailedUpdate = false;
                 foreach ($batches as $batch) {
                     $settlementDate = $this->getSettlementDate($batch['batchDate'], $batch['depositDate']);
                     $result = $apiClient->updateSettlementData(
@@ -62,19 +61,20 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                         $settlementDate
                     );
 
-                    if ($result === false && $hasFailedUpdate === false) {
-                        $hasFailedUpdate = true;
+                    if ($result == false) {
+                        $logger->alert(
+                            sprintf(
+                                'Can\'t close batch batchId%s, groupId#%s',
+                                $batch['batchId'],
+                                $batch['groupId']
+                            )
+                        );
                     }
                 }
 
-                if ($hasFailedUpdate === true) {
-                    $logger->debug(
-                        'Can\'t close batch(s), create job for notify about failure for holding#' . $holding->getId()
-                    );
-                    $job = new Job('renttrack:notify:batch-close-failure', ['--holding-id' => $holding->getId()]);
-                    $this->getContainer()->get('doctrine.orm.entity_manager')->persist($job);
-                    $this->getContainer()->get('doctrine.orm.entity_manager')->flush($job);
-                }
+                $this->getContainer()->get('batch.close.failure.notifier')->createNotifierAboutBatchCloseFailureJob(
+                    $holding
+                );
             }
         } catch (\Exception $e) {
             $logger->alert(sprintf(

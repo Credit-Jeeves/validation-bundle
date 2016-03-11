@@ -16,6 +16,7 @@ use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -59,6 +60,11 @@ class AccountingPaymentSynchronizer
     protected $logger;
 
     /**
+     * @var BatchCloseFailureNotifier
+     */
+    protected $notifier;
+
+    /**
      * @var bool
      */
     protected $debug = false;
@@ -70,7 +76,8 @@ class AccountingPaymentSynchronizer
      *     "soapClientFactory" = @DI\Inject("soap.client.factory"),
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
      *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
-     *     "logger" = @DI\Inject("logger")
+     *     "logger" = @DI\Inject("logger"),
+     *     "notifier" = @DI\Inject("batch.close.failure.notifier")
      * })
      */
     public function __construct(
@@ -79,7 +86,8 @@ class AccountingPaymentSynchronizer
         SoapClientFactory $soapClientFactory,
         Serializer $serializer,
         ExceptionCatcher $exceptionCatcher,
-        Logger $logger
+        Logger $logger,
+        BatchCloseFailureNotifier $notifier
     ) {
         $this->em = $em;
         $this->apiClientFactory = $apiClientFactory;
@@ -87,6 +95,7 @@ class AccountingPaymentSynchronizer
         $this->serializer = $serializer;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->logger = $logger;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -455,11 +464,12 @@ class AccountingPaymentSynchronizer
                 $this->em->flush();
                 $this->logger->debug('Batch ID:%s closed, holding#', $mappingBatch->getId(), $holding->getId());
             } else {
-                $this->createNotifyJobAboutFailure($holding, $mappingBatch);
-                $this->logger->debug(
+                $this->logger->alert(
                     sprintf('Batch ID:%s failed to close, holding#', $mappingBatch->getId(), $holding->getId())
                 );
             }
+
+            $this->createNotifyJobAboutFailure($holding, $mappingBatch);
         }
     }
 
@@ -469,14 +479,10 @@ class AccountingPaymentSynchronizer
      */
     protected function createNotifyJobAboutFailure(Holding $holding, PaymentBatchMapping $paymentBatchMapping)
     {
-        $parameters = ['--holding-id' => $holding->getId()];
-        if ($holding->getAccountingSystem() === AccountingSystem::YARDI_VOYAGER) {
-            $parameters['accounting-batch-id'] = $paymentBatchMapping->getAccountingBatchId();
-        }
-
-        $job = new Job('renttrack:notify:batch-close-failure', $parameters);
-        $this->em->persist($job);
-        $this->em->flush();
+        $this->notifier->createNotifierAboutBatchCloseFailureJob(
+            $holding,
+            $paymentBatchMapping->getAccountingBatchId()
+        );
     }
 
     /**

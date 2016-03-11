@@ -24,7 +24,7 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
                 'Job ID'
             )
             ->addOption(
-                'holding-id',
+                'group-id',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Holding id in renttrack system'
@@ -47,15 +47,15 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $holding = $em->getRepository('DataBundle:Holding')->find($input->getOption('holding-id'));
+        $group = $em->getRepository('DataBundle:Group')->find($input->getOption('group-id'));
 
-        if (empty($holding)) {
-            throw new \LogicException('Can\'t find holding by such holding-id#' . $input->getOption('holding-id'));
+        if (empty($group)) {
+            throw new \LogicException('Can\'t find holding by such holding-id#' . $input->getOption('group-id'));
         }
 
         $this->getContainer()
             ->get('batch.close.failure.notifier')
-            ->notify($holding, $input->getOption('accounting-batch-id'));
+            ->notify($group, $input->getOption('accounting-batch-id'));
     }
 }
 
