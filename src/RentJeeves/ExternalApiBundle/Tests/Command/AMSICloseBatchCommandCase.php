@@ -5,8 +5,14 @@ namespace RentJeeves\ExternalApiBundle\Tests\Command;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\ExternalApiBundle\Command\AMSICloseBatchCommand;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -33,15 +39,53 @@ class AMSICloseBatchCommandCase extends BaseTestCase
             ->setParameter(':today', $today->format('Y-m-d H:i:s'))
             ->getQuery()
             ->execute();
+        //Prepea failure job
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(22);
+
+        $this->assertNotEmpty($contract, 'Please check fixtures');
+
+        $order = new OrderSubmerchant();
+        $order->setUser($contract->getTenant());
+        $order->setStatus(OrderStatus::COMPLETE);
+        $order->setPaymentType(OrderPaymentType::BANK);
+        $order->setSum(600);
+        $order->setPaymentProcessor(PaymentProcessor::ACI);
+        $order->setDescriptor('Test Check');
+        $order->setCreatedAt(new \DateTime());
+
+        $operation = new Operation();
+        $operation->setAmount(600);
+        $operation->setType(OperationType::RENT);
+        $operation->setOrder($order);
+        $operation->setGroup(null);
+        $operation->setContract($contract);
+        $operation->setPaidFor(new \DateTime());
+
+        $order->addOperation($operation);
+        $this->getEntityManager()->persist($operation);
+        $this->getEntityManager()->persist($order);
+
+        $jobRelatedToOrder = new JobRelatedOrder();
+        $jobRelatedToOrder->setOrder($order);
+        $jobRelatedToOrder->setCreatedAt(new \DateTime());
+        $job = new Job('external_api:payment:push');
+        $job->addRelatedEntity($jobRelatedToOrder);
+        $job->setState(Job::STATE_RUNNING);
+        $job->setState(Job::STATE_FAILED);
+
+        $this->getEntityManager()->persist($job);
+        $this->getEntityManager()->persist($jobRelatedToOrder);
+
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
+        //end
 
         $soapClientFactory = $this->getBaseMock('\RentJeeves\ExternalApiBundle\Soap\SoapClientFactory');
         $amsiLedgerClient = $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient');
 
         $amsiLedgerClient->expects($this->any())
             ->method('updateSettlementData')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(true));
 
         $soapClientFactory->expects($this->any())
             ->method('getClient')

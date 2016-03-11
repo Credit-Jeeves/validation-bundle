@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ExternalApiBundle\Services\EmailNotifier;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\RentTrackReport;
@@ -15,16 +14,13 @@ class RentTrackExportReport extends RentTrackReport
     public function getData(array $settings)
     {
         $this->softDeleteableControl->disable();
-        /** @var Holding $holding */
-        $holding = $settings['holding'];
         $beginDate = sprintf('%s 00:00:00', $settings['begin']);
         $endDate = sprintf('%s 23:59:59', $settings['end']);
-        $groups = $holding->getGroups();
         /** @var TransactionRepository $repo */
         $repo = $this->em->getRepository('RjDataBundle:Transaction');
 
         return $repo->getTransactionsForRentTrackReport(
-            $groups,
+            [$settings['group']],
             $beginDate,
             $endDate,
             ExportReport::EXPORT_BY_PAYMENTS
@@ -37,7 +33,7 @@ class RentTrackExportReport extends RentTrackReport
      */
     protected function validateSettings(array $settings)
     {
-        if (!isset($settings['holding']) || !isset($settings['begin']) || !isset($settings['end']))
+        if (!isset($settings['group']) || !isset($settings['begin']) || !isset($settings['end']))
         {
             throw new ExportException('Not enough parameters for RentTrackExportReport report');
         }

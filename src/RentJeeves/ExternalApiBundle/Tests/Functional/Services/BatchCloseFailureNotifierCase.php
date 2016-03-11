@@ -23,7 +23,7 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
     {
         $this->load(true);
         /** @var Contract $contract */
-        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(23);
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(22);
 
         $this->assertNotEmpty($contract, 'Please check fixtures');
 
@@ -64,7 +64,7 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
         $plugin->clean();
         /** @var BatchCloseFailureNotifier $notifier */
         $notifier = $this->getContainer()->get('batch.close.failure.notifier');
-        $notifier->notify($contract->getHolding());
+        $notifier->notify($contract->getGroup());
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);
         $this->assertEquals('Unable to Post Payment to Accounting System', $message->getSubject());

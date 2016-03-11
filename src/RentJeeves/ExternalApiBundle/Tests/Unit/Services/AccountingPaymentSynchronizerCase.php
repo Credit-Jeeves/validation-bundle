@@ -22,7 +22,8 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
             $this->getExceptionCatcherMock(),
-            $this->getLoggerMock()
+            $this->getLoggerMock(),
+            $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier')
         );
     }
 
@@ -154,15 +155,13 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
                 AccountingSystem::YARDI_VOYAGER,
                 'RentJeeves\DataBundle\Entity\YardiSettings',
                 'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\PaymentClient',
-                'setYardiSettings',
-                ',555,--app=rj'
+                'setYardiSettings'
             ],
             [
                 AccountingSystem::RESMAN,
                 'RentJeeves\DataBundle\Entity\ResManSettings',
                 'RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient',
-                'setResManSettings',
-                ',--app=rj'
+                'setResManSettings'
             ]
         ];
     }
@@ -172,7 +171,6 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      * @param string $externalSettingsClassName
      * @param string $paymentClient
      * @param string $setterSettings
-     * @param string $argumentsInCommand
      *
      * @test
      * @dataProvider dataProviderForCloseBatchFailure
@@ -181,13 +179,15 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $accountingSystem,
         $externalSettingsClassName,
         $paymentClient,
-        $setterSettings,
-        $argumentsInCommand
+        $setterSettings
     ) {
         $em = $this->getEntityManagerMock();
         $paymentBatchMappingRep = $this->getBaseMock('RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository');
         $transactionRepository = $this->getBaseMock('RentJeeves\DataBundle\Entity\TransactionRepository');
         $paymentClient = $this->getBaseMock($paymentClient);
+        $notifier = $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier');
+        $notifier->expects($this->once())
+            ->method('createNotifierAboutBatchCloseFailureJob');
 
         $paymentClient->expects($this->at(0))
             ->method('setDebug');
@@ -233,39 +233,15 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('RjDataBundle:Transaction'))
             ->will($this->returnValue($transactionRepository));
 
-        $em->expects($this->at(2))
-            ->method('persist')
-            ->willReturnCallback(function ($job) use ($argumentsInCommand) {
-                $this->assertInstanceOf('RentJeeves\DataBundle\Entity\Job', $job, 'Job should create');
-                $this->assertEquals(
-                    $job->getCommand(),
-                    'renttrack:notify:batch-close-failure',
-                    'Command should be failure'
-                );
-                $this->assertEquals(
-                    implode(',', $job->getArgs()),
-                    $argumentsInCommand,
-                    'Command should have arguments'
-                );
-
-                return null;
-            });
-
-        $em->expects($this->at(3))
-            ->method('flush');
-
         $logger = $this->getLoggerMock();
-        $logger->expects($this->at(0))
-            ->method('debug')
-            ->with('Batch ID: failed to close, holding#');
-
         $synchronizer = new AccountingPaymentSynchronizer(
             $em,
             $clientFactory,
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
             $this->getExceptionCatcherMock(),
-            $logger
+            $logger,
+            $notifier
         );
 
         $synchronizer->closeBatches($accountingSystem);

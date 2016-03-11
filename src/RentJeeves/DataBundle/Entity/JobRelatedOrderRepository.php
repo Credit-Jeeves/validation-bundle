@@ -2,9 +2,8 @@
 
 namespace RentJeeves\DataBundle\Entity;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityRepository;
-use FOS\UserBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Group;
 
 class JobRelatedOrderRepository extends EntityRepository
 {
@@ -20,12 +19,12 @@ class JobRelatedOrderRepository extends EntityRepository
             ->innerJoin('job_related.order', 'order')
             ->innerJoin('order.operations', 'operations')
             ->innerJoin('operations.contract', 'contract')
-            ->innerJoin('contract.group', 'group')
-            ->where('group.id = :group')
+            ->innerJoin('contract.group', 'gr')
+            ->where('gr.id = :groupId')
             ->andWhere('job.command = :command')
             ->andWhere('job.state = :failed')
             ->andWhere('DATE(job_related.createdAt) = :date')
-            ->setParameter('group', $group)
+            ->setParameter('groupId', $group->getId())
             ->setParameter('failed', Job::STATE_FAILED)
             ->setParameter('command', 'external_api:payment:push')
             ->setParameter('date', $date->format('Y-m-d'))
