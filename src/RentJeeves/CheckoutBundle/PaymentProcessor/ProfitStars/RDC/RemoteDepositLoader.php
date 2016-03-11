@@ -80,7 +80,7 @@ class RemoteDepositLoader
                 $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
                 foreach ($batchItems as $orderData) {
                     $isCreatedNewOrder = $this->createOrderIfItIsNew($orderData);
-                    $countChecks = true === $isCreatedNewOrder? $countChecks + 1 : $countChecks;
+                    $countChecks = true === $isCreatedNewOrder ? $countChecks + 1 : $countChecks;
                 }
             }
         } catch (ProfitStarsException $e) {

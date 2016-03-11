@@ -32,6 +32,12 @@ class RDCClient
     /** @var string */
     protected $storeKey;
 
+    /**
+     * @param RemoteDepositReportingClient $depositReportingClient
+     * @param LoggerInterface $logger
+     * @param string $rentTrackStoreId
+     * @param string $rentTrackStoreKey
+     */
     public function __construct(
         RemoteDepositReportingClient $depositReportingClient,
         LoggerInterface $logger,

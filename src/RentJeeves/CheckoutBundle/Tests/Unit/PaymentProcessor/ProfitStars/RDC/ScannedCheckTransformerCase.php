@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -15,6 +16,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -134,12 +136,12 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
-            'CreditJeeves\DataBundle\Entity\Operation',
+            Operation::class,
             $operation = $order->getOperations()->first(),
             'Operation entity is expected'
         );
         $this->assertInstanceOf(
-            'RentJeeves\DataBundle\Entity\Transaction',
+            Transaction::class,
             $transaction = $order->getCompleteTransaction(),
             'Transaction entity is expected'
         );
@@ -252,15 +254,15 @@ class ScannedCheckTransformerCase extends UnitTestBase
         );
 
         $order = $checkTransformer->transformToOrder($depositItem);
-        $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $order, 'Order entity is expected');
+        $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
-            'CreditJeeves\DataBundle\Entity\Operation',
+            Operation::class,
             $operation = $order->getOperations()->first(),
             'Operation entity is expected'
         );
         $this->assertInstanceOf(
-            'RentJeeves\DataBundle\Entity\Transaction',
+            Transaction::class,
             $transaction = $order->getCompleteTransaction(),
             'Transaction entity is expected'
         );
@@ -387,15 +389,15 @@ class ScannedCheckTransformerCase extends UnitTestBase
         );
 
         $order = $checkTransformer->transformToOrder($depositItem);
-        $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $order, 'Order entity is expected');
+        $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
-            'CreditJeeves\DataBundle\Entity\Operation',
+            Operation::class,
             $operation = $order->getOperations()->first(),
             'Operation entity is expected'
         );
         $this->assertInstanceOf(
-            'RentJeeves\DataBundle\Entity\Transaction',
+            Transaction::class,
             $transaction = $order->getCompleteTransaction(),
             'Transaction entity is expected'
         );
@@ -475,7 +477,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
      */
     protected function getEncoderMock()
     {
-        return $this->getBaseMock('RentJeeves\ApiBundle\Services\Encoders\Skip32IdEncoder');
+        return $this->getBaseMock(Skip32IdEncoder::class);
     }
 
     /**
