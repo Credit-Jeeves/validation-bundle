@@ -64,7 +64,7 @@ class BatchCloseFailureNotifier
             )
         );
 
-        $failureJobs = $this->getFailureJobs($holding);
+        $failureJobs = $this->getFailedPushJobsToExternalApi($holding);
         if (empty($failureJobs)) {
             $this->logger->debug(
                 sprintf('We don\'t have failure jobs per holding#%s, so nothing to send', $holding->getId())
@@ -101,9 +101,9 @@ class BatchCloseFailureNotifier
      * @param Holding $holding
      * @return \RentJeeves\DataBundle\Entity\JobRelatedOrder[]
      */
-    protected function getFailureJobs(Holding $holding)
+    protected function getFailedPushJobsToExternalApi(Holding $holding)
     {
-        return $this->em->getRepository('RjDataBundle:JobRelatedOrder')->getFailureOrder(
+        return $this->em->getRepository('RjDataBundle:JobRelatedOrder')->getFailedPushJobsToExternalApi(
             $holding,
             new \DateTime()
         );
@@ -190,11 +190,11 @@ class BatchCloseFailureNotifier
 
             if ($result === false) {
                 $this->logger->debug(
-                    sprintf('Don\'t send email to %s about failure batch close', $landlord->getEmail())
+                    sprintf('Can not send  send email to %s about failure batch close', $landlord->getEmail())
                 );
             } else {
                 $this->logger->debug(
-                    sprintf('Send email to %s about failure batch close', $landlord->getEmail())
+                    sprintf('Email to %s about failure batch close was successfully sent', $landlord->getEmail())
                 );
             }
         }

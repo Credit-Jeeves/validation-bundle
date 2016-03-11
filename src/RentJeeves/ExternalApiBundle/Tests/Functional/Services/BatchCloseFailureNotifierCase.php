@@ -40,7 +40,7 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
         $operation->setAmount(600);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
-        $operation->setGroup($contract->getGroup());
+        $operation->setGroup(null);
         $operation->setContract($contract);
         $operation->setPaidFor(new \DateTime());
 
@@ -51,7 +51,7 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
         $jobRelatedToOrder = new JobRelatedOrder();
         $jobRelatedToOrder->setOrder($order);
         $jobRelatedToOrder->setCreatedAt(new \DateTime());
-        $job = new Job('api:accounting:close-payment-batches');
+        $job = new Job('external_api:payment:push');
         $job->addRelatedEntity($jobRelatedToOrder);
         $job->setState(Job::STATE_RUNNING);
         $job->setState(Job::STATE_FAILED);

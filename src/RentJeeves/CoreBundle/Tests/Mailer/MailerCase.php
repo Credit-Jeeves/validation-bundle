@@ -255,7 +255,7 @@ class MailerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldSendPaymentFailreEmail()
+    public function shouldSendPaymentFailureEmail()
     {
         $plugin = $this->registerEmailListener();
         $plugin->clean();

@@ -113,7 +113,7 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
-        $integrationType = $holding->getAccountingSystem();
+        $accountingSystem = $holding->getAccountingSystem();
         $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
         if ($order->getCustomOperation()) {
             if (false == $postAppFeeAndSecurityDeposit) {
@@ -128,7 +128,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
             // RT-1926: Allow only ResMan non rent payments. Other AS will be allowed later.
-            if (AccountingSystem::RESMAN !== $integrationType) {
+            if (AccountingSystem::RESMAN !== $accountingSystem) {
                 $this->logger->debug(sprintf(
                     'Order ID#%s with custom operation NOT allowed for external payment post. ' .
                     'Api Integration Type of holding %s (ID#%s) is not ResMan. done.',
@@ -142,7 +142,7 @@ class AccountingPaymentSynchronizer
         }
 
 
-        $isIntegrated = (!empty($integrationType) && $integrationType !== AccountingSystem::NONE);
+        $isIntegrated = (!empty($accountingSystem) && $accountingSystem !== AccountingSystem::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
             $this->logger->debug('Holding is allowed for external payment post.');
             $group = $contract->getGroup();

@@ -257,7 +257,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $logger = $this->getLoggerMock();
         $logger->expects($this->at(0))
             ->method('debug')
-            ->with('Batch ID: failed to close');
+            ->with('Batch ID: failed to close, holding#');
 
         $synchronizer = new AccountingPaymentSynchronizer(
             $em,

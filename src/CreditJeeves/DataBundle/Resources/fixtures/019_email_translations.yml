@@ -1741,12 +1741,12 @@ fixtures:
       {% endblock %}
 
 # rjPostPaymentError.html
-  translation_52_subject:
+  translation_53_subject:
     translatable: email_53
     locale: %locale%
     property: subject
     value: Unable to Post Payment to Accounting System
-  translation_52_body:
+  translation_53_body:
     translatable: email_53
     locale: %locale%
     property: body

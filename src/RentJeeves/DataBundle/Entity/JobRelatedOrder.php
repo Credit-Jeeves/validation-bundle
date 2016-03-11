@@ -5,7 +5,6 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\JobRelatedOrderRepository")
  */
 class JobRelatedOrder extends JobRelatedEntities

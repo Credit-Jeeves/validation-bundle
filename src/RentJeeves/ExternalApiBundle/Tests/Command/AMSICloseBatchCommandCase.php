@@ -8,12 +8,15 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Command\AMSICloseBatchCommand;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
 class AMSICloseBatchCommandCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      */
@@ -33,20 +36,8 @@ class AMSICloseBatchCommandCase extends BaseTestCase
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
 
-        $soapClientFactory = $this->getMock(
-            '\RentJeeves\ExternalApiBundle\Soap\SoapClientFactory',
-            [],
-            [],
-            '',
-            false
-        );
-        $amsiLedgerClient = $this->getMock(
-            '\RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient',
-            [],
-            [],
-            '',
-            false
-        );
+        $soapClientFactory = $this->getBaseMock('\RentJeeves\ExternalApiBundle\Soap\SoapClientFactory');
+        $amsiLedgerClient = $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient');
 
         $amsiLedgerClient->expects($this->any())
             ->method('updateSettlementData')

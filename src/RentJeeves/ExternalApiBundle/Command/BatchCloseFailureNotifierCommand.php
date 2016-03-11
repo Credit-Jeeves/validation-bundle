@@ -36,7 +36,7 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
                 'Accounting batch id exist for some accounting system'
             )
             ->setDescription(
-                'Fetch all failure order by holding and send email to landlord about this failure'
+                'Fetch failed push jobs to ExternalApi by holding and send notification to landlord about this failure'
             );
     }
 
@@ -48,6 +48,10 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $holding = $em->getRepository('DataBundle:Holding')->find($input->getOption('holding-id'));
+
+        if (empty($holding)) {
+            throw new \LogicException('Can\'t find holding by such holding-id#' . $input->getOption('holding-id'));
+        }
 
         $this->getContainer()
             ->get('batch.close.failure.notifier')
