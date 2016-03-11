@@ -96,6 +96,7 @@ function init() {
         disabled: true
     });
 
+
     //contract individual pages info filled out from JSON
     contractsArr = $.map(contractsJson, function(el) {
         return el
@@ -302,8 +303,28 @@ function editSource(name) {
 
 }
 
-function deleteSource(id) {
+function deleteSource(name){
     //hit http://dev-nr.renttrack.com/sources/del/
+
+    id=-1;
+    $.each(payAccounts, function (i, localPaymentAccountId) {
+        if (localPaymentAccountId.name == name) {
+            id = localPaymentAccountId.id;
+        }
+    })
+
+    //check it we still need this source
+
+    for(i=0;i<contractsArr.length;i++){
+        contract = contractsArr[i]
+        if(contract.payment) {
+            if (contract.payment.paymentAccountId == id) {
+                alert("Cannot delete this payment source. It is currently in use by an existing payment.")
+                return;
+            }
+        }
+    }
+
     //use the ID to hit our source
     $.ajax({
         url: '/sources/del/' + id,
@@ -315,7 +336,7 @@ function deleteSource(id) {
             if (debug) {
                 console.log(result)
             }
-            window.location = "#sources?a=" + Math.random() * 10000000000
+            window.location = "?a=" + Math.random() * 10000000000 //refresh the page
 
         },
         error: function(request, error) { //ajax error!
@@ -871,18 +892,14 @@ function addNewPaymentSource(formObj) {
             },
             error: function(request, error) { //ajax error!
                 /*
-<<<<<<< HEAD
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
                 */
                 $('body').animate({ scrollTop: '0' }, 0)
-=======
                  msg = "An error occurred. (" + error + ")"
                  $("#sourceErrorMsg").html(msg)
                  $("#sourceErrorMsg").show()
-                 */
->>>>>>> master
             }
         });
 
