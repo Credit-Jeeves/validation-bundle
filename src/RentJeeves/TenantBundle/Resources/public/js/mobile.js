@@ -99,6 +99,7 @@ function init() {
         disabled: true
     });
 
+
     //contract individual pages info filled out from JSON
     contractsArr = $.map(contractsJson, function(el) {
         return el
@@ -106,10 +107,6 @@ function init() {
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
-        if(contract.groupSetting.is_integrated){
-            $("#contractTotalLabel" + contract.id).html("BALANCE")
-            $("#contractTotal" + contract.id).html(contract.integrated_balance)
-        }
         var dueDate = contract.startAt.substr(5, 2)
         if (dueDate.charAt(0) == "0") {
             dueDate = dueDate.charAt(1);
@@ -130,6 +127,10 @@ function init() {
             $("#contractFromAccLabel" + contract.id).hide()
             $("#contractTotal" + contract.id).html(contract.rent)
 
+        }
+        if(contract.groupSetting.is_integrated){
+            $("#contractTotalLabel" + contract.id).html("BALANCE")
+            $("#contractTotal" + contract.id).html(contract.integrated_balance)
         }
         /*
          contract object does not have payToName
@@ -305,8 +306,25 @@ function editSource(name) {
 
 }
 
-function deleteSource(id) {
+function deleteSource(id){
     //hit http://dev-nr.renttrack.com/sources/del/
+
+
+    //check it we still need this source
+
+    for(i=0;i<contractsArr.length;i++){
+        contract = contractsArr[i]
+        if(contract.payment) {
+            if (contract.payment.paymentAccountId == id) {
+                alert("Cannot delete this payment source. It is currently in use by an existing payment.")
+                return;
+            }
+        }
+    }
+
+    if(!confirm("Are you sure you want to delete this payment source?"))
+        return
+
     //use the ID to hit our source
     $.ajax({
         url: '/sources/del/' + id,
@@ -318,7 +336,7 @@ function deleteSource(id) {
             if (debug) {
                 console.log(result)
             }
-            window.location = "#sources?a=" + Math.random() * 10000000000
+            window.location = "?a=" + Math.random() * 10000000000 //refresh the page
 
         },
         error: function(request, error) { //ajax error!
@@ -865,6 +883,8 @@ function addNewPaymentSource(formObj) {
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
+
+                $('body').animate({ scrollTop: '0' }, 0)
             }
         });
 
@@ -900,10 +920,14 @@ function addNewPaymentSource(formObj) {
             },
             error: function(request, error) { //ajax error!
                 /*
+                msg = "An error occurred. (" + error + ")"
+                $("#sourceErrorMsg").html(msg)
+                $("#sourceErrorMsg").show()
+                */
+                $('body').animate({ scrollTop: '0' }, 0)
                  msg = "An error occurred. (" + error + ")"
                  $("#sourceErrorMsg").html(msg)
                  $("#sourceErrorMsg").show()
-                 */
             }
         });
 
