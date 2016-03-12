@@ -92,9 +92,9 @@ class BatchCloseFailureNotifier
 
     /**
      * @param Group $group
-     * @param string $accountingSystemBatchNumber = null
+     * @param string $accountingSystemBatchNumber
      */
-    public function notify(Group $group, $accountingSystemBatchNumber =  null)
+    public function notify(Group $group, $accountingSystemBatchNumber = null)
     {
         $this->logger->debug(
             sprintf(
@@ -241,4 +241,3 @@ class BatchCloseFailureNotifier
         $this->logger->debug('Finish send email about failed push per Group#%s');
     }
 }
-

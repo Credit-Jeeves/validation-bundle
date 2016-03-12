@@ -33,10 +33,8 @@ class RentTrackExportReport extends RentTrackReport
      */
     protected function validateSettings(array $settings)
     {
-        if (!isset($settings['group']) || !isset($settings['begin']) || !isset($settings['end']))
-        {
+        if (!isset($settings['group']) || !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for RentTrackExportReport report');
         }
     }
 }
-

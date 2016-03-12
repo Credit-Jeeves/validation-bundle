@@ -58,4 +58,3 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
             ->notify($group, $input->getOption('accounting-batch-id'));
     }
 }
-

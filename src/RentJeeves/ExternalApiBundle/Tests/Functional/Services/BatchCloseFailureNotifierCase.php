@@ -72,4 +72,3 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
         $this->assertArrayHasKey(1, $message->getChildren(), 'Body should be');
     }
 }
-

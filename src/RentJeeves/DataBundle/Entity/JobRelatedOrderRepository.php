@@ -9,7 +9,7 @@ class JobRelatedOrderRepository extends EntityRepository
 {
     /**
      * @param Group $group
-     * @param \DateTime $data
+     * @param \DateTime $date
      * @return JobRelatedOrder[]
      */
     public function getFailedPushJobsToExternalApi(Group $group, \DateTime $date)
@@ -32,4 +32,3 @@ class JobRelatedOrderRepository extends EntityRepository
             ->execute();
     }
 }
-
