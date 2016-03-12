@@ -462,10 +462,12 @@ class AccountingPaymentSynchronizer
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
                 $this->em->flush();
-                $this->logger->debug('Batch ID:%s closed, holding#', $mappingBatch->getId(), $holding->getId());
+                $this->logger->debug(
+                    sprintf('Batch ID:%s closed, holding#%s', $mappingBatch->getId(), $holding->getId())
+                );
             } else {
                 $this->logger->alert(
-                    sprintf('Batch ID:%s failed to close, holding#', $mappingBatch->getId(), $holding->getId())
+                    sprintf('Batch ID:%s failed to close, holding#%s', $mappingBatch->getId(), $holding->getId())
                 );
             }
 
