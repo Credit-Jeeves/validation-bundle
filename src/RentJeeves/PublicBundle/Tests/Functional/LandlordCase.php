@@ -63,7 +63,7 @@ class LandlordCase extends BaseTestCase
                 'numberOfUnit'                                           => 3,
             )
         );
-        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit'));
         $addUnit->click();
         $this->session->wait($this->timeout, "$('.unit-name:visible').length == 3");
         $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
