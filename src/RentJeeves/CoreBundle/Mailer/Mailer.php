@@ -32,7 +32,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -52,10 +52,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string   $isImported
+     * @param string $isImported
      *
      * @return bool
      */
@@ -77,7 +77,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -99,7 +99,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -121,9 +121,9 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param string   $paymentType
-     * @param boolean  $isRecurringPaymentEnded
-     * @param float    $paymentTotal
+     * @param string $paymentType
+     * @param boolean $isRecurringPaymentEnded
+     * @param float $paymentTotal
      *
      * @return bool
      */
@@ -147,6 +147,27 @@ class Mailer extends BaseMailer
             $vars,
             $contract->getTenant()->getEmail(),
             $contract->getTenant()->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $failureBatchDetails
+     * @param string $filePath
+     *
+     * @return bool
+     */
+    public function sendPostPaymentError(Landlord $landlord, array $failureBatchDetails, $filePath)
+    {
+        return $this->sendBaseLetter(
+            'rjPostPaymentError',
+            [
+                'landlordName' => $landlord->getFullName(),
+                'details' => $failureBatchDetails,
+            ],
+            $landlord->getEmail(),
+            $landlord->getCulture(),
+            $filePath
         );
     }
 

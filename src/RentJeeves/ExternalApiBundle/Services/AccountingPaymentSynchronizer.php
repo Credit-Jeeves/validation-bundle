@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
@@ -15,6 +16,7 @@ use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -58,6 +60,11 @@ class AccountingPaymentSynchronizer
     protected $logger;
 
     /**
+     * @var BatchCloseFailureNotifier
+     */
+    protected $notifier;
+
+    /**
      * @var bool
      */
     protected $debug = false;
@@ -69,7 +76,8 @@ class AccountingPaymentSynchronizer
      *     "soapClientFactory" = @DI\Inject("soap.client.factory"),
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
      *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
-     *     "logger" = @DI\Inject("logger")
+     *     "logger" = @DI\Inject("logger"),
+     *     "notifier" = @DI\Inject("batch.close.failure.notifier")
      * })
      */
     public function __construct(
@@ -78,7 +86,8 @@ class AccountingPaymentSynchronizer
         SoapClientFactory $soapClientFactory,
         Serializer $serializer,
         ExceptionCatcher $exceptionCatcher,
-        Logger $logger
+        Logger $logger,
+        BatchCloseFailureNotifier $notifier
     ) {
         $this->em = $em;
         $this->apiClientFactory = $apiClientFactory;
@@ -86,6 +95,7 @@ class AccountingPaymentSynchronizer
         $this->serializer = $serializer;
         $this->exceptionCatcher = $exceptionCatcher;
         $this->logger = $logger;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -112,7 +122,7 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
-        $integrationType = $holding->getAccountingSystem();
+        $accountingSystem = $holding->getAccountingSystem();
         $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
         if ($order->getCustomOperation()) {
             if (false == $postAppFeeAndSecurityDeposit) {
@@ -127,7 +137,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
             // RT-1926: Allow only ResMan non rent payments. Other AS will be allowed later.
-            if (AccountingSystem::RESMAN !== $integrationType) {
+            if (AccountingSystem::RESMAN !== $accountingSystem) {
                 $this->logger->debug(sprintf(
                     'Order ID#%s with custom operation NOT allowed for external payment post. ' .
                     'Api Integration Type of holding %s (ID#%s) is not ResMan. done.',
@@ -141,7 +151,7 @@ class AccountingPaymentSynchronizer
         }
 
 
-        $isIntegrated = (!empty($integrationType) && $integrationType !== AccountingSystem::NONE);
+        $isIntegrated = (!empty($accountingSystem) && $accountingSystem !== AccountingSystem::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
             $this->logger->debug('Holding is allowed for external payment post.');
             $group = $contract->getGroup();
@@ -452,8 +462,29 @@ class AccountingPaymentSynchronizer
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
                 $this->em->flush();
+                $this->logger->debug(
+                    sprintf('Batch ID:%s closed, holding#%s', $mappingBatch->getId(), $holding->getId())
+                );
+            } else {
+                $this->logger->alert(
+                    sprintf('Batch ID:%s failed to close, holding#%s', $mappingBatch->getId(), $holding->getId())
+                );
             }
+
+            $this->createNotifyJobAboutFailure($holding, $mappingBatch);
         }
+    }
+
+    /**
+     * @param Holding $holding
+     * @param PaymentBatchMapping $paymentBatchMapping
+     */
+    protected function createNotifyJobAboutFailure(Holding $holding, PaymentBatchMapping $paymentBatchMapping)
+    {
+        $this->notifier->createNotifierAboutBatchCloseFailureJob(
+            $holding,
+            $paymentBatchMapping->getAccountingBatchId()
+        );
     }
 
     /**
