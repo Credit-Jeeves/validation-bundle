@@ -83,3 +83,8 @@
 .import_properties_button {
     width: 135px !important;
 }
+
+#createCsvMappingLink {
+    margin-left: 37px;
+    width: 134px;
+}

@@ -39,19 +39,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $lastName->setValue('Jr');
     }
 
-    /**
-     * @param array $map
-     * @param int $limit
-     */
-    protected function fillCsvMapping(array $map, $limit)
-    {
-        for ($i = 1; $i <= $limit; $i++) {
-            if (isset($map[$i])) {
-                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column' . $i));
-                $choice->selectOption($map[$i]);
-            }
-        }
-    }
+
 
     /**
      * @test

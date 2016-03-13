@@ -179,7 +179,7 @@ class ImportBaseAbstract extends BaseTestCase
     /**
      * @return ImportGroupSettings
      */
-    public function getImportGroupSettings()
+    protected function getImportGroupSettings()
     {
 
         /** @var ImportGroupSettings $importGroupSettings */
@@ -191,5 +191,20 @@ class ImportBaseAbstract extends BaseTestCase
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
 
         return $importGroupSettings;
+    }
+
+    /**
+     * @param array $map
+     * @param int $limit
+     * @param string $id
+     */
+    protected function fillCsvMapping(array $map, $limit, $id = '#import_match_file_type_column')
+    {
+        for ($i = 1; $i <= $limit; $i++) {
+            if (isset($map[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', $id . $i));
+                $choice->selectOption($map[$i]);
+            }
+        }
     }
 }
