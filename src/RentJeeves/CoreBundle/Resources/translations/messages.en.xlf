@@ -2942,7 +2942,7 @@
             </trans-unit>
             <trans-unit id="order.report.type.mri_boston_post">
                 <source>order.report.type.mri_boston_post</source>
-                <target>MRI Boston Post (CSV)</target>
+                <target>MRI Bostonpost (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
