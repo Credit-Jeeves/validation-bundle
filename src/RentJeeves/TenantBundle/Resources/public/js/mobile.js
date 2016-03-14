@@ -870,6 +870,7 @@ function addNewPaymentSource(formObj) {
 
                     $("#sourceErrorMsg").html(msg)
                     $("#sourceErrorMsg").show()
+                    $('body').animate({ scrollTop: '0' }, 0)
                 } else { //we are successful! display dialog, refresh page to update information
                     $("#sourceErrorMsg").hide()
                     $.mobile.changePage('#pay')
@@ -883,7 +884,6 @@ function addNewPaymentSource(formObj) {
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
-
                 $('body').animate({ scrollTop: '0' }, 0)
             }
         });
@@ -928,6 +928,7 @@ function addNewPaymentSource(formObj) {
                  msg = "An error occurred. (" + error + ")"
                  $("#sourceErrorMsg").html(msg)
                  $("#sourceErrorMsg").show()
+                 $('body').animate({ scrollTop: '0' }, 0)
             }
         });
 
