@@ -168,7 +168,7 @@ services:
         parent: "accounting.export.renttrack"
 
     batch.close.failure.notifier:
-        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier
+        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"

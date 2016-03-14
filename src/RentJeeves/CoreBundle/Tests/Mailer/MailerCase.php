@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PartnerUser;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
-use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailureDetail;
+use RentJeeves\ExternalApiBundle\Model\EmailNotifier\FailedPostPaymentDetail;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class MailerCase extends BaseTestCase
@@ -264,7 +264,7 @@ class MailerCase extends BaseTestCase
         $landlord = new Landlord();
         $landlord->setCulture('test');
         $landlord->setEmail('test@email.com');
-        $failureDetail = new BatchCloseFailureDetail();
+        $failureDetail = new FailedPostPaymentDetail();
         $failureDetail->setPaymentDate(new \DateTime());
         $failureDetail->setResidentId('123141');
         $failureDetail->setResidentName('Hello Hello');

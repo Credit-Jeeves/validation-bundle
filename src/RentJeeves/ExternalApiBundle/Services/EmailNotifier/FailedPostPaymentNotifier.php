@@ -10,9 +10,9 @@ use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\ExternalApiBundle\Model\EmailNotifier\BatchCloseFailureDetail;
+use RentJeeves\ExternalApiBundle\Model\EmailNotifier\FailedPostPaymentDetail;
 
-class BatchCloseFailureNotifier
+class FailedPostPaymentNotifier
 {
     /**
      * @var EntityManager
@@ -56,7 +56,7 @@ class BatchCloseFailureNotifier
      * @param Holding $holding
      * @param string $accountingBatchId
      */
-    public function createNotifierAboutBatchCloseFailureJob(Holding $holding, $accountingBatchId = null)
+    public function createNotifierAboutFailedPostPaymentJob(Holding $holding, $accountingBatchId = null)
     {
         $parameters = [];
 
@@ -66,7 +66,7 @@ class BatchCloseFailureNotifier
 
         /** @var Group $group */
         foreach ($holding->getGroups() as $group) {
-            if (!$this->isExistFailedPushJobsToExternalApi($group)) {
+            if (!$this->isExistFailedPushPaymentJobsToExternalApi($group)) {
                 $this->logger->debug(sprintf('Don\'t have failed jobs about payment push group#%s', $group->getId()));
                 continue;
             }
@@ -85,9 +85,9 @@ class BatchCloseFailureNotifier
      * @param Group $group
      * @return bool
      */
-    public function isExistFailedPushJobsToExternalApi(Group $group)
+    public function isExistFailedPushPaymentJobsToExternalApi(Group $group)
     {
-        return count($this->getFailedPushJobsToExternalApi($group)) > 0;
+        return count($this->getFailedPushPaymentJobsToExternalApi($group)) > 0;
     }
 
     /**
@@ -103,7 +103,7 @@ class BatchCloseFailureNotifier
             )
         );
 
-        $failureJobs = $this->getFailedPushJobsToExternalApi($group);
+        $failureJobs = $this->getFailedPushPaymentJobsToExternalApi($group);
         if (empty($failureJobs)) {
             $this->logger->debug(
                 sprintf('We don\'t have failure jobs per Group#%s, so nothing to send', $group->getId())
@@ -112,7 +112,7 @@ class BatchCloseFailureNotifier
             return;
         }
 
-        $batchCloseFailureModels = $this->mapJobsToBatchCloseFailureDetail(
+        $batchCloseFailureModels = $this->mapJobsToFailedPostPaymentDetail(
             $group,
             $failureJobs,
             $accountingSystemBatchNumber
@@ -120,7 +120,7 @@ class BatchCloseFailureNotifier
 
         $pathToCsvFileReport = $this->getPathToCsvFileReport($group);
 
-        $this->sendEmail(
+        $this->sendEmails(
             $group,
             $batchCloseFailureModels,
             $pathToCsvFileReport
@@ -140,7 +140,7 @@ class BatchCloseFailureNotifier
      * @param Group $group
      * @return \RentJeeves\DataBundle\Entity\JobRelatedOrder[]
      */
-    protected function getFailedPushJobsToExternalApi(Group $group)
+    protected function getFailedPushPaymentJobsToExternalApi(Group $group)
     {
         return $this->em->getRepository('RjDataBundle:JobRelatedOrder')->getFailedPushJobsToExternalApi(
             $group,
@@ -191,14 +191,14 @@ class BatchCloseFailureNotifier
      * @param Group $group
      * @param array $failureJobs
      * @param string $accountingSystemBatchNumber
-     * @return BatchCloseFailureDetail[]
+     * @return FailedPostPaymentDetail[]
      */
-    protected function mapJobsToBatchCloseFailureDetail(Group $group, $failureJobs, $accountingSystemBatchNumber = null)
+    protected function mapJobsToFailedPostPaymentDetail(Group $group, $failureJobs, $accountingSystemBatchNumber = null)
     {
         $result = [];
         /** @var JobRelatedOrder $job */
         foreach ($failureJobs as $job) {
-            $batchCloseFailure = new BatchCloseFailureDetail();
+            $batchCloseFailure = new FailedPostPaymentDetail();
             $batchCloseFailure->setPaymentDate($job->getOrder()->getCreatedAt());
             $batchCloseFailure->setRentTrackBatchNumber($job->getOrder()->getTransactionBatchId());
             $batchCloseFailure->setResidentId(
@@ -216,10 +216,10 @@ class BatchCloseFailureNotifier
 
     /**
      * @param Group $group
-     * @param BatchCloseFailureDetail[] $batchCloseFailureDetail
+     * @param FailedPostPaymentDetail[] $batchCloseFailureDetail
      * @param string $filePath
      */
-    protected function sendEmail(Group $group, $batchCloseFailureDetail, $filePath)
+    protected function sendEmails(Group $group, $batchCloseFailureDetail, $filePath)
     {
         $this->logger->debug('Send email about failed push per Group#%s');
         $landlords = $this->em->getRepository('RjDataBundle:Landlord')->getLandlordsByGroup($group);

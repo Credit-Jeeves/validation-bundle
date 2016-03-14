@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ExternalApiBundle\Model\EmailNotifier;
 
-class BatchCloseFailureDetail
+class FailedPostPaymentDetail
 {
     /**
      * @var string
