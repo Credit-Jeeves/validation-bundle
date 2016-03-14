@@ -8,22 +8,6 @@ use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 class LandlordRepository extends EntityRepository
 {
 
-    /**
-     * @param Group $group
-     * @return Landlord
-     */
-    public function getAllLandlordsByGroup(Group $group)
-    {
-        return $this->createQueryBuilder('l')
-            ->innerJoin('l.holding', 'h')
-            ->innerJoin('h.groups', 'g')
-            ->where('ga.id = :group')
-            ->setParameter('group', $group)
-            ->getQuery()
-            ->execute();
-    }
-
-
     public function getLandlordsByGroup($groupId)
     {
         $query = $this->createQueryBuilder('c');
