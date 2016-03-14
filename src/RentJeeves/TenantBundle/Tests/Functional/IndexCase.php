@@ -164,7 +164,7 @@ class IndexCase extends BaseTestCase
                 'questions_OutWalletAnswer4_3' => true,
             ]
         );
-        $this->page->pressButton('pay_popup.step.3');
+        $this->session->executeScript('$("button.next:contains(\'pay_popup.step.3\')").click();');
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
         $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary')");
         $this->getEntityManager()->refresh($tenant);

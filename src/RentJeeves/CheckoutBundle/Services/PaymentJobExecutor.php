@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use RentJeeves\CheckoutBundle\DoD\DodManager;
 use RentJeeves\CheckoutBundle\Payment\PayCreditTrack;
 use RentJeeves\CheckoutBundle\Payment\PayRent;
 use RentJeeves\CoreBundle\DateTime;
@@ -46,6 +47,11 @@ class PaymentJobExecutor
     protected $payCreditTrack;
 
     /**
+     * @var DodManager
+     */
+    protected $dodManager;
+
+    /**
      * @var Job
      */
     protected $job;
@@ -71,6 +77,7 @@ class PaymentJobExecutor
      *     "payRent" = @DI\Inject("payment.pay_rent"),
      *     "payCreditTrack" = @DI\Inject("payment.pay_credit_track"),
      *     "logger" = @DI\Inject("logger"),
+     *     "dodManager" = @DI\Inject("dod"),
      *     "creditSummaryVendor" = @DI\Inject("%credit_summary_vendor%")
      * })
      *
@@ -78,6 +85,7 @@ class PaymentJobExecutor
      * @param PayRent $payRent
      * @param PayCreditTrack $payCreditTrack
      * @param Logger $logger
+     * @param DodManager $dodManager
      * @param string $creditSummaryVendor
      */
     public function __construct(
@@ -85,6 +93,7 @@ class PaymentJobExecutor
         PayRent $payRent,
         PayCreditTrack $payCreditTrack,
         Logger $logger,
+        DodManager $dodManager,
         $creditSummaryVendor
     ) {
         $this->em = $em;
@@ -92,6 +101,7 @@ class PaymentJobExecutor
         $this->payCreditTrack = $payCreditTrack;
         $this->logger = $logger;
         $this->creditSummaryVendor = $creditSummaryVendor;
+        $this->dodManager = $dodManager;
     }
 
     public function getMessage()
@@ -176,6 +186,15 @@ class PaymentJobExecutor
             $this->message = 'Payment already executed.';
             $this->exitCode = 1;
             $this->logger->debug('Payment already executed. Payment ID ' . $payment->getId());
+
+            return false;
+        }
+
+        if (!$this->dodManager->checkPayment($payment)) {
+            $this->message = 'Dod checking is failed.';
+            $this->exitCode = 1;
+            $this->logger->debug('Dod checking is failed. Payment ID ' . $payment->getId());
+            $this->em->flush($payment);
 
             return false;
         }

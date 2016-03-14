@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentBalanceOnlyType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Form\AttributeGenerator\AttributeGeneratorWeb;
@@ -30,7 +31,6 @@ class PayController extends Controller
 
     protected function createPaymentForm(Request $request, $mobile = false)
     {
-
         $contractId = $request->get('contract_id');
         /** @var Contract $contract */
         $contract = $this->getDoctrine()
@@ -59,41 +59,47 @@ class PayController extends Controller
             $contract = $paymentEntity->getContract();
         }
 
+        if (!empty($paymentEntity) &&
+            $paymentEntity->getPaymentAccount()->getUser()->getId() !== $this->getUser()->getId()
+        ) {
+            throw $this->createNotFoundException("Payment with '{$formData['id']}' not found");
+        }
+
         if ($mobile) {
             $attributes =  new AttributeGeneratorMobile();
         } else {
             $attributes =  new AttributeGeneratorWeb();
         }
 
+        $formOptions = [
+            'one_time_until_value' => $this->container->getParameter('payment_one_time_until_value'),
+            'attributes' => $attributes,
+            'open_day' => $contract->getGroupSettings()->getOpenDate(),
+            'close_day' => $contract->getGroupSettings()->getCloseDate(),
+        ];
+
         if ($payBalanceOnly) {
-            $formType = new PaymentBalanceOnlyType(
-                $this->container->getParameter('payment_one_time_until_value'),
-                array(),
-                array(),
-                $this->getDoctrine()->getManager(),
-                $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                $contract->getGroup()->getGroupSettings()->getCloseDate(),
-                $attributes
-            );
+            $formType = new PaymentBalanceOnlyType();
+            $formOptions['em'] = $this->getDoctrine()->getManager();
         } else {
             $dueDays = $contract->getSettings()->getDueDays();
-            $formType = new PaymentType(
-                $this->container->getParameter('payment_one_time_until_value'),
-                $this->container->get('checkout.paid_for')->getArray($contract),
-                array_combine($dueDays, $dueDays),
-                $contract->getGroup()->getGroupSettings()->getOpenDate(),
-                $contract->getGroup()->getGroupSettings()->getCloseDate(),
-                $attributes
-            );
+            $formType = new PaymentType();
+            $formOptions['paid_for'] = $this->container->get('checkout.paid_for')->getArray($contract);
+            $formOptions['due_days'] = array_combine($dueDays, $dueDays);
         }
 
-        if (!empty($paymentEntity) &&
-            $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
+        $orderRepo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
+        if ($contract->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
+            $lastDTROrder = $orderRepo->getLastPaidOrderByContract($contract)
         ) {
-            throw $this->createNotFoundException("Payment with '{$formData['id']}' not found");
+            $lastPaymentDate = clone $lastDTROrder->getCreatedAt();
+            $lastPaymentDate->modify(
+                '+' . (int) $this->container->getParameter('dod_dtr_payment_rolling_window') . ' days'
+            );
+            $formOptions['min_start_date'] = $lastPaymentDate;
         }
 
-        return $this->createForm($formType, $paymentEntity);
+        return $this->createForm($formType, $paymentEntity, $formOptions);
     }
 
     /**
@@ -127,11 +133,9 @@ class PayController extends Controller
             ]);
         }
 
-        return new JsonResponse(
-            array(
-                'success' => true
-            )
-        );
+        return new JsonResponse([
+            'success' => true
+        ]);
     }
 
     /**
@@ -150,16 +154,14 @@ class PayController extends Controller
         $formProcessor = $this->get('user.details.type.processor');
         $formProcessor->save($userType, $this->getUser());
 
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'newAddress' => $formProcessor->getIsNewAddress() ?
-                    $this->get('jms_serializer')->serialize(
-                        $formProcessor->getAddress(),
-                        'array'
-                    ) : null
-            )
-        );
+        return new JsonResponse([
+            'success' => true,
+            'newAddress' => $formProcessor->getIsNewAddress() ?
+                $this->get('jms_serializer')->serialize(
+                    $formProcessor->getAddress(),
+                    'array'
+                ) : null
+        ]);
     }
 
     /**
@@ -171,7 +173,6 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-
         $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {

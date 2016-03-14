@@ -15,31 +15,14 @@ use RentJeeves\TestBundle\Command\BaseTestCase;
 class GetScoreTrackReportCommandCase extends BaseTestCase
 {
     /**
-     * @return array
-     */
-    public function providerExecute()
-    {
-        return [
-            ['-1 month', 0],
-            ['+1 month', 1],
-        ];
-    }
-
-    /**
-     * @param string $scoreTrackFreeMonth
-     * @param string $emailCount
-     *
      * @test
-     * @dataProvider providerExecute
      */
-    public function executeCommand($scoreTrackFreeMonth, $emailCount)
+    public function updateExistingReportByCommand()
     {
-        $scoreTrackFreeDate = new \DateTime($scoreTrackFreeMonth);
         $this->load(true);
         $em = $this->getEntityManager();
         /** @var Tenant $user */
         $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('marion@rentrack.com');
-        $user->getSettings()->setScoretrackFreeUntil($scoreTrackFreeDate);
         $report = new ReportPrequal();
         $report->setUser($user);
         $report->setRawData('');
@@ -56,9 +39,6 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         $em->persist($job);
         $em->persist($order);
         $em->flush();
-
-        $plugin = $this->registerEmailListener();
-        $plugin->clean();
 
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
         $this->assertCount(
@@ -87,7 +67,63 @@ class GetScoreTrackReportCommandCase extends BaseTestCase
         $this->assertNotEmpty($report->getRawData(), 'Command should load and save report data.');
         $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
         $this->assertCount(2, $scores, 'Command should add new score record');
+    }
 
-        $this->assertCount($emailCount, $plugin->getPreSendMessages());
+    /**
+     * @test
+     */
+    public function createNewReportForFreeCommand()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+        /** @var Tenant $user */
+        $user = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('marion@rentrack.com');
+        $report = new ReportPrequal();
+        $report->setUser($user);
+        $report->setRawData('');
+        $user->getSettings()->setScoretrackFreeUntil(new \DateTime('+1 month'));
+        $job = new Job();
+        $job->addRelatedEntity($report);
+        $em->persist($report);
+        $em->persist($job);
+        $em->flush();
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
+        $this->assertCount(
+            1,
+            $scores,
+            sprintf('Check fixtures for user with email "%s" should be one score record', $user->getEmail())
+        );
+
+        $application = new Application($this->getKernel());
+        $application->add(new GetScoreTrackReportCommand());
+
+        $command = $application->find('score-track:get-report');
+        $commandTester = new CommandTester($command);
+        $this->assertEquals(
+            0,
+            $commandTester->execute([
+                'command' => $command->getName(),
+                '--jms-job-id' => $job->getId()
+            ]),
+            'Command should be finished without error with exit code "0"'
+        );
+
+        $em->clear();
+        $report = $em->getRepository('DataBundle:ReportPrequal')->find($report->getId());
+        $this->assertNotEmpty($report->getRawData(), 'Command should load and save report data.');
+        $scores = $em->getRepository('DataBundle:Score')->findByUser($user);
+        $this->assertCount(2, $scores, 'Command should add new score record');
+
+        $this->assertCount(1, $plugin->getPreSendMessages());
+        $this->assertEquals(
+            'ScoreTrack Updated',
+            $plugin->getPreSendMessage(0)->getSubject(),
+            'Check email for score track free'
+        );
     }
 }

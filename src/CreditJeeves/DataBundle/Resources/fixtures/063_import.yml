@@ -13,4 +13,3 @@ fixtures:
         importType: 'property'
         status: 'running'
         createdAt: 'now'
-        finishedAt: 'now'

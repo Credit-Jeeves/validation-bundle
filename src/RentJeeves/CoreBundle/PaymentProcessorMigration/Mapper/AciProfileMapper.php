@@ -92,21 +92,19 @@ class AciProfileMapper
      */
     protected function mapUser()
     {
-        try {
-            return array_merge(
-                [$this->mapUserConsumerRecord()],
-                $this->mapUserAccountRecords(),
-                $this->mapUserFundingRecords()
-            );
-        } catch (CsvMapException $e) {
-            return [];
+        if (null === $cRecord = $this->mapUserConsumerRecord()) {
+            return [];  // we cannot have A or F records without a C record
         }
+
+        return array_merge(
+            [$cRecord],
+            $this->mapUserAccountRecords(),
+            $this->mapUserFundingRecords()
+        );
     }
 
     /**
      * @return null|ConsumerRecord
-     *
-     * @throws CsvMapException if we can`t get address for User
      */
     protected function mapUserConsumerRecord()
     {
@@ -126,22 +124,31 @@ class AciProfileMapper
         $consumerRecord->setPrimaryEmailAddress($user->getEmail());
         /** @var MailingAddress $address */
         if (null !== $address = $user->getDefaultAddress()) {
+            // try using the default address
             $address1 = $address->getNumber() . ' ' . $address->getStreet();
             $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
             $consumerRecord->setCity(substr($address->getCity(), 0, 12));
             $consumerRecord->setState($address->getArea());
             $consumerRecord->setZipCode($address->getZip());
         } else {
-            if (null === $contract = $this->getContractForUser($user)) {
-                throw new CsvMapException();
-            }
-            $property = $contract->getProperty();
-            $propertyAddress = $property->getPropertyAddress();
+            if (null !== $contract = $this->getContractForUser($user)) {
+                // otherwise use the lease address
+                $property = $contract->getProperty();
+                $propertyAddress = $property->getPropertyAddress();
 
-            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($propertyAddress->getAddress(), 64));
-            $consumerRecord->setCity(substr($propertyAddress->getCity(), 0, 12));
-            $consumerRecord->setState($propertyAddress->getState());
-            $consumerRecord->setZipCode($propertyAddress->getZip());
+                $consumerRecord->setAddress1(
+                    ShorteningAddressUtility::shrinkAddress($propertyAddress->getAddress(), 64)
+                );
+                $consumerRecord->setCity(substr($propertyAddress->getCity(), 0, 12));
+                $consumerRecord->setState($propertyAddress->getState());
+                $consumerRecord->setZipCode($propertyAddress->getZip());
+            } else {
+                // last resort, fill in a bogus address
+                $consumerRecord->setAddress1('1234 Nowhere Street');
+                $consumerRecord->setCity(substr('Santa Barbara', 0, 12));
+                $consumerRecord->setState('CA');
+                $consumerRecord->setZipCode('93101');
+            }
         }
 
         return $consumerRecord;
@@ -245,8 +252,12 @@ class AciProfileMapper
      */
     protected function mapGroup()
     {
+        if (null === $cRecord = $this->mapGroupConsumerRecord()) {
+            return [];  // we cannot have A or F records without a C record
+        }
+
         return array_merge(
-            [$this->mapGroupConsumerRecord()],
+            [$cRecord],
             [$this->mapGroupAccountRecord()],
             $this->mapGroupFundingRecords()
         );
@@ -263,11 +274,9 @@ class AciProfileMapper
         }
         /** @var Landlord $landlord */
         if (false == $landlord = $group->getGroupAgents()->first()) {
-            return null;
-        }
-
-        if (null === $address = $landlord->getDefaultAddress()) {
-            return null;
+            if (false == $landlord = $group->getHolding()->getLandlords()->first()) {
+                return null;
+            }
         }
 
         $consumerRecord = new ConsumerRecord();
@@ -278,11 +287,21 @@ class AciProfileMapper
         $consumerRecord->setConsumerFirstName($landlord->getFirstName());
         $consumerRecord->setConsumerLastName($landlord->getLastName());
         $consumerRecord->setPrimaryEmailAddress($landlord->getEmail());
-        $address1 = $address->getNumber() . ' ' . $address->getStreet();
-        $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
-        $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
-        $consumerRecord->setState($address ? $address->getArea() : '');
-        $consumerRecord->setZipCode($address ? $address->getZip() : '');
+
+        if (null !== $address = $landlord->getDefaultAddress()) {
+            // try using the default address
+            $address1 = $address->getNumber() . ' ' . $address->getStreet();
+            $consumerRecord->setAddress1(ShorteningAddressUtility::shrinkAddress($address1, 64));
+            $consumerRecord->setCity($address ? substr($address->getCity(), 0, 12) : '');
+            $consumerRecord->setState($address ? $address->getArea() : '');
+            $consumerRecord->setZipCode($address ? $address->getZip() : '');
+        } else {
+            // last resort, fill in a bogus address
+            $consumerRecord->setAddress1('1234 Nowhere Street');
+            $consumerRecord->setCity(substr('Santa Barbara', 0, 12));
+            $consumerRecord->setState('CA');
+            $consumerRecord->setZipCode('93101');
+        }
 
         return $consumerRecord;
     }

@@ -150,10 +150,20 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
      */
     public function setError(Order $order)
     {
-        if ($this->updateStatus($order, OrderStatus::ERROR)) {
-            $this->mailer->sendRentError($order);
-            $this->logger->debug('[OrderStatusManager]Sent Rent Error Email for order #' . $order->getId());
+        if (!$this->updateStatus($order, OrderStatus::ERROR)) {
+            return;
         }
+
+        $reportOperations = $order->getReportOperations();
+        if (count($reportOperations) > 0) {
+            $this->mailer->sendScoreTrackError($order);
+            $this->logger->debug('[OrderStatusManager]Sent ScoreTrack Error Email for order #' . $order->getId());
+
+            return;
+        }
+
+        $this->mailer->sendRentError($order);
+        $this->logger->debug('[OrderStatusManager]Sent Rent Error Email for order #' . $order->getId());
     }
 
     /**

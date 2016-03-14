@@ -14,7 +14,7 @@ class Residents
     protected $residents = [];
 
     /**
-     * @return mixed
+     * @return ResidentsResident[]
      */
     public function getResidents()
     {
@@ -22,7 +22,7 @@ class Residents
     }
 
     /**
-     * @param mixed $residents
+     * @param ResidentsResident $residents
      */
     public function setResidents($residents)
     {

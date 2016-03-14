@@ -71,7 +71,7 @@ abstract class ContractWaiting
      *      type="string",
      *      name="resident_id",
      *      length=128,
-     *      nullable=false
+     *      nullable=true
      * )
      * @Assert\NotBlank
      * @Assert\Length(

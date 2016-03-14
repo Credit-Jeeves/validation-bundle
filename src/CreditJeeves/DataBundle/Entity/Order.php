@@ -499,6 +499,29 @@ class Order extends Base
     }
 
     /**
+     * @return Operations|null
+     */
+    public function getReportOperations()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::REPORT == $operation->getType()) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            );
+
+        if (0 == $operationCollection->count()) {
+            return null;
+        }
+
+        return $operationCollection;
+    }
+
+    /**
      * @return Operation|null
      */
     public function getCustomOperation()
@@ -965,25 +988,27 @@ class Order extends Base
      */
     public function getResManUnitId()
     {
-        $unitMapping = $this->getContract()->getUnit()->getUnitMapping();
+        if (null !== $unit = $this->getContract()->getUnit()) {
+            $unitMapping = $unit->getUnitMapping();
 
-        if ($unitMapping) {
-            $externalUnitId = $unitMapping->getExternalUnitId();
-            $exceptionMessage = sprintf(
-                'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
-                $this->getId(),
-                $externalUnitId
-            );
-            if (substr_count($externalUnitId, '|') !== 2) {
-                throw new \RuntimeException($exceptionMessage);
+            if ($unitMapping) {
+                $externalUnitId = $unitMapping->getExternalUnitId();
+                $exceptionMessage = sprintf(
+                    'ResMan: Cannot post order #%d: external unit mapping (%s) invalid',
+                    $this->getId(),
+                    $externalUnitId
+                );
+                if (substr_count($externalUnitId, '|') !== 2) {
+                    throw new \RuntimeException($exceptionMessage);
+                }
+
+                list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
+                if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
+                    throw new \RuntimeException($exceptionMessage);
+                }
+
+                return $unitId;
             }
-
-            list($propertyId, $buildingId, $unitId) = explode('|', $externalUnitId);
-            if (empty($propertyId) || empty($buildingId) || empty($unitId)) {
-                throw new \RuntimeException($exceptionMessage);
-            }
-
-            return $unitId;
         }
 
         return null;

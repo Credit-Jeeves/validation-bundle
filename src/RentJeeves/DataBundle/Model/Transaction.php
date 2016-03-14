@@ -52,7 +52,7 @@ abstract class Transaction
      *
      * @ORM\Column(
      *     name="transaction_id",
-     *     type="integer",
+     *     type="string",
      *     nullable=true
      * )
      */
@@ -189,7 +189,7 @@ abstract class Transaction
     }
 
     /**
-     * @param int $transactionId
+     * @param string $transactionId
      */
     public function setTransactionId($transactionId)
     {
@@ -197,7 +197,7 @@ abstract class Transaction
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
     public function getTransactionId()
     {

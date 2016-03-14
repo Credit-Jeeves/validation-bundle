@@ -264,7 +264,6 @@ class StorageCase extends UnitTestBase
                 16 => 'Not Used',
                 17 => 'Not Used',
                 18 => 'Not Used',
-                19 => 'Not Used',
             ]
         );
 

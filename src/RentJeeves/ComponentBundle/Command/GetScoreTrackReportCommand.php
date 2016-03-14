@@ -47,10 +47,8 @@ class GetScoreTrackReportCommand extends BaseCommand
                     return 0;
                 }
 
-                $isFreeReport = $report->getUser()->getSettings()->isScoreTrackFree();
                 try {
-                    $updateExistingReport = ($isFreeReport) ? false : true; // creates a new report if free
-                    $this->getReportBuilder()->build($report->getUser(), $updateExistingReport);
+                    $this->getReportBuilder()->build($report->getUser(), $updateExistReport = true);
                 } catch (\Exception $e) {
                     $this->getLogger()->alert('[Get ScoreTrack Report Command]Failed: ' . $e->getMessage());
                     $output->writeln($e->getMessage());
@@ -60,7 +58,7 @@ class GetScoreTrackReportCommand extends BaseCommand
                 $output->writeln('OK');
                 $this->getLogger()->debug('[Get ScoreTrack Report Command]Report load successfuly');
 
-                if ($isFreeReport) {
+                if ($report->getUser()->getSettings()->isScoreTrackFree()) {
                     $this->getContainer()->get('project.mailer')->sendFreeReportUpdated($report->getUser());
                 }
 

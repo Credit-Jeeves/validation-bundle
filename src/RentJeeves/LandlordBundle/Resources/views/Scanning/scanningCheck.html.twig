@@ -1,0 +1,24 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+    <div class="container-content">
+        <h1>{{ 'waiting_for_redirect_to_scanning'|trans }}</h1>
+
+        <div>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+
+            <input type="submit" style="display: none"/>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function () {
+            $('form').submit();
+        });
+    </script>
+{% endblock %}

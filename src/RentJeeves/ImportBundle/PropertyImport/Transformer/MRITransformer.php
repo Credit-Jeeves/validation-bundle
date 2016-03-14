@@ -48,7 +48,7 @@ class MRITransformer implements TransformerInterface
                 'Starting process transformData for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
 
         /** @var Value $accountingSystemRecord */
@@ -75,7 +75,7 @@ class MRITransformer implements TransformerInterface
 
             $this->em->persist($importProperty);
 
-            $this->arrayCache[] = $import->getId() . $this->getExternalUnitId($accountingSystemRecord);
+            $this->arrayCache[] = $import->getId() . '|' . $this->getExternalUnitId($accountingSystemRecord);
         }
 
         $this->em->flush();
@@ -85,7 +85,7 @@ class MRITransformer implements TransformerInterface
                 'Finished process transformData for Import#%d',
                 $import->getId()
             ),
-            ['group_id' => $import->getGroup()->getId()]
+            ['group' => $import->getGroup()]
         );
     }
 
@@ -203,14 +203,6 @@ class MRITransformer implements TransformerInterface
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity\ImportPropertyRepository
-     */
-    protected function getImportPropertyRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:ImportProperty');
-    }
-
-    /**
      * @param Import $import
      * @param Value  $accountingSystemRecord
      *
@@ -218,6 +210,6 @@ class MRITransformer implements TransformerInterface
      */
     protected function checkExistImportPropertyInCache(Import $import, Value $accountingSystemRecord)
     {
-        return in_array($import->getId() . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
+        return in_array($import->getId() . '|' . $this->getExternalUnitId($accountingSystemRecord), $this->arrayCache);
     }
 }

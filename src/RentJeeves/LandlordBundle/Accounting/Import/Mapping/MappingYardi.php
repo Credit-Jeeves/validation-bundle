@@ -115,6 +115,8 @@ class MappingYardi extends MappingCsv
             $residentId = $resident->getResidentId();
         }
 
-        return $this->residentData->getResidentData($holding, $residentId, $externalPropertyId);
+        $this->residentData->setSettings($holding->getExternalSettings());
+
+        return $this->residentData->getResidentData($residentId, $externalPropertyId);
     }
 }

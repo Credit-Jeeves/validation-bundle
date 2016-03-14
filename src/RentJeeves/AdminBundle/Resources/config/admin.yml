@@ -290,3 +290,14 @@ services:
         class: RentJeeves\AdminBundle\Form\ProfitStarsSettingsType
         tags:
             - { name: form.type, alias: profit_stars_settings_type }
+
+    csv.mapping.creator:
+        class: RentJeeves\AdminBundle\Services\CsvMappingCreator
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @import.reader.csv
+            - @translator
+            - @form.factory
+
+    form.upload_csv_file:
+        class: RentJeeves\AdminBundle\Form\UploadCsvFileType

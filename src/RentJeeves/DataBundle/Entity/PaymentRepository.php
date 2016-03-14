@@ -96,7 +96,7 @@ class PaymentRepository extends EntityRepository
     }
 
     /**
-     * @return array
+     * @return Job[]
      */
     public function collectToJobs(DateTime $date = null)
     {

@@ -54,12 +54,14 @@
                             <div class="paymentStatusBox">
                                 <span style="left: 0px;"><i class="fa fa-usd"></i><br>Charged</span>
                                 <span style="left: 40px;">- - - - - - - - <i class="fa fa-arrow-right"></i>- - - - - - - - <br>Sent</span>
-                                <span style="left: 180px;"><i class="fa fa-circle-o"></i><br>Received</span>
+                                <span style="left: 174px;"><i class="fa fa-circle-o"></i><br>Received</span>
                             </div>
                         </div>
-                        <div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">
-                            Set Up a Rent Payment
-                        </div>
+                        <a href="#contracts" style="text-decoration: none;">
+                            <div style="background: #6BAB1B; padding: 5px; text-shadow: none; color: white; text-align: center;">
+                                Set Up a Rent Payment
+                            </div>
+                        </a>
                     </div>
 
                 </div>
@@ -106,14 +108,38 @@
                 {% for contract in contracts %}
                     {% if contract.status != 'deleted' and contract.status!='finished' %}
                     <a href="#contract{{ contract.id }}" style="color: rgb(40,40,40); text-decoration: none; font-weight: normal;" data-transition="slide">
-                        <div onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );" class="contractBox">
+                        {% set canPay = true %}
+                        {% if not contract.isPaymentEditAllowed %}
+                            {% set canPay = false %}
+                        {% elseif not contract.in_day_range %}
+                            {% set canPay = false %}
+                        {% elseif contract.payment_status == 'processing' %}
+                            {% set canPay = false %}
+                        {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
+                            {% set canPay = false %}
+                        {% endif %}
+
+                        <div {% if canPay %}onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );"{% endif %} class="contractBox">
                             <a id="a{{ loop.index }}" href="#contract{{ contract.id }}" style="position: absolute;top: 6px; left: 10px;background: none;border: none; color: #333;"><i class="fa fa-home fa-lg"></i></a>
-                            <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                            {% if canPay %}
+                                <a href="#contract{{ contract.id }}" style="position: absolute; top: 32%; right: 21px;background: none;border: none; color: #eb6024;"><i class="fa fa-chevron-right fa-lg"></i></a>
+                            {% endif %}
                             <b style="font-size: 16;">{{ contract.full_address|length > 21 ? contract.full_address|slice(0, 21) ~ '...' : contract.full_address  }}</b>
                             <br>
-                            <span style="font-size: 14;">Rent: {{ contract.rent }}</span>
+                            <span style="font-size: 14;">Base Rent: {{ contract.rent }}</span>
                             <br>
-                            {% if contract.status == 'pending' %}
+                            {% if not contract.isPaymentEditAllowed %}
+                                <span style="color: red;">{{ 'mobile.contract.payments.blocked' | trans }}</span>
+                            {% elseif (contract.status == 'approved' or contract.status == 'invite' or contract.status == 'current') and not contract.in_day_range %}
+                                <span style="color: red;">{{ 'mobile.payment.start_date.error_range'|trans(
+                                {
+                                    '%OPEN_DAY%' : contract.open_day|ordinal_number,
+                                    '%CLOSE_DAY%': contract.close_day|ordinal_number
+                                }
+                                ) }}</span>
+                            {% elseif (contract.status == 'approved' or contract.status == 'invite' or contract.status == 'current') and contract.is_allowed_to_pay == false and not contract.isPayment %}
+                                <span style="color: red;">{{ 'tenant.no_balance.alert'|trans }}</span>
+                            {% elseif contract.status == 'pending' %}
                                 <span style="color: red;">{{ 'contract.status.pending.text' | trans }}</span>
                             {% elseif contract.payment_status == 'processing' %}
                                 <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
@@ -144,7 +170,7 @@
             <div data-role="page" id="contract{{ contract.id }}">
 
                 <div data-role="header" role="banner" class="ui-header ui-bar-inherit" style="">
-                    <a href="#main" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
+                    <a href="#contracts" data-transition="slide" data-direction="reverse" class="headerButton" data-role="none" style="color: white;">Back</a>
                     <h1 class="ui-title" role="heading" aria-level="1">Payment</h1>
                     {% if contract.status != 'pending' %}
                         <a onclick="setupPayForm({{ contract.id }})" class="headerButton" style="border-left: 1px solid white; border-right: none; color: white;" data-role="none">
@@ -168,7 +194,7 @@
                         Due on: <span id="contractDueNext{{ contract.id }}"></span> {% if contract.payment_type == 'recurring' %}<i class="fa fa-refresh" style="color: #EB6024;"></i>{% endif %}
                     </div>
 
-                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAYMENT AMOUNT</div>
+                    <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;" id="contractTotalLabel{{ contract.id }}">PAYMENT AMOUNT</div>
                     <div style="font-family: PT Sans Caption; font-size: 14pt;" id="contractTotal{{ contract.id }}"></div>
 
                     <div style="margin-top: 25px; font-family: PT Sans Caption; font-size: 9pt;">PAY TO</div>

@@ -9,12 +9,10 @@ use RentJeeves\CheckoutBundle\Form\AttributeGenerator\PayAnythingAttributeGenera
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface as FormBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use Symfony\Component\Validator\ExecutionContextInterface;
 
 class PayAnythingPaymentType extends AbstractType
 {
@@ -86,10 +84,6 @@ class PayAnythingPaymentType extends AbstractType
                         'groups'  => ['pay_anything'],
                         'openDay'    => $options['openDay'],
                         'closeDay'   => $options['closeDay']
-                    ]),
-                    new Callback([
-                        'groups'  => ['pay_anything'],
-                        'methods' => [[$this, 'isLaterOrEqualNow']]
                     ]),
                 ]
             ]
@@ -174,20 +168,5 @@ class PayAnythingPaymentType extends AbstractType
     public function getName()
     {
         return static::NAME;
-    }
-
-    /**
-     * @param $data
-     * @param ExecutionContextInterface $validatorContext
-     */
-    public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
-    {
-        $now = new \DateTime();
-        $now->setTime(0, 0);
-
-        $payDate = new \DateTime($data);
-        if ($payDate < $now) {
-            $validatorContext->addViolationAt('start_date', 'checkout.error.date.is_in_past', [], null);
-        }
     }
 }

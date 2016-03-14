@@ -7,9 +7,12 @@ use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerResponseRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingResponseRecord;
 use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class EnrollmentResponseFileDeserializerCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      */
@@ -18,7 +21,7 @@ class EnrollmentResponseFileDeserializerCase extends BaseTestCase
         $pathToFile = $this->getFileLocator()->locate(
             '@RjCoreBundle/Tests/Fixtures/PaymentProcessorMigration/fileForDeserializer.csv'
         );
-        $deserializer = new EnrollmentResponseFileDeserializer();
+        $deserializer = new EnrollmentResponseFileDeserializer($this->getLoggerMock());
         $data = $deserializer->deserialize($pathToFile);
 
         $this->assertEquals(3, count($data));
@@ -114,7 +117,7 @@ class EnrollmentResponseFileDeserializerCase extends BaseTestCase
     public function shouldThrowExceptionIfFileIsNotExists()
     {
         $pathToFile = '/test.csv';
-        $deserializer = new EnrollmentResponseFileDeserializer();
+        $deserializer = new EnrollmentResponseFileDeserializer($this->getLoggerMock());
         $deserializer->deserialize($pathToFile);
     }
 

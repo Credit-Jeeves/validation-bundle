@@ -2,6 +2,9 @@
 namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -45,5 +48,23 @@ class BaseController extends Controller
     protected function redirectToRoute($route, array $parameters = [], $status = 302)
     {
         return $this->redirect($this->generateUrl($route, $parameters), $status);
+    }
+
+    /**
+     * Creates and returns a Form instance from the type of the form.
+     *
+     * @param string                   $name
+     * @param string|FormTypeInterface $type    The built type of the form
+     * @param mixed                    $data    The initial data for the form
+     * @param array                    $options Options for the form
+     *
+     * @return Form
+     */
+    protected function createNamedForm($name, $type, $data = null, array $options = [])
+    {
+        /** @var FormFactory $formBuilder */
+        $formBuilder = $this->container->get('form.factory');
+
+        return $formBuilder->createNamed($name, $type, $data, $options);
     }
 }

@@ -8,7 +8,7 @@ use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 
 class BinlistSource
 {
-    const SOURCE = 'https://raw.githubusercontent.com/binlist/binlist-data/master/iin-user-contributions.csv';
+    const SOURCE = 'https://raw.githubusercontent.com/binlist/data/master/archived/iin-user-contributions.csv';
 
     /**
      * @var LoggerInterface

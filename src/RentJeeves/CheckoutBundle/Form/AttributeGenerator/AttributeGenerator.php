@@ -86,7 +86,7 @@ abstract class AttributeGenerator implements AttributeGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public static function startDateAttrs($isPastCutoffTime = false)
+    public static function startDateAttrs($isPastCutoffTime = false, $minDate = null)
     {
         return [];
     }

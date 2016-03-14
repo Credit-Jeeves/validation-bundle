@@ -3,7 +3,9 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use ACI\Utils\OldProfilesStorage;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Payum\AciCollectPay\Model\Profile;
@@ -11,14 +13,15 @@ use Payum\AciCollectPay\Request\ProfileRequest\DeleteProfile;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManagerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciCollectPay;
 use RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount as PaymentAccountData;
-use RentJeeves\ComponentBundle\Command\GetScoreTrackReportCommand;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\JobRelatedCreditTrack;
+use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\JobRelatedReport;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\BankAccountType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -138,6 +141,125 @@ class PaymentCommandsCase extends BaseTestCase
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
         $this->assertCount(0, $jobs);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotExecuteDTRPaymentOutsideRollingWindow()
+    {
+        $em = $this->getEntityManager();
+        // collected all payments that was created before
+        $em->getRepository('RjDataBundle:Payment')->collectToJobs();
+
+        // prepare fixtures
+        $contract = $this->getContract($em);
+        $contract->getGroup()->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+
+        /** @var Operation[] $rentOperations */
+        $rentOperations = $em->getRepository('DataBundle:Operation')->findBy([
+            'type' => OperationType::RENT,
+            'contract' => $contract
+        ]);
+        $this->assertNotEmpty($rentOperations, 'Should be created rent operations for this contract before');
+        $countBefore = count($rentOperations);
+        $rentOperation = $rentOperations[0];
+        $rentOperation->getOrder()->setCreatedAt(
+            new \DateTime('-' . ($this->getContainer()->getParameter('dod_dtr_payment_rolling_window') - 1) . ' days')
+        );
+
+        $payment = new Payment();
+        $payment->setActive();
+        $payment->setStartDate();
+        $payment->setAmount(100);
+        $payment->setContract($contract);
+        $payment->setType(PaymentType::ONE_TIME);
+        $payment->setPaymentAccount($contract->getTenant()->getPaymentAccounts()->first());
+        $payment->setDepositAccount(
+            $contract->getGroup()->getDepositAccountForCurrentPaymentProcessor(DepositAccountType::RENT)
+        );
+        $payment->setPaidFor(new \DateTime());
+
+        $em->persist($contract->getGroup());
+        $em->persist($rentOperation->getOrder());
+        $em->persist($payment);
+        $em->flush();
+
+        $jobs = $em->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount(1, $jobs, 'Should be collected last payment');
+
+        $this->executePayCommand($jobs[0]->getId());
+
+        $em->refresh($payment);
+        $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'Payment should be flagged');
+        $this->assertCount(
+            $countBefore,
+            $em->getRepository('DataBundle:Operation')->findBy([
+                'type' => OperationType::RENT,
+                'contract' => $contract
+            ]),
+            'Should not be created new operation'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldExecuteDTRPaymentInsideRollingWindow()
+    {
+        $em = $this->getEntityManager();
+        // collected all payments that was created before
+        $em->getRepository('RjDataBundle:Payment')->collectToJobs();
+
+        // prepare fixtures
+        $contract = $this->getContract($em);
+        $contract->getGroup()->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+
+        /** @var Operation[] $rentOperations */
+        $rentOperations = $em->getRepository('DataBundle:Operation')->findBy([
+            'type' => OperationType::RENT,
+            'contract' => $contract
+        ]);
+        $this->assertNotEmpty($rentOperations, 'Should be created rent operations for this contract before');
+        $countBefore = count($rentOperations);
+        $rentOperation = $rentOperations[0];
+        $rentOperation->getOrder()->setCreatedAt(
+            new \DateTime('-' . ($this->getContainer()->getParameter('dod_dtr_payment_rolling_window') + 1) . ' days')
+        );
+
+        $payment = new Payment();
+        $payment->setActive();
+        $payment->setStartDate();
+        $payment->setAmount(100);
+        $payment->setContract($contract);
+        $payment->setType(PaymentType::ONE_TIME);
+        $payment->setPaymentAccount($contract->getTenant()->getPaymentAccounts()->first());
+        $payment->setDepositAccount(
+            $contract->getGroup()->getDepositAccountForCurrentPaymentProcessor(DepositAccountType::RENT)
+        );
+        $payment->setPaidFor(new \DateTime());
+
+        $em->persist($contract->getGroup());
+        $em->persist($rentOperation->getOrder());
+        $em->persist($payment);
+        $em->flush();
+        $em->refresh($payment);
+
+        $jobs = $em->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount(1, $jobs, 'Should be collected last payment');
+
+        $this->executePayCommand($jobs[0]->getId());
+
+        $payment = $em->find('RjDataBundle:Payment', $payment->getId());
+        $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus(), 'Payment should be closed');
+        $this->assertCount(
+            $countBefore + 1,
+            $em->getRepository('DataBundle:Operation')->findBy([
+                'type' => OperationType::RENT,
+                'contract' => $contract
+            ]),
+            'Should be created new operation'
+        );
     }
 
     /**
@@ -431,6 +553,8 @@ class PaymentCommandsCase extends BaseTestCase
     protected function prepareFixturesCollectAndPayAciCollectPay(EntityManager $em)
     {
         /* Remove all payments */
+        $query = $em->createQuery('DELETE FROM RjDataBundle:PaymentHistory');
+        $query->execute();
         $query = $em->createQuery('DELETE FROM RjDataBundle:Payment');
         $query->execute();
         /** @var Contract $contract */
@@ -468,7 +592,7 @@ class PaymentCommandsCase extends BaseTestCase
             ->set('expiration_month', '12')
             ->set('expiration_year', '2025')
             ->set('address_choice', null)
-            ->set('card_number', '5110200200001115')
+            ->set('card_number', '5110200200001164')
             ->set('routing_number', '063113057')
             ->set('account_number', '123245678')
             ->set('csc_code', '123');
@@ -514,6 +638,7 @@ class PaymentCommandsCase extends BaseTestCase
         $bankPayment = clone $cardPayment;
 
         $cardPayment->setAmount(-200);
+        $cardPayment->setTotal(-200);
 
         $bankPayment->setPaymentAccount($bankPaymentAccount);
         // should create another payment for another contract

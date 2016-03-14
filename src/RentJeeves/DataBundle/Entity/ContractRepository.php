@@ -1543,6 +1543,7 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
     /**
      * @param Holding $holding
      * @param string $externalPropertyId
@@ -1647,6 +1648,7 @@ class ContractRepository extends EntityRepository
     public function getActiveWithGroup(Group $group, $page, $limit)
     {
         $offset = ($page - 1) * $limit;
+
         return $this->createQueryBuilder('c')
             ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
             ->orderBy('c.id', 'ASC')
@@ -1658,5 +1660,55 @@ class ContractRepository extends EntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Group  $group
+     * @param string $name
+     * @param string $email
+     * @param string $address
+     * @param string $unit
+     *
+     * @return array
+     */
+    public function findContractsForScanningTab(
+        Group $group,
+        $name = null,
+        $email = null,
+        $address = null,
+        $unit = null
+    ) {
+        $query = $this->createQueryBuilder('contract')
+            ->select('contract.id, tenant.first_name, tenant.last_name, tenant.email')
+            ->addSelect('propertyAddress.street, propertyAddress.number, unit.name as unitName')
+            ->innerJoin('contract.unit', 'unit')
+            ->innerJoin('contract.property', 'property')
+            ->innerJoin('property.propertyAddress', 'propertyAddress')
+            ->innerJoin('contract.tenant', 'tenant')
+            ->where('contract.group = :group')
+            ->setParameter('group', $group);
+
+        if ($name !== null) {
+            $query
+                ->andWhere('(tenant.first_name LIKE :tenantName OR tenant.last_name LIKE :tenantName)')
+                ->setParameter('tenantName', '%' . $name . '%');
+        }
+        if ($email !== null) {
+            $query
+                ->andWhere('tenant.email LIKE :tenantEmail')
+                ->setParameter('tenantEmail', '%' . $email . '%');
+        }
+        if ($address !== null) {
+            $query
+                ->andWhere("CONCAT(CONCAT(propertyAddress.number, ' '), propertyAddress.street) LIKE :address")
+                ->setParameter('address', '%' . $address . '%');
+        }
+        if ($unit !== null) {
+            $query
+                ->andWhere('unit.name = :unitName')
+                ->setParameter('unitName', $unit);
+        }
+
+        return $query->getQuery()->getArrayResult();
     }
 }

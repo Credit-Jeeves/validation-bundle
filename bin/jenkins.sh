@@ -7,10 +7,15 @@ if [ $1 ]; then
     BUILD=$1
 fi
 
+source /home/ec2-user/.phpbrew/bashrc
+
+export PATH=/usr/local/bin:$PATH
+phpbrew use 5.6.17
+
+PHPUNIT_PATH=`which phpunit`
 DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="${WORKSPACE}/../../jobs/${JOB_NAME}_${EXECUTOR_NUMBER}/builds"
 BUILD_DIR="$DIR/../app/logs/build"
-PHPUNIT_PATH=`which phpunit`
 PHPUNIT_PARAMS=(--debug -v --testsuite "Project Test Suite")
 
 export SYMFONY__DATABASE__NAME="renttrack_jenkins"
@@ -18,7 +23,7 @@ export SYMFONY__SERVER__NAME="dev2"
 export SYMFONY__SELENIUM__HOST__URL="http://10.164.182.167:4444/wd/hub"
 if [ "jenkins" = $BUILD ]; then
     export SYMFONY__DATABASE__NAME="renttrack_jenkins_pr${EXECUTOR_NUMBER}"
-    export SYMFONY__SERVER__NAME="pr${EXECUTOR_NUMBER}.test"
+    export SYMFONY__SERVER__NAME="pr${EXECUTOR_NUMBER}-dev.test"
     export SYMFONY__SELENIUM__HOST__URL="http://10.164.182.167:444${EXECUTOR_NUMBER}/wd/hub"
 fi
 

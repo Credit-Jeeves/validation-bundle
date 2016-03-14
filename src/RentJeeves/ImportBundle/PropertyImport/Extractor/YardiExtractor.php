@@ -5,14 +5,24 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\YardiSettings;
+use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager as YardiResidentDataManager;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.yardi"
  */
-class YardiExtractor implements ExtractorInterface
+class YardiExtractor implements ApiExtractorInterface
 {
+    use SetupGroupTrait;
+    use SetupExternalPropertyIdTrait;
+
     /**
      * @var YardiResidentDataManager
      */
@@ -25,7 +35,7 @@ class YardiExtractor implements ExtractorInterface
 
     /**
      * @param YardiResidentDataManager $residentDataManager
-     * @param LoggerInterface        $logger
+     * @param LoggerInterface          $logger
      */
     public function __construct(YardiResidentDataManager $residentDataManager, LoggerInterface $logger)
     {
@@ -36,37 +46,38 @@ class YardiExtractor implements ExtractorInterface
     /**
      * {@inheritdoc}
      */
-    public function extractData(Group $group, $externalPropertyId)
+    public function extractData()
     {
+        if (null === $this->group || null === $this->externalPropertyId) {
+            throw new ImportLogicException(
+                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+            );
+        }
         $this->logger->info(
-            sprintf(
-                'Starting process Yardi extractData for extPropertyId#%s',
-                $externalPropertyId
-            ),
-            ['group_id' => $group->getId()]
+            'Starting process Yardi extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
-        if (!$group->getIntegratedApiSettings() instanceof YardiSettings) {
+        if (!$this->group->getIntegratedApiSettings() instanceof YardiSettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for YardiExtractor.',
-                ['group_id' => $group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
         }
 
-        $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
+        $this->residentDataManager->setSettings($this->group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getResidentTransactions($externalPropertyId);
+            $data = $this->getFullResidentsList($this->externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
-                    'Can`t get data from Yardi for ExternalPropertyId="%s". Details: %s',
-                    $externalPropertyId,
+                    'Can`t get data from Yardi. Details: %s',
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
@@ -74,22 +85,117 @@ class YardiExtractor implements ExtractorInterface
 
         if (empty($data)) {
             $this->logger->info(
-                sprintf(
-                    'Returned response for extPropertyId#%s is empty.',
-                    $externalPropertyId
-                ),
-                ['group_id' => $group->getId()]
+                'Returned response is empty.',
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
         }
 
         $this->logger->info(
-            sprintf(
-                'Finished process extractData for extPropertyId#%s',
-                $externalPropertyId
-            ),
-            ['group_id' => $group->getId()]
+            'Finished process extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
         return $data;
+    }
+
+    /**
+     * @param string $externalPropertyId
+     *
+     * @throws ImportExtractorException
+     *
+     * @return FullResident[]
+     */
+    protected function getFullResidentsList($externalPropertyId)
+    {
+        $property = $this->getProperty($externalPropertyId);
+        $residents = $this->getResidents($property);
+        $listOfFullResident = [];
+        /** @var ResidentsResident $resident */
+        foreach ($residents as $resident) {
+            $fullResident = new FullResident();
+            $fullResident->setProperty($property);
+            $fullResident->setResident($resident);
+            $fullResident->setResidentData($this->getResidentData($property, $resident));
+
+            $listOfFullResident[] = $fullResident;
+        }
+
+        return $listOfFullResident;
+    }
+
+    /**
+     * @param string $externalPropertyId
+     *
+     * @throws ImportExtractorException
+     *
+     * @return Property
+     */
+    protected function getProperty($externalPropertyId)
+    {
+        $properties = $this->residentDataManager->getProperties();
+        $filteredProperties = array_filter(
+            $properties,
+            function (Property $property) use ($externalPropertyId) {
+                return $externalPropertyId === $property->getCode();
+            }
+        );
+
+        if (empty($filteredProperties)) {
+            throw new ImportExtractorException(
+                sprintf(
+                    'Can\'t find property by externalPropertyID "%s" in property configurations',
+                    $externalPropertyId
+                )
+            );
+        }
+
+        return reset($filteredProperties);
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @throws ImportExtractorException
+     *
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident[]
+     */
+    protected function getResidents(Property $property)
+    {
+        $residents = $this->residentDataManager->getResidents($property->getCode());
+        if (empty($residents)) {
+            throw new ImportExtractorException(
+                sprintf('Can\'t find residents by externalPropertyID "%s"', $property->getCode())
+            );
+        }
+
+        return $residents;
+    }
+
+    /**
+     * @param Property          $property
+     * @param ResidentsResident $resident
+     *
+     * @throws ImportExtractorException
+     *
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile
+     */
+    protected function getResidentData(Property $property, ResidentsResident $resident)
+    {
+        try {
+            return $this->residentDataManager->getResidentData($resident->getCode(), $property->getCode());
+        } catch (\Exception $e) {
+            $message = sprintf(
+                'Can\'t get resident data for residentID:%s externalPropertyID: %s error: %s',
+                $resident->getCode(),
+                $property->getCode(),
+                $e->getMessage()
+            );
+            $this->logger->alert(
+                $message,
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
+            );
+
+            throw new ImportExtractorException($message);
+        }
     }
 }
