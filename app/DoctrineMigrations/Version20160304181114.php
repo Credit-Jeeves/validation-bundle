@@ -27,7 +27,7 @@ class Version20160304181114 extends AbstractMigration
             locale = "en",
             property = "body",
             value = "
-              {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+              {% extends \"RjComponentBundle:Mailer:base.html.twig\" %}
               {% block h1 %}Hi {{ landlordName }}!{% endblock %}
               {% block email %}
                  Here are the details:
