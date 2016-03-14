@@ -11,10 +11,10 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
-use RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class BatchCloseFailureNotifierCase extends BaseTestCase
+class FailedPostPaymentNotifierCase extends BaseTestCase
 {
     /**
      * @test
@@ -62,8 +62,8 @@ class BatchCloseFailureNotifierCase extends BaseTestCase
         $this->getEntityManager()->flush();
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        /** @var BatchCloseFailureNotifier $notifier */
-        $notifier = $this->getContainer()->get('batch.close.failure.notifier');
+        /** @var FailedPostPaymentNotifier $notifier */
+        $notifier = $this->getContainer()->get('failed.post.payment.notifier');
         $notifier->notify($contract->getGroup());
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);

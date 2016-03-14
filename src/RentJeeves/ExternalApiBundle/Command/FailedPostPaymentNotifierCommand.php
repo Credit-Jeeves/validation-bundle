@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
+class FailedPostPaymentNotifierCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -54,7 +54,7 @@ class BatchCloseFailureNotifierCommand extends ContainerAwareCommand
         }
 
         $this->getContainer()
-            ->get('batch.close.failure.notifier')
+            ->get('failed.post.payment.notifier')
             ->notify($group, $input->getOption('accounting-batch-id'));
     }
 }

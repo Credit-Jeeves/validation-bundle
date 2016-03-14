@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Group as EntityGroup;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -12,11 +12,11 @@ use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 class TransactionRepository extends EntityRepository
 {
     /**
-     * @param  Group    $group
-     * @param  DateTime $date
+     * @param EntityGroup $group
+     * @param DateTime $date
      * @return mixed
      */
-    public function getBatchDepositedInfo(Group $group, DateTime $date)
+    public function getBatchDepositedInfo(EntityGroup $group, DateTime $date)
     {
         $query = $this->createQueryBuilder('h');
         $query->select(

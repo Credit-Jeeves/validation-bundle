@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 

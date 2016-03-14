@@ -16,7 +16,7 @@ use Monolog\Logger;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
-use RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -60,7 +60,7 @@ class AccountingPaymentSynchronizer
     protected $logger;
 
     /**
-     * @var BatchCloseFailureNotifier
+     * @var FailedPostPaymentNotifier
      */
     protected $notifier;
 
@@ -77,7 +77,7 @@ class AccountingPaymentSynchronizer
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
      *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
      *     "logger" = @DI\Inject("logger"),
-     *     "notifier" = @DI\Inject("batch.close.failure.notifier")
+     *     "notifier" = @DI\Inject("failed.post.payment.notifier")
      * })
      */
     public function __construct(
@@ -87,7 +87,7 @@ class AccountingPaymentSynchronizer
         Serializer $serializer,
         ExceptionCatcher $exceptionCatcher,
         Logger $logger,
-        BatchCloseFailureNotifier $notifier
+        FailedPostPaymentNotifier $notifier
     ) {
         $this->em = $em;
         $this->apiClientFactory = $apiClientFactory;
@@ -471,20 +471,11 @@ class AccountingPaymentSynchronizer
                 );
             }
 
-            $this->createNotifyJobAboutFailure($holding, $mappingBatch);
+            $this->notifier->createNotifierAboutFailedPostPaymentJob(
+                $holding,
+                $mappingBatch->getAccountingBatchId()
+            );
         }
-    }
-
-    /**
-     * @param Holding $holding
-     * @param PaymentBatchMapping $paymentBatchMapping
-     */
-    protected function createNotifyJobAboutFailure(Holding $holding, PaymentBatchMapping $paymentBatchMapping)
-    {
-        $this->notifier->createNotifierAboutBatchCloseFailureJob(
-            $holding,
-            $paymentBatchMapping->getAccountingBatchId()
-        );
     }
 
     /**
