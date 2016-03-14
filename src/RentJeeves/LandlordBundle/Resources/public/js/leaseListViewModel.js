@@ -50,7 +50,7 @@ function LeaseListViewModel() {
                 self.isUpdatingData(false);
             }
         });
-    }
+    };
 
     /**
      * Load ProfitStars scans
@@ -74,5 +74,5 @@ function LeaseListViewModel() {
                 self.isProcessingScans(false);
             }
         });
-    }
+    };
 }
