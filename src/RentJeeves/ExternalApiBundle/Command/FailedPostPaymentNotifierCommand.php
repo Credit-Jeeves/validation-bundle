@@ -54,7 +54,7 @@ class FailedPostPaymentNotifierCommand extends ContainerAwareCommand
         }
 
         $this->getContainer()
-            ->get('batch.close.failure.notifier')
+            ->get('failed.post.payment.notifier')
             ->notify($group, $input->getOption('accounting-batch-id'));
     }
 }

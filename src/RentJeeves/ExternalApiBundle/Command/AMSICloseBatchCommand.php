@@ -72,7 +72,7 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                     }
                 }
 
-                $this->getContainer()->get('batch.close.failure.notifier')->createNotifierAboutFailedPostPaymentJob(
+                $this->getContainer()->get('failed.post.payment.notifier')->createNotifierAboutFailedPostPaymentJob(
                     $holding
                 );
             }

@@ -63,7 +63,7 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $plugin = $this->registerEmailListener();
         $plugin->clean();
         /** @var FailedPostPaymentNotifier $notifier */
-        $notifier = $this->getContainer()->get('batch.close.failure.notifier');
+        $notifier = $this->getContainer()->get('failed.post.payment.notifier');
         $notifier->notify($contract->getGroup());
         $this->assertCount(1, $plugin->getPreSendMessages(), '1 email should be sent');
         $message = $plugin->getPreSendMessage(0);

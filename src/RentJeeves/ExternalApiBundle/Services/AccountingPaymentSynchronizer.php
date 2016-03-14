@@ -77,7 +77,7 @@ class AccountingPaymentSynchronizer
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
      *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
      *     "logger" = @DI\Inject("logger"),
-     *     "notifier" = @DI\Inject("batch.close.failure.notifier")
+     *     "notifier" = @DI\Inject("failed.post.payment.notifier")
      * })
      */
     public function __construct(
