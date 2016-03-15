@@ -59,7 +59,8 @@ class Version20160304181114 extends AbstractMigration
                         we are blocking payments - either using your accounting system status, or by blocking them
                         within RentTrack.
                     </li>
-                 </ul>"'
+                 </ul>
+                 {% endblock %}"'
         );
 
         $this->addSql(
