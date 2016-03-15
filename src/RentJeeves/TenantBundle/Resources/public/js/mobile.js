@@ -855,13 +855,15 @@ function traverseErrorMsgs(o) { //traverse nested error messages
 function addNewPaymentSource(formObj) {
 
     if (!saving) { //it's a new account
+        $('#' + accountPrefix + 'submit').prop('disabled', true);
+        $("#loader").show();
         $.ajax({
             url: 'checkout/source',
             data: $(formObj).serialize(),
             type: 'post',
-            async: 'true',
-
             success: function(result) {
+                $("#loader").hide();
+                $('#' + accountPrefix + 'submit').prop('disabled', false);
                 a = result
                 if (debug) {
                     console.log(result)
@@ -887,6 +889,8 @@ function addNewPaymentSource(formObj) {
                 }
             },
             error: function(request, error) { //ajax error!
+                $("#loader").hide();
+                $('#' + accountPrefix + 'submit').prop('disabled', false);
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()

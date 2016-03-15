@@ -739,7 +739,7 @@ body{
 }
 
 #loader{
-    position: absolute;
+    position: fixed;
     top: 120px;
     left: 50%;
     margin-left: -54px;
