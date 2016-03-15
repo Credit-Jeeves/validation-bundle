@@ -61,7 +61,7 @@ class FailedPostPaymentNotifier
         $parameters = [];
 
         if ($accountingBatchId) {
-            $parameters['accounting-batch-id'] = $accountingBatchId;
+            $parameters[] = '--accounting-batch-id=' . $accountingBatchId;
         }
 
         /** @var Group $group */
@@ -71,7 +71,7 @@ class FailedPostPaymentNotifier
                 continue;
             }
 
-            $parameters['--group-id'] = $group->getId();
+            $parameters[] = '--group-id=' . $group->getId();
             $job = new Job('renttrack:notify:batch-close-failure', $parameters);
             $this->em->persist($job);
 
