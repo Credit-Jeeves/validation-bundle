@@ -222,7 +222,11 @@ class FailedPostPaymentNotifier
     protected function sendEmails(Group $group, $batchCloseFailureDetail, $filePath)
     {
         $this->logger->debug('Send email about failed push per Group#%s');
-        $landlords = $this->em->getRepository('RjDataBundle:Landlord')->getLandlordsByGroup($group);
+        $landlordsByGroup = $this->em->getRepository('RjDataBundle:Landlord')->getLandlordsByGroup($group->getId());
+        $landlordsAdmin = $this->em->getRepository('RjDataBundle:Landlord')->getLandlordsAdmin($group->getId());
+
+        $landlords = array_merge($landlordsAdmin, $landlordsByGroup);
+
         /** @var Landlord $landlord */
         foreach ($landlords as $landlord) {
             $result = $this->mailer->sendPostPaymentError($landlord, $batchCloseFailureDetail, $filePath);
