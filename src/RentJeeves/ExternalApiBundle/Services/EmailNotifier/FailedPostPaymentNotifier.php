@@ -201,9 +201,12 @@ class FailedPostPaymentNotifier
             $batchCloseFailure = new FailedPostPaymentDetail();
             $batchCloseFailure->setPaymentDate($job->getOrder()->getCreatedAt());
             $batchCloseFailure->setRentTrackBatchNumber($job->getOrder()->getTransactionBatchId());
-            $batchCloseFailure->setResidentId(
-                $job->getOrder()->getContract()->getTenant()->getResidentForHolding($group->getHolding())
+            $residentMapping = $job->getOrder()->getContract()->getTenant()->getResidentForHolding(
+                $group->getHolding()
             );
+            if ($residentMapping) {
+                $batchCloseFailure->setResidentId($residentMapping->getResidentId());
+            }
             $batchCloseFailure->setTransactionId($job->getOrder()->getTransactionId());
             $batchCloseFailure->setResidentName($job->getOrder()->getContract()->getTenant()->getFullName());
             $batchCloseFailure->setAccountingSystemBatchNumber($accountingSystemBatchNumber);
