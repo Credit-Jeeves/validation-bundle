@@ -151,7 +151,7 @@ class MatchFileType extends AbstractType
                     }
 
                     if ($data !== self::EMPTY_VALUE) {
-                        $field->addError(new FormError('value.cannot.duplicate'));
+                        $field->addError(new FormError($this->translator->trans('value.cannot.duplicate')));
                     }
                 }
 
