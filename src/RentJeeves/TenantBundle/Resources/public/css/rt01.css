@@ -717,7 +717,7 @@ body{
 }
 .paymentBox{
     border-radius: 4px;
-    margin-top: 50px;
+    margin-top: 40px;
     background: rgb(230,230,230); padding: 10px 10px 10px 10px; height: 150px; font-size: 10pt; text-align: center;
 }
 
