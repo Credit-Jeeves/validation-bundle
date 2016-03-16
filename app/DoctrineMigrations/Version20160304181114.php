@@ -38,7 +38,7 @@ class Version20160304181114 extends AbstractMigration
                       <li>Resident Name: {{ detail.residentName }}</li>
                       <li>Payment Date: {{ detail.paymentDateFormatted }}</li>
                       <li>Transaction ID: {{ detail.transactionId }}</li>
-                      <li>RentTrack Batch Number: {{ detail.transactionId }}</li>
+                      <li>RentTrack Batch Number: {{ detail.rentTrackBatchNumber }}</li>
                       {% if detail.accountingSystemBatchNumber %}
                         <li>Accounting System Batch Number: {{ detail.accountingSystemBatchNumber }}</li>
                       {% endif %}
