@@ -432,6 +432,13 @@ class AccountingPaymentSynchronizer
         foreach ($mappingBatches as $mappingBatch) {
             /** @var PaymentBatchMapping $mappingBatch */
             $holding = $repo->getMerchantHoldingByBatchId($mappingBatch->getPaymentBatchId());
+            if (empty($holding)) {
+                $this->logger->alert(
+                    sprintf('We can\'nt find holding by payment batch ID#%s', $mappingBatch->getPaymentBatchId())
+                );
+
+                continue;
+            }
             $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings());
 
             if (!$apiClient) {
