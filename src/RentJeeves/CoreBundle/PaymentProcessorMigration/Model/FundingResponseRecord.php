@@ -29,6 +29,7 @@ class FundingResponseRecord
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @Assert\Length(min = 1, max = 12)
      */
     protected $fundingAccountId;
