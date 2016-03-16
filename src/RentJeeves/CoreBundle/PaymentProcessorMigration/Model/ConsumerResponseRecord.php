@@ -174,14 +174,14 @@ class ConsumerResponseRecord
      * @var string
      *
      * @Assert\NotBlank()
-     * @Assert\Choice(choices = {"R", "E"})
+     * @Assert\NotEqualTo(value = "R", message="Unable to process the record with status 'R'.")
      */
     protected $status;
 
     /**
      * @var string
      *
-     * @Assert\Length(min = 1, max = 64)
+     * @Assert\Blank(message="Unable to process the record with rejectReason.")
      */
     protected $rejectReason;
 
