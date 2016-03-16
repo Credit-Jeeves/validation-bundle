@@ -813,7 +813,9 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function manageException(Exception $e)
     {
+        $this->logger->alert($e->getMessage());
         if ($e instanceof \Doctrine\ORM\ORMException) {
+            //@TODO should be remove because not work as we excepted
             $this->reConnectDB();
         }
 
