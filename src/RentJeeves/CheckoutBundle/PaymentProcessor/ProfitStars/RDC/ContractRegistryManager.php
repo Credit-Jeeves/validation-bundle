@@ -69,7 +69,7 @@ class ContractRegistryManager
     public function registerContract(Contract $contract, DepositAccount $depositAccount)
     {
         if (false === $contract->hasProfitStarsRegisteredLocation($depositAccount->getMerchantName())) {
-            $this->logger->debug(
+            $this->logger->info(
                 sprintf(
                     'Try to register contract #%d for location #%s',
                     $contract->getId(),
@@ -88,11 +88,12 @@ class ContractRegistryManager
                 ->setLastName($tenant->getLastName())
                 ->setEmail($tenant->getEmail())
                 ->setAddress1($address->getAddress())
-                ->setAddress2($contract->getUnit()->getName())
+                ->setAddress2($contract->getUnit() ? $contract->getUnit()->getName() : '')
                 ->setCity($address->getCity())
                 ->setStateRegion($address->getState())
                 ->setPostalCode($address->getZip());
-            $entityId = $contract->getHolding()->getProfitStarsSettings()->getMerchantId();
+
+            $entityId = $depositAccount->getHolding()->getProfitStarsSettings()->getMerchantId();
             try {
                 $response = $this->client->RegisterCustomer($this->storeId, $this->storeKey, $entityId, $customer);
             } catch (\Exception $e) {
@@ -110,9 +111,10 @@ class ContractRegistryManager
                 $this->saveRegisteredContract($contract, $depositAccount);
             } else {
                 $this->logger->alert($message = sprintf(
-                    'Got failed response when registering contract #%d for location #%s',
+                    'Got failed response when registering contract #%d for location #%s: %s',
                     $contract->getId(),
-                    $depositAccount->getMerchantName()
+                    $depositAccount->getMerchantName(),
+                    $response->getRegisterCustomerResult()->getMessage()
                 ));
                 throw new PaymentProcessorRuntimeException($message);
             }
@@ -149,6 +151,10 @@ class ContractRegistryManager
             $contract->addProfitStarsRegisteredContract($registeredContract);
             $this->em->persist($registeredContract);
             $this->em->flush($registeredContract);
+            $this->logger->info(sprintf(
+                'Contract #%d has been added to registered contracts.',
+                $contract->getId()
+            ));
         } catch (DBALException $e) {
             $this->logger->alert(sprintf(
                 'Can not save to DB registered contract #%d. Reason: %s',
