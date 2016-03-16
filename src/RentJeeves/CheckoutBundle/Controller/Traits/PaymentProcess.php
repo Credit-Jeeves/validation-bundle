@@ -18,6 +18,7 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @method mixed get()
@@ -207,6 +208,16 @@ trait PaymentProcess
         }
 
         $this->get('dod')->checkPayment($paymentEntity);
+
+        /** @var Validator $validator */
+        $validator = $this->get('validator');
+        $errors = $validator->validate($paymentEntity, ['last_step']);
+        if (count($errors) > 0) {
+            foreach ($errors as $error) {
+                $errorsMessages[] = $error->getMessage();
+            }
+            throw new \Exception(implode(', ', $errorsMessages));
+        }
 
         $em->persist($contract);
         $em->persist($paymentEntity);
