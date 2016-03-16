@@ -105,6 +105,8 @@ class RegisterContractsToProfitStarsCommand extends BaseCommand
      */
     protected function getContracts(Group $group, $page, $limit)
     {
+        $this->getContainer()->get('soft.deleteable.control')->disable();
+
         return $this->getEntityManager()->getRepository('RjDataBundle:Contract')
             ->getActiveWithGroup($group, $page, $limit);
     }
