@@ -1588,22 +1588,22 @@ fixtures:
     translatable: email_47
     locale: %locale%
     property: subject
-    value: Your Rent Check is in the Mail!
+    value: Your Rent Check has been Ordered!
 
   translation_47_body:
     translatable: email_47
     locale: %locale%
     property: body
     value:  |
-      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block email %}
-        Hi {{ firstName }},
-
-        Your rent check to {{ groupName }} in the amount of {{ checkAmount }} was mailed on {{ sendDate }} and
-        should arrive within 1-3 business days via USPS first-class mail. The check was mailed to {{ mailingAddress }}.
-        If there is anything incorrect in your order, please contact us immediately at help@renttrack.com.
-        Thank you for choosing to pay rent with RentTrack!
-      {% endblock %}
+        {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+        {% block h1 %}Rent Check Ordered!{% endblock %}
+        {% block email %}
+            Hi {{ firstName }},
+            <br /><br />
+            Your rent check to {{ groupName }} in the amount of ${{ checkAmount }} was ordered on {{ sendDate }}. It will get mailed soon and
+            should arrive by {{ estimatedDelivery }} via first-class mail. The check will be mailed to {{ mailingAddress }}.
+            If there is anything incorrect in your order, please contact us immediately at help@renttrack.com.
+        {% endblock %}
 
 # rjOrderRefunding.html
   translation_48_subject:
@@ -1696,7 +1696,7 @@ fixtures:
     property: subject
     value: ScoreTrack Updated
 
-  translation_52_body:
+  translation_51_body:
     translatable: email_51
     locale: %locale%
     property: body
@@ -1707,4 +1707,81 @@ fixtures:
         Your latest score and credit profile is now available under the "Build Credit History" tab. Log into your
         <a href="{{ dashboardLink }}">dashboard</a> to view your score. We'll update this monthly for you so you can
         track how rent reporting and other factors might be affecting your score.
+      {% endblock %}
+
+# rjScoreTrackOrderError.html
+  translation_52_subject:
+    translatable: email_52
+    locale: %locale%
+    property: subject
+    value: ScoreTrack Payment Error
+  translation_52_body:
+    translatable: email_52
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block email %}
+        {{ 'scoretrack.order.error.title'|trans }}
+        <br /><br />
+        {{ 'order.error.message'|trans }}: {{ error }}
+        <br />
+        <br />
+        <hr />
+        Payment Date:&nbsp; {{ date }}<br />
+        Payment Amount: {{ amount }}<br />
+        {% if number %}
+          Reference Number: {{ number }}<br />
+        {% endif %}
+        <br />
+        </br>
+        </br>
+      {{ 'order.contact.us' | trans }}
+      {% endblock %}
+
+# rjPostPaymentError.html
+  translation_53_subject:
+    translatable: email_53
+    locale: %locale%
+    property: subject
+    value: Unable to Post Payment to Accounting System
+  translation_53_body:
+    translatable: email_53
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ landlordName }}!{% endblock %}
+      {% block email %}
+         Here are the details:
+         <br />
+         {% for detail in details %}
+         <ul>
+              <li>Resident ID: {{ detail.residentId }} </li>
+              <li>Resident Name: {{ detail.residentName }}</li>
+              <li>Payment Date: {{ detail.paymentDateFormatted }}</li>
+              <li>Transaction ID: {{ detail.transactionId }}</li>
+              <li>RentTrack Batch Number: {{ detail.rentTrackBatchNumber }}</li>
+              {% if detail.accountingSystemBatchNumber %}
+                <li>Accounting System Batch Number: {{ detail.accountingSystemBatchNumber }}</li>
+              {% endif %}
+         </ul>
+         <br />
+         {% endfor %}
+
+         <br />
+         You will need to: <br />
+         <ul>
+            <li>* Enter the payment and post the batch manually using the attached CSV which contains
+                all the payments in the batch.
+            </li>
+            <li>* If the resident ID was incorrect in RentTrack, please update this by editing the
+                tenant in RentTrack.
+            </li>
+            <li>* If payments should be blocked, please view the tenant in RentTrack and make sure
+                we are blocking payments - either using your accounting system status, or by blocking them
+                within RentTrack.
+            </li>
+         </ul>
       {% endblock %}

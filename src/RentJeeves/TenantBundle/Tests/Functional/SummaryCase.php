@@ -94,6 +94,23 @@ class SummaryCase extends BaseTestCase
         $this->assertNotNull($loading = $this->page->find('css', '.loading'));
         $this->session->wait($this->timeout + 5000, "window.location.pathname.match('\/summary') === null");
         $this->assertNotNull($summaryPage = $this->page->find('css', '#summary_page'));
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#reporting-form'),
+            'Should see popup with form to edit'
+        );
+        $this->fillForm(
+            $form,
+            [
+                'rep-experian'  => true,
+                'rep-tu'    => true,
+                'rep-equifax' => false
+            ]
+        );
+
+        $this->assertNotNull($button = $this->page->find('css', '.footer-button-box .start-reporting'));
+        $button->click();
+
+        $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
 
         $today = new \DateTime();
         self::$kernel = null;

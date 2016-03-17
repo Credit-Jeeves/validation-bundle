@@ -4,6 +4,8 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class GroupRepository extends EntityRepository
 {
@@ -167,5 +169,25 @@ class GroupRepository extends EntityRepository
             ->setParameter('holding', $holding)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return Group[]
+     */
+    public function getProfitStarsEnabledGroups()
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.holding', 'h')
+            ->innerJoin('h.profitStarsSettings', 'ps')
+            ->innerJoin('g.depositAccounts', 'da')
+            ->innerJoin('g.contracts', 'c') // to drop out groups without contracts
+            ->where('ps.merchantId IS NOT NULL')
+            ->andWhere('da.paymentProcessor = :profitStars')
+            ->andWhere('da.status = :completeStatus')
+            ->andWhere('da.merchantName IS NOT NULL')
+            ->setParameter('profitStars', PaymentProcessor::PROFIT_STARS)
+            ->setParameter('completeStatus', DepositAccountStatus::DA_COMPLETE)
+            ->getQuery()
+            ->execute();
     }
 }

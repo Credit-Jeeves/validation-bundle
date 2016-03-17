@@ -5,6 +5,8 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 use RentJeeves\CheckoutBundle\Command\RegisterContractToProfitStarsCommand;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ProfitStarsRegisteredContract;
@@ -14,11 +16,14 @@ use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\TestBundle\ProfitStars\Mocks\PaymentVaultClientMock;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class RegisterContractToProfitStarsCommandCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      * @expectedException \InvalidArgumentException
@@ -141,15 +146,10 @@ class RegisterContractToProfitStarsCommandCase extends BaseTestCase
             'test'
         );
 
-        $reportLoader = $this->getMock(
-            '\RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader',
-            [],
-            [],
-            '',
-            false
-        );
+        $reportLoader = $this->getBaseMock(ReportLoader::class);
+        $remoteDepositLoader = $this->getBaseMock(RemoteDepositLoader::class);
 
-        $paymentProcessor = new PaymentProcessorProfitStarsRdc($reportLoader, $contractRegistry);
+        $paymentProcessor = new PaymentProcessorProfitStarsRdc($reportLoader, $contractRegistry, $remoteDepositLoader);
         $this->getContainer()->set('payment_processor.profit_stars.rdc', $paymentProcessor);
 
         return $this->getContainer();

@@ -788,7 +788,7 @@
            </trans-unit>
             <trans-unit id="bureau.reporting.select.for">
                 <source>bureau.reporting.select.for</source>
-                <target>You are currently reporting to the checked bureaus for:</target>
+                <target>You are currently reporting to the following checked bureaus:</target>
             </trans-unit>
            <trans-unit id="bureau.reporting.experian">
                <source>bureau.reporting.experian</source>
@@ -808,9 +808,15 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.manage.description">
                <source>bureau.reporting.manage.description</source>
-               <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
-                                and you may not receive credit for your payments. Note that stopping and subsequently
-                                starting reporting again may have a negative impact on your credit history.]]></target>
+               <target><![CDATA[
+                                Please check all the bureau you wish to report to.
+                                <br />
+                                <br />
+                                If you uncheck a bureau above, your payments will no longer be reported to that bureau
+                                and you may not receive credit for your payments. The entry will go 'stale' and will be
+                                deleted from your credit record after some time. Note that stopping and subsequently
+                                starting reporting again may have a negative impact on your credit history.]]>
+               </target>
            </trans-unit>
            <trans-unit id="bureau.reporting.save">
                <source>bureau.reporting.save</source>
@@ -823,6 +829,10 @@
            <trans-unit id="bureau.reporting.trans_union.title">
                <source>bureau.reporting.trans_union.title</source>
                <target>TransUnion</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.faq">
+               <source>bureau.reporting.faq</source>
+               <target>Read Reporting FAQs</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -1850,6 +1860,10 @@
                 <source>order.error.title</source>
                 <target>We encountered an error when attempting to make your rent payment.</target>
             </trans-unit>
+            <trans-unit id="scoretrack.order.error.title">
+                <source>scoretrack.order.error.title</source>
+                <target>We encountered an error when attempting to make your ScoreTrack payment.</target>
+            </trans-unit>
             <trans-unit id="order.id">
                 <source>order.id</source>
                 <target>RentTrack Order ID</target>
@@ -2085,7 +2099,7 @@
             </trans-unit>
             <trans-unit id="landlord.hps.contact_us_message">
                 <source>landlord.hps.contact_us_message</source>
-                <target>Please contact us at help@renttrack.com or call 866-841-9090 x2 to set up your merchant account.</target>
+                <target>Please contact us at sales@renttrack.com or call 866-841-9090 x1 to set up your merchant account.</target>
             </trans-unit>
             <trans-unit id="landlord.payment_account.set_up_message">
                 <source>landlord.payment_account.set_up_message</source>
@@ -2228,6 +2242,10 @@
             <trans-unit id="payment.start_date.error.past">
                 <source>payment.start_date.error.past</source>
                 <target>Please check your dates. It appears you have set up a payment to start in the past.</target>
+            </trans-unit>
+            <trans-unit id="payment.start_date.error.outside_rolling_window">
+                <source>payment.start_date.error.outside_rolling_window</source>
+                <target>Another payment cannot be made until the %day%.</target>
             </trans-unit>
             <trans-unit id="payment.year.error.past">
                 <source>payment.year.error.past</source>
@@ -2682,6 +2700,10 @@
               <source>import.error.invalid_property</source>
               <target>Property address is invalid.</target>
             </trans-unit>
+            <trans-unit id="import.error.empty_unique_id">
+              <source>import.error.empty_unique_id</source>
+              <target>This user/contract doesn't have residentId or leaseId. One of it always required.</target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
@@ -2924,7 +2946,7 @@
             </trans-unit>
             <trans-unit id="order.report.type.mri_boston_post">
                 <source>order.report.type.mri_boston_post</source>
-                <target>MRI Boston Post (CSV)</target>
+                <target>MRI Bostonpost (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>
@@ -3375,6 +3397,10 @@
             <trans-unit id="tenant.credit_history_dashboard">
                 <source>tenant.credit_history_dashboard</source>
                 <target>Tenant Credit History Dashboard</target>
+            </trans-unit>
+            <trans-unit id="reported.lease">
+                <source>reported.lease</source>
+                <target>Reported Lease</target>
             </trans-unit>
         </body>
     </file>

@@ -128,11 +128,15 @@ class ContractProcess
     /**
      * @param Tenant $tenant
      * @param ContractWaiting $contractWaiting
+     * @param bool $isSupportResidentId
      *
      * @return Contract
      */
-    public function createContractFromWaiting(Tenant $tenant, ContractWaiting $contractWaiting)
-    {
+    public function createContractFromWaiting(
+        Tenant $tenant,
+        ContractWaiting $contractWaiting,
+        $isSupportResidentId = true
+    ) {
         $contract = new Contract();
         $contract->setTenant($tenant);
         $contract->setProperty($contractWaiting->getProperty());
@@ -162,7 +166,7 @@ class ContractProcess
             );
         }
 
-        if (!$hasResident) {
+        if ($hasResident === false && $isSupportResidentId === true && !empty($contractWaiting->getResidentId())) {
             $residentMapping = new ResidentMapping();
             $residentMapping->setResidentId($contractWaiting->getResidentId());
             $residentMapping->setHolding($holding);

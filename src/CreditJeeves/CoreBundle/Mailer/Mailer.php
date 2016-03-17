@@ -27,10 +27,11 @@ class Mailer extends BaseMailer implements MailerInterface
      * @param array $params
      * @param string $emailTo
      * @param string $culture
+     * @param string $filePath
      *
      * @return bool
      */
-    public function sendBaseLetter($templateName, $params, $emailTo, $culture)
+    public function sendBaseLetter($templateName, $params, $emailTo, $culture, $filePath = null)
     {
         if (false == $this->isValidEmail($emailTo)) {
             $this->handleException(
@@ -63,6 +64,10 @@ class Mailer extends BaseMailer implements MailerInterface
             $message->setSubject($htmlContent['subject']);
             $message->setFrom([$htmlContent['fromEmail'] => $params['partnerName']]);
             $message->setTo($emailTo);
+
+            if (!empty($filePath)) {
+                $message->attach(\Swift_Attachment::fromPath($filePath));
+            }
 
             if (false != $template->getEnTranslation()->getMandrillSlug()) {
                 $message = $this->prepareMessageForMandrill($message, $template, $params, $recipientUser);

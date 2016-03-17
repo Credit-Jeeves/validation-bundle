@@ -56,6 +56,12 @@ function Payment(parent) {
     });
     this.startYear.subscribe(function(newValue) {
         self.checkDueDate();
+
+        var today = new Date();
+        var currentYear = parseInt(today.format('Y'));
+        if (newValue < currentYear) {
+            self.startYears.push({number: newValue, name: newValue});
+        }
     });
     this.startMonth.subscribe(function(newValue) {
         self.checkDueDate();

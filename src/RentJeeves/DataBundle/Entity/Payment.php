@@ -3,6 +3,8 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\CheckoutBundle\Constraint\StartDate; // use in annotation
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -12,7 +14,6 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use RentJeeves\DataBundle\Validators\PaymentDate;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -20,6 +21,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @PaymentDate(groups={"Default", "pay_anything", "last_step"})
+ * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\PaymentHistory")
  */
 class Payment extends Base
 {
@@ -40,11 +42,13 @@ class Payment extends Base
      *      minMessage="checkout.error.other.min",
      *      invalidMessage="checkout.error.other.valid"
      * )
+     * @Serializer\SerializedName("amountOther")
      * @Serializer\Groups({"payRent"})
+     * @Serializer\Accessor(getter="getOther",setter="setOther")
      *
      * @var double
      */
-    protected $other = 0.0;
+    protected $other;
 
     /**
      * FLAGGED is internal status. It should not be visible for users.
@@ -187,7 +191,9 @@ class Payment extends Base
 
     public function getOther()
     {
-        return ($this->total > $this->amount) ? $this->total - $this->amount : 0.0;
+        $other = ($this->total > $this->amount) ? $this->total - $this->amount : 0.0;
+
+        return number_format($other, 2, '.', '');
     }
 
     public function setOther($value)

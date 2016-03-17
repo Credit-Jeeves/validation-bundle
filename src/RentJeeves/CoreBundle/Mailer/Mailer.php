@@ -6,6 +6,8 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -30,7 +32,7 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Contract $contract
      *
      * @return bool
@@ -50,10 +52,10 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
-     * @param string   $isImported
+     * @param string $isImported
      *
      * @return bool
      */
@@ -75,7 +77,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -97,7 +99,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param Tenant   $tenant
+     * @param Tenant $tenant
      * @param Landlord $landlord
      * @param Contract $contract
      *
@@ -119,9 +121,9 @@ class Mailer extends BaseMailer
 
     /**
      * @param Contract $contract
-     * @param string   $paymentType
-     * @param boolean  $isRecurringPaymentEnded
-     * @param float    $paymentTotal
+     * @param string $paymentType
+     * @param boolean $isRecurringPaymentEnded
+     * @param float $paymentTotal
      *
      * @return bool
      */
@@ -145,6 +147,27 @@ class Mailer extends BaseMailer
             $vars,
             $contract->getTenant()->getEmail(),
             $contract->getTenant()->getCulture()
+        );
+    }
+
+    /**
+     * @param Landlord $landlord
+     * @param array $failureBatchDetails
+     * @param string $filePath
+     *
+     * @return bool
+     */
+    public function sendPostPaymentError(Landlord $landlord, array $failureBatchDetails, $filePath)
+    {
+        return $this->sendBaseLetter(
+            'rjPostPaymentError',
+            [
+                'landlordName' => $landlord->getFullName(),
+                'details' => $failureBatchDetails,
+            ],
+            $landlord->getEmail(),
+            $landlord->getCulture(),
+            $filePath
         );
     }
 
@@ -295,6 +318,29 @@ class Mailer extends BaseMailer
         ];
 
         return $this->sendBaseLetter('rjOrderError', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return boolean
+     */
+    public function sendScoreTrackError(Order $order)
+    {
+        $vars = [
+            'nameTenant' => $order->getUser()->getFullName(),
+            'date' => $order->getUpdatedAt()->format('m/d/Y'),
+            'amount' => $this->container->getParameter('credittrack_payment_per_month_currency').$order->getSum(),
+            'number' => $order->getTransactionId(),
+            'error' => $order->getErrorMessage(),
+        ];
+
+        return $this->sendBaseLetter(
+            'rjScoreTrackOrderError',
+            $vars,
+            $order->getUser()->getEmail(),
+            $order->getUser()->getCulture()
+        );
     }
 
     /**
@@ -575,6 +621,11 @@ class Mailer extends BaseMailer
     public function sendReportReceipt(Order $order)
     {
         $dateShortFormat = $this->container->getParameter('date_short');
+        $amout = sprintf(
+            '%s%s',
+            $this->container->getParameter('credittrack_payment_per_month_currency'),
+            number_format($order->getSum(), 2, '.', '')
+        );
 
         return $this->sendEmail(
             $order->getUser(),
@@ -582,8 +633,7 @@ class Mailer extends BaseMailer
             [
                 'tenantName' => $order->getUser()->getFullName(),
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
-                'amout' => $this->container->getParameter('credittrack_payment_per_month_currency') .
-                    $this->container->getParameter('credittrack_payment_per_month'), // TODO currency formatting
+                'amout' => $amout,
                 'number' => $order->getTransactionId(),
                 'paymentProcessor' => $order->getPaymentProcessor(),
                 'type' => $order->getPaymentType(),
@@ -722,9 +772,15 @@ class Mailer extends BaseMailer
             $group->getZip()
         );
 
+        $estimatedDeliveryDate = BusinessDaysCalculator::getBusinessDate(
+            $order->getCreatedAt(),
+            PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK
+        );
+
         $vars = [
             'firstName' => $tenant->getFirstName(),
             'groupName' => $order->getGroupName(),
+            'estimatedDelivery' => $estimatedDeliveryDate->format('m/d/Y'),
             'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
             'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
             'mailingAddress' => $mailingAddress,

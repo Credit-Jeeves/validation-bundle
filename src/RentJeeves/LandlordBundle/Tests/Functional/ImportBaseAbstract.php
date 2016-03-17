@@ -144,6 +144,16 @@ class ImportBaseAbstract extends BaseTestCase
 
     protected function waitReviewAndPost()
     {
+        $this->waitReview();
+
+        $this->session->wait(
+            10000,
+            "$('.submitImportFile>span').is(':visible')"
+        );
+    }
+
+    protected function waitReview()
+    {
         $this->session->wait(
             10000,
             "$('.overlay-trigger').length > 0"
@@ -153,17 +163,15 @@ class ImportBaseAbstract extends BaseTestCase
             21000,
             "$('.overlay-trigger').length <= 0"
         );
-
-        $this->session->wait(
-            10000,
-            "$('.submitImportFile>span').is(':visible')"
-        );
     }
 
-    protected function waitRedirectToSummaryPage()
+    /**
+     * @param int $timeout  on ms
+     */
+    protected function waitRedirectToSummaryPage($timeout = 30000)
     {
         $this->session->wait(
-            1500000,
+            $timeout,
             "$('#summaryList').length > 0"
         );
     }
@@ -171,7 +179,7 @@ class ImportBaseAbstract extends BaseTestCase
     /**
      * @return ImportGroupSettings
      */
-    public function getImportGroupSettings()
+    protected function getImportGroupSettings()
     {
 
         /** @var ImportGroupSettings $importGroupSettings */
@@ -183,5 +191,20 @@ class ImportBaseAbstract extends BaseTestCase
         $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
 
         return $importGroupSettings;
+    }
+
+    /**
+     * @param array $map
+     * @param int $limit
+     * @param string $id
+     */
+    protected function fillCsvMapping(array $map, $limit, $id = '#import_match_file_type_column')
+    {
+        for ($i = 1; $i <= $limit; $i++) {
+            if (isset($map[$i])) {
+                $this->assertNotNull($choice = $this->page->find('css', $id . $i));
+                $choice->selectOption($map[$i]);
+            }
+        }
     }
 }

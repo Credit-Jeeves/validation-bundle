@@ -5,6 +5,8 @@ namespace RentJeeves\CheckoutBundle\Tests\Command;
 use RentJeeves\CheckoutBundle\Command\RegisterContractsToProfitStarsCommand;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ContractRegistryManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoader;
+use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ProfitStarsRegisteredContract;
@@ -129,9 +131,10 @@ class RegisterContractsToProfitStarsCommandCase extends BaseTestCase
             'test'
         );
 
-        $reportLoader = $this->getBaseMock('\RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ReportLoader');
+        $reportLoader = $this->getBaseMock(ReportLoader::class);
+        $remoteDepositLoader = $this->getBaseMock(RemoteDepositLoader::class);
 
-        $paymentProcessor = new PaymentProcessorProfitStarsRdc($reportLoader, $contractRegistry);
+        $paymentProcessor = new PaymentProcessorProfitStarsRdc($reportLoader, $contractRegistry, $remoteDepositLoader);
         $this->getContainer()->set('payment_processor.profit_stars.rdc', $paymentProcessor);
 
         return $this->getContainer();

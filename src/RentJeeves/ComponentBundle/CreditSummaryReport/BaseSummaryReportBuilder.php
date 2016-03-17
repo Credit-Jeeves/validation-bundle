@@ -81,13 +81,14 @@ abstract class BaseSummaryReportBuilder implements CreditSummaryReportBuilderInt
     {
         if ($shouldUpdateReport) {
             $lastReportOperation = $user->getLastCompleteReportOperation();
-            if ($lastReportOperation) {
-                $report = $lastReportOperation->getReportByVendor(static::VENDOR);
-            } else {
+
+            if ($user->getSettings()->isScoreTrackFree()) {
                 $report = $user->getLastReportByVendor(static::VENDOR);
+            } elseif ($lastReportOperation) {
+                $report = $lastReportOperation->getReportByVendor(static::VENDOR);
             }
 
-            if (!$report) {
+            if (empty($report)) {
                 $this->logger->alert(static::LOGGER_PREFIX . 'Doesn\'t have report for update');
                 throw new \RuntimeException('Doesn\'t have report for update');
             }

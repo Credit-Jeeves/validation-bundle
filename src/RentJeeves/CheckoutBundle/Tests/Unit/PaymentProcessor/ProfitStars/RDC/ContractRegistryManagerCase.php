@@ -124,6 +124,7 @@ class ContractRegistryManagerCase extends UnitTestBase
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('testLocationTEST');
+        $depositAccount->setHolding($holding);
 
         $registryManager->registerContract($contract, $depositAccount);
     }
@@ -162,6 +163,7 @@ class ContractRegistryManagerCase extends UnitTestBase
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('testLocationTEST');
+        $depositAccount->setHolding($holding);
 
         $registryManager->registerContract($contract, $depositAccount);
     }
@@ -209,6 +211,7 @@ class ContractRegistryManagerCase extends UnitTestBase
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('testLocationTEST');
+        $depositAccount->setHolding($holding);
 
         $registryManager->registerContract($contract, $depositAccount);
     }
@@ -255,6 +258,7 @@ class ContractRegistryManagerCase extends UnitTestBase
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('testLocationTEST');
+        $depositAccount->setHolding($holding);
 
         $registryManager->registerContract($contract, $depositAccount);
     }

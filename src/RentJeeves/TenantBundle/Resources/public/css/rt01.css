@@ -713,12 +713,12 @@ body{
 
 
 #payments{
-    margin-top: 100px;
+    margin-top: 90px;
 }
 .paymentBox{
     border-radius: 4px;
-    margin-top: 50px;
-    background: rgb(230,230,230); padding: 10px 10px 10px 20px; height: 150px; font-size: 10pt; text-align: center;
+    margin-top: 40px;
+    background: rgb(230,230,230); padding: 10px 10px 10px 10px; height: 150px; font-size: 10pt; text-align: center;
 }
 
 .addressBox{
@@ -739,7 +739,7 @@ body{
 }
 
 #loader{
-    position: absolute;
+    position: fixed;
     top: 120px;
     left: 50%;
     margin-left: -54px;

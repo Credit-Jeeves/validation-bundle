@@ -29,6 +29,8 @@ class CreditProfileTest extends Base
                 return file_get_contents($this->getFixturesDir() . 'tenant11.xml');
             case 'mamazza@rentrack.com':
                 return file_get_contents($this->getFixturesDir() . 'mamazza.xml');
+            case 'transU@example.com':
+                return file_get_contents($this->getFixturesDir() . 'marion.xml');
             case 'marion@rentrack.com':
                 return file_get_contents($this->getFixturesDir() . 'marion.xml');
         }

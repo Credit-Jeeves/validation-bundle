@@ -117,8 +117,11 @@ trait FormBind
             $this->isNeedSendInvite = true;
         }
 
-        $residentMapping = $form->get('residentMapping')->getData();
-        $this->currentImportModel->setResidentMapping($residentMapping);
+        if ($this->isSupportResidentId) {
+            $residentMapping = $form->get('residentMapping')->getData();
+            $this->currentImportModel->setResidentMapping($residentMapping);
+        }
+
         $this->currentImportModel->setContract($contract);
     }
 

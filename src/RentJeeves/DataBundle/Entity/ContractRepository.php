@@ -693,7 +693,7 @@ class ContractRepository extends EntityRepository
         $query->distinct();
         $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
-        $this->whereReportToExperian($query, 'c', clone $startDate);
+        $this->whereReportToExperian($query, 'c', 'op');
         $query->andWhere('c.status = :current');
         $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
         $query->andWhere('MONTH(op.paidFor) = :month');
@@ -743,7 +743,7 @@ class ContractRepository extends EntityRepository
     public function getContractsForExperianClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
         $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
-        $this->whereReportToExperian($query, 'c', clone $startDate);
+        $this->whereReportToExperian($query, 'c', 'op');
         $query = $query->getQuery();
 
         return $query->execute();
@@ -771,13 +771,13 @@ class ContractRepository extends EntityRepository
             ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
             ->andWhere('MONTH(op.paidFor) = :month')
             ->andWhere('YEAR(op.paidFor) = :year');
-        $this->whereReportToExperian($subquery, 'c2', clone $startDate);
+        $this->whereReportToExperian($subquery, 'c2', 'op');
 
         $query = $this->createQueryBuilder('c');
         $query->distinct();
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
         $query->innerJoin('operation.order', 'o', Expr\Join::WITH, 'o.status = :completeOrder');
-        $this->whereReportToExperian($query, 'c', clone $startDate);
+        $this->whereReportToExperian($query, 'c', 'operation');
         $query->andWhere('c.status = :current');
         $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
 
@@ -810,7 +810,7 @@ class ContractRepository extends EntityRepository
         );
         $query->innerJoin('c.operations', 'op', Expr\Join::WITH, 'op.type = :rent AND op.amount > 0');
         $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :completeOrder');
-        $this->whereReportToTransUnion($query, 'c', clone $startDate);
+        $this->whereReportToTransUnion($query, 'c', 'op');
         $query->andWhere('c.status = :current');
         $query->andWhere('op.createdAt BETWEEN :startDate AND :endDate');
         $query->andWhere('MONTH(op.paidFor) = :month');
@@ -849,13 +849,13 @@ class ContractRepository extends EntityRepository
             ->andWhere('op.createdAt BETWEEN :startDate AND :endDate')
             ->andWhere('MONTH(op.paidFor) = :month')
             ->andWhere('YEAR(op.paidFor) = :year');
-        $this->whereReportToTransUnion($subquery, 'c2', clone $startDate);
+        $this->whereReportToTransUnion($subquery, 'c2', 'op');
 
         $query = $this->createQueryBuilder('c');
         $query->distinct();
         $query->innerJoin('c.operations', 'operation', Expr\Join::WITH, 'operation.type = :rent');
         $query->innerJoin('operation.order', 'o', Expr\Join::WITH, 'o.status = :completeOrder');
-        $this->whereReportToTransUnion($query, 'c', clone $startDate);
+        $this->whereReportToTransUnion($query, 'c', 'operation');
 
         $query->andWhere('c.status = :current');
         $query->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()));
@@ -880,7 +880,7 @@ class ContractRepository extends EntityRepository
     public function getContractsForTransUnionClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
         $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
-        $this->whereReportToTransUnion($query, 'c', clone $startDate);
+        $this->whereReportToTransUnion($query, 'c', 'op');
         $query = $query->getQuery();
 
         return $query->execute();
@@ -889,21 +889,18 @@ class ContractRepository extends EntityRepository
     /**
      * @param QueryBuilder $query
      * @param string $contractAlias
-     * @param \DateTime $reportingStartDate
+     * @param string $operationAlias
      * @return QueryBuilder
      */
-    protected function whereReportToTransUnion(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    protected function whereReportToTransUnion(QueryBuilder $query, $contractAlias, $operationAlias)
     {
-        $reportingStartDate->setTime(23, 59, 59);
-
         $query->andWhere(sprintf(
-            '%s.reportToTransUnion = 1 AND %s.transUnionStartAt is not NULL AND %s.transUnionStartAt <= :startDate',
+            '%s.reportToTransUnion = 1 AND %s.transUnionStartAt is not NULL AND %s.transUnionStartAt <= %s.createdAt',
             $contractAlias,
             $contractAlias,
             $contractAlias,
-            $reportingStartDate
+            $operationAlias
         ));
-        $query->setParameter('startDate', $reportingStartDate);
 
         return $query;
     }
@@ -911,21 +908,18 @@ class ContractRepository extends EntityRepository
     /**
      * @param QueryBuilder $query
      * @param string $contractAlias
-     * @param \DateTime $reportingStartDate
+     * @param string $operationAlias
      * @return QueryBuilder
      */
-    protected function whereReportToExperian(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    protected function whereReportToExperian(QueryBuilder $query, $contractAlias, $operationAlias)
     {
-        $reportingStartDate->setTime(23, 59, 59);
-
         $query->andWhere(sprintf(
-            '%s.reportToExperian = 1 AND %s.experianStartAt is not NULL AND %s.experianStartAt <= :startDate',
+            '%s.reportToExperian = 1 AND %s.experianStartAt is not NULL AND %s.experianStartAt <= %s.createdAt',
             $contractAlias,
             $contractAlias,
             $contractAlias,
-            $reportingStartDate
+            $operationAlias
         ));
-        $query->setParameter('startDate', $reportingStartDate);
 
         return $query;
     }
@@ -933,21 +927,18 @@ class ContractRepository extends EntityRepository
     /**
      * @param QueryBuilder $query
      * @param string $contractAlias
-     * @param \DateTime $reportingStartDate
+     * @param string $operationAlias
      * @return QueryBuilder
      */
-    protected function whereReportToEquifax(QueryBuilder $query, $contractAlias, \DateTime $reportingStartDate)
+    protected function whereReportToEquifax(QueryBuilder $query, $contractAlias, $operationAlias)
     {
-        $reportingStartDate->setTime(23, 59, 59);
-
         $query->andWhere(sprintf(
-            '%s.reportToEquifax = 1 AND %s.equifaxStartAt is not NULL AND %s.equifaxStartAt <= :startDate',
+            '%s.reportToEquifax = 1 AND %s.equifaxStartAt is not NULL AND %s.equifaxStartAt <= %s.createdAt',
             $contractAlias,
             $contractAlias,
             $contractAlias,
-            $reportingStartDate
+            $operationAlias
         ));
-        $query->setParameter('startDate', $reportingStartDate);
 
         return $query;
     }
@@ -964,7 +955,7 @@ class ContractRepository extends EntityRepository
         $endDate->setTime(23, 59, 59);
 
         $query = $this->createQueryBuilder('c');
-        $this->whereReportToEquifax($query, 'c', clone $startDate);
+        $this->whereReportToEquifax($query, 'c', 'op');
         $query
             ->select(
                 'c contract, sum(op.amount) total_amount, max(op.createdAt) last_payment_date, op.paidFor paid_for'
@@ -995,7 +986,7 @@ class ContractRepository extends EntityRepository
     public function getContractsForEquifaxClosureReport(\DateTime $startDate, \DateTime $endDate)
     {
         $query = $this->getBaseQueryForClosureReport($startDate, $endDate);
-        $this->whereReportToEquifax($query, 'c', clone $startDate);
+        $this->whereReportToEquifax($query, 'c', 'op');
 
         return $query->getQuery()->execute();
     }
@@ -1543,6 +1534,7 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
     /**
      * @param Holding $holding
      * @param string $externalPropertyId
@@ -1647,6 +1639,7 @@ class ContractRepository extends EntityRepository
     public function getActiveWithGroup(Group $group, $page, $limit)
     {
         $offset = ($page - 1) * $limit;
+
         return $this->createQueryBuilder('c')
             ->where('(c.status = :current OR c.status = :approved) AND c.dueDate IN (:dueDays)')
             ->orderBy('c.id', 'ASC')
@@ -1658,5 +1651,55 @@ class ContractRepository extends EntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Group  $group
+     * @param string $name
+     * @param string $email
+     * @param string $address
+     * @param string $unit
+     *
+     * @return array
+     */
+    public function findContractsForScanningTab(
+        Group $group,
+        $name = null,
+        $email = null,
+        $address = null,
+        $unit = null
+    ) {
+        $query = $this->createQueryBuilder('contract')
+            ->select('contract.id, tenant.first_name, tenant.last_name, tenant.email')
+            ->addSelect('propertyAddress.street, propertyAddress.number, unit.name as unitName')
+            ->innerJoin('contract.unit', 'unit')
+            ->innerJoin('contract.property', 'property')
+            ->innerJoin('property.propertyAddress', 'propertyAddress')
+            ->innerJoin('contract.tenant', 'tenant')
+            ->where('contract.group = :group')
+            ->setParameter('group', $group);
+
+        if ($name !== null) {
+            $query
+                ->andWhere('(tenant.first_name LIKE :tenantName OR tenant.last_name LIKE :tenantName)')
+                ->setParameter('tenantName', '%' . $name . '%');
+        }
+        if ($email !== null) {
+            $query
+                ->andWhere('tenant.email LIKE :tenantEmail')
+                ->setParameter('tenantEmail', '%' . $email . '%');
+        }
+        if ($address !== null) {
+            $query
+                ->andWhere("CONCAT(CONCAT(propertyAddress.number, ' '), propertyAddress.street) LIKE :address")
+                ->setParameter('address', '%' . $address . '%');
+        }
+        if ($unit !== null) {
+            $query
+                ->andWhere('unit.name = :unitName')
+                ->setParameter('unitName', $unit);
+        }
+
+        return $query->getQuery()->getArrayResult();
     }
 }

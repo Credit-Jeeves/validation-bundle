@@ -5,11 +5,15 @@ namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Service`s name "import.property.transformer_factory"
+ */
 class TransformerFactory
 {
     const CUSTOM_NAMESPACE = '\RentJeeves\ImportBundle\PropertyImport\Transformer\Custom\\';
@@ -30,6 +34,11 @@ class TransformerFactory
     protected $defaultTransformers;
 
     /**
+     * @var CsvTransformer
+     */
+    protected $csvTransformer;
+
+    /**
      * @var array
      */
     protected $pathsToCustomTransformers;
@@ -39,17 +48,20 @@ class TransformerFactory
      * @param LoggerInterface        $logger
      * @param array                  $pathsToCustomTransformers
      * @param array                  $defaultTransformers
+     * @param CsvTransformer         $csvTransformer
      */
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
         array $pathsToCustomTransformers,
-        array $defaultTransformers
+        array $defaultTransformers,
+        CsvTransformer $csvTransformer
     ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->pathsToCustomTransformers = $pathsToCustomTransformers;
         $this->defaultTransformers = $defaultTransformers;
+        $this->csvTransformer = $csvTransformer;
     }
 
     /**
@@ -71,23 +83,35 @@ class TransformerFactory
      *
      * @return TransformerInterface returns an import transformer object
      */
-    public function getTransformer(Group $group, $externalPropertyId)
+    public function getTransformer(Group $group, $externalPropertyId = null)
     {
-        $customClassName = $this->em->getRepository('RjDataBundle:ImportTransformer')
-            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, $externalPropertyId);
-
-        $accountingSystemName = $group->getHolding()->getAccountingSystem();
-        if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
+        if (null === $importSettings = $group->getCurrentImportSettings()) {
             throw new ImportInvalidArgumentException(
-                sprintf('Accounting System with name "%s" is not supported.', $accountingSystemName)
+                sprintf('Group#%d doesn`t have settings for import.', $group->getId())
             );
         }
+        if (ImportSource::CSV === $importSettings->getSource()) {
+            return $this->csvTransformer;
+        } else {
+            $customClassName = $this->em->getRepository('RjDataBundle:ImportTransformer')
+                ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, $externalPropertyId);
 
-        if ($customClassName !== null) {
-            return $this->getCustomTransformer($customClassName, $group);
+            $accountingSystemName = $group->getHolding()->getAccountingSystem();
+            if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {
+                throw new ImportInvalidArgumentException(
+                    sprintf(
+                        'TransformerFactory: Accounting System with name "%s" is not supported.',
+                        $accountingSystemName
+                    )
+                );
+            }
+
+            if ($customClassName !== null) {
+                return $this->getCustomTransformer($customClassName, $group);
+            }
+
+            return $this->defaultTransformers[$accountingSystemName];
         }
-
-        return $this->defaultTransformers[$accountingSystemName];
     }
 
     /**
@@ -104,7 +128,7 @@ class TransformerFactory
     {
         $this->logger->debug(
             sprintf('Found className for custom Transformer : "%s".', $className),
-            ['group_id' => $group->getId()]
+            ['group' => $group->getId()]
         );
 
         $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
@@ -121,7 +145,7 @@ class TransformerFactory
                     'Custom transformer for this Group must be override "%s".',
                     get_class($baseTransformer)
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);
@@ -150,7 +174,7 @@ class TransformerFactory
                     'Not found any files with name "%s.php" in all directories for custom transformers.',
                     $className
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);
@@ -166,7 +190,7 @@ class TransformerFactory
                 $customFilePath,
                 $className
             ),
-            ['group_id' => $group->getId()]
+            ['group' => $group]
         );
 
         include_once $customFilePath;
@@ -180,7 +204,7 @@ class TransformerFactory
                     $customTransformerClass,
                     $customFilePath
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $group]
             );
 
             throw new ImportException($message);

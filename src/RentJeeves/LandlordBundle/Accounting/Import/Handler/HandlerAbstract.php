@@ -175,6 +175,13 @@ abstract class HandlerAbstract implements HandlerInterface
 
     protected $lineFromCsvFile = [];
 
+    /**
+     * Tell application could we use resident id or not.
+     *
+     * @var bool
+     */
+    public $isSupportResidentId = true;
+
     public function __construct()
     {
         ini_set('auto_detect_line_endings', true);
@@ -427,7 +434,9 @@ abstract class HandlerAbstract implements HandlerInterface
         $token = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $this->currentImportModel->setCsrfToken($token);
 
-        $this->setResident($row);
+        if ($this->isSupportResidentId) {
+            $this->setResident($row);
+        }
 
         if ($this->currentImportModel->getContract() && $unit = $this->currentImportModel->getContract()->getUnit()) {
             $this->currentImportModel->setUnitMapping($this->getUnitMapping($row, $unit));
@@ -549,6 +558,13 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->currentImportModel->getContract()->setProperty(null);
             $message = $this->translator->trans('import.error.invalid_property');
             $this->setUnrecoverableError($lineNumber, $keyFieldInUI, $message, $errors);
+        }
+
+        $externalLeaseId = $this->currentImportModel->getContract()->getExternalLeaseId();
+        $resident = $this->currentImportModel->getResidentMapping();
+        if (empty($resident) && empty($externalLeaseId)) {
+            $this->currentImportModel->setSkippedMessage($this->translator->trans('import.error.empty_unique_id'));
+            $this->currentImportModel->setIsSkipped(true);
         }
 
         $this->currentImportModel->setErrors($errors);
@@ -759,7 +775,8 @@ abstract class HandlerAbstract implements HandlerInterface
                 $this->flushEntity($this->currentImportModel->getTenant());
                 $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
                     $this->currentImportModel->getTenant(),
-                    $this->currentImportModel->getContractWaiting()
+                    $this->currentImportModel->getContractWaiting(),
+                    $this->isSupportResidentId
                 );
 
                 $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
@@ -797,7 +814,9 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function manageException(Exception $e)
     {
+        $this->logger->alert($e->getMessage());
         if ($e instanceof \Doctrine\ORM\ORMException) {
+            //@TODO should be remove because not work as we excepted
             $this->reConnectDB();
         }
 

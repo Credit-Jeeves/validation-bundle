@@ -2,8 +2,8 @@
 
 namespace RentJeeves\ExternalApiBundle\Services;
 
+
 use CreditJeeves\DataBundle\Entity\Order;
-use RentJeeves\DataBundle\Entity\Contract;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
@@ -12,9 +12,9 @@ use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\PaymentBatchMapping;
 use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use Monolog\Logger;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
+use RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
 use RentJeeves\ExternalApiBundle\Soap\SoapClientFactory;
@@ -48,14 +48,14 @@ class AccountingPaymentSynchronizer
     protected $serializer;
 
     /**
-     * @var ExceptionCatcher
-     */
-    protected $exceptionCatcher;
-
-    /**
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var FailedPostPaymentNotifier
+     */
+    protected $notifier;
 
     /**
      * @var bool
@@ -68,8 +68,8 @@ class AccountingPaymentSynchronizer
      *     "apiClientFactory" = @DI\Inject("accounting.api_client.factory"),
      *     "soapClientFactory" = @DI\Inject("soap.client.factory"),
      *     "jms_serializer" = @DI\Inject("jms_serializer"),
-     *     "exceptionCatcher" = @DI\Inject("fp_badaboom.exception_catcher"),
-     *     "logger" = @DI\Inject("logger")
+     *     "logger" = @DI\Inject("logger"),
+     *     "notifier" = @DI\Inject("failed.post.payment.notifier")
      * })
      */
     public function __construct(
@@ -77,15 +77,15 @@ class AccountingPaymentSynchronizer
         ExternalApiClientFactory $apiClientFactory,
         SoapClientFactory $soapClientFactory,
         Serializer $serializer,
-        ExceptionCatcher $exceptionCatcher,
-        Logger $logger
+        Logger $logger,
+        FailedPostPaymentNotifier $notifier
     ) {
         $this->em = $em;
         $this->apiClientFactory = $apiClientFactory;
         $this->soapClientFactory = $soapClientFactory;
         $this->serializer = $serializer;
-        $this->exceptionCatcher = $exceptionCatcher;
         $this->logger = $logger;
+        $this->notifier = $notifier;
     }
 
     /**
@@ -112,7 +112,7 @@ class AccountingPaymentSynchronizer
             return false;
         }
 
-        $integrationType = $holding->getAccountingSystem();
+        $accountingSystem = $holding->getAccountingSystem();
         $postAppFeeAndSecurityDeposit = $holding->isPostAppFeeAndSecurityDeposit();
         if ($order->getCustomOperation()) {
             if (false == $postAppFeeAndSecurityDeposit) {
@@ -127,7 +127,7 @@ class AccountingPaymentSynchronizer
                 return false;
             }
             // RT-1926: Allow only ResMan non rent payments. Other AS will be allowed later.
-            if (AccountingSystem::RESMAN !== $integrationType) {
+            if (AccountingSystem::RESMAN !== $accountingSystem) {
                 $this->logger->debug(sprintf(
                     'Order ID#%s with custom operation NOT allowed for external payment post. ' .
                     'Api Integration Type of holding %s (ID#%s) is not ResMan. done.',
@@ -141,7 +141,7 @@ class AccountingPaymentSynchronizer
         }
 
 
-        $isIntegrated = (!empty($integrationType) && $integrationType !== AccountingSystem::NONE);
+        $isIntegrated = (!empty($accountingSystem) && $accountingSystem !== AccountingSystem::NONE);
         if ($isIntegrated && $holding->isAllowedToSendRealTimePayments()) {
             $this->logger->debug('Holding is allowed for external payment post.');
             $group = $contract->getGroup();
@@ -265,7 +265,6 @@ class AccountingPaymentSynchronizer
                     $e->getTraceAsString()
                 )
             );
-            $this->exceptionCatcher->handleException($e);
 
             return false;
         }
@@ -433,6 +432,13 @@ class AccountingPaymentSynchronizer
         foreach ($mappingBatches as $mappingBatch) {
             /** @var PaymentBatchMapping $mappingBatch */
             $holding = $repo->getMerchantHoldingByBatchId($mappingBatch->getPaymentBatchId());
+            if (empty($holding)) {
+                $this->logger->alert(
+                    sprintf('We can\'nt find holding by payment batch ID#%s', $mappingBatch->getPaymentBatchId())
+                );
+
+                continue;
+            }
             $apiClient = $this->getApiClient($accountingType, $holding->getExternalSettings());
 
             if (!$apiClient) {
@@ -452,7 +458,19 @@ class AccountingPaymentSynchronizer
                 $mappingBatch->setStatus(PaymentBatchStatus::CLOSED);
                 $this->em->persist($mappingBatch);
                 $this->em->flush();
+                $this->logger->debug(
+                    sprintf('Batch ID:%s closed, holding#%s', $mappingBatch->getId(), $holding->getId())
+                );
+            } else {
+                $this->logger->alert(
+                    sprintf('Batch ID:%s failed to close, holding#%s', $mappingBatch->getId(), $holding->getId())
+                );
             }
+
+            $this->notifier->createNotifierAboutFailedPostPaymentJob(
+                $holding,
+                $mappingBatch->getAccountingBatchId()
+            );
         }
     }
 

@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Monolog\Logger;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
 use RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData;
@@ -53,13 +54,27 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                 $batches = $settlementData->getBatchesToClose($date, $holding);
                 foreach ($batches as $batch) {
                     $settlementDate = $this->getSettlementDate($batch['batchDate'], $batch['depositDate']);
-                    $apiClient->updateSettlementData(
+                    $result = $apiClient->updateSettlementData(
                         $batch['batchId'],
                         $batch['groupId'],
                         $batch['amount'],
                         $settlementDate
                     );
+
+                    if ($result == false) {
+                        $logger->alert(
+                            sprintf(
+                                'Can\'t close batch batchId%s, groupId#%s',
+                                $batch['batchId'],
+                                $batch['groupId']
+                            )
+                        );
+                    }
                 }
+
+                $this->getContainer()->get('failed.post.payment.notifier')->createNotifierAboutFailedPostPaymentJob(
+                    $holding
+                );
             }
         } catch (\Exception $e) {
             $logger->alert(sprintf(

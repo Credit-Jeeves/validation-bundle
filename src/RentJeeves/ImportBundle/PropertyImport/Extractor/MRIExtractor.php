@@ -2,17 +2,23 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
-use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\MRISettings;
 use RentJeeves\ExternalApiBundle\Services\MRI\ResidentDataManager as MRIResidentDataManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.mri"
  */
-class MRIExtractor implements ExtractorInterface
+class MRIExtractor implements ApiExtractorInterface
 {
+    use SetupGroupTrait;
+    use SetupExternalPropertyIdTrait;
+
     /**
      * @var MRIResidentDataManager
      */
@@ -36,37 +42,38 @@ class MRIExtractor implements ExtractorInterface
     /**
      * {@inheritdoc}
      */
-    public function extractData(Group $group, $externalPropertyId)
+    public function extractData()
     {
+        if (null === $this->group || null === $this->externalPropertyId) {
+            throw new ImportLogicException(
+                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+            );
+        }
         $this->logger->info(
-            sprintf(
-                'Starting process MRI extractData for extPropertyId#%s',
-                $externalPropertyId
-            ),
-            ['group_id' => $group->getId()]
+            'Starting process MRI extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
-        if (!$group->getIntegratedApiSettings() instanceof MRISettings) {
+        if (!$this->group->getIntegratedApiSettings() instanceof MRISettings) {
             $this->logger->warning(
                 $message = 'Group has incorrect settings for MRIExtractor.',
-                ['group_id' => $group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
         }
 
-        $this->residentDataManager->setSettings($group->getIntegratedApiSettings());
+        $this->residentDataManager->setSettings($this->group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getResidentTransactions($externalPropertyId);
+            $data = $this->residentDataManager->getResidentTransactions($this->externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(
-                    'Can`t get data from MRI for ExternalPropertyId="%s". Details: %s',
-                    $externalPropertyId,
+                    'Can`t get data from MRI. Details: %s',
                     $e->getMessage()
                 ),
-                ['group_id' => $group->getId()]
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
 
             throw new ImportExtractorException($message);
@@ -74,20 +81,14 @@ class MRIExtractor implements ExtractorInterface
 
         if (empty($data)) {
             $this->logger->info(
-                sprintf(
-                    'Returned response for extPropertyId#%s is empty.',
-                    $externalPropertyId
-                ),
-                ['group_id' => $group->getId()]
+                'Returned response is empty.',
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
         }
 
         $this->logger->info(
-            sprintf(
-                'Finished process extractData for extPropertyId#%s',
-                $externalPropertyId
-            ),
-            ['group_id' => $group->getId()]
+            'Finished process extractData.',
+            ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
         );
 
         return $data;

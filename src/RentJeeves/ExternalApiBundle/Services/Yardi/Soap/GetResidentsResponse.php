@@ -16,7 +16,7 @@ class GetResidentsResponse
     protected $propertyResidents;
 
     /**
-     * @return mixed
+     * @return PropertyResidents
      */
     public function getPropertyResidents()
     {
@@ -24,7 +24,7 @@ class GetResidentsResponse
     }
 
     /**
-     * @param mixed $propertyResidents
+     * @param PropertyResidents $propertyResidents
      */
     public function setPropertyResidents($propertyResidents)
     {

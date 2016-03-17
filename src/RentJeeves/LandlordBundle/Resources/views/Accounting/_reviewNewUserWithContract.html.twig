@@ -52,19 +52,23 @@
             'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_residentMapping_residentId')
         }
     ">
-        {{
-            form_widget(
-                form.contract.residentMapping.residentId,
-                {"attr":
-                    {
-                    "data-bind":
-                    "html:$root.getResidentId($data)"
+        {% if isSupportResidentId %}
+            {{
+                form_widget(
+                    form.contract.residentMapping.residentId,
+                    {"attr":
+                        {
+                        "data-bind":
+                        "html:$root.getResidentId($data)"
+                        }
                     }
-                }
-            )
-        }}
-        {% if isMultipleProperty == 'true' %}
+                )
+            }}
+        {% endif %}
+        {% if isSupportResidentId and isMultipleProperty == 'true' %}
             <hr />
+        {% endif %}
+        {% if isMultipleProperty == 'true' %}
             {{
                 form_widget(
                     form.contract.unitMapping.externalUnitId,

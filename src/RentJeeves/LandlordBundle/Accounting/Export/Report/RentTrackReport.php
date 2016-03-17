@@ -13,7 +13,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 
 /**
- * @Service("accounting.export.renttrack")
+ * accounting.export.renttrack
  */
 class RentTrackReport extends ExportReport
 {
@@ -22,11 +22,6 @@ class RentTrackReport extends ExportReport
     protected $softDeleteableControl;
 
     /**
-     * @InjectParams({
-     *     "em" = @Inject("doctrine.orm.default_entity_manager"),
-     *     "serializer" = @Inject("export.serializer.renttrack"),
-     *     "softDeleteableControl" = @Inject("soft.deleteable.control")
-     * })
      * @param EntityManager    $em
      * @param ExportSerializer $serializer
      * @param $softDeleteableControl

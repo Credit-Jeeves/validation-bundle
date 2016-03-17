@@ -26,18 +26,41 @@ class ImportPropertyCommandCase extends BaseTestCase
     /**
      * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage PropertyMapping for Group#24 and extPropertyId#1 not found
+     * @expectedExceptionMessage Both options("path-to-file" and "external-property-id") are specified
      */
-    public function shouldThrowExceptionIfExtPropertyIdNotFoundForGroupFromImport()
+    public function shouldThrowExceptionIfBothOptionsAreSpecified()
     {
         $this->load(true);
-        $this->executeCommandTester(new ImportPropertyCommand(), ['--import-id' => 1, '--external-property-id' => '1']);
+        $this->executeCommandTester(
+            new ImportPropertyCommand(),
+            [
+                '--import-id' => 1,
+                '--path-to-file' => 'test',
+                '--external-property-id' => 'test',
+            ]
+        );
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Neither option is specified
+     */
+    public function shouldThrowExceptionIfNeitherOptionIsSpecified()
+    {
+        $this->load(true);
+        $this->executeCommandTester(
+            new ImportPropertyCommand(),
+            [
+                '--import-id' => 1,
+            ]
+        );
     }
 
     /**
      * @test
      */
-    public function shouldCallImportIfInputDataIsValid()
+    public function shouldCallImportIfInputDataIsValidForApi()
     {
         $application = new Application($this->getKernel());
         $syncCommand = new ImportPropertyCommand();
@@ -58,6 +81,34 @@ class ImportPropertyCommandCase extends BaseTestCase
                 'command' => $command->getName(),
                 '--import-id' => 1,
                 '--external-property-id' => 'rnttrk01'
+            ]
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCallImportIfInputDataIsValidForCsv()
+    {
+        $application = new Application($this->getKernel());
+        $syncCommand = new ImportPropertyCommand();
+
+        $importPropertyManager = $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager');
+        $importPropertyManager->expects($this->once())
+            ->method('import');
+        $this->getContainer()->set('import.property.manager', $importPropertyManager);
+
+        $syncCommand->setContainer($this->getContainer());
+        $application->add($syncCommand);
+
+        $command = $application->find('renttrack:import:property');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            [
+                'command' => $command->getName(),
+                '--import-id' => 1,
+                '--path-to-file' => 'test'
             ]
         );
     }

@@ -68,6 +68,16 @@ class Address
     protected $longitude;
 
     /**
+     * @var string
+     */
+    protected $unitName;
+
+    /**
+     * @var string
+     */
+    protected $unitDesignator;
+
+    /**
      * @return string
      */
     public function getStreet()
@@ -253,5 +263,37 @@ class Address
             $this->getState(),
             $this->getZip()
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitName()
+    {
+        return $this->unitName;
+    }
+
+    /**
+     * @param string $unitName
+     */
+    public function setUnitName($unitName)
+    {
+        $this->unitName = $unitName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitDesignator()
+    {
+        return $this->unitDesignator;
+    }
+
+    /**
+     * @param string $unitDesignator
+     */
+    public function setUnitDesignator($unitDesignator)
+    {
+        $this->unitDesignator = $unitDesignator;
     }
 }

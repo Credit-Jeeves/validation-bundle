@@ -18,6 +18,30 @@
                 <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
+            <trans-unit id="create.csv.mapping">
+                <source>create.csv.mapping</source>
+                <target>Create CSV mapping</target>
+            </trans-unit>
+            <trans-unit id="group.edit">
+                <source>group.edit</source>
+                <target>Edit Group</target>
+            </trans-unit>
+            <trans-unit id="upload.csv.file">
+                <source>upload.csv.file</source>
+                <target>Upload CSV file</target>
+            </trans-unit>
+            <trans-unit id="csv.mapping.error.file_empty">
+                <source>csv.mapping.error.file_empty</source>
+                <target>Empty csv file</target>
+            </trans-unit>
+            <trans-unit id="csv.mapping.success">
+                <source>csv.mapping.success</source>
+                <target>You have successfully created/updated csv mapping</target>
+            </trans-unit>
+            <trans-unit id="map.csv.file">
+                <source>map.csv.file</source>
+                <target>Map CSV file</target>
+            </trans-unit>
             <trans-unit id="admin.butch.run.success">
                 <source>admin.butch.run.success-%NUMBER%</source>
                 <target>%NUMBER% payments added to job list</target>
@@ -301,6 +325,10 @@
             <trans-unit id="admin.group_settings.label.show_rent_wizard">
                 <source>admin.group_settings.label.show_rent_wizard</source>
                 <target>Fill Rent on Wizard</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.max_limit_per_month">
+                <source>admin.group_settings.label.max_limit_per_month</source>
+                <target>Max Limit per month</target>
             </trans-unit>
             <trans-unit id="admin.import_group_settings.label.source">
                 <source>admin.import_group_settings.label.source</source>

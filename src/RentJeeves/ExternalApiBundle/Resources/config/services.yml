@@ -78,6 +78,7 @@ services:
             - "@jms_serializer"
             - "@http_client"
             - "@logger"
+
     resman.client:
         class: "%resman.client.class%"
         arguments:
@@ -86,6 +87,8 @@ services:
             - "@logger"
             - "%resman.integration_partner_id%"
             - "%resman.api_key%"
+            - "@guzzle_client"
+
     soap.client.factory:
         class: "%soap.client.factory.class%"
         arguments:
@@ -159,3 +162,15 @@ services:
         class: "%binlist.card.class%"
         arguments:
             - "@binlist.debit_card_repo"
+
+    renttrack.export.report:
+        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\RentTrackExportReport
+        parent: "accounting.export.renttrack"
+
+    failed.post.payment.notifier:
+        class: RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+            - "@renttrack.export.report"
+            - "@project.mailer"

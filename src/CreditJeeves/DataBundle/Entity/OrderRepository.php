@@ -193,9 +193,9 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @param Contract $contract
      */
-    public function getContractHistory(\RentJeeves\DataBundle\Entity\Contract $contract)
+    public function getContractHistory(Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p', Expr\Join::WITH, "p.type = :rent");
@@ -209,9 +209,9 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @param Contract $contract
      */
-    public function getLastContractPayment(\RentJeeves\DataBundle\Entity\Contract $contract)
+    public function getLastContractPayment(Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
@@ -224,6 +224,26 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return Order
+     */
+    public function getLastPaidOrderByContract(Contract $contract)
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.operations', 'p')
+            ->where('p.contract = :contract')
+            ->andWhere('o.status in (:status)')
+            ->andWhere('p.type in (:operationsType)')
+            ->setParameter('contract', $contract)
+            ->setParameter('status', OrderStatus::getDTRSuccessfulStatuses())
+            ->setParameter('operationsType', [OperationType::RENT, OperationType::OTHER])
+            ->orderBy('o.created_at', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
@@ -677,6 +697,33 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @return string|null
+     */
+    public function getLastPaidMonthForContract(Contract $contract)
+    {
+        $result = $this->createQueryBuilder('o')
+            ->select('op.paidFor as paid_for')
+            ->innerJoin('o.operations', 'op')
+            ->where('op.contract = :contract')
+            ->andWhere('op.type = :rent')
+            ->andWhere('o.status = :complete')
+            ->orderBy('op.paidFor', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('contract', $contract)
+            ->setParameter('rent', OperationType::RENT)
+            ->setParameter('complete', OrderStatus::COMPLETE)
+            ->getQuery()
+            ->getScalarResult();
+
+        if (isset($result[0]['paid_for'])) {
+            return $result[0]['paid_for'];
+        }
+
+        return null;
     }
 
     /**

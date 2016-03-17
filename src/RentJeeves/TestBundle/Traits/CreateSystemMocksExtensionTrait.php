@@ -80,4 +80,20 @@ trait CreateSystemMocksExtensionTrait
     {
         return $this->getMock($class, [], [], '', false);
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\JMS\Serializer\Serializer
+     */
+    public function getSerializerMock()
+    {
+        return $this->getMock('\JMS\Serializer\Serializer', [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher
+     */
+    public function getExceptionCatcherMock()
+    {
+        return $this->getMock('\Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher', [], [], '', false);
+    }
 }

@@ -13,21 +13,28 @@ class StartDateValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $nowDateTime = new \DateTime();
         $dateValidation = ($value instanceof \DateTime) ? $value : \DateTime::createFromFormat('Y-m-d', $value);
 
         if (!$dateValidation) {
             return $this->context->addViolation($constraint->messageEmptyStartDate);
         }
 
-        if ($dateValidation > $nowDateTime) {
+        $nowDateTime = new \DateTime();
+
+        if ($minDate = $constraint->minDate) {
+            $minDateTime = ($minDate instanceof \DateTime) ? $minDate : new \DateTime($minDate);
+        } else {
+            $minDateTime = $nowDateTime;
+        }
+
+        if ($dateValidation > $minDateTime && $minDateTime >= $nowDateTime) {
             return;
         }
 
         /**
          * If it's today, need check time
          */
-        if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d')) {
+        if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d') && $minDateTime <= $nowDateTime) {
             if (self::isPastCutoffTime($dateValidation, $constraint->oneTimeUntilValue)) {
                 return $this->context->addViolation($constraint->messageDateCutoffTime);
             }
@@ -35,7 +42,12 @@ class StartDateValidator extends ConstraintValidator
             return;
         }
 
-        return $this->context->addViolation($constraint->messageDateInPast);
+        return $minDateTime > $nowDateTime ?
+            $this->context->addViolation(
+                $constraint->messageDateOutsideRollingWindow,
+                ['%day%' => $minDateTime->format('jS')]
+            ) :
+            $this->context->addViolation($constraint->messageDateInPast);
     }
 
     /**

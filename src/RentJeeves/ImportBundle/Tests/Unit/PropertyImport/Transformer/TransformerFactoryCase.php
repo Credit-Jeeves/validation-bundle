@@ -4,7 +4,10 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Transformer;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\ImportSource;
+use RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -57,6 +60,9 @@ class TransformerFactoryCase extends UnitTestBase
     public function shouldThrowExceptionIfDbHasRecordForInputDataButFileWithReturnedNameNotFound()
     {
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
@@ -75,7 +81,8 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
         );
 
         $factory->getTransformer($group, 'test');
@@ -91,6 +98,9 @@ class TransformerFactoryCase extends UnitTestBase
         $this->createInvalidCustomTransformerFile();
 
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
@@ -109,7 +119,8 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
         );
 
         $factory->getTransformer($group, 'test');
@@ -125,6 +136,9 @@ class TransformerFactoryCase extends UnitTestBase
         $this->createCustomTransformerWithInvalidNamespace();
 
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
@@ -143,7 +157,8 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../Fixtures'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
         );
 
         $factory->getTransformer($group, 'test');
@@ -157,6 +172,9 @@ class TransformerFactoryCase extends UnitTestBase
         $this->createCustomTransformerFile();
 
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
@@ -176,7 +194,8 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [AccountingSystem::MRI => $mriTransformer]
+            [AccountingSystem::MRI => $mriTransformer],
+            $this->geCsvTransformerMock()
         );
 
         $transformer = $factory->getTransformer($group, 'test');
@@ -193,6 +212,9 @@ class TransformerFactoryCase extends UnitTestBase
     public function shouldReturnMRITransformerIfDbDoesNotHaveRecordForInputData()
     {
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem(AccountingSystem::MRI);
         $group->setHolding($holding);
@@ -211,7 +233,8 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
         );
 
         $transformer = $factory->getTransformer($group, 'test');
@@ -230,6 +253,9 @@ class TransformerFactoryCase extends UnitTestBase
     public function shouldThrowExceptionIfDbDoesNotHaveRecordForInputDataAndHoldingHaveIncorrectApiType()
     {
         $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
         $holding = new Holding();
         $holding->setAccountingSystem('none');
         $group->setHolding($holding);
@@ -248,10 +274,36 @@ class TransformerFactoryCase extends UnitTestBase
             $em,
             $this->getLoggerMock(),
             [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
-            [AccountingSystem::MRI => $this->getMriTransformerMock()]
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
         );
 
         $factory->getTransformer($group, 'test');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnCsvTransformerIfGroupSettingsHaveCsvSource()
+    {
+        $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::CSV);
+        $group->setImportSettings($groupImportSettings);
+        $holding = new Holding();
+        $holding->setAccountingSystem(AccountingSystem::PROMAS);
+        $group->setHolding($holding);
+
+        $factory = new TransformerFactory(
+            $this->getEntityManagerMock(),
+            $this->getLoggerMock(),
+            [__DIR__ . '/../../../../PropertyImport/Transformer/Custom'],
+            [AccountingSystem::MRI => $this->getMriTransformerMock()],
+            $this->geCsvTransformerMock()
+        );
+
+        $transformer = $factory->getTransformer($group, 'test');
+        $this->assertInstanceOf(CsvTransformer::class, $transformer);
     }
 
     /**
@@ -268,5 +320,13 @@ class TransformerFactoryCase extends UnitTestBase
     protected function getMriTransformerMock()
     {
         return $this->getBaseMock('\RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|CsvTransformer
+     */
+    protected function geCsvTransformerMock()
+    {
+        return $this->getBaseMock(CsvTransformer::class);
     }
 }

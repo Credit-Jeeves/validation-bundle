@@ -91,6 +91,3 @@ parameters:
     monolog.email_from:         developers@renttrack.com
     monolog.alert.email_to:     staging@renttrack.com
     monolog.emergency.email_to: staging@renttrack.com
-
-    profit_stars.store_id: 765350
-    profit_stars.store_key: 'nAfv+O9D5V3i1Pgd3yaUxOAa2D9z'

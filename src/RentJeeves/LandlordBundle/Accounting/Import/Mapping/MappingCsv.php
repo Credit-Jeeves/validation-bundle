@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting\Import\Mapping;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageCsv;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
@@ -227,7 +228,7 @@ class MappingCsv extends MappingAbstract
      */
     public static function getHeaderFileHash(array $data)
     {
-        return md5(implode(array_keys($data[1])));
+        return HashHeaderCreator::createHashHeader(array_keys($data[1]));
     }
 
     /**

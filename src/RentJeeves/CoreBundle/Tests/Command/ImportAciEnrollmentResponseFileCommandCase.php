@@ -203,6 +203,47 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldDisplayErrorsForEachRow()
+    {
+        $this->load(true);
+
+        $filePath = $this->getFileLocator()->locate(
+            '@RjCoreBundle/Tests/Fixtures/PaymentProcessorMigration/AciEnrollmentResponseWithBadData.csv'
+        );
+        $this->executeCommandTester(
+            new ImportAciEnrollmentResponseFileCommand(),
+            [
+                '--path' => $filePath,
+                '--holding_id' => 5
+            ]
+        );
+
+        $errorsString = $this->commandTester->getDisplay();
+        $this->assertContains(
+            'ConsumerResponseRecord#consumerProfileId : This value should not be blank.',
+            $errorsString
+        );
+        $this->assertContains(
+            'ConsumerResponseRecord#status : Unable to process the record with status \'R\'.',
+            $errorsString
+        );
+        $this->assertContains(
+            'ConsumerResponseRecord#rejectReason : Unable to process the record with rejectReason.',
+            $errorsString
+        );
+        $this->assertContains(
+            'AccountResponseRecord#billingAccountId : This value should not be blank.',
+            $errorsString
+        );
+        $this->assertContains(
+            'FundingResponseRecord#fundingAccountId : This value should not be blank.',
+            $errorsString
+        );
+    }
+
+    /**
      * @return \Symfony\Component\HttpKernel\Config\FileLocator
      */
     protected function getFileLocator()
