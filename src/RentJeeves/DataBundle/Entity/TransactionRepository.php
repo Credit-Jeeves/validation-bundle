@@ -12,7 +12,7 @@ use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 class TransactionRepository extends EntityRepository
 {
     /**
-     * @param EntityGroup $group
+     * @param Group $group
      * @param DateTime $date
      * @return mixed
      */

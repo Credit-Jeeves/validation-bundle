@@ -21,7 +21,6 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $this->getExternalApiClientFactoryMock(),
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
-            $this->getExceptionCatcherMock(),
             $this->getLoggerMock(),
             $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier')
         );
@@ -239,7 +238,6 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $clientFactory,
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
-            $this->getExceptionCatcherMock(),
             $logger,
             $notifier
         );
@@ -320,7 +318,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($isIntegrated));
 
         $groupMock = $this->getMock(
-            '\RentJeeves\DataBundle\Entity\Group',
+            '\CreditJeeves\DataBundle\Entity\Group',
             ['getGroupSettings', 'isExistGroupSettings'],
             [],
             '',
