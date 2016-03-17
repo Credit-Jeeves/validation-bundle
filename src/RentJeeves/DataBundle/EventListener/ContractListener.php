@@ -172,6 +172,10 @@ class ContractListener
             return;
         }
 
+        if ($this->isInOlenAmountChangedEmailBlacklist($contract)) {
+            return;
+        }
+
         $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
     }
 
@@ -325,6 +329,60 @@ class ContractListener
                 $this->getEntityManager()->flush($job);
             }
         }
+    }
+
+    /**
+     *
+     * Olen does not want us to send rent changed emails for these groups until
+     * they have converted their recurring charges providers (RT-2189)
+     *
+     * @param Contract $contract
+     * @return bool
+     */
+    protected function isInOlenAmountChangedEmailBlacklist(Contract $contract)
+    {
+        $groupId = $contract->getGroupId();
+        $olenGroupEmailBlacklist = [
+            1608 => "Durango Canyon",
+            1788 => "Club Lake Pointe",
+            1789 => "Club Mira Lago",
+            1790 => "Delray Bay",
+            1791 => "Indian Hills FL",
+            1792 => "Manatee Bay",
+            1793 => "Players Club FL",
+            1794 => "Quantum Lake Villas",
+            1795 => "Sanctuary Cove",
+            1796 => "Villas of Juno",
+            1797 => "Weston Place",
+            1798 => "Whalers Cove",
+            1799 => "Seven Pines",
+            1800 => "The Reserve at West Paces",
+            1801 => "Arroyo Grande",
+            1802 => "Breakers",
+            1803 => "Canyon Villas",
+            1804 => "Diamondhead",
+            1805 => "Eagle Trace",
+            1806 => "Falling Water",
+            1807 => "Hidden Cove",
+            1808 => "Horizon Ridge",
+            1810 => "Indian Hills NV",
+            1811 => "Invitational",
+            1812 => "Morningstar",
+            1813 => "Players Club NV",
+            1814 => "Red Rock Villas",
+            1815 => "Shelter Cove",
+            1816 => "Spanish Ridge",
+            1817 => "Spanish Wells",
+            1818 => "Willowbrook",
+            2094 => "One North Scottsdale",
+            2096 => "Ibis Reserve",
+        ];
+
+        if (array_key_exists($groupId, $olenGroupEmailBlacklist)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

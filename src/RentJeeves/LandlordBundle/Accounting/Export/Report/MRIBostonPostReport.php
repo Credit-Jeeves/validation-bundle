@@ -101,7 +101,7 @@ class MRIBostonPostReport extends ExportReport
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
             !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
-            throw new ExportException('Not enough parameters for Boston Post report');
+            throw new ExportException('Not enough parameters for Bostonpost report');
         }
     }
 

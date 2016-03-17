@@ -223,6 +223,7 @@ class RjGroupAdmin extends Admin
                         'sortable'  => 'position',
                     ]
                 )
+            ->end()
             ->with('Import Defaults')
                 ->add(
                     'importSettings',

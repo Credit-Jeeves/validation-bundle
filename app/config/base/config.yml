@@ -11,6 +11,7 @@ parameters:
     login.delay: 30
 
     credit_summary_vendor: transunion #experian # supported values are 'transunion' or 'experian'
+    payment_debit_one_time_until_value: '15:25'
 
 simulation:
     entity_name: '\CreditJeeves\DataBundle\Entity\Atb'

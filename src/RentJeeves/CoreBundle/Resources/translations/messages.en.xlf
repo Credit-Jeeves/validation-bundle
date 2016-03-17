@@ -2263,6 +2263,10 @@
                 <source>payment.start_date.error.cutoff.time</source>
                 <target>It is past the payment cutoff time for today, please set the date to tomorrow or later.</target>
             </trans-unit>
+            <trans-unit id="payment.start_date.error.debit.cutoff.time">
+                <source>payment.start_date.error.debit.cutoff.time</source>
+                <target>Sorry, but we are past the cutoff time for debit cards payments today. Please choose e-Check, Credit Card, or change your payment date to tomorrow.</target>
+            </trans-unit>
             <trans-unit id="payment.start_date.error.empty_date">
                 <source>payment.start_date.error.empty_date</source>
                 <target>You must specify a date for the payment.</target>
@@ -2942,7 +2946,7 @@
             </trans-unit>
             <trans-unit id="order.report.type.mri_boston_post">
                 <source>order.report.type.mri_boston_post</source>
-                <target>MRI Boston Post (CSV)</target>
+                <target>MRI Bostonpost (CSV)</target>
             </trans-unit>
             <trans-unit id="export.renttrack.include_all_groups">
                 <source>export.renttrack.include_all_groups</source>

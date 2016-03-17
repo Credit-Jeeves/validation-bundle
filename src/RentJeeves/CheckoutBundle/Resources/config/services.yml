@@ -351,7 +351,7 @@ services:
         public: false
         arguments:
             - @skip32.id_encoder
-            - @doctrine.orm.default_entity_manager
+            - @contract.repository
             - @monolog.logger.profit_stars
 
     payment_processor.profit_stars.rdc.remote_deposit_loader:

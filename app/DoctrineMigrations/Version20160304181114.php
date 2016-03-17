@@ -38,7 +38,7 @@ class Version20160304181114 extends AbstractMigration
                       <li>Resident Name: {{ detail.residentName }}</li>
                       <li>Payment Date: {{ detail.paymentDateFormatted }}</li>
                       <li>Transaction ID: {{ detail.transactionId }}</li>
-                      <li>RentTrack Batch Number: {{ detail.transactionId }}</li>
+                      <li>RentTrack Batch Number: {{ detail.rentTrackBatchNumber }}</li>
                       {% if detail.accountingSystemBatchNumber %}
                         <li>Accounting System Batch Number: {{ detail.accountingSystemBatchNumber }}</li>
                       {% endif %}
@@ -49,17 +49,18 @@ class Version20160304181114 extends AbstractMigration
                  <br />
                  You will need to: <br />
                  <ul>
-                    <li>* Enter the payment and post the batch manually using the attached CSV which contains
+                    <li>Enter the payment and post the batch manually using the attached CSV which contains
                         all the payments in the batch.
                     </li>
-                    <li>* If the resident ID was incorrect in RentTrack, please update this by editing the
+                    <li>If the resident ID was incorrect in RentTrack, please update this by editing the
                         tenant in RentTrack.
                     </li>
-                    <li>* If payments should be blocked, please view the tenant in RentTrack and make sure
+                    <li>If payments should be blocked, please view the tenant in RentTrack and make sure
                         we are blocking payments - either using your accounting system status, or by blocking them
                         within RentTrack.
                     </li>
-                 </ul>"'
+                 </ul>
+                 {% endblock %}"'
         );
 
         $this->addSql(

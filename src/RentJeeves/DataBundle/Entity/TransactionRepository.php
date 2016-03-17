@@ -12,8 +12,8 @@ use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 class TransactionRepository extends EntityRepository
 {
     /**
-     * @param  Group    $group
-     * @param  DateTime $date
+     * @param Group $group
+     * @param DateTime $date
      * @return mixed
      */
     public function getBatchDepositedInfo(Group $group, DateTime $date)

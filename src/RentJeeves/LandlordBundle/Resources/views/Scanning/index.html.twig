@@ -32,10 +32,10 @@
         <br/>
         <p>{{ 'landlord.scanning.lease_list.text'|trans }}</p>
         <div class="filter">
-            {{ form_widget(form.name, {'attr': {'data-bind': 'value: nameFilter'}}) }}
-            {{ form_widget(form.email, {'attr': {'data-bind': 'value: emailFilter'}}) }}
-            {{ form_widget(form.address, {'attr': {'data-bind': 'value: addressFilter'}}) }}
-            {{ form_widget(form.unit, {'attr': {'data-bind': 'value: unitFilter'}}) }}
+            {{ form_widget(form.name, {'attr': {'data-bind': "value: nameFilter, valueUpdate: 'afterkeydown'"}}) }}
+            {{ form_widget(form.email, {'attr': {'data-bind': "value: emailFilter, valueUpdate: 'afterkeydown'"}}) }}
+            {{ form_widget(form.address, {'attr': {'data-bind': "value: addressFilter, valueUpdate: 'afterkeydown'"}}) }}
+            {{ form_widget(form.unit, {'attr': {'data-bind': "value: unitFilter, valueUpdate: 'afterkeydown'"}}) }}
             <div class="search-button"></div>
         </div>
         <div class="error-message" data-bind="visible: errorMessage !== null">

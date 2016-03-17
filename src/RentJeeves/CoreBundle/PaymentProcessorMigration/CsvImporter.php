@@ -343,11 +343,11 @@ class CsvImporter
 
     /**
      * @param ConsumerResponseRecord|FundingResponseRecord|AccountResponseRecord $record
-     * @param AciImportProfileMap                                                $aciProfileMap
+     * @param AciImportProfileMap|null                                           $aciProfileMap
      *
      * @return bool
      */
-    protected function isValidRecord($record, AciImportProfileMap $aciProfileMap)
+    protected function isValidRecord($record, AciImportProfileMap $aciProfileMap = null)
     {
         $classNameParts = explode('\\', get_class($record));
         $className = end($classNameParts);
@@ -410,7 +410,7 @@ class CsvImporter
                     $error->getMessage()
                 );
                 $this->errors[] = $message;
-                $this->logger->debug($message);
+                $this->logger->warning($message);
             }
 
             return false;

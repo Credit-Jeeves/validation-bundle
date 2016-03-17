@@ -6,6 +6,7 @@ use Exception;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\CheckoutBundle\Constraint\StartDate; // use in annotation
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
@@ -13,13 +14,13 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\DataBundle\Validators\PaymentDate;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
- * @Assert\Callback(methods={"validate"}, groups={"Default", "pay_anything"})
- *
+ * @PaymentDate(groups={"Default", "pay_anything", "last_step"})
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\PaymentHistory")
  */
 class Payment extends Base
@@ -109,7 +110,7 @@ class Payment extends Base
         if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate()) {
             return null;
         }
-        $date = new \DateTime('0000-00-00T00:00:00');
+        $date = new \DateTime();
 
         return $date->setDate($this->getStartYear(), $this->getStartMonth(), $this->getDueDate());
     }
@@ -241,80 +242,6 @@ class Payment extends Base
         $paidFor = parent::getPaidFor();
 
         return ($paidFor) ? $paidFor->format("Y-m") : "";
-    }
-
-    /**
-     * @param ExecutionContextInterface $validatorContext
-     */
-    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
-    {
-        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
-            !$this->getEndMonth() || !$this->getEndYear()
-        ) {
-            return;
-        }
-        $end = new DateTime();
-        $end->setTime(0, 0, 0);
-        $end->setDate($this->getEndYear(), $this->getEndMonth(), $this->getDueDate());
-        if ($end < $this->getStartDate()) {
-            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
-        }
-    }
-
-    public function validate(ExecutionContextInterface $context)
-    {
-        $now = $this->getNow();
-
-        if ($this->getStartYear() && $this->getStartYear() < $now->format('Y')) {
-            $context->addViolationAt('startYear', "payment.year.error.past");
-        }
-
-        if ($this->getEndYear() && $this->getEndYear() < $now->format('Y')) {
-            $context->addViolationAt('endYear', "payment.end_year.error.past");
-        }
-
-        $group = $this->getContract() ? $this->getContract()->getGroup() : null;
-        $payBalanceOnly = $group ? $group->getGroupSettings()->getPayBalanceOnly() : null;
-
-        if (!$this->getPaidFor() && !$payBalanceOnly && $context->getGroup() === 'Default') {
-            $context->addViolationAt(null, 'error.contract.paid_for');
-        }
-         // if month > 12 the method  $end->setDate with this param returned 500
-        if ($this->getStartMonth() < 1 || $this->getStartMonth() > 12) {
-            return;
-        }
-
-        $lastDayInStartMonth = new DateTime("last day of {$this->getStartYear()}-{$this->getStartMonth()}");
-
-        if ($this->getType() == PaymentType::ONE_TIME && $lastDayInStartMonth->format('d') < $this->getDueDate()) {
-            $context->addViolationAt(
-                'day',
-                "payment.month.error.number",
-                ['%count%' => $lastDayInStartMonth->format('d')]
-            );
-
-            return;
-        }
-
-        // if month > 12 the method  $end->setDate with this param returned 500
-        if ($this->getEndMonth() && ($this->getEndMonth() < 1 || $this->getEndMonth() > 12)) {
-            return;
-        }
-
-        if ($this->getEndYear() && $this->getEndMonth()) {
-            $lastDayInEndMonth = new DateTime("last day of {$this->getEndYear()}-{$this->getEndMonth()}");
-            if ($this->getType() == PaymentType::ONE_TIME && $lastDayInEndMonth->format('d') < $this->getDueDate()) {
-                $context->addViolationAt(
-                    'day',
-                    "payment.month.error.number",
-                    ['%count%' => $lastDayInEndMonth->format('d')]
-                );
-
-                return;
-            }
-        }
-
-        $this->isEndLaterThanStart($context);
     }
 
     public function setActive()

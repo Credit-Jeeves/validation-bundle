@@ -21,9 +21,8 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $this->getExternalApiClientFactoryMock(),
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
-            $this->getExceptionCatcherMock(),
             $this->getLoggerMock(),
-            $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier')
+            $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier')
         );
     }
 
@@ -148,7 +147,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function dataProviderForCloseBatchFailure()
+    public function dataProviderForFailedPushPaymentNotify()
     {
         return [
             [
@@ -173,9 +172,9 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
      * @param string $setterSettings
      *
      * @test
-     * @dataProvider dataProviderForCloseBatchFailure
+     * @dataProvider dataProviderForFailedPushPaymentNotify
      */
-    public function closeBatchFailureShouldCreateJobNotify(
+    public function failedPostPaymentNotifierShouldCreateJobNotify(
         $accountingSystem,
         $externalSettingsClassName,
         $paymentClient,
@@ -185,9 +184,9 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
         $paymentBatchMappingRep = $this->getBaseMock('RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository');
         $transactionRepository = $this->getBaseMock('RentJeeves\DataBundle\Entity\TransactionRepository');
         $paymentClient = $this->getBaseMock($paymentClient);
-        $notifier = $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\BatchCloseFailureNotifier');
+        $notifier = $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier');
         $notifier->expects($this->once())
-            ->method('createNotifierAboutBatchCloseFailureJob');
+            ->method('createNotifierAboutFailedPostPaymentJob');
 
         $paymentClient->expects($this->at(0))
             ->method('setDebug');
@@ -239,7 +238,6 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             $clientFactory,
             $this->getSoapClientFactoryMock(),
             $this->getSerializerMock(),
-            $this->getExceptionCatcherMock(),
             $logger,
             $notifier
         );
@@ -320,7 +318,7 @@ class AccountingPaymentSynchronizerCase extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($isIntegrated));
 
         $groupMock = $this->getMock(
-            '\RentJeeves\DataBundle\Entity\Group',
+            '\CreditJeeves\DataBundle\Entity\Group',
             ['getGroupSettings', 'isExistGroupSettings'],
             [],
             '',

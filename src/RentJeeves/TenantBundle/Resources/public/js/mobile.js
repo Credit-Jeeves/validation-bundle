@@ -2,7 +2,7 @@
 var paymentForm = '#rentjeeves_checkoutbundle_paymenttype';
 var paymentBalanceForm = '#rentjeeves_checkoutbundle_paymentbalanceonlytype';
 var currentPaymentForm = paymentForm;
-var prefix = currentPaymentForm;
+var prefix = currentPaymentForm + '_';
 var accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_";
 
 //since we aren't using KO, list those visible= when card or bank and use Jquery to set
@@ -468,8 +468,12 @@ function setupPayForm(id) {
             })
 
             //fill in payToName, rent amount, and address
-
-            $(prefix + "amount").val(contract.rent)
+            if (contract.payment) {
+                $(prefix + "amount").val(contract.payment.amount);
+                $(prefix + "amountOther").val(contract.payment.amountOther);
+            } else {
+                $(prefix + "amount").val(contract.rent)
+            }
             $("#payTo").html(contract.payToName);
             $("#contractAddress").html((contract.property.propertyAddress.number + " " + contract.property.propertyAddress.street + " " + contract.property.propertyAddress.district).replace("undefined", "").replace(/  /g, ' '))
 
@@ -743,33 +747,33 @@ function createReview() {
 
 
 recurringFormIds = [
-    prefix + "frequency_row",
-    prefix + "startMonth_row",
-    prefix + "ends_row",
-    prefix + "endMonth",
-    prefix + "endYear"
+    "frequency_row",
+    "startMonth_row",
+    "ends_row",
+    "endMonth",
+    "endYear"
 ];
 onetimeFormIds=[
-    prefix + "start_date_row"
+    "start_date_row"
 ];
 
 function formType(isRecurring) {
     $.each(recurringFormIds, function(index, value) {
         if (isRecurring) {
-            $(value).hide();
-            $(value).prop("disabled", true);
+            $(prefix + value).hide();
+            $(prefix + value).prop("disabled", true);
         } else {
-            $(value).show();
-            $(value).prop("disabled", false);
+            $(prefix + value).show();
+            $(prefix + value).prop("disabled", false);
         }
     });
     $.each(onetimeFormIds,function(index,value){
         if (!isRecurring) {
-            $(value).hide();
-            $(value).prop( "disabled", true);
+            $(prefix + value).hide();
+            $(prefix + value).prop( "disabled", true);
         }else{
-            $(value).show();
-            $(value).prop( "disabled", false);
+            $(prefix + value).show();
+            $(prefix + value).prop( "disabled", false);
         }
     });
 
@@ -783,16 +787,16 @@ function formType(isRecurring) {
 
 //hide month/year selection if recurring payment set to complete when cancelled
 cancelled=[
-    prefix + "endMonth",
-    prefix + "endYear"
+    "endMonth",
+    "endYear"
 ];
 
 function whenCancelled(isCancelled) { //isCancelled is recurring event set to when cancelled
     $.each(cancelled, function(index, value) {
         if (isCancelled) {
-            $(value).selectmenu('enable');
+            $(prefix + value).selectmenu('enable');
         } else {
-            $(value).selectmenu('disable');
+            $(prefix + value).selectmenu('disable');
         }
     })
 }
@@ -815,18 +819,20 @@ function updateTotal(contract) {
     if (currentPaymentForm === paymentBalanceForm && contract) {
         total = parseFloat(contract.integrated_balance);
     } else {
-        var amount = parseFloat($(prefix+"amount").val())
-        var other = parseFloat($(prefix+"amountOther").val())
-        total=0;
-        if(!isNaN(amount))
-            total+=amount;
-        if(!isNaN(other))
-            total+=other;
-        total=amount+other
+        var amount = parseFloat($(prefix + "amount").val())
+        var other = parseFloat($(prefix + "amountOther").val())
+        total = 0;
+        if (!isNaN(amount)) {
+            total += amount;
+        }
+        if (!isNaN(other)) {
+            total += other;
+        }
     }
 
-    $("#total").html(accounting.formatNumber(total, 2))
-    $(prefix + "total").val(total)
+    $("#total").html(accounting.formatNumber(total, 2));
+    $(prefix + "total_view").html('$' + accounting.formatNumber(total, 2));
+    $(prefix + "total").val(total);
 
     return total;
 }
@@ -849,13 +855,15 @@ function traverseErrorMsgs(o) { //traverse nested error messages
 function addNewPaymentSource(formObj) {
 
     if (!saving) { //it's a new account
+        $('#' + accountPrefix + 'submit').prop('disabled', true);
+        $("#loader").show();
         $.ajax({
             url: 'checkout/source',
             data: $(formObj).serialize(),
             type: 'post',
-            async: 'true',
-
             success: function(result) {
+                $("#loader").hide();
+                $('#' + accountPrefix + 'submit').prop('disabled', false);
                 a = result
                 if (debug) {
                     console.log(result)
@@ -870,6 +878,7 @@ function addNewPaymentSource(formObj) {
 
                     $("#sourceErrorMsg").html(msg)
                     $("#sourceErrorMsg").show()
+                    $('body').animate({ scrollTop: '0' }, 0)
                 } else { //we are successful! display dialog, refresh page to update information
                     $("#sourceErrorMsg").hide()
                     $.mobile.changePage('#pay')
@@ -880,10 +889,11 @@ function addNewPaymentSource(formObj) {
                 }
             },
             error: function(request, error) { //ajax error!
+                $("#loader").hide();
+                $('#' + accountPrefix + 'submit').prop('disabled', false);
                 msg = "An error occurred. (" + error + ")"
                 $("#sourceErrorMsg").html(msg)
                 $("#sourceErrorMsg").show()
-
                 $('body').animate({ scrollTop: '0' }, 0)
             }
         });
@@ -928,6 +938,7 @@ function addNewPaymentSource(formObj) {
                  msg = "An error occurred. (" + error + ")"
                  $("#sourceErrorMsg").html(msg)
                  $("#sourceErrorMsg").show()
+                 $('body').animate({ scrollTop: '0' }, 0)
             }
         });
 
