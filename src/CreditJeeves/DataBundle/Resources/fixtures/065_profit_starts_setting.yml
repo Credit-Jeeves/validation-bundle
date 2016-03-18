@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\ProfitStarsSettings
+fixtures:
+    ProfitStarsSettings1:
+        holding: rjHolding_1
+        merchantId: test

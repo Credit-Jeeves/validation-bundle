@@ -4,27 +4,26 @@
 <div class="container-content">
     <div class="check-scanning">
         <h1>{{ 'title.scanning'|trans }}</h1>
-        <br/>
-        <div>
+        <div class="control-buttons">
             <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
                 <button class="button small">
                     <span>{{ 'button_title.scanning'|trans }}</span>
                 </button>
             </a>
+            <button class="button small" data-bind="click: processScan">
+                <span>{{ 'button_title.process_scan'|trans }}</span>
+            </button>
         </div>
     </div>
+
     <div>
+        <img id="loading-gif" src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isProcessingScans">
         <div class="info-message" data-bind="visible: processedInfoMessage !== null">
             <span data-bind="text: processedInfoMessage"></span>
         </div>
         <div class="error-message" data-bind="visible: processedErrorMessage !== null">
             <span data-bind="text: processedErrorMessage"></span>
         </div>
-        <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
-            <button class="button small" data-bind="click: processScan">
-                <span>{{ 'landlord.scanning.process_scan'|trans }}</span>
-            </button>
-        </a>
     </div>
 
     <div class="lease-lookup">
@@ -57,7 +56,14 @@
                         <td data-bind="text: name"></td>
                         <td data-bind="text: email"></td>
                         <td data-bind="text: address"></td>
-                        <td data-bind="text: leaseId"></td>
+                        <td>
+                            <span class="lease-id" data-bind="text: leaseId"></span>
+                            <img
+                                class="copy"
+                                src="{{ asset('bundles/landlord/images/copy.png') }}"
+                                data-bind="attr: { 'data-clipboard-text': leaseId }"
+                            >
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -79,11 +85,15 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts '@LandlordBundle/Resources/public/js/leaseListViewModel.js' %}
+    {% javascripts
+        '@LandlordBundle/Resources/public/js/leaseListViewModel.js'
+        '@CoreBundle/Resources/public/js/clipboard.min.js'
+    %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     <script type="text/javascript">
+        new Clipboard('img.copy'); // need for copy to clipboard
         var viewModel = new LeaseListViewModel();
         ko.applyBindings(viewModel);
 
