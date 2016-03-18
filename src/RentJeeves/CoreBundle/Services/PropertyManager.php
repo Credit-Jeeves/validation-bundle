@@ -178,13 +178,7 @@ class PropertyManager
      */
     public function getOrCreatePropertyByAddress(Address $address)
     {
-        $property = $this->findPropertyByAddressInDb(
-            $address->getAddress1(),
-            '',
-            $address->getCity(),
-            $address->getState(),
-            $address->getZip()
-        );
+        $property = $this->getPropertyRepository()->findOneByAddress($address);
 
         if (null !== $property) {
             return $property;
@@ -221,17 +215,24 @@ class PropertyManager
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string $unitName
      *
      * @return null|Property
      */
-    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode)
+    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode, $unitName = '')
     {
         $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
         if (null !== $property) {
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress(
+                trim(sprintf('%s %s %s', $number, $street, $unitName)),
+                $city,
+                $state,
+                $zipCode
+            )
+        ) {
             return null;
         }
 

@@ -110,7 +110,7 @@ class CsvTransformerCase extends UnitTestBase
         $inputData = [
             'hashHeader' => 'test',
             'data' => [
-                ['testStreet', 'testCity', 'testZip', 'testState', 'extra', 'testUnit'],
+                ['testStreet', 'testCity', 'testZip', 'testState', 'extra', 'testUnit', 'testExtUnitId'],
             ]
         ];
 
@@ -134,7 +134,8 @@ class CsvTransformerCase extends UnitTestBase
             3 => 'zip',
             4 => 'state',
             5 => 'extraField',
-            6 => 'unit'
+            6 => 'unit',
+            7 => 'unit_id'
         ];
         $mapping->setMappingData(serialize($mappingData));
 
@@ -158,7 +159,8 @@ class CsvTransformerCase extends UnitTestBase
                         $subject->getAddress1() == 'testStreet' &&
                         $subject->getCity() == 'testCity' &&
                         $subject->getState() == 'testState' &&
-                        $subject->getZip() == 'testZip';
+                        $subject->getZip() == 'testZip' &&
+                        $subject->getExternalUnitId() == 'testExtUnitId';
                 })
             );
 

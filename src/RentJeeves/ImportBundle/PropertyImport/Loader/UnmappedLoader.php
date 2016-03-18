@@ -3,155 +3,21 @@
 namespace RentJeeves\ImportBundle\PropertyImport\Loader;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
-use Psr\Log\LoggerInterface;
-use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
-use RentJeeves\CoreBundle\Services\PropertyManager;
-use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
-use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\Exception\ImportRuntimeException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Validator;
 
 /**
  * Service`s name "import.property.loader.unmapped"
  */
-class UnmappedLoader implements PropertyLoaderInterface
+class UnmappedLoader extends AbstractLoader
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var PropertyManager
-     */
-    protected $propertyManager;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param EntityManager   $em
-     * @param PropertyManager $propertyManager
-     * @param Validator       $validator
-     * @param LoggerInterface $logger
-     */
-    public function __construct(
-        EntityManager $em,
-        PropertyManager $propertyManager,
-        Validator $validator,
-        LoggerInterface $logger
-    ) {
-        $this->em = $em;
-        $this->propertyManager = $propertyManager;
-        $this->validator = $validator;
-        $this->logger = $logger;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadData(Import $import, $additionalParameter = null)
-    {
-        $this->logger->info(
-            sprintf(
-                'Starting process unmapped load property from Import#%d.',
-                $import->getId()
-            ),
-            ['group' => $import->getGroup(), 'additional_parameter' => $additionalParameter]
-        );
-
-        $iterableResult = $this->em
-            ->getRepository('RjDataBundle:ImportProperty')
-            ->getNotProcessedImportProperties($import);
-        /** @var ImportProperty $importProperty */
-        while ((list($importProperty) = $iterableResult->next()) !== false) {
-            $this->processImportProperty($importProperty);
-            $this->em->flush($importProperty);
-            $this->em->clear();
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Finished process unmapped load property from Import#%d.',
-                $import->getId()
-            ),
-            ['group' => $import->getGroup(), 'additional_parameter' => $additionalParameter]
-        );
-    }
-
-    /**
-     * @param ImportProperty $importProperty
-     */
-    protected function processImportProperty(ImportProperty $importProperty)
-    {
-        $this->logger->debug(
-            sprintf('Start processing ImportProperty#%d', $importProperty->getId()),
-            [
-                'group' => $importProperty->getImport()->getGroup()
-            ]
-        );
-
-        try {
-            $property = $this->processProperty($importProperty);
-
-            if (!$property->isSingle()) {
-                $unit = $this->processUnit($property, $importProperty);
-            }
-            $this->em->flush([
-                $property,
-                $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
-            ]);
-
-            if (!$property->getId()) {
-                $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
-            } elseif (isset($unit) && !$unit->getId()) {
-                $importProperty->setStatus(ImportPropertyStatus::NEW_UNIT);
-            } else {
-                $importProperty->setStatus(ImportPropertyStatus::MATCH);
-            }
-        } catch (ImportException $e) {
-            $this->logger->error(
-                sprintf('%s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()),
-                [
-                    'group' => $importProperty->getImport()->getGroup(),
-                ]
-            );
-            $importProperty->setStatus(ImportPropertyStatus::ERROR);
-            $importProperty->setErrorMessages([
-                $e->getMessage()
-            ]);
-        }
-
-        $this->logger->debug(
-            sprintf(
-                'Processed ImportProperty #%d with result "%s"',
-                $importProperty->getId(),
-                $importProperty->getStatus()
-            ),
-            [
-                'group' => $importProperty->getImport()->getGroup(),
-            ]
-        );
-        $importProperty->setProcessed(true);
-    }
-
     /**
      * @param ImportProperty $importProperty
      * @return Property
@@ -162,9 +28,14 @@ class UnmappedLoader implements PropertyLoaderInterface
     {
         $group = $importProperty->getImport()->getGroup();
 
-        $address = $this->mapAddress($importProperty);
-
-        $property = $this->propertyManager->getOrCreatePropertyByAddress($address);
+        $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
+            $importProperty->getAddress1(),
+            null,
+            $importProperty->getCity(),
+            $importProperty->getState(),
+            $importProperty->getZip(),
+            $importProperty->getUnitName()
+        );
 
         if (null === $property) { // ImportProperty has incorrect address
             $this->logger->alert(
@@ -180,7 +51,7 @@ class UnmappedLoader implements PropertyLoaderInterface
             throw new ImportInvalidArgumentException($message);
         }
 
-        if (true === $this->isDifferentPropertyShouldBeCreated($property, $group, $importProperty)) {
+        if (true === $this->isDifferentPropertyShouldBeCreated($property, $group)) {
             $propertyAddress = $property->getPropertyAddress();
             $property = new Property();
             $property->setPropertyAddress($propertyAddress);
@@ -304,15 +175,11 @@ class UnmappedLoader implements PropertyLoaderInterface
     /**
      * @param Property       $property
      * @param Group          $group
-     * @param ImportProperty $importProperty
      *
      * @return bool true if we need create new Property
      */
-    protected function isDifferentPropertyShouldBeCreated(
-        Property $property,
-        Group $group,
-        ImportProperty $importProperty
-    ) {
+    protected function isDifferentPropertyShouldBeCreated(Property $property, Group $group)
+    {
         if ($property->getId() === null) {
             return false;
         }
@@ -347,18 +214,13 @@ class UnmappedLoader implements PropertyLoaderInterface
     }
 
     /**
+     * Method need b/c on mapped we save property and propertyMapping but on unmapped save just property only.
+     *
      * @param ImportProperty $importProperty
-     * @return Address
+     * @param Property $property
      */
-    protected function mapAddress(ImportProperty $importProperty)
+    protected function saveData(ImportProperty $importProperty, Property $property)
     {
-        $address = new Address();
-        $address->setStreet($importProperty->getAddress1());
-        $address->setUnitName($importProperty->getUnitName());
-        $address->setCity($importProperty->getCity());
-        $address->setState($importProperty->getState());
-        $address->setZip($importProperty->getZip());
-
-        return $address;
+        $this->em->flush($property);
     }
 }

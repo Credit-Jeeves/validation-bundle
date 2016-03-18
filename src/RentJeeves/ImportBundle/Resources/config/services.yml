@@ -134,15 +134,21 @@ services:
             - @import.property.loader.mapped
             - @import.property.loader.unmapped
 
+    import.property.loader.base:
+        abstract:  true
+        class: RentJeeves\ImportBundle\PropertyImport\Loader\AbstractLoader
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@property.manager"
+            - "@validator"
+            - "@monolog.logger.property_import"
+
     import.property.loader.mapped:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader
         public: false
-        arguments:
-            - @doctrine.orm.default_entity_manager
-            - @property.manager
-            - @validator
-            - @monolog.logger.property_import
+        parent: import.property.loader.base
 
     import.property.loader.unmapped:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\UnmappedLoader
         public: false
+        parent: import.property.loader.base
