@@ -132,7 +132,7 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
@@ -141,7 +141,7 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeAttribute($propertyManagerMock, 'logger', $this->getLoggerMock());
         $this->writeAttribute($propertyManagerMock, 'em', $this->getEntityManagerMock());
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $loader = new MappedLoader(
@@ -239,13 +239,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -349,13 +349,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -465,13 +465,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -576,13 +576,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -682,13 +682,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -788,13 +788,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $loader = new MappedLoader(

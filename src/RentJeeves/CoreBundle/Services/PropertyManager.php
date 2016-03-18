@@ -172,6 +172,50 @@ class PropertyManager
     }
 
     /**
+     * @param Address $address
+     *
+     * @return null|Property
+     */
+    public function getOrCreatePropertyByAddress(Address $address)
+    {
+        $property = $this->findPropertyByAddressInDb(
+            $address->getAddress1(),
+            '',
+            $address->getCity(),
+            $address->getState(),
+            $address->getZip()
+        );
+
+        if (null !== $property) {
+            return $property;
+        }
+
+        try {
+            $address = $this->addressLookupService->lookupFreeform(
+                sprintf(
+                    '%s %s, %s, %s, %s',
+                    $address->getAddress1(),
+                    $address->getUnitName(),
+                    $address->getCity(),
+                    $address->getState(),
+                    $address->getZip()
+                )
+            );
+        } catch (AddressLookupException $e) {
+            return null;
+        }
+
+        $newProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
+    }
+
+    /**
      * @param string $number
      * @param string $street
      * @param string $city
@@ -180,7 +224,7 @@ class PropertyManager
      *
      * @return null|Property
      */
-    public function getOrCreatePropertyByAddress($number, $street, $city, $state, $zipCode)
+    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode)
     {
         $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
         if (null !== $property) {

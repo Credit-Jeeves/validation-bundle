@@ -35,7 +35,7 @@ class CsvTransformer implements TransformerInterface
      * @var array
      */
     protected $requiredMappingFields = [
-        'street', 'city', 'zip', 'state'
+        'street', 'city', 'zip', 'state', 'unit_id'
     ];
 
     /**

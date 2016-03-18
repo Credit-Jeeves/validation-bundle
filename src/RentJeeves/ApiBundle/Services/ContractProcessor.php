@@ -148,7 +148,7 @@ class ContractProcessor
         $propertyAddress = $newUnitForm->get('address')->getData();
         $unitName = $newUnitForm->get('address')->get('unit_name')->getData();
 
-        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
             $propertyAddress->getNumber(),
             $propertyAddress->getStreet(),
             $propertyAddress->getCity(),

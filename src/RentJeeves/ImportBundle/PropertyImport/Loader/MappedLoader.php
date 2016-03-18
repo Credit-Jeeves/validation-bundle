@@ -173,7 +173,7 @@ class MappedLoader implements PropertyLoaderInterface
     protected function processProperty(ImportProperty $importProperty)
     {
         $group = $importProperty->getImport()->getGroup();
-        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
             $importProperty->getAddress1(),
             null,
             $importProperty->getCity(),
