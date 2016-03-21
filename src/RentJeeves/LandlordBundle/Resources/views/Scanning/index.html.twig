@@ -17,7 +17,7 @@
     </div>
 
     <div>
-        <img id="loading-gif" src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isProcessingScans">
+        <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." data-bind="visible: isProcessingScans">
         <div class="info-message" data-bind="visible: processedInfoMessage !== null">
             <span data-bind="text: processedInfoMessage"></span>
         </div>
