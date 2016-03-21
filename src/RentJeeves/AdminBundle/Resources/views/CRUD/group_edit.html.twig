@@ -56,7 +56,12 @@
                                 <fieldset>
                                     <div class="sonata-ba-collapsed-fields">
                                         {% if name == 'Import Defaults' %}
-                                            <a href="{{ url('admin_upload_csv', {'id': object.id}) }}" id="createCsvMappingLink" class="btn">{{ 'create.csv.mapping'|trans }}</a>
+                                            <a href="{{ url('admin_upload_csv_mapping', {'id': object.id}) }}" id="createCsvMappingLink" class="btn">
+                                                {{ 'create.csv.mapping'|trans }}
+                                            </a>
+                                            <a href="{{ url('admin_create_csv_job_for_import_properties', {'id': object.id}) }}" id="createCsvJobForImportProperties" class="btn">
+                                                {{ 'upload.csv.and.create.job'|trans }}
+                                            </a>
                                         {% endif %}
                                         {% if name == 'Virtual terminal' and object.getActiveBillingAccount %}
                                             <p>

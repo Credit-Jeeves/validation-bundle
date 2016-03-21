@@ -22,6 +22,10 @@
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
             </trans-unit>
+            <trans-unit id="upload.csv.and.create.job">
+                <source>upload.csv.and.create.job</source>
+                <target>Upload csv and create job for import property</target>
+            </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
                 <target>Edit Group</target>
@@ -37,6 +41,10 @@
             <trans-unit id="csv.mapping.success">
                 <source>csv.mapping.success</source>
                 <target>You have successfully created/updated csv mapping</target>
+            </trans-unit>
+            <trans-unit id="csv.job.successfully_created">
+                <source>csv.job.successfully_created</source>
+                <target>You have successfully created a job for process your csv file</target>
             </trans-unit>
             <trans-unit id="map.csv.file">
                 <source>map.csv.file</source>
