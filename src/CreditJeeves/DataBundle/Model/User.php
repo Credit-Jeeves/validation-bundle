@@ -788,50 +788,6 @@ abstract class User extends BaseUser
         return $this->apiUpdate;
     }
 
-    public function getRoles()
-    {
-
-        if (!empty($this->roles)) {
-            return $this->roles;
-        }
-
-        switch ($this->getType()) {
-            case UserType::APPLICANT:
-                return array('ROLE_USER');
-            case UserType::DEALER:
-                return array('ROLE_DEALER');
-            case UserType::ADMIN:
-                return array(
-                    'ROLE_USER',
-                    'ROLE_DEALER',
-                    'ROLE_ADMIN',
-                    'ROLE_TENANT',
-                    'ROLE_LANDLORD',
-                    'ROLE_PARTNER'
-                );
-            case UserType::TETNANT:
-                return array('ROLE_TENANT');
-            case UserType::LANDLORD:
-                return array('ROLE_LANDLORD');
-            case UserType::PARTNER:
-                return array('ROLE_PARTNER');
-        }
-        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
-    }
-
-    /**
-     * Get id
-     *
-     * @param  int  $id
-     * @return User
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     /**
      * Get id
      *
@@ -1151,7 +1107,7 @@ abstract class User extends BaseUser
     /**
      * Set ssn
      *
-     * @param  encrypt $ssn
+     * @param string $ssn
      * @return User
      */
     public function setSsn($ssn)
