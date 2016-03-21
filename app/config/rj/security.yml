@@ -10,7 +10,7 @@ security:
 
     providers:
         custom:
-            id: user.user_provider
+            id: fos_user.user_provider.username_email
         fos_userbundle:
             id: fos_user.user_manager
 
