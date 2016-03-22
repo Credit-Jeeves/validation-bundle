@@ -77,27 +77,27 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
         $this->assertEquals(
-            $countImportPropertyBeforeImport + 260, // 260 unique records(unique extUnitId) from response
+            $countImportPropertyBeforeImport + 270, // 270 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
         $this->assertEquals(
-            $countAllPropertiesBeforeImport + 3, // have 3 different addresses
+            $countAllPropertiesBeforeImport + 1, // have 3 different addresses
             $countAllPropertiesAfterImport,
             'Property is not created.'
         );
         $this->assertEquals(
-            $countAllPropertyAddressesBeforeImport + 3, // 3 new PropertyAddress
+            $countAllPropertyAddressesBeforeImport + 1, // 3 new PropertyAddress
             $countAllPropertiesAddressAfterImport,
             'PropertyAddress is not created.'
         );
         $this->assertEquals(
-            $countAllUnitsBeforeImport + 260, // 260 new Units
+            $countAllUnitsBeforeImport + 270, // 260 new Units
             $countAllUnitsAfterImport,
             'All Units are not created.'
         );
         $this->assertEquals(
-            $countAllUnitMappingsBeforeImport + 260, // 260 new Unit Mappings
+            $countAllUnitMappingsBeforeImport + 270, // 260 new Unit Mappings
             $countAllUnitMappingsAfterImport,
             'All UnitMappings is not created.'
         );
@@ -151,7 +151,7 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsBeforeImport = count($allUnitMappings);
 
-        $this->getImportPropertyManager()->import($newImport, ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $this->getImportPropertyManager()->import($newImport, '84a9d23e-7a46-4dde-818f-79170b60263b');
 
         $allImportProperties = $this->getEntityManager()->getRepository('RjDataBundle:ImportProperty')->findAll();
         $countImportPropertiesAfterImport = count($allImportProperties);
@@ -165,27 +165,28 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
         $this->assertEquals(
-            $countImportPropertyBeforeImport + 1, // 260 unique records(unique extUnitId) from response
+            $countImportPropertyBeforeImport + 39, // 39 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
+        // 0 - addresses are not valid
         $this->assertEquals(
-            $countAllPropertiesBeforeImport + 1, // have 3 different addresses
+            $countAllPropertiesBeforeImport + 0,
             $countAllPropertiesAfterImport,
             'Property is not created.'
         );
         $this->assertEquals(
-            $countAllPropertyAddressesBeforeImport + 1, // 3 new PropertyAddress
+            $countAllPropertyAddressesBeforeImport + 0,
             $countAllPropertiesAddressAfterImport,
             'PropertyAddress is not created.'
         );
         $this->assertEquals(
-            $countAllUnitsBeforeImport + 1, // 260 new Units
+            $countAllUnitsBeforeImport + 0,
             $countAllUnitsAfterImport,
             'All Units are not created.'
         );
         $this->assertEquals(
-            $countAllUnitMappingsBeforeImport + 1, // 260 new Unit Mappings
+            $countAllUnitMappingsBeforeImport + 0,
             $countAllUnitMappingsAfterImport,
             'All UnitMappings is not created.'
         );
@@ -206,7 +207,7 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
      */
     protected function getResponseMockWithoutTenants()
     {
-        $pathToFile = $this->getFileLocator()->locate('@ImportBundle/Tests/Fixtures/ResmanResponseWithoutTenants.xml');
+        $pathToFile = $this->getFileLocator()->locate('@ImportBundle/Tests/Fixtures/ResmanEmptyProperty.xml');
 
         return file_get_contents($pathToFile);
     }
