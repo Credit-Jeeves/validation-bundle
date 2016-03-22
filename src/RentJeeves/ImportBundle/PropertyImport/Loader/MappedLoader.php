@@ -23,7 +23,7 @@ class MappedLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function preCheckedData(Import $import, $externalPropertyId)
+    protected function preCheckData(Import $import, $externalPropertyId)
     {
         if (null === $externalPropertyId) {
             throw new ImportInvalidArgumentException(
@@ -110,14 +110,14 @@ class MappedLoader extends AbstractLoader
             try {
                 $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
             } catch (\RuntimeException $e) {
-                $message = $this->logger->warning(
+                $this->logger->warning(
                     $e->getMessage(),
                     [
                         'group' => $importProperty->getImport()->getGroup(),
                         'additional_parameter' => $importProperty->getExternalPropertyId()
                     ]
                 );
-                throw new ImportLogicException($message);
+                throw new ImportLogicException($e->getMessage());
             }
         }
 

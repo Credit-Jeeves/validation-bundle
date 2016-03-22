@@ -247,17 +247,17 @@ class PropertyManager
     }
 
     /**
-     * @param string $street
+     * @param string $address1
      * @param string $city
      * @param string $state
      * @param string $zipCode
      *
      * @return Address|null
      */
-    public function lookupAddress($street, $city, $state, $zipCode)
+    public function lookupAddress($address1, $city, $state, $zipCode)
     {
         try {
-            return $this->addressLookupService->lookup($street, $city, $state, $zipCode);
+            return $this->addressLookupService->lookup($address1, $city, $state, $zipCode);
         } catch (AddressLookupException $e) {
             return null;
         }

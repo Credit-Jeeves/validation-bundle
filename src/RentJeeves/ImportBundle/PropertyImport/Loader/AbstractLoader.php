@@ -92,9 +92,7 @@ abstract class AbstractLoader implements PropertyLoaderInterface
      * @param null|string $additionalParameter
      * @throws ImportInvalidArgumentException
      */
-    protected function preCheckedData(Import $import, $additionalParameter)
-    {
-    }
+    abstract protected function preCheckData(Import $import, $additionalParameter);
 
     /**
      * @param Import $import

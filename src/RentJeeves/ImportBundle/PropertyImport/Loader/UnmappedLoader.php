@@ -4,6 +4,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Loader;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\NonUniqueResultException;
+use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -18,6 +19,13 @@ use Symfony\Component\Validator\ConstraintViolation;
  */
 class UnmappedLoader extends AbstractLoader
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function preCheckData(Import $import, $externalPropertyId)
+    {
+    }
+
     /**
      * @param ImportProperty $importProperty
      * @return Property
@@ -68,13 +76,13 @@ class UnmappedLoader extends AbstractLoader
             try {
                 $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
             } catch (\RuntimeException $e) {
-                $message = $this->logger->warning(
+                $this->logger->warning(
                     $e->getMessage(),
                     [
                         'group' => $importProperty->getImport()->getGroup()
                     ]
                 );
-                throw new ImportLogicException($message);
+                throw new ImportLogicException($e->getMessage());
             }
         }
 
