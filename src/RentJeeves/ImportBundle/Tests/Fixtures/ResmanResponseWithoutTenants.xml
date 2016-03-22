@@ -1,0 +1,86 @@
+<ResMan>
+  <MethodName>GetResidentTransactions2_0</MethodName>
+  <Status>Success</Status>
+  <AccountID>400</AccountID>
+  <PropertyID>b342e58c-f5ba-4c63-b050-cf44439bb37d</PropertyID>
+  <Response>
+    <ResidentTransactions xmlns:MITS="http://www.w3.org/2005/Atom">
+      <Property>
+        <PropertyID>
+          <MITS:Identification Type="other">
+            <MITS:PrimaryID>b342e58c-f5ba-4c63-b050-cf44439bb37d</MITS:PrimaryID>
+            <MITS:MarketingName>Mill Pond</MITS:MarketingName>
+          </MITS:Identification>
+          <MITS:Address Type="property">
+            <MITS:Address1>1538 Cable Ranch Rd</MITS:Address1>
+            <MITS:City>San Antonio</MITS:City>
+            <MITS:State>TX</MITS:State>
+            <MITS:PostalCode>78245</MITS:PostalCode>
+          </MITS:Address>
+        </PropertyID>
+        <RT_Customer>
+          <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+          <RT_Unit>
+            <UnitID>1101</UnitID>
+            <NumberOccupants Total="1" />
+            <Unit>
+              <MITS:Information>
+                <MITS:UnitID>1101</MITS:UnitID>
+                <MITS:UnitType>B1</MITS:UnitType>
+                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                <MITS:UnitBathrooms>1.00</MITS:UnitBathrooms>
+                <MITS:MinSquareFeet>881</MITS:MinSquareFeet>
+                <MITS:MaxSquareFeet>881</MITS:MaxSquareFeet>
+                <MITS:MarketRent>985.00</MITS:MarketRent>
+                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                <MITS:FloorPlanID>B1</MITS:FloorPlanID>
+                <MITS:FloorplanName>Two Bedroom, One Bath</MITS:FloorplanName>
+                <MITS:BuildingID>1</MITS:BuildingID>
+                <MITS:Address Type="property">
+                  <MITS:Address1>1538 Cable Ranch Rd.</MITS:Address1>
+                  <MITS:Address2>1101</MITS:Address2>
+                  <MITS:City>San Antonio</MITS:City>
+                  <MITS:State>TX</MITS:State>
+                  <MITS:PostalCode>78245</MITS:PostalCode>
+                </MITS:Address>
+              </MITS:Information>
+              <MITS:PropertyPrimaryID>b342e58c-f5ba-4c63-b050-cf44439bb37d</MITS:PropertyPrimaryID>
+              <MITS:MarketingName>Mill Pond</MITS:MarketingName>
+            </Unit>
+          </RT_Unit>
+          <PaymentAccepted>Yes</PaymentAccepted>
+          <RTServiceTransactions>
+            <Transactions>
+              <Charge>
+                <Detail>
+                  <TransactionDate>2016-02-04</TransactionDate>
+                  <Description>Application Fee</Description>
+                  <ChargeCode>APPF</ChargeCode>
+                  <GLAccountNumber>4415</GLAccountNumber>
+                  <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+                  <UnitID>1101</UnitID>
+                  <Amount>49.00</Amount>
+                </Detail>
+              </Charge>
+            </Transactions>
+            <Transactions>
+              <Charge>
+                <Detail>
+                  <TransactionDate>2016-02-04</TransactionDate>
+                  <Description>Administrative Fee</Description>
+                  <ChargeCode>ADMN</ChargeCode>
+                  <GLAccountNumber>4405</GLAccountNumber>
+                  <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+                  <UnitID>1101</UnitID>
+                  <Amount>100.00</Amount>
+                </Detail>
+              </Charge>
+            </Transactions>
+          </RTServiceTransactions>
+        </RT_Customer>
+      </Property>
+    </ResidentTransactions>
+  </Response>
+</ResMan>
