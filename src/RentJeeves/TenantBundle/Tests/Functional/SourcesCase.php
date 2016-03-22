@@ -115,6 +115,8 @@ class SourcesCase extends BaseTestCase
             $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
             'Should be displayed rows with payment account and have at least 1 added new payment account'
         );
+
+        $this->assertCount(1, $rows, 'Should be displayed just one aci account');
         $rows[count($rows) - 1]->clickLink('delete'); // remove last account
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
@@ -159,7 +161,23 @@ class SourcesCase extends BaseTestCase
         $this->page->clickLink('rent.sources');
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
-        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
+        $this->assertEmpty(
+            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+            'Should not be displayed any payment accounts, b/c all active contracts has "ACI" Payment Processor'
+        );
+        /** @var Group $group */
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneByCode('DXC6KXOAGX');
+        $group->getGroupSettings()->setPaymentProcessor(PaymentProcessor::HEARTLAND);
+        $this->getEntityManager()->flush();
+
+        $this->session->reload();
+
+        $this->session->wait($this->timeout, "jQuery('#payment-account-table').length");
+        $this->assertNotEmpty(
+            $rows = $this->page->findAll('css', '#payment-account-table tbody tr'),
+            'Should be displayed HEARTLAND payment accounts, b/c all active contracts has "HEARTLAND" Payment Processor'
+        );
+
         $rowsCount = count($rows);
         $this->asserttrue(1 < $rowsCount);
         $rowsCount -= 1;
