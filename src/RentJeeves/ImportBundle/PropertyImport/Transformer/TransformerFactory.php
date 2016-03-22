@@ -133,7 +133,7 @@ class TransformerFactory
 
         $customTransformerClass = static::CUSTOM_NAMESPACE . $className;
         // if the class exists - there is no sense to register a new class. Just create new instance of this class
-        if (false === class_exists($customTransformerClass, false)) {
+        if (false === class_exists($customTransformerClass)) {
             $this->registerUnregisteredCustomTransformer($className, $group);
         }
 
@@ -162,6 +162,18 @@ class TransformerFactory
      */
     protected function registerUnregisteredCustomTransformer($className, Group $group)
     {
+        if (true === empty($this->pathsToCustomTransformers)) {
+            $this->logger->warning(
+                $message = sprintf(
+                    'Transformers not register if you do not specify paths to directories with custom transformers. ' .
+                    'Pls add paths to directories with custom transformers to config-file.',
+                    $className
+                ),
+                ['group' => $group]
+            );
+
+            throw new ImportException($message);
+        }
         $finder = new Finder();
         $finder->files()->name($className . '.php');
         foreach ($this->pathsToCustomTransformers as $path) {
