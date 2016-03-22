@@ -102,7 +102,7 @@
         },
         {
             "type": "vcs",
-            "url": "git@github.com:Credit-Jeeves/JMSJobQueueBundle.git"
+            "url": "git@github.com:Tobur/JMSJobQueueBundle.git"
         },
         {
             "type": "vcs",
