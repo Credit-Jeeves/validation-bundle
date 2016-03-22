@@ -51,4 +51,17 @@ class RtUnit
     {
         $this->unitId = $unitId;
     }
+
+    /**
+     * @return string
+     */
+    public function getExternalUnitId()
+    {
+        return sprintf(
+            '%s|%s|%s',
+            $this->getUnit()->getPropertyPrimaryID(),
+            $this->getUnit()->getInformation()->getBuildingID(),
+            $this->getUnitId()
+        );
+    }
 }

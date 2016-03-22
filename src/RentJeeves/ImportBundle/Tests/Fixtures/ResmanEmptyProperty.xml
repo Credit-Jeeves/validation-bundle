@@ -1,0 +1,1435 @@
+<ResMan>
+    <MethodName>GetResidentTransactions2_0</MethodName>
+    <Status>Success</Status>
+    <AccountID>2006</AccountID>
+    <PropertyID>84a9d23e-7a46-4dde-818f-79170b60263b</PropertyID>
+    <Response>
+        <ResidentTransactions xmlns:MITS="http://my-company.com/namespace">
+            <Property>
+                <PropertyID>
+                    <MITS:Identification Type="other">
+                        <MITS:PrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PrimaryID>
+                        <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+          
+                    </MITS:Identification>
+                    <MITS:Address Type="property">
+                        <MITS:Address1>3299 S. Babcock St.</MITS:Address1>
+                        <MITS:City>Melbourne </MITS:City>
+                        <MITS:State>FL</MITS:State>
+                        <MITS:PostalCode>32901</MITS:PostalCode>
+          
+                    </MITS:Address>
+        
+                </PropertyID>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-101</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-102</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-103</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-201</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-201</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-202</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-202</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-203</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-203</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-301</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-301</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-302</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-302</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3207-303</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3207-303</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3207</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-101</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-102</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-103</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-104</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-104</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-201</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-201</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-202</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-202</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-203</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-203</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-204</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-204</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-301</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-301</MITS:UnitID>
+                                <MITS:UnitType>3X3</MITS:UnitType>
+                                <MITS:UnitBedrooms>3</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>3.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1430</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1430</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2100.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>3X3</MITS:FloorPlanID>
+                                <MITS:FloorplanName>3 Bedroom, 3 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-302</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-302</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-303</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-303</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3217-304</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3217-304</MITS:UnitID>
+                                <MITS:UnitType>2X2</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>2.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1089</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1089</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>1430.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>2X2</MITS:FloorPlanID>
+                                <MITS:FloorplanName>2 Bedroom, 2 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3217</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3227-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3227-101</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3227-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3227-102</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3227-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3227-103</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3227-104</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3227-104</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3237-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3237-101</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3237-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3237-102</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3237-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3237-103</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3237-104</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3237-104</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3227</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3247-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3247-101</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3247</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3247-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3247-102</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3247</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3247-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3247-103</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3247</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3247-104</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3247-104</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3247</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3247-105</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3247-105</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3247</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3257-101</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3257-101</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3257</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3257-102</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3257-102</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3257</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3257-103</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3257-103</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3257</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3257-104</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3257-104</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3257</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+                <RT_Customer>
+                    <RT_Unit>
+                        <UnitID>3257-105</UnitID>
+                        <NumberOccupants Total="0" />
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>3257-105</MITS:UnitID>
+                                <MITS:UnitType>4X4</MITS:UnitType>
+                                <MITS:UnitBedrooms>4</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>4.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>1772</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>1772</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>2740.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>4X4</MITS:FloorPlanID>
+                                <MITS:FloorplanName>4 Bedroom, 4 Bathroom</MITS:FloorplanName>
+                                <MITS:BuildingID>3257</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>3207 S. Babcock St</MITS:Address1>
+                                    <MITS:City>Melbourne</MITS:City>
+                                    <MITS:State>FL</MITS:State>
+                                    <MITS:PostalCode>32901</MITS:PostalCode>
+                
+                                </MITS:Address>
+              
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>84a9d23e-7a46-4dde-818f-79170b60263b</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Melbourne Commons </MITS:MarketingName>
+            
+                        </Unit>
+          
+                    </RT_Unit>
+        
+                </RT_Customer>
+      
+            </Property>
+    
+        </ResidentTransactions>
+  
+    </Response>
+
+</ResMan>

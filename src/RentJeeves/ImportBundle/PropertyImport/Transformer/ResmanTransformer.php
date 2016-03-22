@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
-use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtUnit;
 
@@ -47,34 +46,26 @@ class ResmanTransformer implements TransformerInterface
         /** @var RtCustomer $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
             $rtUnit = $accountingSystemRecord->getRtUnit();
-            if ($accountingSystemRecord->getCustomers()->getCustomer()->count() === 0) {
+            $extUnitId = $this->getExternalUnitId($rtUnit);
+            if (true === $this->checkExistImportPropertyInCache($import, $extUnitId)) {
                 continue;
             }
-            /** @var Customer $customer */
-            foreach ($accountingSystemRecord->getCustomers()->getCustomer() as $customer) {
-                $extUnitId = $this->getExternalUnitId($customer, $accountingSystemRecord);
-                if (true === $this->checkExistImportPropertyInCache($import, $extUnitId)) {
-                    continue;
-                }
-                $importProperty = new ImportProperty();
-                $importProperty->setImport($import);
-                $importProperty->setExternalPropertyId($this->getExternalPropertyId($customer));
-                $importProperty->setExternalBuildingId($this->getExternalBuildingId($rtUnit));
-                //PLS check
-                $importProperty->setAddressHasUnits($this->getAddressHasUnits($rtUnit));
-                //PLS check
-                $importProperty->setPropertyHasBuildings($this->getPropertyHasBuildings($rtUnit));
-                $importProperty->setUnitName($this->getUnitName($rtUnit));
-                $importProperty->setExternalUnitId($extUnitId);
-                $importProperty->setAddress1($this->getAddress1($customer));
-                $importProperty->setCity($this->getCity($customer));
-                $importProperty->setState($this->getState($customer));
-                $importProperty->setZip($this->getZip($customer));
-                $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($customer));
+            $importProperty = new ImportProperty();
+            $importProperty->setImport($import);
+            $importProperty->setExternalPropertyId($this->getExternalPropertyId($rtUnit));
+            $importProperty->setExternalBuildingId($this->getExternalBuildingId($rtUnit));
+            $importProperty->setAddressHasUnits($this->getAddressHasUnits($rtUnit));
+            $importProperty->setPropertyHasBuildings($this->getPropertyHasBuildings($rtUnit));
+            $importProperty->setUnitName($this->getUnitName($rtUnit));
+            $importProperty->setExternalUnitId($extUnitId);
+            $importProperty->setAddress1($this->getAddress1($rtUnit));
+            $importProperty->setCity($this->getCity($rtUnit));
+            $importProperty->setState($this->getState($rtUnit));
+            $importProperty->setZip($this->getZip($rtUnit));
+            $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($rtUnit));
 
-                $this->em->persist($importProperty);
-                $this->arrayCache[] = $import->getId() . '|' . $extUnitId;
-            }
+            $this->em->persist($importProperty);
+            $this->arrayCache[] = $import->getId() . '|' . $extUnitId;
             $this->em->flush();
         }
 
@@ -88,13 +79,13 @@ class ResmanTransformer implements TransformerInterface
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getExternalPropertyId(Customer $customer)
+    protected function getExternalPropertyId(RtUnit $rtUnit)
     {
-        return $customer->getProperty()->getPrimaryId();
+        return $rtUnit->getUnit()->getPropertyPrimaryID();
     }
 
     /**
@@ -138,62 +129,61 @@ class ResmanTransformer implements TransformerInterface
     }
 
     /**
-     * @param Customer   $customer
-     * @param RtCustomer $rtCustomer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getExternalUnitId(Customer $customer, RtCustomer $rtCustomer)
+    protected function getExternalUnitId(RtUnit $rtUnit)
     {
-        return $customer->getExternalUnitId($rtCustomer);
+        return $rtUnit->getExternalUnitId();
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getAddress1(Customer $customer)
+    protected function getAddress1(RtUnit $rtUnit)
     {
-        return $customer->getAddress()->getAddress1();
+        return $rtUnit->getUnit()->getInformation()->getAddress()->getAddress1();
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getCity(Customer $customer)
+    protected function getCity(RtUnit $rtUnit)
     {
-        return $customer->getAddress()->getCity();
+        return $rtUnit->getUnit()->getInformation()->getAddress()->getCity();
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getState(Customer $customer)
+    protected function getState(RtUnit $rtUnit)
     {
-        return $customer->getAddress()->getState();
+        return $rtUnit->getUnit()->getInformation()->getAddress()->getState();
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return string
      */
-    protected function getZip(Customer $customer)
+    protected function getZip(RtUnit $rtUnit)
     {
-        return $customer->getAddress()->getPostalCode();
+        return $rtUnit->getUnit()->getInformation()->getAddress()->getPostalCode();
     }
 
     /**
-     * @param Customer $customer
+     * @param RtUnit $rtUnit
      *
      * @return boolean
      */
-    protected function getAllowMultipleProperties(Customer $customer)
+    protected function getAllowMultipleProperties(RtUnit $rtUnit)
     {
         return false;
     }
