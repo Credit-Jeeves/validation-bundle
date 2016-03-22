@@ -66,7 +66,7 @@ class ResmanExtractor implements ApiExtractorInterface
         $this->residentDataManager->setSettings($this->group->getIntegratedApiSettings());
 
         try {
-            $data = $this->residentDataManager->getResidentTransactions($this->externalPropertyId);
+            $data = $this->residentDataManager->getResidentUnitsByExternalPropertyId($this->externalPropertyId);
         } catch (\Exception $e) {
             $this->logger->warning(
                 $message = sprintf(

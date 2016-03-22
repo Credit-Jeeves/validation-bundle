@@ -4,6 +4,7 @@ namespace RentJeeves\ExternalApiBundle\Services\ResMan;
 
 use RentJeeves\ExternalApiBundle\Model\ResMan\Customers;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
+use RentJeeves\ExternalApiBundle\Model\ResMan\RtUnit;
 use RentJeeves\ExternalApiBundle\Model\ResMan\Transactions;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface;
 use RentJeeves\ExternalApiBundle\Traits\SettingsTrait;
@@ -74,6 +75,44 @@ class ResidentDataManager implements ResidentDataManagerInterface
                 $customer = print_r($customer, true);
                 $this->logger->warning(
                     sprintf("[ResMan Resident Manager]Skipping entry from resman with no tenants:\n%s", $customer)
+                );
+
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    /**
+     * @param string $externalPropertyId
+     *
+     * @return RtCustomer[]
+     */
+    public function getResidentUnitsByExternalPropertyId($externalPropertyId)
+    {
+        $this->logger->debug(
+            '[ResMan Resident Manager]Try to get resident units for externalPropertyId#' . $externalPropertyId
+        );
+        try {
+            $residents = $this->client->getResidentTransactions($externalPropertyId);
+        } catch (\Exception $e) {
+            $this->logger->alert(
+                '[ResMan Resident Manager]ERROR:' . $e->getMessage()
+            );
+
+            return [];
+        }
+        $customers = $residents->getProperty() ? $residents->getProperty()->getRtCustomers() : [];
+
+        return array_filter($customers, function (RtCustomer $customer) {
+            $rtUnit = $customer->getRtUnit();
+            if (($rtUnit instanceof RtUnit) === false) {
+                $this->logger->warning(
+                    sprintf(
+                        '[ResMan Resident Manager]Skipping entry#%s from ResMan without RtUnit.',
+                        $customer->getCustomerId()
+                    )
                 );
 
                 return false;

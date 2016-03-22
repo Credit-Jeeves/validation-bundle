@@ -47,7 +47,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $dataManager = $this->getResmanResidentDataManagerMock();
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
+            ->method('getResidentUnitsByExternalPropertyId')
             ->with($this->equalTo('test'))
             ->willThrowException(new \Exception('testMessage'));
 
@@ -70,7 +70,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $dataManager = $this->getResmanResidentDataManagerMock();
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
+            ->method('getResidentUnitsByExternalPropertyId')
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = ['test']));
         $resmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
@@ -94,7 +94,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $dataManager = $this->getResmanResidentDataManagerMock();
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
+            ->method('getResidentUnitsByExternalPropertyId')
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = []));
         $logger = $this->getLoggerMock();
