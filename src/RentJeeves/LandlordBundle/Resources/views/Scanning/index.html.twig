@@ -26,10 +26,9 @@
         </div>
     </div>
 
-    <div class="lease-lookup">
+    <div class="pod-large pod-border pod-padding shadow">
         <h1>{{ 'landlord.scanning.lease_list.title'|trans }}</h1>
-        <br/>
-        <p>{{ 'landlord.scanning.lease_list.text'|trans }}</p>
+        <p class="find-message">{{ 'landlord.scanning.lease_list.text'|trans }}</p>
         <div class="filter">
             {{ form_widget(form.name, {'attr': {'data-bind': "value: nameFilter, valueUpdate: 'afterkeydown'"}}) }}
             {{ form_widget(form.email, {'attr': {'data-bind': "value: emailFilter, valueUpdate: 'afterkeydown'"}}) }}
