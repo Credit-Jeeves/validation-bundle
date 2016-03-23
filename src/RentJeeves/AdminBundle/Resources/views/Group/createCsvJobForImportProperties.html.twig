@@ -1,0 +1,6 @@
+{% extends 'RjAdminBundle:Csv:uploadFileForMapping.html.twig' %}
+
+{% block breadcrumb %}
+    <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
+    <li><a href="{{ url('admin_rj_group_list') }}">{{ 'groups'|trans }}</a></li>
+{% endblock %}

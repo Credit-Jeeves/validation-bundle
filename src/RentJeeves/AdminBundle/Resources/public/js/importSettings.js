@@ -2,7 +2,6 @@ function ImportSettings() {
     var self = this;
     var options = [];
     var createCsvMappingLink = $('#createCsvMappingLink');
-    var createCsvJobForImportProperties = $('#createCsvJobForImportProperties');
 
     var selected = $('select[id*="_importSettings_importType"]>option:selected').val();
     $('select[id*="_importSettings_importType"]>option').each(function (i, el) {
@@ -36,12 +35,10 @@ function ImportSettings() {
             $('[id*="csv"]').parent().parent().show();
             $('[id*="api"]').parent().parent().hide();
             createCsvMappingLink.show();
-            createCsvJobForImportProperties.show();
         } else if (sourceType == 'integrated_api') {
             $('[id*="csv"]').parent().parent().hide();
             $('[id*="api"]').parent().parent().show();
             createCsvMappingLink.hide();
-            createCsvJobForImportProperties.hide();
         }
     }
 }

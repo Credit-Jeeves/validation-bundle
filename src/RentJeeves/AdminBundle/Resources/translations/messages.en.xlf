@@ -18,6 +18,10 @@
                 <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
+            <trans-unit id="common.groups">
+                <source>common.groups</source>
+                <target>Groups</target>
+            </trans-unit>
             <trans-unit id="create.csv.mapping">
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>

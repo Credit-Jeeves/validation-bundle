@@ -12,6 +12,7 @@ use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -96,6 +97,62 @@ class GroupController extends BaseController
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->persist($dependentJob);
         $this->getEntityManager()->flush();
+    }
+
+
+    /**
+     * @Route("create/csv/job/for/import/properties/{id}", name="admin_create_csv_job_for_import_properties")
+     * @ParamConverter("group", class="DataBundle:Group")
+     *
+     * @param Request $request
+     * @param Group   $group
+     *
+     * @return Response
+     */
+    public function createCsvJobForImportPropertiesAction(Request $request, Group $group)
+    {
+        $form = $this->createForm($this->get('form.upload_csv_file'));
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $file = $form['attachment']->getData();
+            $tmpDir = sys_get_temp_dir();
+            $newFileName = uniqid() . '.csv';
+            $file->move($tmpDir, $newFileName);
+            $filePath = sprintf('%s%s%s', $tmpDir, DIRECTORY_SEPARATOR, $newFileName);
+            $import = new Import();
+            $import->setGroup($group);
+            $import->setImportType(ImportModelType::PROPERTY);
+            $import->setUser($this->getUser());
+            $import->setStatus(ImportStatus::RUNNING);
+            $this->getEntityManager()->persist($import);
+            $this->getEntityManager()->flush();
+
+            $job = new Job(
+                'renttrack:import:property',
+                ['--path-to-file=' . $filePath, '--import-id=' . $import->getId()]
+            );
+
+            $this->getEntityManager()->persist($job);
+            $this->getEntityManager()->flush();
+
+            $request->getSession()->getFlashBag()->add(
+                'sonata_flash_success',
+                $this->getTranslator()->trans('csv.job.successfully_created')
+            );
+
+            return new RedirectResponse(
+                $this->generateUrl('admin_rj_group_list', ['id' => $group->getId()])
+            );
+        }
+
+        return $this->render(
+            'AdminBundle:Group:createCsvJobForImportProperties.html.twig',
+            [
+                'group' => $group,
+                'form' => $form->createView()
+            ]
+        );
     }
 
     /**

@@ -89,6 +89,6 @@
     width: 134px;
 }
 
-#createCsvJobForImportProperties {
-    width: 285px;
+.createCsvJobForImportProperties {
+    width: 285px !important;
 }

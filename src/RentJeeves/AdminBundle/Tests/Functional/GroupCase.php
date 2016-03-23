@@ -11,6 +11,45 @@ class GroupCase extends BaseTestCase
 
     /**
      * @test
+     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     */
+    public function shouldCreateNewJobForImportProperties()
+    {
+        $this->load(true);
+        $this->getEntityManager()->clear();
+        $jobsBeforeTest = $this->getEntityManager()->getRepository('RjDataBundle:Job')
+            ->findAll();
+        $this->setDefaultSession('symfony');
+        $importMappingChoice = $this->getEntityManager()->getRepository('RjDataBundle:ImportMappingChoice')->findAll();
+        $this->assertCount(0, $importMappingChoice, 'We should don\'t have mapping in fixtures');
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
+        $groupBlock->clickLink('link_list');
+        $this->assertNotEmpty(
+            $createJobButton = $this->page->find('css', '.createCsvJobForImportProperties'),
+            'Should see link csv mapping'
+        );
+        $createJobButton->click();
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#upload_csv_file_attachment'),
+            'Attach does not exist'
+        );
+        $filePath = $this->getFixtureFilePathByName('import.csv');
+        $attFile->attachFile($filePath);
+        $this->assertNotEmpty(
+            $buttonUpload = $this->page->find('css', '#upload_csv_file_upload'),
+            'Should see upload file button'
+        );
+        $buttonUpload->click();
+
+        $this->getEntityManager()->clear();
+        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')
+            ->findAll();
+        $this->assertEquals(count($jobsBeforeTest)+1, count($jobs), 'New job should create');
+    }
+
+    /**
+     * @test
      */
     public function checkDepositAccountCreateAndUpdateInGroup()
     {

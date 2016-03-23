@@ -325,4 +325,18 @@ abstract class BaseTestCase extends Base
 
         return $elements;
     }
+
+
+    /**
+     * @param string $fileName
+     * @return string
+     */
+    protected function getFixtureFilePathByName($fileName)
+    {
+        $sep = DIRECTORY_SEPARATOR;
+        $filePath = getcwd();
+        $filePath .= $sep . 'data' . $sep . 'fixtures' . $sep . $fileName;
+
+        return $filePath;
+    }
 }
