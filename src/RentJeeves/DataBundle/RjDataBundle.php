@@ -52,6 +52,8 @@ class RjDataBundle extends Bundle
             Type::addType('ImportModelType', 'RentJeeves\DataBundle\Enum\ImportModelType');
             Type::addType('ImportStatus', 'RentJeeves\DataBundle\Enum\ImportStatus');
             Type::addType('ImportPropertyStatus', 'RentJeeves\DataBundle\Enum\ImportPropertyStatus');
+            Type::addType('TrustedLandlordStatus', 'RentJeeves\DataBundle\Enum\TrustedLandlordStatus');
+            Type::addType('TrustedLandlordType', 'RentJeeves\DataBundle\Enum\TrustedLandlordType');
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
