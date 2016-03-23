@@ -784,7 +784,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/CoreBundle/zipball/da629381a25ebf50093bef1df286e8cf7910230b",
+                "url": "https://api.github.com/repos/Credit-Jeeves/CoreBundle/zipball/a52f51db4bdfc7536bf461b1302162c6c076c7a3",
                 "reference": "da629381a25ebf50093bef1df286e8cf7910230b",
                 "shasum": ""
             },
@@ -2800,12 +2800,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Tobur/JMSJobQueueBundle.git",
-                "reference": "427271051415e8f6773259e9953b4d2a7a7e4f8b"
+                "reference": "97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Tobur/JMSJobQueueBundle/zipball/427271051415e8f6773259e9953b4d2a7a7e4f8b",
-                "reference": "427271051415e8f6773259e9953b4d2a7a7e4f8b",
+                "url": "https://api.github.com/repos/Tobur/JMSJobQueueBundle/zipball/97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19",
+                "reference": "97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19",
                 "shasum": ""
             },
             "require": {
@@ -2865,7 +2865,7 @@
             "support": {
                 "source": "https://github.com/Tobur/JMSJobQueueBundle/tree/ton"
             },
-            "time": "2016-03-22 14:46:56"
+            "time": "2016-03-23 17:09:46"
         },
         {
             "name": "jms/metadata",
