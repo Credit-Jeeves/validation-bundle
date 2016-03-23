@@ -59,7 +59,7 @@ abstract class AbstractLoader implements PropertyLoaderInterface
      */
     public function loadData(Import $import, $additionalParameter = null)
     {
-        $this->preCheckedData($import, $additionalParameter);
+        $this->preCheckData($import, $additionalParameter);
 
         $this->logger->info(
             sprintf(

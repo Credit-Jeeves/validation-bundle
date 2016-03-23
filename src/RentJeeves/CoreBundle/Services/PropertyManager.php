@@ -226,13 +226,8 @@ class PropertyManager
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress(
-                trim(sprintf('%s %s %s', $number, $street, $unitName)),
-                $city,
-                $state,
-                $zipCode
-            )
-        ) {
+        $address1 = trim(sprintf('%s %s %s', $number, $street, $unitName));
+        if (null === $address = $this->lookupAddress($address1, $city, $state, $zipCode)) {
             return null;
         }
 
