@@ -9,6 +9,20 @@ parameters:
     rental_report.factory.class: RentJeeves\CoreBundle\Report\RentalReportFactory
 
 services:
+    renttrack.email_canonicalizer:
+        class: RentJeeves\CoreBundle\Services\EmailCanonicalizer
+        public: false
+
+    fos_user.user_manager.default:
+        class: FOS\UserBundle\Doctrine\UserManager
+        public: false
+        arguments:
+            - '@security.encoder_factory'
+            - '@fos_user.util.username_canonicalizer'
+            - '@renttrack.email_canonicalizer'
+            - '@fos_user.entity_manager'
+            - '%fos_user.model.user.class%'
+
     rent.is_due.email_sender:
         class: 'RentJeeves\CoreBundle\Services\Emails\RentIsDueEmailSender'
         arguments:

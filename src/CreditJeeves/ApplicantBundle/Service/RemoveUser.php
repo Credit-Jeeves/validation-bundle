@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\ApplicantBundle\Service;
 
+use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,7 +58,7 @@ class RemoveUser
         );
         $title = $this->translator->trans('authorization.removed');
 
-        $newUser = $user->getUserToRemove();
+        $newUser = $this->getUserToRemove($user);
         $newUser->setPassword($this->encoder->encodePassword($user->getPassword(), $user->getSalt()));
         $this->em->transactional(
             function ($em) use ($user, $newUser) {
@@ -74,5 +75,34 @@ class RemoveUser
         $this->session->getFlashBag()->add('message_body', $desc);
 
         return $user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return User
+     */
+    private function getUserToRemove(User $user)
+    {
+        $class = get_class($user);
+        /** @var User $newUser */
+        $newUser = new $class();
+        $newUser->setId($user->getId());
+        $newUser->setFirstName($user->getFirstName());
+        $newUser->setMiddleInitial($user->getMiddleInitial());
+        $newUser->setLastName($user->getLastName());
+        $newUser->setPassword($user->getPassword());
+        $newUser->setCulture($user->getCulture());
+        $newUser->setCreatedAt($user->getCreatedAt()); // we'll store user's created date
+        $newUser->setEmailField($user->getEmail());
+        $newUser->setHasData(false);
+        // TODO recheck
+        $newUser->setIsActive(true);
+        $newUser->setEnabled($user->isEnabled());
+        $newUser->setLocked($user->isLocked());
+        $newUser->setExpired($user->isExpired());
+        $newUser->setCredentialsExpired($user->isCredentialsExpired());
+
+        return $newUser;
     }
 }

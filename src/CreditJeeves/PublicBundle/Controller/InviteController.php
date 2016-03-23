@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\PublicBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\User;
@@ -48,8 +49,9 @@ class InviteController extends Controller
         }
 
         $date = $User->getDateOfBirth();
+        $lead = $this->getActiveLead($User);
         /** @var Group $group */
-        $group = $User->getActiveLead()->getGroup();
+        $group = $lead->getGroup();
         $type = ($group) ? $group->getType() : null;
         $sCurrentDob = null;
         if (!empty($date)) {
@@ -95,7 +97,7 @@ class InviteController extends Controller
                 $currentModelsName = array_keys($currentModels);
                 $currentModelsLinks = array_values($currentModels);
 
-                $lead = $User->getActiveLead();
+                $lead = $this->getActiveLead($User);
                 $lead->setTargetName($mark[$markNameId].' '.$currentModelsName[$modelId]);
                 $lead->setTargetUrl($currentModelsLinks[$modelId]);
                 $lead->setStatus(LeadStatus::ACTIVE);
@@ -146,5 +148,20 @@ class InviteController extends Controller
         );
 
         return $response;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Lead|mixed
+     */
+    private function getActiveLead(User $user)
+    {
+        $nLeads = $user->getUserLeads()->count();
+        if ($nLeads > 0) {
+            return $user->getUserLeads()->last();
+        } else {
+            return new Lead();
+        }
     }
 }

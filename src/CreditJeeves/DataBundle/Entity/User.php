@@ -28,23 +28,22 @@ use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
  * })
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
+ *
+ * @ORM\AttributeOverrides(
+ *  {
+ *      @ORM\AttributeOverride(
+ *          name="email",
+ *          column=@ORM\Column(type="string", name="email", length=255, nullable=true)
+ *     ),
+ *      @ORM\AttributeOverride(
+ *          name="emailCanonical",
+ *          column=@ORM\Column(type="string", name="email_canonical", length=255, unique=true, nullable=true)
+ *     )
+ *  }
+ * )
  */
 abstract class User extends BaseUser
 {
-    /**
-     * @ORM\PreRemove
-     */
-    public function preRemove()
-    {
-    }
-
-    /**
-     * @ORM\PostRemove
-     */
-    public function postRemove()
-    {
-    }
-
     /**
      * @ORM\PrePersist
      */
@@ -55,14 +54,7 @@ abstract class User extends BaseUser
         if (!$this->getInviteCode()) {
             $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
         }
-        $this->cleanPhoneNumber();
-    }
-
-    /**
-     * @ORM\PostPersist
-     */
-    public function postPersist()
-    {
+        $this->phone = PhoneNumberFormatter::formatToDigitsOnly($this->phone);
     }
 
     /**
@@ -71,23 +63,12 @@ abstract class User extends BaseUser
     public function preUpdate()
     {
         $this->updated_at = new DateTime();
-        $this->cleanPhoneNumber();
+        $this->phone = PhoneNumberFormatter::formatToDigitsOnly($this->phone);
     }
 
     /**
-     * @ORM\PostUpdate
+     * @return array
      */
-    public function postUpdate()
-    {
-    }
-
-    /**
-     * @ORM\PostLoad
-     */
-    public function postLoad()
-    {
-    }
-
     public function getRoles()
     {
         switch ($this->getType()) {
@@ -104,11 +85,12 @@ abstract class User extends BaseUser
             case UserType::PARTNER:
                 return array('ROLE_PARTNER');
         }
+
         throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**
-     * {@inheritdoc}
+     * @deprecated pls use setEmailField for set email
      */
     public function setEmail($email)
     {
@@ -121,8 +103,17 @@ abstract class User extends BaseUser
     }
 
     /**
+     * @param string|null $email
+     */
+    public function setEmailField($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
      * @param string $ssn
-     * @return User
+     *
+     * @return self
      */
     public function setSsn($ssn)
     {
@@ -155,15 +146,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Used in prePersist and preUpdate to prevent adding non numeric symbols to phone numbers.
-     */
-    public function cleanPhoneNumber()
-    {
-        $this->phone = PhoneNumberFormatter::formatToDigitsOnly($this->phone);
-    }
-
-    /**
-     * @return OrderSubmerchant | null
+     * @return OrderSubmerchant|null
      */
     public function getLastCompleteOrder()
     {
@@ -179,13 +162,16 @@ abstract class User extends BaseUser
         return $return;
     }
 
+    /**
+     * @return bool
+     */
     public function isCompleteOrderExist()
     {
         return null != $this->getLastCompleteOrder();
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Enum\OperationType $type
+     * @return Operation|null
      */
     public function getLastCompleteReportOperation()
     {
@@ -229,103 +215,13 @@ abstract class User extends BaseUser
         );
     }
 
-    public function copyPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * Here would be logic, how we'll get active lead. Now - simply last
-     *
-     * @return Lead
-     */
-    public function getActiveLead()
-    {
-        $nLeads = $this->getUserLeads()->count();
-        if ($nLeads > 0) {
-            return $this->getUserLeads()->last();
-        } else {
-            return new Lead();
-        }
-    }
-
-    public function getActiveGroup()
-    {
-        $nGroups = $this->getHolding()->getGroups()->count();
-        if ($nGroups > 0) {
-            return $this->getHolding()->getGroups()->first();
-        } else {
-            return new Group();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getArrayForPidkiq()
-    {
-        $data = array(
-            'id',
-            'first_name',
-            'middle_initial',
-            'last_name',
-            'ssn',
-            'is_verified',
-        );
-        $return = array(
-            'unit' => '',
-            'number' => '',
-            'street' => '',
-            'city' => '',
-            'zip' => '',
-            'country' => '',
-        );
-        foreach ($data as $key) {
-            $return[$key] = $this->$key;
-        }
-        /** @var Address $address */
-        if ($address = $this->getDefaultAddress()) {
-            $return['unit'] = $address->getUnit();
-            $return['number'] = $address->getNumber();
-            $return['street'] = $address->getStreet();
-            $return['city'] = $address->getCity();
-            $return['zip'] = $address->getZip();
-            $return['country'] = $address->getCountry();
-        }
-
-        return $return;
-    }
-
-    public function getUserToRemove()
-    {
-        /** @var User $User */
-        $User = new static();
-        $User->setId($this->getId());
-        $User->setFirstName($this->getFirstName());
-        $User->setMiddleInitial($this->getMiddleInitial());
-        $User->setLastName($this->getLastName());
-        $User->copyPassword($this->getPassword());
-        $User->setCulture($this->getCulture());
-        $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
-        $User->setEmail($this->getEmail());
-        $User->setHasData(false);
-        // TODO recheck
-        $User->setIsActive(true);
-        $User->setEnabled($this->enabled);
-        $User->setLocked($this->locked);
-        $User->setExpired($this->expired);
-        $User->setCredentialsExpired($this->credentialsExpired);
-
-        return $User;
-    }
-
     /**
      * @return MailingAddress
      */
     public function getDefaultAddress()
     {
         $return = null;
-        /** @var Address $address */
+        /** @var MailingAddress $address */
         foreach ($this->getAddresses() as $address) { // TODO find faster way
             $return = $address;
             if ($return->getIsDefault()) { // TODO add check if default not find
@@ -396,20 +292,14 @@ abstract class User extends BaseUser
         return null;
     }
 
+    /**
+     * @return int
+     */
     public function getLastScore()
     {
         $score = $this->getScores()->last();
 
         return $score ? $score->getScore() : 0;
-    }
-
-    public function getLastFicoScore()
-    {
-        $score = $this->getLastScore();
-        $nFicoScore = round(10 * (($score - 483.06) / 11.079) + 490);
-        $nFicoScore = $nFicoScore > 850 ? 850 : $nFicoScore;
-
-        return $score ? $nFicoScore : 0;
     }
 
     /**
