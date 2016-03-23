@@ -93,3 +93,8 @@ parameters:
     monolog.email_from:         developers@renttrack.com
     monolog.alert.email_to:     staging@renttrack.com
     monolog.emergency.email_to: staging@renttrack.com
+
+    jira_api.hostname: https://credit.atlassian.net
+    jira_api.user: tobur
+    jira_api.password: tobur
+    jira_api.key: RT
