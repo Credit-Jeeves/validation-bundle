@@ -9,19 +9,18 @@ use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\ImportPropertyRepository;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
-use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Entity\UnitMappingRepository;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
-use RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader;
+use RentJeeves\ImportBundle\PropertyImport\Loader\UnmappedLoader;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class PropertyLoaderCase extends UnitTestBase
+class UnmappedLoaderCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
     use WriteAttributeExtensionTrait;
@@ -38,8 +37,6 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
 
@@ -51,7 +48,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $emMock = $this->getEntityManagerMock();
@@ -63,13 +60,13 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('flush')
             ->with($this->equalTo($importProperty));
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $this->getPropertyManagerMock(),
             $this->getValidatorMock(),
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(ImportPropertyStatus::ERROR, $importProperty->getStatus(), 'Status is not updated');
         $this->assertContains(
@@ -83,7 +80,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateNewSinglePropertyAndSetCorrectStatusFroImportProperty()
+    public function shouldCreateNewSinglePropertyAndSetCorrectStatusForImportProperty()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -96,13 +93,10 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(false);
-        $importProperty->setExternalPropertyId($extPropertyId);
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -116,7 +110,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $emMock = $this->getEntityManagerMock();
@@ -132,7 +126,7 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
@@ -141,16 +135,16 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeAttribute($propertyManagerMock, 'logger', $this->getLoggerMock());
         $this->writeAttribute($propertyManagerMock, 'em', $this->getEntityManagerMock());
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $this->getValidatorMock(),
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::NEW_PROPERTY_AND_UNIT,
@@ -158,11 +152,6 @@ class PropertyLoaderCase extends UnitTestBase
             'Status is not updated'
         );
         $this->assertTrue($property->isSingle(), 'Property should be single');
-        $this->assertEquals(
-            $extPropertyId,
-            $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-            'Property should contain PropertyMapping for current Holding with correct extPropertyId'
-        );
         $this->assertTrue(
             $property->getPropertyGroups()->contains($group),
             'Property doesn`t have relation with current group'
@@ -174,7 +163,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateNewMultiPropertyAndSetCorrectStatusFroImportProperty()
+    public function shouldSetErrorStatusForImportPropertyIfHasNoUnitMappingId()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -187,13 +176,10 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
         $importProperty->setUnitName('testUnitName');
 
         $propertyAddress = new PropertyAddress();
@@ -208,7 +194,84 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
+            ->will($this->returnValue($iterableResultFromDb));
+
+        $emMock = $this->getEntityManagerMock();
+        $emMock->expects($this->at(0))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:ImportProperty'))
+            ->will($this->returnValue($repositoryMock));
+
+        /**
+         * @var \PHPUnit_Framework_MockObject_MockObject|PropertyManager $propertyManagerMock
+         */
+        $propertyManagerMock = $this->getMock(
+            '\RentJeeves\CoreBundle\Services\PropertyManager',
+            ['getOrCreatePropertyByAddressFields'],
+            [],
+            '',
+            false
+        );
+        $propertyManagerMock->expects($this->once())
+            ->method('getOrCreatePropertyByAddressFields')
+            ->willReturn($property);
+
+        $validator = $this->getValidatorMock();
+
+        $loader = new UnmappedLoader(
+            $emMock,
+            $propertyManagerMock,
+            $validator,
+            $this->getLoggerMock()
+        );
+        $loader->loadData($import);
+
+        $this->assertEquals(ImportPropertyStatus::ERROR, $importProperty->getStatus(), 'Status is not updated');
+        $this->assertContains(
+            'ExternalUnitId is required field',
+            current($importProperty->getErrorMessages()),
+            'Message is not updated'
+        );
+        $this->assertTrue($importProperty->isProcessed(), 'Status of process is not updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateNewMultiPropertyAndSetCorrectStatusForImportProperty()
+    {
+        $holding = new Holding();
+        $this->writeIdAttribute($holding, 1);
+
+        $group = new Group();
+        $this->writeIdAttribute($group, 1);
+        $group->setHolding($holding);
+
+        $import = new Import();
+        $this->writeIdAttribute($import, 1);
+        $import->setGroup($group);
+
+        $importProperty = new ImportProperty();
+        $importProperty->setImport($import);
+        $importProperty->setAllowMultipleProperties(false);
+        $importProperty->setAddressHasUnits(true);
+        $importProperty->setUnitName('testUnitName');
+        $importProperty->setExternalUnitId('testExtUnitId');
+
+        $propertyAddress = new PropertyAddress();
+        $property = new Property();
+        $property->setPropertyAddress($propertyAddress);
+
+        $iterableResultFromDb = $this->getBaseMock('\Doctrine\ORM\Internal\Hydration\IterableResult');
+        $iterableResultFromDb->expects($this->exactly(2))
+            ->method('next')
+            ->will($this->onConsecutiveCalls([$importProperty], false));
+
+        $repositoryMock = $this->getImportPropertyRepositoryMock();
+        $repositoryMock->expects($this->once())
+            ->method('getNotProcessedImportProperties')
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $unitMappingRepositoryMock = $this->getUnitMappingRepositoryMock();
@@ -239,13 +302,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -253,13 +316,13 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::NEW_PROPERTY_AND_UNIT,
@@ -267,11 +330,6 @@ class PropertyLoaderCase extends UnitTestBase
             'Status is not updated'
         );
         $this->assertFalse($property->isSingle(), 'Property should be single');
-        $this->assertEquals(
-            $extPropertyId,
-            $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-            'Property should contain PropertyMapping for current Holding with correct extPropertyId'
-        );
         $this->assertTrue(
             $property->getPropertyGroups()->contains($group),
             'Property doesn`t have relation with current group'
@@ -296,14 +354,12 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
         $importProperty->setUnitName('testUnitName');
+        $importProperty->setExternalUnitId('testExtUnitId');
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -318,7 +374,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $unitMappingRepositoryMock = $this->getUnitMappingRepositoryMock();
@@ -349,13 +405,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -363,23 +419,18 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::NEW_UNIT,
             $importProperty->getStatus(),
             'Status is not updated'
-        );
-        $this->assertEquals(
-            $extPropertyId,
-            $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-            'Property should contain PropertyMapping for current Holding with correct extPropertyId'
         );
         $this->assertTrue(
             $property->getPropertyGroups()->contains($group),
@@ -392,7 +443,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldJustSetCorrectStatusFroImportPropertyIfUnitIsFound()
+    public function shouldJustSetCorrectStatusForImportPropertyIfUnitIsFound()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -405,14 +456,12 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
         $importProperty->setUnitName('testUnitName');
+        $importProperty->setExternalUnitId('testExternalUnitId');
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -434,7 +483,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $unitMappingRepositoryMock = $this->getUnitMappingRepositoryMock();
@@ -465,13 +514,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -479,23 +528,18 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::MATCH,
             $importProperty->getStatus(),
             'Status is not updated'
-        );
-        $this->assertEquals(
-            $extPropertyId,
-            $property->getPropertyMappingByHolding($holding)->getExternalPropertyId(),
-            'Property should contain PropertyMapping for current Holding with correct extPropertyId'
         );
         $this->assertTrue(
             $property->getPropertyGroups()->contains($group),
@@ -521,14 +565,12 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
         $importProperty->setUnitName('testUnitName');
+        $importProperty->setExternalUnitId('testExternalUnitId');
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -550,7 +592,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $unitMappingRepositoryMock = $this->getUnitMappingRepositoryMock();
@@ -576,13 +618,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -590,13 +632,13 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('validate')
             ->willReturn([]);
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::ERROR,
@@ -627,14 +669,12 @@ class PropertyLoaderCase extends UnitTestBase
         $this->writeIdAttribute($import, 1);
         $import->setGroup($group);
 
-        $extPropertyId = 'test';
-
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(true);
+        $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
         $importProperty->setUnitName('testUnitName');
+        $importProperty->setExternalUnitId('testExternalUnitId');
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -656,7 +696,7 @@ class PropertyLoaderCase extends UnitTestBase
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
+            ->with($this->equalTo($import), $this->equalTo(null))
             ->will($this->returnValue($iterableResultFromDb));
 
         $unitMappingRepositoryMock = $this->getUnitMappingRepositoryMock();
@@ -682,13 +722,13 @@ class PropertyLoaderCase extends UnitTestBase
          */
         $propertyManagerMock = $this->getMock(
             '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
+            ['getOrCreatePropertyByAddressFields'],
             [],
             '',
             false
         );
         $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
+            ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
         $validator = $this->getValidatorMock();
@@ -698,13 +738,13 @@ class PropertyLoaderCase extends UnitTestBase
                 [new ConstraintViolation('test', 'test', [], 'test', 'test', 'test')]
             ));
 
-        $loader = new MappedLoader(
+        $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
             $validator,
             $this->getLoggerMock()
         );
-        $loader->loadData($import, $extPropertyId);
+        $loader->loadData($import);
 
         $this->assertEquals(
             ImportPropertyStatus::ERROR,
@@ -713,105 +753,6 @@ class PropertyLoaderCase extends UnitTestBase
         );
         $this->assertContains(
             'Unit is not valid: test : test',
-            current($importProperty->getErrorMessages()),
-            'Message is not updated'
-        );
-
-        $this->assertTrue($importProperty->isProcessed(), 'Status of process is not updated');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSetErrorStatusForImportPropertyIfExternalPropertyIdsNotMatch()
-    {
-        $holding = new Holding();
-        $this->writeIdAttribute($holding, 1);
-
-        $group = new Group();
-        $this->writeIdAttribute($group, 1);
-        $group->setHolding($holding);
-
-        $import = new Import();
-        $this->writeIdAttribute($import, 1);
-        $import->setGroup($group);
-
-        $extPropertyId = 'test';
-
-        $importProperty = new ImportProperty();
-        $importProperty->setImport($import);
-        $importProperty->setAllowMultipleProperties(false);
-        $importProperty->setAddressHasUnits(true);
-        $importProperty->setExternalPropertyId($extPropertyId);
-        $importProperty->setUnitName('testUnitName');
-
-        $propertyAddress = new PropertyAddress();
-        $property = new Property();
-        $this->writeIdAttribute($property, 1);
-        $property->setPropertyAddress($propertyAddress);
-
-        $propertyMapping = new PropertyMapping();
-        $propertyMapping->setExternalPropertyId('test2');
-        $propertyMapping->setHolding($holding);
-
-        $property->addPropertyMapping($propertyMapping);
-
-        $unit = new Unit();
-        $this->writeIdAttribute($unit, 1);
-        $unit->setProperty($property);
-        $unitMapping = new UnitMapping();
-        $unitMapping->setUnit($unit);
-        $unit->setUnitMapping($unitMapping);
-
-        $iterableResultFromDb = $this->getBaseMock('\Doctrine\ORM\Internal\Hydration\IterableResult');
-        $iterableResultFromDb->expects($this->exactly(2))
-            ->method('next')
-            ->will($this->onConsecutiveCalls([$importProperty], false));
-
-        $repositoryMock = $this->getImportPropertyRepositoryMock();
-        $repositoryMock->expects($this->once())
-            ->method('getNotProcessedImportProperties')
-            ->with($this->equalTo($import), $this->equalTo($extPropertyId))
-            ->will($this->returnValue($iterableResultFromDb));
-
-        $emMock = $this->getEntityManagerMock();
-        $emMock->expects($this->once())
-            ->method('getRepository')
-            ->with($this->equalTo('RjDataBundle:ImportProperty'))
-            ->will($this->returnValue($repositoryMock));
-        $emMock->expects($this->once())
-            ->method('flush')
-            ->with($this->equalTo($importProperty));
-
-        /**
-         * @var \PHPUnit_Framework_MockObject_MockObject|PropertyManager $propertyManagerMock
-         */
-        $propertyManagerMock = $this->getMock(
-            '\RentJeeves\CoreBundle\Services\PropertyManager',
-            ['getOrCreatePropertyByAddress'],
-            [],
-            '',
-            false
-        );
-        $propertyManagerMock->expects($this->once())
-            ->method('getOrCreatePropertyByAddress')
-            ->willReturn($property);
-
-        $loader = new MappedLoader(
-            $emMock,
-            $propertyManagerMock,
-            $validator = $this->getValidatorMock(),
-            $this->getLoggerMock()
-        );
-        $loader->loadData($import, $extPropertyId);
-
-        $this->assertEquals(
-            ImportPropertyStatus::ERROR,
-            $importProperty->getStatus(),
-            'Status is not updated'
-        );
-        $this->assertContains(
-            'External property ids do not match for ImportProperty#0 (test2 !== test).',
             current($importProperty->getErrorMessages()),
             'Message is not updated'
         );

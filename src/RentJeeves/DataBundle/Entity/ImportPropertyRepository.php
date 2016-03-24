@@ -8,18 +8,24 @@ class ImportPropertyRepository extends EntityRepository
 {
     /**
      * @param Import $import
-     * @param string $externalPropertyId
+     * @param string|null $externalPropertyId
      *
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
-    public function getNotProcessedImportProperties(Import $import, $externalPropertyId)
+    public function getNotProcessedImportProperties(Import $import, $externalPropertyId = null)
     {
-        return $this->createQueryBuilder('ip')
+        $query = $this->createQueryBuilder('ip')
             ->where('ip.processed = 0')
             ->andWhere('ip.import = :import')
-            ->andWhere('ip.externalPropertyId = :extPropertyId')
-            ->setParameter('import', $import)
-            ->setParameter('extPropertyId', $externalPropertyId)
+            ->setParameter('import', $import);
+
+        if (!is_null($externalPropertyId)) {
+            $query
+                ->andWhere('ip.externalPropertyId = :extPropertyId')
+                ->setParameter('extPropertyId', $externalPropertyId);
+        }
+
+        return $query
             ->getQuery()
             ->iterate();
     }

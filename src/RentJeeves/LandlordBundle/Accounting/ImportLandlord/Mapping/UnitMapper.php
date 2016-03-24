@@ -136,7 +136,7 @@ class UnitMapper extends AbstractMapper
      */
     protected function getOrCreateProperty()
     {
-        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
             '',
             $this->get('streetaddress'),
             $this->get('city_name'),

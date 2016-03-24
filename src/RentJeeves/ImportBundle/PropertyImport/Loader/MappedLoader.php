@@ -3,165 +3,33 @@
 namespace RentJeeves\ImportBundle\PropertyImport\Loader;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
-use Psr\Log\LoggerInterface;
-use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
-use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\Exception\ImportRuntimeException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Validator;
 
 /**
  * Service`s name "import.property.loader.mapped"
  */
-class MappedLoader implements PropertyLoaderInterface
+class MappedLoader extends AbstractLoader
 {
     /**
-     * @var EntityManager
+     * {@inheritdoc}
      */
-    protected $em;
-
-    /**
-     * @var PropertyManager
-     */
-    protected $propertyManager;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param EntityManager   $em
-     * @param PropertyManager $propertyManager
-     * @param Validator       $validator
-     * @param LoggerInterface $logger
-     */
-    public function __construct(
-        EntityManager $em,
-        PropertyManager $propertyManager,
-        Validator $validator,
-        LoggerInterface $logger
-    ) {
-        $this->em = $em;
-        $this->propertyManager = $propertyManager;
-        $this->validator = $validator;
-        $this->logger = $logger;
-    }
-
-    /**
-     * @param Import $import
-     * @param string $externalPropertyId
-     *
-     * @throws ImportInvalidArgumentException
-     */
-    public function loadData(Import $import, $externalPropertyId = null)
+    protected function preCheckData(Import $import, $externalPropertyId)
     {
         if (null === $externalPropertyId) {
             throw new ImportInvalidArgumentException(
                 sprintf('ExternalPropertyId cant be "null" for "%s"', __CLASS__)
             );
         }
-
-        $this->logger->info(
-            sprintf(
-                'Starting process load property from Import#%d.',
-                $import->getId()
-            ),
-            ['group' => $import->getGroup(), 'additional_parameter' => $externalPropertyId]
-        );
-
-        $iterableResult = $this->em
-            ->getRepository('RjDataBundle:ImportProperty')
-            ->getNotProcessedImportProperties($import, $externalPropertyId);
-        /** @var ImportProperty $importProperty */
-        while ((list($importProperty) = $iterableResult->next()) !== false) {
-            $this->processImportProperty($importProperty);
-            $this->em->flush($importProperty);
-            $this->em->clear();
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Finished process load property from Import#%d.',
-                $import->getId()
-            ),
-            ['group' => $import->getGroup(), 'additional_parameter' => $externalPropertyId]
-        );
-    }
-
-    /**
-     * @param ImportProperty $importProperty
-     */
-    protected function processImportProperty(ImportProperty $importProperty)
-    {
-        $this->logger->debug(
-            sprintf('Start processing ImportProperty#%d', $importProperty->getId()),
-            [
-                'group' => $importProperty->getImport()->getGroup(),
-                'additional_parameter' => $importProperty->getExternalPropertyId()
-            ]
-        );
-
-        try {
-            $property = $this->processProperty($importProperty);
-
-            if (!$property->isSingle()) {
-                $unit = $this->processUnit($property, $importProperty);
-            }
-            $this->em->flush([
-                $property,
-                $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
-            ]);
-
-            if (!$property->getId()) {
-                $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
-            } elseif (isset($unit) && !$unit->getId()) {
-                $importProperty->setStatus(ImportPropertyStatus::NEW_UNIT);
-            } else {
-                $importProperty->setStatus(ImportPropertyStatus::MATCH);
-            }
-        } catch (ImportException $e) {
-            $this->logger->error(
-                sprintf('%s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()),
-                [
-                    'group' => $importProperty->getImport()->getGroup(),
-                    'additional_parameter' => $importProperty->getExternalPropertyId()
-                ]
-            );
-            $importProperty->setStatus(ImportPropertyStatus::ERROR);
-            $importProperty->setErrorMessages([
-                $e->getMessage()
-            ]);
-        }
-
-        $this->logger->debug(
-            sprintf(
-                'Processed ImportProperty #%d with result "%s"',
-                $importProperty->getId(),
-                $importProperty->getStatus()
-            ),
-            [
-                'group' => $importProperty->getImport()->getGroup(),
-                'additional_parameter' => $importProperty->getExternalPropertyId()
-            ]
-        );
-        $importProperty->setProcessed(true);
     }
 
     /**
@@ -173,7 +41,7 @@ class MappedLoader implements PropertyLoaderInterface
     protected function processProperty(ImportProperty $importProperty)
     {
         $group = $importProperty->getImport()->getGroup();
-        $property = $this->propertyManager->getOrCreatePropertyByAddress(
+        $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
             $importProperty->getAddress1(),
             null,
             $importProperty->getCity(),
@@ -242,14 +110,14 @@ class MappedLoader implements PropertyLoaderInterface
             try {
                 $this->propertyManager->setupSingleProperty($property, ['doFlush' => false]);
             } catch (\RuntimeException $e) {
-                $message = $this->logger->warning(
+                $this->logger->warning(
                     $e->getMessage(),
                     [
                         'group' => $importProperty->getImport()->getGroup(),
                         'additional_parameter' => $importProperty->getExternalPropertyId()
                     ]
                 );
-                throw new ImportLogicException($message);
+                throw new ImportLogicException($e->getMessage());
             }
         }
 
@@ -391,5 +259,16 @@ class MappedLoader implements PropertyLoaderInterface
                 sprintf('Unit is not valid: %s', implode(', ', array_values($errors)))
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function saveData(ImportProperty $importProperty, Property $property)
+    {
+        $this->em->flush([
+            $property,
+            $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
+        ]);
     }
 }
