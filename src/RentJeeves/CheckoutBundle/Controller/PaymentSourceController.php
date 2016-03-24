@@ -149,11 +149,13 @@ class PaymentSourceController extends Controller
                     ->find($contractId);
                 $group = $contract->getGroup();
                 $tenant = $contract->getTenant();
+                $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
             } elseif ($groupId) {
                 $group = $this->getDoctrine()
                     ->getRepository('DataBundle:Group')
                     ->find($groupId);
                 $tenant = $this->getUser();
+                $depositAccount = $group->getDepositAccount($depositAccountType, $tenant->getPreferPaymentProcessor());
             }
             if (empty($contract) && empty($group)) {
                 throw new \Exception('Contract and Group are undefined.');
@@ -162,7 +164,7 @@ class PaymentSourceController extends Controller
                 $paymentAccountType,
                 $group,
                 $tenant,
-                $depositAccountType
+                $depositAccount
             );
         } catch (\Exception $e) {
             return new JsonResponse([
@@ -249,6 +251,74 @@ class PaymentSourceController extends Controller
 
             /** @var SubmerchantProcessorInterface $paymentProcessor */
             $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessor($group);
+            $paymentAccountMapped = $this->get('payment_account.type.mapper')
+                ->map($this->createForm($formType, $paymentAccount));
+            $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                $formType->getName() => [
+                    '_globals' => explode('|', $e->getMessage())
+                ]
+            ]);
+        }
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @Route(
+     *      "/source_existing_scoretrack",
+     *      name="checkout_pay_scoretrack_existing_source",
+     *      options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function sourceExistingScoreTrackAction(Request $request)
+    {
+        $formType = new PaymentAccountType(
+            $this->getUser()
+        );
+        $formData = $request->get($formType->getName());
+
+        $paymentAccountId = $formData['id'];
+        $groupId = $request->get('group_id');
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $this->getDoctrine()->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
+        if ($groupId) {
+            /** @var Group $group */
+            $group = $this->getDoctrine()->getRepository('DataBundle:Group')->find($groupId);
+        }
+
+        try {
+            /** @var Group $group */
+            if (empty($group) || empty($paymentAccount)) {
+                throw new \Exception('Group or Payment Account is undefined');
+            }
+
+            $depositAccount = $group->getDepositAccount(
+                DepositAccountType::RENT,
+                $this->getUser()->getPreferPaymentProcessor()
+            );
+            if (null == $depositAccount) {
+                $this->get('logger')->alert(sprintf(
+                    'Rent Deposit account not found when tenant tries to create a payment. Tenant email: %s, Group: %s',
+                    $paymentAccount->getUser()->getEmail(),
+                    $group->getName()
+                ));
+                throw new PaymentProcessorInvalidArgumentException(
+                    $this->get('translator')->trans(
+                        'checkout.payment.error.cannot_be_processed',
+                        ['%support_email%' => $this->container->getParameter('support_email')]
+                    )
+                );
+            }
+
+            /** @var SubmerchantProcessorInterface $paymentProcessor */
+            $paymentProcessor = $this->get('payment_processor.factory')->getPaymentProcessorByPaymentAccount(
+                $paymentAccount
+            );
             $paymentAccountMapped = $this->get('payment_account.type.mapper')
                 ->map($this->createForm($formType, $paymentAccount));
             $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);

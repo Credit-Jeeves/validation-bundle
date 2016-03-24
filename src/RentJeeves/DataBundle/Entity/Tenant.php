@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 /**
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\TenantRepository")
@@ -228,6 +229,19 @@ class Tenant extends User
     public function getPaymentAccounts()
     {
         return $this->paymentAccounts;
+    }
+
+    /**
+     * @return string
+     * @see PaymentProcessor
+     */
+    public function getPreferPaymentProcessor()
+    {
+        if ($this->getAciCollectPayProfileId()) {
+            return PaymentProcessor::ACI;
+        }
+
+        return PaymentProcessor::HEARTLAND;
     }
 
     public function getAvailableVerificationStatuses()

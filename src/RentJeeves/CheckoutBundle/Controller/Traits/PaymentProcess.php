@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -13,7 +14,6 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DebitType;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,14 +34,14 @@ trait PaymentProcess
      * @param  Form $paymentAccountType
      * @param Group $group
      * @param Tenant $tenant
-     * @param string $depositAccountType
+     * @param DepositAccount $depositAccount
      * @return mixed
      */
     protected function savePaymentAccount(
         Form $paymentAccountType,
         Group $group,
         Tenant $tenant,
-        $depositAccountType = DepositAccountType::RENT
+        DepositAccount $depositAccount = null
     ) {
         /** @var \RentJeeves\CheckoutBundle\Services\PaymentAccountTypeMapper\PaymentAccount $paymentAccountMapped */
         $paymentAccountMapped = $this->get('payment_account.type.mapper')->map($paymentAccountType);
@@ -68,7 +68,9 @@ trait PaymentProcess
             $paymentAccountMapped->getEntity()->setRegistered(true);
         }
 
-        $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
+        if (!$depositAccount) {
+            $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
+        }
 
         $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
 
