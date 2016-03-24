@@ -101,7 +101,7 @@ class GroupController extends BaseController
 
 
     /**
-     * @Route("create/csv/job/for/import/properties/{id}", name="admin_create_csv_job_for_import_properties")
+     * @Route("csv_import/job/properties/{id}", name="admin_create_csv_job_for_import_properties")
      * @ParamConverter("group", class="DataBundle:Group")
      *
      * @param Request $request

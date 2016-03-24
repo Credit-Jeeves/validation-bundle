@@ -5,7 +5,7 @@ namespace RentJeeves\AdminBundle\Tests\Functional;
 use RentJeeves\LandlordBundle\Tests\Functional\ImportBaseAbstract;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 
-class CsvCase extends ImportBaseAbstract
+class CsvMappingCase extends ImportBaseAbstract
 {
     /**
      * @test

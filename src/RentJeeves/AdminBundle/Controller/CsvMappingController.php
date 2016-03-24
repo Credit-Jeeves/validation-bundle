@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class CsvController extends BaseController
+class CsvMappingController extends BaseController
 {
     const FILE_PATH_KEY = 'admin_csv_mapping_file_path';
 
@@ -45,7 +45,7 @@ class CsvController extends BaseController
         }
 
         return $this->render(
-            'AdminBundle:Csv:uploadFileForMapping.html.twig',
+            'AdminBundle:CsvMapping:uploadFileForMapping.html.twig',
             [
                 'group' => $group,
                 'form' => $form->createView()
@@ -92,7 +92,7 @@ class CsvController extends BaseController
         }
 
         return $this->render(
-            'AdminBundle:Csv:map.html.twig',
+            'AdminBundle:CsvMapping:map.html.twig',
             [
                 'group' => $group,
                 'data' => $csvMappingCreator->getViewData(),
@@ -100,5 +100,4 @@ class CsvController extends BaseController
             ]
         );
     }
-
 }

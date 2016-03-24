@@ -26,8 +26,8 @@
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
             </trans-unit>
-            <trans-unit id="upload.csv.and.create.job">
-                <source>upload.csv.and.create.job</source>
+            <trans-unit id="upload.csv.create_job">
+                <source>upload.csv.create_job</source>
                 <target>Upload csv and create job for import property</target>
             </trans-unit>
             <trans-unit id="group.edit">
