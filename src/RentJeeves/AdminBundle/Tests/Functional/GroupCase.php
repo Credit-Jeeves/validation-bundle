@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -481,6 +482,7 @@ class GroupCase extends BaseTestCase
     {
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
         $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
@@ -490,11 +492,11 @@ class GroupCase extends BaseTestCase
         $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
         $groupBlock->clickLink('link_list');
 
-        $importProperties = $this->getDomElements(
-            'a:contains("admin.import.property")',
+        $importProperties = $this->getDomElement(
+            '.import_properties_button',
             'Import Property links not found'
         );
-        $importProperties[2]->click();
+        $importProperties->click();
         $this->getDomElement('.alert-success', 'Should get successful message');
         $this->assertCount(
             $jobsCount + 6, //6 because 3 for import and 3 for check status
@@ -509,16 +511,20 @@ class GroupCase extends BaseTestCase
     public function shouldShowErrorMessageIfPressImportPropertyForGroupWithoutExtPropertyId()
     {
         $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $group->getImportSettings()->setApiPropertyIds(null);
+        $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
         $groupBlock->clickLink('link_list');
 
-        $importProperties = $this->getDomElements(
-            'a:contains("admin.import.property")',
+        $importProperties = $this->getDomElement(
+            '.import_properties_button',
             'Import Property links not found'
         );
-        $importProperties[0]->click();
+        $importProperties->click();
         $this->getDomElement('.alert-danger', 'Should get error for group which doesn\'t have externalProperties');
     }
 }

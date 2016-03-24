@@ -74,6 +74,9 @@ class ImportPropertySettingsProvider
     {
         $this->logger->info('Getting External Property Ids from db.', ['group' => $group]);
         $allExtPropertyIds = $group->getImportSettings()->getApiPropertyIds();
+        if (empty($allExtPropertyIds)) {
+            return [];
+        }
         $result = [];
         foreach (explode(',', $allExtPropertyIds) as $extPropertyId) {
             $result[] = trim($extPropertyId);
