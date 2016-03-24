@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0b3513de59704b448f2eaa3d182be62b",
-    "content-hash": "b1fb6c9f6d2a987722b00cd71a727434",
+    "hash": "0dc85a4337fa716318395046047402da",
+    "content-hash": "f6f87e504ed4464b9177ce73c0e8f8fc",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -938,7 +938,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/07a9af2d4de5f9ef0bf2d9ae94421e5fc50d7859",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/2e1b1f7597e2f647e99e96e747fcae9718ac817b",
                 "reference": "f25c8aab83e0c3e976fd7d19875f198ccf2f7535",
                 "shasum": ""
             },
@@ -1075,7 +1075,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/866e100a425b8b73d15393fd081c6bf067f05bf9",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/e0721034158c1a0b73f984888af833fe1682311e",
                 "reference": "866e100a425b8b73d15393fd081c6bf067f05bf9",
                 "shasum": ""
             },
@@ -2799,13 +2799,13 @@
             "target-dir": "JMS/JobQueueBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Tobur/JMSJobQueueBundle.git",
-                "reference": "97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19"
+                "url": "https://github.com/Credit-Jeeves/JMSJobQueueBundle.git",
+                "reference": "cdee98f1bd7b64113ce1b113eb5edbe11ef3a771"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Tobur/JMSJobQueueBundle/zipball/97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19",
-                "reference": "97a02e98f2f97f1eb2325a2c557a2ffb9ab12c19",
+                "url": "https://api.github.com/repos/Credit-Jeeves/JMSJobQueueBundle/zipball/cdee98f1bd7b64113ce1b113eb5edbe11ef3a771",
+                "reference": "cdee98f1bd7b64113ce1b113eb5edbe11ef3a771",
                 "shasum": ""
             },
             "require": {
@@ -2863,9 +2863,9 @@
                 "queue"
             ],
             "support": {
-                "source": "https://github.com/Tobur/JMSJobQueueBundle/tree/ton"
+                "source": "https://github.com/Credit-Jeeves/JMSJobQueueBundle/tree/ton"
             },
-            "time": "2016-03-23 17:09:46"
+            "time": "2016-03-24 10:23:48"
         },
         {
             "name": "jms/metadata",
