@@ -28,6 +28,7 @@ class TransactionRepository extends EntityRepository
             o.status as orderStatus,
             d.accountNumber as accountNumber,
             d.type as depositAccountType,
+            d.friendlyName as friendlyName,
             h.status as transactionStatus,
             CONCAT_WS(' ', ten.first_name, ten.last_name) as resident,
             CONCAT_WS(' ', propertyAddress.number, propertyAddress.street) as property,
@@ -239,9 +240,10 @@ class TransactionRepository extends EntityRepository
     {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('h');
-        $query->select(
-            'h.batchId batchNumber, sum(p.amount) orderAmount, h.depositDate, da.type depositType, h.status'
-        );
+        $selectedFields = 'h.batchId batchNumber, sum(p.amount) orderAmount, h.depositDate, da.type depositType';
+        $selectedFields .= ', h.status, da.friendlyName';
+
+        $query->select($selectedFields);
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');

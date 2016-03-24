@@ -51,8 +51,13 @@ class BatchDepositsManager
 
         foreach ($deposits as $key => $deposit) {
             $depositDate = new \DateTime($deposit['depositDate']);
+            if ($deposits[$key]['friendlyName']) {
+                $depositType = $deposits[$key]['friendlyName'];
+            } else {
+                $depositType = DepositAccountType::capitalizeTitle($deposits[$key]['depositType']);
+            }
             $deposits[$key]['depositDate'] = $depositDate->format('m/d/Y');
-            $deposits[$key]['depositType'] = DepositAccountType::capitalizeTitle($deposits[$key]['depositType']);
+            $deposits[$key]['depositType'] = $depositType;
             $deposits[$key]['orderAmount'] = $this->formatAmount(
                 $this->getBatchAmount($deposits[$key]['orderAmount'], $deposits[$key]['status'])
             );
