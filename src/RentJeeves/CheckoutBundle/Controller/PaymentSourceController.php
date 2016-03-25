@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -155,7 +156,10 @@ class PaymentSourceController extends Controller
                     ->getRepository('DataBundle:Group')
                     ->find($groupId);
                 $tenant = $this->getUser();
-                $depositAccount = $group->getDepositAccount($depositAccountType, $tenant->getPreferPaymentProcessor());
+                $depositAccount = $group->getDepositAccount(
+                    $depositAccountType,
+                    PaymentProcessorFactory::getScoreTrackPaymentProcessorType($tenant)
+                );
             }
             if (empty($contract) && empty($group)) {
                 throw new \Exception('Contract and Group are undefined.');
@@ -299,7 +303,7 @@ class PaymentSourceController extends Controller
 
             $depositAccount = $group->getDepositAccount(
                 DepositAccountType::RENT,
-                $this->getUser()->getPreferPaymentProcessor()
+                PaymentProcessorFactory::getScoreTrackPaymentProcessorType($this->getUser())
             );
             if (null == $depositAccount) {
                 $this->get('logger')->alert(sprintf(

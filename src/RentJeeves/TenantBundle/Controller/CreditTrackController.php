@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
@@ -35,9 +36,10 @@ class CreditTrackController extends Controller
         $user = $this->getUser();
         $serializer = $this->get('jms_serializer');
 
+        $paymentProcessorType = PaymentProcessorFactory::getScoreTrackPaymentProcessorType($user);
         $paymentAccounts = $serializer->serialize(
-            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($user) {
-                return $paymentAccount->getPaymentProcessor() === $user->getPreferPaymentProcessor();
+            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($paymentProcessorType) {
+                return $paymentAccount->getPaymentProcessor() === $paymentProcessorType;
             }),
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
