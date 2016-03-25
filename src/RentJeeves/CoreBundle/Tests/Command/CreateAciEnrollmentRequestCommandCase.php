@@ -118,6 +118,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
                 '--path' => $this->getDirPath(),
                 '--prefix' => 'test',
                 '--holding_id' => 5,
+                '--holding_id_end' => 6,
                 '--profiles' => 1,
             ]
         );
