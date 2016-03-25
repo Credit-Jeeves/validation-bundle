@@ -32,6 +32,8 @@ use Symfony\Component\Validator\Validator;
  */
 class CsvImporter
 {
+    const EM_CLEANUP_PERIOD = 100;
+
     /**
      * @var EntityManagerInterface
      */
@@ -90,7 +92,7 @@ class CsvImporter
         $this->holding = $holding;
         $records = $this->deserializer->deserialize($pathToFile);
         /** @var ConsumerResponseRecord|FundingResponseRecord|AccountResponseRecord $record */
-        foreach ($records as $record) {
+        foreach ($records as $i => $record) {
             $aciProfileMap = $this->getAciImportProfileMapRepository()->find($record->getProfileId());
             if (false === $this->isValidRecord($record, $aciProfileMap)) {
                 continue;
@@ -107,6 +109,9 @@ class CsvImporter
                     break;
                 default:
                     break;
+            }
+            if (($i + 1) % self::EM_CLEANUP_PERIOD === 0) {
+                $this->em->clear();
             }
         }
     }

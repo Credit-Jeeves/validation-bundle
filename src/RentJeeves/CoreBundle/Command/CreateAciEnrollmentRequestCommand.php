@@ -30,10 +30,10 @@ class CreateAciEnrollmentRequestCommand extends BaseCommand
             $holdings = $this->getHoldings($holdingId, $input->getOption('holding_id_end'));
         }
 
-        $importer = $this->getCsvExporter();
-        $importer->export($input->getOption('path'), $holdings);
+        $exporter = $this->getCsvExporter();
+        $exporter->export($input->getOption('path'), $holdings);
 
-        foreach ($importer->getErrors() as $key => $errors) {
+        foreach ($exporter->getErrors() as $key => $errors) {
             $output->writeln(sprintf('Errors for aci profile map with id#%d:', $key));
             foreach ($errors as $error) {
                 $output->writeln(sprintf('<error>%s</error>', $error));
