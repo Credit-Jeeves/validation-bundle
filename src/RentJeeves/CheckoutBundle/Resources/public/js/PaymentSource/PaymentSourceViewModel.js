@@ -131,7 +131,7 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
      * Init object
      */
     self.init = function() {
-        if (parent.paymentAccounts && parent.paymentAccounts().length > 0) {
+        if (parent.paymentAccounts && typeof(parent.paymentAccounts()) === 'object') {
             self.mapPaymentAccounts(parent.paymentAccounts());
         } else {
             self.load(self.contractId());
