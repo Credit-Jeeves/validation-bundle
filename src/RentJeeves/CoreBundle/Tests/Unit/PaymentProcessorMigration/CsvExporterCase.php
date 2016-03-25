@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 class CsvExporterCase extends BaseTestCase
@@ -24,17 +25,28 @@ class CsvExporterCase extends BaseTestCase
     protected function tearDown()
     {
         parent::tearDown();
-        if (true === file_exists($this->getFilePath())) {
-            unlink($this->getFilePath());
+        if (true === file_exists($this->getDirPath())) {
+            $fileSystem = new Filesystem();
+            $fileSystem->remove($this->getDirPath());
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        if (false === is_dir($this->getDirPath())) {
+            mkdir($this->getDirPath());
         }
     }
 
     /**
      * @return string
      */
-    protected function getFilePath()
+    protected function getDirPath()
     {
-        return __DIR__ . '/test.csv';
+        return __DIR__ . '/../../Fixtures/ExportFiles';
     }
 
     /**
@@ -85,9 +97,9 @@ class CsvExporterCase extends BaseTestCase
             ->will($this->returnValue($result = "csvDataHere"));
 
         $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-        $csvExporter->export($this->getFilePath(), [$holding, $holding2]);
+        $csvExporter->export($this->getDirPath(), 'test', 1000, [$holding, $holding2]);
 
-        $this->assertContains($result, file_get_contents($this->getFilePath()));
+        $this->assertContains($result, file_get_contents($this->getDirPath() . '/test0.csv'));
     }
 
     /**
@@ -130,9 +142,11 @@ class CsvExporterCase extends BaseTestCase
             ->will($this->returnValue($result = "csvDataHere"));
 
         $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-        $csvExporter->export($this->getFilePath(), $holding);
+        $csvExporter->export($this->getDirPath(), 'test', 1000, $holding);
 
-        $fileData = file_get_contents($this->getFilePath());
+        $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
+
+        $fileData = file_get_contents($this->getDirPath() . '/test0.csv');
         $this->assertContains($result, $fileData);
     }
 

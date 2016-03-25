@@ -16,7 +16,9 @@ class CreateAciEnrollmentRequestCommand extends BaseCommand
             ->setDescription('Create Batch enrollment request file')
             ->addOption('holding_id', null, InputOption::VALUE_OPTIONAL, '', null)
             ->addOption('holding_id_end', null, InputOption::VALUE_OPTIONAL, '', null)
-            ->addOption('path', null, InputOption::VALUE_REQUIRED);
+            ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Directory to place the output files', null)
+            ->addOption('profiles', null, InputOption::VALUE_REQUIRED, 'Count profiles for 1 output file', 1000)
+            ->addOption('prefix', null, InputOption::VALUE_REQUIRED, 'The output filename prefix', null);
     }
 
     /**
@@ -25,13 +27,20 @@ class CreateAciEnrollmentRequestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $holdings = null;
+        if (null === $prefix = $input->getOption('prefix')) {
+            throw new \InvalidArgumentException('Option "prefix" cannot be NULL.');
+        }
+        $pathToDir = $input->getOption('path');
+        if (false === is_dir($pathToDir) || false === is_writable($pathToDir)) {
+            throw new \InvalidArgumentException('Option "path" should contain path to writable directory.');
+        }
+
         $holdingId = $input->getOption('holding_id');
         if ($holdingId !== null) {
             $holdings = $this->getHoldings($holdingId, $input->getOption('holding_id_end'));
         }
-
         $exporter = $this->getCsvExporter();
-        $exporter->export($input->getOption('path'), $holdings);
+        $exporter->export($input->getOption('path'), $prefix, $input->getOption('profiles'), $holdings);
 
         foreach ($exporter->getErrors() as $key => $errors) {
             $output->writeln(sprintf('Errors for aci profile map with id#%d:', $key));
