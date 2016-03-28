@@ -33,7 +33,7 @@ class CsvMappingCase extends ImportBaseAbstract
             $attFile = $this->page->find('css', '#upload_csv_file_attachment'),
             'Attach does not exist'
         );
-        $filePath = $this->getFilePathByName('import.csv');
+        $filePath = $this->getFixtureFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->assertNotEmpty(
             $buttonUpload = $this->page->find('css', '#upload_csv_file_upload'),

@@ -72,7 +72,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->setPropertyFirst();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_failed.csv');
+        $filePath = $this->getFixtureFilePathByName('import_failed.csv');
         $attFile->attachFile($filePath);
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
@@ -81,7 +81,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $prev->click();
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import.csv');
+        $filePath = $this->getFixtureFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile->click();
@@ -271,7 +271,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $exceptionOnly->check();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import.csv');
+        $filePath = $this->getFixtureFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
@@ -334,7 +334,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $this->session->wait(5000, "typeof jQuery != 'undefined'");
             $this->setPropertyFirst();
             $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-            $filePath = $this->getFilePathByName('import_waiting_room.csv');
+            $filePath = $this->getFixtureFilePathByName('import_waiting_room.csv');
             $attFile->attachFile($filePath);
 
             $submitImportFile = $this->getDomElement('.submitImportFile');
@@ -493,7 +493,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $filePath = $this->getFilePathByName('import_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('import_waiting_room.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
@@ -548,7 +548,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
-        $filePath = $this->getFilePathByName('import_date_format.csv');
+        $filePath = $this->getFixtureFilePathByName('import_date_format.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $this->setPropertyFirst();
         $attFile->attachFile($filePath);
@@ -614,7 +614,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_multiple.csv');
+        $filePath = $this->getFixtureFilePathByName('import_multiple.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
@@ -811,7 +811,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_one_user.csv');
+        $filePath = $this->getFixtureFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
@@ -872,7 +872,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_one_user.csv');
+        $filePath = $this->getFixtureFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
@@ -912,7 +912,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
@@ -953,7 +953,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('duplicate_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -1002,7 +1002,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile = $this->getDomElement('.submitImportFile');
@@ -1041,7 +1041,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('one_user_for_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('one_user_for_waiting_room.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile->click();
@@ -1107,7 +1107,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
         //First Step
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_multiple_group.csv');
+        $filePath = $this->getFixtureFilePathByName('import_multiple_group.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
@@ -1172,7 +1172,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->setPropertyFirst();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_only_exception.csv');
+        $filePath = $this->getFixtureFilePathByName('import_only_exception.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
@@ -1254,7 +1254,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_one_user.csv');
+        $filePath = $this->getFixtureFilePathByName('import_one_user.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
 
@@ -1322,7 +1322,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('promas_extra_field.csv');
+        $filePath = $this->getFixtureFilePathByName('promas_extra_field.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile = $this->getDomElement('.submitImportFile');
@@ -1425,7 +1425,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->setPropertyFirst();
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_waiting_only_exception.csv');
+        $filePath = $this->getFixtureFilePathByName('import_waiting_only_exception.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
@@ -1471,7 +1471,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_current_tenant.csv');
+        $filePath = $this->getFixtureFilePathByName('import_current_tenant.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
@@ -1518,7 +1518,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_two_user.csv');
+        $filePath = $this->getFixtureFilePathByName('import_two_user.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $this->setPropertyFirst();
@@ -1575,7 +1575,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('skipped_message_and_date_notice.csv');
+        $filePath = $this->getFixtureFilePathByName('skipped_message_and_date_notice.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
@@ -1646,7 +1646,7 @@ class ImportCsvCase extends ImportBaseAbstract
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_lease_id.csv');
+        $filePath = $this->getFixtureFilePathByName('import_lease_id.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile = $this->getDomElement('.submitImportFile');

@@ -4,9 +4,7 @@ namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\AdminBundle\Form\MatchFileType;
 use RentJeeves\AdminBundle\Services\CsvMappingCreator;
-use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,13 +16,15 @@ class CsvMappingController extends BaseController
     const FILE_PATH_KEY = 'admin_csv_mapping_file_path';
 
     /**
-     * @Route("upload/csv/{id}", name="admin_upload_csv")
+     * @Route("upload/csv/mapping/{id}", name="admin_upload_csv_mapping")
      * @ParamConverter("group", class="DataBundle:Group")
      *
      * @param Request $request
+     * @param Group   $group
+     *
      * @return Response
      */
-    public function uploadFileAction(Request $request, Group $group)
+    public function uploadFileForMappingAction(Request $request, Group $group)
     {
         $form = $this->createForm($this->get('form.upload_csv_file'));
         $form->handleRequest($request);
@@ -45,7 +45,7 @@ class CsvMappingController extends BaseController
         }
 
         return $this->render(
-            'AdminBundle:CsvMapping:uploadFile.html.twig',
+            'AdminBundle:CsvMapping:uploadFileForMapping.html.twig',
             [
                 'group' => $group,
                 'form' => $form->createView()
