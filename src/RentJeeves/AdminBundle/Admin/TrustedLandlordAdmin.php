@@ -5,7 +5,6 @@ namespace RentJeeves\AdminBundle\Admin;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
 class TrustedLandlordAdmin extends Admin
@@ -25,7 +24,7 @@ class TrustedLandlordAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/' . self::TYPE;
+        return DIRECTORY_SEPARATOR . self::TYPE;
     }
 
     /**
@@ -55,6 +54,7 @@ class TrustedLandlordAdmin extends Admin
         $listMapper
             ->addIdentifier('id')
             ->add('checkMailingAddress', null, ['label' => 'Address'])
+            ->add('checkMailingAddress.addressee', null, ['label' => 'Addressee'])
             ->add('full_name', null, ['label' => 'Full Name'])
             ->add('company_name', null, ['label' => 'Company'])
             ->add('phone')

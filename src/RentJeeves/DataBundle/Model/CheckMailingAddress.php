@@ -22,6 +22,13 @@ abstract class CheckMailingAddress
     /**
      * @var string
      *
+     * @ORM\Column(name="addressee",type="string")
+     */
+    protected $addressee;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string",length=2)
      */
     protected $state;
@@ -91,6 +98,22 @@ abstract class CheckMailingAddress
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddressee()
+    {
+        return $this->addressee;
+    }
+
+    /**
+     * @param string $addressee
+     */
+    public function setAddressee($addressee)
+    {
+        $this->addressee = $addressee;
     }
 
     /**

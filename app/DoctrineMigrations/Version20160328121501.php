@@ -25,6 +25,7 @@ class Version20160328121501 extends AbstractMigration
         $this->addSql(
             "CREATE TABLE rj_check_mailing_address (
                 id BIGINT AUTO_INCREMENT NOT NULL,
+                addressee VARCHAR(255) NOT NULL,
                 state VARCHAR(2) NOT NULL,
                 city VARCHAR(255) NOT NULL,
                 address1 VARCHAR(255) NOT NULL,
