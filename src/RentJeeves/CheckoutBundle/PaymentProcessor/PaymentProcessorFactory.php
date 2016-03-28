@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
 use RentJeeves\CheckoutBundle\PaymentProcessor\SubmerchantProcessorInterface as PaymentProcessor;
@@ -62,6 +63,19 @@ class PaymentProcessorFactory
                     )
                 );
         }
+    }
+
+    /**
+     * @param User $user
+     * @return string
+     */
+    public static function getScoreTrackPaymentProcessorType(User $user)
+    {
+        if ($user->getAciCollectPayProfileId()) {
+            return PaymentProcessorEnum::ACI;
+        }
+
+        return PaymentProcessorEnum::HEARTLAND;
     }
 
     /**
