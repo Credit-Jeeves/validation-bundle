@@ -21,8 +21,6 @@ class GroupCase extends BaseTestCase
         $jobsBeforeTest = $this->getEntityManager()->getRepository('RjDataBundle:Job')
             ->findAll();
         $this->setDefaultSession('symfony');
-        $importMappingChoice = $this->getEntityManager()->getRepository('RjDataBundle:ImportMappingChoice')->findAll();
-        $this->assertCount(0, $importMappingChoice, 'We should don\'t have mapping in fixtures');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
         $groupBlock->clickLink('link_list');
