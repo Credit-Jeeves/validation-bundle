@@ -70,7 +70,7 @@ class PayAnythingController extends BaseController
 
         foreach ($depositAccounts as $depositAccount) {
             $depositAccountsList[]  = [
-                'name' => DepositAccountType::title($depositAccount->getType()),
+                'name' => $depositAccount->getTitleName(),
                 'value' => $depositAccount->getType(),
             ];
         }
@@ -149,12 +149,16 @@ class PayAnythingController extends BaseController
                 $integrationDataManager->removeIntegrationData();
             } elseif (!empty($amounts)) {
                 DepositAccountType::setTranslator([$this->get('translator'), 'trans']);
+                $paid = $contract->getGroup()->getDepositAccount(
+                    $depositAccountType,
+                    $paymentAccount->getPaymentProcessor()
+                )->getTitleName();
                 $request->getSession()->getFlashBag()->add(
                     'payAnything',
                     $this->getTranslator()->trans(
                         'pay_anything_popup.should_pay_message',
                         [
-                            '%paid%' => DepositAccountType::title($depositAccountType),
+                            '%paid%' => $paid,
                             '%should_pay%' => $integrationDataManager->getPaymentsList()
                         ]
                     )

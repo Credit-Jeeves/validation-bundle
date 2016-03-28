@@ -188,12 +188,16 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
 
             /** Need check that next.batch_id != current.batch_id, also check that next exists */
             if (($i + 1) == $count || $data[$i]['batchId'] != $data[$i + 1]['batchId']) {
+                $depositType = $data[$i]['depositAccountType'];
+                $friendlyName = $data[$i]['friendlyName'];
+                $depositType = !empty($friendlyName) ? $friendlyName : DepositAccountType::title($depositType);
+
                 $preparedData[] = [
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
                     'transactions' => $transactions,
                     'accountNumber' => $data[$i]['accountNumber'],
-                    'depositAccountType' => DepositAccountType::title($data[$i]['depositAccountType']),
+                    'depositAccountType' => $depositType,
                     'paymentTotal' => number_format($paymentTotal, 2, '.', ''),
                 ];
                 $transactions = [];
