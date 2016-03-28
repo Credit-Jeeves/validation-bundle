@@ -125,10 +125,6 @@ class MappedLoader implements PropertyLoaderInterface
                 $unit = $this->processUnit($property, $importProperty);
             }
 
-            $this->em->persist($property);
-            $this->em->persist($property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding()));
-            $this->em->flush();
-
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
             } elseif (isset($unit) && !$unit->getId()) {
@@ -136,6 +132,10 @@ class MappedLoader implements PropertyLoaderInterface
             } else {
                 $importProperty->setStatus(ImportPropertyStatus::MATCH);
             }
+
+            $this->em->persist($property);
+            $this->em->persist($property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding()));
+            $this->em->flush();
         } catch (ImportException $e) {
             $this->logger->error(
                 sprintf('%s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()),
@@ -187,6 +187,13 @@ class MappedLoader implements PropertyLoaderInterface
 
             throw new ImportInvalidArgumentException($message);
         }
+        $this->logger->debug(
+            $property->getId() === null ? 'Created new Property.' : 'Found Property#' . $property->getId(),
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
+        );
 
         if (true === $this->isDifferentPropertyShouldBeCreated($property, $group, $importProperty)) {
             $propertyAddress = $property->getPropertyAddress();
@@ -379,29 +386,27 @@ class MappedLoader implements PropertyLoaderInterface
                 'additional_parameter' => $importProperty->getExternalPropertyId()
             ]
         );
-        $property = $this->getPropertyRepository()->getPropertyByGroupAndExternalId(
+        $properties = $this->getPropertyRepository()->findAllByGroupAndExternalId(
             $importProperty->getImport()->getGroup(),
             $importProperty->getExternalPropertyId()
         );
 
-        if (null === $property) {
-            $this->logger->debug(
-                sprintf('Property not found by Group and extPropertyId.', $importProperty->getId()),
-                [
-                    'group' => $importProperty->getImport()->getGroup(),
-                    'additional_parameter' => $importProperty->getExternalPropertyId()
-                ]
-            );
-            $property = $this->propertyManager->getOrCreatePropertyByAddress(
-                $importProperty->getAddress1(),
-                null,
-                $importProperty->getCity(),
-                $importProperty->getState(),
-                $importProperty->getZip()
-            );
+        if (false === empty($properties)) {
+            if (null !== $property = $this->matchPropertyByInvalidIndex($importProperty, $properties)) {
+                return $property;
+            }
+            if (null !== $property = $this->matchPropertyByAddress($importProperty, $properties)) {
+                return $property;
+            }
         }
 
-        return $property;
+        return $this->propertyManager->getOrCreatePropertyByAddress(
+            $importProperty->getAddress1(),
+            null,
+            $importProperty->getCity(),
+            $importProperty->getState(),
+            $importProperty->getZip()
+        );
     }
 
     /**
@@ -423,6 +428,90 @@ class MappedLoader implements PropertyLoaderInterface
                 sprintf('Unit is not valid: %s', implode(', ', array_values($errors)))
             );
         }
+    }
+
+    /**
+     * @param ImportProperty $importProperty
+     * @param array          $properties
+     *
+     * @throws ImportLogicException
+     *
+     * @return null|Property
+     */
+    protected function matchPropertyByInvalidIndex(ImportProperty $importProperty, array $properties)
+    {
+        $invalidIndex = PropertyManager::generateInvalidAddressIndex(
+            $importProperty->getAddress1(),
+            '',
+            $importProperty->getCity(),
+            $importProperty->getState()
+        );
+
+        $this->logger->debug(
+            sprintf('Try to match Property by invalid index %s', $invalidIndex),
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
+        );
+
+        $matchedProperty = null;
+        /** @var Property $property */
+        foreach ($properties as $property) {
+            if ($property->getPropertyAddress()->getIndex() === $invalidIndex) {
+                if ($matchedProperty !== null) {
+                    throw new ImportLogicException('Duplicate addresses detected for external property id.');
+                }
+                $matchedProperty = $property;
+            }
+        }
+
+        return $matchedProperty;
+    }
+
+    /**
+     * @param ImportProperty $importProperty
+     * @param array          $properties
+     *
+     * @throws ImportLogicException
+     *
+     * @return null|Property
+     */
+    protected function matchPropertyByAddress(ImportProperty $importProperty, array $properties)
+    {
+        $address = $this->propertyManager->lookupAddress(
+            $importProperty->getAddress1(),
+            $importProperty->getCity(),
+            $importProperty->getState(),
+            $importProperty->getZip()
+        );
+
+        if ($address === null) {
+            return null;
+        }
+
+        $ssIndex = $address->getIndex();
+
+        $this->logger->debug(
+            sprintf('Try to match Property by invalid ssIndex %s', $ssIndex),
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
+        );
+
+        $matchedProperty = null;
+        /** @var Property $property */
+        foreach ($properties as $property) {
+            if ($property->getPropertyAddress()->getIndex() === $ssIndex) {
+                if ($matchedProperty !== null) {
+                    throw new ImportLogicException('Duplicate addresses detected for external property id.');
+                }
+                $matchedProperty = $property;
+            }
+        }
+
+        return $matchedProperty;
     }
 
     /**

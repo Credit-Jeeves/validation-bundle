@@ -340,11 +340,9 @@ EOT;
      * @param Group  $group
      * @param string $externalPropertyId
      *
-     * @return Property|null
-     *
-     * @throws NonUniqueResultException
+     * @return Property[]
      */
-    public function getPropertyByGroupAndExternalId(Group $group, $externalPropertyId)
+    public function findAllByGroupAndExternalId(Group $group, $externalPropertyId)
     {
         return $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
@@ -356,7 +354,7 @@ EOT;
             ->setParameter('groupId', $group->getId())
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->execute();
     }
 
     /**

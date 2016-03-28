@@ -317,7 +317,7 @@ class PropertyManager
      *
      * @return string
      */
-    protected function generateInvalidAddressIndex($number, $street, $city, $state)
+    public static function generateInvalidAddressIndex($number, $street, $city, $state)
     {
         $index = sprintf('%s%s%s%sinvalidaddress', $number, $street, $city, $state);
         $index = str_replace(' ', '', $index);
