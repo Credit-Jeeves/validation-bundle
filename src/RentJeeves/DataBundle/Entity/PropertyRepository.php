@@ -337,6 +337,29 @@ EOT;
     }
 
     /**
+     * @param Group  $group
+     * @param string $externalPropertyId
+     *
+     * @return Property|null
+     *
+     * @throws NonUniqueResultException
+     */
+    public function getPropertyByGroupAndExternalId(Group $group, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('p.property_groups', 'pg')
+            ->where('pm.holding = :holdingId')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pg.id = :groupId')
+            ->setParameter('holdingId', $group->getHolding()->getId())
+            ->setParameter('groupId', $group->getId())
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param Address $address
      *
      * @return Property

@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\ImportPropertyRepository;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Entity\PropertyRepository;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Entity\UnitMappingRepository;
@@ -42,6 +43,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
+        $importProperty->setExternalPropertyId($extPropertyId);
 
         $iterableResultFromDb = $this->getBaseMock('\Doctrine\ORM\Internal\Hydration\IterableResult');
         $iterableResultFromDb->expects($this->exactly(2))
@@ -54,14 +56,23 @@ class PropertyLoaderCase extends UnitTestBase
             ->with($this->equalTo($import), $this->equalTo($extPropertyId))
             ->will($this->returnValue($iterableResultFromDb));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $emMock = $this->getEntityManagerMock();
-        $emMock->expects($this->once())
+        $emMock->expects($this->at(0))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
             ->will($this->returnValue($repositoryMock));
+        $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
         $emMock->expects($this->once())
-            ->method('flush')
-            ->with($this->equalTo($importProperty));
+            ->method('flush');
 
         $loader = new MappedLoader(
             $emMock,
@@ -83,7 +94,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateNewSinglePropertyAndSetCorrectStatusFroImportProperty()
+    public function shouldCreateNewSinglePropertyAndSetCorrectStatusForImportProperty()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -119,11 +130,23 @@ class PropertyLoaderCase extends UnitTestBase
             ->with($this->equalTo($import), $this->equalTo($extPropertyId))
             ->will($this->returnValue($iterableResultFromDb));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $emMock = $this->getEntityManagerMock();
-        $emMock->expects($this->once())
+        $emMock->expects($this->at(0))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
             ->will($this->returnValue($repositoryMock));
+        $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->exactly(2))
+            ->method('persist');
         $emMock->expects($this->exactly(2))
             ->method('flush');
 
@@ -174,7 +197,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateNewMultiPropertyAndSetCorrectStatusFroImportProperty()
+    public function shouldCreateNewMultiPropertyAndSetCorrectStatusForImportProperty()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -216,6 +239,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('getMappingForImport')
             ->will($this->returnValue(null));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $emMock = $this->getEntityManagerMock();
         $emMock->expects($this->at(0))
             ->method('getRepository')
@@ -223,15 +252,22 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->at(1))
             ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->at(2))
+            ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
-        ->method('persist')
+        // it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(4))
+            ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\PropertyMapping')
             );
 
         /**
@@ -283,7 +319,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateNewUnitForExistsPropertyAndSetCorrectStatusFroImportProperty()
+    public function shouldCreateNewUnitForExistsPropertyAndSetCorrectStatusForImportProperty()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -315,6 +351,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('next')
             ->will($this->onConsecutiveCalls([$importProperty], false));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
@@ -333,15 +375,22 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->at(1))
             ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->at(2))
+            ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
-        ->method('persist')
+        // it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(4))
+            ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\PropertyMapping')
             );
 
         /**
@@ -392,7 +441,7 @@ class PropertyLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldJustSetCorrectStatusFroImportPropertyIfUnitIsFound()
+    public function shouldJustSetCorrectStatusForImportPropertyIfUnitIsFound()
     {
         $holding = new Holding();
         $this->writeIdAttribute($holding, 1);
@@ -426,6 +475,12 @@ class PropertyLoaderCase extends UnitTestBase
         $unitMapping->setUnit($unit);
         $unit->setUnitMapping($unitMapping);
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $iterableResultFromDb = $this->getBaseMock('\Doctrine\ORM\Internal\Hydration\IterableResult');
         $iterableResultFromDb->expects($this->exactly(2))
             ->method('next')
@@ -449,15 +504,21 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->at(1))
             ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->at(2))
+            ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(4))// it checks creating Unit and UnitMapping
         ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\PropertyMapping')
             );
 
         /**
@@ -547,6 +608,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('next')
             ->will($this->onConsecutiveCalls([$importProperty], false));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
@@ -564,6 +631,10 @@ class PropertyLoaderCase extends UnitTestBase
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->at(2))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($unitMappingRepositoryMock));
@@ -604,7 +675,7 @@ class PropertyLoaderCase extends UnitTestBase
             'Status is not updated'
         );
         $this->assertContains(
-            'Unit#1 found by external unit id and group but do not belong to processing property',
+            'Unit#1 found by external unit id and group but do not belong to processing Property#1',
             current($importProperty->getErrorMessages()),
             'Message is not updated'
         );
@@ -653,6 +724,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('next')
             ->will($this->onConsecutiveCalls([$importProperty], false));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
@@ -670,6 +747,10 @@ class PropertyLoaderCase extends UnitTestBase
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+        $emMock->expects($this->at(2))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($unitMappingRepositoryMock));
@@ -768,6 +849,12 @@ class PropertyLoaderCase extends UnitTestBase
             ->method('next')
             ->will($this->onConsecutiveCalls([$importProperty], false));
 
+        $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
+        $propertyRepositoryMock->expects($this->once())
+            ->method('getPropertyByGroupAndExternalId')
+            ->with($this->equalTo($group), $this->equalTo($extPropertyId))
+            ->willReturn(null);
+
         $repositoryMock = $this->getImportPropertyRepositoryMock();
         $repositoryMock->expects($this->once())
             ->method('getNotProcessedImportProperties')
@@ -775,10 +862,15 @@ class PropertyLoaderCase extends UnitTestBase
             ->will($this->returnValue($iterableResultFromDb));
 
         $emMock = $this->getEntityManagerMock();
-        $emMock->expects($this->once())
+        $emMock->expects($this->at(0))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
             ->will($this->returnValue($repositoryMock));
+        $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:Property'))
+            ->will($this->returnValue($propertyRepositoryMock));
+
         $emMock->expects($this->once())
             ->method('flush')
             ->with($this->equalTo($importProperty));

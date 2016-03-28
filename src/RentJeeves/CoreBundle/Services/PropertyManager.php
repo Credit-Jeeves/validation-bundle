@@ -68,33 +68,6 @@ class PropertyManager
     }
 
     /**
-     * Sometimes we have to add properties manually -- because they are new construction or
-     * not deliverable by the USPS.
-     *
-     * When adding a property address manually, be sure to use this method to generate the index
-     * Or it may not be found.  You have been warned!
-     *
-     * Example:
-     *
-     *      Takes this Address: "3217 S. Babcock St Melbourne FL"
-     *      And returns this index: "3217sbabcockstmelbourneflinvalidaddress"
-     *
-     * @param $number
-     * @param $street
-     * @param $city
-     * @param $state
-     * @return string
-     */
-    public static function generateInvalidAddressIndex($number, $street, $city, $state)
-    {
-        $index = sprintf('%s%s%s%sinvalidaddress', $number, $street, $city, $state);
-        $index = str_replace(' ', '', $index);
-        $index = str_replace('.', '', $index);
-        $index = strtolower($index);
-        return $index;
-    }
-
-    /**
      *
      * Sets the property as a single unit property and returns the single unit.
      *
@@ -218,14 +191,7 @@ class PropertyManager
             return null;
         }
 
-        $newProperty = new Property();
-        $propertyAddress = new PropertyAddress();
-
-        $propertyAddress->setAddressFields($address);
-
-        $newProperty->setPropertyAddress($propertyAddress);
-
-        return $newProperty;
+        return $this->createPropertyByAddress($address);
     }
 
     /**
@@ -276,6 +242,7 @@ class PropertyManager
         $invalidAddressIndex = self::generateInvalidAddressIndex($number, $street, $city, $state);
         if (null !== $property = $this->findByInvalidIndex($invalidAddressIndex)) {
             $this->logger->debug(sprintf('Found manually added property(%s)', $property->getId()));
+
             return $property;
         }
 
@@ -308,10 +275,10 @@ class PropertyManager
     }
 
     /**
-     *
      * Here is where we look for those invalid property addresses that had to be added manually
      *
      * @param $index
+     *
      * @return null|Property
      */
     protected function findByInvalidIndex($index)
@@ -329,6 +296,52 @@ class PropertyManager
         }
 
         return null;
+    }
+
+    /**
+     * Sometimes we have to add properties manually -- because they are new construction or
+     * not deliverable by the USPS.
+     *
+     * When adding a property address manually, be sure to use this method to generate the index
+     * Or it may not be found.  You have been warned!
+     *
+     * Example:
+     *
+     *      Takes this Address: "3217 S. Babcock St Melbourne FL"
+     *      And returns this index: "3217sbabcockstmelbourneflinvalidaddress"
+     *
+     * @param string $number
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     *
+     * @return string
+     */
+    protected function generateInvalidAddressIndex($number, $street, $city, $state)
+    {
+        $index = sprintf('%s%s%s%sinvalidaddress', $number, $street, $city, $state);
+        $index = str_replace(' ', '', $index);
+        $index = str_replace('.', '', $index);
+        $index = strtolower($index);
+
+        return $index;
+    }
+
+    /**
+     * @param Address $address
+     *
+     * @return Property
+     */
+    protected function createPropertyByAddress(Address $address)
+    {
+        $newProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
     }
 
     /**

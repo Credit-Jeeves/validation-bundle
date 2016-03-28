@@ -34,6 +34,10 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
         $countImportPropertyBeforeImport = count($allImportProperties);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $countAllPropertiesBeforeImport = count($allProperties);
+
+        $allPropertyGroups = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
+
         $allPropertiesAddresses = $this->getEntityManager()->getRepository('RjDataBundle:PropertyAddress')->findAll();
         $countAllPropertyAddressesBeforeImport = count($allPropertiesAddresses);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
@@ -56,7 +60,8 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
         $countAllUnitsAfterImport = count($allUnits);
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
-
+        $allPropertyGroupsAfterImport = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
         $this->assertEquals(
             $countImportPropertyBeforeImport + 53, // 53 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
@@ -71,6 +76,11 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
             $countAllPropertyAddressesBeforeImport + 8, // 8 new PropertyAddress
             $countAllPropertiesAddressAfterImport,
             'PropertyAddress is not created.'
+        );
+        $this->assertEquals(
+            $allPropertyGroups + 8, // 8 new PropertyGroup
+            $allPropertyGroupsAfterImport,
+            'PropertyGroup is not created.'
         );
         $this->assertEquals(
             $countAllUnitsBeforeImport + 8, // 8 new Units

@@ -124,10 +124,10 @@ class MappedLoader implements PropertyLoaderInterface
             if (!$property->isSingle()) {
                 $unit = $this->processUnit($property, $importProperty);
             }
-            $this->em->flush([
-                $property,
-                $property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding())
-            ]);
+
+            $this->em->persist($property);
+            $this->em->persist($property->getPropertyMappingByHolding($importProperty->getImport()->getGroup()->getHolding()));
+            $this->em->flush();
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
@@ -173,15 +173,7 @@ class MappedLoader implements PropertyLoaderInterface
     protected function processProperty(ImportProperty $importProperty)
     {
         $group = $importProperty->getImport()->getGroup();
-        $property = $this->propertyManager->getOrCreatePropertyByAddress(
-            $importProperty->getAddress1(),
-            null,
-            $importProperty->getCity(),
-            $importProperty->getState(),
-            $importProperty->getZip()
-        );
-
-        if (null === $property) { // ImportProperty has incorrect address
+        if (null === $property = $this->getPropertyByImportProperty($importProperty)) {
             $this->logger->alert(
                 $message = sprintf(
                     'Address is invalid for ImportProperty#%d',
@@ -278,8 +270,9 @@ class MappedLoader implements PropertyLoaderInterface
             ) {
                 $this->logger->warning(
                     $message = sprintf(
-                        'Unit#%d found by external unit id and group but do not belong to processing property',
-                        $unitMapping->getUnit()->getId()
+                        'Unit#%d found by external unit id and group but do not belong to processing Property#%d',
+                        $unitMapping->getUnit()->getId(),
+                        $property->getId()
                     ),
                     [
                         'group' => $importProperty->getImport()->getGroup(),
@@ -373,6 +366,45 @@ class MappedLoader implements PropertyLoaderInterface
     }
 
     /**
+     * @param ImportProperty $importProperty
+     *
+     * @return Property|null
+     */
+    protected function getPropertyByImportProperty(ImportProperty $importProperty)
+    {
+        $this->logger->debug(
+            sprintf('Try to find Property by Group and extPropertyId.', $importProperty->getId()),
+            [
+                'group' => $importProperty->getImport()->getGroup(),
+                'additional_parameter' => $importProperty->getExternalPropertyId()
+            ]
+        );
+        $property = $this->getPropertyRepository()->getPropertyByGroupAndExternalId(
+            $importProperty->getImport()->getGroup(),
+            $importProperty->getExternalPropertyId()
+        );
+
+        if (null === $property) {
+            $this->logger->debug(
+                sprintf('Property not found by Group and extPropertyId.', $importProperty->getId()),
+                [
+                    'group' => $importProperty->getImport()->getGroup(),
+                    'additional_parameter' => $importProperty->getExternalPropertyId()
+                ]
+            );
+            $property = $this->propertyManager->getOrCreatePropertyByAddress(
+                $importProperty->getAddress1(),
+                null,
+                $importProperty->getCity(),
+                $importProperty->getState(),
+                $importProperty->getZip()
+            );
+        }
+
+        return $property;
+    }
+
+    /**
      * @param Unit $unit
      *
      * @throws ImportLogicException if Unit is not valid
@@ -391,5 +423,13 @@ class MappedLoader implements PropertyLoaderInterface
                 sprintf('Unit is not valid: %s', implode(', ', array_values($errors)))
             );
         }
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\PropertyRepository
+     */
+    protected function getPropertyRepository()
+    {
+        return $this->em->getRepository('RjDataBundle:Property');
     }
 }

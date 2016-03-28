@@ -4,6 +4,7 @@ namespace RentJeeves\ImportBundle\Tests\Functional\PropertyImport;
 
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient;
@@ -53,7 +54,6 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $this->getContainer()->set('soap.client.yardi.resident_transactions', $residentTransactionsMock);
         $this->getContainer()->set('soap.client.yardi.resident_data', $residentDataClientMock);
 
-
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
         $admin = $this->getEntityManager()->getRepository('DataBundle:Admin')->find(1);
         $newImport = new Import();
@@ -65,7 +65,6 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $this->getEntityManager()->persist($newImport);
         $this->getEntityManager()->flush();
 
-
         $allImportProperties = $this->getEntityManager()->getRepository('RjDataBundle:ImportProperty')->findAll();
         $countImportPropertyBeforeImport = count($allImportProperties);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
@@ -76,6 +75,9 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $countAllUnitsBeforeImport = count($allUnits);
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsBeforeImport = count($allUnitMappings);
+
+        $allPropertyGroups = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
 
         $this->getImportPropertyManager()->import($newImport, 'rnttrk01');
         $importProperties = $newImport->getImportProperties();
@@ -100,6 +102,9 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
+        $allPropertyGroupsAfterImport = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
+
         $this->assertEquals(
             $countImportPropertyBeforeImport + 1, // 1 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
@@ -116,6 +121,11 @@ class YardiImportPropertyManagerCase extends BaseTestCase
             'PropertyAddress is not created.'
         );
         $this->assertEquals(
+            $allPropertyGroups + 1, // 1 new PropertyGroup
+            $allPropertyGroupsAfterImport,
+            'PropertyGroup is not created.'
+        );
+        $this->assertEquals(
             $countAllUnitsBeforeImport + 1, // 1 new Unit
             $countAllUnitsAfterImport,
             'Unit is not created.'
@@ -125,7 +135,6 @@ class YardiImportPropertyManagerCase extends BaseTestCase
             $countAllUnitMappingsAfterImport,
             'Unit Mappint is not created.'
         );
-
     }
 
     /**
