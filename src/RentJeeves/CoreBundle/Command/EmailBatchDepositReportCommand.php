@@ -190,11 +190,8 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
             if (($i + 1) == $count || $data[$i]['batchId'] != $data[$i + 1]['batchId']) {
                 $depositType = $data[$i]['depositAccountType'];
                 $friendlyName = $data[$i]['friendlyName'];
-                if (!empty($friendlyName)) {
-                    $depositType = $friendlyName;
-                } else {
-                    $depositType = DepositAccountType::title($depositType);
-                }
+                $depositType = !empty($friendlyName) ? $friendlyName : DepositAccountType::title($depositType);
+
                 $preparedData[] = [
                     'batchId' => $data[$i]['batchId'],
                     'paymentType' => $data[$i]['paymentType'],
