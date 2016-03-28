@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
@@ -38,17 +39,24 @@ class MatchFileType extends AbstractType
     protected $defaultValue;
 
     /**
+     * @var Group
+     */
+    protected $group;
+
+    /**
+     * @param Group               $group
      * @param Translator          $translator
      * @param ImportGroupSettings $settings
      * @param integer             $rowNumber
      * @param array               $defaultValue
      */
-    public function __construct(Translator $translator, ImportGroupSettings $settings, $rowNumber, array $defaultValue)
+    public function __construct(Group $group, Translator $translator, ImportGroupSettings $settings, $rowNumber, array $defaultValue)
     {
         $this->numberRow  = $rowNumber;
         $this->translator = $translator;
         $this->settings = $settings;
         $this->defaultValue = $defaultValue;
+        $this->group = $group;
     }
 
     /**
@@ -68,7 +76,6 @@ class MatchFileType extends AbstractType
     {
         $choicesRequired =  [
             ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance'),
-            ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId'),
             ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('common.tenant_name'),
             ImportMapping::KEY_RENT            => $this->translator->trans('import.rent'),
             ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end'),
@@ -85,13 +92,20 @@ class MatchFileType extends AbstractType
             ImportMapping::KEY_CREDITS              => $this->translator->trans('common.open_credits'),
             ImportMapping::KEY_PAYMENT_ACCEPTED     => $this->translator->trans('common.payment_accepted'),
             ImportMapping::KEY_TENANT_STATUS        => $this->translator->trans('common.tenant.status'),
-            ImportMapping::KEY_EXTERNAL_LEASE_ID    => $this->translator->trans('common.lease_id'),
         ];
 
         if ($this->settings->getImportType() === ImportType::MULTI_GROUPS) {
             $choicesRequired[ImportMapping::KEY_GROUP_ACCOUNT_NUMBER] = $this
                 ->translator
                 ->trans('import.group_account_number');
+        }
+
+
+        if ($this->group->isAllowedEditResidentId() === false) {
+            $choicesRequired[ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans('import.residentId');
+            $choicesNoneRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
+        } else {
+            $choicesRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
         }
 
         if ($this->settings->getImportType() === ImportType::MULTI_PROPERTIES) {
