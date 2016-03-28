@@ -180,12 +180,29 @@ abstract class HandlerAbstract implements HandlerInterface
      *
      * @var bool
      */
-    public $isSupportResidentId = true;
+    protected $isSupportResidentId = true;
 
     public function __construct()
     {
         ini_set('auto_detect_line_endings', true);
         $this->currentImportModel = new ModelImport();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSupportResidentId()
+    {
+        if ($this->isSupportResidentId === false) {
+            return false;
+        }
+
+        $group = $this->getGroup($this->currentImportModel->getRow());
+        if ($group->isAllowedEditResidentId() === true) {
+            return false;
+        }
+
+        return true;
     }
 
     public function updateMatchedContracts()
@@ -434,7 +451,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $token = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $this->currentImportModel->setCsrfToken($token);
 
-        if ($this->isSupportResidentId) {
+        if ($this->isSupportResidentId()) {
             $this->setResident($row);
         }
 
@@ -776,7 +793,7 @@ abstract class HandlerAbstract implements HandlerInterface
                 $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
                     $this->currentImportModel->getTenant(),
                     $this->currentImportModel->getContractWaiting(),
-                    $this->isSupportResidentId
+                    $this->isSupportResidentId()
                 );
 
                 $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());

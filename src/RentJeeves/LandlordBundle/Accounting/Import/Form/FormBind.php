@@ -117,7 +117,7 @@ trait FormBind
             $this->isNeedSendInvite = true;
         }
 
-        if ($this->isSupportResidentId) {
+        if ($this->isSupportResidentId()) {
             $residentMapping = $form->get('residentMapping')->getData();
             $this->currentImportModel->setResidentMapping($residentMapping);
         }

@@ -45,7 +45,7 @@ trait Forms
                 $isUseToken,
                 $isMultipleProperty = $this->storage->isMultipleProperty(),
                 true,
-                $this->isSupportResidentId
+                $this->isSupportResidentId()
             )
         );
     }
@@ -63,7 +63,7 @@ trait Forms
                 $this->translator,
                 $this->currentImportModel,
                 $isMultipleProperty = $this->storage->isMultipleProperty(),
-                $this->isSupportResidentId
+                $this->isSupportResidentId()
             )
         );
     }
@@ -118,7 +118,7 @@ trait Forms
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
-            if ($this->isSupportResidentId) {
+            if ($this->isSupportResidentId()) {
                 $form->get('residentMapping')->setData($this->currentImportModel->getResidentMapping());
             }
             if ($this->storage->isMultipleProperty()) {
@@ -136,7 +136,7 @@ trait Forms
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-            if ($this->isSupportResidentId) {
+            if ($this->isSupportResidentId()) {
                 $form->get('contract')->get('residentMapping')->setData(
                     $this->currentImportModel->getResidentMapping()
                 );
