@@ -3,6 +3,7 @@
 namespace RentJeeves\DataBundle;
 
 use RentJeeves\DataBundle\DBAL\Types\DateTimeType;
+use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Doctrine\DBAL\Types\Type;
 
@@ -54,6 +55,7 @@ class RjDataBundle extends Bundle
             Type::addType('ImportPropertyStatus', 'RentJeeves\DataBundle\Enum\ImportPropertyStatus');
             Type::addType('TrustedLandlordStatus', 'RentJeeves\DataBundle\Enum\TrustedLandlordStatus');
             Type::addType('TrustedLandlordType', 'RentJeeves\DataBundle\Enum\TrustedLandlordType');
+            Type::addType('ProfitStarsBatchStatus', ProfitStarsBatchStatus::class);
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
