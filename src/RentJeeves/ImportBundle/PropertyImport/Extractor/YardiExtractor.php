@@ -109,7 +109,7 @@ class YardiExtractor implements ApiExtractorInterface
     protected function getFullResidentsList($externalPropertyId)
     {
         $property = $this->getProperty($externalPropertyId);
-        $residentTransaction = $this->residentDataManager->getResidentTransactions($externalPropertyId);
+        $residentTransaction = $this->getResidentTransactionData();
         $listOfFullResident = [];
         /** @var ResidentTransactionPropertyCustomer $transaction */
         foreach ($residentTransaction as $transaction) {
@@ -198,5 +198,21 @@ class YardiExtractor implements ApiExtractorInterface
         }
 
         return null;
+    }
+
+    /**
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer[]
+     * @throws ImportExtractorException
+     */
+    protected function getResidentTransactionData()
+    {
+        $residentTransactions = $this->residentDataManager->getResidentTransactions($this->externalPropertyId);
+        if (empty($residentTransactions)) {
+            throw new ImportExtractorException(
+                sprintf('No property data found for Yardi property(%s)', $this->externalPropertyId)
+            );
+        }
+
+        return $residentTransactions;
     }
 }
