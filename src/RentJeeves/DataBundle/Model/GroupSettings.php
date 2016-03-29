@@ -238,6 +238,34 @@ abstract class GroupSettings
      * @var boolean
      *
      * @ORM\Column(
+     *     type="boolean",
+     *     name="allowed_credit_card",
+     *     options={
+     *         "default" : 1
+     *     },
+     *     nullable=false
+     * )
+     */
+    protected $allowedCreditCard = true;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
+     *     type="boolean",
+     *     name="allowed_ach",
+     *     options={
+     *         "default" : 1
+     *     },
+     *     nullable=false
+     * )
+     */
+    protected $allowedACH = true;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(
      *      type="boolean",
      *      name="allowed_debit_fee",
      *      options={
@@ -607,6 +635,38 @@ abstract class GroupSettings
     public function setAutoApproveContracts($isAutoApproveContracts)
     {
         $this->autoApproveContracts = $isAutoApproveContracts;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedCreditCard()
+    {
+        return $this->allowedCreditCard;
+    }
+
+    /**
+     * @param boolean $allowedCreditCard
+     */
+    public function setAllowedCreditCard($allowedCreditCard)
+    {
+        $this->allowedCreditCard = $allowedCreditCard;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAllowedACH()
+    {
+        return $this->allowedACH;
+    }
+
+    /**
+     * @param boolean $allowedACH
+     */
+    public function setAllowedACH($allowedACH)
+    {
+        $this->allowedACH = $allowedACH;
     }
 
     /**
