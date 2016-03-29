@@ -26,6 +26,8 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
+use ACI\Client\CollectPay\Enum\BankAccountType as AciBankAccountTypeEnum;
+use RentJeeves\DataBundle\Enum\BankAccountType as BankAccountTypeEnum;
 
 /**
  * Service`s name "aci_profiles_importer"
@@ -184,6 +186,24 @@ class CsvImporter
     }
 
     /**
+     * @param string $aciBankAccountType
+     * @return string|null
+     */
+    protected function getRentTrackBankAccountType($aciBankAccountType)
+    {
+        switch ($aciBankAccountType) {
+            case AciBankAccountTypeEnum::PERSONAL_CHECKING:
+                return BankAccountTypeEnum::CHECKING;
+            case AciBankAccountTypeEnum::PERSONAL_SAVINGS:
+                return BankAccountTypeEnum::SAVINGS;
+            case AciBankAccountTypeEnum::BUSINESS_CHECKING:
+                return BankAccountTypeEnum::BUSINESS_CHECKING;
+            default:
+                return null;
+        }
+    }
+
+    /**
      * @param AccountResponseRecord $record
      * @param AciImportProfileMap   $aciProfileMap
      */
@@ -288,7 +308,7 @@ class CsvImporter
         $newPaymentAccount->setName($paymentAccount->getName());
         $newPaymentAccount->setLastFour($paymentAccount->getLastFour());
         $newPaymentAccount->setToken($record->getFundingAccountId());
-        $newPaymentAccount->setBankAccountType($paymentAccount->getBankAccountType());
+        $newPaymentAccount->setBankAccountType($this->getRentTrackBankAccountType($record->getBankAccountSubType()));
 
         if ($newPaymentAccount->getType() === PaymentAccountType::CARD) {
             $expirationDate = new \DateTime(sprintf(
@@ -333,7 +353,7 @@ class CsvImporter
         $newBillingAccount->setToken($record->getFundingAccountId());
         $newBillingAccount->setNickname($billingAccount->getName());
         $newBillingAccount->setLastFour($billingAccount->getLastFour());
-        $newBillingAccount->setBankAccountType($billingAccount->getBankAccountType());
+        $newBillingAccount->setBankAccountType($this->getRentTrackBankAccountType($record->getBankAccountSubType()));
         $newBillingAccount->setIsActive($billingAccount->getIsActive());
 
         $this->em->persist($newBillingAccount);
