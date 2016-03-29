@@ -33,7 +33,6 @@ class OrderPayDirectStatusManagerCase extends BaseTestCase
         $orderStatusManager->setComplete($order);
 
         $this->assertCount(1, $emailPlugin->getPreSendMessages(), '1 email is expected to be sent');
-        print_r($emailPlugin->getPreSendMessage(0)->getBody());
         $this->assertEquals('Your Rent is Paid!', $emailPlugin->getPreSendMessage(0)->getSubject());
 
         $emailPlugin->clean();
