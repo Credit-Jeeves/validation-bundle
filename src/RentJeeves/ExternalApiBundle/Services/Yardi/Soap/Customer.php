@@ -44,7 +44,7 @@ class Customer
     }
 
     /**
-     * @return string
+     * @return CustomerAddress
      */
     public function getCustomerAddress()
     {
@@ -52,7 +52,7 @@ class Customer
     }
 
     /**
-     * @param string $customerAddress
+     * @param CustomerAddress $customerAddress
      */
     public function setCustomerAddress($customerAddress)
     {

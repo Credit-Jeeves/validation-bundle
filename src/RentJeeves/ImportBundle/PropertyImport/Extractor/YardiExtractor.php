@@ -115,7 +115,8 @@ class YardiExtractor implements ApiExtractorInterface
         foreach ($residentTransaction as $transaction) {
             $fullResident = new FullResident();
             $fullResident->setProperty($property);
-            $fullResident->setResidentTransactionUnit($transaction->getUnit());
+            $fullResident->setResidentTransactionPropertyCustomer($transaction);
+            //Sadly, PMs fill in the data wherever, so we have to be able to pull from either.
             $fullResident->setResidentData($this->getResidentData($property, $transaction->getCustomerId()));
             $listOfFullResident[] = $fullResident;
         }
@@ -194,8 +195,8 @@ class YardiExtractor implements ApiExtractorInterface
                 $message,
                 ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
             );
-
-            throw new ImportExtractorException($message);
         }
+
+        return null;
     }
 }

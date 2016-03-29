@@ -3,6 +3,7 @@
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
 class YardiVirtuRosemontTransformer extends YardiTransformer
@@ -12,7 +13,15 @@ class YardiVirtuRosemontTransformer extends YardiTransformer
      */
     protected function getAddress1(FullResident $accountingSystemRecord)
     {
-        return $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
+        $customers = $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getCustomers()->getCustomer();
+        /**
+         * We have array here and I don't know what exactly user address I should get, so I get first
+         *
+         * @var Customer $customer
+         */
+        $customer = reset($customers);
+
+        return $customer->getCustomerAddress()->getCustomerAddress1();
     }
 
     /**
