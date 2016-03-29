@@ -5,6 +5,8 @@ namespace RentJeeves\ExternalApiBundle\Model\Yardi;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property as YardiProperty;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionUnit;
 
 class FullResident
 {
@@ -22,6 +24,28 @@ class FullResident
      * @var YardiProperty
      */
     protected $property;
+
+    /**
+     * @var ResidentTransactionUnit
+     */
+    protected $ResidentTransactionPropertyCustomer;
+
+    /**
+     * @return ResidentTransactionPropertyCustomer
+     */
+    public function getResidentTransactionPropertyCustomer()
+    {
+        return $this->ResidentTransactionPropertyCustomer;
+    }
+
+    /**
+     * @param ResidentTransactionPropertyCustomer $ResidentTransactionPropertyCustomer
+     */
+    public function setResidentTransactionPropertyCustomer(
+        ResidentTransactionPropertyCustomer $ResidentTransactionPropertyCustomer
+    ) {
+        $this->ResidentTransactionPropertyCustomer = $ResidentTransactionPropertyCustomer;
+    }
 
     /**
      * @return YardiProperty
@@ -50,7 +74,7 @@ class FullResident
     /**
      * @param ResidentLeaseFile $residentData
      */
-    public function setResidentData(ResidentLeaseFile $residentData)
+    public function setResidentData(ResidentLeaseFile $residentData = null)
     {
         $this->residentData = $residentData;
     }

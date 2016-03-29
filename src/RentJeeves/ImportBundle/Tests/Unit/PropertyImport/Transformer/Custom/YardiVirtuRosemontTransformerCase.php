@@ -5,10 +5,12 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Transformer\Custom;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnitAddress;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\CustomerAddress;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customers;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionUnit;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\Custom\YardiVirtuRosemontTransformer;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -26,14 +28,15 @@ class YardiVirtuRosemontTransformerCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $em = $this->getEntityManagerMock();
         $fullResident = new FullResident();
+        $fullResident->setResidentTransactionPropertyCustomer(new ResidentTransactionPropertyCustomer());
+        $customers = new Customers();
+        $customers->addCustomer($customer = new Customer());
+        $fullResident->getResidentTransactionPropertyCustomer()->setUnit($unit = new ResidentTransactionUnit());
+        $unit->setUnitId('Test');
+        $fullResident->getResidentTransactionPropertyCustomer()->setCustomers($customers);
+        $customer->setCustomerAddress(new CustomerAddress());
+        $customer->getCustomerAddress()->setCustomerAddress1('Fishermans Dr');
         $property = new Property();
-        $residentData = new ResidentLeaseFile();
-        $unit = new LeaseFileUnit();
-        $address = new LeaseFileUnitAddress();
-        $unit->setUnitAddress($address);
-        $address->setUnitAddressLine1('Test address');
-        $residentData->setUnit($unit);
-        $fullResident->setResidentData($residentData);
         $fullResident->setProperty($property);
 
         $transformer = new YardiVirtuRosemontTransformer($em, $logger);
@@ -43,7 +46,7 @@ class YardiVirtuRosemontTransformerCase extends UnitTestBase
         $this->assertCount(1, $import->getImportProperties());
         /** @var ImportProperty $importProperty */
         $importProperty = $import->getImportProperties()->get(0);
-        $this->assertEquals('Test address', $importProperty->getAddress1(), 'Address should map correct');
+        $this->assertEquals('Fishermans Dr', $importProperty->getAddress1(), 'Address should map correct');
         $this->assertEmpty($importProperty->getUnitName(), 'We should don\'t have unit name for that transformer');
     }
 }

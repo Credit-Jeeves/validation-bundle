@@ -23,21 +23,14 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $this->load(true);
 
         $residentDataClientMock = $this->getResidentDataClientMock();
-        $residentDataClientMock->expects($this->once())
-            ->method('getResidentData')
-            ->will($this->returnValue($this->getResidentDataResponse()));
 
-        $residentDataClientMock->expects($this->once())
-            ->method('getResidents')
-            ->will($this->returnValue($this->getResidentsResponse()));
-
-        $residentDataClientMock->expects($this->exactly(2))
+        $residentDataClientMock->expects($this->never())
             ->method('setSettings');
 
-        $residentDataClientMock->expects($this->exactly(2))
+        $residentDataClientMock->expects($this->never())
             ->method('build');
 
-        $residentDataClientMock->expects($this->exactly(1))
+        $residentDataClientMock->expects($this->never())
             ->method('isError');
 
         $residentTransactionsMock = $this->getResidentTransactionsClientMock();
@@ -46,9 +39,13 @@ class YardiImportPropertyManagerCase extends BaseTestCase
             ->will($this->returnValue($this->getPropertyConfigurationsResponse()));
 
         $residentTransactionsMock->expects($this->once())
+            ->method('getResidentTransactions')
+            ->will($this->returnValue($this->getResidentTransactionsResponse()));
+
+        $residentTransactionsMock->expects($this->exactly(2))
             ->method('setSettings');
 
-        $residentTransactionsMock->expects($this->once())
+        $residentTransactionsMock->expects($this->exactly(2))
             ->method('build');
 
         $this->getContainer()->set('soap.client.yardi.resident_transactions', $residentTransactionsMock);
@@ -81,7 +78,7 @@ class YardiImportPropertyManagerCase extends BaseTestCase
 
         $this->getImportPropertyManager()->import($newImport, 'rnttrk01');
         $importProperties = $newImport->getImportProperties();
-        $this->assertCount(1, $importProperties, 'Should transform response');
+        $this->assertCount(48, $importProperties, 'Should transform response');
         /** @var ImportProperty $importProperty */
         $importProperty = $importProperties->get(0);
         $this->assertEquals('Santa Barbara', $importProperty->getCity(), 'City should map');
@@ -106,7 +103,7 @@ class YardiImportPropertyManagerCase extends BaseTestCase
             ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
 
         $this->assertEquals(
-            $countImportPropertyBeforeImport + 1, // 1 unique records(unique extUnitId) from response
+            $countImportPropertyBeforeImport + 48, // 48 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
@@ -126,12 +123,12 @@ class YardiImportPropertyManagerCase extends BaseTestCase
             'PropertyGroup is not created.'
         );
         $this->assertEquals(
-            $countAllUnitsBeforeImport + 1, // 1 new Unit
+            $countAllUnitsBeforeImport + 48, // 48 new Unit
             $countAllUnitsAfterImport,
             'Unit is not created.'
         );
         $this->assertEquals(
-            $countAllUnitMappingsBeforeImport + 1, // 1 new Unit Mapping
+            $countAllUnitMappingsBeforeImport + 48, // 48 new Unit Mapping
             $countAllUnitMappingsAfterImport,
             'Unit Mappint is not created.'
         );
@@ -152,7 +149,7 @@ class YardiImportPropertyManagerCase extends BaseTestCase
     {
         return $this->getMock(
             'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient',
-            ['getPropertyConfigurations', 'setSettings', 'build'],
+            ['getPropertyConfigurations', 'setSettings', 'build', 'getResidentTransactions'],
             [],
             '',
             '',
@@ -167,7 +164,7 @@ class YardiImportPropertyManagerCase extends BaseTestCase
     {
         return $this->getMock(
             'RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentDataClient',
-            ['getResidentData', 'getResidents', 'setSettings', 'build', 'isError'],
+            ['getResidentData', 'setSettings', 'build', 'isError'],
             [],
             '',
             '',
@@ -192,33 +189,15 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         return $getPropertyConfigurationsResponse;
     }
 
-    /**
-     * @return GetResidentDataResponse
-     */
-    protected function getResidentDataResponse()
+    protected function getResidentTransactionsResponse()
     {
         $pathToFile = $this->getFileLocator()->locate(
-            '@ImportBundle/Tests/Fixtures/getResidentDataResponse.xml'
+            '@ImportBundle/Tests/Fixtures/getResidentTransactionsResponse.xml'
         );
 
         return $this->deserialize(
             file_get_contents($pathToFile),
-            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse'
-        );
-    }
-
-    /**
-     * @return GetResidentDataResponse
-     */
-    protected function getResidentsResponse()
-    {
-        $pathToFile = $this->getFileLocator()->locate(
-            '@ImportBundle/Tests/Fixtures/getResidentsResponse.xml'
-        );
-
-        return $this->deserialize(
-            file_get_contents($pathToFile),
-            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentsResponse'
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse'
         );
     }
 

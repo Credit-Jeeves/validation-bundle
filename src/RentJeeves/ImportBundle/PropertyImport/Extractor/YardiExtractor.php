@@ -9,6 +9,7 @@ use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager as YardiResidentDataManager;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
@@ -108,15 +109,13 @@ class YardiExtractor implements ApiExtractorInterface
     protected function getFullResidentsList($externalPropertyId)
     {
         $property = $this->getProperty($externalPropertyId);
-        $residents = $this->getResidents($property);
+        $residentTransaction = $this->getResidentTransactionData();
         $listOfFullResident = [];
-        /** @var ResidentsResident $resident */
-        foreach ($residents as $resident) {
+        /** @var ResidentTransactionPropertyCustomer $transaction */
+        foreach ($residentTransaction as $transaction) {
             $fullResident = new FullResident();
             $fullResident->setProperty($property);
-            $fullResident->setResident($resident);
-            $fullResident->setResidentData($this->getResidentData($property, $resident));
-
+            $fullResident->setResidentTransactionPropertyCustomer($transaction);
             $listOfFullResident[] = $fullResident;
         }
 
@@ -153,49 +152,18 @@ class YardiExtractor implements ApiExtractorInterface
     }
 
     /**
-     * @param Property $property
-     *
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer[]
      * @throws ImportExtractorException
-     *
-     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident[]
      */
-    protected function getResidents(Property $property)
+    protected function getResidentTransactionData()
     {
-        $residents = $this->residentDataManager->getResidents($property->getCode());
-        if (empty($residents)) {
+        $residentTransactions = $this->residentDataManager->getResidentTransactions($this->externalPropertyId);
+        if (empty($residentTransactions)) {
             throw new ImportExtractorException(
-                sprintf('Can\'t find residents by externalPropertyID "%s"', $property->getCode())
+                sprintf('No property data found for Yardi property(%s)', $this->externalPropertyId)
             );
         }
 
-        return $residents;
-    }
-
-    /**
-     * @param Property          $property
-     * @param ResidentsResident $resident
-     *
-     * @throws ImportExtractorException
-     *
-     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile
-     */
-    protected function getResidentData(Property $property, ResidentsResident $resident)
-    {
-        try {
-            return $this->residentDataManager->getResidentData($resident->getCode(), $property->getCode());
-        } catch (\Exception $e) {
-            $message = sprintf(
-                'Can\'t get resident data for residentID:%s externalPropertyID: %s error: %s',
-                $resident->getCode(),
-                $property->getCode(),
-                $e->getMessage()
-            );
-            $this->logger->alert(
-                $message,
-                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
-            );
-
-            throw new ImportExtractorException($message);
-        }
+        return $residentTransactions;
     }
 }
