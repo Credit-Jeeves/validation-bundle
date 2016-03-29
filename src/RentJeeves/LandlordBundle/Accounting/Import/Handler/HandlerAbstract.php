@@ -198,8 +198,11 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $group = $this->getGroup($this->currentImportModel->getRow());
+        if ($group) {
+            return $group->isAllowedEditResidentId();
+        }
 
-        return $group->isAllowedEditResidentId();
+        return $this->isSupportResidentId;
     }
 
     public function updateMatchedContracts()

@@ -99,11 +99,11 @@ class ImportMatchFileType extends AbstractType
                 ->trans('import.group_account_number');
         }
 
-        if ($this->group->isAllowedEditResidentId() === false) {
-            $choicesRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
-        } else {
+        if ($this->group->isAllowedEditResidentId()) {
             $choicesRequired[ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans('import.residentId');
             $choicesNoneRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
+        } else {
+            $choicesRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
         }
 
         if ($this->storage->isMultipleProperty()) {

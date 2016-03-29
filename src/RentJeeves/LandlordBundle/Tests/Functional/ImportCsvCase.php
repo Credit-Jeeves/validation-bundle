@@ -1707,7 +1707,7 @@ class ImportCsvCase extends ImportBaseAbstract
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_lease_id_mri_bostonpost.csv');
+        $filePath = $this->getFixtureFilePathByName('import_lease_id_mri_bostonpost.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile = $this->getDomElement('.submitImportFile');
@@ -1728,7 +1728,6 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertCount(1, $trs, "Count statuses is wrong");
         $this->assertCount(2, $trs['import.status.new'], "Count contract with status 'new' wrong");
-        //$this->assertCount(1, $trs['import.status.match'], "Count contract with status 'match' wrong");
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         $this->getEntityManager()->clear();
@@ -1745,7 +1744,7 @@ class ImportCsvCase extends ImportBaseAbstract
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
-        $filePath = $this->getFilePathByName('import_lease_id_mri_bostonpost.csv');
+        $filePath = $this->getFixtureFilePathByName('import_lease_id_mri_bostonpost.csv');
         $attFile->attachFile($filePath);
         $this->setPropertyFirst();
         $submitImportFile = $this->getDomElement('.submitImportFile');

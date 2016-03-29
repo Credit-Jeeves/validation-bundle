@@ -50,8 +50,13 @@ class MatchFileType extends AbstractType
      * @param integer             $rowNumber
      * @param array               $defaultValue
      */
-    public function __construct(Group $group, Translator $translator, ImportGroupSettings $settings, $rowNumber, array $defaultValue)
-    {
+    public function __construct(
+        Group $group,
+        Translator $translator,
+        ImportGroupSettings $settings,
+        $rowNumber,
+        array $defaultValue
+    ) {
         $this->numberRow  = $rowNumber;
         $this->translator = $translator;
         $this->settings = $settings;
@@ -101,11 +106,11 @@ class MatchFileType extends AbstractType
         }
 
 
-        if ($this->group->isAllowedEditResidentId() === false) {
-            $choicesRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
-        } else {
+        if ($this->group->isAllowedEditResidentId()) {
             $choicesRequired[ImportMapping::KEY_RESIDENT_ID] = $this->translator->trans('import.residentId');
             $choicesNoneRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
+        } else {
+            $choicesRequired[ImportMapping::KEY_EXTERNAL_LEASE_ID] = $this->translator->trans('common.lease_id');
         }
 
         if ($this->settings->getImportType() === ImportType::MULTI_PROPERTIES) {
