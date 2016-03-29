@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -475,6 +476,20 @@ abstract class Group
      * @Assert\NotBlank(groups={"landlordImport"})
      */
     protected $externalGroupId;
+
+    /**
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\TrustedLandlord",
+     *      inversedBy="group"
+     * )
+     * @ORM\JoinColumn(
+     *      name="trusted_landlord_id",
+     *      referencedColumnName="id"
+     * )
+     *
+     * @var TrustedLandlord
+     */
+    protected $trustedLandlord;
 
     public function __construct()
     {
@@ -1544,5 +1559,21 @@ abstract class Group
         }
 
         return true;
+    }
+
+    /**
+     * @return TrustedLandlord
+     */
+    public function getTrustedLandlord()
+    {
+        return $this->trustedLandlord;
+    }
+
+    /**
+     * @param TrustedLandlord $trustedLandlord
+     */
+    public function setTrustedLandlord(TrustedLandlord $trustedLandlord)
+    {
+        $this->trustedLandlord = $trustedLandlord;
     }
 }
