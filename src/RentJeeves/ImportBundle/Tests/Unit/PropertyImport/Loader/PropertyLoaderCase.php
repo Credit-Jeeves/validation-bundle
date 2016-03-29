@@ -58,7 +58,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -132,7 +132,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -241,7 +241,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -353,7 +353,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -477,7 +477,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -610,7 +610,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -726,7 +726,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
@@ -851,7 +851,7 @@ class PropertyLoaderCase extends UnitTestBase
 
         $propertyRepositoryMock = $this->getBaseMock(PropertyRepository::class);
         $propertyRepositoryMock->expects($this->once())
-            ->method('getPropertyByGroupAndExternalId')
+            ->method('findAllByGroupAndExternalId')
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
