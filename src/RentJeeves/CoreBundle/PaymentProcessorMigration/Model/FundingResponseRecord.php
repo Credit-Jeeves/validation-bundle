@@ -131,6 +131,7 @@ class FundingResponseRecord
      * @var string
      *
      * @Assert\Length(min = 1, max = 20)
+     * @Assert\Choice(choices = {"PERSONAL CHECKING", "PERSONAL SAVINGS", "BUSINESS CHECKING", ""})
      */
     protected $bankAccountSubType;
 
