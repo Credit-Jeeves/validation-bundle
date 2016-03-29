@@ -23,17 +23,14 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         $this->load(true);
 
         $residentDataClientMock = $this->getResidentDataClientMock();
-        $residentDataClientMock->expects($this->any())
-            ->method('getResidentData')
-            ->will($this->returnValue($this->getResidentDataResponse()));
 
-        $residentDataClientMock->expects($this->any())
+        $residentDataClientMock->expects($this->never())
             ->method('setSettings');
 
-        $residentDataClientMock->expects($this->any())
+        $residentDataClientMock->expects($this->never())
             ->method('build');
 
-        $residentDataClientMock->expects($this->any())
+        $residentDataClientMock->expects($this->never())
             ->method('isError');
 
         $residentTransactionsMock = $this->getResidentTransactionsClientMock();
@@ -201,21 +198,6 @@ class YardiImportPropertyManagerCase extends BaseTestCase
         return $this->deserialize(
             file_get_contents($pathToFile),
             'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionsLoginResponse'
-        );
-    }
-
-    /**
-     * @return GetResidentDataResponse
-     */
-    protected function getResidentDataResponse()
-    {
-        $pathToFile = $this->getFileLocator()->locate(
-            '@ImportBundle/Tests/Fixtures/getResidentDataResponse.xml'
-        );
-
-        return $this->deserialize(
-            file_get_contents($pathToFile),
-            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse'
         );
     }
 
