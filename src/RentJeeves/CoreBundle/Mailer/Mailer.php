@@ -792,6 +792,23 @@ class Mailer extends BaseMailer
 
     /**
      * @param OrderPayDirect $order
+     * @return bool
+     */
+    public function sendOrderPayDirectCompleteNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'groupName' => $order->getGroupName(),
+            'amount' => $order->getSum(),
+            'date' => $order->getUpdatedAt()->format('m/d/Y'),
+        ];
+
+        return $this->sendBaseLetter('rjOrderPayDirectComplete', $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    /**
+     * @param OrderPayDirect $order
      *
      * @return bool
      */
