@@ -1,3 +1,14 @@
 parameters:
 
 services:
+    trusted_landlord_service:
+        class: RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+            - "@address_lookup_service"
+            - "@trusted_landlord.status_manager"
+
+    trusted_landlord.status_manager:
+        class: RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager
+        public: false
