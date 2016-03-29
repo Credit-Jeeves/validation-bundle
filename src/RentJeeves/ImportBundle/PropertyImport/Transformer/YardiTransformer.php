@@ -145,7 +145,7 @@ class YardiTransformer implements TransformerInterface
      */
     protected function getUnitName(FullResident $accountingSystemRecord)
     {
-        return $accountingSystemRecord->getResidentData()->getUnit()->getIdentification()->getUnitName();
+        return $accountingSystemRecord->getResidentTransactionUnit()->getUnitId();
     }
 
     /**

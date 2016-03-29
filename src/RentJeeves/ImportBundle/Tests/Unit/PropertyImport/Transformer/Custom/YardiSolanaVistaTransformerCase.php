@@ -5,10 +5,8 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Transformer\Custom;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnit;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\LeaseFileUnitIdentification;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionUnit;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\Custom\YardiSolanaVistaTransformer;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -26,17 +24,10 @@ class YardiSolanaVistaTransformerCase extends UnitTestBase
         $logger = $this->getLoggerMock();
         $em = $this->getEntityManagerMock();
         $fullResident = new FullResident();
+        $fullResident->setResidentTransactionUnit(new ResidentTransactionUnit());
+        $fullResident->getResidentTransactionUnit()->setUnitId('TEST');
         $property = new Property();
-        $residentData = new ResidentLeaseFile();
-        $unit = new LeaseFileUnit();
-        $identification = new LeaseFileUnitIdentification();
-        $identification->setUnitName('TEST');
-        $unit->setIdentification($identification);
-        $residentData->setUnit($unit);
-        $fullResident->setResidentData($residentData);
         $fullResident->setProperty($property);
-
-
         $transformer = new YardiSolanaVistaTransformer($em, $logger);
         $import = new Import();
         $import->setGroup(new Group());
