@@ -337,6 +337,27 @@ EOT;
     }
 
     /**
+     * @param Group  $group
+     * @param string $externalPropertyId
+     *
+     * @return Property[]
+     */
+    public function findAllByGroupAndExternalId(Group $group, $externalPropertyId)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.propertyMappings', 'pm')
+            ->innerJoin('p.property_groups', 'pg')
+            ->where('pm.holding = :holdingId')
+            ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->andWhere('pg.id = :groupId')
+            ->setParameter('holdingId', $group->getHolding()->getId())
+            ->setParameter('groupId', $group->getId())
+            ->setParameter('externalPropertyId', $externalPropertyId)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
      * @param Address $address
      *
      * @return Property

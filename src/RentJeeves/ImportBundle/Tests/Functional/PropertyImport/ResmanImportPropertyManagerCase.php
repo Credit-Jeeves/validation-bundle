@@ -63,6 +63,9 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsBeforeImport = count($allUnitMappings);
 
+        $allPropertyGroups = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
+
         $this->getImportPropertyManager()->import($newImport, ResManClientCase::EXTERNAL_PROPERTY_ID);
 
         $allImportProperties = $this->getEntityManager()->getRepository('RjDataBundle:ImportProperty')->findAll();
@@ -76,20 +79,28 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
         $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
+        $allPropertyGroupsAfterImport = $this->getEntityManager()
+            ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
+
         $this->assertEquals(
             $countImportPropertyBeforeImport + 270, // 270 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
         $this->assertEquals(
-            $countAllPropertiesBeforeImport + 1, // have 3 different addresses
+            $countAllPropertiesBeforeImport + 1, // have 1 different addresses
             $countAllPropertiesAfterImport,
             'Property is not created.'
         );
         $this->assertEquals(
-            $countAllPropertyAddressesBeforeImport + 1, // 3 new PropertyAddress
+            $countAllPropertyAddressesBeforeImport + 1, // 1 new PropertyAddress
             $countAllPropertiesAddressAfterImport,
             'PropertyAddress is not created.'
+        );
+        $this->assertEquals(
+            $allPropertyGroups + 1, // 1 new PropertyGroup
+            $allPropertyGroupsAfterImport,
+            'PropertyGroup is not created.'
         );
         $this->assertEquals(
             $countAllUnitsBeforeImport + 270, // 260 new Units
