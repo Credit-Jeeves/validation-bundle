@@ -243,12 +243,10 @@ class TransUnionReportRecord
         if (!$this->reportLeaseStatus) {
             $this->getLeaseStatus();
         }
-        if ($this->reportLeaseStatus == self::LEASE_STATUS_CLOSED_AND_PAID)
-        {
+        if ($this->reportLeaseStatus == self::LEASE_STATUS_CLOSED_AND_PAID) {
             return 0;
         }
-        if ($this->reportLeaseStatus == self::LEASE_STATUS_TRANSFERRED)
-        {
+        if ($this->reportLeaseStatus == self::LEASE_STATUS_TRANSFERRED) {
             $interval = $this->getUnpaidInterval();
             $leaseStatus = $this->getLateLeaseStatus($interval);
 
