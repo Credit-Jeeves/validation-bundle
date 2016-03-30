@@ -584,4 +584,15 @@ class PublicController extends Controller
 
         return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['email' => $email]);
     }
+
+    /**
+     * @Route("/handle/jira/wehook", name="handle_jira_webhook")
+     */
+    public function handleJiraWebhookAction(Request $request)
+    {
+        $data = $request->request->all();
+        $this->get('trusted.landlord.jira.service')->handleWebhookEvent($data);
+
+        return new Response();
+    }
 }

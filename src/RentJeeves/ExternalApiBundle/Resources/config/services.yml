@@ -32,7 +32,7 @@ services:
         arguments:
             - "@jira.rest_client"
             - "@doctrine.orm.default_entity_manager"
-            - "logger"
+            - "@logger"
 
     yardi.resident_data:
         class: RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager

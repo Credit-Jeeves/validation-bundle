@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
-use Symfony\Component\Templating\Loader\LoaderInterface;
 use JiraClient\Exception\JiraException;
 /**
  * trusted.landlord.jira.service
@@ -33,9 +32,9 @@ class TrustedLandlordJiraService
     /**
      * @param JiraClient $client
      * @param EntityManager $em
-     * @param LoaderInterface $logger
+     * @param LoggerInterface $logger
      */
-    public function __construct(JiraClient $client, EntityManager $em, LoaderInterface $logger)
+    public function __construct(JiraClient $client, EntityManager $em, LoggerInterface $logger)
     {
         $this->client = $client;
         $this->em = $em;
@@ -82,11 +81,26 @@ class TrustedLandlordJiraService
     }
 
     /**
-     * @param array  $data
-     * @param string $jiraKey
+     * @param array $data
+     * @return boolean
      */
-    public function handleWebhookEvent(array $data, $jiraKey)
+    public function handleWebhookEvent(array $data)
     {
+        if (!isset($data['issue'])) {
+            $this->logger->debug('Data structure is invalid, we don\'t have issue key in array');
+
+            return false;
+        }
+
+        $issue = $data['issue'];
+
+        if (!isset($issue['key'])) {
+            $this->logger->debug('Data structure is invalid, we don\'t have "key" key in array');
+
+            return false;
+        }
+
+        $jiraKey = $issue['key'];
     }
 }
 
