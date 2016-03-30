@@ -326,6 +326,10 @@ class PaymentCommandsCase extends BaseTestCase
         if (31 == $today->format('j')) {
             $this->assertEmpty($JobsRelatedReport);
         }
+        $this->assertNotEmpty(
+            $JobsRelatedReport,
+            '1 ScoreTrack Report is expected. Check the date!'
+        );
         /** @var JobRelatedReport $jobRelatedReport */
         $jobRelatedReport = reset($JobsRelatedReport);
         $job = $jobRelatedReport->getJob();
