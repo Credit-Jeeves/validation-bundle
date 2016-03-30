@@ -104,3 +104,5 @@ fixtures:
         name: rjScoreTrackOrderError.html
     email_53:
         name: rjPostPaymentError.html
+    email_54:
+        name: rjOrderPayDirectComplete.html

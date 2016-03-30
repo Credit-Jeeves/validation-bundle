@@ -6,9 +6,11 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\DataBundle\Entity\ImportProperty;
+use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
 use RentJeeves\ImportBundle\Exception\ImportTransformerException;
 
 /**
@@ -35,7 +37,7 @@ class CsvTransformer implements TransformerInterface
      * @var array
      */
     protected $requiredMappingFields = [
-        'street', 'city', 'zip', 'state'
+        'street', 'city', 'zip', 'state', 'unit_id'
     ];
 
     /**
@@ -94,27 +96,40 @@ class CsvTransformer implements TransformerInterface
             $extUnitId = isset($importMappingRule['unit_id']) ?
                 $accountingSystemRecord[$importMappingRule['unit_id']] : '';
 
-            $address = $this->lookupService->lookupFreeform(
-                sprintf(
-                    '%s %s, %s, %s, %s',
-                    $street,
-                    $unit,
-                    $city,
-                    $state,
-                    $zip
-                )
-            );
-
             $importProperty = new ImportProperty();
             $importProperty->setImport($import);
-            $importProperty->setAddressHasUnits((boolean) $address->getUnitName());
-            $importProperty->setUnitName($address->getUnitName());
+
+            try {
+                $address = $this->lookupService->lookupFreeform(
+                    sprintf(
+                        '%s %s, %s, %s, %s',
+                        $street,
+                        $unit,
+                        $city,
+                        $state,
+                        $zip
+                    )
+                );
+
+                $importProperty->setAddressHasUnits((boolean) $address->getUnitName());
+                $importProperty->setUnitName($address->getUnitName());
+            } catch (AddressLookupException $e) {
+                $importProperty->setProcessed(true);
+                $importProperty->setStatus(ImportPropertyStatus::ERROR);
+                $importProperty->setErrorMessages([
+                    'Address is invalid'
+                ]);
+                $importProperty->setUnitName($unit);
+                $importProperty->setAddressHasUnits((boolean) $unit);
+            }
+
             $importProperty->setExternalUnitId($extUnitId);
             $importProperty->setAddress1($street);
             $importProperty->setCity($city);
             $importProperty->setState($state);
             $importProperty->setZip($zip);
             $importProperty->setAllowMultipleProperties(false); // PLS check it
+
             $this->em->persist($importProperty);
         }
 

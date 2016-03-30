@@ -102,6 +102,7 @@ sonata_admin:
                 - sonata.admin.property_mapping
                 - sonata.admin.unit_mapping
                 - sonata.admin.partners
+                - sonata.admin.trusted_landlord
 
 twig:
     exception_controller: FOS\RestBundle\Controller\ExceptionController::showAction

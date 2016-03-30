@@ -1,6 +1,7 @@
 .container-content>div {
     margin: 10px 0 10px 0;
 }
+
 div.filter{
     height: 40px;
 }
@@ -25,19 +26,50 @@ div.info-message {
     font-weight: bold;
 }
 
+div.control-buttons {
+    float: right;
+}
+
+div.check-scanning>h1 {
+    float: left;
+    padding-top: 9px;
+}
+
+div.check-scanning {
+    padding-bottom: 30px;
+}
+
+p.find-message {
+    padding-top: 20px;
+}
+
 .search-button {
-    background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    background-image: url("/bundles/rjpublic/images/icon-search-white-bg.png");
     margin: 5px 0 5px 0;
     background-repeat: no-repeat;
     border-radius: 4px 4px 4px 4px;
     float: left;
     display: block;
-    height: 22px;
-    width: 22px;
-    background-position: -48px -97px;
+    height: 25px;
+    width: 23px;
 }
+
+img.copy {
+    position: relative;
+    top: 2px;
+    margin-left: 5px;
+    display: block;
+    height: 11px;
+    width: 11px;
+    left: 2px;
+}
+
 .search-button:hover {
     cursor: pointer;
+}
+
+span.lease-id {
+    float: left;
 }
 
 .hidden {

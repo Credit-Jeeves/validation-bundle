@@ -172,22 +172,62 @@ class PropertyManager
     }
 
     /**
+     * @param Address $address
+     *
+     * @return null|Property
+     */
+    public function getOrCreatePropertyByAddress(Address $address)
+    {
+        $property = $this->getPropertyRepository()->findOneByAddress($address);
+
+        if (null !== $property) {
+            return $property;
+        }
+
+        try {
+            $address = $this->addressLookupService->lookupFreeform(
+                sprintf(
+                    '%s %s, %s, %s, %s',
+                    $address->getAddress1(),
+                    $address->getUnitName(),
+                    $address->getCity(),
+                    $address->getState(),
+                    $address->getZip()
+                )
+            );
+        } catch (AddressLookupException $e) {
+            return null;
+        }
+
+        $newProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
+    }
+
+    /**
      * @param string $number
      * @param string $street
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string $unitName
      *
      * @return null|Property
      */
-    public function getOrCreatePropertyByAddress($number, $street, $city, $state, $zipCode)
+    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode, $unitName = '')
     {
         $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
         if (null !== $property) {
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+        $address1 = trim(sprintf('%s %s %s', $number, $street, $unitName));
+        if (null === $address = $this->lookupAddress($address1, $city, $state, $zipCode)) {
             return null;
         }
 
@@ -195,17 +235,17 @@ class PropertyManager
     }
 
     /**
-     * @param string $street
+     * @param string $address1
      * @param string $city
      * @param string $state
      * @param string $zipCode
      *
      * @return Address|null
      */
-    public function lookupAddress($street, $city, $state, $zipCode)
+    public function lookupAddress($address1, $city, $state, $zipCode)
     {
         try {
-            return $this->addressLookupService->lookup($street, $city, $state, $zipCode);
+            return $this->addressLookupService->lookup($address1, $city, $state, $zipCode);
         } catch (AddressLookupException $e) {
             return null;
         }

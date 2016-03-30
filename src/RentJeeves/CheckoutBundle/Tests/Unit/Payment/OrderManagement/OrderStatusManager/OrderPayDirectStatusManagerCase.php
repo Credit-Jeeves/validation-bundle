@@ -6,14 +6,18 @@ use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderPayDirectStatusManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\OutboundTransactionType;
-use RentJeeves\TestBundle\Mocks\CommonSystemMocks;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @var OrderPayDirectStatusManager
      */
@@ -21,12 +25,10 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $systemsMocks = new CommonSystemMocks();
-
         $this->statusManager = new OrderPayDirectStatusManager(
-            $systemsMocks->getEntityManagerMock(),
-            $systemsMocks->getLoggerMock(),
-            $systemsMocks->getMailerMock(),
+            $this->getEntityManagerMock(),
+            $this->getLoggerMock(),
+            $this->getMailerMock(),
             $this->getCheckSenderMock()
         );
     }
@@ -323,16 +325,36 @@ class OrderPayDirectStatusManagerCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldSendEmailWhenSetOrderStatusToComplete()
+    {
+        $order = new OrderPayDirect();
+        $transaction = new OutboundTransaction();
+        $transaction->setType(OutboundTransactionType::DEPOSIT);
+        $transaction->setStatus(OutboundTransactionStatus::SUCCESS);
+        $order->addOutboundTransaction($transaction);
+        $mailerMock = $this->getBaseMock(Mailer::class);
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendOrderPayDirectCompleteNotification')
+            ->with($order);
+        $statusManager = new OrderPayDirectStatusManager(
+            $this->getEntityManagerMock(),
+            $this->getLoggerMock(),
+            $mailerMock,
+            $this->getCheckSenderMock()
+        );
+        $statusManager->setComplete($order);
+
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus(), 'Order is expected to be COMPLETE');
+    }
+
+    /**
     * @return \RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender
     */
     protected function getCheckSenderMock()
     {
-        return $this->getMock(
-            'RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\CheckSender',
-            [],
-            [],
-            '',
-            false
-        );
+        return $this->getBaseMock(CheckSender::class);
     }
 }

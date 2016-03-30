@@ -1594,7 +1594,11 @@
             </trans-unit>
             <trans-unit id="button_title.scanning">
                 <source>button_title.scanning</source>
-                <target>Open Check Scanner</target>
+                <target>1. Open Scanner</target>
+            </trans-unit>
+            <trans-unit id="button_title.process_scan">
+                <source>button_title.process_scan</source>
+                <target>2. Process Batch</target>
             </trans-unit>
             <trans-unit id="waiting_for_redirect_to_scanning">
                 <source>waiting_for_redirect_to_scanning</source>
@@ -1631,10 +1635,6 @@
             <trans-unit id="landlord.scanning.lease_list.fields_error">
                 <source>landlord.scanning.lease_list.fields_error</source>
                 <target>Fields 'email' and 'address' should contain 3 or more characters.</target>
-            </trans-unit>
-            <trans-unit id="landlord.scanning.process_scan">
-                <source>landlord.scanning.process_scan</source>
-                <target>Process Scan</target>
             </trans-unit>
             <trans-unit id="landlord.scanning.process_scan.result">
                 <source>landlord.scanning.process_scan.result</source>

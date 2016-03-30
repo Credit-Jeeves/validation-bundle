@@ -1047,7 +1047,11 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.default>li').text() == 'contract.reminder.error.already.send'");
 
         $this->assertNotNull($error = $this->page->find('css', '.default>li'));
-        $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
+        $this->assertEquals(
+            'contract.reminder.error.already.send',
+            $error->getText(),
+            'Wrong text error : ' . $error->getText()
+        );
         $this->logout();
         // check email
         $this->assertCount($nCountEmails, $this->getEmails(), 'Wrong number of emails');

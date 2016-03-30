@@ -97,19 +97,6 @@ class ImportBaseAbstract extends BaseTestCase
         return $contractWaiting;
     }
 
-    /**
-     * @param string $fileName
-     * @return string
-     */
-    protected function getFilePathByName($fileName)
-    {
-        $sep = DIRECTORY_SEPARATOR;
-        $filePath = getcwd();
-        $filePath .= $sep . 'data' . $sep . 'fixtures' . $sep . $fileName;
-
-        return $filePath;
-    }
-
     protected function setPropertyFirst()
     {
         $em = $this->getEntityManager();

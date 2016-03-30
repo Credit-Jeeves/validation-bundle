@@ -49,6 +49,26 @@ class Job extends Base
      */
     protected $dependencies;
 
+
+    /**
+     * @param string $command
+     * @param array $args
+     * @param bool|true $confirmed
+     * @param string $queue
+     * @param int $priority
+     *
+     * @return Job
+     */
+    public static function create(
+        $command,
+        array $args = [],
+        $confirmed = true,
+        $queue = self::DEFAULT_QUEUE,
+        $priority = self::PRIORITY_DEFAULT
+    ) {
+        return new self($command, $args, $confirmed, $queue, $priority);
+    }
+
     public function __construct($command = '', array $args = [], $confirmed = true)
     {
         if (false === in_array('--app=rj', $args)) {

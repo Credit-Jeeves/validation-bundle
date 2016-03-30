@@ -227,6 +227,15 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.trusted_landlord:
+        class: RentJeeves\AdminBundle\Admin\TrustedLandlordAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Trusted Landlords" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\TrustedLandlord
+            - 'SonataAdminBundle:CRUD'
+
     sonata.admin.user_partner:
         class: RentJeeves\AdminBundle\Admin\PartnerUsersAdmin
         tags:

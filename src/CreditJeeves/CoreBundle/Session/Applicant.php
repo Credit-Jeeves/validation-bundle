@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
 use CreditJeeves\DataBundle\Entity\Applicant as UserEntity;
@@ -25,7 +26,7 @@ class Applicant extends User
      */
     public function prepareApplicant(UserEntity $User)
     {
-        $Lead = $User->getActiveLead();
+        $Lead = $this->getActiveLead($User);
         $this->data['user_id'] = $User->getId();
         $this->data['lead_id'] = $Lead->getId();
     }
@@ -41,6 +42,7 @@ class Applicant extends User
                 return $user;
             }
         }
+
         return new UserEntity();
     }
 
@@ -68,5 +70,20 @@ class Applicant extends User
     public function getLead()
     {
         return $this->em->getRepository('DataBundle:Lead')->find($this->getLeadId());
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\User $user
+     *
+     * @return Lead|mixed
+     */
+    private function getActiveLead(\CreditJeeves\DataBundle\Entity\User $user)
+    {
+        $nLeads = $user->getUserLeads()->count();
+        if ($nLeads > 0) {
+            return $user->getUserLeads()->last();
+        } else {
+            return new Lead();
+        }
     }
 }

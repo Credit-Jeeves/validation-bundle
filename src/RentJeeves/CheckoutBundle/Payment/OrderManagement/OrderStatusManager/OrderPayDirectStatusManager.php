@@ -54,7 +54,9 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
 
         /** @var OrderPayDirect $order */
         if ($this->isOutboundLegInitiated($order)) {
-            $this->updateStatus($order, OrderStatus::COMPLETE);
+            if ($this->updateStatus($order, OrderStatus::COMPLETE)) {
+                $this->mailer->sendOrderPayDirectCompleteNotification($order);
+            }
         } else {
             $this->initiateOutboundLeg($order);
         }
