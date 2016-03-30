@@ -269,8 +269,11 @@ class FundingAccountManager extends AbstractManager
                 case BankAccountTypeEnum::SAVINGS:
                     $account->setBankAccountType(BankAccountType::PERSONAL_SAVINGS);
                     break;
-                default:
+                case BankAccountTypeEnum::BUSINESS_CHECKING:
                     $account->setBankAccountType(BankAccountType::BUSINESS_CHECKING);
+                    break;
+                default:
+                    throw new PaymentProcessorInvalidArgumentException('Unsupported Bank Account Type');
                     break;
             }
         } else {
