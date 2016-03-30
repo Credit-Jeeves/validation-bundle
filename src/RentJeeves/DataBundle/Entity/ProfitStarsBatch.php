@@ -3,6 +3,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use RentJeeves\DataBundle\Model\ProfitStarsBatch as Base;
 
 /**
@@ -11,4 +12,23 @@ use RentJeeves\DataBundle\Model\ProfitStarsBatch as Base;
  */
 class ProfitStarsBatch extends Base
 {
+    /**
+     * Checks if batch status is OPEN
+     *
+     * @return bool
+     */
+    public function isOpen()
+    {
+        return $this->status === ProfitStarsBatchStatus::OPEN;
+    }
+
+    /**
+     * Checks if batch status is CLOSED
+     *
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return $this->status === ProfitStarsBatchStatus::CLOSED;
+    }
 }

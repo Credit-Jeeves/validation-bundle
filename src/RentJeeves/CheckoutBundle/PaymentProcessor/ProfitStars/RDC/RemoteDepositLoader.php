@@ -6,7 +6,9 @@ use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
+use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSItemStatus;
@@ -30,6 +32,9 @@ class RemoteDepositLoader
     /** @var LoggerInterface */
     protected $logger;
 
+    /** @var integer */
+    protected $countChecks;
+
     /**
      * @param RDCClient $client
      * @param ScannedCheckTransformer $checkTransformer
@@ -51,6 +56,7 @@ class RemoteDepositLoader
     /**
      * @param Group $group
      * @param \DateTime $date
+     * @return int
      */
     public function loadScannedChecks(Group $group, \DateTime $date)
     {
@@ -59,7 +65,6 @@ class RemoteDepositLoader
             $group->getId(),
             $date->format('m-d-Y')
         ));
-        $countChecks = 0;
         try {
             $batches = $this->getBatches($group, $date);
             $this->logger->info(sprintf(
@@ -76,12 +81,7 @@ class RemoteDepositLoader
                     $batch->getBatchStatus()
                 ));
 
-                $batchItems = $this->getBatchItems($group, $batchNumber);
-                $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
-                foreach ($batchItems as $orderData) {
-                    $isCreatedNewOrder = $this->createOrderIfItIsNew($orderData);
-                    $countChecks = true === $isCreatedNewOrder ? $countChecks + 1 : $countChecks;
-                }
+                $this->processBatch($batch, $group);
             }
         } catch (ProfitStarsException $e) {
             $this->logger->alert(sprintf(
@@ -92,7 +92,54 @@ class RemoteDepositLoader
             ));
         }
 
-        return $countChecks;
+        return $this->countChecks;
+    }
+
+    /**
+     * @param WSRemoteDepositBatch $batch
+     * @param Group $group
+     */
+    protected function processBatch(WSRemoteDepositBatch $batch, Group $group)
+    {
+        $profitStarsBatch = $this->getProfitStarsBatch($batch->getBatchNumber());
+        if (null !== $profitStarsBatch) {
+            if ($profitStarsBatch->isOpen() && !$this->isSentToTransactionProcessingBatch($batch)) {
+                $this->logger->emergency(
+                    sprintf(
+                        'ProfitStars CheckScanning batch #%s for group #%d is in unexpected state %s.',
+                        $batch->getBatchNumber(),
+                        $group->getId(),
+                        $batch->getBatchStatus()
+                    )
+                );
+
+                return;
+            }
+            if ($profitStarsBatch->isClosed()) {
+                $this->logger->info(
+                    sprintf(
+                        'Skipping existing ProfitStarsBatch with status closed for batch %s and group #%d',
+                        $batch->getBatchNumber(),
+                        $group->getId()
+                    )
+                );
+
+                return;
+            }
+        } else {
+            $profitStarsBatch = $this->createProfitStarsBatch($batch, $group);
+        }
+
+        $batchItems = $this->getBatchItems($group, $batch->getBatchNumber());
+        $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
+        foreach ($batchItems as $orderData) {
+            $isCreatedNewOrder = $this->createOrderIfItIsNew($orderData);
+            $this->incrementCountChecks($isCreatedNewOrder);
+        }
+
+        if ($this->isSentToTransactionProcessingBatch($batch)) {
+            $this->closeProfitStarsBatch($profitStarsBatch);
+        }
     }
 
     /**
@@ -195,5 +242,61 @@ class RemoteDepositLoader
         }
 
         return false;
+    }
+
+    /**
+     * @param string $number
+     * @return null|ProfitStarsBatch
+     */
+    protected function getProfitStarsBatch($number)
+    {
+        return $this->em->getRepository('RjDataBundle:ProfitStarsBatch')->findOneBy(['batchNumber' => $number]);
+    }
+
+    /**
+     * @param WSRemoteDepositBatch $batch
+     * @param Group $group
+     * @return ProfitStarsBatch
+     */
+    protected function createProfitStarsBatch(WSRemoteDepositBatch $batch, Group $group)
+    {
+        $profitStarsBatch = new ProfitStarsBatch();
+        $profitStarsBatch->setHolding($group->getHolding());
+        $profitStarsBatch->setBatchNumber($batch->getBatchNumber());
+        $profitStarsBatch->setStatus(ProfitStarsBatchStatus::OPEN);
+        $createdAt = new \DateTime($batch->getCreateDateTime());
+        $profitStarsBatch->setCreatedAt($createdAt);
+
+        $this->em->persist($profitStarsBatch);
+        $this->em->flush();
+
+        return $profitStarsBatch;
+    }
+
+    /**
+     * @param ProfitStarsBatch $batch
+     */
+    protected function closeProfitStarsBatch(ProfitStarsBatch $batch)
+    {
+        $batch->setStatus(ProfitStarsBatchStatus::CLOSED);
+        $this->em->persist($batch);
+        $this->em->flush();
+    }
+
+    /**
+     * @param WSRemoteDepositBatch $batch
+     * @return bool
+     */
+    protected function isSentToTransactionProcessingBatch(WSRemoteDepositBatch $batch)
+    {
+        return $batch->getBatchStatus() === WSBatchStatus::SENTTOTRANSACTIONPROCESSING;
+    }
+
+    /**
+     * @param bool $shouldIncrement
+     */
+    protected function incrementCountChecks($shouldIncrement)
+    {
+        $this->countChecks = true === $shouldIncrement ? $this->countChecks + 1 : $this->countChecks;
     }
 }

@@ -3,12 +3,13 @@
 namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use RentJeeves\ApiBundle\Services\Encoders\Skip32IdEncoder;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RDCClient;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ScannedCheckTransformer;
+use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -30,6 +31,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $group = new Group();
         $batchNumber = 111;
 
+        $holding = new Holding();
+        $group->setHolding($holding);
+
         $remoteBatch = new WSRemoteDepositBatch();
         $remoteBatch->setBatchNumber($batchNumber);
 
@@ -49,6 +53,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->will($this->returnValue([$remoteBatch]));
         $depositItem = new WSRemoteDepositItem();
         $depositItem->setDeleted(true);
+        $profitStarsBatch = new ProfitStarsBatch();
 
         $rdcClientMock
             ->expects($this->once())
@@ -64,13 +69,28 @@ class RemoteDepositLoaderCase extends UnitTestBase
             )
             ->will($this->returnValue([$depositItem]));
 
+        $repositoryMock  = $this->getEntityRepositoryMock();
+        $repositoryMock
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['batchNumber' => $batchNumber])
+            ->will($this->returnValue(null));
+
         $emMock = $this->getEntityManagerMock();
         $emMock
-            ->expects($this->exactly(0)) // check that DELETED item is not persisted
-            ->method('persist');
+            ->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:ProfitStarsBatch'))
+            ->will($this->returnValue($repositoryMock));
+
         $emMock
-            ->expects($this->exactly(0)) // check that DELETED item is not flushed
-            ->method('flush');
+            ->expects($this->once()) // once called when create ProfitStarsBatch
+            ->method('persist')
+            ->withConsecutive($profitStarsBatch);
+        $emMock
+            ->expects($this->once())
+            ->method('flush')
+            ->withConsecutive($profitStarsBatch);
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -92,6 +112,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $date = new \DateTime();
         $group = new Group();
         $batchNumber = 111;
+
+        $holding = new Holding();
+        $group->setHolding($holding);
 
         $remoteBatch = new WSRemoteDepositBatch();
         $remoteBatch->setBatchNumber($batchNumber);
@@ -133,29 +156,32 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $emMock = $this->getEntityManagerMock();
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('findOneBy')
-            ->with(
-                [
+            ->withConsecutive(
+                [['batchNumber' => $batchNumber]],
+                [[
                     'transactionId' => 'ref-test',
                     'batchId' => 'b1',
                     'status' => 'complete'
-                ]
+                ]]
             )
-            ->will($this->returnValue(new Transaction()));
+            ->will($this->onConsecutiveCalls(null, $this->returnValue(new Transaction())));
 
+        $emMock
+            ->expects($this->exactly(2))
+            ->method('getRepository')
+            ->withConsecutive(['RjDataBundle:ProfitStarsBatch'], ['RjDataBundle:Transaction'])
+            ->will($this->returnValue($repositoryMock));
+        $profitStarsBatch = new ProfitStarsBatch();
+        $emMock
+            ->expects($this->once()) // once called when create ProfitStarsBatch
+            ->method('persist')
+            ->with($profitStarsBatch);
         $emMock
             ->expects($this->once())
-            ->method('getRepository')
-            ->with('RjDataBundle:Transaction')
-            ->will($this->returnValue($repositoryMock));
-
-        $emMock
-            ->expects($this->exactly(0)) // check that item with already existing transaction is not persisted
-            ->method('persist');
-        $emMock
-            ->expects($this->exactly(0)) // check that item with already existing transaction is not flushed
-            ->method('flush');
+            ->method('flush')
+            ->withConsecutive($profitStarsBatch);
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -177,6 +203,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $date = new \DateTime();
         $group = new Group();
         $batchNumber = 111;
+
+        $holding = new Holding();
+        $group->setHolding($holding);
 
         $remoteBatch = new WSRemoteDepositBatch();
         $remoteBatch->setBatchNumber($batchNumber);
@@ -221,6 +250,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
             )
             ->will($this->returnValue([$depositItem1, $depositItem2]));
 
+        $profitStarsBatch = new ProfitStarsBatch();
         $order1 = new Order();
         $order1->setStatus(OrderStatus::PENDING);
         $order2 = new Order();
@@ -229,9 +259,10 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $emMock = $this->getEntityManagerMock();
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('findOneBy')
             ->withConsecutive(
+                [['batchNumber' => $batchNumber]],
                 [[
                     'transactionId' => 'ref-test1',
                     'batchId' => 'b1',
@@ -253,19 +284,24 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->willReturnOnConsecutiveCalls([$order1], [$order2]);
 
         $emMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('getRepository')
-            ->with('RjDataBundle:Transaction')
+            ->withConsecutive(
+                ['RjDataBundle:ProfitStarsBatch'],
+                ['RjDataBundle:Transaction'],
+                ['RjDataBundle:Transaction']
+            )
             ->will($this->returnValue($repositoryMock));
 
         $emMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('persist')
-            ->withConsecutive($order1, $order2);
+            ->withConsecutive($profitStarsBatch, $order1, $order2);
 
         $emMock
-            ->expects($this->exactly(2))
-            ->method('flush');
+            ->expects($this->exactly(3))
+            ->method('flush')
+            ->withConsecutive($profitStarsBatch, $order1, $order2);
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
