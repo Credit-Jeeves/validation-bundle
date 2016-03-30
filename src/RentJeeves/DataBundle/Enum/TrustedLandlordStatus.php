@@ -13,4 +13,6 @@ class TrustedLandlordStatus extends Enum
     const RFI = 'rfi';
 
     const DENIED = 'denied';
+
+    const IN_PROGRESS = 'in progress';
 }

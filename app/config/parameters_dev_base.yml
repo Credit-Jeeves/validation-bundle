@@ -97,4 +97,4 @@ parameters:
     jira_api.hostname: https://credit.atlassian.net
     jira_api.user: tobur
     jira_api.password: tobur
-    jira_api.key: RT
+    jira_api.key: TLDTEST
