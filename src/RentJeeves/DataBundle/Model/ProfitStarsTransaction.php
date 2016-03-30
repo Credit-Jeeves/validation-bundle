@@ -87,7 +87,7 @@ abstract class ProfitStarsTransaction
     /**
      * @param OrderEntity $order
      */
-    public function setOrder(OrderEntity $order = null)
+    public function setOrder(OrderEntity $order)
     {
         $this->order = $order;
     }
