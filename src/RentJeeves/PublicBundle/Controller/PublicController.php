@@ -341,7 +341,6 @@ class PublicController extends Controller
             } catch (\InvalidArgumentException $e) {
                 throw new BadRequestHttpException($e->getMessage());
             } catch (\LogicException $e) {
-                var_dump($e->getMessage());exit;
                 throw new HttpException(412, 'We are scrambling our robots...');
             }
 

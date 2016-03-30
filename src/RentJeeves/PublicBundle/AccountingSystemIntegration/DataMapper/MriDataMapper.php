@@ -87,7 +87,7 @@ class MriDataMapper implements DataMapperInterface
      */
     protected function checkDigest(Request $request)
     {
-        if (!$this->HMACGenerator->checkDataHMAC($request->request->all())) {
+        if (!$this->HMACGenerator->validateHMAC($request->request->all())) {
             throw new \InvalidArgumentException('Digest is invalid');
         }
     }
@@ -104,7 +104,7 @@ class MriDataMapper implements DataMapperInterface
             'sum' => number_format($integratedModel->getSum(), 2, '.', ''),
 
         ];
-        $returnParams['Digest'] = $this->HMACGenerator->makeDataHMAC($returnParams);
+        $returnParams['Digest'] = $this->HMACGenerator->generateHMAC($returnParams);
 
         return $returnParams;
     }

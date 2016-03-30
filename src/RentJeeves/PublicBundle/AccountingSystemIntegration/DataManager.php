@@ -52,8 +52,7 @@ class DataManager
         EntityManager $em,
         Session $session,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->em = $em;
         $this->session = $session;
         $this->logger = $logger;

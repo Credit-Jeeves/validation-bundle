@@ -15,56 +15,33 @@ class HMACGenerator
     /**
      * @var string
      */
-    protected $algorithm = 'sha256';
+    protected $signParamName;
 
     /**
      * @var string
      */
-    protected $signParamName = 'hmac';
+    protected $algorithm;
 
     /**
      * @param string $secretKey
-     * @param string $algorithm
      * @param string $signParamName
+     * @param string $algorithm
      */
-    public function __construct($secretKey, $algorithm = 'sha256', $signParamName = 'hmac')
+    public function __construct($secretKey, $signParamName = 'hmac', $algorithm = 'sha256')
     {
         $this->secretKey = $secretKey;
         $this->signParamName = $signParamName;
-        $this->setHashAlgorithm($algorithm);
-    }
-
-    /**
-     * @param string $algorithm
-     * @throws \RuntimeException
-     */
-    public function setHashAlgorithm($algorithm)
-    {
-        if (in_array($algorithm = strtolower($algorithm), hash_algos())) {
-            $this->algorithm = $algorithm;
-        } else {
-            throw new \RuntimeException(sprintf('Hash algorithm "%s" is not supported', $algorithm));
-        }
-    }
-
-    /**
-     * @param $signParamName
-     */
-    public function setSignParamName($signParamName)
-    {
-        $this->signParamName = $signParamName;
+        $this->algorithm = $algorithm;
     }
 
     /**
      * @param array $data
-     * @param string $secretKey
      * @return string
      */
-    public function makeDataHMAC(array $data, $secretKey = null)
+    public function generateHMAC(array $data)
     {
-        $secretKey = $secretKey ?: $this->secretKey;
-
-        if(isset($data[$this->signParamName])) {
+        // signature should created without signature parameter
+        if (isset($data[$this->signParamName])) {
             unset($data[$this->signParamName]);
         }
 
@@ -72,54 +49,27 @@ class HMACGenerator
 
         $dataEncoded = $this->serializeArray($data);
 
-        return $this->makeSignature($dataEncoded, $secretKey);
+        return $this->makeSignature($dataEncoded);
     }
 
     /**
      * @param array $data
-     * @param string $secretKey
-     * @param string $signParamName
      * @return bool
      */
-    public function checkDataHMAC(array $data, $secretKey = null, $signParamName = null){
-
-        $secretKey = $secretKey ?: $this->secretKey;
-
-        $signParamName = $signParamName ?: $this->signParamName;
-
-        if (empty($data[$signParamName])) {
+    public function validateHMAC(array $data)
+    {
+        if (empty($data[$this->signParamName])) {
             return false;
         }
 
-        $HMAC = $data[$signParamName];
-        unset($data[$signParamName]);
+        $inputHMAC = $data[$this->signParamName];
+        $originHMAC = $this->generateHMAC($data);
 
-        $originHMAC = $this->makeDataHMAC($data, $secretKey);
-
-        if  (strtolower($originHMAC) === strtolower($HMAC)) {
+        if (strtolower($originHMAC) === strtolower($inputHMAC)) {
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * @param array $data
-     * @return string
-     */
-    protected function serializeArray(array $data)
-    {
-        return http_build_query($data);
-    }
-
-    /**
-     * @param string $dataEncoded
-     * @param string $secretKey
-     * @return string
-     */
-    protected function makeSignature($dataEncoded, $secretKey)
-    {
-        return hash_hmac($this->algorithm, $dataEncoded, $secretKey);
     }
 
     /**
@@ -138,5 +88,38 @@ class HMACGenerator
         }
 
         return true;
+    }
+
+    /**
+     * @param string $algorithm
+     * @throws \InvalidArgumentException
+     */
+    protected function checkHashAlgorithm($algorithm)
+    {
+        if (in_array($algorithm = strtolower($algorithm), hash_algos())) {
+            $this->algorithm = $algorithm;
+        } else {
+            throw new \InvalidArgumentException(sprintf('Hash algorithm "%s" is not supported', $algorithm));
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    protected function serializeArray(array $data)
+    {
+        return http_build_query($data);
+    }
+
+    /**
+     * @param string $dataEncoded
+     * @return string
+     */
+    protected function makeSignature($dataEncoded)
+    {
+        $this->checkHashAlgorithm($this->algorithm);
+
+        return hash_hmac($this->algorithm, $dataEncoded, $this->secretKey);
     }
 }
