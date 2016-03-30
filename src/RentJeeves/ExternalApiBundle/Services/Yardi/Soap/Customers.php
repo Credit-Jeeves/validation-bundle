@@ -11,10 +11,10 @@ class Customers
      * @Serializer\Type("array<RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer>")
      * @Serializer\XmlList(inline = true, entry = "Customer")
      */
-    protected $customer;
+    protected $customer = [];
 
     /**
-     * @return Customer
+     * @return Customer[]
      */
     public function getCustomer()
     {
@@ -24,8 +24,8 @@ class Customers
     /**
      * @param Customer $customer
      */
-    public function setCustomer(Customer $customer)
+    public function addCustomer(Customer $customer)
     {
-        $this->customer = $customer;
+        $this->customer[] = $customer;
     }
 }

@@ -156,7 +156,7 @@ function CreditTrackPayDialog(options) {
                 } else if (self.isNewPaymentAccount()) {
                     sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);
                 } else {
-                    sendData(Routing.generate('checkout_pay_existing_source'), forms[currentStep]);
+                    sendData(Routing.generate('checkout_pay_scoretrack_existing_source'), forms[currentStep]);
                 }
                 break;
             case 'pay':

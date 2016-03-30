@@ -136,11 +136,39 @@ abstract class DepositAccount
      */
     protected $accountNumber;
 
+    /**
+     * @ORM\Column(
+     *      name="friendly_name",
+     *      type="string",
+     *      nullable=true,
+     *      length=255
+     * )
+     *
+     * @var string
+     */
+    protected $friendlyName;
+
     public function __construct()
     {
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->passedAch = false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFriendlyName()
+    {
+        return $this->friendlyName;
+    }
+
+    /**
+     * @param string $friendlyName
+     */
+    public function setFriendlyName($friendlyName)
+    {
+        $this->friendlyName = $friendlyName;
     }
 
     /**

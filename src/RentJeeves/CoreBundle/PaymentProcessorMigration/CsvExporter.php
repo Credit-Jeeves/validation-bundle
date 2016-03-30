@@ -42,9 +42,9 @@ class CsvExporter
 
     /**
      * @param EntityManagerInterface $em
-     * @param AciProfileMapper $mapper
-     * @param Serializer $serializer
-     * @param Validator $validator
+     * @param AciProfileMapper       $mapper
+     * @param Serializer             $serializer
+     * @param Validator              $validator
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -59,10 +59,12 @@ class CsvExporter
     }
 
     /**
-     * @param string $pathToFile
-     * @param array $holdings
+     * @param string     $pathToDir
+     * @param string     $filePrefix
+     * @param int        $profilesLimit
+     * @param array|null $holdings
      */
-    public function export($pathToFile, array $holdings = null)
+    public function export($pathToDir, $filePrefix, $profilesLimit, array $holdings = null)
     {
         if ($holdings === null) {
             $aciProfiles = $this->getAciProfileMapRepository()->findAll();
@@ -73,11 +75,45 @@ class CsvExporter
             return;
         }
 
-        $models = $this->mapProfilesToModels($aciProfiles, $holdings);
-        $models = $this->getValidModels($models);
-        $csvData = $this->serializeModelsToCsv($models);
+        $batches = $this->createBatchesWithValidModels($aciProfiles, $profilesLimit, $holdings);
+        foreach ($batches as $key => $batch) {
+            $batchData = $this->serializeModelsToCsv($batch);
+            $filePath = sprintf('%s/%s%s.csv', $pathToDir, $filePrefix, $key);
 
-        file_put_contents($pathToFile, $csvData);
+            file_put_contents($filePath, $batchData);
+        }
+    }
+
+    /**
+     * @param array      $aciProfiles
+     * @param int        $batchSize
+     * @param array|null $holdings
+     *
+     * @return array
+     */
+    protected function createBatchesWithValidModels(array $aciProfiles, $batchSize, array $holdings = null)
+    {
+        $batches = [];
+        $batchIndex = 0;
+        $countProfilesInBatch = 0;
+        foreach ($aciProfiles as $aciProfile) {
+            if (false === isset($batches[$batchIndex])) {
+                $batches[$batchIndex] = [];
+            }
+            $aciProfileModels = $this->mapper->map($aciProfile, $holdings);
+            $aciProfileValidModels = $this->getValidModels($aciProfileModels);
+            if (false === empty($aciProfileValidModels)) {
+                $batches[$batchIndex] = array_merge($batches[$batchIndex], $aciProfileValidModels);
+                $countProfilesInBatch++;
+            }
+
+            if ($countProfilesInBatch !== 0 && $countProfilesInBatch % $batchSize === 0) {
+                $batchIndex++;
+                $countProfilesInBatch = 0;
+            }
+        }
+
+        return $batches;
     }
 
     /**

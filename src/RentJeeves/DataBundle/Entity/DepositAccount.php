@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Model\DepositAccount as Base;
 
 /**
@@ -42,5 +43,17 @@ class DepositAccount extends Base
     public function __toString()
     {
         return (string) $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitleName()
+    {
+        if (empty($this->getFriendlyName())) {
+            return DepositAccountType::title($this->getType());
+        } else {
+            return $this->getFriendlyName();
+        }
     }
 }

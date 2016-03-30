@@ -625,7 +625,7 @@ class Order extends Base
                 break;
         }
         $result['depositType'] = $this->getDepositAccount() ?
-            DepositAccountType::title($this->getDepositAccount()->getType()) : '';
+            $this->getDepositAccount()->getTitleName() : '';
         $result['transactionId'] = $this->getTransactionId();
 
         if ($visitor !== null) {
@@ -699,7 +699,7 @@ class Order extends Base
         $result['total'] = $this->getTotalAmount();
         $result['deposit_type'] = '';
         if ($this->getDepositAccount()) {
-            $depositAccountType = DepositAccountType::title($this->getDepositAccount()->getType());
+            $depositAccountType = $this->getDepositAccount()->getTitleName();
             $result['deposit_type'] = $this->getCustomOperation() ? $depositAccountType : '';
         }
         $result['type'] = $this->getOrderPaymentTypes();
