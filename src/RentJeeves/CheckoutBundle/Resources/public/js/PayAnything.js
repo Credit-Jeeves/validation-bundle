@@ -19,7 +19,7 @@ function PayAnything(parent, contract, defaultParams) {
         defaultAmounts = defaultParams.amounts ? defaultParams.amounts : {};
     }
 
-    var redirectUrl = null;
+    var shouldRedirect = false;
 
     // Wizard-popup steps
     var steps = ['details', 'source', 'pay', 'finish'];
@@ -115,15 +115,22 @@ function PayAnything(parent, contract, defaultParams) {
                 // End
                 break;
             case 'pay':
-                if (data.redirectUrl) {
-                    redirectUrl = data.redirectUrl;
+                if (data.redirection) {
+                    self.postProcessedForm.url(data.redirection.url);
+                    var params = [];
+                    jQuery.each(data.redirection.params, function(index, val) {
+                        params.push({'name': index, 'value': val});
+                    });
+                    self.postProcessedForm.elements(params);
+                    self.postProcessedForm.method(data.redirection.method);
+                    shouldRedirect = true;
                 }
                 break;
             case 'finish':
                 rootNode.dialog('close');
                 jQuery('body').showOverlay();
-                if (redirectUrl) {
-                    window.location.href = redirectUrl;
+                if (shouldRedirect) {
+                    self.postProcessedForm.submitHandler();
                 } else {
                     window.location.reload();
                 }
@@ -265,6 +272,8 @@ function PayAnything(parent, contract, defaultParams) {
 
         return propertyFullAddress;
     });
+
+    self.postProcessedForm = new VirtualFormViewModel();
 
     ko.utils.extend(self, new PayAddress(self, self.propertyAddress));
 

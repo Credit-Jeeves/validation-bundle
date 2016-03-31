@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\PublicBundle\Services;
+namespace RentJeeves\PublicBundle\AccountingSystemIntegration;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
@@ -9,15 +9,15 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
-use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ASIDataMapperFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * DI\Service('accounting_system.integration.data_manager')
  */
-class AccountingSystemIntegrationDataManager
+class ASIDataManager
 {
     const SESSION_INTEGRATION_DATA = 'integration_data';
 
@@ -37,20 +37,26 @@ class AccountingSystemIntegrationDataManager
     protected $logger;
 
     /**
-     * @var array
+     * @var ASIIntegratedModel
      */
     protected $cachedData;
 
     /**
+     * @param ASIDataMapperFactory $dataMapperFactory
      * @param EntityManager $em
      * @param Session $session
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, Session $session, LoggerInterface $logger)
-    {
+    public function __construct(
+        ASIDataMapperFactory $dataMapperFactory,
+        EntityManager $em,
+        Session $session,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
         $this->session = $session;
         $this->logger = $logger;
+        $this->dataMapperFactory = $dataMapperFactory;
     }
 
     /**
@@ -60,41 +66,13 @@ class AccountingSystemIntegrationDataManager
      */
     public function processRequestData($accountingSystem, Request $request)
     {
-        $accountingSystem = array_search($accountingSystem, AccountingSystem::$importMapping);
-        if ($accountingSystem === false) {
-            throw new \InvalidArgumentException('Accounting system type is invalid.');
-        }
-        $processedData = ['accsys' => $accountingSystem];
+        $dataMapper = $this->dataMapperFactory->getMapper($accountingSystem);
 
-        $requiredParams = ['resid', 'leaseid', 'propid'];
-        foreach ($requiredParams as $paramName) {
-            if (!$paramValue = $request->get($paramName)) {
-                throw new \InvalidArgumentException(
-                    sprintf('Please provide required parameter "%s".', $paramName)
-                );
-            }
-            $processedData[$paramName] = $paramValue;
-        }
+        $integratedModel = $dataMapper->mapData($request);
 
-        $optionalParams = ['unitid', 'rent', 'redirect'];
-        foreach ($optionalParams as $paramName) {
-            if ($paramValue = $request->get($paramName)) {
-                $processedData[$paramName] = $paramValue;
-            }
-        }
+        $this->session->set(self::SESSION_INTEGRATION_DATA, $integratedModel);
 
-        $amounts = [];
-        if ($appFee = $request->get('appfee')) {
-            $amounts[DepositAccountType::APPLICATION_FEE] = $appFee;
-        }
-        if ($secDep = $request->get('secdep')) {
-            $amounts[DepositAccountType::SECURITY_DEPOSIT] = $secDep;
-        }
-        $processedData['amounts'] = $amounts;
-
-        $this->session->set(self::SESSION_INTEGRATION_DATA, $processedData);
-
-        $this->cachedData = $processedData;
+        $this->cachedData = $integratedModel;
     }
 
     /**
@@ -102,7 +80,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function hasIntegrationData()
     {
-        return !empty($this->cachedData) || $this->session->has(self::SESSION_INTEGRATION_DATA);
+        return $this->cachedData instanceof ASIIntegratedModel || $this->session->has(self::SESSION_INTEGRATION_DATA);
     }
 
     public function removeIntegrationData()
@@ -116,13 +94,14 @@ class AccountingSystemIntegrationDataManager
      */
     public function hasMultiProperties()
     {
-        if ($this->get('unitid')) {
+        if ($this->get('unitId')) {
             return false;
         }
 
         $properties = $this->getPropertiesByExternalParameters(
-            $this->get('accsys'),
-            $this->get('propid')
+            $this->get('accountingSystem'),
+            $this->get('propertyId'),
+            $this->get('holdingId')
         );
 
         if (count($properties) <= 1) {
@@ -142,8 +121,9 @@ class AccountingSystemIntegrationDataManager
     public function getMultiProperties()
     {
         return $this->getPropertiesByExternalParameters(
-            $this->get('accsys'),
-            $this->get('propid')
+            $this->get('accountingSystem'),
+            $this->get('propertyId'),
+            $this->get('holdingId')
         );
     }
 
@@ -154,9 +134,11 @@ class AccountingSystemIntegrationDataManager
     public function getProperty()
     {
         $property = $this->getPropertyByExternalParameters(
-            $this->get('accsys'),
-            $this->get('propid'),
-            $this->get('unitid')
+            $this->get('accountingSystem'),
+            $this->get('propertyId'),
+            $this->get('unitId'),
+            $this->get('buildingId'),
+            $this->get('holdingId')
         );
         if ($property) {
             $this->checkPropertyBelongOneGroup($property);
@@ -170,10 +152,10 @@ class AccountingSystemIntegrationDataManager
      */
     public function getUnit()
     {
-        if ($property = $this->getProperty() and $externalUnitId = $this->get('unitid')) {
+        if ($property = $this->getProperty() and $externalUnitId = $this->get('unitId')) {
             try {
                 $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')
-                    ->getUnitMappingByPropertyAndExternalUnitId($property, $this->get('propid'), $externalUnitId);
+                    ->getUnitMappingByPropertyAndExternalUnitId($property, $this->get('propertyId'), $externalUnitId);
                 if ($unitMapping) {
                     return $unitMapping->getUnit();
                 }
@@ -190,7 +172,7 @@ class AccountingSystemIntegrationDataManager
      */
     public function getExternalLeaseId()
     {
-        return $this->get('leaseid');
+        return $this->get('leaseId');
     }
 
     /**
@@ -261,12 +243,37 @@ class AccountingSystemIntegrationDataManager
     }
 
     /**
+     * @return null|string
+     */
+    public function getReturnUrl()
+    {
+        return $this->get('returnUrl');
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnMethod()
+    {
+        return $this->get('returnMethod', 'get');
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getReturnParams()
+    {
+        return $this->get('returnParams', []);
+    }
+
+    /**
      * @param array $params
      * @return null|string
      */
     public function getRedirectUrl(array $params = [])
     {
-        $redirectUrl = $this->get('redirect');
+        $redirectUrl = $this->get('returnUrl');
         if ($redirectUrl && !empty($params)) {
             // @parse_url to suppress E_WARNING for invalid urls
             $parsedRedirectUrl = @parse_url($redirectUrl);
@@ -296,17 +303,14 @@ class AccountingSystemIntegrationDataManager
      */
     public function createResidentMapping(Property $property, $unitName)
     {
-        if (!$this->get('resid')) {
+        if (!$this->get('residentId')) {
             throw new \InvalidArgumentException('Resident id should be specified.');
         }
-        if (!$this->get('propid')) {
+        if (!$this->get('propertyId')) {
             throw new \InvalidArgumentException('External property id should be specified.');
         }
-        if (!$this->get('accsys')) {
-            throw new \InvalidArgumentException('Accounting system should be specified.');
-        }
         $residentMapping = new ResidentMapping();
-        $residentMapping->setResidentId($this->get('resid'));
+        $residentMapping->setResidentId($this->get('residentId'));
         $unit = null;
         if ($unitName !== Unit::SEARCH_UNIT_UNASSIGNED) {
             $unit = $property->searchUnit($unitName);
@@ -317,15 +321,15 @@ class AccountingSystemIntegrationDataManager
                     ->getPropertyMappingByPropertyUnitAndExternalPropertyBelongAccountingSystem(
                         $property,
                         $unit,
-                        $this->get('propid'),
-                        $this->get('accsys')
+                        $this->get('propertyId'),
+                        $this->get('accountingSystem')
                     );
             } else {
                 $propertyMapping = $this->em->getRepository('RjDataBundle:PropertyMapping')
                     ->getPropertyMappingByPropertyAndExternalPropertyBelongAccountingSystem(
                         $property,
-                        $this->get('propid'),
-                        $this->get('accsys')
+                        $this->get('propertyId'),
+                        $this->get('accountingSystem')
                     );
             }
             if (!$propertyMapping) {
@@ -338,8 +342,8 @@ class AccountingSystemIntegrationDataManager
                     ' property #%d,%s accounting system "%s", external property "%s"',
                     $property->getId(),
                     $unitName ? ' and selected unit "' . $unitName. '",' : '',
-                    $this->get('accsys'),
-                    $this->get('propid')
+                    $this->get('accountingSystem'),
+                    $this->get('propertyId')
                 )
             );
             throw new \LogicException('Should be find just one property mapping with this parameters.');
@@ -371,20 +375,34 @@ class AccountingSystemIntegrationDataManager
      * @param string $accountingSystem
      * @param string $externalPropertyId
      * @param string|null $externalUnitId
+     * @param string|null $externalBuildingId
+     * @param string|null $holdingId
      * @return null|Property
      */
     protected function getPropertyByExternalParameters(
         $accountingSystem,
         $externalPropertyId,
-        $externalUnitId = null
+        $externalUnitId = null,
+        $externalBuildingId = null,
+        $holdingId = null
     ) {
         try {
             if ($externalUnitId) {
                 return $this->em->getRepository('RjDataBundle:Property')
-                    ->getPropertyByExternalPropertyUnitIds($accountingSystem, $externalPropertyId, $externalUnitId);
+                    ->getPropertyByExternalPropertyUnitIds(
+                        $accountingSystem,
+                        $externalPropertyId,
+                        $externalUnitId,
+                        $externalBuildingId,
+                        $holdingId
+                    );
             } else {
                 return $this->em->getRepository('RjDataBundle:Property')
-                    ->getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId);
+                    ->getPropertyByExternalPropertyId(
+                        $accountingSystem,
+                        $externalPropertyId,
+                        $holdingId
+                    );
             }
         } catch (NonUniqueResultException $e) {
             $this->logger->emergency(
@@ -402,12 +420,13 @@ class AccountingSystemIntegrationDataManager
     /**
      * @param string $accountingSystem
      * @param string $externalPropertyId
-     * @return Property[]
+     * @param string|null $holdingId
+     * @return \RentJeeves\DataBundle\Entity\Property[]
      */
-    protected function getPropertiesByExternalParameters($accountingSystem, $externalPropertyId)
+    protected function getPropertiesByExternalParameters($accountingSystem, $externalPropertyId, $holdingId = null)
     {
         return $this->em->getRepository('RjDataBundle:Property')
-            ->getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId);
+            ->getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId, $holdingId);
     }
 
     /**
