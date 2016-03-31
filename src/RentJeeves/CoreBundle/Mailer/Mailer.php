@@ -281,7 +281,7 @@ class Mailer extends BaseMailer
             'otherAmount' => $order->getOtherAmount(),
             'paymentProcessor' => $order->getPaymentProcessor(),
             'type' => $order->getPaymentType(),
-            'depositType' => DepositAccountType::title($order->getDepositAccount()->getType()),
+            'depositType' => $order->getDepositAccount()->getTitleName(),
             'statementDescriptor' => $this->getStatementDescriptor($order),
             'paymentType' => $order->getPayment() ? $order->getPayment()->getType() : null,
             'paymentCreatedAt' => $order->getPayment() ? $order->getPayment()->getCreatedAt()->format('Y-m-d') : null,

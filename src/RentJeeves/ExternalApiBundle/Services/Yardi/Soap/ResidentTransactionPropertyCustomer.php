@@ -39,7 +39,7 @@ class ResidentTransactionPropertyCustomer
     protected $paymentAccepted;
 
     /**
-     * @return array
+     * @return Customers
      */
     public function getCustomers()
     {
@@ -108,7 +108,7 @@ class ResidentTransactionPropertyCustomer
     }
 
     /**
-     * @param mixed $unit
+     * @param ResidentTransactionUnit $unit
      */
     public function setUnit($unit)
     {
@@ -116,7 +116,7 @@ class ResidentTransactionPropertyCustomer
     }
 
     /**
-     * @return mixed
+     * @return ResidentTransactionUnit
      */
     public function getUnit()
     {

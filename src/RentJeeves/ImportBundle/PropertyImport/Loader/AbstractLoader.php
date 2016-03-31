@@ -119,15 +119,13 @@ abstract class AbstractLoader implements PropertyLoaderInterface
                 'additional_parameter' => $additionalParameter
             ]
         );
-
+        $group = $importProperty->getImport()->getGroup();
         try {
             $property = $this->processProperty($importProperty);
 
             if (!$property->isSingle()) {
                 $unit = $this->processUnit($property, $importProperty);
             }
-
-            $this->saveData($importProperty, $property);
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
@@ -136,11 +134,13 @@ abstract class AbstractLoader implements PropertyLoaderInterface
             } else {
                 $importProperty->setStatus(ImportPropertyStatus::MATCH);
             }
+
+            $this->saveData($importProperty, $property);
         } catch (ImportException $e) {
             $this->logger->error(
                 sprintf('%s on %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()),
                 [
-                    'group' => $importProperty->getImport()->getGroup(),
+                    'group' => $group,
                     'additional_parameter' => $additionalParameter
                 ]
             );
@@ -157,7 +157,7 @@ abstract class AbstractLoader implements PropertyLoaderInterface
                 $importProperty->getStatus()
             ),
             [
-                'group' => $importProperty->getImport()->getGroup(),
+                'group' => $group,
                 'additional_parameter' => $additionalParameter
             ]
         );

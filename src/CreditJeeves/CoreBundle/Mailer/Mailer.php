@@ -8,6 +8,8 @@ use FOS\UserBundle\Model\UserInterface;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 class Mailer extends BaseMailer implements MailerInterface
 {
@@ -50,7 +52,7 @@ class Mailer extends BaseMailer implements MailerInterface
         }
 
         if (null !== $recipientUser = $this->getUserByEmail($emailTo)) {
-            if (false === $recipientUser->getEmailNotification()) {
+            if (false === MailAuthorizer::isAllowed($templateName, $recipientUser)) {
                 return false;
             }
         }
@@ -80,7 +82,7 @@ class Mailer extends BaseMailer implements MailerInterface
             return true;
         } catch (\Twig_Error $e) {
             $this->handleException($e);
-            $this->container->get('logger')->alert(
+            $this->logger->alert(
                 sprintf(
                     'Error when sending email (%s) to user %s : %s',
                     $templateName,

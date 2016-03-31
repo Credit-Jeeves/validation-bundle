@@ -5,9 +5,11 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorFactory;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType as PaymentAccountFromType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,9 +36,10 @@ class CreditTrackController extends Controller
         $user = $this->getUser();
         $serializer = $this->get('jms_serializer');
 
+        $paymentProcessorType = PaymentProcessorFactory::getScoreTrackPaymentProcessorType($user);
         $paymentAccounts = $serializer->serialize(
-            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($group) {
-                return $paymentAccount->getPaymentProcessor() === $group->getGroupSettings()->getPaymentProcessor();
+            $user->getPaymentAccounts()->filter(function (PaymentAccount $paymentAccount) use ($paymentProcessorType) {
+                return $paymentAccount->getPaymentProcessor() === $paymentProcessorType;
             }),
             'json',
             SerializationContext::create()->setGroups(array('paymentAccounts'))
