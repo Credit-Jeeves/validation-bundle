@@ -10,6 +10,7 @@ use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 class MriASIDataMapperCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      * @expectedException \InvalidArgumentException
@@ -144,7 +145,7 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('get')
             ->willReturnCallback(function ($param) {
                 switch ($param) {
-                    case 'trackingid' :
+                    case 'trackingid':
                         return '1111';
                     case 'appfee':
                     case 'secdep':

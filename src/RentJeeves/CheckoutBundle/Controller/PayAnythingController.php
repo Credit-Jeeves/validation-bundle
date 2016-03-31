@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIDataManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use RentJeeves\CheckoutBundle\Form\Type\PayAnythingPaymentType;
@@ -139,7 +139,7 @@ class PayAnythingController extends BaseController
         );
 
         $redirection = null;
-        /** @var DataManager $integrationDataManager */
+        /** @var ASIDataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($integrationDataManager->hasIntegrationData()) {
             $integrationDataManager->removePayment($depositAccountType);

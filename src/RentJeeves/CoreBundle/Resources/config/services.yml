@@ -17,7 +17,6 @@ services:
         parent: hmac.generator
         arguments:
             - "%mri.digest_key%"
-            - "sha256"
             - "Digest"
 
     renttrack.email_canonicalizer:

@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIDataManager;
 use RentJeeves\PublicBundle\Services\TenantProcessor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -492,7 +492,7 @@ class PublicController extends Controller
     {
         /** @var TenantProcessor $tenantProcessor */
         $tenantProcessor = $this->get('tenant.processor');
-        /** @var DataManager $integrationDataManager */
+        /** @var ASIDataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         /** @var Property $property */
         $property = $form->get('propertyId')->getData();
