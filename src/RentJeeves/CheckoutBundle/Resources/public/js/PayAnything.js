@@ -19,7 +19,7 @@ function PayAnything(parent, contract, defaultParams) {
         defaultAmounts = defaultParams.amounts ? defaultParams.amounts : {};
     }
 
-    var shouldRedirected = false;
+    var shouldRedirect = false;
 
     // Wizard-popup steps
     var steps = ['details', 'source', 'pay', 'finish'];
@@ -117,20 +117,19 @@ function PayAnything(parent, contract, defaultParams) {
             case 'pay':
                 if (data.redirection) {
                     self.postProcessedForm.url(data.redirection.url);
-                    console.log(data.redirection);
                     var params = [];
                     jQuery.each(data.redirection.params, function(index, val) {
                         params.push({'name': index, 'value': val});
                     });
                     self.postProcessedForm.elements(params);
                     self.postProcessedForm.method(data.redirection.method);
-                    shouldRedirected = true;
+                    shouldRedirect = true;
                 }
                 break;
             case 'finish':
                 rootNode.dialog('close');
                 jQuery('body').showOverlay();
-                if (shouldRedirected) {
+                if (shouldRedirect) {
                     self.postProcessedForm.submitHandler();
                 } else {
                     window.location.reload();
