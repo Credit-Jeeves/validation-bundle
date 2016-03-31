@@ -11,6 +11,9 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 
+/**
+ * trusted.landlord_status.manager
+ */
 class TrustedLandlordStatusManager
 {
     /**

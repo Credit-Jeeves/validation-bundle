@@ -30,6 +30,7 @@ services:
     trusted.landlord.jira.service:
         class: RentJeeves\ExternalApiBundle\Services\Jira\TrustedLandlordJiraService
         arguments:
+            - "@trusted.landlord_status.manager"
             - "@jira.rest_client"
             - "@doctrine.orm.default_entity_manager"
             - "@logger"

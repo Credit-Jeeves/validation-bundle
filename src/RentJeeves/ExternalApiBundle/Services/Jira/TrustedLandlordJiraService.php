@@ -8,6 +8,8 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
 use JiraClient\Exception\JiraException;
+use RentJeeves\LandlordBundle\Services\TrustedLandlordStatusManager;
+
 /**
  * trusted.landlord.jira.service
  */
@@ -30,15 +32,26 @@ class TrustedLandlordJiraService
     protected $logger;
 
     /**
-     * @param JiraClient $client
-     * @param EntityManager $em
-     * @param LoggerInterface $logger
+     * @var TrustedLandlordStatusManager
      */
-    public function __construct(JiraClient $client, EntityManager $em, LoggerInterface $logger)
-    {
+    protected $statusManager;
+
+    /**
+     * @param TrustedLandlordStatusManager $statusManager
+     * @param JiraClient                   $client
+     * @param EntityManager                $em
+     * @param LoggerInterface              $logger
+     */
+    public function __construct(
+        TrustedLandlordStatusManager $statusManager,
+        JiraClient $client,
+        EntityManager $em,
+        LoggerInterface $logger
+    ) {
         $this->client = $client;
         $this->em = $em;
         $this->logger = $logger;
+        $this->statusManager = $statusManager;
     }
 
     /**
@@ -82,9 +95,38 @@ class TrustedLandlordJiraService
 
     /**
      * @param array $data
-     * @return boolean
+     * @return bool
      */
     public function handleWebhookEvent(array $data)
+    {
+        $jiraKey = $this->getJiraKey($data);
+        $jiraStatus = strtolower($this->getJiraStatus($data));
+
+        if (empty($jiraKey) || empty($jiraStatus)) {
+            $this->logger->debug('JiraKey or JiraStatus missed.');
+
+            return false;
+        }
+
+        $trustedLandlordJiraMapping = $this->em->getRepository('RjDataBundle:TrustedLandlordJiraMapping')->findOneBy(
+            ['jiraKey' => $jiraKey]
+        );
+
+        if (empty($trustedLandlordJiraMapping)) {
+            $this->logger->debug('trustedLandlordJiraMapping  missed in database, jiraKey#' . $jiraKey);
+
+            return false;
+        }
+
+
+        return $this->statusManager->updateStatus($trustedLandlordJiraMapping->getTrustedLandlord(), $jiraStatus);
+    }
+
+    /**
+     * @param array $data
+     * @return bool|string
+     */
+    protected function getJiraKey(array $data)
     {
         if (!isset($data['issue'])) {
             $this->logger->debug('Data structure is invalid, we don\'t have issue key in array');
@@ -100,7 +142,30 @@ class TrustedLandlordJiraService
             return false;
         }
 
-        $jiraKey = $issue['key'];
+        return $issue['key'];
+    }
+
+    /**
+     * @param array $data
+     * @return bool|string
+     */
+    protected function getJiraStatus(array $data)
+    {
+        if (!isset($data['transition'])) {
+            $this->logger->debug('Data structure is invalid, we don\'t have issue key in array');
+
+            return false;
+        }
+
+        $transition = $data['transition'];
+
+        if (!isset($transition['to_status'])) {
+            $this->logger->debug('Data structure is invalid, we don\'t have "key" key in array');
+
+            return false;
+        }
+
+        return $transition['to_status'];
     }
 }
 
