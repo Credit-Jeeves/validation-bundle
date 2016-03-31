@@ -7,24 +7,24 @@ use RentJeeves\DataBundle\Enum\AccountingSystem;
 /**
  * DI\Service('accounting_system.integration.data_mapper_factory')
  */
-class DataMapperFactory
+class ASIDataMapperFactory
 {
     /**
-     * @var DataMapperInterface[]
+     * @var ASIDataMapperInterface[]
      */
-    protected $dataMappers;
+    protected $ASIDataMappers;
 
     /**
-     * @param array $dataMappers
+     * @param array $ASIDataMappers
      */
-    public function __construct(array $dataMappers)
+    public function __construct(array $ASIDataMappers)
     {
-        $this->dataMappers = $dataMappers;
+        $this->ASIDataMappers = $ASIDataMappers;
     }
 
     /**
      * @param $accountingSystem
-     * @return DataMapperInterface
+     * @return ASIDataMapperInterface
      */
     public function getMapper($accountingSystem)
     {
@@ -33,8 +33,8 @@ class DataMapperFactory
             throw new \InvalidArgumentException('Accounting system type is invalid.');
         }
 
-        if (!isset($this->dataMappers[$accountingSystem]) ||
-            !$this->dataMappers[$accountingSystem] instanceof DataMapperInterface
+        if (!isset($this->ASIDataMappers[$accountingSystem]) ||
+            !$this->ASIDataMappers[$accountingSystem] instanceof ASIDataMapperInterface
         ) {
             throw new \RuntimeException(
                 sprintf(
@@ -44,6 +44,6 @@ class DataMapperFactory
             );
         }
 
-        return $this->dataMappers[$accountingSystem];
+        return $this->ASIDataMappers[$accountingSystem];
     }
 }

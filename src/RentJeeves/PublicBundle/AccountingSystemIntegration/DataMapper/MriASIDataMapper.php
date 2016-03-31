@@ -6,14 +6,14 @@ use RentJeeves\CoreBundle\Services\HMACGenerator;
 use RentJeeves\CoreBundle\Traits\ValidateEntities;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\AccountingSystemIntegration\IntegratedModel;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIIntegratedModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator;
 
 /**
  * DI\Service('accounting_system.integration.data_mapper.mri')
  */
-class MriDataMapper implements DataMapperInterface
+class MriASIDataMapper implements ASIDataMapperInterface
 {
     use ValidateEntities;
 
@@ -34,12 +34,12 @@ class MriDataMapper implements DataMapperInterface
 
     /**
      * @param Request $request
-     * @return IntegratedModel
+     * @return ASIIntegratedModel
      */
     public function mapData(Request $request)
     {
         $this->checkDigest($request);
-        $integratedModel = new IntegratedModel(AccountingSystem::MRI);
+        $integratedModel = new ASIIntegratedModel(AccountingSystem::MRI);
 
         $integratedModel->setResidentId($request->get('resid'));
         $integratedModel->setLeaseId($request->get('leaseid'));
@@ -93,10 +93,10 @@ class MriDataMapper implements DataMapperInterface
     }
 
     /**
-     * @param IntegratedModel $integratedModel
+     * @param ASIIntegratedModel $integratedModel
      * @return array
      */
-    protected function prepareReturnParams(IntegratedModel $integratedModel)
+    protected function prepareReturnParams(ASIIntegratedModel $integratedModel)
     {
         $returnParams = [
             'trackingid' => $integratedModel->getTrackingId(),

@@ -4,7 +4,7 @@ namespace RentJeeves\PublicBundle\AccountingSystemIntegration;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class IntegratedModel implements \ArrayAccess
+class ASIIntegratedModel implements \ArrayAccess
 {
     /**
      * @var string

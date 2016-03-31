@@ -1,27 +1,27 @@
 services:
     accounting_system.integration.data_mapper.resman:
         public: false
-        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanDataMapper
+        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanASIDataMapper
         arguments:
             - "@validator"
 
     accounting_system.integration.data_mapper.mri:
         public: false
-        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\MriDataMapper
+        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\MriASIDataMapper
         arguments:
             - "@validator"
             - "@mri.hmac.generator"
 
     accounting_system.integration.data_mapper_factory:
         public: false
-        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\DataMapperFactory
+        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ASIDataMapperFactory
         arguments:
             -
                 %accounting_system.resman%: "@accounting_system.integration.data_mapper.resman"
                 %accounting_system.mri%: "@accounting_system.integration.data_mapper.mri"
 
     accounting_system.integration.data_manager:
-        class: RentJeeves\PublicBundle\AccountingSystemIntegration\DataManager
+        class: RentJeeves\PublicBundle\AccountingSystemIntegration\ASIDataManager
         arguments:
             - "@accounting_system.integration.data_mapper_factory"
             - "@doctrine.orm.default_entity_manager"

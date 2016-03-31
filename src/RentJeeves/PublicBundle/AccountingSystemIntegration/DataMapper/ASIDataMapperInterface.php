@@ -2,14 +2,14 @@
 
 namespace RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper;
 
-use RentJeeves\PublicBundle\AccountingSystemIntegration\IntegratedModel;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIIntegratedModel;
 use Symfony\Component\HttpFoundation\Request;
 
-interface DataMapperInterface
+interface ASIDataMapperInterface
 {
     /**
      * @param Request $request
-     * @return IntegratedModel
+     * @return ASIIntegratedModel
      */
     public function mapData(Request $request);
 }

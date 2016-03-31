@@ -3,11 +3,11 @@
 namespace RentJeeves\PublicBundle\Tests\Unit\AccountingSystemIntegration\DataMapper;
 
 use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\DataMapperFactory;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ASIDataMapperFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class DataMapperFactoryCase extends UnitTestBase
+class ASIDataMapperFactoryCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
     /**
@@ -17,7 +17,7 @@ class DataMapperFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionOnInvalidAccountingSystem()
     {
-        $factory = new DataMapperFactory([]);
+        $factory = new ASIDataMapperFactory([]);
 
         $factory->getMapper('invalidSystem');
     }
@@ -29,7 +29,7 @@ class DataMapperFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfMapperNotFound()
     {
-        $factory = new DataMapperFactory([]);
+        $factory = new ASIDataMapperFactory([]);
 
         $factory->getMapper(AccountingSystem::MRI);
     }
@@ -40,13 +40,13 @@ class DataMapperFactoryCase extends UnitTestBase
     public function shouldReturnCorrectMapper()
     {
         $resmanDataMapper = $this->getBaseMock(
-            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanDataMapper'
+            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanASIDataMapper'
         );
 
         $mriDataMapper = $this->getBaseMock(
-            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\MriDataMapper'
+            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\MriASIDataMapper'
         );
-        $factory = new DataMapperFactory([
+        $factory = new ASIDataMapperFactory([
             AccountingSystem::RESMAN => $resmanDataMapper,
             AccountingSystem::MRI => $mriDataMapper,
         ]);
@@ -54,7 +54,7 @@ class DataMapperFactoryCase extends UnitTestBase
         $mapper = $factory->getMapper(AccountingSystem::RESMAN);
 
         $this->assertInstanceOf(
-            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanDataMapper',
+            'RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ResmanASIDataMapper',
             $mapper,
             'Should return correct mapper.'
         );

@@ -10,14 +10,14 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
-use RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\DataMapperFactory;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\DataMapper\ASIDataMapperFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * DI\Service('accounting_system.integration.data_manager')
  */
-class DataManager
+class ASIDataManager
 {
     const SESSION_INTEGRATION_DATA = 'integration_data';
 
@@ -37,18 +37,18 @@ class DataManager
     protected $logger;
 
     /**
-     * @var IntegratedModel
+     * @var ASIIntegratedModel
      */
     protected $cachedData;
 
     /**
-     * @param DataMapperFactory $dataMapperFactory
+     * @param ASIDataMapperFactory $dataMapperFactory
      * @param EntityManager $em
      * @param Session $session
      * @param LoggerInterface $logger
      */
     public function __construct(
-        DataMapperFactory $dataMapperFactory,
+        ASIDataMapperFactory $dataMapperFactory,
         EntityManager $em,
         Session $session,
         LoggerInterface $logger
@@ -80,7 +80,7 @@ class DataManager
      */
     public function hasIntegrationData()
     {
-        return $this->cachedData instanceof IntegratedModel || $this->session->has(self::SESSION_INTEGRATION_DATA);
+        return $this->cachedData instanceof ASIIntegratedModel || $this->session->has(self::SESSION_INTEGRATION_DATA);
     }
 
     public function removeIntegrationData()
