@@ -103,7 +103,7 @@ class TrustedLandlordJiraService
         $jiraStatus = strtolower($this->getJiraStatus($data));
 
         if (empty($jiraKey) || empty($jiraStatus)) {
-            $this->logger->debug('JiraKey or JiraStatus missed.');
+            $this->logger->debug(sprintf('JiraKey#%s or JiraStatus#%s missed.', $jiraKey, $jiraStatus));
 
             return false;
         }
@@ -129,7 +129,7 @@ class TrustedLandlordJiraService
     protected function getJiraKey(array $data)
     {
         if (!isset($data['issue'])) {
-            $this->logger->debug('Data structure is invalid, we don\'t have issue key in array');
+            $this->logger->debug('Data structure is invalid, we don\'t have "issue" key in array');
 
             return false;
         }
@@ -152,7 +152,7 @@ class TrustedLandlordJiraService
     protected function getJiraStatus(array $data)
     {
         if (!isset($data['transition'])) {
-            $this->logger->debug('Data structure is invalid, we don\'t have issue key in array');
+            $this->logger->debug('Data structure is invalid, we don\'t have "transition" key in array');
 
             return false;
         }
@@ -160,7 +160,7 @@ class TrustedLandlordJiraService
         $transition = $data['transition'];
 
         if (!isset($transition['to_status'])) {
-            $this->logger->debug('Data structure is invalid, we don\'t have "key" key in array');
+            $this->logger->debug('Data structure is invalid, we don\'t have "to_status" key in array');
 
             return false;
         }

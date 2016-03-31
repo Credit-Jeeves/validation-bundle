@@ -53,7 +53,7 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
         $trustedLandlordJira = $em->getRepository('DataBundle:Group')->find($input->getOption('trusted-landlord-id'));
         if (empty($trustedLandlordJira)) {
             throw new \LogicException(
-                sprintf('Option trusted-landlord-id# for command is wrong', $input->getOption('trusted-landlord-id'))
+                sprintf('Option trusted-landlord-id#%s for command is wrong', $input->getOption('trusted-landlord-id'))
             );
         }
         /** @var TrustedLandlordJiraService $jiraClient */

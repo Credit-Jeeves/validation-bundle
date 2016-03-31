@@ -8,7 +8,6 @@ use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
-use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 
 /**
@@ -199,6 +198,14 @@ class TrustedLandlordStatusManager
      */
     protected function handleNewStatus(TrustedLandlord $trustedLandlord)
     {
+        if ($trustedLandlord->getJiraMapping()) {
+            $this->logger->debug(
+                sprintf('TrustedLandlord#%s already has mapping.', $trustedLandlord->getId())
+            );
+
+            return false;
+        }
+
         $job = new Job('api:jira:create-issue', ['--trusted-landlord-id='.$trustedLandlord->getId()]);
         $this->em->persist($job);
         $this->em->flush($job);
