@@ -186,7 +186,6 @@ class TrustedLandlordStatusManager
         );
         foreach ($activePayments as $activePayment) {
             $activePayment->setClosed($this, 'We were unable to verify your Property Manager');
-            $activePayment->setFlaggedReason(PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD);
             $this->mailer->sendTrustedLandlordDenied($activePayment);
         }
         $this->em->flush();
