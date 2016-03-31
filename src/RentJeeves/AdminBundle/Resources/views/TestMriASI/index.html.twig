@@ -14,12 +14,12 @@
     {{ form_widget(form) }}
     {{ form_end(form) }}
     <script type="text/javascript">
-        var requestData = $('form').serializeArray();
-        requestData.push({
-            'name': 'Submit',
-            'value': ''
-        });
         function generateDigest() {
+            var requestData = $('form').serializeArray();
+            requestData.push({
+                'name': 'Submit',
+                'value': ''
+            });
             $.post(
                 Routing.generate('asi_mri_test_generate_digest'),
                 $.param(requestData, false),

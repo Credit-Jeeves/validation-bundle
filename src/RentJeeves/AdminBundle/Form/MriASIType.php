@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Form\Type;
+namespace RentJeeves\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

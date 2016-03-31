@@ -1,7 +1,7 @@
 <?php
-namespace RentJeeves\CoreBundle\Controller;
+namespace RentJeeves\AdminBundle\Controller;
 
-use RentJeeves\CoreBundle\Form\Type\MriASIType;
+use RentJeeves\AdminBundle\Form\MriASIType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -13,7 +13,7 @@ class TestMriASIController extends Controller
 {
     /**
      * @Route("/test/asi/mri", name="asi_mri_test")
-     * @Template("RjCoreBundle:TestMriASI:index.html.twig")
+     * @Template("AdminBundle:TestMriASI:index.html.twig")
      *
      * @return array
      */
