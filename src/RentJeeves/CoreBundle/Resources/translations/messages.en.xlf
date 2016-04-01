@@ -1186,6 +1186,10 @@
                 <source>contract.statuses.current</source>
                 <target>ACTIVE</target>
             </trans-unit>
+            <trans-unit id="contract.statuses.waiting">
+                <source>contract.statuses.waiting</source>
+                <target>WAITING</target>
+            </trans-unit>
             <trans-unit id="contract.statuses.contract_ended">
                 <source>contract.statuses.contract_ended</source>
                 <target>%status% (CONTRACT ENDED)</target>
@@ -3401,6 +3405,10 @@
             <trans-unit id="reported.lease">
                 <source>reported.lease</source>
                 <target>Reported Lease</target>
+            </trans-unit>
+            <trans-unit id="contract.in_waiting_status">
+                <source>contract.in_waiting_status</source>
+                <target>Contract is in waiting status.</target>
             </trans-unit>
         </body>
     </file>
