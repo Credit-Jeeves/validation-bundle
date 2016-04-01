@@ -238,9 +238,10 @@ class AccountingController extends Controller
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
             new ImportMatchFileType(
-                count($dataView),
+                $this->getUser()->getCurrentGroup(),
                 $this->get('translator'),
                 $importStorage,
+                count($dataView),
                 $defaultMappingValue
             )
         );
@@ -317,7 +318,7 @@ class AccountingController extends Controller
         $source = $this->getCurrentGroup()->getImportSettings()->getSource();
 
         return array(
-            'isSupportResidentId'     => $handler->isSupportResidentId,
+            'isSupportResidentId'     => $handler->isSupportResidentId(),
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),

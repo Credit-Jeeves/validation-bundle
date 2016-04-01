@@ -56,7 +56,7 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        if ($this->isSupportResidentId) {
+        if ($this->isSupportResidentId()) {
             $residentId = $row[Mapping::KEY_RESIDENT_ID];
         } else {
             $residentId = null;
@@ -188,7 +188,7 @@ trait Tenant
             return;
         }
 
-        if (!$this->isSupportResidentId) {
+        if (!$this->isSupportResidentId()) {
             return;
         }
 
