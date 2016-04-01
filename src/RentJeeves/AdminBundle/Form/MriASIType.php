@@ -131,7 +131,8 @@ class MriASIType extends AbstractType
             ]
         );
 
-        $builder->add('GenerateDigest',
+        $builder->add(
+            'GenerateDigest',
             'button',
             [
                 'attr' => [
