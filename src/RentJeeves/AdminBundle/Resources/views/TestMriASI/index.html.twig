@@ -1,0 +1,35 @@
+{% extends 'AdminBundle:Sonata:index.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+{% endblock %}
+
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+{% block content %}
+    <h1>Test MRI Accounting System Integration</h1>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+    <script type="text/javascript">
+        function generateDigest() {
+            var requestData = $('form').serializeArray();
+            requestData.push({
+                'name': 'Submit',
+                'value': ''
+            });
+            $.post(
+                Routing.generate('asi_mri_test_generate_digest'),
+                $.param(requestData, false),
+                function( data ) {
+                    if (data.digest) {
+                        $('#Digest').val(data.digest);
+                        $('#Submit').enable();
+                    }
+                }
+            );
+        }
+    </script>
+{% endblock %}
