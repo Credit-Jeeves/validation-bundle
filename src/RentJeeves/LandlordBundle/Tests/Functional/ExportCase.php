@@ -1103,7 +1103,7 @@ class ExportCase extends BaseTestCase
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
-        $csvArr = explode("\n", $csv);
+        $csvArr = explode("\r", $csv);
 
         $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
 
@@ -1173,7 +1173,7 @@ class ExportCase extends BaseTestCase
 
         // check file with unit id
         $file = $archive->getFromIndex(1);
-        $rows = explode("\n", trim($file));
+        $rows = explode("\r", trim($file));
         $this->assertCount(2, $rows, 'Should be two row');
         $columns = explode(",", $rows[1]);
 
