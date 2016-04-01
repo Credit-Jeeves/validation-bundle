@@ -1876,6 +1876,14 @@
                 <source>order.error.title</source>
                 <target>We encountered an error when attempting to make your rent payment.</target>
             </trans-unit>
+            <trans-unit id="payment.order.check_number.title">
+                <source>payment.order.check_number.title</source>
+                <target>Check # %checkNumber%</target>
+            </trans-unit>
+            <trans-unit id="deposit.order.check_number.title">
+                <source>deposit.order.check_number.title</source>
+                <target>Check # %checkNumber%</target>
+            </trans-unit>
             <trans-unit id="scoretrack.order.error.title">
                 <source>scoretrack.order.error.title</source>
                 <target>We encountered an error when attempting to make your ScoreTrack payment.</target>
@@ -2357,6 +2365,10 @@
                 <source>filter.group_by.deposit.batchId</source>
                 <target>Batch ID</target>
             </trans-unit>
+            <trans-unit id="filter.group_by.deposit.order.check_number">
+                <source>filter.group_by.deposit.order.check_number</source>
+                <target>Check Number</target>
+            </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>
                 <target>DEPOSIT</target>
@@ -2415,6 +2427,10 @@
             <trans-unit id="payments.filter.amount">
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.checkNumber">
+                <source>payments.filter.checkNumber</source>
+                <target>Search by Check #</target>
             </trans-unit>
             <trans-unit id="payments.filter.batch_deposit_report.go">
                 <source>payments.filter.batch_deposit_report.go</source>

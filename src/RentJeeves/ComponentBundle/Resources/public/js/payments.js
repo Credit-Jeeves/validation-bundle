@@ -148,17 +148,22 @@ function Payments() {
   };
 
   this.getTenantWithDepositTitle = function(order) {
+      var message = '';
       if (order.depositType.length == 0 || order.depositType.toLowerCase() == 'rent') {
-          return order.tenant;
+          message += order.tenant;
+      } else {
+          message += Translator.trans(
+              'landlord.dashboard.additional_paid_for',
+              {
+                  'paid_for': Translator.trans(order.depositType),
+                  'tenant': order.tenant
+              }
+          );
       }
-
-      return Translator.trans(
-          'landlord.dashboard.additional_paid_for',
-          {
-            'paid_for': Translator.trans(order.depositType),
-            'tenant' : order.tenant
-          }
-      );
+      if(order.checkNumber) {
+          message += ' | ' + Translator.trans('payment.order.check_number.title', {checkNumber: order.checkNumber})
+      }
+      return message;
   };
 
   this.getOrderAmount = function(isDeposit, order) {

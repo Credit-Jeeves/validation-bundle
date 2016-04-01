@@ -142,4 +142,62 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
         $this->assertEquals('payments.total (39)', $title->getHtml());
     }
+
+    /**
+     * @test
+     */
+    public function searchByCheckNumber()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->loginByAccessToken('landlord1@example.com');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
+
+        $this->assertNotNull(
+            $allh2 = $this->page->find('css', '#payments-block .title-box>h2'),
+            'Should be title Payments Total'
+        );
+        $this->assertEquals('payments.total (39)', $allh2->getText(), 'Wrong count');
+
+        $this->assertNotNull(
+            $searchPayments_link = $this->page->find('css', '#searchPayments_link'),
+            'On the page should be button for search'
+        );
+        $searchPayments_link->click();
+
+        $this->assertNotNull($checkNumberFilter = $this->page->find('css', '#searchPayments_li_4'),
+            'Should be options Check Number');
+        $checkNumberFilter->click();
+        $searchField = $this->page->find('css', '#searsh-field-payments');
+        $this->assertNotNull($searchField, 'Should be input for search value');
+
+        //test when wrong check number value
+        $searchField->setValue('test');
+        $this->assertNotNull(
+            $searchSubmit = $this->page->find('css', '#search-submit-payments', 'Should be input for submit button')
+        );
+        $searchSubmit->click();
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', 'h3.processPayment'));
+        $this->assertEquals('donthavedata', $allh2->getText(), 'Wrong count');
+
+        //test with check number value is exist in DB
+        $searchField->setValue('123456');
+        $searchSubmit->click();
+
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
+        $this->assertEquals('payments.total (1)', $allh2->getText(), 'Wrong count: Should be 1 result');
+
+        $this->assertNotNull($delete = $this->page->find('css', '#payments-block .pie-el'));
+        $delete->click();
+
+        $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
+        $this->assertEquals('payments.total (39)', $allh2->getHtml(), 'Wrong count');
+    }
 }

@@ -84,6 +84,7 @@ class BatchDepositsManager
                 'depositType' => $transaction->getOrder()->getDepositAccount() ?
                     DepositAccountType::title($transaction->getOrder()->getDepositAccount()->getType()) : '',
                 'transactionId' => $transaction->getTransactionId(),
+                'checkNumber' => $transaction->getOrder()->getCheckNumber(),
                 'errorMessage' => $transaction->getMessages(),
                 'style' => $this->getOrderStatusStyle($transaction->getOrder()),
                 'status' => 'order.status.text.'.$transaction->getOrder()->getStatus(),
@@ -130,7 +131,7 @@ class BatchDepositsManager
      */
     protected function getFilter($givenFilter)
     {
-        if ('transactionId' === $givenFilter || 'batchId' === $givenFilter) {
+        if ('transactionId' === $givenFilter || 'batchId' === $givenFilter || 'checkNumber' === $givenFilter) {
             return $givenFilter;
         }
 
