@@ -326,10 +326,7 @@ class TransUnionReportRecord
             return str_pad($uncollectedBalance, 9, '0', STR_PAD_LEFT);
         }
 
-        $amount = $this->getFormattedRentAmount();
-
-        // if contract rent amount is 0, return the payment amount
-        return ($amount > 0) ? $amount : $this->getLeasePaymentAmountConfirmed();
+        return str_repeat('0', 9); // zero fill balance if positive reporting
     }
 
     public function getAmountPastDue()
