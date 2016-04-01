@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Tests\Command;
 
 use RentJeeves\CoreBundle\Command\ImportAciEnrollmentResponseFileCommand;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -244,6 +245,64 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldNotCreateNewAddressForFundingAccountTypeIsBank()
+    {
+        $this->load(true);
+
+        $filePath = $this->getFileLocator()->locate(
+            '@RjCoreBundle/Tests/Fixtures/PaymentProcessorMigration/fileForCommand.csv'
+        );
+        $allMailingAddress = $this->getEntityManager()->getRepository('DataBundle:MailingAddress')->findAll();
+        $count = count($allMailingAddress);
+
+        $this->executeCommandTester(
+            new ImportAciEnrollmentResponseFileCommand(),
+            [
+                '--path' => $filePath,
+                '--holding_id' => 5,
+            ]
+        );
+        $allMailingAddress = $this->getEntityManager()->getRepository('DataBundle:MailingAddress')->findAll();
+        $countAfterImport = count($allMailingAddress);
+
+        $this->assertEquals($count, $countAfterImport, 'Address not should be created.');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateNewAddressForFundingAccountTypeIsNotBankAndOldAccountDoesntHaveAddress()
+    {
+        $this->load(true);
+        $paymentAccount = $this->getPaymentAccountRepository()->findOneOrNullByToken(
+            '568C0904-9174-46DE-BEC4-9B76599B28C5'
+        );
+        $paymentAccount->setType(PaymentAccountType::CARD);
+        $paymentAccount->setAddress(null);
+        $this->getEntityManager()->flush();
+
+        $filePath = $this->getFileLocator()->locate(
+            '@RjCoreBundle/Tests/Fixtures/PaymentProcessorMigration/fileForCommand.csv'
+        );
+        $allMailingAddress = $this->getEntityManager()->getRepository('DataBundle:MailingAddress')->findAll();
+        $count = count($allMailingAddress);
+
+        $this->executeCommandTester(
+            new ImportAciEnrollmentResponseFileCommand(),
+            [
+                '--path' => $filePath,
+                '--holding_id' => 5,
+            ]
+        );
+        $allMailingAddress = $this->getEntityManager()->getRepository('DataBundle:MailingAddress')->findAll();
+        $countAfterImport = count($allMailingAddress);
+
+        $this->assertEquals($count + 1, $countAfterImport, 'Address not should be created.');
+    }
+
+    /**
      * @return \Symfony\Component\HttpKernel\Config\FileLocator
      */
     protected function getFileLocator()
@@ -268,7 +327,7 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
     }
 
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * @return \RentJeeves\DataBundle\Entity\PaymentAccountRepository
      */
     protected function getPaymentAccountRepository()
     {
