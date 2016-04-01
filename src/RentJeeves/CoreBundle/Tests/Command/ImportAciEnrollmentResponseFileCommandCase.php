@@ -279,6 +279,7 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $paymentAccount = $this->getPaymentAccountRepository()->findOneOrNullByToken(
             '568C0904-9174-46DE-BEC4-9B76599B28C5'
         );
+        $this->assertNotNull($paymentAccount, 'Pls check db.');
         $paymentAccount->setType(PaymentAccountType::CARD);
         $paymentAccount->setAddress(null);
         $this->getEntityManager()->flush();
@@ -299,7 +300,7 @@ class ImportAciEnrollmentResponseFileCommandCase extends BaseTestCase
         $allMailingAddress = $this->getEntityManager()->getRepository('DataBundle:MailingAddress')->findAll();
         $countAfterImport = count($allMailingAddress);
 
-        $this->assertEquals($count + 1, $countAfterImport, 'Address not should be created.');
+        $this->assertEquals($count + 1, $countAfterImport, 'New address should be created.');
     }
 
     /**
