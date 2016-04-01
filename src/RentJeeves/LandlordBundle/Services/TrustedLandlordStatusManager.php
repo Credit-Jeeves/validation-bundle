@@ -101,13 +101,16 @@ class TrustedLandlordStatusManager
                 $trustedLandlord->getId()
             );
             $this->logger->alert($message);
+
             throw new \LogicException($message);
         }
 
         $trustedLandlord->setStatus($newStatus);
         $method = sprintf('handle%sStatus', str_replace(' ', '', ucwords($newStatus)));
-        $this->$method($trustedLandlord);
-        $this->em->flush($trustedLandlord);
+        $result = $this->$method($trustedLandlord);
+        $this->em->flush();
+
+        return $result;
     }
 
     /**
@@ -208,7 +211,7 @@ class TrustedLandlordStatusManager
 
         $job = new Job('api:jira:create-issue', ['--trusted-landlord-id='.$trustedLandlord->getId()]);
         $this->em->persist($job);
-        $this->em->flush($job);
+        $this->em->flush();
 
         return true;
     }
