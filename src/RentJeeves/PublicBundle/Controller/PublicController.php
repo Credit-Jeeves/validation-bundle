@@ -587,8 +587,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/handle/jira/wehook", name="handle_jira_webhook")
-     * @Method({"POST"})
+     * @Route("/handle/jira/webhook", name="handle_jira_webhook")
      */
     public function handleJiraWebhookAction(Request $request)
     {
@@ -597,10 +596,12 @@ class PublicController extends Controller
 
         if ($result) {
             $httpCode = Response::HTTP_OK;
+            $content = 'Success';
         } else {
             $httpCode = Response::HTTP_BAD_REQUEST;
+            $content = 'Bad Request';
         }
 
-        return new Response('', $httpCode);
+        return new Response($content, $httpCode);
     }
 }

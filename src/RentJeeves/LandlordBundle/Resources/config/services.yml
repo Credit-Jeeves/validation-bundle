@@ -21,7 +21,7 @@ services:
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
-            - "@mailer"
+            - "@project.mailer"
             - "%payment_one_time_until_value%"
             - "%payment_debit_one_time_until_value%"
     export.serializer.mri_boston_post:

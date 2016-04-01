@@ -3,6 +3,12 @@ namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CoreBundle\HttpClient\HttpClient;
+use RentJeeves\DataBundle\Entity\CheckMailingAddress;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
+use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
+use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PublicControllerCase extends BaseTestCase
@@ -237,5 +243,84 @@ class PublicControllerCase extends BaseTestCase
             'ThisIsMyRental not found for Group #26'
         );
         $this->assertEquals(1, count($thisIsMyRental), 'Wrong count of rental property for Group #26');
+    }
+
+    /**
+     * @test
+     * @expectedException Guzzle\Http\Exception\ClientErrorResponseException
+     */
+    public function shouldFailedPostWebhook()
+    {
+        /** @var HttpClient $client */
+        $client = $this->getContainer()->get('http_client');
+        $body = $this->getJiraRequestMock();
+        $link = $this->getUrl() . 'handle/jira/webhook';
+        $client->send(
+            'POST',
+            $link,
+            ['Content-Type' => 'application/json'],
+            $body
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSuccessPostWebhook()
+    {
+        $this->load(true);
+        $landlord = new TrustedLandlord();
+        $landlord->setType(TrustedLandlordType::PERSON);
+        $landlord->setCheckMailingAddress($mailingAddress = new CheckMailingAddress());
+        $landlord->setStatus(TrustedLandlordStatus::NEWONE);
+        $landlord->setCompanyName('Fanta');
+        $landlord->setFirstName('Queen');
+        $landlord->setLastName('Of Darkness');
+        $mapping = new TrustedLandlordJiraMapping();
+        $mapping->setTrustedLandlord($landlord);
+        $mapping->setJiraKey('RT-2276');
+        $mailingAddress->setCity('Default city');
+        $mailingAddress->setState('Default state');
+        $mailingAddress->setAddressee('Thumb');
+        $mailingAddress->setIndex('123456');
+        $mailingAddress->setAddress1('Good morning');
+        $mailingAddress->setAddress2('Good evening');
+        $mailingAddress->setZip('1231');
+        $this->getEntityManager()->persist($mapping);
+        $this->getEntityManager()->persist($landlord);
+        $this->getEntityManager()->flush();
+        /** @var HttpClient $client */
+        $client = $this->getContainer()->get('http_client');
+        $body = $this->getJiraRequestMock();
+        $link = $this->getUrl() . 'handle/jira/webhook';
+        $response = $client->send(
+            'POST',
+            $link,
+            [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ],
+            $body
+        );
+
+        $this->assertEquals('Success', $response->getBody('true'));
+    }
+
+    /**
+     * @return string XML data from MRI
+     */
+    protected function getJiraRequestMock()
+    {
+        $pathToFile = $this->getFileLocator()->locate('@RjPublicBundle/Resources/fixtures/jira_hook_data.txt');
+
+        return file_get_contents($pathToFile);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Config\FileLocator
+     */
+    protected function getFileLocator()
+    {
+        return $this->getContainer()->get('file_locator');
     }
 }
