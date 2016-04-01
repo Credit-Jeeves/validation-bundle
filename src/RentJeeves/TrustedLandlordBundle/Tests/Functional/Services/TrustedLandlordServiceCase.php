@@ -29,7 +29,7 @@ class TrustedLandlordServiceCase extends BaseTestCase
         $trustedLandlordDTO->setZip('10003');
 
         $result = $trustedLandlordService->lookup($trustedLandlordDTO);
-        $this->assertNull($result);
+        $this->assertNull($result, 'Service returned bad result.');
     }
 
     /**
