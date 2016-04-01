@@ -24,7 +24,7 @@ abstract class ProfitStarsTransaction
     /**
      * @var OrderEntity
      *
-     * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order")
+     * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order",  inversedBy="profitStarsTransaction")
      * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
      */
     protected $order;

@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class HoldingRepository extends EntityRepository
 {
@@ -200,5 +201,21 @@ class HoldingRepository extends EntityRepository
             ->setParameter('lastId', $lastId)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @return array
+     */
+    public function findAllHoldingsWithProfitStarsSetting()
+    {
+        return $this->createQueryBuilder('h')
+            ->select('pss.merchantId, da.merchantName')
+            ->innerJoin('h.profitStarsSettings', 'pss')
+            ->innerJoin('h.depositAccounts', 'da')
+            ->where('pss.merchantId IS NOT NULL')
+            ->andWhere('da.paymentProcessor = :profitStars')
+            ->setParameter('profitStars', PaymentProcessor::PROFIT_STARS)
+            ->getQuery()
+            ->getArrayResult();
     }
 }

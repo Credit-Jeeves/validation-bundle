@@ -307,4 +307,24 @@ class TransactionRepository extends EntityRepository
 
         return null;
     }
+
+    /**
+     * @param string $transactionNumber
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Transaction
+     */
+    public function findOneCompletedByProfitStarsTransactionId($transactionNumber)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.order', 'o')
+            ->innerJoin('o.profitStarsTransaction', 'pst')
+            ->where('t.status = :status')
+            ->andWhere('pst.transactionNumber = :transactionNumber')
+            ->setParameter('status', TransactionStatus::COMPLETE)
+            ->setParameter('transactionNumber', $transactionNumber)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

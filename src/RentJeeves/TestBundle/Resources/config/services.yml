@@ -6,3 +6,5 @@ parameters:
     payment_processor.aci.collect_pay.report_loader.class: RentJeeves\TestBundle\Aci\CollectPayReportLoaderTest
     soap.client.yardi.resident_transactions.class: RentJeeves\TestBundle\Services\Yardi\Clients\ResidentTransactionsClient
     soap.client.amsi.leasing.class: 'RentJeeves\TestBundle\Services\AMSI\AMSILeasingClient'
+    profit_stars.transaction_reporting.client.class: 'RentJeeves\TestBundle\ProfitStars\TransactionReportingClient'
+    profit_stars.client_builder.class: 'RentJeeves\TestBundle\ProfitStars\ClientBuilder'
