@@ -58,7 +58,10 @@ class RDCClientCase extends UnitTestBase
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock(null);
 
         $rdcClient = new RDCClient(
-            $depositReportingClientMock, $this->getLoggerMock(), $this->storeId, $this->storeKey
+            $depositReportingClientMock,
+            $this->getLoggerMock(),
+            $this->storeId,
+            $this->storeKey
         );
 
         $rdcClient->getBatches($group, $date, $this->statuses);
@@ -76,7 +79,10 @@ class RDCClientCase extends UnitTestBase
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock(new GetBatchesByDateRangeResponse());
 
         $rdcClient = new RDCClient(
-            $depositReportingClientMock, $this->getLoggerMock(), $this->storeId, $this->storeKey
+            $depositReportingClientMock,
+            $this->getLoggerMock(),
+            $this->storeId,
+            $this->storeKey
         );
 
         $rdcClient->getBatches($group, $date, $this->statuses);
@@ -98,7 +104,10 @@ class RDCClientCase extends UnitTestBase
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock($response);
 
         $rdcClient = new RDCClient(
-            $depositReportingClientMock, $this->getLoggerMock(), $this->storeId, $this->storeKey
+            $depositReportingClientMock,
+            $this->getLoggerMock(),
+            $this->storeId,
+            $this->storeKey
         );
 
         $result = $rdcClient->getBatches($group, $date, $this->statuses);
@@ -123,7 +132,10 @@ class RDCClientCase extends UnitTestBase
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock($response);
 
         $rdcClient = new RDCClient(
-            $depositReportingClientMock, $this->getLoggerMock(), $this->storeId, $this->storeKey
+            $depositReportingClientMock,
+            $this->getLoggerMock(),
+            $this->storeId,
+            $this->storeKey
         );
 
         $result = $rdcClient->getBatches($group, $date, $this->statuses);
@@ -160,7 +172,10 @@ class RDCClientCase extends UnitTestBase
             ->will($this->returnValue(null));
 
         $rdcClient = new RDCClient(
-            $depositReportingClientMock, $this->getLoggerMock(), $this->storeId, $this->storeKey
+            $depositReportingClientMock,
+            $this->getLoggerMock(),
+            $this->storeId,
+            $this->storeKey
         );
 
         $rdcClient->getBatchItems($group, $batchNumber, $this->statuses);
