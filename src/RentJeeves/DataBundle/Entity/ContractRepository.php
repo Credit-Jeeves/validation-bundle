@@ -1702,4 +1702,22 @@ class ContractRepository extends EntityRepository
 
         return $query->getQuery()->getArrayResult();
     }
+
+    /**
+     * @param int $periodInDays
+     * @return array
+     */
+    public function getLastPendingContracts($periodInDays = 3)
+    {
+        $date = new DateTime();
+        $date->modify("-{$periodInDays} days");
+
+        $query = $this->createQueryBuilder('c')
+            ->andWhere('c.status = :pending')
+            ->andWhere('c.createdAt >= :date')
+            ->setParameter('pending', ContractStatus::PENDING)
+            ->setParameter('date', $date);
+
+        return $query->getQuery()->getResult();
+    }
 }

@@ -173,17 +173,16 @@ class Mailer extends BaseMailer
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
      * @param Contract $contract
      *
      * @return bool
      */
-    public function sendPendingContractToLandlord(Landlord $landlord, Tenant $tenant, Contract $contract)
+    public function sendPendingContractToLandlord(Landlord $landlord, Contract $contract)
     {
         $vars = [
             'nameLandlord' => $landlord->getFullName(),
-            'nameTenant' => $tenant->getFullName(),
-            'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+            'nameTenant' => $contract->getTenant()->getFullName(),
+            'address' => $contract->getRentAddress(),
         ];
 
         return $this->sendBaseLetter('rjPendingContract', $vars, $landlord->getEmail(), $landlord->getCulture());
