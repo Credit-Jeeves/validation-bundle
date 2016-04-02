@@ -14,6 +14,6 @@ class EquifaxReportRecord extends TransUnionReportRecord
      */
     public function getPropertyIdentificationNumber()
     {
-        return str_pad(sprintf('%s', 'RENTTRACK'), 20);
+        return str_pad('RENTTRACK', 20);
     }
 }

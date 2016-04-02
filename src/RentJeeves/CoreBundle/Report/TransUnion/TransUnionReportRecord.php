@@ -181,13 +181,13 @@ class TransUnionReportRecord
     }
 
     /**
-     * TU does not want a unique unit ID, only property
+     * @return string
      */
     public function getPropertyIdentificationNumber()
     {
-        $propertyNumber = $this->contract->getProperty()->getId();
+        $number = $this->contract->getHolding()->getId();
 
-        return str_pad(sprintf('p%s', $propertyNumber), 20);
+        return str_pad(sprintf('h%s', $number), 20);
     }
 
     public function getLeaseNumber()
