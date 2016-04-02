@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\TrustedLandlordBundle\Command\MoveDTRGroupAddressToCheckMailingAddressCommand;
-use Symfony\Component\Console\Tester\CommandTester;
 
 class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
 {
@@ -32,36 +31,38 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
         $this->load(true);
 
         $em = $this->getEntityManager();
-        /** @var $group1 Group */
+        /** @var Group $group1 */
         $group1 = $em->getRepository('DataBundle:Group')->find(25);
 
         //Set valid data
         $group1->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $group1->setMailingAddressName('Jason Waters');
-        $group1->setStreetAddress1('1600 Amphitheatre Pkwy');
+        $group1->setStreetAddress1('770 Broadway'); // this address will be taken from SS cache
         $group1->setStreetAddress2('');
-        $group1->setCity('Mountain View');
-        $group1->setState('CA');
-        $group1->setZip('94043');
+        $group1->setCity('New York');
+        $group1->setState('NY');
+        $group1->setZip('10003');
 
-        /** @var $group2 Group */
+        $em->flush();
+
+        /** @var Group $group2 */
         $group2 = $em->getRepository('DataBundle:Group')->find(2);
 
         //Duplicate address for another entity
         $group2->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $group2->setMailingAddressName('Brian Waters');
-        $group2->setStreetAddress1('1600 Amphitheatre Pkwy');
+        $group2->setStreetAddress1('770 Broadway'); // this address will be taken from SS cache
         $group2->setStreetAddress2('');
-        $group2->setCity('Mountain View');
-        $group2->setState('CA');
-        $group2->setZip('94043');
+        $group2->setCity('New York');
+        $group2->setState('NY');
+        $group2->setZip('10003');
 
         $em->flush();
 
         $this->executeCommandTester(new MoveDTRGroupAddressToCheckMailingAddressCommand);
     
         $mailingAddress = $em->getRepository('RjDataBundle:CheckMailingAddress')
-            ->findByIndex('1600AmphitheatrePkwyMountainViewCA');
+            ->findByIndex('770BroadwayNewYorkNY');
 
         $this->assertEquals(1, count($mailingAddress), 'Only one check mailing address should be created');
 

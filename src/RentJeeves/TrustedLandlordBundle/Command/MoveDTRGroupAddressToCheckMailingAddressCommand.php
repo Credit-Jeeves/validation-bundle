@@ -72,7 +72,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
                 $group->setTrustedLandlord($trustedLandlord);
 
                 $em->persist($trustedLandlord);
-                $em->flush([$trustedLandlord, $group]);
+                $em->flush();
 
                 $this->getLogger()->info(sprintf(
                     'Address for Group #%d "%s" has been successfully moved',
