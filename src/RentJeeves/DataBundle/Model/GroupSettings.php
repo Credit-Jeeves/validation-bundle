@@ -245,6 +245,8 @@ abstract class GroupSettings
      *     },
      *     nullable=false
      * )
+     * @Serializer\SerializedName("allowCreditCard")
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $allowedCreditCard = true;
 
@@ -259,6 +261,8 @@ abstract class GroupSettings
      *     },
      *     nullable=false
      * )
+     * @Serializer\SerializedName("allowBank")
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $allowedACH = true;
 
@@ -273,6 +277,8 @@ abstract class GroupSettings
      *      },
      *     nullable=false
      * )
+     * @Serializer\SerializedName("allowDebitCard")
+     * @Serializer\Groups({"paymentAccounts"});
      */
     protected $allowedDebitFee = false;
 
