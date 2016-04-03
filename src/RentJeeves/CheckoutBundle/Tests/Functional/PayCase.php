@@ -908,7 +908,7 @@ class PayCase extends BaseTestCase
         $this->load(true);
 
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
-        $this->assertFalse($group->isDisableCreditCard());
+        $this->assertTrue($group->getGroupSettings()->isAllowedCreditCard());
 
         $this->login('tenant11@example.com', 'pass');
 
@@ -944,8 +944,8 @@ class PayCase extends BaseTestCase
         $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
         $this->assertNotNull($cardType);
         // disable "show card"
-        $group->setDisableCreditCard(true);
-        $this->getEntityManager()->flush($group);
+        $group->getGroupSettings()->setAllowedCreditCard(false);
+        $this->getEntityManager()->flush();
 
         $this->session->reload();
 
@@ -977,6 +977,108 @@ class PayCase extends BaseTestCase
         );
 
         $this->assertTrue($isHidden);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowSourceTypesForGroupWithAllowedAndHideForGroupWithDisable()
+    {
+        $this->load(true);
+
+        $em = $this->getEntityManager();
+
+        $group1 = $em->getRepository('DataBundle:Group')->find(24);
+        $group2 = $em->getRepository('DataBundle:Group')->find(25);
+
+        $this->assertTrue($group1->getGroupSettings()->isAllowedCreditCard());
+        $this->assertTrue($group2->getGroupSettings()->isAllowedACH());
+
+        $contract1 = $em->getRepository('RjDataBundle:Contract')->find(18);
+        $contract2 = $em->getRepository('RjDataBundle:Contract')->find(9);
+
+
+        $contract1->setGroup($group1);
+        $contract2->setGroup($group2);
+
+        $group1->getGroupSettings()->setAllowedACH(false);
+        $group2->getGroupSettings()->setAllowedCreditCard(false);
+
+        $em->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton('contract-pay-2');
+        $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype', 'Payment form not found');
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, 2, date('Y') + 1);
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $this->paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+
+        $newPaymentLink = $this->getDomElement('a.checkout-plus', 'Should be present for add new payment account');
+        $newPaymentLink->click();
+
+        $accountSourceTypes = $this->getDomElements(
+            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio',
+            'Should be found payment source types'
+        );
+        $this->assertCount(3, $accountSourceTypes);
+        $this->assertTrue(
+            $accountSourceTypes[0]->find('css','input[value="bank"]')->isChecked(),
+            'Default type "bank"  should be checked'
+        );
+        $this->assertTrue($accountSourceTypes[0]->isVisible(), 'Bank type should be visible');
+        $this->assertFalse($accountSourceTypes[1]->isVisible(), 'CreditCard type should not be visible');
+        $this->assertFalse($accountSourceTypes[2]->isVisible(), 'DebitCard type should not be visible');
+
+        $closeDialogBtn = $this->getDomElement(
+            '.ui-button.ui-dialog-titlebar-close',
+            'Close dialog batton should be present'
+        );
+        $closeDialogBtn->click();
+
+        $this->page->pressButton('contract-pay-1');
+
+        $paidForString = $this->getPaidForDate('tenant11@example.com', 1)->format('Y-m-d');
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_checkoutbundle_paymenttype_paidFor' => $paidForString,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::ONE_TIME,
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth' => 2,
+                'rentjeeves_checkoutbundle_paymenttype_startYear' => date('Y') + 1,
+            ]
+        );
+
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "$('#id-source-step').is(':visible')");
+
+        $newPaymentLink->click();
+
+        $accountSourceTypes = $this->getDomElements(
+            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio',
+            'Should be found payment source types'
+        );
+        $this->assertCount(3, $accountSourceTypes);
+        $this->assertTrue(
+            $accountSourceTypes[1]->find('css','input[value="card"]')->isChecked(),
+            'Default type "card" should be checked'
+        );
+        $this->assertFalse($accountSourceTypes[0]->isVisible(), 'Bank type should not be visible');
+        $this->assertTrue($accountSourceTypes[1]->isVisible(), 'CreditCard type should be visible');
+        $this->assertFalse($accountSourceTypes[2]->isVisible(), 'DebitCard type should not be visible');
     }
 
     /**
