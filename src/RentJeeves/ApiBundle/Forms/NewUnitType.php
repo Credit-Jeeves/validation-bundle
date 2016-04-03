@@ -15,7 +15,7 @@ class NewUnitType extends AbstractType
     public function buildForm(FormBuilder $builder, array $options)
     {
         $builder->add('address', new PropertyAddressForNewUnitType());
-        $builder->add('landlord', new LandlordType());
+        $builder->add('landlord', new TrustedLandlordType());
     }
 
     /**
