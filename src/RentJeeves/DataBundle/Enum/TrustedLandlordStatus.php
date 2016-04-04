@@ -15,4 +15,6 @@ class TrustedLandlordStatus extends Enum
     const DENIED = 'denied';
 
     const IN_PROGRESS = 'in progress';
+
+    const WAITING_FOR_INFO = 'waiting for info';
 }

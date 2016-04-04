@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Tests\Unit\Services;
+namespace RentJeeves\TrustedLandlordBundle\Tests\Unit\Services;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
-use RentJeeves\LandlordBundle\Services\TrustedLandlordStatusManager;
+use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\DataBundle\Entity\Job;

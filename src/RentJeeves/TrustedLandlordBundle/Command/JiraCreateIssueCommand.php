@@ -1,17 +1,9 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Command;
+namespace RentJeeves\TrustedLandlordBundle\Command;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
-use Monolog\Logger;
-use RentJeeves\DataBundle\Entity\Job;
-use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\ExternalApiBundle\Services\AMSI\Clients\AMSILedgerClient;
-use RentJeeves\ExternalApiBundle\Services\AMSI\SettlementData;
-use RentJeeves\ExternalApiBundle\Services\ClientsEnum\SoapClientEnum;
-use RentJeeves\ExternalApiBundle\Services\Jira\JiraClient;
-use RentJeeves\ExternalApiBundle\Services\Jira\TrustedLandlordJiraService;
+use RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -56,9 +48,9 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
                 sprintf('Option trusted-landlord-id#%s for command is wrong', $input->getOption('trusted-landlord-id'))
             );
         }
-        /** @var TrustedLandlordJiraService $jiraClient */
-        $trustedLandlordJira = $this->getContainer()->get('trusted.landlord.jira.service');
-        $jiraMapping = $trustedLandlordJira->addToQueue($trustedLandlordJira);
+        /** @var TrustedLandlordJiraService $trustedLandlordJiraService */
+        $trustedLandlordJiraService = $this->getContainer()->get('trusted.landlord.jira.service');
+        $jiraMapping = $trustedLandlordJiraService->addToQueue($trustedLandlordJira);
         if (empty($jiraMapping)) {
             return 1;
         }

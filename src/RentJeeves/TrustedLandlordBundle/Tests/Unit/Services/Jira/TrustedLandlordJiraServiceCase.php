@@ -1,11 +1,11 @@
 <?php
 
-namespace RentJeeves\ExternalApiBundle\Tests\Services\Jira;
+namespace RentJeeves\TrustedLandlordBundle\Tests\Unit\Services\Jira;
 
 use RentJeeves\DataBundle\Entity\CheckMailingAddress;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
-use RentJeeves\ExternalApiBundle\Services\Jira\TrustedLandlordJiraService;
+use RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase as Base;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
@@ -33,8 +33,8 @@ class TrustedLandlordJiraServiceCase extends Base
 
         $jiraClientMock = $this->getJiraClientMock();
         $jiraClientMock->expects($this->once())
-            ->method('createIssue')
-            ->with($trustedLandlord->getFullName() . " Verification", $checkMailingAddress->getFullAddress())
+            ->method('createTrustedLandlordIssue')
+            ->with($trustedLandlord)
             ->willReturn($issue);
 
         $emMock = $this->getEntityManagerMock();
@@ -100,7 +100,7 @@ class TrustedLandlordJiraServiceCase extends Base
      */
     protected function getTrustedLandlordStatusManagerMock()
     {
-        return $this->getBaseMock('RentJeeves\LandlordBundle\Services\TrustedLandlordStatusManager');
+        return $this->getBaseMock('RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager');
     }
 
     /**
@@ -108,7 +108,7 @@ class TrustedLandlordJiraServiceCase extends Base
      */
     protected function getJiraClientMock()
     {
-        return $this->getBaseMock('RentJeeves\ExternalApiBundle\Services\Jira\JiraClient');
+        return $this->getBaseMock('RentJeeves\TrustedLandlordBundle\Services\Jira\JiraClient');
     }
 
     /**

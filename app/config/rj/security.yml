@@ -81,7 +81,7 @@ security:
         - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login/defence/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/new/send/*,                     role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/handle/jira/webhook,             role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/trusted-landlord/jira-webhook/*, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
         - { path: ^/api/tenant,                     role: [ ROLE_TENANT, ROLE_PARTNER ] }
         - { path: ^/api/partner,                    role: ROLE_PARTNER }

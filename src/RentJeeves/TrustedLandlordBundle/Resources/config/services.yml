@@ -1,3 +1,27 @@
 parameters:
 
 services:
+    trusted.landlord_status.manager:
+        class: RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+            - "@project.mailer"
+            - "%payment_one_time_until_value%"
+            - "%payment_debit_one_time_until_value%"
+    jira.rest_client:
+        class: RentJeeves\TrustedLandlordBundle\Services\Jira\JiraClient
+        arguments:
+            - "@logger"
+            - "%jira_api.hostname%"
+            - "%jira_api.user%"
+            - "%jira_api.password%"
+            - "%jira_api.key%"
+    trusted.landlord.jira.service:
+        class: RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService
+        arguments:
+            - "@trusted.landlord_status.manager"
+            - "@jira.rest_client"
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+            - "@jms_serializer"

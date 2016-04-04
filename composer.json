@@ -134,6 +134,10 @@
         },
         {
             "type": "vcs",
+            "url": "git@github.com:Credit-Jeeves/jira-client.git"
+        },
+        {
+            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/environment.git"
         },
         {
@@ -259,7 +263,7 @@
         "besimple/soap-wsdl": "v0.2.4 as dev-master",
         "besimple/soap-server": "v0.2.5 as dev-master",
     	"ass/xmlsecurity": "v1.1.1 as dev-master",
-        "rastor/jira-client": "~0.3"
+        "rastor/jira-client": "dev-master as 0.3"
     },
     "require-dev": {
         "khepin/yaml-fixtures-bundle": "v0.8.2 as dev-master",

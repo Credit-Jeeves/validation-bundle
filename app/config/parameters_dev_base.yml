@@ -95,6 +95,6 @@ parameters:
     monolog.emergency.email_to: staging@renttrack.com
 
     jira_api.hostname: https://credit.atlassian.net
-    jira_api.user: staging@renttrack.com
+    jira_api.user: RentTrackAppStage #staging@renttrack.com
     jira_api.password: svzB10KC3B0Z
     jira_api.key: TLDTEST

@@ -1,0 +1,10 @@
+model: RentJeeves\DataBundle\Entity\TrustedLandlord
+fixtures:
+    Trusted_Landlord_1:
+        type: person
+        status: new
+        companyName: Pepsi
+        firstName: Queen
+        lastName: Of Darkness
+        checkMailingAddress: CheckMailingAddress_1
+        phone: 777777

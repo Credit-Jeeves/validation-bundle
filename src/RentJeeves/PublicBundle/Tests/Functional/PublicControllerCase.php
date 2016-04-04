@@ -254,7 +254,7 @@ class PublicControllerCase extends BaseTestCase
         /** @var HttpClient $client */
         $client = $this->getContainer()->get('http_client');
         $body = $this->getJiraRequestMock();
-        $link = $this->getUrl() . 'handle/jira/webhook';
+        $link = $this->getUrl() . 'trusted-landlord/jira-webhook/RT';
         $client->send(
             'POST',
             $link,
@@ -269,30 +269,17 @@ class PublicControllerCase extends BaseTestCase
     public function shouldSuccessPostWebhook()
     {
         $this->load(true);
-        $landlord = new TrustedLandlord();
-        $landlord->setType(TrustedLandlordType::PERSON);
-        $landlord->setCheckMailingAddress($mailingAddress = new CheckMailingAddress());
-        $landlord->setStatus(TrustedLandlordStatus::NEWONE);
-        $landlord->setCompanyName('Fanta');
-        $landlord->setFirstName('Queen');
-        $landlord->setLastName('Of Darkness');
+        $landlord = $this->getEntityManager()->getRepository('RjDataBundle:TrustedLandlord')->find(1);
+        $this->assertEquals(TrustedLandlordStatus::NEWONE, $landlord->getStatus(), 'Wrong status in fixtures');
         $mapping = new TrustedLandlordJiraMapping();
         $mapping->setTrustedLandlord($landlord);
-        $mapping->setJiraKey('RT-2276');
-        $mailingAddress->setCity('Default city');
-        $mailingAddress->setState('Default state');
-        $mailingAddress->setAddressee('Thumb');
-        $mailingAddress->setIndex('123456');
-        $mailingAddress->setAddress1('Good morning');
-        $mailingAddress->setAddress2('Good evening');
-        $mailingAddress->setZip('1231');
+        $mapping->setJiraKey('TLDTEST-7');
         $this->getEntityManager()->persist($mapping);
-        $this->getEntityManager()->persist($landlord);
         $this->getEntityManager()->flush();
         /** @var HttpClient $client */
         $client = $this->getContainer()->get('http_client');
         $body = $this->getJiraRequestMock();
-        $link = $this->getUrl() . 'handle/jira/webhook';
+        $link = $this->getUrl() . 'trusted-landlord/jira-webhook/RT';
         $response = $client->send(
             'POST',
             $link,
@@ -302,8 +289,13 @@ class PublicControllerCase extends BaseTestCase
             ],
             $body
         );
-
+        $this->getEntityManager()->refresh($landlord);
         $this->assertEquals('Success', $response->getBody('true'));
+        $this->assertEquals(
+            TrustedLandlordStatus::WAITING_FOR_INFO,
+            $landlord->getStatus(),
+            'Wrong status set for landlord'
+        );
     }
 
     /**

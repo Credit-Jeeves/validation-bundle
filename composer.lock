@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "54fe152dea7245b59c3c1cf5adbe736b",
-    "content-hash": "b320a8ae3c4cc7f2398b46786573a15d",
+    "hash": "ed1fdd95b596dd6c0acf40407550d494",
+    "content-hash": "8e0aca8208f74a3340ac4f884c745fe8",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1075,7 +1075,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/382cc2c8e1bae7453e8598b5c52c951a9c97d53d",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/9f89fd349fd2b537be8a0a0c41f87f2f640dfc8a",
                 "reference": "866e100a425b8b73d15393fd081c6bf067f05bf9",
                 "shasum": ""
             },
@@ -4456,16 +4456,16 @@
         },
         {
             "name": "rastor/jira-client",
-            "version": "0.3.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/oRastor/jira-client.git",
-                "reference": "eb47df01ac3c196d1dbc33a565837051108528f0"
+                "url": "https://github.com/Credit-Jeeves/jira-client.git",
+                "reference": "6028d1e9ad1447be7ca4c144242ee81f67f04759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oRastor/jira-client/zipball/eb47df01ac3c196d1dbc33a565837051108528f0",
-                "reference": "eb47df01ac3c196d1dbc33a565837051108528f0",
+                "url": "https://api.github.com/repos/Credit-Jeeves/jira-client/zipball/6028d1e9ad1447be7ca4c144242ee81f67f04759",
+                "reference": "6028d1e9ad1447be7ca4c144242ee81f67f04759",
                 "shasum": ""
             },
             "require": {
@@ -4477,7 +4477,6 @@
                     "JiraClient\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -4494,7 +4493,10 @@
                 "jira",
                 "rest"
             ],
-            "time": "2016-03-01 05:21:12"
+            "support": {
+                "source": "https://github.com/Credit-Jeeves/jira-client/tree/master"
+            },
+            "time": "2016-04-04 14:11:40"
         },
         {
             "name": "react/promise",
@@ -5255,7 +5257,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/474be8b9dbb8ca1c378aa24e701df940a89ec124",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8e68cfd2a44fd590226f3b10b21624ced0aa9bef",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -6644,7 +6646,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8e884e78f9f0eb1329e445619e04456e64d8051d",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/416fb8ad1d095a87f1d21bc40711843cd122fd4a",
                 "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d",
                 "shasum": ""
             },
@@ -8141,6 +8143,12 @@
             "package": "ass/xmlsecurity"
         },
         {
+            "alias": "0.3",
+            "alias_normalized": "0.3.0.0",
+            "version": "9999999-dev",
+            "package": "rastor/jira-client"
+        },
+        {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
             "version": "0.8.2.0",
@@ -8188,6 +8196,7 @@
         "renttrack/profit-stars-client-bundle": 20,
         "beberlei/doctrineextensions": 20,
         "besimple/soap-common": 20,
+        "rastor/jira-client": 20,
         "sensio/generator-bundle": 20,
         "comfortablynumb/backup-restore-bundle": 20
     },

@@ -19,21 +19,6 @@ services:
             - "@soap.client.factory"
             - "@jms_serializer"
             - "@logger"
-    jira.rest_client:
-        class: RentJeeves\ExternalApiBundle\Services\Jira\JiraClient
-        arguments:
-            - "@logger"
-            - "%jira_api.hostname%"
-            - "%jira_api.user%"
-            - "%jira_api.password%"
-            - "%jira_api.key%"
-    trusted.landlord.jira.service:
-        class: RentJeeves\ExternalApiBundle\Services\Jira\TrustedLandlordJiraService
-        arguments:
-            - "@trusted.landlord_status.manager"
-            - "@jira.rest_client"
-            - "@doctrine.orm.default_entity_manager"
-            - "@logger"
 
     yardi.resident_data:
         class: RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager

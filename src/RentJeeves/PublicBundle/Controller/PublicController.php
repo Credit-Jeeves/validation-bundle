@@ -13,7 +13,6 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIDataManager;
 use RentJeeves\PublicBundle\Services\TenantProcessor;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -587,11 +586,12 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/handle/jira/webhook", name="handle_jira_webhook")
+     * @Route("/trusted-landlord/jira-webhook/{jiraKey}", name="handle_jira_webhook")
      */
-    public function handleJiraWebhookAction(Request $request)
+    public function handleJiraWebhookAction(Request $request, $jiraKey)
     {
         $data = $request->request->all();
+
         $result = $this->get('trusted.landlord.jira.service')->handleWebhookEvent($data);
 
         if ($result) {

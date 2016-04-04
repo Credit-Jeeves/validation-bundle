@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Services;
+namespace RentJeeves\TrustedLandlordBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
@@ -131,6 +131,19 @@ class TrustedLandlordStatusManager
      * @return bool
      */
     protected function handleRfiStatus(TrustedLandlord $trustedLandlord)
+    {
+        $this->logger->debug(
+            sprintf('TrustedLandlord#%s got new status %s', $trustedLandlord->getId(), $trustedLandlord->getStatus())
+        );
+
+        return true;
+    }
+
+    /**
+     * @param TrustedLandlord $trustedLandlord
+     * @return bool
+     */
+    protected function handleWaitingForInfoStatus(TrustedLandlord $trustedLandlord)
     {
         $this->logger->debug(
             sprintf('TrustedLandlord#%s got new status %s', $trustedLandlord->getId(), $trustedLandlord->getStatus())
