@@ -50,7 +50,7 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $trustedLandlordJira = $em->getRepository('DataBundle:Group')->find($input->getOption('trusted-landlord-id'));
+        $trustedLandlordJira = $em->getRepository('RjDataBundle:TrustedLandlord')->find($input->getOption('trusted-landlord-id'));
         if (empty($trustedLandlordJira)) {
             throw new \LogicException(
                 sprintf('Option trusted-landlord-id#%s for command is wrong', $input->getOption('trusted-landlord-id'))
