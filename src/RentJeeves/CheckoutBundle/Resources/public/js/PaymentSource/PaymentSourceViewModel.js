@@ -10,15 +10,15 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
     var self = this;
 
     self.allowPaymentSourceTypes = {
-        'bank' : true,
-        'card' : true,
-        'debit_card' : false
+        'bank' : ko.observable(true),
+        'card' : ko.observable(true),
+        'debit_card' : ko.observable(false)
     };
-    if (settings.allowPaymentSourceTypes) {
-        self.allowPaymentSourceTypes = settings.allowPaymentSourceTypes
+    if (settings && settings.allowPaymentSourceTypes) {
+        self.allowPaymentSourceTypes = settings.allowPaymentSourceTypes;
     }
 
-    self.defaultType = ko.pureComputed(function (defaultType) {
+    self.defaultType = ko.pureComputed(function () {
         if (typeof (defaultType) == 'undefined' || !self.allowPaymentSourceTypes[defaultType]()) {
             defaultType = self.allowPaymentSourceTypes['bank']() ? 'bank' : 'card';
         }

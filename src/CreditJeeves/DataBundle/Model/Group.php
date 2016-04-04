@@ -382,8 +382,8 @@ abstract class Group
      *     fetch="EAGER"
      * )
      * @Assert\Valid
-     * @Serializer\SerializedName("groupSettings");
-     * @Serializer\Groups({"paymentAccounts"});
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Groups({"paymentAccounts"})
      */
     protected $groupSettings;
 
