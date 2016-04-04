@@ -181,13 +181,13 @@ class TransUnionReportRecord
     }
 
     /**
-     * TU does not want a unique unit ID, only property
+     * @return string
      */
     public function getPropertyIdentificationNumber()
     {
-        $propertyNumber = $this->contract->getProperty()->getId();
+        $number = $this->contract->getHolding()->getId();
 
-        return str_pad(sprintf('p%s', $propertyNumber), 20);
+        return str_pad(sprintf('h%s', $number), 20);
     }
 
     public function getLeaseNumber()
@@ -326,10 +326,7 @@ class TransUnionReportRecord
             return str_pad($uncollectedBalance, 9, '0', STR_PAD_LEFT);
         }
 
-        $amount = $this->getFormattedRentAmount();
-
-        // if contract rent amount is 0, return the payment amount
-        return ($amount > 0) ? $amount : $this->getLeasePaymentAmountConfirmed();
+        return str_repeat('0', 9); // zero fill balance if positive reporting
     }
 
     public function getAmountPastDue()
