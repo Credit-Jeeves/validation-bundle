@@ -514,7 +514,6 @@ class PaymentAccountType extends AbstractType
                 'data_class' => 'RentJeeves\DataBundle\Entity\PaymentAccount',
                 'validation_groups' => function (FormInterface $form) {
                     $data = $form->getData();
-//                    $this->contractId = $form->get('contractId')->getData();
                     $type = $data->getType();
                     $groups = [];
                     if (PaymentAccountTypeEnum::CARD == $type || PaymentAccountTypeEnum::DEBIT_CARD == $type) {

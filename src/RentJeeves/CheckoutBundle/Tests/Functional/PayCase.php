@@ -1035,7 +1035,7 @@ class PayCase extends BaseTestCase
         );
         $this->assertCount(3, $accountSourceTypes);
         $this->assertTrue(
-            $accountSourceTypes[0]->find('css','input[value="bank"]')->isChecked(),
+            $accountSourceTypes[0]->find('css', 'input[value="bank"]')->isChecked(),
             'Default type "bank"  should be checked'
         );
         $this->assertTrue($accountSourceTypes[0]->isVisible(), 'Bank type should be visible');
@@ -1073,7 +1073,7 @@ class PayCase extends BaseTestCase
         );
         $this->assertCount(3, $accountSourceTypes);
         $this->assertTrue(
-            $accountSourceTypes[1]->find('css','input[value="card"]')->isChecked(),
+            $accountSourceTypes[1]->find('css', 'input[value="card"]')->isChecked(),
             'Default type "card" should be checked'
         );
         $this->assertFalse($accountSourceTypes[0]->isVisible(), 'Bank type should not be visible');
