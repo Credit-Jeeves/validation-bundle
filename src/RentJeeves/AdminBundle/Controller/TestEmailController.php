@@ -23,16 +23,24 @@ class TestEmailController extends BaseController
     {
         $enTranslation = $emailTemplate->getEnTranslation();
         $parameters = json_decode($enTranslation->getTestVariables(), true);
+        $recipientUser = $this->getEntityManager()
+            ->getRepository('DataBundle:User')
+            ->findOneBy(['email' => $enTranslation->getTestEmailTo()]);
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->getSession()->getFlashBag()->add(
                 'sonata_flash_error',
                 $this->getTranslator()->trans('admin.email.actions.send_test.wrong_json')
             );
+        } elseif (null === $recipientUser) {
+            $this->getSession()->getFlashBag()->add(
+                'sonata_flash_error',
+                $this->getTranslator()->trans('admin.email.actions.send_test.user_not_found')
+            );
         } else {
             $result = $this->getMailer()->sendBaseLetter(
                 current(explode('.', $emailTemplate->getName())),
                 $parameters ?: [],
-                $enTranslation->getTestEmailTo(),
+                $recipientUser,
                 self::TEST_CULTURE
             );
             if ($result === true) {

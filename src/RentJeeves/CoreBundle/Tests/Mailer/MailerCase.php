@@ -75,7 +75,8 @@ class MailerCase extends BaseTestCase
         $template->getEnTranslation()->setMandrillSlug('testSlug');
         $this->getEntityManager()->flush($template);
 
-        $this->getMailer()->sendBaseLetter('invite', [], $email = 'test@mail.com', 'en');
+        $user = $this->getEntityManager()->getRepository('DataBundle:User')->findOneByEmail('tenant11@example.com');
+        $this->getMailer()->sendBaseLetter('invite', [], $user);
 
         $this->assertCount(1, $plugin->getPreSendMessages());
         $message =  $plugin->getPreSendMessage(0);
@@ -94,7 +95,7 @@ class MailerCase extends BaseTestCase
         $this->assertEquals('testSlug', $header->get('X-MC-Template')->getFieldBody());
         $this->assertTrue($header->has('X-MC-MergeVars'));
 
-        $expectedParams = array_merge($this->defaultValuesForEmail, ['emailTo' => urlencode($email)]);
+        $expectedParams = array_merge($this->defaultValuesForEmail, ['emailTo' => urlencode($user->getEmail())]);
         $this->assertEquals(
             json_encode($expectedParams, true),
             $header->get('X-MC-MergeVars')->getFieldBody()
