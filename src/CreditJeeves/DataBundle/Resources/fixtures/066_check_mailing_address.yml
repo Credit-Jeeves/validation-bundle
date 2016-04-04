@@ -1,0 +1,9 @@
+model: RentJeeves\DataBundle\Entity\CheckMailingAddress
+fixtures:
+    CheckMailingAddress1:
+        addressee:      Alexander Radionovich Borodach
+        address1:       770 Broadway
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          770BroadwayNewYorkNY

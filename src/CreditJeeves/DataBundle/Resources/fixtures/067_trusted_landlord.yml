@@ -1,0 +1,8 @@
+model: RentJeeves\DataBundle\Entity\TrustedLandlord
+fixtures:
+    TrustedLandlord1:
+        checkMailingAddress: CheckMailingAddress1
+        firstName:      Alexander Radionovich
+        lastName:       Borodach
+        type:           person
+        status:         new

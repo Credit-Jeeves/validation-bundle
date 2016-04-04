@@ -41,21 +41,21 @@ abstract class TrustedLandlord
     /**
      * @var string
      *
-     * @ORM\Column(name="first_name",type="string",length=255,nullable=true)
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
      */
     protected $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="last_name",type="string",length=255,nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      */
     protected $lastName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="company_name",type="string",length=255,nullable=true)
+     * @ORM\Column(name="company_name", type="string", length=255, nullable=true)
      */
     protected $companyName;
 
