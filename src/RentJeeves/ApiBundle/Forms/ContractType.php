@@ -47,23 +47,6 @@ class ContractType extends AbstractType
             ]
         ]);
 
-        $builder->add('new_unit', new NewUnitType(), [
-            'mapped' => false,
-            'property_path' => 'new_unit',
-            'constraints' => [
-                new NotBlank([
-                    'message' => 'api.errors.contract.new_unit.empty',
-                    'groups' => ['new_unit']
-                ]),
-                new Callback([
-                    'methods' => [
-                        [$this, 'isSubmitted']
-                    ],
-                    'groups' => ['edit_contract', 'unit_url'],
-                ])
-            ],
-        ]);
-
         $builder->add('rent', null);
 
         $builder->add('due_date', null);
@@ -93,8 +76,30 @@ class ContractType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $submittedData = $event->getData();
+            if (empty($submittedData['unit_url'])) {
+                $event->getForm()->add('new_unit', new NewUnitType(), [
+                    'mapped' => false,
+                    'property_path' => 'new_unit',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'api.errors.contract.new_unit.empty',
+                            'groups' => ['new_unit']
+                        ]),
+                        new Callback([
+                            'methods' => [
+                                [$this, 'isSubmitted']
+                            ],
+                            'groups' => ['edit_contract', 'unit_url'],
+                        ])
+                    ],
+                ]);
+            }
+
             if (!empty($submittedData['new_unit'])) {
                 $this->submit = true;
+            } else {
+                unset($submittedData['new_unit']);
+                $event->setData($submittedData);
             }
         });
     }

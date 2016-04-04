@@ -16,6 +16,9 @@ use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
+use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -50,18 +53,25 @@ class ContractProcessor
     protected $propertyManager;
 
     /**
+     * @var TrustedLandlordService
+     */
+    protected $trustedLandlordService;
+
+    /**
      * @param EntityManager $em
      * @param Mailer $mailer
      * @param $locale
      * @param ContractProcess $contractProcess
      * @param PropertyManager $propertyProcess
+     * @param TrustedLandlordService $trustedLandlordService
      *
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
      *     "mailer" = @DI\Inject("project.mailer"),
      *     "locale" = @DI\Inject("%kernel.default_locale%"),
      *     "contractProcess" = @DI\Inject("contract.process"),
-     *     "propertyProcess" = @DI\Inject("property.manager")
+     *     "propertyProcess" = @DI\Inject("property.manager"),
+     *     "trustedLandlordService" = @DI\Inject("trusted_landlord_service")
      * })
      */
     public function __construct(
@@ -69,13 +79,15 @@ class ContractProcessor
         Mailer $mailer,
         $locale,
         ContractProcess $contractProcess,
-        PropertyManager $propertyProcess
+        PropertyManager $propertyProcess,
+        TrustedLandlordService $trustedLandlordService
     ) {
         $this->em = $em;
         $this->mailer = $mailer;
         $this->locale = $locale;
         $this->contractProcess = $contractProcess;
         $this->propertyManager = $propertyProcess;
+        $this->trustedLandlordService = $trustedLandlordService;
     }
 
     /**
@@ -159,18 +171,25 @@ class ContractProcessor
             throw new BadRequestHttpException('api.errors.contracts.property.invalid');
         }
 
-        /** @var Landlord $landlord */
-        $landlord = $newUnitForm->get('landlord')->getData();
-
-        /** @var Landlord $landlordInDb */
-        $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            ['email' => $landlord->getEmail()]
-        );
+        /** @var TrustedLandlordDTO $landlordDTO */
+        $landlordDTO = $newUnitForm->get('landlord')->getData();
+        $landlordInDb = null;
+        if ($landlordDTO->getEmail()) {
+            /** @var Landlord $landlordInDb */
+            $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(
+                ['email' => $landlordDTO->getEmail()]
+            );
+        }
 
         if ($landlordInDb) {
             $landlord = $landlordInDb;
             $group = $landlord->getCurrentGroup();
         } else {
+            $landlord = new Landlord();
+            $landlord->setEmail($landlordDTO->getEmail());
+            $landlord->setFirstName($landlordDTO->getFirstName());
+            $landlord->setLastName($landlordDTO->getLastName());
+            $landlord->setPhone($landlordDTO->getPhone());
             $landlord->setPassword(md5(md5(1)));
             $landlord->setCulture($this->locale);
 
@@ -183,9 +202,18 @@ class ContractProcessor
             $group->setType(GroupType::RENT);
             $group->setHolding($holding);
 
+            if (!$newUnitForm->get('landlord')->get('mailing_address')->isEmpty()) {
+                if (!$trustedLandlord = $this->trustedLandlordService->lookup($landlordDTO)) {
+                    $trustedLandlord = $this->trustedLandlordService->create($landlordDTO);
+                }
+                $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+                $group->setTrustedLandlord($trustedLandlord);
+            }
+
             $holding->addGroup($group);
             $landlord->setAgentGroups($group);
 
+            $this->em->persist($group);
             $this->em->persist($holding);
             $this->em->persist($landlord);
         }

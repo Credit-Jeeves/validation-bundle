@@ -3,43 +3,80 @@
 namespace RentJeeves\TrustedLandlordBundle\Model;
 
 use RentJeeves\DataBundle\Enum\TrustedLandlordType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TrustedLandlordDTO
 {
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"landlord", "person"}, message="email.required")
+     * @var string
+     */
     protected $email;
 
-    /** @var string */
+    /**
+     * @Assert\Choice(
+     *     callback={"RentJeeves\DataBundle\Enum\TrustedLandlordType", "all"},
+     *     groups={"trusted_landlord"}
+     * )
+     * @var string
+     */
     protected $type = TrustedLandlordType::PERSON;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"person"})
+     * @var string
+     */
     protected $firstName;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"person"})
+     * @var string
+     */
     protected $lastName;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"company"})
+     * @var string
+     */
     protected $companyName;
 
     /** @var string */
     protected $phone;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $addressee;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $address1;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $address2;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $state;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $city;
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @var string
+     */
     protected $zip;
 
     /**
