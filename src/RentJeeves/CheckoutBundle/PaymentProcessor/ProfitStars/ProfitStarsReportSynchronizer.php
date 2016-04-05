@@ -178,17 +178,19 @@ class ProfitStarsReportSynchronizer
             return;
         }
 
+        if (null === $profitStarsTransaction = $transaction->getOrder()->getProfitStarsTransaction()) {
+            $this->logger->emergency(
+                sprintf('ProfitStarsTransaction for Order#%d not found', $transaction->getOrder()->getId())
+            );
+
+            return;
+        }
+
         if (null === $transaction->getDepositDate()) {
             $transaction->setDepositDate(new \DateTime($report->getEventDateTime()));
         }
 
-        if (null === $transaction->getOrder()->getProfitStarsTransaction()) {
-            $newProfitStars = new ProfitStarsTransaction();
-            $newProfitStars->setOrder($transaction->getOrder());
-            $newProfitStars->setTransactionNumber($report->getTransactionNumber());
-
-            $this->em->persist($newProfitStars);
-        }
+        $profitStarsTransaction->setTransactionNumber($report->getTransactionNumber());
 
         $this->em->flush();
     }
@@ -255,19 +257,7 @@ class ProfitStarsReportSynchronizer
         $this->em->persist($transaction);
         $this->em->flush();
 
-        $newStatus = $this->getMappedStatusByProfitStarsStatus($report->getEventType());
-        $method = 'set' . ucfirst($newStatus);
-        $this->statusManager->$method($order); // update Order status here
-    }
-
-    /**
-     * @param string $profitStarsStatus
-     *
-     * @return string
-     */
-    protected function getMappedStatusByProfitStarsStatus($profitStarsStatus)
-    {
-        switch ($profitStarsStatus) {
+        switch ($report->getEventType()) {
             case WSTransactionEvent::RETURNED_NSF:
             case WSTransactionEvent::OTHER_CHECK21_RETURNS:
             case WSTransactionEvent::DISPUTED:
@@ -276,19 +266,17 @@ class ProfitStarsReportSynchronizer
             case WSTransactionEvent::PROCESSING_ERROR:
             case WSTransactionEvent::REVERSED:
             case WSTransactionEvent::NOTICE_OF_CHANGE:
-                $status = OrderStatus::RETURNED;
+                $this->statusManager->setReturned($order);
                 break;
             case WSTransactionEvent::VOIDED:
-                $status = OrderStatus::CANCELLED;
+                $this->statusManager->setCancelled($order);
                 break;
             case WSTransactionEvent::REFUNDED:
-                $status = OrderStatus::REFUNDED;
+                $this->statusManager->setReturned($order);
                 break;
             default:
-                throw new \LogicException('Unexpected status ' . $profitStarsStatus);
+                throw new \LogicException('Unexpected status ' . $report->getEventType());
         }
-
-        return $status;
     }
 
     /**

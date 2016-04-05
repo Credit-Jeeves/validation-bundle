@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class HoldingRepository extends EntityRepository
@@ -214,7 +215,9 @@ class HoldingRepository extends EntityRepository
             ->innerJoin('h.depositAccounts', 'da')
             ->where('pss.merchantId IS NOT NULL')
             ->andWhere('da.paymentProcessor = :profitStars')
+            ->andWhere('da.status = :status')
             ->setParameter('profitStars', PaymentProcessor::PROFIT_STARS)
+            ->setParameter('status', DepositAccountStatus::DA_COMPLETE)
             ->getQuery()
             ->getArrayResult();
     }

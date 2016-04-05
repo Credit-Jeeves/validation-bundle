@@ -25,10 +25,13 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateProfitStarsTransactionForSettledEventIfOrderDoestHaveItYet()
+    public function shouldUpdateProfitStarsTransactionForSettledEvent()
     {
+        $order = new Order();
+        $order->setProfitStarsTransaction(new ProfitStarsTransaction());
+
         $transaction = new Transaction();
-        $transaction->setOrder($order = new Order());
+        $transaction->setOrder($order);
 
         $repositoryMock = $this->getTransactionRepositoryMock();
         $repositoryMock->expects($this->once())
@@ -40,20 +43,6 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
             ->method('getRepository')
             ->with('RjDataBundle:Transaction')
             ->willReturn($repositoryMock);
-        $emMock->expects($this->once())
-            ->method('persist')
-            ->with($this->callback(function ($subject) use ($order) {
-                /** @var ProfitStarsTransaction $subject */
-                $this->assertInstanceOf(ProfitStarsTransaction::class, $subject, 'Unexpected object for persist.');
-                $this->assertEquals($order, $subject->getOrder(), 'Incorrect Order for ProfitStarsTransaction.');
-                $this->assertEquals(
-                    '{54a9a112-d59b-44a6-b3ad-ec7e5d078648}', // TransactionNumber
-                    $subject->getTransactionNumber(),
-                    'Incorrect TransactionNumber for ProfitStarsTransaction.'
-                );
-
-                return true;
-            }));
 
         $reportingClient = $this->getTransactionReportingClientMock();
         $reportingClient->expects($this->once())
@@ -70,6 +59,12 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
         );
 
         $reportSynchronizer->sync('location', 'entityId', new \DateTime(), new \DateTime());
+
+        $this->assertEquals(
+            '{54a9a112-d59b-44a6-b3ad-ec7e5d078648}',
+            $order->getProfitStarsTransaction()->getTransactionNumber(),
+            'TransactionNumber is not updated.'
+        );
     }
 
     /**

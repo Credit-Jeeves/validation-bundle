@@ -40,8 +40,6 @@ class TransactionReportingClient extends Base
         $fromAmount,
         $toAmount
     ) {
-        $a = 1;
-
         return TransactionReportingClientMock::getMockForGetHistoricalEventReport();
     }
 }

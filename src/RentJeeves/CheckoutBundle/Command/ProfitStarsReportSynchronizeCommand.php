@@ -14,7 +14,7 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('payment:report:synchronize:profit-stars')
+            ->setName('renttrack:payment:report:synchronize:profit-stars')
             ->setDescription('Synchronize ProfitStars reports');
     }
 
@@ -25,7 +25,7 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     {
         $output->writeln('Start sync ProfitStars reports.');
 
-        $startDate = new \DateTime('2015-11-01');
+        $startDate = new \DateTime();
         $startDate->setTime(0, 0, 0);
 
         $endDate = clone $startDate;
