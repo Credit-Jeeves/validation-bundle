@@ -188,6 +188,18 @@ class GroupSettingsType extends Base
         );
 
         $builder->add(
+            'allowedACH',
+            'checkbox',
+            ['label' => 'admin.group_settings.label.allowed_ach', 'required' => false]
+        );
+
+        $builder->add(
+            'allowedCreditCard',
+            'checkbox',
+            ['label' => 'admin.group_settings.label.allowed_credit_card', 'required' => false]
+        );
+
+        $builder->add(
             'allowedDebitFee',
             'checkbox',
             ['label' => 'Is Allowed Debit Fee?', 'required' => false]

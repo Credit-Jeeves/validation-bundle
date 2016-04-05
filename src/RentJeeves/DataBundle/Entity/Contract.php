@@ -107,14 +107,26 @@ class Contract extends Base
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("disableCreditCard")
+     * @Serializer\SerializedName("allowBank")
      * @Serializer\Groups({"payRent"})
      *
      * @return boolean
      */
-    public function isDisableCreditCard()
+    public function isAllowedACH()
     {
-        return $this->getGroup()->isDisableCreditCard();
+        return $this->getGroupSettings()->isAllowedACH();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("allowCreditCard")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return boolean
+     */
+    public function isAllowedCreditCard()
+    {
+        return $this->getGroupSettings()->isAllowedCreditCard();
     }
 
     /**
@@ -124,7 +136,7 @@ class Contract extends Base
      *
      * @return boolean
      */
-    public function isAllowDebitCard()
+    public function isAllowedDebitCard()
     {
         return $this->getGroupSettings()->isAllowedDebitFee();
     }

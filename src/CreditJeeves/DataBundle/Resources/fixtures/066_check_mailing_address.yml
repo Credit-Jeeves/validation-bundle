@@ -1,10 +1,9 @@
 model: RentJeeves\DataBundle\Entity\CheckMailingAddress
 fixtures:
-    CheckMailingAddress_1:
-        city: Default city
-        state: Default state
-        addressee: Thumb
-        index: 123456
-        address1: Good morning
-        address2: Good evening
-        zip: 1231
+    CheckMailingAddress1:
+        addressee:      Alexander Radionovich Borodach
+        address1:       770 Broadway
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          770BroadwayNewYorkNY

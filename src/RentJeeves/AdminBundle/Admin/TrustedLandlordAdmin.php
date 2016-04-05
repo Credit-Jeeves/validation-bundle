@@ -53,7 +53,7 @@ class TrustedLandlordAdmin extends Admin
     {
         $listMapper
             ->addIdentifier('id')
-            ->add('checkMailingAddress', null, ['label' => 'Address'])
+            ->add('checkMailingAddress.fullAddress', null, ['label' => 'Address'])
             ->add('checkMailingAddress.addressee', null, ['label' => 'Addressee'])
             ->add('full_name', null, ['label' => 'Full Name'])
             ->add('company_name', null, ['label' => 'Company'])

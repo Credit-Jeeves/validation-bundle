@@ -13,24 +13,13 @@ class CheckMailingAddress extends Base
     /**
      * @return string
      */
-    public function __toString()
-    {
-        return $this->getFullAddress();
-    }
-
-    /**
-     * @return string
-     */
     public function getFullAddress()
     {
-        $address = [];
-        if ($address1 = $this->getAddress1()) {
-            $address[] = $address1;
-        }
-        if ($address2 = $this->getAddress2()) {
-            $address[] = $address2;
+        $address = $this->getAddress1();
+        if (false === empty($this->getAddress2())) {
+            $address .= ' ' . $this->getAddress2();
         }
 
-        return sprintf('%s, %s, %s %s', implode(' ', $address), $this->getCity(), $this->getState(), $this->getZip());
+        return sprintf('%s, %s, %s %s', $address, $this->getCity(), $this->getState(), $this->getZip());
     }
 }
