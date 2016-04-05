@@ -29,6 +29,22 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldNotAddRowToDbWhenCallSaveForNewEmptyCacheId()
+    {
+        $this->load(true);
+
+        $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
+        $this->assertCount(4, $allCache, 'Check fixtures: fixtures not should contain data for SmartyStreetsCache');
+
+        $this->getSmartyStreetsCacheService()->save('', 'test');
+
+        $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
+        $this->assertCount(4, $allCache, 'Data is saved in db');
+    }
+
+    /**
+     * @test
+     */
     public function shouldReturnFalseWhenCallSaveForExistingCacheId()
     {
         $this->load(true);
