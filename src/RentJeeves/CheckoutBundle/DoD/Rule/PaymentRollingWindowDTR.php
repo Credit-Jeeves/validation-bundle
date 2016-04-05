@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\DoD\Rule;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 
 /**
  * Service name "dod.payment_rolling_window_dtr"
@@ -52,9 +53,17 @@ class PaymentRollingWindowDTR implements DodPaymentRuleInterface
     /**
      * {@inheritdoc}
      */
-    public function getReason()
+    public function getReasonMessage()
     {
         return 'Payment date should be inside rolling window.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonCode()
+    {
+        return PaymentFlaggedReason::OUTSIDE_DTR_ROLLING_WINDOW;
     }
 
     /**

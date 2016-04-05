@@ -7,6 +7,7 @@ use RentJeeves\CheckoutBundle\DoD\Rule\PaymentAmountMaxLimit;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
 class PaymentAmountMaxLimitCase extends UnitTestBase
@@ -80,9 +81,18 @@ class PaymentAmountMaxLimitCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldReturnReason()
+    public function shouldReturnReasonMessage()
     {
         $limitRule = new PaymentAmountMaxLimit(500);
-        $this->assertEquals($limitRule->getReason(), 'Payment amount exceeds MAX limit of 500');
+        $this->assertEquals($limitRule->getReasonMessage(), 'Payment amount exceeds MAX limit of 500');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnReasonCode()
+    {
+        $limitRule = new PaymentAmountMaxLimit(500);
+        $this->assertEquals($limitRule->getReasonCode(), PaymentFlaggedReason::AMOUNT_LIMIT_EXCEEDED);
     }
 }

@@ -716,6 +716,31 @@ class Mailer extends BaseMailer
     }
 
     /**
+     * @param Contract $contract
+     *
+     * @return bool
+     */
+    public function sendEmailPaymentFlaggedByUntrustedLandlordRule(Contract $contract)
+    {
+        $tenant = $contract->getTenant();
+        $jiraTicket = null;
+        if ($trustedLandlord = $contract->getGroup()->getTrustedLandlord() and $trustedLandlord->getJiraMapping()) {
+            $jiraTicket = $trustedLandlord->getJiraMapping()->getJiraKey();
+        }
+
+        return $this->sendBaseLetter(
+            $template = 'rjPaymentFlaggedByUntrustedLandlordRule',
+            [
+                'firstName' => $tenant->getFirstName(),
+                'propertyAddress' => $contract->getTenantRentAddress(),
+                'jiraTicket' => $jiraTicket
+            ],
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
+
+    /**
      * @param Landlord   $landlord
      * @param Contract[] $contracts
      * @param string     $month

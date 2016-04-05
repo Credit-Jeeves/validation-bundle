@@ -1858,3 +1858,34 @@ fixtures:
           We're here to help,
           The RentTrack Team
         {% endblock %}
+
+# rjPaymentFlaggedByUntrustedLandlordRule.html
+  translation_57_subject:
+    translatable: email_57
+    locale: %locale%
+    property: subject
+    value: More Info Required to Process your Rent Payment
+
+  translation_57_body:
+      translatable: email_57
+      locale: %locale%
+      property: body
+      value: |
+          {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+          {% block h1 %}More Info Required to Process your Rent Payment.{% endblock %}
+          {% block email %}
+              <p>Hi {{ firstName }}!</p>
+              <p>It looks like you're the first payor for this property manager.
+              We'll need some more information before we can process your payment for {{ propertyAddress }}:</p>
+              <ul>
+                  <li>The first page of your Lease</li>
+                  <li>A photo of your Government-Issued ID</li>
+              </ul>
+              <p>You can scan these items, or if you have a smart phone, you can snap a picture of each.
+              Please send them to help@renttrack.com so we can verify all is above-board.
+              We should be able to approve your payment within 72 hours.</p>
+
+              {% if jiraTicket %}<p>Please reference {{ jiraTicket }} when replying to this message.</p>{% endif %}
+              <p>Thank you, <br\>
+              The RentTrack Team</p>
+          {% endblock %}
