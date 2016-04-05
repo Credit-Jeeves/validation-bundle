@@ -12,20 +12,6 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldCheckMailingAddressCountIsZeroIfNoGroupsPayDirect()
-    {
-        $this->load(true);
-
-        $this->executeCommandTester(new MoveDTRGroupAddressToCheckMailingAddressCommand);
-
-        $mailingAddresses = $this->getEntityManager()->getRepository('RjDataBundle:CheckMailingAddress')->findAll();
-
-        $this->assertEquals(0, count($mailingAddresses), 'Mailing addresses should be empty');
-    }
-
-    /**
-     * @test
-     */
     public function shouldInsertTrustedLandlordAndCheckMailingAddressForValidAddress()
     {
         $this->load(true);
@@ -37,7 +23,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
         //Set valid data
         $group1->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $group1->setMailingAddressName('Jason Waters');
-        $group1->setStreetAddress1('770 Broadway'); // this address will be taken from SS cache
+        $group1->setStreetAddress1('771 Broadway'); // this address will be taken from SS cache
         $group1->setStreetAddress2('');
         $group1->setCity('New York');
         $group1->setState('NY');
@@ -51,7 +37,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
         //Duplicate address for another entity
         $group2->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
         $group2->setMailingAddressName('Brian Waters');
-        $group2->setStreetAddress1('770 Broadway'); // this address will be taken from SS cache
+        $group2->setStreetAddress1('771 Broadway'); // this address will be taken from SS cache
         $group2->setStreetAddress2('');
         $group2->setCity('New York');
         $group2->setState('NY');
@@ -62,7 +48,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
         $this->executeCommandTester(new MoveDTRGroupAddressToCheckMailingAddressCommand);
     
         $mailingAddress = $em->getRepository('RjDataBundle:CheckMailingAddress')
-            ->findByIndex('770BroadwayNewYorkNY');
+            ->findByIndex('771BroadwayNewYorkNY');
 
         $this->assertEquals(1, count($mailingAddress), 'Only one check mailing address should be created');
 
