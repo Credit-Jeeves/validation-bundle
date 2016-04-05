@@ -100,4 +100,34 @@ class GroupSettings extends Base
 
         return false;
     }
+
+    /**
+     * @Assert\True(
+     *     message="admin.error.should_be_allowed_payment_source_type",
+     *     groups={
+     *         "allowed_payments_source"
+     *     }
+     * )
+     */
+    public function isAllowedAtLeastOnePaymentSourceType()
+    {
+        return $this->isAllowedCreditCard() || $this->isAllowedACH();
+    }
+
+    /**
+     * @Assert\True(
+     *     message="admin.error.should_be_allowed_credit_card_for_debit",
+     *     groups={
+     *         "allowed_payments_source"
+     *     }
+     * )
+     */
+    public function isAllowedDebitFeeThenShouldBeAllowedCreditCard()
+    {
+        if ($this->isAllowedDebitFee()) {
+            return $this->isAllowedCreditCard();
+        }
+
+        return true;
+    }
 }

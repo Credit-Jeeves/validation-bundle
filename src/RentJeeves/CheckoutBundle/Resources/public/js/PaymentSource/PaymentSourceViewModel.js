@@ -9,16 +9,24 @@
 function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
     var self = this;
 
-    if (typeof (defaultType) == 'undefined') {
-        defaultType = 'bank';
+    self.allowPaymentSourceTypes = {
+        'bank' : ko.observable(true),
+        'card' : ko.observable(true),
+        'debit_card' : ko.observable(false)
+    };
+    if (settings && settings.allowPaymentSourceTypes) {
+        self.allowPaymentSourceTypes = settings.allowPaymentSourceTypes;
     }
 
+    self.defaultType = ko.pureComputed(function () {
+        if (typeof (defaultType) == 'undefined' || !self.allowPaymentSourceTypes[defaultType]()) {
+            defaultType = self.allowPaymentSourceTypes['bank']() ? 'bank' : 'card';
+        }
+
+        return defaultType;
+    });
+
     self.contractId = ko.observable(null);
-
-    self.disableCreditCard = ko.observable(false);
-
-    self.allowDebitCard = ko.observable(false);
-
     if (contractId) {
         self.contractId = contractId;
 
@@ -29,20 +37,13 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
         });
     }
 
-    if (settings && settings.disableCreditCard) {
-        self.disableCreditCard = settings.disableCreditCard;
-    }
-    if (settings && settings.allowDebitCard) {
-        self.allowDebitCard = settings.allowDebitCard;
-    }
-
     self.paymentAccounts = ko.observableArray([]);
 
     self.currentPaymentAccountId = ko.observable(null);
 
     self.isNewPaymentAccount = ko.observable(false);
 
-    self.currentPaymentAccount = ko.observable(new PaymentAccount({'contractId' : contractId}, defaultType));
+    self.currentPaymentAccount = ko.observable(new PaymentAccount({'contractId' : contractId}, self.defaultType()));
 
     self.currentPaymentAccountId.subscribe(function(newPaymentAccountId) {
         changePaymentAccountHandler(newPaymentAccountId);
@@ -62,7 +63,7 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
                 self.isNewPaymentAccount(false);
             }
         } else {
-            self.currentPaymentAccount(new PaymentAccount({'contractId' : contractId}, defaultType));
+            self.currentPaymentAccount(new PaymentAccount({'contractId' : contractId}, self.defaultType()));
             self.isNewPaymentAccount(true);
         }
         if (typeof (parent.changePaymentAccountHandler) === 'function') {
@@ -110,8 +111,16 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
      */
     self.addNewPaymentAccount = function() {
         self.currentPaymentAccountId(null);
-        self.currentPaymentAccount(new PaymentAccount({'contractId' : contractId}, defaultType));
+        self.currentPaymentAccount(new PaymentAccount({'contractId' : contractId}, self.defaultType()));
         self.isNewPaymentAccount(true);
+    };
+
+    /**
+     * @param sourceType
+     * @return boolean
+     */
+    self.isAvailablePaymentSourceType = function(sourceType) {
+        return self.allowPaymentSourceTypes[sourceType];
     };
 
     /**
@@ -136,14 +145,14 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
         } else {
             self.load(self.contractId());
         }
-        jQuery('input:radio[value="card"]')
-            .closest('label.radio')
-            .attr('data-bind', 'visible: !disableCreditCard()');
-        jQuery('input:radio[value="debit_card"]')
-            .closest('label.radio')
-            .attr('data-bind', 'visible: (!disableCreditCard() && allowDebitCard())');
+        // add binding for hide no available payment source types
+        ko.utils.arrayForEach(document.getElementsByClassName('payment_source_type'), function (element) {
+            element.parentNode.setAttribute(
+                "data-bind",
+                "visible: isAvailablePaymentSourceType('" + element.value + "')"
+            );
+        });
     };
-
 
     // Constructor
 

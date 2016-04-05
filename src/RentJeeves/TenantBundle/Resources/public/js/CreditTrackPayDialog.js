@@ -11,6 +11,8 @@ function CreditTrackPayDialog(options) {
     }));
     self.paymentGroup = self.root.data('paymentGroup');
 
+    self.paymentGroupId = ko.observable(self.paymentGroup.id);
+
     this.infoMessage = ko.observable(null);
 
     this.getCurrentStep = function() {
@@ -38,7 +40,6 @@ function CreditTrackPayDialog(options) {
     };
 
     this.step.subscribe(function(newValue) {
-
         // if this step was already passed, then remove it (when user clicks Previous button)
         if (self.passedSteps.indexOf(newValue) >= 0) {
             self.passedSteps.remove(newValue);
@@ -65,9 +66,16 @@ function CreditTrackPayDialog(options) {
         self.root.hideOverlay();
     };
 
+    var paymentAccountSettings = {
+        'allowPaymentSourceTypes' : {
+            'bank' : ko.observable(self.paymentGroup.groupSettings.allowBank),
+            'card' : ko.observable(self.paymentGroup.groupSettings.allowCreditCard),
+            // TODO for allowed debit card for ScoreTrack need separate task
+            'debit_card' : ko.observable(false) // ko.observable(self.paymentGroup.groupSettings.allowDebitCard)
+        }
+    };
     // Connected Payment Source Component
-    // Component should be connected after contractId and disableCreditCard and before it should be using
-    ko.utils.extend(self, new PaymentSourceViewModel(self, null, {}, 'card'));
+    ko.utils.extend(self, new PaymentSourceViewModel(self, null, paymentAccountSettings, 'card'));
 
     self.changePaymentAccountHandler = function() {
         self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());

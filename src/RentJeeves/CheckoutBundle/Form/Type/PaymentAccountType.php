@@ -1,8 +1,8 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Model\User;
-use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\BankAccountType;
@@ -32,25 +32,13 @@ class PaymentAccountType extends AbstractType
     protected $formNameSuffix = '';
 
     /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var int
-     */
-    protected $contractId;
-
-    /**
      * @param User $user
      * @param string $formNameSuffix
-     * @param EntityManager|null $em
      */
-    public function __construct(User $user, $formNameSuffix = '', EntityManager $em = null)
+    public function __construct(User $user, $formNameSuffix = '')
     {
         $this->user = $user;
         $this->formNameSuffix = $formNameSuffix ? '_' . $formNameSuffix : '';
-        $this->em = $em;
     }
 
     /**
@@ -72,6 +60,7 @@ class PaymentAccountType extends AbstractType
                 'empty_value'  => false,
                 'data'  => PaymentAccountTypeEnum::BANK,
                 'attr' => [
+                    'class' => 'payment_source_type',
                     'data-bind' => 'checked: currentPaymentAccount().type',
                     'html' => '<div
                             data-bind="visible: \'debit_card\' == currentPaymentAccount().type()"
@@ -493,12 +482,25 @@ class PaymentAccountType extends AbstractType
         $builder->add('id', 'hidden', ['attr' => ['data-bind' => 'value: currentPaymentAccount().id']]);
 
         $builder->add(
-            'contractId',
-            'hidden',
+            'contract',
+            'entity_hidden',
             [
                 'mapped' => false,
-                'attr' => [
+                'class' => 'RentJeeves\DataBundle\Entity\Contract',
+                    'attr' => [
                     'data-bind' => 'value: currentPaymentAccount().contractId',
+                ]
+            ]
+        );
+
+        $builder->add(
+            'group',
+            'entity_hidden',
+            [
+                'mapped' => false,
+                'class' => 'CreditJeeves\DataBundle\Entity\Group',
+                'attr' => [
+                    'data-bind' => 'value: $root.paymentGroupId ? $root.paymentGroupId : null',
                 ]
             ]
         );
@@ -512,7 +514,6 @@ class PaymentAccountType extends AbstractType
                 'data_class' => 'RentJeeves\DataBundle\Entity\PaymentAccount',
                 'validation_groups' => function (FormInterface $form) {
                     $data = $form->getData();
-                    $this->contractId = $form->get('contractId')->getData();
                     $type = $data->getType();
                     $groups = [];
                     if (PaymentAccountTypeEnum::CARD == $type || PaymentAccountTypeEnum::DEBIT_CARD == $type) {
@@ -545,16 +546,30 @@ class PaymentAccountType extends AbstractType
      */
     public function isValidPaymentAccountType($data, ExecutionContextInterface $context)
     {
-        if ($data === PaymentAccountTypeEnum::BANK || is_null($this->em) || empty($this->contractId)) {
-            return;
-        }
+        $form = $context->getRoot();
         /** @var Contract $contract */
-        if (!$contract = $this->em->getRepository('RjDataBundle:Contract')->find($this->contractId)) {
+        $contract = $form->get('contract')->getData();
+        /** @var Group $group */
+        $group = $form->get('group')->getData();
+        if (!$contract && !$group) {
             return;
         }
-        if ($contract->getGroup()->isDisableCreditCard()) {
-            $context->addViolation('checkout.error.type.disallow', ['%value%' => $data]);
-        } elseif (!$contract->getGroupSettings()->isAllowedDebitFee() && $data === PaymentAccountTypeEnum::DEBIT_CARD) {
+        $groupSettings = $contract ? $contract->getGroupSettings() : $group->getGroupSettings();
+        switch ($data) {
+            case PaymentAccountTypeEnum::BANK:
+                $valid = $groupSettings->isAllowedACH();
+                break;
+            case PaymentAccountTypeEnum::CARD:
+                $valid = $groupSettings->isAllowedCreditCard();
+                break;
+            case PaymentAccountTypeEnum::DEBIT_CARD:
+                $valid = $groupSettings->isAllowedCreditCard() && $groupSettings->isAllowedDebitFee();
+                break;
+            default:
+                $context->addViolation('checkout.error.type.invalid');
+                return;
+        }
+        if (!$valid) {
             $context->addViolation('checkout.error.type.disallow', ['%value%' => $data]);
         }
     }
