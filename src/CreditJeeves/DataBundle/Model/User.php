@@ -57,7 +57,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Length(
@@ -75,7 +76,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Regex(
@@ -134,7 +136,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Length(
@@ -152,7 +155,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Regex(
@@ -630,6 +634,16 @@ abstract class User extends BaseUser
      * )
      */
     protected $partner;
+
+    /**
+     * @Assert\NotBlank(groups={"userCreationManager"})
+     */
+    protected $username;
+
+    /**
+     * @Assert\NotBlank(groups={"userCreationManager"})
+     */
+    protected $usernameCanonical;
 
     public function __construct()
     {
