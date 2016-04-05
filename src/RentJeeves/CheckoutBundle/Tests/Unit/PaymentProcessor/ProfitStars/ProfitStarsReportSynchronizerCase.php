@@ -108,9 +108,13 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
             ->method('GetHistoricalEventReport')
             ->willReturn($this->getReversalReport('Declined'));
 
+        $orderStatusManager = $this->getOrderStatusManagerMock();
+        $orderStatusManager->expects($this->once())
+            ->method('setReturned');
+
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,
-            $this->getOrderStatusManagerMock(),
+            $orderStatusManager,
             $emMock,
             $this->getLoggerMock(),
             'test',
