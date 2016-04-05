@@ -226,9 +226,9 @@ class TrustedLandlordServiceCase extends UnitTestBase
 
         $statusManager = $this->getBaseMock(TrustedLandlordStatusManager::class);
         // Pls uncomment for statusManager task
-//        $statusManager->expects($this->once())
-//            ->method('updateStatus')
-//            ->with($this->isInstanceOf(TrustedLandlord::class), $this->equalTo(TrustedLandlordStatus::RFI));
+        $statusManager->expects($this->once())
+            ->method('updateStatus')
+            ->with($this->isInstanceOf(TrustedLandlord::class), $this->equalTo(TrustedLandlordStatus::NEWONE));
 
         $trustedLandlordService = new TrustedLandlordService(
             $em,

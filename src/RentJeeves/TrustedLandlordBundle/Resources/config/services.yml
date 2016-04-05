@@ -7,7 +7,7 @@ services:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
             - "@address_lookup_service"
-            - "@trusted_landlord.status_manager"
+            - "@trusted.landlord_status.manager"
 
     trusted.landlord_status.manager:
         class: RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager

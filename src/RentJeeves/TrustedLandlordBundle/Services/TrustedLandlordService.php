@@ -124,12 +124,10 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $newTrustedLandlord->setCompanyName($trustedLandlordDTO->getCompanyName());
         $newTrustedLandlord->setType($trustedLandlordDTO->getType());
         $newTrustedLandlord->setPhone($trustedLandlordDTO->getPhone());
-        $newTrustedLandlord->setStatus(TrustedLandlordStatus::NEWONE);
-
+        // here we do request for JIRA
+        $this->statusManager->updateStatus($newTrustedLandlord, TrustedLandlordStatus::NEWONE);
         $this->em->persist($newTrustedLandlord);
         $this->em->flush();
-        // here we do request for JIRA
-//        $this->statusManager->updateStatus($newTrustedLandlord, TrustedLandlordStatus::RFI);
     }
 
     /**
