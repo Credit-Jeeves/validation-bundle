@@ -80,8 +80,9 @@ class PaymentAccountRepository extends EntityRepository
     public function getPaymentAccountsForTenantByContract(Tenant $tenant, Contract $contract)
     {
         $paymentProcessor = $contract->getGroupSettings()->getPaymentProcessor();
-        $isDisabledCreditCard = $contract->getGroup()->isDisableCreditCard();
-        $isAllowDebitCard = $contract->getGroupSettings()->isAllowedDebitFee();
+        $isAllowedACH = $contract->getGroupSettings()->isAllowedACH();
+        $isAllowedCreditCard = $contract->getGroupSettings()->isAllowedCreditCard();
+        $isAllowedDebitCard = $contract->getGroupSettings()->isAllowedDebitFee();
 
         $query = $this->createQueryBuilder('pa')
             ->innerJoin('pa.user', 'u')
@@ -92,13 +93,18 @@ class PaymentAccountRepository extends EntityRepository
                 'paymentProcessor' => $paymentProcessor
             ]);
 
-        if ($isDisabledCreditCard) {
+        if (!$isAllowedACH) {
+            $query
+                ->andWhere('pa.type != :bank')
+                ->setParameter('bank', PaymentAccountType::BANK);
+        }
+        if (!$isAllowedCreditCard) {
             $query
                 ->andWhere('pa.type != :card')
                 ->andWhere('pa.type != :debit_card')
                 ->setParameter('card', PaymentAccountType::CARD)
                 ->setParameter('debit_card', PaymentAccountType::DEBIT_CARD);
-        } elseif (!$isAllowDebitCard) {
+        } elseif (!$isAllowedDebitCard) {
             $query
                 ->andWhere('pa.type != :debit_card')
                 ->setParameter('debit_card', PaymentAccountType::DEBIT_CARD);

@@ -266,6 +266,14 @@
                 <source>admin.late_report.choose_contract</source>
                 <target>Choose a contract please</target>
             </trans-unit>
+            <trans-unit id="admin.error.should_be_allowed_payment_source_type">
+                <source>admin.error.should_be_allowed_payment_source_type</source>
+                <target>You should allow at least one payment source type. Please set ach or credit card to "allowed".</target>
+            </trans-unit>
+            <trans-unit id="admin.error.should_be_allowed_credit_card_for_debit">
+                <source>admin.error.should_be_allowed_credit_card_for_debit</source>
+                <target>To allow debit fee, you should also allow credit card.</target>
+            </trans-unit>
             <trans-unit id="admin.error.deposit_account">
                 <source>admin.error.deposit_account</source>
                 <target>You already have deposit account with such type and payment processor.</target>
@@ -337,6 +345,14 @@
             <trans-unit id="admin.group_settings.label.show_rent_wizard">
                 <source>admin.group_settings.label.show_rent_wizard</source>
                 <target>Fill Rent on Wizard</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.allowed_ach">
+                <source>admin.group_settings.label.allowed_ach</source>
+                <target>Is Allowed ACH?</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.allowed_credit_card">
+                <source>admin.group_settings.label.allowed_credit_card</source>
+                <target>Is Allowed Credit Card?</target>
             </trans-unit>
             <trans-unit id="admin.group_settings.label.max_limit_per_month">
                 <source>admin.group_settings.label.max_limit_per_month</source>

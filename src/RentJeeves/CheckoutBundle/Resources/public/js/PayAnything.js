@@ -257,9 +257,19 @@ function PayAnything(parent, contract, defaultParams) {
         return  contract ? contract.id : null;
     });
 
-    self.disableCreditCard = ko.computed(function () {
+    self.allowBank = ko.computed(function () {
         var contract = ko.unwrap(self.contract);
-        return  contract ? contract.disableCreditCard : false;
+        return  contract ? contract.allowBank : false;
+    });
+
+    self.allowCreditCard = ko.computed(function () {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.allowCreditCard : true;
+    });
+
+    self.allowDebitCard = ko.computed(function () {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.allowDebitCard && contract.allowCreditCard : false;
     });
 
     self.propertyAddress = ko.computed(function() {
@@ -278,14 +288,18 @@ function PayAnything(parent, contract, defaultParams) {
     ko.utils.extend(self, new PayAddress(self, self.propertyAddress));
 
     // Connected Payment Source Component
-    // Component should be connected after contractId and disableCreditCard and before it should be using
+    // Component should be connected after contractId and allowedCreditCard and before it should be using
     ko.utils.extend(
         self,
         new PaymentSourceViewModel(
             self,
             self.contractId,
             {
-                'disableCreditCard': self.disableCreditCard
+                'allowPaymentSourceTypes': {
+                    'bank' : self.allowBank,
+                    'card' : self.allowCreditCard,
+                    'debit_card' : ko.observable(false)//self.allowDebitCard
+                }
             }
         )
     );

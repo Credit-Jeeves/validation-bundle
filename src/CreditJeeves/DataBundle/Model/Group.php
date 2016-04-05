@@ -239,13 +239,6 @@ abstract class Group
     protected $created_at;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="disable_credit_card", type="boolean", options={"default"="0"})
-     */
-    protected $disableCreditCard;
-
-    /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -389,6 +382,8 @@ abstract class Group
      *     fetch="EAGER"
      * )
      * @Assert\Valid
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Groups({"paymentAccounts"})
      */
     protected $groupSettings;
 
@@ -507,7 +502,6 @@ abstract class Group
         $this->billingAccounts = new ArrayCollection();
         $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
-        $this->disableCreditCard = false;
         $this->depositAccounts = new ArrayCollection();
     }
 
@@ -1464,22 +1458,6 @@ abstract class Group
     public function setStatementDescriptor($statementDescriptor)
     {
         $this->statementDescriptor = $statementDescriptor;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function isDisableCreditCard()
-    {
-        return $this->disableCreditCard;
-    }
-
-    /**
-     * @param mixed $disableCreditCard
-     */
-    public function setDisableCreditCard($disableCreditCard)
-    {
-        $this->disableCreditCard = $disableCreditCard;
     }
 
     /**
