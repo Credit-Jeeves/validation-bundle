@@ -84,7 +84,11 @@ class PaymentAmountMaxLimitCase extends UnitTestBase
     public function shouldReturnReasonMessage()
     {
         $limitRule = new PaymentAmountMaxLimit(500);
-        $this->assertEquals($limitRule->getReasonMessage(), 'Payment amount exceeds MAX limit of 500');
+        $this->assertEquals(
+            'Payment amount exceeds MAX limit of 500',
+            $limitRule->getReasonMessage(),
+            'Reason message is invalid'
+        );
     }
 
     /**
@@ -93,6 +97,14 @@ class PaymentAmountMaxLimitCase extends UnitTestBase
     public function shouldReturnReasonCode()
     {
         $limitRule = new PaymentAmountMaxLimit(500);
-        $this->assertEquals($limitRule->getReasonCode(), PaymentFlaggedReason::AMOUNT_LIMIT_EXCEEDED);
+        $this->assertEquals(
+            PaymentFlaggedReason::AMOUNT_LIMIT_EXCEEDED,
+            $limitRule->getReasonCode(),
+            sprintf(
+                'Reason code is invalid should be "%s" expected "%s"',
+                PaymentFlaggedReason::AMOUNT_LIMIT_EXCEEDED,
+                $limitRule->getReasonCode()
+            )
+        );
     }
 }

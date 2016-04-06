@@ -128,6 +128,15 @@ class PaymentToTrustedLandlordDTRCase extends UnitTestBase
     public function shouldReturnReasonCode()
     {
         $paymentRule = new PaymentToTrustedLandlordDTR($this->getMailerMock());
-        $this->assertEquals($paymentRule->getReasonCode(), PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD);
+
+        $this->assertEquals(
+            PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD,
+            $paymentRule->getReasonCode(),
+            sprintf(
+                'Reason code is invalid should be "%s" expected "%s"',
+                PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD,
+                $paymentRule->getReasonCode()
+            )
+        );
     }
 }

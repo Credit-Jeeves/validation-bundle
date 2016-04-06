@@ -99,7 +99,6 @@ class PaymentFirstTimeDTR implements DodPaymentRuleInterface
         return PaymentFlaggedReason::DTR_FIRST_PAYMENT;
     }
 
-
     /**
      * {@inheritdoc}
      */
