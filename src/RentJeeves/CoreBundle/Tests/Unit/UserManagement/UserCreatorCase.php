@@ -3,13 +3,13 @@
 namespace RentJeeves\CoreBundle\Tests\Unit\UserManagement;
 
 use CreditJeeves\DataBundle\Entity\UserRepository;
-use RentJeeves\CoreBundle\UserManagement\UserCreationManager;
+use RentJeeves\CoreBundle\UserManagement\UserCreator;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class UserCreationManagerCase extends UnitTestBase
+class UserCreatorCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
@@ -19,12 +19,12 @@ class UserCreationManagerCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfInputDataIsEmptyForCreateTenantWithoutEmail()
     {
-        $manager = new UserCreationManager(
+        $manager = new UserCreator(
             $this->getEntityManagerMock(),
             $this->getLoggerMock(),
             $this->getValidatorMock()
         );
-        $manager->createTenantWithoutEmail('', '');
+        $manager->createTenant('', '');
     }
 
     /**
@@ -77,12 +77,12 @@ class UserCreationManagerCase extends UnitTestBase
             ->method('validate')
             ->willReturn(new ConstraintViolationList());
 
-        $manager = new UserCreationManager(
+        $manager = new UserCreator(
             $em,
             $this->getLoggerMock(),
             $validator
         );
-        $manager->createTenantWithoutEmail('te', 'st');
+        $manager->createTenant('te', 'st');
     }
 
     /**
@@ -115,11 +115,11 @@ class UserCreationManagerCase extends UnitTestBase
             ->method('validate')
             ->willReturn(new ConstraintViolationList());
 
-        $manager = new UserCreationManager(
+        $manager = new UserCreator(
             $em,
             $this->getLoggerMock(),
             $validator
         );
-        $manager->createTenantWithoutEmail('te', 'st');
+        $manager->createTenant('te', 'st');
     }
 }

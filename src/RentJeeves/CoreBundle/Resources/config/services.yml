@@ -172,3 +172,21 @@ services:
             - @dedupe.unit_deduplicator
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_deduplicator
+
+    renttrack.user_creator:
+        class: RentJeeves\CoreBundle\UserManagement\UserCreator
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@logger'
+            - '@validator'
+
+    renttrack.contract_creator:
+        class: RentJeeves\CoreBundle\ContractManagement\ContractCreator
+
+    renttrack.contract_manager:
+        class: RentJeeves\CoreBundle\ContractManagement\ContractManager
+        arguments:
+            - '@renttrack.contract_creator'
+            - '@renttrack.user_creator'
+            - '@doctrine.orm.default_entity_manager'
+            - '@logger'

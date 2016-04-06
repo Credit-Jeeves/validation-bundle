@@ -74,7 +74,7 @@ trait CreateSystemMocksExtensionTrait
     /**
      * @param string $class Class name with namespace
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|mixed
      */
     public function getBaseMock($class)
     {

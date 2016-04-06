@@ -2,6 +2,6 @@
 
 namespace RentJeeves\CoreBundle\Exception;
 
-class UserCreationManagerException extends \Exception
+class UserCreatorException extends \Exception
 {
 }
