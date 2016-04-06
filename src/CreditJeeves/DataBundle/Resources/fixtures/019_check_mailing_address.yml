@@ -7,3 +7,10 @@ fixtures:
         state:          NY
         zip:            10003
         index:          770BroadwayNewYorkNY
+    CheckMailingAddress2:
+        addressee:      John Brown
+        address1:       60 University Pl
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          60UniversityPlNewYorkNY

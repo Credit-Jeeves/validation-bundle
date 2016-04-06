@@ -736,7 +736,9 @@ class Mailer extends BaseMailer
                 'jiraTicket' => $jiraTicket
             ],
             $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant->getCulture(),
+            null,
+            false
         );
     }
 

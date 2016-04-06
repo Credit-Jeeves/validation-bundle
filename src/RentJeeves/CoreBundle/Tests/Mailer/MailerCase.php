@@ -23,7 +23,8 @@ class MailerCase extends BaseTestCase
         'partnerName' => 'RentTrack',
         'partnerAddress' => '4601 Excelsior Blvd Ste 403A, St. Louis Park, MN 55416',
         'loginUrl' => 'my.renttrack.com',
-        'isPoweredBy' => false
+        'isPoweredBy' => false,
+        'replyToEmail' => 'help@renttrack.com'
     ];
 
     /**
