@@ -16,14 +16,30 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(4, $allCache, 'Check fixtures: fixtures not should contain data for SmartyStreetsCache');
+        $this->assertCount(4, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
 
         $this->assertTrue($result, 'Cache with key `test` is not saved');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(5, $allCache, 'Data not saved in db');
+        $this->assertCount(5, $allCache, 'SS cache should be added for empty data');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotAddRowToDbWhenCallSaveForNewEmptyCacheId()
+    {
+        $this->load(true);
+
+        $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
+        $this->assertCount(4, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
+
+        $this->getSmartyStreetsCacheService()->save('', 'test');
+
+        $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
+        $this->assertCount(4, $allCache, 'SS cache should not be added for empty data');
     }
 
     /**
@@ -34,7 +50,7 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(4, $allCache, 'Check fixtures: fixtures not should contain data for SmartyStreetsCache');
+        $this->assertCount(4, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
 

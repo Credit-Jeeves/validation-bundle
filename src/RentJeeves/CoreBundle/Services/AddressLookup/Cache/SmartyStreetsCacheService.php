@@ -34,6 +34,10 @@ class SmartyStreetsCacheService implements Cache
             return false;
         }
 
+        if (empty($id)) {
+            return true;
+        }
+
         $cache = new SmartyStreetsCache();
         $cache->setId($id);
         $cache->setValue($data);
