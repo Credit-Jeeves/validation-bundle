@@ -7,10 +7,10 @@ services:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
             - "@address_lookup_service"
-            - "@trusted.landlord_status.manager"
-
-    trusted.landlord_status.manager:
+            - "@trusted_landlord.status_manager"
+    trusted_landlord.status_manager:
         class: RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager
+        public: false
         arguments:
             - "@doctrine.orm.default_entity_manager"
             - "@logger"
@@ -25,10 +25,10 @@ services:
             - "%jira_api.user%"
             - "%jira_api.password%"
             - "%jira_api.key%"
-    trusted.landlord.jira.service:
+    trusted_landlord.jira.service:
         class: RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService
         arguments:
-            - "@trusted.landlord_status.manager"
+            - "@trusted_landlord_service"
             - "@jira.rest_client"
             - "@doctrine.orm.default_entity_manager"
             - "@logger"

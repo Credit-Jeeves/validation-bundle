@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ed1fdd95b596dd6c0acf40407550d494",
-    "content-hash": "8e0aca8208f74a3340ac4f884c745fe8",
+    "hash": "61ae04ee3b2ad3d5a327e5ab50a02bce",
+    "content-hash": "9e9662d1fb8d53d18955e23dd24ade70",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1352,12 +1352,12 @@
             "target-dir": "Doctrine/Bundle/DoctrineCacheBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
-                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d"
+                "url": "git@github.com:doctrine/DoctrineCacheBundle.git",
+                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
                 "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
                 "shasum": ""
             },
@@ -4459,13 +4459,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Credit-Jeeves/jira-client.git",
-                "reference": "6028d1e9ad1447be7ca4c144242ee81f67f04759"
+                "url": "https://github.com/oRastor/jira-client.git",
+                "reference": "77bde68a2604529298cc25b0c7f88acc933a5e3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/jira-client/zipball/6028d1e9ad1447be7ca4c144242ee81f67f04759",
-                "reference": "6028d1e9ad1447be7ca4c144242ee81f67f04759",
+                "url": "https://api.github.com/repos/oRastor/jira-client/zipball/77bde68a2604529298cc25b0c7f88acc933a5e3c",
+                "reference": "77bde68a2604529298cc25b0c7f88acc933a5e3c",
                 "shasum": ""
             },
             "require": {
@@ -4477,6 +4477,7 @@
                     "JiraClient\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -4493,10 +4494,7 @@
                 "jira",
                 "rest"
             ],
-            "support": {
-                "source": "https://github.com/Credit-Jeeves/jira-client/tree/master"
-            },
-            "time": "2016-04-04 14:11:40"
+            "time": "2016-04-05 13:44:24"
         },
         {
             "name": "react/promise",

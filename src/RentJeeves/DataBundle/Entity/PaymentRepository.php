@@ -283,7 +283,7 @@ class PaymentRepository extends EntityRepository
      * @param Group $group
      * @return ArrayCollection|Payment[]
      */
-    public function findAllActivePaymentsForGroup(Group $group)
+    public function findAllActiveAndFlaggedPaymentsForGroup(Group $group)
     {
         return $this->createQueryBuilder('p')
             ->innerJoin('p.contract', 'c')
@@ -308,7 +308,7 @@ class PaymentRepository extends EntityRepository
             ->andWhere('p.flaggedReason = :flaggedReason')
             ->setParameter('groupId', $group->getId())
             ->setParameter('flaggedReason', PaymentFlaggedReason::DTR_PAYMENT_TO_UNTRUSTED_LANDLORD)
-            ->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED])
+            ->setParameter('activeStatuses', [PaymentStatus::FLAGGED])
             ->getQuery()
             ->execute();
     }

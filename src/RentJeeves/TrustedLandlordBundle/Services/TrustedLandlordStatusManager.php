@@ -9,9 +9,10 @@ use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
+use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordStatusException;
 
 /**
- * trusted.landlord_status.manager
+ * trusted_landlord.status_manager
  */
 class TrustedLandlordStatusManager
 {
@@ -64,7 +65,7 @@ class TrustedLandlordStatusManager
     /**
      * @param TrustedLandlord $trustedLandlord
      * @param string $newStatus
-     * @throws \LogicException
+     * @throws TrustedLandlordStatusException
      *
      * @return bool
      */
@@ -102,7 +103,7 @@ class TrustedLandlordStatusManager
             );
             $this->logger->alert($message);
 
-            throw new \LogicException($message);
+            throw new TrustedLandlordStatusException($message);
         }
 
         $trustedLandlord->setStatus($newStatus);
@@ -126,14 +127,15 @@ class TrustedLandlordStatusManager
         return true;
     }
 
+
     /**
      * @param TrustedLandlord $trustedLandlord
      * @return bool
      */
-    protected function handleRfiStatus(TrustedLandlord $trustedLandlord)
+    protected function handleFailedStatus(TrustedLandlord $trustedLandlord)
     {
-        $this->logger->debug(
-            sprintf('TrustedLandlord#%s got new status %s', $trustedLandlord->getId(), $trustedLandlord->getStatus())
+        $this->logger->alert(
+            sprintf('TrustedLandlord#%s got new status %s.', $trustedLandlord->getId(), $trustedLandlord->getStatus())
         );
 
         return true;
@@ -179,10 +181,11 @@ class TrustedLandlordStatusManager
              */
             if ($today > $currentStartDate) {
                 $tomorrow = new \DateTime('+1 day');
+                $tomorrow->setTime('06', '00', '00');
                 $payment->setStartDate($tomorrow);
             }
 
-            $this->mailer->sendTrustedLandlordApproved($trustedLandlord, $payment);
+            $this->mailer->sendTrustedLandlordApproved($payment);
         }
 
         $this->em->flush();
@@ -196,7 +199,7 @@ class TrustedLandlordStatusManager
      */
     protected function handleDeniedStatus(TrustedLandlord $trustedLandlord)
     {
-        $activePayments = $this->em->getRepository('RjDataBundle:Payment')->findAllActivePaymentsForGroup(
+        $activePayments = $this->em->getRepository('RjDataBundle:Payment')->findAllActiveAndFlaggedPaymentsForGroup(
             $trustedLandlord->getGroup()
         );
         foreach ($activePayments as $activePayment) {
@@ -222,11 +225,10 @@ class TrustedLandlordStatusManager
             return false;
         }
 
-        $job = new Job('api:jira:create-issue', ['--trusted-landlord-id='.$trustedLandlord->getId()]);
+        $job = new Job('renttrack:jira-api:create-issue', ['--trusted-landlord-id='.$trustedLandlord->getId()]);
         $this->em->persist($job);
         $this->em->flush();
 
         return true;
     }
 }
-

@@ -47,7 +47,7 @@ class Version20160328121501 extends AbstractMigration
                 type ENUM('person','company')
                     COMMENT '(DC2Type:TrustedLandlordType)' NOT NULL,
                 phone VARCHAR(255) DEFAULT NULL,
-                status ENUM('new','trusted','rfi','denied', 'in progress', 'waiting for info')
+                status ENUM('new','trusted','initiated','denied', 'in progress', 'waiting for info', 'failed')
                     COMMENT '(DC2Type:TrustedLandlordStatus)' NOT NULL,
                 created_at DATETIME NOT NULL,
                 updated_at DATETIME NOT NULL,

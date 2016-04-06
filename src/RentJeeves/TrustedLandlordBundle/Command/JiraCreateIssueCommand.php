@@ -3,6 +3,7 @@
 namespace RentJeeves\TrustedLandlordBundle\Command;
 
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 use RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +18,7 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('api:jira:create-issue')
+            ->setName('renttrack:jira-api:create-issue')
             ->addOption(
                 'jms-job-id',
                 null,
@@ -28,7 +29,7 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
                 'trusted-landlord-id',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Accounting batch id exist for some accounting system'
+                'Trusted Landlord ID of Entity'
             )
             ->setDescription(
                 'Create new issue on jira.'
@@ -42,16 +43,23 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $trustedLandlordJira = $em->getRepository('RjDataBundle:TrustedLandlord')->find($input->getOption('trusted-landlord-id'));
+        $trustedLandlordJira = $em->getRepository('RjDataBundle:TrustedLandlord')->find(
+            $input->getOption('trusted-landlord-id')
+        );
+
         if (empty($trustedLandlordJira)) {
             throw new \LogicException(
                 sprintf('Option trusted-landlord-id#%s for command is wrong', $input->getOption('trusted-landlord-id'))
             );
         }
         /** @var TrustedLandlordJiraService $trustedLandlordJiraService */
-        $trustedLandlordJiraService = $this->getContainer()->get('trusted.landlord.jira.service');
+        $trustedLandlordJiraService = $this->getContainer()->get('trusted_landlord.jira.service');
         $jiraMapping = $trustedLandlordJiraService->addToQueue($trustedLandlordJira);
         if (empty($jiraMapping)) {
+            $this->getContainer()->get('trusted_landlord_service')->update(
+                $trustedLandlordJira,
+                TrustedLandlordStatus::FAILED
+            );
             return 1;
         }
 

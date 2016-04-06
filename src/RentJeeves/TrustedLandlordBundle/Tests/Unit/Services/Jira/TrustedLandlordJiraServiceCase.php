@@ -5,9 +5,15 @@ namespace RentJeeves\TrustedLandlordBundle\Tests\Unit\Services\Jira;
 use RentJeeves\DataBundle\Entity\CheckMailingAddress;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
+use RentJeeves\TrustedLandlordBundle\Model\Jira\Fields;
+use RentJeeves\TrustedLandlordBundle\Model\Jira\Issue;
+use RentJeeves\TrustedLandlordBundle\Model\Jira\Transition;
+use RentJeeves\TrustedLandlordBundle\Model\Jira\TrustedLandlordIssue;
 use RentJeeves\TrustedLandlordBundle\Services\Jira\TrustedLandlordJiraService;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase as Base;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
+use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
+use  RentJeeves\TrustedLandlordBundle\Model\Jira\Type;
 
 class TrustedLandlordJiraServiceCase extends Base
 {
@@ -46,14 +52,14 @@ class TrustedLandlordJiraServiceCase extends Base
 
         $logger = $this->getLoggerMock();
         $logger->expects($this->once())
-            ->method('debug')
-            ->with('Created issue#RTT-22 for trustedLandlordRecord#');
+            ->method('debug');
 
         $trustedLandlordJiraService = new TrustedLandlordJiraService(
-            $this->getTrustedLandlordStatusManagerMock(),
+            $this->getBaseMock(TrustedLandlordService::class),
             $jiraClientMock,
             $emMock,
-            $logger
+            $logger,
+            $this->getSerializerMock()
         );
 
         $result = $trustedLandlordJiraService->addToQueue($trustedLandlord);
@@ -69,9 +75,9 @@ class TrustedLandlordJiraServiceCase extends Base
      */
     public function shouldSuccessfullyHandleWebhookEvent()
     {
-        $trustedLandlordJiraService = $this->getTrustedLandlordStatusManagerMock();
-        $trustedLandlordJiraService->expects($this->once())
-            ->method('updateStatus');
+        $trustedLandlordService = $this->getBaseMock(TrustedLandlordService::class);
+        $trustedLandlordService->expects($this->once())
+            ->method('update');
 
         $mapping = new TrustedLandlordJiraMapping();
         $trusted = new TrustedLandlord();
@@ -81,18 +87,25 @@ class TrustedLandlordJiraServiceCase extends Base
         $repository = $this->getEntityRepositoryMock();
         $em->expects($this->once())->method('getRepository')->willReturn($repository);
         $repository->expects($this->once())->method('findOneBy')->willReturn($mapping);
-
-        $trustedLandlordJiraService = new TrustedLandlordJiraService(
-            $trustedLandlordJiraService,
+        $serializer = $this->getSerializerMock();
+        $trustedLandlordIssue = new TrustedLandlordIssue();
+        $trustedLandlordIssue->setTransition(new Transition());
+        $trustedLandlordIssue->setIssue(new Issue());
+        $trustedLandlordIssue->getIssue()->setFields($fields = new Fields());
+        $fields->setType(new Type());
+        $serializer->expects($this->once())->method('deserialize')->willReturn($trustedLandlordIssue);
+        $trustedLandlordService = new TrustedLandlordJiraService(
+            $trustedLandlordService,
             $this->getJiraClientMock(),
             $em,
-            $this->getLoggerMock()
+            $this->getLoggerMock(),
+            $serializer
         );
         $data = [
             'issue' => ['key' => 'RT-22'],
             'transition' => ['to_status' => 'new']
         ];
-        $trustedLandlordJiraService->handleWebhookEvent($data);
+        $trustedLandlordService->handleWebhookEvent($data);
     }
 
     /**
@@ -119,4 +132,3 @@ class TrustedLandlordJiraServiceCase extends Base
         return $this->getBaseMock('JiraClient\Resource\Issue');
     }
 }
-

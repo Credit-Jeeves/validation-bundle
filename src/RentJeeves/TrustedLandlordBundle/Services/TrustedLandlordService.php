@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Entity\CheckMailingAddress;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordServiceException;
+use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordStatusException;
 use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
 
 /**
@@ -124,18 +125,83 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $newTrustedLandlord->setCompanyName($trustedLandlordDTO->getCompanyName());
         $newTrustedLandlord->setType($trustedLandlordDTO->getType());
         $newTrustedLandlord->setPhone($trustedLandlordDTO->getPhone());
-        // here we do request for JIRA
-        $this->statusManager->updateStatus($newTrustedLandlord, TrustedLandlordStatus::NEWONE);
+        $newTrustedLandlord->setStatus(TrustedLandlordStatus::INITIATED);
         $this->em->persist($newTrustedLandlord);
         $this->em->flush();
+        $this->updateStatus($newTrustedLandlord, TrustedLandlordStatus::NEWONE);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateStatus(TrustedLandlord $trustedLandlord, $status)
+    public function update(TrustedLandlord $trustedLandlord, $status, TrustedLandlordDTO $trustedLandlordDTO = null)
     {
-        $this->statusManager->updateStatus($trustedLandlord, $status);
+        $this->logger->debug('Try to update TrustedLandlord#'.$trustedLandlord->getId());
+
+        if (empty($trustedLandlordDTO)) {
+            $this->updateStatus($trustedLandlord, $status);
+
+            return;
+        }
+
+        try {
+            $address = $this->lookupAddressByTrustedLandlordDTO($trustedLandlordDTO);
+        } catch (AddressLookupException $e) {
+            $this->logger->warning($e->getMessage());
+            throw new TrustedLandlordServiceException($e->getMessage());
+        }
+        /** @var CheckMailingAddress $checkMailingAddressInDB */
+        $checkMailingAddressInDB = $this->getCheckMailingAddressRepository()->findOneBy(
+            ['index' => $address->getIndex()]
+        );
+
+        if (!empty($checkMailingAddressInDB) &&
+            $checkMailingAddressInDB->getId() !== $trustedLandlord->getCheckMailingAddress()->getId()
+        ) {
+            $this->logger->warning(
+                $message = sprintf(
+                    'Cant update TrustedLandlord#%s: CheckMailingAddress with index "%s" already exists.',
+                    $trustedLandlord->getId(),
+                    $address->getIndex()
+                )
+            );
+
+            throw new TrustedLandlordServiceException($message);
+        }
+
+        $checkMailingAddress = $trustedLandlord->getCheckMailingAddress();
+        $checkMailingAddress->setAddressee($trustedLandlordDTO->getAddressee());
+        $checkMailingAddress->setState($address->getState());
+        $checkMailingAddress->setCity($address->getCity());
+        $checkMailingAddress->setAddress1($address->getAddress1());
+
+        $address2 = $address->getUnitDesignator() . $address->getUnitName();
+
+        $checkMailingAddress->setAddress2($address2 ?: null);
+        $checkMailingAddress->setZip($address->getZip());
+        $checkMailingAddress->setIndex($address->getIndex());
+
+        $trustedLandlord->setCheckMailingAddress($checkMailingAddress);
+        $trustedLandlord->setFirstName($trustedLandlordDTO->getFirstName());
+        $trustedLandlord->setLastName($trustedLandlordDTO->getLastName());
+        $trustedLandlord->setCompanyName($trustedLandlordDTO->getCompanyName());
+        $trustedLandlord->setType($trustedLandlordDTO->getType());
+        $trustedLandlord->setPhone($trustedLandlordDTO->getPhone());
+        $this->updateStatus($trustedLandlord, $status);
+    }
+
+    /**
+     * @param TrustedLandlord $trustedLandlord
+     * @param string $status
+     * @throws TrustedLandlordServiceException
+     */
+    protected function updateStatus(TrustedLandlord $trustedLandlord, $status)
+    {
+        try {
+            $this->statusManager->updateStatus($trustedLandlord, $status);
+        } catch (TrustedLandlordStatusException $e) {
+            throw new TrustedLandlordServiceException($e->getMessage());
+        }
     }
 
     /**

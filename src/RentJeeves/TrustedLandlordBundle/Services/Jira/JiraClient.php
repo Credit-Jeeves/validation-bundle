@@ -71,6 +71,4 @@ class JiraClient
     {
         return $this->client->issue()->get($key);
     }
-
 }
-

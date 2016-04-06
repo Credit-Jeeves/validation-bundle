@@ -19,10 +19,11 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
+
     /**
      * @test
      */
-    public function shouldHandleInProgressStatus()
+    public function shouldHandleFailedStatusAndLogAlertAboutIt()
     {
         $trustedLandlord = new TrustedLandlord();
         $trustedLandlord->setStatus(TrustedLandlordStatus::NEWONE);
@@ -37,42 +38,50 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         );
 
         $logger->expects($this->once())
-            ->method('debug')
-            ->with('TrustedLandlord# got new status in progress');
+            ->method('alert');
+
+        $result = $trustedLandlordStatusManager->updateStatus($trustedLandlord, TrustedLandlordStatus::FAILED);
+        $this->assertTrue($result, 'Doesn\'t update status');
+        $this->assertEquals(
+            $trustedLandlord->getStatus(),
+            TrustedLandlordStatus::FAILED,
+            'We don\'t update status'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHandleInProgressStatusShouldLogAboutIt()
+    {
+        $trustedLandlord = new TrustedLandlord();
+        $trustedLandlord->setStatus(TrustedLandlordStatus::NEWONE);
+        $now = new \DateTime('+30 minutes');
+
+        $trustedLandlordStatusManager = new TrustedLandlordStatusManager(
+            $this->getEntityManagerMock(),
+            $logger = $this->getLoggerMock(),
+            $this->getMailerMock(),
+            $now->format('H:m'),
+            $now->format('H:m')
+        );
+
+        $logger->expects($this->once())
+            ->method('debug');
 
         $result = $trustedLandlordStatusManager->updateStatus($trustedLandlord, TrustedLandlordStatus::IN_PROGRESS);
         $this->assertTrue($result, 'Doesn\'t update status');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldHandleRfiStatus()
-    {
-        $trustedLandlord = new TrustedLandlord();
-        $trustedLandlord->setStatus(TrustedLandlordStatus::NEWONE);
-        $now = new \DateTime('+30 minutes');
-
-        $trustedLandlordStatusManager = new TrustedLandlordStatusManager(
-            $this->getEntityManagerMock(),
-            $logger = $this->getLoggerMock(),
-            $this->getMailerMock(),
-            $now->format('H:m'),
-            $now->format('H:m')
+        $this->assertEquals(
+            $trustedLandlord->getStatus(),
+            TrustedLandlordStatus::IN_PROGRESS,
+            'We don\'t update status'
         );
-
-        $logger->expects($this->once())
-            ->method('debug')
-            ->with('TrustedLandlord# got new status rfi');
-
-        $result = $trustedLandlordStatusManager->updateStatus($trustedLandlord, TrustedLandlordStatus::RFI);
-        $this->assertTrue($result, 'Doesn\'t update status');
     }
 
     /**
      * @test
      */
-    public function shouldHandleNewStatus()
+    public function shouldHandleNewStatusAndCreateJob()
     {
         $trustedLandlord = new TrustedLandlord();
         $now = new \DateTime('+30 minutes');
@@ -88,7 +97,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         $em->expects($this->once())
             ->method('persist')
             ->with($this->callback(
-                function($job) {
+                function ($job) {
                     return $job instanceof Job;
                 }
             ));
@@ -98,12 +107,13 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
 
         $result = $trustedLandlordStatusManager->updateStatus($trustedLandlord, TrustedLandlordStatus::NEWONE);
         $this->assertTrue($result, 'Doesn\'t update status');
+        $this->assertEquals($trustedLandlord->getStatus(), TrustedLandlordStatus::NEWONE, 'We don\'t update status');
     }
 
     /**
      * @test
      */
-    public function shouldBeFailedWhenWeDoNotProcessSuchStatus()
+    public function shouldReturnFalseWhenInvalidStatusPassed()
     {
         $trustedLandlord = new TrustedLandlord();
         $now = new \DateTime('+30 minutes');
@@ -129,7 +139,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
     public function shouldDoNotUpdateStatusIfStatusTheSame()
     {
         $trustedLandlord = new TrustedLandlord();
-        $trustedLandlord->setStatus(TrustedLandlordStatus::RFI);
+        $trustedLandlord->setStatus(TrustedLandlordStatus::WAITING_FOR_INFO);
         $now = new \DateTime('+30 minutes');
 
         $trustedLandlordStatusManager = new TrustedLandlordStatusManager(
@@ -143,13 +153,17 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         $logger->expects($this->once())
             ->method('debug');
 
-        $result = $trustedLandlordStatusManager->updateStatus($trustedLandlord, TrustedLandlordStatus::RFI);
+        $result = $trustedLandlordStatusManager->updateStatus(
+            $trustedLandlord,
+            TrustedLandlordStatus::WAITING_FOR_INFO
+        );
         $this->assertFalse($result, 'Successfully update status');
+        $this->assertEquals($trustedLandlord->getStatus(), TrustedLandlordStatus::WAITING_FOR_INFO, 'We update status');
     }
 
     /**
      * @test
-     * @expectedException LogicException
+     * @expectedException RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordStatusException
      */
     public function shouldBlockToChangeTrustedStatus()
     {
@@ -173,7 +187,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
 
     /**
      * @test
-     * @expectedException LogicException
+     * @expectedException RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordStatusException
      */
     public function shouldBlockToChangeDeniedStatus()
     {
@@ -198,7 +212,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldSetTrustedStatus()
+    public function shouldSetTrustedStatusAndCheckStartAtOfPayments()
     {
         $trustedLandlord = new TrustedLandlord();
         $trustedLandlord->setStatus(TrustedLandlordStatus::IN_PROGRESS);
@@ -231,7 +245,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
 
         $repository->expects($this->once())
             ->method('findAllFlaggedPaymentToUntrustedLandlord')
-            ->with($this->callback(function($group){
+            ->with($this->callback(function ($group) {
                 return $group instanceof Group;
             }))
             ->willReturn($arrayCollection);
@@ -246,10 +260,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         $mailer->expects($this->exactly(2))
             ->method('sendTrustedLandlordApproved')
             ->with(
-                $this->callback(function($trustedLandlord) {
-                    return $trustedLandlord instanceof TrustedLandlord;
-                }),
-                $this->callback(function($payment) {
+                $this->callback(function ($payment) {
                     return $payment instanceof Payment;
                 })
             );
@@ -267,12 +278,13 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
             $paymentDebit->getStartDate()->format('dmY'),
             'Start date of payment debit don\'t set to tomorrow'
         );
+        $this->assertEquals($trustedLandlord->getStatus(), TrustedLandlordStatus::TRUSTED, 'Status didn\'t update');
     }
 
     /**
      * @test
      */
-    public function shouldSetDeniedStatus()
+    public function shouldSetDeniedStatusAndCloseActivePayments()
     {
         $trustedLandlord = new TrustedLandlord();
         $trustedLandlord->setGroup(new Group());
@@ -295,8 +307,8 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         $repository = $this->getBaseMock('RentJeeves\DataBundle\Entity\PaymentRepository');
 
         $repository->expects($this->once())
-            ->method('findAllActivePaymentsForGroup')
-            ->with($this->callback(function($group){
+            ->method('findAllActiveAndFlaggedPaymentsForGroup')
+            ->with($this->callback(function ($group) {
                 return $group instanceof Group;
             }))
             ->willReturn($arrayCollection);
@@ -311,7 +323,7 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         $mailer->expects($this->once())
             ->method('sendTrustedLandlordDenied')
             ->with(
-                $this->callback(function($payment) {
+                $this->callback(function ($payment) {
                     return $payment instanceof Payment;
                 })
             );
@@ -329,6 +341,6 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
             'Reason: We were unable to verify your Property Manager',
             'Payment closeDetail doesn\'t update correctly'
         );
+        $this->assertEquals($trustedLandlord->getStatus(), TrustedLandlordStatus::DENIED, 'Status didn\'t update');
     }
 }
-

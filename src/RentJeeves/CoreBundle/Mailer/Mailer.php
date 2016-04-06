@@ -939,13 +939,13 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param TrustedLandlord $trustedLandlord
      * @param Payment $payment
      * @return bool
      */
-    public function sendTrustedLandlordApproved(TrustedLandlord $trustedLandlord, Payment $payment)
+    public function sendTrustedLandlordApproved(Payment $payment)
     {
         $tenant = $payment->getContract()->getTenant();
+        $trustedLandlord = $payment->getContract()->getGroup()->getTrustedLandlord();
         $params = [
             'tenantFirstName' => $tenant->getFirstName(),
             'trustedLandlordFullName' => $trustedLandlord->getFullName(),

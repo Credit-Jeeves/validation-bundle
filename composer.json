@@ -134,10 +134,6 @@
         },
         {
             "type": "vcs",
-            "url": "git@github.com:Credit-Jeeves/jira-client.git"
-        },
-        {
-            "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/environment.git"
         },
         {

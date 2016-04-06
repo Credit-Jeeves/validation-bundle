@@ -584,24 +584,4 @@ class PublicController extends Controller
 
         return $this->render('RjPublicBundle:Public:unsubscribeUser.html.twig', ['email' => $email]);
     }
-
-    /**
-     * @Route("/trusted-landlord/jira-webhook/{jiraKey}", name="handle_jira_webhook")
-     */
-    public function handleJiraWebhookAction(Request $request, $jiraKey)
-    {
-        $data = $request->request->all();
-
-        $result = $this->get('trusted.landlord.jira.service')->handleWebhookEvent($data);
-
-        if ($result) {
-            $httpCode = Response::HTTP_OK;
-            $content = 'Success';
-        } else {
-            $httpCode = Response::HTTP_BAD_REQUEST;
-            $content = 'Bad Request';
-        }
-
-        return new Response($content, $httpCode);
-    }
 }

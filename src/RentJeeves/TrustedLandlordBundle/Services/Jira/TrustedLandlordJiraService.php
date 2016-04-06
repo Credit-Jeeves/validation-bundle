@@ -11,10 +11,11 @@ use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
 use JiraClient\Exception\JiraException;
 use RentJeeves\TrustedLandlordBundle\Model\Jira\Fields;
 use RentJeeves\TrustedLandlordBundle\Model\Jira\TrustedLandlordIssue;
-use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordStatusManager;
+use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
+use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
 
 /**
- * trusted.landlord.jira.service
+ * trusted_landlord.jira.service
  */
 class TrustedLandlordJiraService
 {
@@ -34,24 +35,24 @@ class TrustedLandlordJiraService
     protected $logger;
 
     /**
-     * @var TrustedLandlordStatusManager
-     */
-    protected $statusManager;
-
-    /**
      * @var Serializer
      */
     protected $serializer;
 
     /**
-     * @param TrustedLandlordStatusManager $statusManager
+     * @var TrustedLandlordService
+     */
+    protected $trustedLandlordService;
+
+    /**
+     * @param TrustedLandlordService       $trustedLandlordService
      * @param JiraClient                   $client
      * @param EntityManager                $em
      * @param LoggerInterface              $logger
      * @param Serializer                   $serializer
      */
     public function __construct(
-        TrustedLandlordStatusManager $statusManager,
+        TrustedLandlordService $trustedLandlordService,
         JiraClient $client,
         EntityManager $em,
         LoggerInterface $logger,
@@ -59,8 +60,8 @@ class TrustedLandlordJiraService
     ) {
         $this->client = $client;
         $this->em = $em;
+        $this->trustedLandlordService = $trustedLandlordService;
         $this->logger = $logger;
-        $this->statusManager = $statusManager;
         $this->serializer = $serializer;
     }
 
@@ -75,7 +76,7 @@ class TrustedLandlordJiraService
             $issue = $this->client->createTrustedLandlordIssue($trustedLandlordRecord);
         } catch (JiraException $e) {
             $this->logger->alert(
-                $message = sprintf(
+                sprintf(
                     'We got exception when tried to create an issue for trustedLandlordRecord#%s. Exception: %s',
                     $trustedLandlordRecord->getId(),
                     $e->getMessage()
@@ -119,7 +120,7 @@ class TrustedLandlordJiraService
         $trustedLandlordIssue->getIssue();
 
         if (empty($trustedLandlordIssue->getTransition()) || empty($trustedLandlordIssue->getIssue())) {
-            $this->logger->debug(
+            $this->logger->alert(
                 sprintf('Required data missed. Wrong deserialize, source:%s', print_r($data, true))
             );
 
@@ -139,33 +140,35 @@ class TrustedLandlordJiraService
         }
 
         $trustedLandlord = $trustedLandlordJiraMapping->getTrustedLandlord();
-        $this->mapToTrustedLandlordNewValues($trustedLandlord, $trustedLandlordIssue->getIssue()->getFields());
 
-        return $this->statusManager->updateStatus(
+        $this->trustedLandlordService->update(
             $trustedLandlord,
-            strtolower($trustedLandlordIssue->getTransition()->getToStatus())
+            strtolower($trustedLandlordIssue->getTransition()->getToStatus()),
+            $this->mapToTrustedLandlordDTOValues($trustedLandlordIssue->getIssue()->getFields())
         );
+
+        return true;
     }
 
     /**
-     * @param TrustedLandlord $trustedLandlord
      * @param Fields $fields
+     * @return TrustedLandlordDTO
      */
-    public function mapToTrustedLandlordNewValues(TrustedLandlord $trustedLandlord, Fields $fields)
+    public function mapToTrustedLandlordDTOValues(Fields $fields)
     {
-        $trustedLandlord->setFirstName($fields->getFirstName());
-        $trustedLandlord->setLastName($fields->getLastName());
-        $trustedLandlord->setCompanyName($fields->getCompanyName());
-        $trustedLandlord->setType(strtolower($fields->getType()->getValue()));
-        $trustedLandlord->setPhone($fields->getPhone());
+        $trustedLandlordDTO = new TrustedLandlordDTO();
+        $trustedLandlordDTO->setFirstName($fields->getFirstName());
+        $trustedLandlordDTO->setLastName($fields->getLastName());
+        $trustedLandlordDTO->setCompanyName($fields->getCompanyName());
+        $trustedLandlordDTO->setType(strtolower($fields->getType()->getValue()));
+        $trustedLandlordDTO->setPhone($fields->getPhone());
+        $trustedLandlordDTO->setAddressee($fields->getAddressee());
+        $trustedLandlordDTO->setAddress1($fields->getAddress1());
+        $trustedLandlordDTO->setAddress2($fields->getAddress2());
+        $trustedLandlordDTO->setCity($fields->getCity());
+        $trustedLandlordDTO->setState($fields->getState());
+        $trustedLandlordDTO->setZip($fields->getZip());
 
-        $checkMailingAddress = $trustedLandlord->getCheckMailingAddress();
-        $checkMailingAddress->setAddressee($fields->getAddressee());
-        $checkMailingAddress->setAddress1($fields->getAddress1());
-        $checkMailingAddress->setAddress2($fields->getAddress2());
-        $checkMailingAddress->setCity($fields->getCity());
-        $checkMailingAddress->setState($fields->getState());
-        $checkMailingAddress->setZip($checkMailingAddress->getZip());
+        return $trustedLandlordDTO;
     }
 }
-
