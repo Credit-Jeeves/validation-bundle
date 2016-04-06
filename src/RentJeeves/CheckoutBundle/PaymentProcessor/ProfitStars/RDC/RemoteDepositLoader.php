@@ -9,7 +9,6 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStars
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
-use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSItemStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSRemoteDepositBatch;
@@ -186,11 +185,8 @@ class RemoteDepositLoader
      */
     protected function getExistingTransaction(WSRemoteDepositItem $depositItem)
     {
-        return $this->em->getRepository('RjDataBundle:Transaction')->findOneBy([
-            'transactionId' => $depositItem->getReferenceNumber(),
-            'batchId' => $depositItem->getBatchNumber(),
-            'status' => TransactionStatus::COMPLETE
-        ]);
+        return $this->em->getRepository('RjDataBundle:Transaction')
+            ->getTransactionByProfitStarsItemId($depositItem->getItemId());
     }
 
     /**
@@ -235,10 +231,12 @@ class RemoteDepositLoader
             }
         } else {
             $this->logger->info(sprintf(
-                'Transaction already exists for referenceNumber "%s", batchNumber "%s" -- skipping item',
-                $depositItem->getReferenceNumber(),
+                'Transaction already exists for itemId "%s", batch#%s -- trying to set reference# as transactionId',
+                $depositItem->getItemId(),
                 $depositItem->getBatchNumber()
             ));
+
+            $this->updateTransactionId($transaction, $depositItem);
         }
 
         return false;
@@ -298,5 +296,23 @@ class RemoteDepositLoader
     protected function incrementCountChecks($shouldIncrement)
     {
         $this->countChecks = true === $shouldIncrement ? $this->countChecks + 1 : $this->countChecks;
+    }
+
+    /**
+     * @param Transaction $transaction
+     * @param WSRemoteDepositItem $depositItem
+     */
+    protected function updateTransactionId(Transaction $transaction, WSRemoteDepositItem $depositItem)
+    {
+        if (false === empty($depositItem->getReferenceNumber()) && true === empty($transaction->getTransactionId())) {
+            $this->logger->info(sprintf(
+                'Setting referenceNumber "%s" as transactionId for Transaction #%d from Item id#%s',
+                $depositItem->getReferenceNumber(),
+                $transaction->getId(),
+                $depositItem->getItemId()
+            ));
+            $transaction->setTransactionId($depositItem->getReferenceNumber());
+            $this->em->flush();
+        }
     }
 }

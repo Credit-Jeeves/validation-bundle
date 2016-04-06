@@ -11,6 +11,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoad
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ScannedCheckTransformer;
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
@@ -51,9 +52,13 @@ class RemoteDepositLoaderCase extends UnitTestBase
                 ]
             )
             ->will($this->returnValue([$remoteBatch]));
+
         $depositItem = new WSRemoteDepositItem();
         $depositItem->setDeleted(true);
         $profitStarsBatch = new ProfitStarsBatch();
+        $profitStarsBatch->setHolding($holding);
+        $profitStarsBatch->setBatchNumber($batchNumber);
+        $profitStarsBatch->setCreatedAt($date);
 
         $rdcClientMock
             ->expects($this->once())
@@ -86,11 +91,10 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $emMock
             ->expects($this->once()) // once called when create ProfitStarsBatch
             ->method('persist')
-            ->withConsecutive($profitStarsBatch);
+            ->with($profitStarsBatch);
         $emMock
             ->expects($this->once())
-            ->method('flush')
-            ->withConsecutive($profitStarsBatch);
+            ->method('flush');
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -135,6 +139,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->will($this->returnValue([$remoteBatch]));
         $depositItem = new WSRemoteDepositItem();
         $depositItem
+            ->setItemId(123)
             ->setDeleted(false)
             ->setReferenceNumber('ref-test')
             ->setBatchNumber('b1');
@@ -156,32 +161,43 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $emMock = $this->getEntityManagerMock();
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('findOneBy')
-            ->withConsecutive(
-                [['batchNumber' => $batchNumber]],
-                [[
-                    'transactionId' => 'ref-test',
-                    'batchId' => 'b1',
-                    'status' => 'complete'
-                ]]
-            )
-            ->will($this->onConsecutiveCalls(null, $this->returnValue(new Transaction())));
+            ->with(['batchNumber' => $batchNumber])
+            ->will($this->returnValue(null));
+
+        $transaction = new Transaction();
+        $transaction->setTransactionId('ref-test');
+        $transactionRepositoryMock = $this->getBaseMock(TransactionRepository::class);
+        $transactionRepositoryMock
+            ->expects($this->once())
+            ->method('getTransactionByProfitStarsItemId')
+            ->with($this->equalTo(123))
+            ->will($this->returnValue($transaction));
 
         $emMock
             ->expects($this->exactly(2))
             ->method('getRepository')
             ->withConsecutive(['RjDataBundle:ProfitStarsBatch'], ['RjDataBundle:Transaction'])
-            ->will($this->returnValue($repositoryMock));
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue($repositoryMock),
+                    $this->returnValue($transactionRepositoryMock)
+                )
+            );
         $profitStarsBatch = new ProfitStarsBatch();
+        $profitStarsBatch->setHolding($holding);
+        $profitStarsBatch->setBatchNumber($batchNumber);
+        $profitStarsBatch->setCreatedAt($date);
+
         $emMock
-            ->expects($this->once()) // once called when create ProfitStarsBatch
+            ->expects($this->once())
             ->method('persist')
             ->with($profitStarsBatch);
         $emMock
             ->expects($this->once())
             ->method('flush')
-            ->withConsecutive($profitStarsBatch);
+            ->with($this->isNull());
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -198,7 +214,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldCreateOrderIfTransactionIsNew()
+    public function shouldCreateNewBatchWithOrdersIfItemIsNew()
     {
         $date = new \DateTime();
         $group = new Group();
@@ -226,12 +242,14 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->will($this->returnValue([$remoteBatch]));
         $depositItem1 = new WSRemoteDepositItem();
         $depositItem1
+            ->setItemId(123)
             ->setDeleted(false)
             ->setReferenceNumber('ref-test1')
             ->setBatchNumber('b1');
 
         $depositItem2 = new WSRemoteDepositItem();
         $depositItem2
+            ->setItemId(124)
             ->setDeleted(false)
             ->setReferenceNumber('ref-test2')
             ->setBatchNumber('b2');
@@ -259,21 +277,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $emMock = $this->getEntityManagerMock();
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(1))
             ->method('findOneBy')
-            ->withConsecutive(
-                [['batchNumber' => $batchNumber]],
-                [[
-                    'transactionId' => 'ref-test1',
-                    'batchId' => 'b1',
-                    'status' => 'complete'
-                ]],
-                [[
-                    'transactionId' => 'ref-test2',
-                    'batchId' => 'b2',
-                    'status' => 'complete'
-                ]]
-            )
+            ->with(['batchNumber' => $batchNumber])
             ->will($this->returnValue(null));
 
         $checkTransformerMock = $this->getBaseMock(ScannedCheckTransformer::class);

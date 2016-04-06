@@ -24,7 +24,11 @@ abstract class ProfitStarsTransaction
     /**
      * @var OrderEntity
      *
-     * @ORM\OneToOne(targetEntity="\CreditJeeves\DataBundle\Entity\Order", inversedBy="profitStarsTransaction")
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
+     *     inversedBy="profitStarsTransaction",
+     *     cascade={"persist"}
+     * )
      * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
      */
     protected $order;
@@ -32,9 +36,16 @@ abstract class ProfitStarsTransaction
     /**
      * @var string
      *
-     * @ORM\Column(name="transaction_number", type="string", nullable=false)
+     * @ORM\Column(name="transaction_number", type="string", nullable=true)
      */
     protected $transactionNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_id", type="string", nullable=false, unique=true)
+     */
+    protected $itemId;
 
     /**
      * @var \DateTime
@@ -98,5 +109,21 @@ abstract class ProfitStarsTransaction
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * @return string
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * @param string $itemId
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
     }
 }

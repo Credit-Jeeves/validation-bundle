@@ -327,4 +327,20 @@ class TransactionRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param string $itemId
+     * @return Transaction|null
+     */
+    public function getTransactionByProfitStarsItemId($itemId)
+    {
+        return $this
+            ->createQueryBuilder('t')
+            ->innerJoin('t.order', 'o')
+            ->innerJoin('o.profitStarsTransaction', 'pst')
+            ->where('pst.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

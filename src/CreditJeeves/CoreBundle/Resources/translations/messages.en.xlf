@@ -1644,6 +1644,10 @@
                 <source>landlord.scanning.process_scan.error</source>
                 <target>An error occurred while processing scanned checks.</target>
             </trans-unit>
+            <trans-unit id="landlord.scanning.open_scanner.error">
+                <source>landlord.scanning.open_scanner.error</source>
+                <target>Cutoff time for scanning checks is over for today.</target>
+            </trans-unit>
 
             <trans-unit id="error.accounting_system.integration.data.residentId.empty">
                 <source>error.accounting_system.integration.data.residentId.empty</source>

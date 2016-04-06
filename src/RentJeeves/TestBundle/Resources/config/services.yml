@@ -7,4 +7,5 @@ parameters:
     soap.client.yardi.resident_transactions.class: RentJeeves\TestBundle\Services\Yardi\Clients\ResidentTransactionsClient
     soap.client.amsi.leasing.class: 'RentJeeves\TestBundle\Services\AMSI\AMSILeasingClient'
     profit_stars.transaction_reporting.client.class: 'RentJeeves\TestBundle\ProfitStars\TransactionReportingClient'
+    profit_stars.remote_deposit_reporting.client.class: 'RentJeeves\TestBundle\ProfitStars\RemoteDepositReportingClient'
     profit_stars.client_builder.class: 'RentJeeves\TestBundle\ProfitStars\ClientBuilder'

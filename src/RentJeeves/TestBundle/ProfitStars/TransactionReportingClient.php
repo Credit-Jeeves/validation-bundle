@@ -13,7 +13,6 @@ use RentTrack\ProfitStarsClientBundle\TransactionReporting\Model\TransactionRepo
 
 class TransactionReportingClient extends Base
 {
-
     public function __construct()
     {
     }

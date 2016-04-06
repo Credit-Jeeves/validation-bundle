@@ -15,6 +15,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\ScannedCheckTrans
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
@@ -117,6 +118,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $totalAmount = 999.99;
         $itemDateTime = (new \DateTime())->format('Y-m-d');
         $depositItem
+            ->setItemId(125)
             ->setCustomerNumber('test')
             ->setBatchNumber('b1')
             ->setItemStatus(WSItemStatus::CREATED)
@@ -145,6 +147,12 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $transaction = $order->getCompleteTransaction(),
             'Transaction entity is expected'
         );
+        $this->assertInstanceOf(
+            ProfitStarsTransaction::class,
+            $profitStarsTransaction = $order->getProfitStarsTransaction(),
+            'ProfitStarsTransaction entity is expected'
+        );
+        $this->assertEquals(125, $profitStarsTransaction->getItemId(), 'ItemId should be set to 125');
         $this->assertEquals(OrderStatus::PENDING, $order->getStatus(), 'Order is expected to be PENDING');
         $this->assertEquals($totalAmount, $order->getSum(), sprintf('Order sum should be %s', $totalAmount));
         $this->assertEquals(
@@ -238,6 +246,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $totalAmount = 999.99;
         $itemDateTime = (new \DateTime())->format('Y-m-d');
         $depositItem
+            ->setItemId('123')
             ->setCustomerNumber('test')
             ->setBatchNumber('b1')
             ->setItemStatus(WSItemStatus::SENTTOTRANSACTIONPROCESSING)
@@ -266,6 +275,12 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $transaction = $order->getCompleteTransaction(),
             'Transaction entity is expected'
         );
+        $this->assertInstanceOf(
+            ProfitStarsTransaction::class,
+            $profitStarsTransaction = $order->getProfitStarsTransaction(),
+            'ProfitStarsTransaction entity is expected'
+        );
+        $this->assertEquals(123, $profitStarsTransaction->getItemId(), 'ItemId should be set to 123');
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus(), 'Order is expected to be COMPLETE');
         $this->assertEquals($totalAmount, $order->getSum(), sprintf('Order sum should be %s', $totalAmount));
         $this->assertEquals(
