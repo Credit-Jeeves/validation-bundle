@@ -272,7 +272,7 @@ class ProfitStarsReportSynchronizer
                 $this->statusManager->setCancelled($order);
                 break;
             case WSTransactionEvent::REFUNDED:
-                $this->statusManager->setReturned($order);
+                $this->statusManager->setRefunded($order);
                 break;
             default:
                 throw new \LogicException('Unexpected status ' . $report->getEventType());
