@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -34,6 +35,7 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
         $depositAccount->setHolding($holding);
         $depositAccount->setGroup($group);
         $depositAccount->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+        $depositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         $depositAccount->setMerchantName('test');
         $depositAccount->setMid(1);
         $this->getEntityManager()->persist($depositAccount);
@@ -41,6 +43,10 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
         $transaction = $this->getEntityManager()->find('RjDataBundle:Transaction', 1);
         $transaction->setTransactionId('7VC825CFBA2');
         $transaction->setDepositDate(null);
+        $profitStarsTransaction = new ProfitStarsTransaction();
+        $profitStarsTransaction->setOrder($transaction->getOrder());
+        $profitStarsTransaction->setTransactionNumber('');
+        $this->getEntityManager()->persist($profitStarsTransaction);
         // Fixtures for Declined event "report4"
         $orderForReversal = $this->getEntityManager()->find('DataBundle:Order', 3);
         $newProfitStarsTransaction = new ProfitStarsTransaction();
@@ -62,11 +68,11 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
         $transaction = $this->getEntityManager()->find('RjDataBundle:Transaction', 1);
 
         $this->assertNotNull($transaction->getDepositDate(), 'Deposit date is not updated.');
-        $this->assertNotNull(
-            $transaction->getOrder()->getProfitStarsTransaction(),
-            'Order should be related with ProfitStars transaction.'
+        $this->assertNotEquals(
+            '',
+            $transaction->getOrder()->getProfitStarsTransaction()->getTransactionNumber(),
+            'TransactionNumber for ProfitStarsTransaction is not updated.'
         );
-
         $allTransactionAfterSync = $this->getEntityManager()
             ->getRepository('RjDataBundle:Transaction')->findAll();
 

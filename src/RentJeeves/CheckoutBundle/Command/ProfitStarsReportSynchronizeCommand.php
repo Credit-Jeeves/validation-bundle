@@ -29,7 +29,7 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
         $startDate->setTime(0, 0, 0);
 
         $endDate = clone $startDate;
-        $endDate->setTime(23,59,59);
+        $endDate->setTime(23, 59, 59);
 
         foreach ($this->getHoldingRepository()->findAllHoldingsWithProfitStarsSetting() as $row) {
             $this->getReportSynchronizer()->sync($row['merchantName'], $row['merchantId'], $startDate, $endDate);
