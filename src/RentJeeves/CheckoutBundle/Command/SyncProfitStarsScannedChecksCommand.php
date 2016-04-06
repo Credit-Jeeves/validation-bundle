@@ -126,6 +126,6 @@ class SyncProfitStarsScannedChecksCommand extends BaseCommand
     {
         $profitStarsSettings = $group->getHolding()->getProfitStarsSettings();
 
-        return null !== $profitStarsSettings && null !== $profitStarsSettings->getMerchantId();
+        return null !== $profitStarsSettings && false === empty($profitStarsSettings->getMerchantId());
     }
 }

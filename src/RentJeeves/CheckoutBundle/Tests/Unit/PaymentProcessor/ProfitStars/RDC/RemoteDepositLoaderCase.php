@@ -37,6 +37,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
 
         $remoteBatch = new WSRemoteDepositBatch();
         $remoteBatch->setBatchNumber($batchNumber);
+        $remoteBatch->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
 
         $rdcClientMock = $this->getBaseMock(RDCClient::class);
         $rdcClientMock
@@ -46,19 +47,25 @@ class RemoteDepositLoaderCase extends UnitTestBase
                 $group,
                 $date,
                 [
+                    WSBatchStatus::OPEN,
                     WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
                     WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
                     WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
                 ]
             )
             ->will($this->returnValue([$remoteBatch]));
 
         $depositItem = new WSRemoteDepositItem();
         $depositItem->setDeleted(true);
-        $profitStarsBatch = new ProfitStarsBatch();
-        $profitStarsBatch->setHolding($holding);
-        $profitStarsBatch->setBatchNumber($batchNumber);
-        $profitStarsBatch->setCreatedAt($date);
+        $depositItem->setItemStatus(WSItemStatus::APPROVED);
 
         $rdcClientMock
             ->expects($this->once())
@@ -70,11 +77,23 @@ class RemoteDepositLoaderCase extends UnitTestBase
                     WSItemStatus::CREATED,
                     WSItemStatus::APPROVED,
                     WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
                 ]
             )
             ->will($this->returnValue([$depositItem]));
 
-        $repositoryMock  = $this->getEntityRepositoryMock();
+        $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock
             ->expects($this->once())
             ->method('findOneBy')
@@ -89,11 +108,11 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->will($this->returnValue($repositoryMock));
 
         $emMock
-            ->expects($this->once()) // once called when create ProfitStarsBatch
+            ->expects($this->once()) // when create new ProfitStarsBatch
             ->method('persist')
-            ->with($profitStarsBatch);
+            ->with($this->isInstanceOf(ProfitStarsBatch::class));
         $emMock
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('flush');
 
         $loader = new RemoteDepositLoader(
@@ -121,7 +140,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $group->setHolding($holding);
 
         $remoteBatch = new WSRemoteDepositBatch();
-        $remoteBatch->setBatchNumber($batchNumber);
+        $remoteBatch
+            ->setBatchNumber($batchNumber)
+            ->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
 
         $rdcClientMock = $this->getBaseMock(RDCClient::class);
         $rdcClientMock
@@ -131,9 +152,18 @@ class RemoteDepositLoaderCase extends UnitTestBase
                 $group,
                 $date,
                 [
+                    WSBatchStatus::OPEN,
                     WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
                     WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
                     WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
                 ]
             )
             ->will($this->returnValue([$remoteBatch]));
@@ -141,6 +171,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $depositItem
             ->setItemId(123)
             ->setDeleted(false)
+            ->setItemStatus(WSItemStatus::APPROVED)
             ->setReferenceNumber('ref-test')
             ->setBatchNumber('b1');
 
@@ -154,6 +185,18 @@ class RemoteDepositLoaderCase extends UnitTestBase
                     WSItemStatus::CREATED,
                     WSItemStatus::APPROVED,
                     WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
                 ]
             )
             ->will($this->returnValue([$depositItem]));
@@ -185,19 +228,14 @@ class RemoteDepositLoaderCase extends UnitTestBase
                     $this->returnValue($transactionRepositoryMock)
                 )
             );
-        $profitStarsBatch = new ProfitStarsBatch();
-        $profitStarsBatch->setHolding($holding);
-        $profitStarsBatch->setBatchNumber($batchNumber);
-        $profitStarsBatch->setCreatedAt($date);
 
         $emMock
             ->expects($this->once())
             ->method('persist')
-            ->with($profitStarsBatch);
+            ->with($this->isInstanceOf(ProfitStarsBatch::class));
         $emMock
-            ->expects($this->once())
-            ->method('flush')
-            ->with($this->isNull());
+            ->expects($this->exactly(2))
+            ->method('flush');
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -224,7 +262,9 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $group->setHolding($holding);
 
         $remoteBatch = new WSRemoteDepositBatch();
-        $remoteBatch->setBatchNumber($batchNumber);
+        $remoteBatch
+            ->setBatchNumber($batchNumber)
+            ->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
 
         $rdcClientMock = $this->getBaseMock(RDCClient::class);
         $rdcClientMock
@@ -234,9 +274,18 @@ class RemoteDepositLoaderCase extends UnitTestBase
                 $group,
                 $date,
                 [
+                    WSBatchStatus::OPEN,
                     WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
                     WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
                     WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
                 ]
             )
             ->will($this->returnValue([$remoteBatch]));
@@ -244,6 +293,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $depositItem1
             ->setItemId(123)
             ->setDeleted(false)
+            ->setItemStatus(WSItemStatus::APPROVED)
             ->setReferenceNumber('ref-test1')
             ->setBatchNumber('b1');
 
@@ -251,6 +301,7 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $depositItem2
             ->setItemId(124)
             ->setDeleted(false)
+            ->setItemStatus(WSItemStatus::SENTTOTRANSACTIONPROCESSING)
             ->setReferenceNumber('ref-test2')
             ->setBatchNumber('b2');
 
@@ -264,6 +315,18 @@ class RemoteDepositLoaderCase extends UnitTestBase
                     WSItemStatus::CREATED,
                     WSItemStatus::APPROVED,
                     WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
                 ]
             )
             ->will($this->returnValue([$depositItem1, $depositItem2]));
@@ -305,9 +368,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->withConsecutive($profitStarsBatch, $order1, $order2);
 
         $emMock
-            ->expects($this->exactly(3))
-            ->method('flush')
-            ->withConsecutive($profitStarsBatch, $order1, $order2);
+            ->expects($this->exactly(4))
+            ->method('flush');
 
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
@@ -319,5 +381,179 @@ class RemoteDepositLoaderCase extends UnitTestBase
         $result = $loader->loadScannedChecks($group, $date);
 
         $this->assertEquals(2, $result, 'Count of loaded checks should be 2');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotCreateNeitherBatchNorOrderWhenBatchStatusIsNotAllowed()
+    {
+        $date = new \DateTime();
+        $group = new Group();
+        $batchNumber = 111;
+
+        $holding = new Holding();
+        $group->setHolding($holding);
+
+        $remoteBatch = new WSRemoteDepositBatch();
+        $remoteBatch->setBatchNumber($batchNumber);
+        $remoteBatch->setBatchStatus(WSBatchStatus::ERROR);
+
+        $rdcClientMock = $this->getBaseMock(RDCClient::class);
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatches')
+            ->with(
+                $group,
+                $date,
+                [
+                    WSBatchStatus::OPEN,
+                    WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
+                    WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
+                    WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
+                ]
+            )
+            ->will($this->returnValue([$remoteBatch]));
+
+        $depositItem = new WSRemoteDepositItem();
+        $depositItem->setDeleted(true);
+        $depositItem->setItemStatus(WSItemStatus::APPROVED);
+
+        $rdcClientMock
+            ->expects($this->never())
+            ->method('getBatchItems');
+
+        $emMock = $this->getEntityManagerMock();
+
+        $emMock
+            ->expects($this->never())
+            ->method('persist');
+        $emMock
+            ->expects($this->never())
+            ->method('flush');
+
+        $loader = new RemoteDepositLoader(
+            $rdcClientMock,
+            $this->getBaseMock(ScannedCheckTransformer::class),
+            $emMock,
+            $this->getLoggerMock()
+        );
+
+        $result = $loader->loadScannedChecks($group, $date);
+
+        $this->assertEquals(0, $result, 'Count of loaded checks should be 0');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotCreateOrderWhenBatchStatusIsAllowedButItemStatusNotAllowed()
+    {
+        $date = new \DateTime();
+        $group = new Group();
+        $batchNumber = 111;
+
+        $holding = new Holding();
+        $group->setHolding($holding);
+
+        $remoteBatch = new WSRemoteDepositBatch();
+        $remoteBatch->setBatchNumber($batchNumber);
+        $remoteBatch->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
+
+        $rdcClientMock = $this->getBaseMock(RDCClient::class);
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatches')
+            ->with(
+                $group,
+                $date,
+                [
+                    WSBatchStatus::OPEN,
+                    WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
+                    WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
+                    WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
+                ]
+            )
+            ->will($this->returnValue([$remoteBatch]));
+
+        $depositItem = new WSRemoteDepositItem();
+        $depositItem->setDeleted(true);
+        $depositItem->setItemStatus(WSItemStatus::CHECKDECISIONINGERROR); // status not allowed
+
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatchItems')
+            ->with(
+                $group,
+                $batchNumber,
+                [
+                    WSItemStatus::CREATED,
+                    WSItemStatus::APPROVED,
+                    WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
+                ]
+            )
+            ->will($this->returnValue([$depositItem]));
+
+        $repositoryMock = $this->getEntityRepositoryMock();
+        $repositoryMock
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['batchNumber' => $batchNumber])
+            ->will($this->returnValue(null));
+
+        $emMock = $this->getEntityManagerMock();
+        $emMock
+            ->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:ProfitStarsBatch'))
+            ->will($this->returnValue($repositoryMock));
+
+        $emMock
+            ->expects($this->once()) // when create new ProfitStarsBatch
+            ->method('persist')
+            ->with($this->isInstanceOf(ProfitStarsBatch::class));
+
+        $emMock
+            ->expects($this->exactly(2)) // when creating and then updating ProfitStarsBatch
+            ->method('flush');
+
+        $loader = new RemoteDepositLoader(
+            $rdcClientMock,
+            $this->getBaseMock(ScannedCheckTransformer::class),
+            $emMock,
+            $this->getLoggerMock()
+        );
+
+        $result = $loader->loadScannedChecks($group, $date);
+
+        $this->assertEquals(0, $result, 'Count of loaded checks should be 0');
     }
 }

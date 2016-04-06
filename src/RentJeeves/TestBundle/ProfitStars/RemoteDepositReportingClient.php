@@ -3,7 +3,6 @@
 namespace RentJeeves\TestBundle\ProfitStars;
 
 use RentJeeves\TestBundle\ProfitStars\Mocks\RemoteDepositReportingClientMock;
-use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\ArrayOfInt;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\RemoteDepositReportingClient as Base;
 
 class RemoteDepositReportingClient extends Base

@@ -64,6 +64,7 @@ class RemoteDepositLoader
             $group->getId(),
             $date->format('m-d-Y')
         ));
+        $this->countChecks = 0;
         try {
             $batches = $this->getBatches($group, $date);
             $this->logger->info(sprintf(
@@ -79,8 +80,15 @@ class RemoteDepositLoader
                     $batchNumber,
                     $batch->getBatchStatus()
                 ));
-
-                $this->processBatch($batch, $group);
+                if ($this->isAllowedBatchStatus($batch)) {
+                    $this->processBatch($batch, $group);
+                } else {
+                    $this->logger->alert(sprintf(
+                        'Batch "%s" has alert state "%s". Skipping.',
+                        $batch->getBatchNumber(),
+                        $batch->getBatchStatus()
+                    ));
+                }
             }
         } catch (ProfitStarsException $e) {
             $this->logger->alert(sprintf(
@@ -131,14 +139,60 @@ class RemoteDepositLoader
 
         $batchItems = $this->getBatchItems($group, $batch->getBatchNumber());
         $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
-        foreach ($batchItems as $orderData) {
-            $isCreatedNewOrder = $this->createOrderIfItIsNew($orderData);
-            $this->incrementCountChecks($isCreatedNewOrder);
+        foreach ($batchItems as $batchItem) {
+            if ($this->isAllowedItemStatus($batchItem)) {
+                $isCreatedNewOrder = $this->createOrderIfItIsNew($batchItem);
+                $this->incrementCountChecks($isCreatedNewOrder);
+            } else {
+                $this->logger->alert(sprintf(
+                    'Item id#%s from Batch "%s" has alert state "%s". Skipping.',
+                    $batchItem->getItemId(),
+                    $batch->getBatchNumber(),
+                    $batchItem->getItemStatus()
+                ));
+            }
         }
 
         if ($this->isSentToTransactionProcessingBatch($batch)) {
             $this->closeProfitStarsBatch($profitStarsBatch);
         }
+    }
+
+    /**
+     * @param WSRemoteDepositBatch $batch
+     * @return bool
+     */
+    protected function isAllowedBatchStatus(WSRemoteDepositBatch $batch)
+    {
+        $allowedStatuses = [
+            WSBatchStatus::OPEN,
+            WSBatchStatus::CLOSED,
+            WSBatchStatus::READYFORPROCESSING,
+            WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+        ];
+        if (in_array($batch->getBatchStatus(), $allowedStatuses)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param WSRemoteDepositItem $item
+     * @return bool
+     */
+    protected function isAllowedItemStatus(WSRemoteDepositItem $item)
+    {
+        $allowedStatuses = [
+            WSItemStatus::CREATED,
+            WSItemStatus::APPROVED,
+            WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+        ];
+        if (in_array($item->getItemStatus(), $allowedStatuses)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -153,9 +207,18 @@ class RemoteDepositLoader
             $group,
             $date,
             [
+                WSBatchStatus::OPEN,
                 WSBatchStatus::CLOSED,
+                WSBatchStatus::ERROR,
                 WSBatchStatus::READYFORPROCESSING,
+                WSBatchStatus::REJECTED,
+                WSBatchStatus::DELETED,
                 WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                WSBatchStatus::TPERROR,
+                WSBatchStatus::NEEDSBALANCING,
+                WSBatchStatus::PARTIALLYPROCESSED,
+                WSBatchStatus::TPBATCHCREATIONFAILED,
+                WSBatchStatus::PARTIALDEPOSIT
             ]
         );
     }
@@ -175,6 +238,18 @@ class RemoteDepositLoader
                 WSItemStatus::CREATED,
                 WSItemStatus::APPROVED,
                 WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                WSItemStatus::CLOSED,
+                WSItemStatus::DELETED,
+                WSItemStatus::ERROR,
+                WSItemStatus::CHECKDECISIONINGERROR,
+                WSItemStatus::NEEDSATTENTION,
+                WSItemStatus::NEEDSRESCAN,
+                WSItemStatus::REJECTED,
+                WSItemStatus::RELEASED,
+                WSItemStatus::RESCANNED,
+                WSItemStatus::TPERROR,
+                WSItemStatus::RESOLVED,
+                WSItemStatus::NONE
             ]
         );
     }
@@ -277,7 +352,6 @@ class RemoteDepositLoader
     protected function closeProfitStarsBatch(ProfitStarsBatch $batch)
     {
         $batch->setStatus(ProfitStarsBatchStatus::CLOSED);
-        $this->em->persist($batch);
         $this->em->flush();
     }
 

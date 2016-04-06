@@ -155,7 +155,7 @@ class ScannedCheckTransformer
     {
         foreach ($group->getDepositAccounts() as $depositAccount) {
             if (PaymentProcessor::PROFIT_STARS === $depositAccount->getPaymentProcessor() &&
-                $locationId === $depositAccount->getMerchantName()
+                $locationId == $depositAccount->getMerchantName()
             ) {
                 return $depositAccount;
             }
