@@ -9,11 +9,15 @@ use RentJeeves\CoreBundle\ContractManagement\Model\ContractDTO;
 use RentJeeves\CoreBundle\Exception\ContractCreatorException;
 use RentJeeves\CoreBundle\Exception\ContractManagerException;
 use RentJeeves\CoreBundle\Exception\UserCreatorException;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\UserManagement\UserCreator;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator;
 
 class ContractManager
 {
@@ -38,21 +42,37 @@ class ContractManager
     protected $logger;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
+     * @var Mailer
+     */
+    protected $mailer;
+
+    /**
      * @param ContractCreator        $contractCreator
      * @param UserCreator            $userCreator
      * @param EntityManagerInterface $em
      * @param LoggerInterface        $logger
+     * @param Validator              $validator
+     * @param Mailer                 $mailer
      */
     public function __construct(
         ContractCreator $contractCreator,
         UserCreator $userCreator,
         EntityManagerInterface $em,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        Validator $validator,
+        Mailer $mailer
     ) {
         $this->contractCreator = $contractCreator;
         $this->userCreator = $userCreator;
         $this->em = $em;
         $this->logger = $logger;
+        $this->validator = $validator;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -105,6 +125,42 @@ class ContractManager
     }
 
     /**
+     * @param Contract $contract
+     * @param string   $newStatus
+     * @param null     $tenantEmail
+     *
+     * @throws \LogicException Contract has not Waiting status
+     */
+    public function moveContractOutOfWaiting(
+        Contract $contract,
+        $newStatus = ContractStatus::APPROVED,
+        $tenantEmail = null
+    ) {
+        $this->logger->debug(
+            sprintf('Try to move Contract#%d from waiting status to %s.', $contract->getId(), $newStatus)
+        );
+
+        if ($contract->getStatus() !== ContractStatus::WAITING) {
+            throw new \LogicException(
+                sprintf('Cant use function %s for contract with status %s', __FUNCTION__, $contract->getStatus())
+            );
+        }
+
+        $contract->setStatus($newStatus);
+
+        if (false === empty($tenantEmail) && $this->isValidEmail($tenantEmail)) {
+            $tenant = $contract->getTenant();
+            $tenant->setEmailField($tenantEmail);
+            $tenant->setUsernameCanonical(strtolower($tenantEmail));
+            $tenant->setEmailNotification(true);
+
+            $this->sendInviteToTenant($tenant, $contract);
+        }
+
+        $this->em->flush();
+    }
+
+    /**
      * @param Holding $holding
      * @param Tenant  $tenant
      * @param string  $residentId
@@ -118,5 +174,45 @@ class ContractManager
 
         $this->em->persist($residentMapping);
         $this->em->flush();
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return bool
+     */
+    protected function isValidEmail($email)
+    {
+        $emailConstraint = new Assert\Email();
+        $errorList = $this->validator->validate($email, $emailConstraint);
+        if (0 !== count($errorList)) {
+            $this->logger->warning('"%s" is not valid email.', $email);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Tenant   $tenant
+     * @param Contract $contract
+     */
+    protected function sendInviteToTenant(Tenant $tenant, Contract $contract)
+    {
+        $landlord = $contract->getHolding()->getLandlords()->first();
+
+        if (true === empty($landlord)) {
+            $this->logger->warning(
+                sprintf(
+                    'We can`t find landlord for Group#%d. Skip send email.',
+                    $contract->getGroup()->getId()
+                )
+            );
+
+            return;
+        }
+
+        $this->mailer->sendRjTenantInvite($tenant, $landlord, $contract);
     }
 }
