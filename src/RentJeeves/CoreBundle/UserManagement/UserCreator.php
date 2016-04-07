@@ -4,12 +4,12 @@ namespace RentJeeves\CoreBundle\UserManagement;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use RentJeeves\CoreBundle\Exception\UserCreationManagerException;
+use RentJeeves\CoreBundle\Exception\UserCreatorException;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
 
-class UserCreationManager
+class UserCreator
 {
     /**
      * @var EntityManagerInterface
@@ -39,6 +39,48 @@ class UserCreationManager
     }
 
     /**
+     * @param string      $firstName
+     * @param string      $lastName
+     * @param string|null $email
+     *
+     * @return Tenant
+     */
+    public function createTenant($firstName, $lastName, $email = null)
+    {
+        $this->logger->debug(
+            'Try to create new Tenant.',
+            ['firstName' => $firstName, 'lastName' => $lastName, 'email' => $email]
+        );
+
+        if (null === $email) {
+            $tenant = $this->createTenantWithoutEmail($firstName, $lastName);
+        } else {
+            $tenant = $this->createTenantWithEmail($firstName, $lastName, $email);
+        }
+
+        $this->logger->debug(
+            'Try to create new Tenant.',
+            ['firstName' => $firstName, 'lastName' => $lastName, 'email' => $email]
+        );
+
+        return $tenant;
+    }
+
+    /**
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $email
+     *
+     * @throw \InvalidArgumentException ?
+     *
+     * @return Tenant
+     */
+    protected function createTenantWithEmail($firstName, $lastName, $email)
+    {
+        // PLS implement me
+    }
+
+    /**
      * @param string $firstName
      * @param string $lastName
      *
@@ -46,7 +88,7 @@ class UserCreationManager
      *
      * @return Tenant
      */
-    public function createTenantWithoutEmail($firstName, $lastName)
+    protected function createTenantWithoutEmail($firstName, $lastName)
     {
         if (true === empty($firstName) || true === empty($lastName)) {
             throw new \InvalidArgumentException('Fields "firstName" and "lastName" are required.');
@@ -101,7 +143,7 @@ class UserCreationManager
     /**
      * @param $user
      *
-     * @throws UserCreationManagerException
+     * @throws UserCreatorException
      */
     protected function validate(User $user)
     {
@@ -126,7 +168,7 @@ class UserCreationManager
                     implode(', ', $errors)
                 )
             );
-            throw new UserCreationManagerException($message);
+            throw new UserCreatorException($message);
         }
     }
 
