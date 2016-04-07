@@ -22,6 +22,7 @@ $BASE_DIR/web/_intellij_phpdebug_validator.php,\
 $BASE_DIR/bin/doctrine.php,\
 $BASE_DIR/web/,\
 $BASE_DIR/app/,\
-$BASE_DIR/src/RentJeeves/ExternalApiBundle/Services/Yardi/Soap"
+$BASE_DIR/src/RentJeeves/ExternalApiBundle/Services/Yardi/Soap,\
+$BASE_DIR/src/RentJeeves/TestBundle/ProfitStars"
 
 $CS_PATH -d memory_limit=1024M --standard=$BASE_DIR/vendor/credit-jeeves/core-bundle/CreditJeeves/CoreBundle/CS -p --ignore=$IGNOR_DIRS $1

@@ -369,3 +369,13 @@ services:
             - @payment_processor.profit_stars.rdc.report_loader
             - @payment_processor.profit_stars.rdc.contract_registry
             - @payment_processor.profit_stars.rdc.remote_deposit_loader
+
+    payment_processor.profit_stars.report_synchronizer:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\ProfitStarsReportSynchronizer
+        arguments:
+            - '@profit_stars.transaction_reporting.client'
+            - '@payment_processor.order_status_manager'
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.profit_stars'
+            - '%profit_stars.store_id%'
+            - '%profit_stars.store_key%'
