@@ -80,7 +80,7 @@ class Job extends Base
             $args[] = '--app=rj';
         }
 
-        parent::__construct($command, $args, $confirmed);
+        parent::__construct($command, $args, $confirmed, $queue, $priority);
     }
 
     public function setRelatedEntities(ArrayCollection $relatedEntities)

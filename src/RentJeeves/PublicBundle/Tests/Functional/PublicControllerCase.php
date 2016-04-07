@@ -3,12 +3,6 @@ namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\CoreBundle\HttpClient\HttpClient;
-use RentJeeves\DataBundle\Entity\CheckMailingAddress;
-use RentJeeves\DataBundle\Entity\TrustedLandlord;
-use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
-use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
-use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PublicControllerCase extends BaseTestCase

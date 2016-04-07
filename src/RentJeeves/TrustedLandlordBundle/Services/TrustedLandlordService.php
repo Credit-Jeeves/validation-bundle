@@ -181,7 +181,6 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $checkMailingAddress->setZip($address->getZip());
         $checkMailingAddress->setIndex($address->getIndex());
 
-        $trustedLandlord->setCheckMailingAddress($checkMailingAddress);
         $trustedLandlord->setFirstName($trustedLandlordDTO->getFirstName());
         $trustedLandlord->setLastName($trustedLandlordDTO->getLastName());
         $trustedLandlord->setCompanyName($trustedLandlordDTO->getCompanyName());

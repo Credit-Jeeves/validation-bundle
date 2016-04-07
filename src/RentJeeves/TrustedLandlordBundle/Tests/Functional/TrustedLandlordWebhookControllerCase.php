@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\PublicBundle\Tests\Functional;
+namespace RentJeeves\TrustedLandlordBundle\Tests\Functional;
 
 use RentJeeves\CoreBundle\HttpClient\HttpClient;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\TrustedLandlordJiraMapping;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
-class TrustedLandlordWebhookControllerCaseCase extends BaseTestCase
+class TrustedLandlordWebhookControllerCase extends BaseTestCase
 {
     /**
      * @test
@@ -29,7 +29,7 @@ class TrustedLandlordWebhookControllerCaseCase extends BaseTestCase
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldSuccessPostWebhookWhenWeHaveJiraMapping()
     {
@@ -60,7 +60,6 @@ class TrustedLandlordWebhookControllerCaseCase extends BaseTestCase
             $landlord->getStatus(),
             'Wrong status set for landlord'
         );
-
     }
 
     /**

@@ -43,21 +43,21 @@ class JiraCreateIssueCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $trustedLandlordJira = $em->getRepository('RjDataBundle:TrustedLandlord')->find(
+        $trustedLandlord = $em->getRepository('RjDataBundle:TrustedLandlord')->find(
             $input->getOption('trusted-landlord-id')
         );
 
-        if (empty($trustedLandlordJira)) {
+        if (empty($trustedLandlord)) {
             throw new \LogicException(
                 sprintf('Option trusted-landlord-id#%s for command is wrong', $input->getOption('trusted-landlord-id'))
             );
         }
         /** @var TrustedLandlordJiraService $trustedLandlordJiraService */
         $trustedLandlordJiraService = $this->getContainer()->get('trusted_landlord.jira.service');
-        $jiraMapping = $trustedLandlordJiraService->addToQueue($trustedLandlordJira);
+        $jiraMapping = $trustedLandlordJiraService->addToQueue($trustedLandlord);
         if (empty($jiraMapping)) {
             $this->getContainer()->get('trusted_landlord_service')->update(
-                $trustedLandlordJira,
+                $trustedLandlord,
                 TrustedLandlordStatus::FAILED
             );
             return 1;

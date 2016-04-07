@@ -181,7 +181,7 @@ class TrustedLandlordStatusManager
              */
             if ($today > $currentStartDate) {
                 $tomorrow = new \DateTime('+1 day');
-                $tomorrow->setTime('06', '00', '00');
+                $tomorrow->setTime(0, 0, 0);
                 $payment->setStartDate($tomorrow);
             }
 

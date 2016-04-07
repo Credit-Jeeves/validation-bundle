@@ -19,7 +19,6 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
 
-
     /**
      * @test
      */

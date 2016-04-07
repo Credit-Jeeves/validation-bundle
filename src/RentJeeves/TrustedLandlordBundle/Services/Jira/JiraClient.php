@@ -35,6 +35,7 @@ class JiraClient
     {
         $this->client = new Client($host, $user, $password);
         $this->projectKey = $projectKey;
+        $this->logger = $logger;
     }
 
     /**
@@ -43,6 +44,7 @@ class JiraClient
      */
     public function createTrustedLandlordIssue(TrustedLandlord $trustedLandlord)
     {
+        $this->logger->debug('Call createTrustedLandlordIssue for TrustedLandlord#' . $trustedLandlord->getId());
         $newIssue = $this->client->issue()
             ->create($this->projectKey, 'Task')
             ->field(Field::SUMMARY, $trustedLandlord->getFullName() . ' Verification')

@@ -19,7 +19,7 @@ class TrustedLandlordWebhookController extends BaseController
         $result = $this->get('trusted_landlord.jira.service')->handleWebhookEvent($data);
 
         if ($result) {
-            $httpCode = Response::HTTP_OK;
+            $httpCode = Response::HTTP_NO_CONTENT;
         } else {
             $httpCode = Response::HTTP_BAD_REQUEST;
         }
