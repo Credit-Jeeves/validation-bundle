@@ -46,12 +46,14 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
         $profitStarsTransaction = new ProfitStarsTransaction();
         $profitStarsTransaction->setOrder($transaction->getOrder());
         $profitStarsTransaction->setTransactionNumber('');
+        $profitStarsTransaction->setItemId(100);
         $this->getEntityManager()->persist($profitStarsTransaction);
         // Fixtures for Declined event "report4"
         $orderForReversal = $this->getEntityManager()->find('DataBundle:Order', 3);
         $newProfitStarsTransaction = new ProfitStarsTransaction();
         $newProfitStarsTransaction->setOrder($orderForReversal);
         $newProfitStarsTransaction->setTransactionNumber('{37e9b6b9-4058-4ac6-aa76-51f9bb67badc}');
+        $newProfitStarsTransaction->setItemId(111);
         $this->getEntityManager()->persist($newProfitStarsTransaction);
 
         $this->getEntityManager()->flush();
