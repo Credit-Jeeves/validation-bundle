@@ -3,9 +3,9 @@
 namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
@@ -23,24 +23,17 @@ class TestEmailController extends BaseController
     {
         $enTranslation = $emailTemplate->getEnTranslation();
         $parameters = json_decode($enTranslation->getTestVariables(), true);
-        $recipientUser = $this->getEntityManager()
-            ->getRepository('DataBundle:User')
-            ->findOneBy(['email' => $enTranslation->getTestEmailTo()]);
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->getSession()->getFlashBag()->add(
                 'sonata_flash_error',
                 $this->getTranslator()->trans('admin.email.actions.send_test.wrong_json')
             );
-        } elseif (null === $recipientUser) {
-            $this->getSession()->getFlashBag()->add(
-                'sonata_flash_error',
-                $this->getTranslator()->trans('admin.email.actions.send_test.user_not_found')
-            );
         } else {
+            $user = new Tenant();
             $result = $this->getMailer()->sendBaseLetter(
                 current(explode('.', $emailTemplate->getName())),
                 $parameters ?: [],
-                $recipientUser,
+                $user,
                 self::TEST_CULTURE
             );
             if ($result === true) {

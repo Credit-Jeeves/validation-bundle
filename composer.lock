@@ -780,12 +780,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "da629381a25ebf50093bef1df286e8cf7910230b"
+                "reference": "50e464dd4563a4ab1dbe3c04d8fbc69f31636d6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/CoreBundle/zipball/a52f51db4bdfc7536bf461b1302162c6c076c7a3",
-                "reference": "da629381a25ebf50093bef1df286e8cf7910230b",
+                "url": "https://api.github.com/repos/Credit-Jeeves/CoreBundle/zipball/50e464dd4563a4ab1dbe3c04d8fbc69f31636d6a",
+                "reference": "50e464dd4563a4ab1dbe3c04d8fbc69f31636d6a",
                 "shasum": ""
             },
             "require": {
@@ -817,7 +817,7 @@
                 "source": "https://github.com/Credit-Jeeves/CoreBundle/tree/master",
                 "issues": "https://github.com/Credit-Jeeves/CoreBundle/issues"
             },
-            "time": "2016-03-16 16:24:55"
+            "time": "2016-04-07 13:27:38"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -2845,7 +2845,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/cg-library/zipball/0af1113c7409b8636c5244bbae10b2e0ff792e9c",
+                "url": "https://api.github.com/repos/schmittjoh/cg-library/zipball/2152ea2c48f746a676debb841644ae64cae27835",
                 "reference": "0af1113c7409b8636c5244bbae10b2e0ff792e9c",
                 "shasum": ""
             },

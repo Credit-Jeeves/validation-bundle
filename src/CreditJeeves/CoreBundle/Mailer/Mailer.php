@@ -8,8 +8,6 @@ use FOS\UserBundle\Model\UserInterface;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 class Mailer extends BaseMailer implements MailerInterface
 {
