@@ -152,7 +152,7 @@
                             {% elseif contract.status == 'approved' %}
                                 {{ 'contract.status.approved.text' | trans }}
                             {% elseif contract.status == 'current' %}
-                                Setup your first payment!
+                                Set up a payment!
                             {% elseif contract.status == 'finished' %}
                                 {{ 'contract.status.finished.text' | trans }}
                             {% else %}
@@ -207,7 +207,7 @@
 
                     <br>
 
-                    <div style="color: #996600; border-radius: 3px; background: #fcf8e3; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
+                    <div id="contractStatus{{ contract.id }}" style="color: #996600; border-radius: 3px; background: #fcf8e3; padding: 10px; text-shadow: none; font-size: 10pt; font-family: PT Sans Caption;">
                         {% if contract.status == 'pending' %}
                             {{ 'contract.status.pending.text' | trans }}
                         {% elseif contract.payment_status == 'processing' %}
