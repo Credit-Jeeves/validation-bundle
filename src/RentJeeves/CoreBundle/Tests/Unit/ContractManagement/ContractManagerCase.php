@@ -216,5 +216,6 @@ class ContractManagerCase extends UnitTestBase
         $this->assertEquals(ContractStatus::CURRENT, $contract->getStatus(), 'Not correct status after move.');
         $this->assertNotNull($contract->getTenant()->getEmail(), 'Email is not updated.');
         $this->assertTrue($contract->getTenant()->getEmailNotification(), 'EmailNotification is not updated.');
+        $this->assertTrue($contract->getTenant()->getOfferNotification(), 'OfferNotification is not updated.');
     }
 }

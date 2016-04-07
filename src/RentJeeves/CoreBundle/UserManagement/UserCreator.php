@@ -103,6 +103,7 @@ class UserCreator
         $newTenant->setUsernameCanonical($userName);
         $newTenant->setPassword($this->generatePassword());
         $newTenant->setEmailNotification(false);
+        $newTenant->setOfferNotification(false);
 
         $this->validate($newTenant);
 

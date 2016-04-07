@@ -151,8 +151,9 @@ class ContractManager
         if (false === empty($tenantEmail) && $this->isValidEmail($tenantEmail)) {
             $tenant = $contract->getTenant();
             $tenant->setEmailField($tenantEmail);
-            $tenant->setUsernameCanonical(strtolower($tenantEmail));
+            $tenant->setEmailCanonical(strtolower($tenantEmail));
             $tenant->setEmailNotification(true);
+            $tenant->setOfferNotification(true);
 
             $this->sendInviteToTenant($tenant, $contract);
         }
