@@ -11,12 +11,14 @@ class MailerCase extends BaseTestCase
      */
     public function shouldUseReplyToEmailIfNoReplyFalse()
     {
+        $this->load(true);
+
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
         $this
             ->getContainer()
             ->get('project.mailer')
-            ->sendBaseLetter('invite', [] ,'tenant11@example.com', 'en', null, false);
+            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en', null, false);
 
         $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
 
@@ -32,12 +34,14 @@ class MailerCase extends BaseTestCase
      */
     public function shouldNotUseReplyToEmailIfNoReplyTrue()
     {
+        $this->load(true);
+
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
         $this
             ->getContainer()
             ->get('project.mailer')
-            ->sendBaseLetter('invite', [] ,'tenant11@example.com', 'en');
+            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en');
 
         $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
 

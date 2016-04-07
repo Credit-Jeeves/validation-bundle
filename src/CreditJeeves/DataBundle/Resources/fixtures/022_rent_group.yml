@@ -4,6 +4,7 @@ fixtures:
     name:           Test Rent Group
     statementDescriptor: Test Rent
     holding:        rjHolding_1
+    trustedLandlord: TrustedLandlord2
     type:           rent
     code:           DXC6KXOAGX
     mailingAddressName: Vasiliy Pups
@@ -13,7 +14,6 @@ fixtures:
     state: NY
     zip: 11216
     externalGroupId: GROUP_ID_EXT_1
-    trustedLandlord: TrustedLandlord2
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_2:
