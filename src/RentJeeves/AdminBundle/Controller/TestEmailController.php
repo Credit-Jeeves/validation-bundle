@@ -30,11 +30,11 @@ class TestEmailController extends BaseController
             );
         } else {
             $user = new Tenant();
+            $user->setEmailField($enTranslation->getTestEmailTo());
             $result = $this->getMailer()->sendBaseLetter(
                 current(explode('.', $emailTemplate->getName())),
                 $parameters ?: [],
-                $user,
-                self::TEST_CULTURE
+                $user
             );
             if ($result === true) {
                 $this->getSession()->getFlashBag()->add(

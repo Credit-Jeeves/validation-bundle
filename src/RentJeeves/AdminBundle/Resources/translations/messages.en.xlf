@@ -158,10 +158,6 @@
                 <source>admin.email.actions.send_test.failure</source>
                 <target>The letter has not been sent. Please check all variables and resend</target>
             </trans-unit>
-            <trans-unit id="admin.email.actions.send_test.user_not_found">
-                <source>admin.email.actions.send_test.user_not_found</source>
-                <target>The letter has not been sent. User to send email to not found.</target>
-            </trans-unit>
             <trans-unit id="admin.email.actions.send_test.wrong_json">
                 <source>admin.email.actions.send_test.wrong_json</source>
                 <target>Test variables : JSON is not valid</target>
