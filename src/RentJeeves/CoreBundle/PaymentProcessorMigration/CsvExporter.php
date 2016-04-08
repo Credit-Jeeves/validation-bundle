@@ -62,20 +62,17 @@ class CsvExporter
      * @param string     $pathToDir
      * @param string     $filePrefix
      * @param int        $profilesLimit
-     * @param array|null $holdings
+     * @param array|null $holdingIds
      */
-    public function export($pathToDir, $filePrefix, $profilesLimit, array $holdings = null)
+    public function export($pathToDir, $filePrefix, $profilesLimit, array $holdingIds)
     {
-        if ($holdings === null) {
-            $aciProfiles = $this->getAciProfileMapRepository()->findAll();
-        } else {
-            $aciProfiles = $this->getAciProfileMapRepository()->findAllByHoldingIds($this->getHoldingIds($holdings));
-        }
+        $aciProfiles = $this->getAciProfileMapRepository()->findAllByHoldingIds($holdingIds);
+
         if (true === empty($aciProfiles)) {
             return;
         }
 
-        $batches = $this->createBatchesWithValidModels($aciProfiles, $profilesLimit, $holdings);
+        $batches = $this->createBatchesWithValidModels($aciProfiles, $profilesLimit, $holdingIds);
         foreach ($batches as $key => $batch) {
             $batchData = $this->serializeModelsToCsv($batch);
             $filePath = sprintf('%s/%s%s.csv', $pathToDir, $filePrefix, $key);
@@ -91,7 +88,7 @@ class CsvExporter
      *
      * @return array
      */
-    protected function createBatchesWithValidModels(array $aciProfiles, $batchSize, array $holdings = null)
+    protected function createBatchesWithValidModels(array $aciProfiles, $batchSize, array $holdingIds)
     {
         $batches = [];
         $batchIndex = 0;
@@ -100,7 +97,7 @@ class CsvExporter
             if (false === isset($batches[$batchIndex])) {
                 $batches[$batchIndex] = [];
             }
-            $aciProfileModels = $this->mapper->map($aciProfile, $holdings);
+            $aciProfileModels = $this->mapper->map($aciProfile, $holdingIds);
             $aciProfileValidModels = $this->getValidModels($aciProfileModels);
             if (false === empty($aciProfileValidModels)) {
                 $batches[$batchIndex] = array_merge($batches[$batchIndex], $aciProfileValidModels);
@@ -179,22 +176,6 @@ class CsvExporter
         $context->setAttribute('use_header', false);
 
         return $this->serializer->serialize($models, 'csv_pipe', $context);
-    }
-
-    /**
-     * @param array $holdings
-     *
-     * @return array
-     */
-    protected function getHoldingIds(array $holdings)
-    {
-        $ids = [];
-        /** @var Holding $holding */
-        foreach ($holdings as $holding) {
-            $ids[] = $holding->getId();
-        }
-
-        return $ids;
     }
 
     /**
