@@ -64,8 +64,11 @@ class PaymentToTrustedLandlordDTRCase extends UnitTestBase
     {
         return [
             [TrustedLandlordStatus::NEWONE],
-            [TrustedLandlordStatus::RFI],
-            [TrustedLandlordStatus::DENIED],
+            [TrustedLandlordStatus::INITIATED],
+            [TrustedLandlordStatus::FAILED],
+            [TrustedLandlordStatus::IN_PROGRESS],
+            [TrustedLandlordStatus::IN_PROGRESS],
+            [TrustedLandlordStatus::WAITING_FOR_INFO],
         ];
     }
 
