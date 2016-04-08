@@ -2,11 +2,11 @@
 
 namespace RentJeeves\CheckoutBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use RentJeeves\CoreBundle\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PaymentReportSynchronizeAciCollectV4Command extends ContainerAwareCommand
+class PaymentReportSynchronizeAciCollectV4Command extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -23,10 +23,16 @@ class PaymentReportSynchronizeAciCollectV4Command extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $paymentProcessor = $this->getAciPaymentProcessor();
-        $report = $paymentProcessor->loadReport();
-        $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, true);
-        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        try {
+            $paymentProcessor = $this->getAciPaymentProcessor();
+            $report = $paymentProcessor->loadReport();
+            $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, true);
+            $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        } catch (\Exception $e) {
+            $this->getLogger()->emergency(
+                sprintf('PaymentReportSynchronizeAciCollectV4Command finished with error : %s', $e->getMessage())
+            );
+        }
     }
 
     /**

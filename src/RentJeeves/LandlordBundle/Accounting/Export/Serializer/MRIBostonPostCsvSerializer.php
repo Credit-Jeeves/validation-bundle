@@ -34,6 +34,8 @@ class MRIBostonPostCsvSerializer implements ExportSerializerInterface
         $context->setSerializeNull(true);
         $context->setGroups('mri_bostonpost');
         $context->setAttribute('use_header', true);
+        $context->setAttribute('eol', "\r");
+
         $mappedData = [];
         /** @var Order $order */
         foreach ($data as $order) {

@@ -58,7 +58,9 @@ class MRIBostonPostExport
      */
     public function getSum()
     {
-        return $this->order->getSum();
+        $sum = $this->order->getSum();
+
+        return number_format($sum, '2', '.', '');
     }
 
     /**
@@ -124,7 +126,9 @@ class MRIBostonPostExport
      */
     public function getCheckAmount()
     {
-        return $this->order->getSum();
+        $sum = $this->order->getSum();
+
+        return number_format($sum, '2', '', '');
     }
 
     /**

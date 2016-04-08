@@ -3,11 +3,11 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorAciPayAnyone;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use RentJeeves\CoreBundle\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PaymentReportSynchronizeAciPayAnyoneCommand extends ContainerAwareCommand
+class PaymentReportSynchronizeAciPayAnyoneCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -24,10 +24,16 @@ class PaymentReportSynchronizeAciPayAnyoneCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $paymentProcessor = $this->getAciPayAnyonePaymentProcessor();
-        $report = $paymentProcessor->loadReport();
-        $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, false);
-        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        try {
+            $paymentProcessor = $this->getAciPayAnyonePaymentProcessor();
+            $report = $paymentProcessor->loadReport();
+            $result = $this->getReportSynchronizer()->synchronize($report, $paymentProcessor, false);
+            $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
+        } catch (\Exception $e) {
+            $this->getLogger()->emergency(
+                sprintf('PaymentReportSynchronizeAciPayAnyoneCommand finished with error : %s', $e->getMessage())
+            );
+        }
     }
 
     /**

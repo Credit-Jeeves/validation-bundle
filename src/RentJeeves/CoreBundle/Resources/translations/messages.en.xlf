@@ -2814,7 +2814,7 @@
             </trans-unit>
             <trans-unit id="email.rent_amount">
                 <source>email.rent_amount</source>
-                <target>Rent Amount</target>
+                <target>Amount</target>
             </trans-unit>
             <trans-unit id="email.other_amount">
                 <source>email.other_amount</source>

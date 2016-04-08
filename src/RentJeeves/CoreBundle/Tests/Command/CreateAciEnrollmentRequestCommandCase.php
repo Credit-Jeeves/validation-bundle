@@ -49,7 +49,9 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
     {
         $this->executeCommandTester(
             new CreateAciEnrollmentRequestCommand(),
-            []
+            [
+                'holding_ids' => [ 5 ]
+            ]
         );
     }
 
@@ -64,6 +66,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             new CreateAciEnrollmentRequestCommand(),
             [
                 '--prefix' => 'test',
+                'holding_ids' => [ 5 ]
             ]
         );
     }
@@ -80,7 +83,7 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             [
                 '--path' => $this->getDirPath(),
                 '--prefix' => 'test',
-                '--holding_id' => 123456,
+                'holding_ids' => [ 123456 ],
             ]
         );
     }
@@ -95,13 +98,13 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             [
                 '--path' => $this->getDirPath(),
                 '--prefix' => 'test',
-                '--holding_id' => 5,
+                'holding_ids' => [ 5 ]
             ]
         );
 
         $finder = new Finder();
         $finder->in($this->getDirPath())->files()->name('*.csv');
-        $this->assertCount(1, $finder, 'Should be created only 1 file.');
+        $this->assertCount(1, $finder, 'Should create only 1 file.');
 
         $fileData = trim(file_get_contents($finder->getIterator()->getRealPath()));
         $this->assertEquals(5, count(explode("\n", $fileData)), 'File should contain 5 rows');
@@ -117,36 +120,14 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             [
                 '--path' => $this->getDirPath(),
                 '--prefix' => 'test',
-                '--holding_id' => 5,
-                '--holding_id_end' => 6,
                 '--profiles' => 1,
+                'holding_ids' => [ 5, 6 ]
             ]
         );
 
         $finder = new Finder();
         $finder->in($this->getDirPath())->files()->name('*.csv');
-        $this->assertCount(2, $finder, 'Should be created 2 files.');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldCreateFileWithRowsForAllHoldingIfNotSendHolding()
-    {
-        $this->executeCommandTester(
-            new CreateAciEnrollmentRequestCommand(),
-            [
-                '--path' => $this->getDirPath(),
-                '--prefix' => 'test',
-            ]
-        );
-
-        $finder = new Finder();
-        $finder->in($this->getDirPath())->files()->name('*.csv');
-        $this->assertCount(1, $finder, 'Should be created only 1 file.');
-
-        $fileData = trim(file_get_contents($finder->getIterator()->getRealPath()));
-        $this->assertEquals(7, count(explode("\n", $fileData)));// 5 for Holding#5 and 2 for other
+        $this->assertCount(2, $finder, 'Should create 2 files.');
     }
 
     /**
@@ -174,14 +155,13 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             new CreateAciEnrollmentRequestCommand(),
             [
                 '--path' => $this->getDirPath(),
-                '--holding_id' => $firstId,
-                '--holding_id_end' => $lastId,
                 '--prefix' => 'test',
+                'holding_ids' => [ $firstId, $lastId ]
             ]
         );
         $finder = new Finder();
         $finder->in($this->getDirPath())->files()->name('*.csv');
-        $this->assertCount(1, $finder, 'Should be created only 1 file.');
+        $this->assertCount(1, $finder, 'Should create only 1 file.');
 
         $fileData = trim(file_get_contents($finder->getIterator()->getRealPath()));
         $this->assertEquals($expectedCount, count(explode("\n", $fileData)));
@@ -202,14 +182,13 @@ class CreateAciEnrollmentRequestCommandCase extends BaseTestCase
             [
                 'command' => $command->getName(),
                 '--path' => $this->getDirPath(),
-                '--holding_id' => 7,
-                '--holding_id_end' => 15,
                 '--prefix' => 'test',
+                'holding_ids' => [ 7, 8, 9 ]
             ]
         );
 
         $finder = new Finder();
         $finder->in($this->getDirPath())->files()->name('*.csv');
-        $this->assertCount(0, $finder, 'Should not be created any files.');
+        $this->assertCount(0, $finder, 'Should create any files.');
     }
 }
