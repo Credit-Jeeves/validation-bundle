@@ -41,7 +41,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertCount(
             5,
@@ -134,7 +134,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertCount(0, $result, "result should not have any records");
     }
@@ -155,7 +155,7 @@ class AciProfileMapperCase extends BaseTestCase
         $profile->setUser($user);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertEquals(4, count($result));
         $this->assertNotInstanceOf(
@@ -192,7 +192,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertCount(
             2,
@@ -232,7 +232,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertEquals(3, count($result));
         /** @var ConsumerRecord $consumerRecord */
@@ -310,7 +310,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertCount(0, $result, "result should not have any records");
     }
@@ -334,7 +334,7 @@ class AciProfileMapperCase extends BaseTestCase
         $this->writeIdAttribute($profile, 1);
 
         $mapper = $this->createAciProfileMapper();
-        $result = $mapper->map($profile, [$holding]);
+        $result = $mapper->map($profile, [$holding->getId()]);
 
         $this->assertEquals(2, count($result));
 
@@ -371,7 +371,7 @@ class AciProfileMapperCase extends BaseTestCase
         $profile = new AciImportProfileMap();
         $profile->setUser($user);
 
-        $result = $aciProfileMapper->map($profile, [$holding]);
+        $result = $aciProfileMapper->map($profile, [$holding->getId()]);
 
         $this->assertTrue(is_array($result), 'Result of AciProfileMapper::map must be array');
         $this->assertCount(
