@@ -282,6 +282,50 @@ class MailerCase extends BaseTestCase
         $this->assertArrayHasKey(1, $message->getChildren(), 'Body should be');
     }
 
+    /**
+     * @test
+     */
+    public function shouldUseReplyToEmailIfNoReplyFalse()
+    {
+//        $this->load(true);
+
+        $emailPlugin = $this->registerEmailListener();
+        $emailPlugin->clean();
+        $this
+            ->getContainer()
+            ->get('project.mailer')
+            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en', null, false);
+
+        $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
+
+        $this->assertEquals(
+            ['help@renttrack.com' => 'RentTrack'],
+            $emailPlugin->getPreSendMessage(0)->getReplyTo(),
+            'Reply to email should be help@renttrack.com'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldNotUseReplyToEmailIfNoReplyTrue()
+    {
+//        $this->load(true);
+
+        $emailPlugin = $this->registerEmailListener();
+        $emailPlugin->clean();
+        $this
+            ->getContainer()
+            ->get('project.mailer')
+            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en');
+
+        $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
+
+        $this->assertNull(
+            $emailPlugin->getPreSendMessage(0)->getReplyTo(),
+            'Reply to email should be empty'
+        );
+    }
 
     /**
      * @return \RentJeeves\CoreBundle\Mailer\Mailer
