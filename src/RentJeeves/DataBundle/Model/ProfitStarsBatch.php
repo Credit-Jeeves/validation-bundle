@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use CreditJeeves\DataBundle\Entity\Holding as HoldingEntity;
@@ -132,5 +133,21 @@ abstract class ProfitStarsBatch
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return Holding
+     */
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    /**
+     * @param Holding $holding
+     */
+    public function setHolding(Holding $holding)
+    {
+        $this->holding = $holding;
     }
 }

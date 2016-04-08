@@ -5,8 +5,12 @@
     <div class="check-scanning">
         <h1>{{ 'title.scanning'|trans }}</h1>
         <div class="control-buttons">
-            <a target="_blank" href="{{ path('landlord_scanning_check_form') }}">
-                <button class="button small">
+            <a target="_blank" href="{{ path('landlord_scanning_check_form') }}"
+                {% if not isEnabledOpenScanner %}
+                    title="{{ 'landlord.scanning.open_scanner.error'|trans }}"
+                    data-bind="click: function() { return false; }"
+                {% endif %}>
+                <button class="button small" {% if not isEnabledOpenScanner %}disabled="disabled"{% endif %}>
                     <span>{{ 'button_title.scanning'|trans }}</span>
                 </button>
             </a>

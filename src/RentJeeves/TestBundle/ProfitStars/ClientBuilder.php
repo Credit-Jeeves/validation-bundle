@@ -13,4 +13,12 @@ class ClientBuilder extends Base
     {
         return new TransactionReportingClient();
     }
+
+    /**
+     * @return RemoteDepositReportingClient
+     */
+    public static function buildRemoteDepositReportingClient()
+    {
+        return new RemoteDepositReportingClient();
+    }
 }

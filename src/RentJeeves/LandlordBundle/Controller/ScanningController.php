@@ -29,7 +29,8 @@ class ScanningController extends LandlordController
         return $this->render(
             'LandlordBundle:Scanning:index.html.twig',
             [
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'isEnabledOpenScanner' => $this->checkCutOffTime(),
             ]
         );
     }
@@ -137,6 +138,23 @@ class ScanningController extends LandlordController
             ->loadScannedChecks($this->getCurrentGroup(), $date);
 
         return new JsonResponse(['count' => $countChecks]);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkCutOffTime()
+    {
+        $cstTimezone = new \DateTimeZone('America/Chicago');
+        $now = new \DateTime('now', $cstTimezone);
+
+        $cutoffTimeSetting = $this->container->getParameter('scanning_cutoff_time');
+
+        $cutOffTime = new \DateTime($cutoffTimeSetting, $cstTimezone);
+        $nowTime = (int) $now->format('U');
+        $offTime = (int) $cutOffTime->format('U');
+
+        return $nowTime < $offTime;
     }
 
     /**

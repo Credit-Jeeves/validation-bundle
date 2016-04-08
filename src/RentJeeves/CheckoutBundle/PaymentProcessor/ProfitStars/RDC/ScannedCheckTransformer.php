@@ -16,6 +16,7 @@ use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStars
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -99,6 +100,12 @@ class ScannedCheckTransformer
         }
         $order->addTransaction($transaction);
 
+        $profitStarsTransaction = new ProfitStarsTransaction();
+        $profitStarsTransaction->setOrder($order);
+        $profitStarsTransaction->setItemId($depositItem->getItemId());
+
+        $order->setProfitStarsTransaction($profitStarsTransaction);
+
         return $order;
     }
 
@@ -148,7 +155,7 @@ class ScannedCheckTransformer
     {
         foreach ($group->getDepositAccounts() as $depositAccount) {
             if (PaymentProcessor::PROFIT_STARS === $depositAccount->getPaymentProcessor() &&
-                $locationId === $depositAccount->getMerchantName()
+                $locationId == $depositAccount->getMerchantName()
             ) {
                 return $depositAccount;
             }

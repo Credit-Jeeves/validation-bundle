@@ -240,7 +240,11 @@ abstract class Order
     /**
      * @var ProfitStarsTransaction
      *
-     * @ORM\OneToOne(targetEntity="\RentJeeves\DataBundle\Entity\ProfitStarsTransaction", mappedBy="order")
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\ProfitStarsTransaction",
+     *     mappedBy="order",
+     *     cascade={"persist"}
+     * )
      */
     protected $profitStarsTransaction;
 
@@ -669,7 +673,7 @@ abstract class Order
     /**
      * @param ProfitStarsTransaction $profitStarsTransaction
      */
-    public function setProfitStarsTransaction($profitStarsTransaction)
+    public function setProfitStarsTransaction(ProfitStarsTransaction $profitStarsTransaction)
     {
         $this->profitStarsTransaction = $profitStarsTransaction;
     }
