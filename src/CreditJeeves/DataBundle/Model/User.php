@@ -1828,10 +1828,10 @@ abstract class User extends BaseUser
     /**
      * @Assert\IsTrue(
      *     groups={"userCreationManager"},
-     *     message = "The token is invalid"
+     *     message = "Username cannot be different from email."
      * )
      */
-    public function isUsernameAndPasswordValid()
+    public function isUsernameValid()
     {
         return $this->emailCanonical === null || $this->emailCanonical === $this->usernameCanonical;
     }
