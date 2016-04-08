@@ -29,8 +29,9 @@ interface TrustedLandlordServiceInterface
     /**
      * Set new status for TrustedLandlord.
      *
-     * @param TrustedLandlord $trustedLandlord
-     * @param string          $status
+     * @param TrustedLandlord         $trustedLandlord
+     * @param string                  $status
+     * @param TrustedLandlordDTO|null $trustedLandlordDTO
      */
-    public function updateStatus(TrustedLandlord $trustedLandlord, $status);
+    public function update(TrustedLandlord $trustedLandlord, $status, TrustedLandlordDTO $trustedLandlordDTO = null);
 }

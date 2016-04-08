@@ -2,7 +2,6 @@
 
 namespace RentJeeves\DataBundle;
 
-use RentJeeves\DataBundle\DBAL\Types\DateTimeType;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Doctrine\DBAL\Types\Type;

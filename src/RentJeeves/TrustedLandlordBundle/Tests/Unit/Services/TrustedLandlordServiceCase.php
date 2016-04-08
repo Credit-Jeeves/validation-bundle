@@ -226,9 +226,9 @@ class TrustedLandlordServiceCase extends UnitTestBase
 
         $statusManager = $this->getBaseMock(TrustedLandlordStatusManager::class);
         // Pls uncomment for statusManager task
-//        $statusManager->expects($this->once())
-//            ->method('updateStatus')
-//            ->with($this->isInstanceOf(TrustedLandlord::class), $this->equalTo(TrustedLandlordStatus::RFI));
+        $statusManager->expects($this->once())
+            ->method('updateStatus')
+            ->with($this->isInstanceOf(TrustedLandlord::class), $this->equalTo(TrustedLandlordStatus::NEWONE));
 
         $trustedLandlordService = new TrustedLandlordService(
             $em,
@@ -245,13 +245,63 @@ class TrustedLandlordServiceCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldJustCallUpdateStatusViaStatusManager()
+    public function shouldCallUpdateStatusViaStatusManagerAndUpdateTheEntity()
     {
         $trustedLandlord = new TrustedLandlord();
+        $trustedLandlord->setCheckMailingAddress(new CheckMailingAddress());
+        $trustedLandlordDTO = new TrustedLandlordDTO();
         $statusManager = $this->getBaseMock(TrustedLandlordStatusManager::class);
         $statusManager->expects($this->once())
             ->method('updateStatus')
-            ->with($this->equalTo($trustedLandlord), $this->equalTo(TrustedLandlordStatus::RFI));
+            ->with(
+                $this->equalTo($trustedLandlord),
+                $this->equalTo(TrustedLandlordStatus::WAITING_FOR_INFO)
+            );
+        $address = new Address();
+        $address->setLatitude(1);
+        $address->setLongitude(1);
+        $address->setNumber('test');
+
+        $lookupServiceMock = $this->getBaseMock(SmartyStreetsAddressLookupService::class);
+        $lookupServiceMock->expects($this->once())
+            ->method('lookup')
+            ->willReturn($address);
+        $repository = $this->getEntityRepositoryMock();
+        $repository->expects($this->once())
+            ->method('findOneBy')
+            ->with($this->equalTo(['index' => 'test']))
+            ->willReturn(null);
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:CheckMailingAddress'))
+            ->willReturn($repository);
+
+        $trustedLandlordService = new TrustedLandlordService(
+            $em,
+            $this->getLoggerMock(),
+            $lookupServiceMock,
+            $statusManager
+        );
+
+        $trustedLandlordService->update($trustedLandlord, TrustedLandlordStatus::WAITING_FOR_INFO, $trustedLandlordDTO);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldJustCallUpdateStatusViaStatusManager()
+    {
+        $trustedLandlord = new TrustedLandlord();
+        $trustedLandlord->setCheckMailingAddress(new CheckMailingAddress());
+        $statusManager = $this->getBaseMock(TrustedLandlordStatusManager::class);
+        $statusManager->expects($this->once())
+            ->method('updateStatus')
+            ->with(
+                $this->equalTo($trustedLandlord),
+                $this->equalTo(TrustedLandlordStatus::WAITING_FOR_INFO)
+            );
+
         $trustedLandlordService = new TrustedLandlordService(
             $this->getEntityManagerMock(),
             $this->getLoggerMock(),
@@ -259,6 +309,6 @@ class TrustedLandlordServiceCase extends UnitTestBase
             $statusManager
         );
 
-        $trustedLandlordService->updateStatus($trustedLandlord, TrustedLandlordStatus::RFI);
+        $trustedLandlordService->update($trustedLandlord, TrustedLandlordStatus::WAITING_FOR_INFO);
     }
 }

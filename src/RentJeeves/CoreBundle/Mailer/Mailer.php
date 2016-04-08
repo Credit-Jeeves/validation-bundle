@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -915,6 +916,47 @@ class Mailer extends BaseMailer
             $params,
             $order->getUser()->getEmail(),
             $order->getUser()->getCulture()
+        );
+    }
+
+    /**
+     * @param Payment $payment
+     * @return bool
+     */
+    public function sendTrustedLandlordDenied(Payment $payment)
+    {
+        $tenant = $payment->getContract()->getTenant();
+        $params = [
+            'tenantFirstName' => $tenant->getFirstName(),
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjTrustedLandlordDenied',
+            $params,
+            $tenant->getEmail(),
+            $tenant->getCulture()
+        );
+    }
+
+    /**
+     * @param Payment $payment
+     * @return bool
+     */
+    public function sendTrustedLandlordApproved(Payment $payment)
+    {
+        $tenant = $payment->getContract()->getTenant();
+        $trustedLandlord = $payment->getContract()->getGroup()->getTrustedLandlord();
+        $params = [
+            'tenantFirstName' => $tenant->getFirstName(),
+            'trustedLandlordFullName' => $trustedLandlord->getFullName(),
+            'trustedLandlordAddress' => $trustedLandlord->getCheckMailingAddress()->getFullAddress()
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjTrustedLandlordApproved',
+            $params,
+            $tenant->getEmail(),
+            $tenant->getCulture()
         );
     }
 

@@ -69,13 +69,18 @@ class Job extends Base
         return new self($command, $args, $confirmed, $queue, $priority);
     }
 
-    public function __construct($command = '', array $args = [], $confirmed = true)
-    {
+    public function __construct(
+        $command = '',
+        array $args = [],
+        $confirmed = true,
+        $queue = self::DEFAULT_QUEUE,
+        $priority = self::PRIORITY_DEFAULT
+    ) {
         if (false === in_array('--app=rj', $args)) {
             $args[] = '--app=rj';
         }
 
-        parent::__construct($command, $args, $confirmed);
+        parent::__construct($command, $args, $confirmed, $queue, $priority);
     }
 
     public function setRelatedEntities(ArrayCollection $relatedEntities)

@@ -6,11 +6,17 @@ use CreditJeeves\CoreBundle\Enum;
 
 class TrustedLandlordStatus extends Enum
 {
+    const INITIATED = 'initiated';
+
+    const FAILED = 'failed';
+
     const NEWONE = 'new';
 
     const TRUSTED = 'trusted';
 
-    const RFI = 'rfi';
-
     const DENIED = 'denied';
+
+    const IN_PROGRESS = 'in progress';
+
+    const WAITING_FOR_INFO = 'waiting for info';
 }
