@@ -1826,7 +1826,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @Assert\IsTrue(
+     * @Assert\True(
      *     groups={"userCreationManager"},
      *     message = "Username cannot be different from email."
      * )
