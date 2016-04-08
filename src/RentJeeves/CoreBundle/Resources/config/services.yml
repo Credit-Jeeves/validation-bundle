@@ -190,3 +190,5 @@ services:
             - '@renttrack.user_creator'
             - '@doctrine.orm.default_entity_manager'
             - '@logger'
+            - '@validator'
+            - '@project.mailer'
