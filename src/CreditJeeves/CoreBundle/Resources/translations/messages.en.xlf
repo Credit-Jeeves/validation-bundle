@@ -1602,7 +1602,7 @@
             </trans-unit>
             <trans-unit id="waiting_for_redirect_to_scanning">
                 <source>waiting_for_redirect_to_scanning</source>
-                <target>Redirect to scanning check</target>
+                <target>Redirecting Check Scanning Interface</target>
             </trans-unit>
             <trans-unit id="landlord.scanning.lease_list.title">
                 <source>landlord.scanning.lease_list.title</source>
