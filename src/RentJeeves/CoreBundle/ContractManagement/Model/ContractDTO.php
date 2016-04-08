@@ -5,9 +5,6 @@ namespace RentJeeves\CoreBundle\ContractManagement\Model;
 class ContractDTO
 {
     /** @var string */
-    protected $email;
-
-    /** @var string */
     protected $search;
 
     /** @var string */
