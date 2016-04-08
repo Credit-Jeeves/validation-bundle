@@ -1824,4 +1824,15 @@ abstract class User extends BaseUser
     {
         return $this->lastIp;
     }
+
+    /**
+     * @Assert\IsTrue(
+     *     groups={"userCreationManager"},
+     *     message = "The token is invalid"
+     * )
+     */
+    public function isUsernameAndPasswordValid()
+    {
+        return $this->emailCanonical === null || $this->emailCanonical === $this->usernameCanonical;
+    }
 }

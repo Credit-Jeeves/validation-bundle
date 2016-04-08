@@ -15,7 +15,7 @@ class UserCreatorCase extends UnitTestBase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException \RentJeeves\CoreBundle\Exception\UserCreatorException
      */
     public function shouldThrowExceptionIfInputDataIsEmptyForCreateTenantWithoutEmail()
     {
@@ -121,5 +121,78 @@ class UserCreatorCase extends UnitTestBase
             $validator
         );
         $manager->createTenant('te', 'st');
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\CoreBundle\Exception\UserCreatorException
+     * @expectedExceptionMessage User with email "test@test.com" already exist.
+     */
+    public function shouldThrowExceptionIfEmailAlreadyExistsForCreateTenantWithEmail()
+    {
+        $userRepository = $this->getBaseMock(UserRepository::class);
+        $userRepository->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn(new Tenant());
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('DataBundle:User'))
+            ->willReturn($userRepository);
+        $em->expects($this->never())
+            ->method('persist');
+
+        $validator = $this->getValidatorMock();
+
+        $manager = new UserCreator(
+            $em,
+            $this->getLoggerMock(),
+            $validator
+        );
+        $manager->createTenant('test', 'test', 'test@test.com');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldJustCreateTenantForCreateTenantWithEmail()
+    {
+        $userRepository = $this->getBaseMock(UserRepository::class);
+        $userRepository->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn(null);
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->with($this->equalTo('DataBundle:User'))
+            ->willReturn($userRepository);
+        $em->expects($this->once())
+            ->method('persist')
+            ->with($this->callback(function ($subject) {
+                /** @var Tenant $subject */
+                $this->assertInstanceOf(Tenant::class, $subject, 'Persisted incorrect object.');
+                $this->assertEquals('test@test.com', $subject->getUsername(), 'Incorrect Username.');
+                $this->assertEquals('test@test.com', $subject->getUsernameCanonical(), 'Incorrect UsernameCanonical.');
+                $this->assertEquals('test@test.com', $subject->getEmail(), 'Incorrect Email.');
+                $this->assertEquals('test@test.com', $subject->getEmailCanonical(), 'Incorrect EmailCanonical.');
+                $this->assertTrue($subject->getEmailNotification(), 'EmailNotification should be true.');
+                $this->assertTrue($subject->getOfferNotification(), 'OfferNotification should be true.');
+
+                return true;
+            }));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList());
+
+        $manager = new UserCreator(
+            $em,
+            $this->getLoggerMock(),
+            $validator
+        );
+        $manager->createTenant('test', 'test', 'test@test.com');
     }
 }
