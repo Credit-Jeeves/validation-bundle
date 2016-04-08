@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\ContractManagement\Model\ContractDTO;
+use RentJeeves\CoreBundle\ContractManagement\Model\UserDTO;
 use RentJeeves\CoreBundle\Exception\ContractCreatorException;
 use RentJeeves\CoreBundle\Exception\ContractManagerException;
 use RentJeeves\CoreBundle\Exception\UserCreatorException;
@@ -77,19 +78,20 @@ class ContractManager
 
     /**
      * @param Unit        $unit
+     * @param UserDTO     $userDTO
      * @param ContractDTO $contractDTO
      *
      * @throws ContractManagerException if cant create new Contract
      *
      * @return Contract
      */
-    public function createContract(Unit $unit, ContractDTO $contractDTO)
+    public function createContract(Unit $unit, UserDTO $userDTO, ContractDTO $contractDTO)
     {
         $this->logger->debug('Try to create new contract.');
 
-        $email = $contractDTO->getEmail();
-        $firstName = $contractDTO->getFirstName();
-        $lastName = $contractDTO->getLastName();
+        $email = $userDTO->getEmail();
+        $firstName = $userDTO->getFirstName();
+        $lastName = $userDTO->getLastName();
 
         if (true === empty($email) && true === empty($firstName) && true === empty($lastName)) {
             $this->logger->warning(
@@ -106,8 +108,8 @@ class ContractManager
             $tenant = $this->userCreator->createTenant($firstName, $lastName, $email);
             $contract = $this->contractCreator->createContract($unit, $tenant, $contractDTO);
 
-            if (false === empty($contractDTO->getExternalResidentId())) {
-                $this->createResidentMapping($contract->getHolding(), $tenant, $contractDTO->getExternalResidentId());
+            if (true === $userDTO->isSupportResidentId() && false === empty($userDTO->getExternalResidentId())) {
+                $this->createResidentMapping($contract->getHolding(), $tenant, $userDTO->getExternalResidentId());
             }
 
             $this->em->commit();

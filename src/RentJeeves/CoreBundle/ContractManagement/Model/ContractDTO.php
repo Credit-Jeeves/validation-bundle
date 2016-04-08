@@ -5,12 +5,6 @@ namespace RentJeeves\CoreBundle\ContractManagement\Model;
 class ContractDTO
 {
     /** @var string */
-    protected $firstName;
-
-    /** @var string */
-    protected $lastName;
-
-    /** @var string */
     protected $email;
 
     /** @var string */
@@ -44,9 +38,6 @@ class ContractDTO
     protected $finishAt;
 
     /** @var string */
-    protected $externalResidentId;
-
-    /** @var string */
     protected $externalLeaseId;
 
     /**
@@ -68,22 +59,6 @@ class ContractDTO
     /**
      * @return string
      */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * @return string
-     */
     public function getExternalLeaseId()
     {
         return $this->externalLeaseId;
@@ -95,22 +70,6 @@ class ContractDTO
     public function setExternalLeaseId($externalLeaseId)
     {
         $this->externalLeaseId = $externalLeaseId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExternalResidentId()
-    {
-        return $this->externalResidentId;
-    }
-
-    /**
-     * @param string $externalResidentId
-     */
-    public function setExternalResidentId($externalResidentId)
-    {
-        $this->externalResidentId = $externalResidentId;
     }
 
     /**
@@ -130,22 +89,6 @@ class ContractDTO
     }
 
     /**
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @param string $firstName
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-    }
-
-    /**
      * @return float
      */
     public function getIntegratedBalance()
@@ -159,22 +102,6 @@ class ContractDTO
     public function setIntegratedBalance($integratedBalance)
     {
         $this->integratedBalance = $integratedBalance;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * @param string $lastName
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
     }
 
     /**

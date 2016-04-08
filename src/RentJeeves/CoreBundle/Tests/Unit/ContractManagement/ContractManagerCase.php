@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\CoreBundle\ContractManagement\ContractCreator;
 use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\CoreBundle\ContractManagement\Model\ContractDTO;
+use RentJeeves\CoreBundle\ContractManagement\Model\UserDTO;
 use RentJeeves\CoreBundle\Exception\UserCreatorException;
 use RentJeeves\CoreBundle\UserManagement\UserCreator;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -40,7 +41,7 @@ class ContractManagerCase extends UnitTestBase
             $this->getValidatorMock(),
             $this->getMailerMock()
         );
-        $contractManager->createContract(new Unit(), new ContractDTO());
+        $contractManager->createContract(new Unit(), new UserDTO(), new ContractDTO());
     }
 
     /**
@@ -70,9 +71,9 @@ class ContractManagerCase extends UnitTestBase
             $this->getValidatorMock(),
             $this->getMailerMock()
         );
-        $contractDTO = new ContractDTO();
-        $contractDTO->setEmail('test@test.com');
-        $contractManager->createContract(new Unit(), $contractDTO);
+        $userDTO = new UserDTO();
+        $userDTO->setEmail('test@test.com');
+        $contractManager->createContract(new Unit(), $userDTO, new ContractDTO());
     }
 
     /**
@@ -122,10 +123,12 @@ class ContractManagerCase extends UnitTestBase
             $this->getValidatorMock(),
             $this->getMailerMock()
         );
-        $contractDTO = new ContractDTO();
-        $contractDTO->setEmail('test@test.com');
-        $contractDTO->setExternalResidentId('test');
-        $contract = $contractManager->createContract(new Unit(), $contractDTO);
+        $userDTO = new UserDTO();
+        $userDTO->setEmail('test@test.com');
+        $userDTO->setExternalResidentId('test');
+        $userDTO->setIsSupportResidentId(true);
+
+        $contract = $contractManager->createContract(new Unit(), $userDTO, new ContractDTO());
 
         $this->assertInstanceOf(Contract::class, $contract, 'createContract should return instance of Contract class');
     }
