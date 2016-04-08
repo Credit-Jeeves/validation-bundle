@@ -216,7 +216,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
             'Transaction should have batchId b1'
         );
         $this->assertTrue($transaction->getIsSuccessful(), 'Transaction should be successful');
-        $this->assertNull($transaction->getDepositDate(), 'Pending order can not have deposit date');
+        $this->assertNotNull($transaction->getDepositDate(), 'Order should have deposit date');
     }
 
     /**
