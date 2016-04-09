@@ -31,8 +31,14 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
         $endDate = clone $startDate;
         $endDate->setTime(23, 59, 59);
 
-        foreach ($this->getHoldingRepository()->findAllHoldingsWithProfitStarsSetting() as $row) {
-            $this->getReportSynchronizer()->sync($row['merchantName'], $row['merchantId'], $startDate, $endDate);
+        try {
+            foreach ($this->getHoldingRepository()->findAllHoldingsWithProfitStarsSetting() as $row) {
+                $this->getReportSynchronizer()->sync($row['merchantName'], $row['merchantId'], $startDate, $endDate);
+            }
+        } catch (\Exception $e) {
+            $this->getLogger()->emergency(
+                sprintf('ProfitStarsReportSynchronizeCommand finished with error : %s', $e->getMessage())
+            );
         }
     }
 
