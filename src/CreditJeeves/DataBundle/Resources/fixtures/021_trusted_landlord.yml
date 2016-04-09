@@ -1,0 +1,16 @@
+model: RentJeeves\DataBundle\Entity\TrustedLandlord
+fixtures:
+    TrustedLandlord1:
+        checkMailingAddress: CheckMailingAddress1
+        firstName:           Alexander Radionovich
+        lastName:            Borodach
+        type:                person
+        status:              new
+        phone:               777777
+
+    TrustedLandlord2:
+        checkMailingAddress: CheckMailingAddress2
+        firstName:           John
+        lastName:            Brown
+        type:                person
+        status:              trusted

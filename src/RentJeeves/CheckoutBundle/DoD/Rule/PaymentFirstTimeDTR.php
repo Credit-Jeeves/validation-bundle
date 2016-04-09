@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\PidkiqRepository;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 
 /**
  * Service name "dod.payment_first_time_dtr"
@@ -72,7 +73,7 @@ class PaymentFirstTimeDTR implements DodPaymentRuleInterface
     /**
      * {@inheritdoc}
      */
-    public function getReason()
+    public function getReasonMessage()
     {
         if (!$this->currentPayment) {
             return '';
@@ -88,6 +89,14 @@ class PaymentFirstTimeDTR implements DodPaymentRuleInterface
             $tenant->getPhone() ? ', phone: ' . $tenant->getFormattedPhone() : '',
             $pidkiqSession ? $pidkiqSession->getUpdatedAt()->format('Y-m-d') : ''
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonCode()
+    {
+        return PaymentFlaggedReason::DTR_FIRST_PAYMENT;
     }
 
     /**

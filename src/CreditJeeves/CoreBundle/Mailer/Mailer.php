@@ -21,7 +21,8 @@ class Mailer extends BaseMailer implements MailerInterface
         'partnerName' => 'RentTrack',
         'partnerAddress' => '4601 Excelsior Blvd Ste 403A, St. Louis Park, MN 55416',
         'loginUrl' => 'my.renttrack.com',
-        'isPoweredBy' => false
+        'isPoweredBy' => false,
+        'replyToEmail' => 'help@renttrack.com',
     ];
 
     /**
@@ -30,10 +31,11 @@ class Mailer extends BaseMailer implements MailerInterface
      * @param string $emailTo
      * @param string $culture
      * @param string $filePath
+     * @param bool $noReply
      *
      * @return bool
      */
-    public function sendBaseLetter($templateName, $params, $emailTo, $culture, $filePath = null)
+    public function sendBaseLetter($templateName, $params, $emailTo, $culture, $filePath = null, $noReply = true)
     {
         if (false == $this->isValidEmail($emailTo)) {
             $this->handleException(
@@ -65,6 +67,10 @@ class Mailer extends BaseMailer implements MailerInterface
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
             $message->setFrom([$htmlContent['fromEmail'] => $params['partnerName']]);
+            if (!$noReply) {
+                $message->setReplyTo($params['replyToEmail'], $params['partnerName']);
+            }
+
             $message->setTo($emailTo);
 
             if (!empty($filePath)) {
@@ -114,6 +120,7 @@ class Mailer extends BaseMailer implements MailerInterface
                     $params['partnerAddress'] = $partner->getAddress();
                     $params['loginUrl'] = $partner->getLoginUrl();
                     $params['isPoweredBy'] = $partner->isPoweredBy();
+                    $params['replyToEmail'] = $partner->getReplyToEmail();
                 }
             }
         }

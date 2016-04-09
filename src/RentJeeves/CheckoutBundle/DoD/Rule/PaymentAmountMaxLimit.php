@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\DoD\Rule;
 
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 
 /**
  * Service name "dod.payment_amount_max"
@@ -40,9 +41,17 @@ class PaymentAmountMaxLimit implements DodRuleInterface
     /**
      * {@inheritdoc}
      */
-    public function getReason()
+    public function getReasonMessage()
     {
         return sprintf('Payment amount exceeds MAX limit of %s', $this->paymentMaxLimit);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonCode()
+    {
+        return PaymentFlaggedReason::AMOUNT_LIMIT_EXCEEDED;
     }
 
     /**

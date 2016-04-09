@@ -4,6 +4,7 @@ fixtures:
     name:           Test Rent Group
     statementDescriptor: Test Rent
     holding:        rjHolding_1
+    trustedLandlord: TrustedLandlord2
     type:           rent
     code:           DXC6KXOAGX
     mailingAddressName: Vasiliy Pups

@@ -296,6 +296,11 @@ services:
         arguments:
             - @operation.repository
 
+    dod.payment_to_trusted_landlord_dtr:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentToTrustedLandlordDTR
+        arguments:
+            - @project.mailer
+
     dod.payment_amount_max:
         class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentAmountMaxLimit
         arguments:
@@ -314,6 +319,7 @@ services:
             - [addRule, ["@dod.payment_rolling_window_dtr"]]
             - [addRule, ["@dod.payment_first_time_dtr"]]
             - [addRule, ["@dod.payment_sum_limit_per_month_dtr"]]
+            - [addRule, ["@dod.payment_to_trusted_landlord_dtr"]]
 
     payment_processor.profit_stars.rdc.client:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RDCClient
