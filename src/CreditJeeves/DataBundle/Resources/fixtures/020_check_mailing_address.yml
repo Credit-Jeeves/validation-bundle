@@ -14,3 +14,4 @@ fixtures:
         state:          NY
         zip:            10003
         index:          60UniversityPlNewYorkNY
+        location_id:    ExternalGroupId

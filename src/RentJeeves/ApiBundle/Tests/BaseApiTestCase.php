@@ -90,7 +90,7 @@ abstract class BaseApiTestCase extends BaseTestCase
             $result,
             $data,
             sprintf(
-                'Response is incorrect.%1$sShould be:%1$s%2$sExpected:%1$s%3$s',
+                'Response is incorrect.%1$sExpected:%1$s%2$sActual:%1$s%3$s',
                 PHP_EOL,
                 print_r($result, true),
                 print_r($data, true)
@@ -107,7 +107,7 @@ abstract class BaseApiTestCase extends BaseTestCase
     {
         $message = $message ?:
             sprintf(
-                "Invalid array structure, should be:\n%s\nExcept:\n%s",
+                "Invalid array structure, should be:\n%s\nInstead:\n%s",
                 print_r(array_flip($structureKeys), true),
                 print_r($array, true)
             );

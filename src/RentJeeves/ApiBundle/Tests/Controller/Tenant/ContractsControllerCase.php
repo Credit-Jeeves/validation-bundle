@@ -104,40 +104,6 @@ class ContractsControllerCase extends BaseApiTestCase
             $answerFromApi['delivery_method']
         );
 
-        $this->assertArrayHasKey(
-            'mailing_address',
-            $answerFromApi
-        );
-
-        $mailingAddress = $answerFromApi['mailing_address'];
-        $this->assertEquals(
-            $contractInDB->getGroup()->getMailingAddressName(),
-            $mailingAddress['name']
-        );
-        $this->assertEquals(
-            $contractInDB->getGroup()->getStreetAddress1(),
-            $mailingAddress['street_address_1']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getStreetAddress2(),
-            $mailingAddress['street_address_2']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getCity(),
-            $mailingAddress['city']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getState(),
-            $mailingAddress['state']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getZip(),
-            $mailingAddress['zip']
-        );
 
         $leaseEndResult = $contractInDB->getFinishAt() ? $contractInDB->getFinishAt()->format('Y-m-d') : '';
 
@@ -159,6 +125,64 @@ class ContractsControllerCase extends BaseApiTestCase
         );
 
         return [$id, $answerFromApi];
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-1
+     */
+    public function shouldBePresentCheckingMailingAddressOnTrustedLandlordGroup(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertNotNull(
+            $contractInDB->getGroup()->getTrustedLandlord(),
+            'Group should have trusted landlord'
+        );
+        $this->assertNotNull(
+            $checkingAddressInDB = $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress(),
+            'Group should have checking mailing address'
+        );
+        $this->assertArrayHasKey(
+            'mailing_address',
+            $answerFromApi
+        );
+
+        $mailingAddress = $answerFromApi['mailing_address'];
+        $checkingAddressInDB = $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress();
+
+        $this->assertEquals(
+            $checkingAddressInDB->getAddressee(),
+            $mailingAddress['payee_name']
+        );
+        $this->assertEquals(
+            $checkingAddressInDB->getAddress1(),
+            $mailingAddress['street_address_1']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getAddress2(),
+            $mailingAddress['street_address_2']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getCity(),
+            $mailingAddress['city']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getState(),
+            $mailingAddress['state']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getZip(),
+            $mailingAddress['zip']
+        );
     }
 
     /**
@@ -204,7 +228,7 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-1
      */
-    public function shouldBePresentExternalGroupIdOnGetContractWhenNotNull(array $data)
+    public function shouldBePresentLocationIdOnGetContractWhenNotNull(array $data)
     {
         list($contractId, $answerFromApi) = $data;
         $this->assertArrayHasKey(
@@ -219,7 +243,7 @@ class ContractsControllerCase extends BaseApiTestCase
         /** @var Contract $contractInDB */
         $contractInDB = $repo->find($contractId);
         $this->assertEquals(
-            $contractInDB->getGroup()->getExternalGroupId(),
+            $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress()->getLocationId(),
             $mailingAddress['location_id'],
             'Location_id should be equals external group id on DB'
         );
