@@ -89,6 +89,7 @@ class ScannedCheckTransformer
         $transaction->setMerchantName($depositItem->getLocationId());
         $transaction->setBatchId($depositItem->getBatchNumber());
         $transaction->setBatchDate($createdDate);
+        $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $createdDate));
         $transaction->setAmount($depositItem->getTotalAmount());
         $transaction->setIsSuccessful(true);
         $transaction->setTransactionId($depositItem->getReferenceNumber());
@@ -96,7 +97,6 @@ class ScannedCheckTransformer
 
         if (WSItemStatus::SENTTOTRANSACTIONPROCESSING === $depositItem->getItemStatus()) {
             $order->setStatus(OrderStatus::COMPLETE);
-            $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $createdDate));
         }
         $order->addTransaction($transaction);
 
