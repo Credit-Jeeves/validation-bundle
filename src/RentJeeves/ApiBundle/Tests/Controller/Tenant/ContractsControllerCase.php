@@ -396,10 +396,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '60654',
                     ],
                     'landlord' => [
+                        'type' => 'person',
                         'first_name' => 'Test',
                         'last_name' => 'Name',
                         'email' => 'test_landlord1@gmail.com',
                         'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'rent' => 700,
@@ -418,7 +426,16 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '10003',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord2@gmail.com',
+                        'type' => 'company',
+                        'company_name' => 'Test Company Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'experian_reporting' => 'enabled',
@@ -450,6 +467,7 @@ class ContractsControllerCase extends BaseApiTestCase
                         'street' => '22Broadway',
                     ],
                     'landlord' => [
+                        'type' => 'campany',
                         'email' => 'test_landlord3gmail.com',
                         'phone' => '111-111-111'
                     ],
@@ -478,7 +496,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '222222',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord3@gmail.com',
+                        'type' => 'person',
+                        'first_name' => 'Test',
+                        'last_name' => 'Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'rent' => 800,
@@ -497,7 +526,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '10003',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord4@gmail.com',
+                        'type' => 'person',
+                        'first_name' => 'Test',
+                        'last_name' => 'Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'experian_reporting' => 'enabled',
@@ -529,6 +569,60 @@ class ContractsControllerCase extends BaseApiTestCase
             // 10
             [
                 'experian_reporting' => 'enable',
+            ],
+            // 11
+            [
+                'new_unit' => [
+                    'address' => [
+                        'street' => '770 Broadway',
+                        'unit_name' => '3-a',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003',
+                    ],
+                    'landlord' => [
+                        'type' => 'person',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
+                    ],
+                ],
+                'experian_reporting' => 'enabled',
+                'rent' => 600,
+                'due_date' => 5,
+                'lease_start' => '2015-03-03',
+                'lease_end' => '2020-03-03',
+            ],
+            // 12
+            [
+                'new_unit' => [
+                    'address' => [
+                        'street' => '770 Broadway',
+                        'unit_name' => '3-a',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003',
+                    ],
+                    'landlord' => [
+                        'type' => 'company',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
+                    ],
+                ],
+                'experian_reporting' => 'enabled',
+                'rent' => 600,
+                'due_date' => 5,
+                'lease_start' => '2015-03-03',
+                'lease_end' => '2020-03-03',
             ],
         ];
     }
@@ -610,7 +704,18 @@ class ContractsControllerCase extends BaseApiTestCase
                     'zip' => '60654',
                 ],
                 'landlord' => [
-                    'email' => 'landlord1@example.com',
+                    'type' => 'person',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'email' => 'test_landlord4@gmail.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown',
+                        'street_address_1' => '60 University Pl',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
                 ],
             ],
             'rent' => 700,
@@ -758,14 +863,38 @@ class ContractsControllerCase extends BaseApiTestCase
                         'message' => 'api.errors.property.zip.empty'
                     ],
                     [
-                        'parameter' => 'new_unit_landlord_email',
-                        'value' => 'test_landlord3gmail.com',
-                        'message' => 'This value is not a valid email address.',
+                        'parameter' => 'new_unit_landlord_type',
+                        'message' => 'api.errors.landlord.type.invalid',
                     ],
                     [
                         'parameter' => 'new_unit_landlord_phone',
                         'value' => '111111111',
                         'message' => 'error.user.phone.format',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_email',
+                        'value' => 'test_landlord3gmail.com',
+                        'message' => 'This value is not a valid email address.',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_payee_name',
+                        'message' => 'api.errors.mailing_address.payee_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_street_address_1',
+                        'message' => 'api.errors.mailing_address.street_address_1.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_state',
+                        'message' => 'api.errors.mailing_address.state.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_city',
+                        'message' => 'api.errors.mailing_address.city.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_zip',
+                        'message' => 'api.errors.mailing_address.zip.empty',
                     ],
                 ]
             ],
@@ -798,8 +927,28 @@ class ContractsControllerCase extends BaseApiTestCase
                         'message' => 'api.errors.property.zip.empty'
                     ],
                     [
-                        'parameter' => 'new_unit_landlord_email',
-                        'message' => 'email.required',
+                        'parameter' => 'new_unit_landlord_type',
+                        'message' => 'api.errors.landlord.type.invalid',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_payee_name',
+                        'message' => 'api.errors.mailing_address.payee_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_street_address_1',
+                        'message' => 'api.errors.mailing_address.street_address_1.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_state',
+                        'message' => 'api.errors.mailing_address.state.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_city',
+                        'message' => 'api.errors.mailing_address.city.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_zip',
+                        'message' => 'api.errors.mailing_address.zip.empty',
                     ],
                 ]
             ],
@@ -836,6 +985,30 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 6
+            [
+                self::contractsDataProvider()[11],
+                [
+                    [
+                        'parameter' => 'new_unit_landlord_first_name',
+                        'message' => 'api.errors.landlord.first_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_last_name',
+                        'message' => 'api.errors.landlord.last_name.empty',
+                    ],
+                ]
+            ],
+            // 7
+            [
+                self::contractsDataProvider()[12],
+                [
+                    [
+                        'parameter' => 'new_unit_landlord_company_name',
+                        'message' => 'api.errors.landlord.company_name.empty',
+                    ],
+                ]
+            ],
         ];
     }
 
@@ -859,11 +1032,15 @@ class ContractsControllerCase extends BaseApiTestCase
     /**
      * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'enable' violated a constraint/
      */
     public function wrongEnabledCreate()
     {
         $requestParams = [
             'unit_url' => 'unit_url/2974582658',
+            'rent' => '1200.0',
+            'due_date' => 1,
+            'lease_start' => '2012-12-12',
             'experian_reporting' => 'enable',
         ];
 
@@ -873,10 +1050,14 @@ class ContractsControllerCase extends BaseApiTestCase
     /**
      * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'disable' violated a constraint/
      */
     public function wrongEnabledEdit()
     {
         $requestParams = [
+            'rent' => '1200.0',
+            'due_date' => 1,
+            'lease_start' => '2012-12-12',
             'experian_reporting' => 'disable',
         ];
 

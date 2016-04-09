@@ -8,76 +8,86 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TrustedLandlordDTO
 {
     /**
-     * @Assert\NotBlank(groups={"landlord", "person"}, message="email.required")
-     * @var string
-     */
-    protected $email;
-
-    /**
      * @Assert\Choice(
      *     callback={"RentJeeves\DataBundle\Enum\TrustedLandlordType", "all"},
+     *     message="api.errors.landlord.type.invalid",
      *     groups={"trusted_landlord"}
      * )
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.landlord.type.invalid")
      * @var string
      */
-    protected $type = TrustedLandlordType::PERSON;
+    protected $type;
 
     /**
-     * @Assert\NotBlank(groups={"person"})
+     * @Assert\NotBlank(groups={"person"}, message="api.errors.landlord.first_name.empty")
      * @var string
      */
     protected $firstName;
 
     /**
-     * @Assert\NotBlank(groups={"person"})
+     * @Assert\NotBlank(groups={"person"}, message="api.errors.landlord.last_name.empty")
      * @var string
      */
     protected $lastName;
 
     /**
-     * @Assert\NotBlank(groups={"company"})
+     * @Assert\NotBlank(groups={"company"}, message="api.errors.landlord.company_name.empty")
      * @var string
      */
     protected $companyName;
 
-    /** @var string */
+    /**
+     * @Assert\Regex(
+     *     pattern = "/^\d{10}$/",
+     *     message="error.user.phone.format",
+     *     groups={"trusted_landlord"}
+     * )
+     * @var string
+     */
     protected $phone;
 
     /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @Assert\Email(
+     *     groups={"trusted_landlord"}
+     * )
+     * @var string */
+    protected $email;
+
+    /**
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.mailing_address.payee_name.empty")
      * @var string
      */
     protected $addressee;
 
     /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.mailing_address.street_address_1.empty")
      * @var string
      */
     protected $address1;
 
-    /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
-     * @var string
-     */
+    /** @var string */
     protected $address2;
 
     /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.mailing_address.state.empty")
      * @var string
      */
     protected $state;
 
     /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.mailing_address.city.empty")
      * @var string
      */
     protected $city;
 
     /**
-     * @Assert\NotBlank(groups={"trusted_landlord"})
+     * @Assert\NotBlank(groups={"trusted_landlord"}, message="api.errors.mailing_address.zip.empty")
      * @var string
      */
     protected $zip;
+
+    /** @var string */
+    protected $locationId;
 
     /**
      * @return string
@@ -269,5 +279,21 @@ class TrustedLandlordDTO
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocationId()
+    {
+        return $this->locationId;
+    }
+
+    /**
+     * @param string $locationId
+     */
+    public function setLocationId($locationId)
+    {
+        $this->locationId = $locationId;
     }
 }

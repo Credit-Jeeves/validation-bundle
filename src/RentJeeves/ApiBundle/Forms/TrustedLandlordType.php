@@ -19,14 +19,21 @@ class TrustedLandlordType extends AbstractType
      */
     public function buildForm(FormBuilder $builder, array $options)
     {
-        $builder->add('email', 'email');
-        $builder->add('type', 'choice', ['choices' => TrustedLandlordTypeEnum::cachedTitles()]);
+        $builder->add(
+            'type',
+            'choice',
+            [
+                'choices' => TrustedLandlordTypeEnum::cachedTitles(),
+                'invalid_message' => 'api.errors.landlord.type.invalid',
+            ]
+        );
         $builder->add('first_name', 'text', ['property_path' => 'firstName']);
         $builder->add('last_name', 'text', ['property_path' => 'lastName']);
         $builder->add('company_name', 'text', ['property_path' => 'companyName']);
         $builder->add(
             $builder->create('phone', 'text')->addViewTransformer(new PhoneNumberTransformer())
         );
+        $builder->add('email', 'email');
         $builder->add('mailing_address', new MailingAddressType(), ['data_class' => $options['data_class']]);
     }
 
@@ -40,14 +47,20 @@ class TrustedLandlordType extends AbstractType
             'csrf_protection' => false,
             'cascade_validation' => true,
             'validation_groups' => function (FormInterface $form) {
-                if ($form->get('mailing_address')->isEmpty()) {
-                    $groups[] = 'landlord';
-                } else {
+                $validationGroups = $form->getRoot()->getConfig()->getOption('validation_groups');
+                if (is_callable($validationGroups)) {
+                    $validationGroups = call_user_func($validationGroups, $form->getRoot());
+                }
+                if (is_array($validationGroups) && in_array('new_unit', $validationGroups)) {
                     $groups[] = 'trusted_landlord';
-                    $groups[] = $form->get('type')->getData();
+                    if ($type = $form->get('type')->getData()) {
+                        $groups[] = $type;
+                    }
+
+                    return $groups;
                 }
 
-                return $groups;
+                return [];
             }
         ]);
     }

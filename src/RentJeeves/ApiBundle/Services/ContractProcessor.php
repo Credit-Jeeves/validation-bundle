@@ -4,9 +4,12 @@ namespace RentJeeves\ApiBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Services\PropertyManager;
@@ -17,6 +20,8 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
+use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordServiceException;
 use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
 use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
 use Symfony\Component\Form\Form;
@@ -31,6 +36,11 @@ class ContractProcessor
      * @var EntityManager
      */
     protected $em;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @var string
@@ -59,6 +69,7 @@ class ContractProcessor
 
     /**
      * @param EntityManager $em
+     * @param LoggerInterface $logger
      * @param Mailer $mailer
      * @param $locale
      * @param ContractProcess $contractProcess
@@ -67,6 +78,7 @@ class ContractProcessor
      *
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "logger" = @DI\Inject("logger"),
      *     "mailer" = @DI\Inject("project.mailer"),
      *     "locale" = @DI\Inject("%kernel.default_locale%"),
      *     "contractProcess" = @DI\Inject("contract.process"),
@@ -76,6 +88,7 @@ class ContractProcessor
      */
     public function __construct(
         EntityManager $em,
+        LoggerInterface $logger,
         Mailer $mailer,
         $locale,
         ContractProcess $contractProcess,
@@ -83,6 +96,7 @@ class ContractProcessor
         TrustedLandlordService $trustedLandlordService
     ) {
         $this->em = $em;
+        $this->logger = $logger;
         $this->mailer = $mailer;
         $this->locale = $locale;
         $this->contractProcess = $contractProcess;
@@ -167,54 +181,50 @@ class ContractProcessor
             $propertyAddress->getState(),
             $propertyAddress->getZip()
         );
+
         if (null === $property) {
             throw new BadRequestHttpException('api.errors.contracts.property.invalid');
         }
 
-        /** @var TrustedLandlordDTO $landlordDTO */
-        $landlordDTO = $newUnitForm->get('landlord')->getData();
-        $landlordInDb = null;
-        if ($landlordDTO->getEmail()) {
-            /** @var Landlord $landlordInDb */
-            $landlordInDb = $this->em->getRepository('RjDataBundle:Landlord')->findOneBy(
-                ['email' => $landlordDTO->getEmail()]
-            );
+        /** @var TrustedLandlordDTO $trustedLandlordDTO */
+        $trustedLandlordDTO = $newUnitForm->get('landlord')->getData();
+        if (!$trustedLandlord = $this->trustedLandlordService->lookup($trustedLandlordDTO)) {
+            try {
+                $trustedLandlord = $this->trustedLandlordService->create($trustedLandlordDTO);
+            } catch (TrustedLandlordServiceException $e) {
+                throw new BadRequestHttpException('api.errors.contracts.mailing_address.invalid');
+            }
         }
 
-        if ($landlordInDb) {
-            $landlord = $landlordInDb;
-            $group = $landlord->getCurrentGroup();
-        } else {
-            $landlord = new Landlord();
-            $landlord->setEmail($landlordDTO->getEmail());
-            $landlord->setFirstName($landlordDTO->getFirstName());
-            $landlord->setLastName($landlordDTO->getLastName());
-            $landlord->setPhone($landlordDTO->getPhone());
-            $landlord->setPassword(md5(md5(1)));
-            $landlord->setCulture($this->locale);
-
+        if (!$group = $trustedLandlord->getGroup()) {
             $holding = new Holding();
-            $holding->setName($landlord->getUsername());
-            $landlord->setHolding($holding);
+            $holding->setName($this->generateCommercialName($trustedLandlordDTO));
 
             $group = new Group();
-            $group->setName($landlord->getUsername());
+            $group->setName($this->generateCommercialName($trustedLandlordDTO));
             $group->setType(GroupType::RENT);
+            $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
             $group->setHolding($holding);
-
-            if (!$newUnitForm->get('landlord')->get('mailing_address')->isEmpty()) {
-                if (!$trustedLandlord = $this->trustedLandlordService->lookup($landlordDTO)) {
-                    $trustedLandlord = $this->trustedLandlordService->create($landlordDTO);
-                }
-                $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
-                $group->setTrustedLandlord($trustedLandlord);
-            }
+            $group->setTrustedLandlord($trustedLandlord);
 
             $holding->addGroup($group);
+
+            $this->em->persist($holding);
+        }
+
+        if ($email = $trustedLandlordDTO->getEmail() and
+            !$this->em->getRepository('DataBundle:User')->findOneByEmail($email)
+        ) {
+            $landlord = new Landlord();
+            $landlord->setEmail($email);
+            $landlord->setFirstName($trustedLandlordDTO->getFirstName());
+            $landlord->setLastName($trustedLandlordDTO->getLastName());
+            $landlord->setPhone($trustedLandlordDTO->getPhone());
+            $landlord->setPassword(md5(md5(1)));
+            $landlord->setCulture($this->locale);
+            $landlord->setHolding($group->getHolding());
             $landlord->setAgentGroups($group);
 
-            $this->em->persist($group);
-            $this->em->persist($holding);
             $this->em->persist($landlord);
         }
 
@@ -236,18 +246,36 @@ class ContractProcessor
             ->contractProcess
             ->setContract($contract)
             ->createContractFromTenantSide($tenant, $property, $unitName);
-
         if (!is_array($contracts)) {
             $contracts = [$contracts];
         }
-
+        /** @var Contract[] $contracts */
         foreach ($contracts as $contract) {
-            if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                throw new \Exception('Email can\'t be send. Please contact with administrator.');
+            if ($group->getId() == $contract->getGroup()->getId()) {
+                if (!empty($landlord) && !$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
+                    throw new \Exception(
+                        sprintf(
+                            'Invitation email to "%s" can\'t be send. Please contact with administrator.',
+                            $landlord->getEmail()
+                        )
+                    );
+                }
+
+                return $contract;
             }
         }
 
         //TODO return last need understand how it will be fix
         return $contract;
+    }
+
+    /**
+     * @param TrustedLandlordDTO $trustedLandlordDTO
+     * @return string
+     */
+    protected function generateCommercialName(TrustedLandlordDTO $trustedLandlordDTO)
+    {
+        return $trustedLandlordDTO->getCompanyName() ?:
+            sprintf('%s %s', $trustedLandlordDTO->getFirstName(), $trustedLandlordDTO->getLastName());
     }
 }

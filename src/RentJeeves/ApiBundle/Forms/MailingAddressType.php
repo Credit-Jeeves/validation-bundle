@@ -15,12 +15,13 @@ class MailingAddressType extends AbstractType
      */
     public function buildForm(FormBuilder $builder, array $options)
     {
-        $builder->add('addressee');
-        $builder->add('address1');
-        $builder->add('address2');
+        $builder->add('payee_name', 'text', ['property_path' => 'addressee']);
+        $builder->add('street_address_1', 'text', ['property_path' => 'address1']);
+        $builder->add('street_address_2', 'text', ['property_path' => 'address2']);
         $builder->add('state');
         $builder->add('city');
         $builder->add('zip');
+        $builder->add('location_id', 'text', ['property_path' => 'locationId']);
     }
 
     /**

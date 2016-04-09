@@ -86,7 +86,16 @@ abstract class BaseApiTestCase extends BaseTestCase
     {
         $data = $this->parseContent($content, $format);
 
-        $this->assertEquals($result, $data, 'Response is incorrect.');
+        $this->assertEquals(
+            $result,
+            $data,
+            sprintf(
+                'Response is incorrect.%1$sShould be:%1$s%2$sExpected:%1$s%3$s',
+                PHP_EOL,
+                print_r($result, true),
+                print_r($data, true)
+            )
+        );
     }
 
     /**

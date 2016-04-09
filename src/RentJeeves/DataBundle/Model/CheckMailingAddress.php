@@ -22,28 +22,28 @@ abstract class CheckMailingAddress
     /**
      * @var string
      *
-     * @ORM\Column(name="addressee",type="string")
+     * @ORM\Column(name="addressee", type="string")
      */
     protected $addressee;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string",length=2)
+     * @ORM\Column(type="string", length=2)
      */
     protected $state;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string",length=255)
+     * @ORM\Column(type="string", length=255)
      */
     protected $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string",length=255)
+     * @ORM\Column(type="string", length=255)
      */
     protected $address1;
 
@@ -57,9 +57,16 @@ abstract class CheckMailingAddress
     /**
      * @var string
      *
-     * @ORM\Column(type="string",length=15)
+     * @ORM\Column(type="string", length=15)
      */
     protected $zip;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location_id", type="string", length=255, nullable=true)
+     */
+    protected $locationId;
 
     /**
      * @var string
@@ -194,6 +201,22 @@ abstract class CheckMailingAddress
     public function getZip()
     {
         return $this->zip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocationId()
+    {
+        return $this->locationId;
+    }
+
+    /**
+     * @param string $locationId
+     */
+    public function setLocationId($locationId)
+    {
+        $this->locationId = $locationId;
     }
 
     /**

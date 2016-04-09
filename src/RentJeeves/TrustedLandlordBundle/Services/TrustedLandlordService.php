@@ -129,6 +129,8 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $this->em->persist($newTrustedLandlord);
         $this->em->flush();
         $this->updateStatus($newTrustedLandlord, TrustedLandlordStatus::NEWONE);
+
+        return $newTrustedLandlord;
     }
 
     /**
