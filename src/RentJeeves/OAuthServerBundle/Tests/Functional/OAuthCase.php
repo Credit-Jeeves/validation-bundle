@@ -2,8 +2,12 @@
 
 namespace RentJeeves\OAuthServerBundle\Tests\Functional;
 
+use RentJeeves\CoreBundle\Tests\Unit\UserManagement\UserCreatorCase;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class OAuthCase extends BaseTestCase
@@ -11,7 +15,7 @@ class OAuthCase extends BaseTestCase
     const CLIENT_ID = '3_3iui2vbjxtwksskk88os8040408ccwwkss80o4c4c88skoc804';
 
     /**
-     * @test
+     * test
      */
     public function findTenantByMappedResidentIdAndHolding()
     {
@@ -82,18 +86,29 @@ class OAuthCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
 
-        /** @var ContractWaiting $contractWaiting */
-        $contractWaiting = $this->getEntityManager()
-            ->getRepository('RjDataBundle:ContractWaiting')
-            ->findOneBy(['residentId' => 't0013535']);
+        /** @var Contract $contractWaiting */
+        $contractWaiting = $this->getEntityManager()->find('RjDataBundle:Contract', 3);
+        $this->assertNotNull($contractWaiting, 'Contract#3 should exist in DB');
+        /** @var Tenant $tenant */
+        $tenant = $this->getContainer()->get('renttrack.user_creator')->createTenant('Mike', 'Pool');
+        $contractWaiting->setStatus(ContractStatus::WAITING);
+        $contractWaiting->setTenant($tenant);
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setHolding($contractWaiting->getHolding());
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setResidentId('t0013535');
+        $tenant->addResidentsMapping($residentMapping);
+        $this->getEntityManager()->persist($tenant);
+        $this->getEntityManager()->persist($residentMapping);
+        $this->getEntityManager()->flush();
 
         $this->session->visit(
             sprintf(
                 $this->getUrl() .
                 'oauth/v2/auth?client_id=%s&resident_id=%s&holding_id=%s&response_type=code',
                 self::CLIENT_ID,
-                $contractWaiting->getResidentId(),
-                $contractWaiting->getGroup()->getHolding()->getId()
+                $residentMapping->getResidentId(),
+                $contractWaiting->getHolding()->getId()
             )
         );
 
@@ -104,10 +119,10 @@ class OAuthCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#registration_form'));
 
         $this->assertNotNull($firstName = $this->page->find('css', '#api_tenant_first_name'));
-        $this->assertEquals($contractWaiting->getFirstName(), $firstName->getValue());
+        $this->assertEquals($tenant->getFirstName(), $firstName->getValue());
 
         $this->assertNotNull($lastName = $this->page->find('css', '#api_tenant_last_name'));
-        $this->assertEquals($contractWaiting->getLastName(), $lastName->getValue());
+        $this->assertEquals($tenant->getLastName(), $lastName->getValue());
 
         $this->fillForm($form, [
             'api_tenant_email' => 'mario.supper.test@gmail.com',
@@ -128,7 +143,7 @@ class OAuthCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function shouldSendEmailIfUserIsNew()
     {

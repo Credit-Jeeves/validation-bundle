@@ -167,7 +167,7 @@ class TenantType extends AbstractType
                     }
                 }
 
-                $contractsWaiting = $unit->getContractsWaiting();
+                $contractsWaiting = $this->em->getRepository('RjDataBundle:Contract')->getAllWaitingForUnit($unit);
                 $firstName = strtolower($data['first_name']);
                 $lastName = strtolower($data['last_name']);
 

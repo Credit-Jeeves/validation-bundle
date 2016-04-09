@@ -25,7 +25,6 @@ abstract class ContractWaiting
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     inversedBy="contractsWaiting",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
@@ -39,7 +38,6 @@ abstract class ContractWaiting
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="contractsWaiting",
      *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
