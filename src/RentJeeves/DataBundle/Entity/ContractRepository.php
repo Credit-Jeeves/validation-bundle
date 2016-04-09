@@ -1720,4 +1720,19 @@ class ContractRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    /**
+     * @param Tenant $tenant
+     * @return Contract[]
+     */
+    public function getAllWaitingForTenant(Tenant $tenant)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :waiting')
+            ->andWhere('c.tenant = :tenant')
+            ->setParameter('pending', ContractStatus::WAITING)
+            ->setParameter('tenant', $tenant->getId())
+            ->getQuery()
+            ->execute();
+    }
 }
