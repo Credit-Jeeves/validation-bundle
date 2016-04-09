@@ -71,27 +71,52 @@ class UserCreator
      * @param string $lastName
      * @param string $email
      *
-     * @throw \InvalidArgumentException ?
+     * @throws UserCreatorException if user with input email already exists
      *
      * @return Tenant
      */
     protected function createTenantWithEmail($firstName, $lastName, $email)
     {
-        // PLS implement me
+        $email = strtolower($email);
+        if (null !== $this->getUserRepository()->findOneBy(['emailCanonical' => $email])) {
+            throw new UserCreatorException(
+                sprintf('User with email "%s" already exist.', $email)
+            );
+        }
+
+        $newTenant = new Tenant();
+        $newTenant->setFirstName($firstName);
+        $newTenant->setLastName($lastName);
+        $newTenant->setUsername($email);
+        $newTenant->setEmailField($email);
+        $newTenant->setUsernameCanonical($email);
+        $newTenant->setEmailCanonical($email);
+        $newTenant->setPassword($this->generatePassword());
+        $newTenant->setEmailNotification(true);
+        $newTenant->setOfferNotification(true);
+
+        $this->validate($newTenant);
+
+        $this->em->persist($newTenant);
+        $this->em->flush();
+
+        return $newTenant;
     }
 
     /**
      * @param string $firstName
      * @param string $lastName
      *
-     * @throw \InvalidArgumentException if input data is empty
+     * @throws UserCreatorException if input data is empty
      *
      * @return Tenant
      */
     protected function createTenantWithoutEmail($firstName, $lastName)
     {
         if (true === empty($firstName) || true === empty($lastName)) {
-            throw new \InvalidArgumentException('Fields "firstName" and "lastName" are required.');
+            throw new UserCreatorException(
+                'Fields "firstName" and "lastName" are required for creating Tenant without email.'
+            );
         }
 
         $userName = $this->generateUserName($firstName, $lastName);

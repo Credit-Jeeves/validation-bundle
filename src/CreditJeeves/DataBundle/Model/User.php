@@ -1824,4 +1824,15 @@ abstract class User extends BaseUser
     {
         return $this->lastIp;
     }
+
+    /**
+     * @Assert\True(
+     *     groups={"userCreationManager"},
+     *     message = "Username cannot be different from email."
+     * )
+     */
+    public function isUsernameValid()
+    {
+        return $this->emailCanonical === null || $this->emailCanonical === $this->usernameCanonical;
+    }
 }
