@@ -1450,7 +1450,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('rm.residentId = :residentId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
@@ -1525,7 +1528,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('unitName', $unitName)
@@ -1562,7 +1568,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
