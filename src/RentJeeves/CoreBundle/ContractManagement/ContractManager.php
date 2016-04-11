@@ -127,26 +127,26 @@ class ContractManager
     }
 
     /**
-     * @param Contract $contract
-     * @param string   $newStatus
-     * @param null     $tenantEmail
-     *
-     * @throws \LogicException Contract has not Waiting status
+     * @param Contract    $contract
+     * @param string      $newStatus
+     * @param null|string $tenantEmail
+     * @param null|string $tenantEmail
+     * @param boolean     $sendEmail
      */
-    public function moveContractOutOfWaiting(
+    public function moveContractOutOfWaitingByLandlord(
         Contract $contract,
         $newStatus = ContractStatus::APPROVED,
-        $tenantEmail = null
+        $tenantEmail = null,
+        $sendEmail = true
     ) {
         $this->logger->debug(
-            sprintf('Try to move Contract#%d from waiting status to %s.', $contract->getId(), $newStatus)
+            sprintf(
+                '%s: Try to move Contract#%d from waiting status to %s.',
+                __FUNCTION__,
+                $contract->getId(),
+                $newStatus
+            )
         );
-
-        if ($contract->getStatus() !== ContractStatus::WAITING) {
-            throw new \LogicException(
-                sprintf('Cant use function %s for contract with status %s', __FUNCTION__, $contract->getStatus())
-            );
-        }
 
         $contract->setStatus($newStatus);
 
@@ -157,7 +157,48 @@ class ContractManager
             $tenant->setEmailNotification(true);
             $tenant->setOfferNotification(true);
 
-            $this->sendInviteToTenant($tenant, $contract);
+            if (true === $sendEmail) {
+                $this->sendInviteToTenant($tenant, $contract);
+            }
+        }
+
+        $this->em->flush();
+    }
+
+    /**
+     * @param Contract    $contract
+     * @param string      $newStatus
+     * @param null|string $tenantEmail
+     * @param null|string $tenantEmail
+     * @param boolean     $sendEmail
+     */
+    public function moveContractOutOfWaitingByTenant(
+        Contract $contract,
+        $newStatus = ContractStatus::APPROVED,
+        $tenantEmail = null,
+        $sendEmail = true
+    ) {
+        $this->logger->debug(
+            sprintf(
+                '%s: Try to move Contract#%d from waiting status to %s.',
+                __FUNCTION__,
+                $contract->getId(),
+                $newStatus
+            )
+        );
+
+        $contract->setStatus($newStatus);
+
+        if (false === empty($tenantEmail) && $this->isValidEmail($tenantEmail)) {
+            $tenant = $contract->getTenant();
+            $tenant->setEmailField($tenantEmail);
+            $tenant->setEmailCanonical(strtolower($tenantEmail));
+            $tenant->setEmailNotification(true);
+            $tenant->setOfferNotification(true);
+
+            if (true === $sendEmail) {
+                $this->mailer->sendCheckEmail($tenant);
+            }
         }
 
         $this->em->flush();

@@ -135,32 +135,8 @@ class ContractManagerCase extends UnitTestBase
 
     /**
      * @test
-     * @expectedException \LogicException
      */
-    public function shouldThrowExceptionIfInputContractHasNotWaitingStatusForMoveContractOutOfWaiting()
-    {
-        $em = $this->getEntityManagerMock();
-        $em->expects($this->never())
-            ->method('flush');
-        $contractManager = new ContractManager(
-            $this->getBaseMock(ContractCreator::class),
-            $this->getBaseMock(UserCreator::class),
-            $em,
-            $this->getLoggerMock(),
-            $this->getValidatorMock(),
-            $this->getMailerMock()
-        );
-
-        $contract = new Contract();
-        $contract->setStatus(ContractStatus::APPROVED);
-
-        $contractManager->moveContractOutOfWaiting($contract);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldOnlyUpdateStatusIfEmailIsEmptyForMoveContractOutOfWaiting()
+    public function shouldOnlyUpdateStatusIfEmailIsEmptyForMoveContractOutOfWaitingByLandlord()
     {
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -177,7 +153,7 @@ class ContractManagerCase extends UnitTestBase
         $contract = new Contract();
         $contract->setStatus(ContractStatus::WAITING);
 
-        $contractManager->moveContractOutOfWaiting($contract);
+        $contractManager->moveContractOutOfWaitingByLandlord($contract);
 
         $this->assertEquals(ContractStatus::APPROVED, $contract->getStatus(), 'Not correct status after move.');
     }
@@ -185,7 +161,7 @@ class ContractManagerCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldUpdateStatusAndEmailForTenantAndSendEmailIfEmailIsNotEmptyForMoveContractOutOfWaiting()
+    public function shouldUpdateStatusAndEmailAndSendEmailIfEmailIsNotEmptyForMoveContractOutOfWaitingByLandlord()
     {
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -214,7 +190,132 @@ class ContractManagerCase extends UnitTestBase
         $this->writeAttribute($holding, 'users', new ArrayCollection([new Landlord()]));
         $contract->setHolding($holding);
 
-        $contractManager->moveContractOutOfWaiting($contract, ContractStatus::CURRENT, 'test@test.com');
+        $contractManager->moveContractOutOfWaitingByLandlord($contract, ContractStatus::CURRENT, 'test@test.com');
+
+        $this->assertEquals(ContractStatus::CURRENT, $contract->getStatus(), 'Not correct status after move.');
+        $this->assertNotNull($contract->getTenant()->getEmail(), 'Email is not updated.');
+        $this->assertTrue($contract->getTenant()->getEmailNotification(), 'EmailNotification is not updated.');
+        $this->assertTrue($contract->getTenant()->getOfferNotification(), 'OfferNotification is not updated.');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateStatusAndEmailAndNotSendEmailIfFlagForSendIsFalseForMoveContractOutOfWaitingByLandlord()
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('flush');
+        $mailer = $this->getMailerMock();
+        $mailer->expects($this->never())
+            ->method('sendRjTenantInvite');
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList());
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $this->getLoggerMock(),
+            $validator,
+            $mailer
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setTenant(new Tenant());
+
+        $holding = new Holding();
+        $this->writeAttribute($holding, 'users', new ArrayCollection([new Landlord()]));
+        $contract->setHolding($holding);
+
+        $contractManager->moveContractOutOfWaitingByLandlord(
+            $contract,
+            ContractStatus::CURRENT,
+            'test@test.com',
+            false
+        );
+
+        $this->assertEquals(ContractStatus::CURRENT, $contract->getStatus(), 'Not correct status after move.');
+        $this->assertNotNull($contract->getTenant()->getEmail(), 'Email is not updated.');
+        $this->assertTrue($contract->getTenant()->getEmailNotification(), 'EmailNotification is not updated.');
+        $this->assertTrue($contract->getTenant()->getOfferNotification(), 'OfferNotification is not updated.');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateStatusAndEmailAndSendEmailIfEmailIsNotEmptyForMoveContractOutOfWaitingByTenant()
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('flush');
+        $mailer = $this->getMailerMock();
+        $mailer->expects($this->once())
+            ->method('sendCheckEmail');
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList());
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $this->getLoggerMock(),
+            $validator,
+            $mailer
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setTenant(new Tenant());
+
+        $holding = new Holding();
+        $this->writeAttribute($holding, 'users', new ArrayCollection([new Landlord()]));
+        $contract->setHolding($holding);
+
+        $contractManager->moveContractOutOfWaitingByTenant($contract, ContractStatus::CURRENT, 'test@test.com');
+
+        $this->assertEquals(ContractStatus::CURRENT, $contract->getStatus(), 'Not correct status after move.');
+        $this->assertNotNull($contract->getTenant()->getEmail(), 'Email is not updated.');
+        $this->assertTrue($contract->getTenant()->getEmailNotification(), 'EmailNotification is not updated.');
+        $this->assertTrue($contract->getTenant()->getOfferNotification(), 'OfferNotification is not updated.');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateStatusAndEmailAndNotSendEmailIfFlagIsFalseForMoveContractOutOfWaitingByTenant()
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('flush');
+        $mailer = $this->getMailerMock();
+        $mailer->expects($this->never())
+            ->method('sendCheckEmail');
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList());
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $this->getLoggerMock(),
+            $validator,
+            $mailer
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setTenant(new Tenant());
+
+        $holding = new Holding();
+        $this->writeAttribute($holding, 'users', new ArrayCollection([new Landlord()]));
+        $contract->setHolding($holding);
+
+        $contractManager->moveContractOutOfWaitingByTenant($contract, ContractStatus::CURRENT, 'test@test.com', false);
 
         $this->assertEquals(ContractStatus::CURRENT, $contract->getStatus(), 'Not correct status after move.');
         $this->assertNotNull($contract->getTenant()->getEmail(), 'Email is not updated.');
