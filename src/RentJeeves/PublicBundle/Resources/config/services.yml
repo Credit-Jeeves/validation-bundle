@@ -11,6 +11,7 @@ services:
         arguments:
             - "@validator"
             - "@mri.hmac.generator"
+            - "@logger"
 
     accounting_system.integration.data_mapper_factory:
         public: false
