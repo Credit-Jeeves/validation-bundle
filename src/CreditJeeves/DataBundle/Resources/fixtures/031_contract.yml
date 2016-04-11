@@ -338,3 +338,14 @@ fixtures:
         finishAt:  '+12 months'
         createdAt: '-1 days'
         updatedAt: '-1 days'
+    Contract_waiting_1:
+        tenant:   Tenant_dtr_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        property:  Property_1
+        unit:      Unit_dtr_1
+        rent:      1250
+        status:    waiting
+        paidTo:    null
+        createdAt: '-1 days'
+        updatedAt: '-1 days'

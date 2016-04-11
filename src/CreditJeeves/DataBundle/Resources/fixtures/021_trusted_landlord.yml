@@ -7,10 +7,14 @@ fixtures:
         type:                person
         status:              new
         phone:               777777
-
     TrustedLandlord2:
         checkMailingAddress: CheckMailingAddress2
         firstName:           John
         lastName:            Brown
         type:                person
+        status:              trusted
+    TrustedLandlord3:
+        checkMailingAddress: CheckMailingAddress3
+        companyName:         Lex Corp
+        type:                company
         status:              trusted

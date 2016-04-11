@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\ComponentBundle\Service\ResidentManager;
+use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
@@ -774,7 +775,18 @@ class AjaxController extends Controller
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
         $tenant->setLastName($details['last_name']);
-        $tenant->setEmail($details['email']);
+
+        if (($email = trim($details['email'])) && !($email = filter_var($email, FILTER_VALIDATE_EMAIL))) {
+            $errors[] = $translator->trans('contract.error.email.invalid');
+        } elseif(!empty($email)) {
+              /** @var ContractManager $contractManager */
+            $contractManager = $this->get('renttrack.contract_manager');
+            $contractStatus = $contract->getStatus();
+            if ($contractStatus === ContractStatus::WAITING) {
+                $contractStatus = ContractStatus::APPROVED;
+            }
+            $contractManager->moveContractOutOfWaitingByLandlord($contract, $contractStatus, $email);
+        }
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
 

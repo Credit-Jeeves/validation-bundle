@@ -84,3 +84,13 @@ fixtures:
     code:           RentTrackCorp
     type:           generic
     mailingAddressName: tes231t71_11
+  DTRGroup_1:
+    name: First DTR Group
+    statementDescriptor: Test DTR Group
+    holding: rjHolding_1
+    trustedLandlord: TrustedLandlord3
+    orderAlgorithm: pay_direct
+    type: rent
+    code: DTR6DTRAGX
+    created_at: '-60 days'
+    updated_at: '-8 days'

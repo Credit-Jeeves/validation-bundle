@@ -212,7 +212,8 @@
                 <div class="form-row clearfix">
                     <label>{{'name'|trans}}<b>*</b></label>
                     <div class="fields-box">
-                        <span data-bind="text: tenant"></span>
+                        <span data-bind="text: tenant, visible: email"></span>
+                        <span data-bind="visible: !email">{{ 'landlord.contract_edit.contract_waiting' | trans }}</span>
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -222,9 +223,14 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'email'|trans }}<b>*</b></label>
+                    <label>{{ 'email'|trans }}</label>
                     <div class="fields-box">
-                        <span data-bind="text: email"></span>
+                        <span data-bind="text: email, visible: email"></span>
+                        <input data-bind="value: email, visible: !email" type="text" id="email-edit" class="half-of-right">
+                        <div data-bind="visible: !email" class="tooltip-box type3 pie-el">
+                            <h4>{{ 'landlord.contract_edit.add_email.title' | trans }}</h4>
+                            <p>{{ 'landlord.contract_edit.add_email.description' | trans }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
