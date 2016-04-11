@@ -2,9 +2,7 @@
 
 namespace RentJeeves\OAuthServerBundle\Tests\Functional;
 
-use RentJeeves\CoreBundle\Tests\Unit\UserManagement\UserCreatorCase;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -15,7 +13,7 @@ class OAuthCase extends BaseTestCase
     const CLIENT_ID = '3_3iui2vbjxtwksskk88os8040408ccwwkss80o4c4c88skoc804';
 
     /**
-     * test
+     * @test
      */
     public function findTenantByMappedResidentIdAndHolding()
     {
@@ -143,7 +141,7 @@ class OAuthCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function shouldSendEmailIfUserIsNew()
     {

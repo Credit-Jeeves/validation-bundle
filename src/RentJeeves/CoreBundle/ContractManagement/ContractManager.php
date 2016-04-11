@@ -197,7 +197,7 @@ class ContractManager
             $tenant->setOfferNotification(true);
 
             if (true === $sendEmail) {
-                $this->mailer->sendCheckEmail($tenant);
+                $this->mailer->sendRjCheckEmail($tenant);
             }
         }
 

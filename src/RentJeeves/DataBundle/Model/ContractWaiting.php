@@ -216,9 +216,7 @@ abstract class ContractWaiting
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="waitingContracts",
-     *     cascade={"persist"}
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group"
      * )
      * @ORM\JoinColumn(
      *     name="group_id",

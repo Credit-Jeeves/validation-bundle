@@ -63,7 +63,7 @@ class PublicController extends Controller
                     /** @var ContractManager $contractManager */
                     $contractManager = $this->get('renttrack.contract_manager');
                     foreach ($contractsWaiting as $contract) {
-                        $contractManager->moveContractOutOfWaiting(
+                        $contractManager->moveContractOutOfWaitingByTenant(
                             $contract,
                             ContractStatus::APPROVED,
                             $tenant->getEmail()

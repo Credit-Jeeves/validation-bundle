@@ -3,7 +3,6 @@ namespace RentJeeves\CoreBundle\Tests\Command;
 
 use RentJeeves\CoreBundle\Command\UnitDeduplicateCommand;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 

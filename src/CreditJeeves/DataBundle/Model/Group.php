@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
@@ -412,15 +411,6 @@ abstract class Group
     protected $aciCollectPayProfile;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
-     *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"}
-     * )
-     */
-    protected $waitingContracts;
-
-    /**
     * @ORM\Column(
      *     type="string",
      *     name="statement_descriptor",
@@ -500,7 +490,6 @@ abstract class Group
         $this->contracts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
-        $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
     }
@@ -1426,22 +1415,6 @@ abstract class Group
     public function getGroupAgents()
     {
         return $this->group_agents;
-    }
-
-    /**
-     * @param ContractWaiting $waitingContract
-     */
-    public function addWaitingContract(ContractWaiting $waitingContract)
-    {
-        $this->waitingContracts[] = $waitingContract;
-    }
-
-    /**
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getWaitingContracts()
-    {
-        return $this->waitingContracts;
     }
 
     /**

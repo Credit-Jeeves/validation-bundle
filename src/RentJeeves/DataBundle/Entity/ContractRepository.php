@@ -1759,4 +1759,24 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param Holding $holding
+     * @param string $residentId
+     * @return Contract[]
+     */
+    public function getAllWaitingByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status = :waiting')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->execute();
+    }
 }

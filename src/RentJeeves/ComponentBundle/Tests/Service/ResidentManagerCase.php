@@ -38,32 +38,6 @@ class ResidentManagerCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldClearWaitingRoom()
-    {
-        $this->load(true);
-        /** @var $resident ResidentManager */
-        $resident = $this->getContainer()->get('resident_manager');
-        /** @var $em EntityManager */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(1, $contractsWaiting);
-
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('alex@rentrack.com');
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
-
-        $residentMapping = new ResidentMapping();
-        $residentMapping->setTenant($tenant);
-        $residentMapping->setHolding($landlord->getHolding());
-        $residentMapping->setResidentId('t0013535');
-        $resident->validate($landlord, $residentMapping);
-
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(0, $contractsWaiting);
-    }
-
-    /**
-     * @test
-     */
     public function shouldNotHaveMultipleContracts()
     {
         $this->load(true);
