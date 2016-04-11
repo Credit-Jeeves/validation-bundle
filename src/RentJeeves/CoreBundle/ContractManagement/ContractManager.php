@@ -228,9 +228,9 @@ class ContractManager
     protected function isValidEmail($email)
     {
         $emailConstraint = new Assert\Email();
-        $errorList = $this->validator->validate($email, $emailConstraint);
+        $errorList = $this->validator->validateValue($email, $emailConstraint);
         if (0 !== count($errorList)) {
-            $this->logger->warning('"%s" is not valid email.', $email);
+            $this->logger->warning(sprintf('"%s" is not valid email.', $email));
 
             return false;
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Tests\ContractManagement;
+namespace RentJeeves\CoreBundle\Tests\Unit\ContractManagement;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -171,7 +171,7 @@ class ContractManagerCase extends UnitTestBase
             ->method('sendRjTenantInvite');
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())
-            ->method('validate')
+            ->method('validateValue')
             ->willReturn(new ConstraintViolationList());
         $contractManager = new ContractManager(
             $this->getBaseMock(ContractCreator::class),
@@ -211,7 +211,7 @@ class ContractManagerCase extends UnitTestBase
             ->method('sendRjTenantInvite');
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())
-            ->method('validate')
+            ->method('validateValue')
             ->willReturn(new ConstraintViolationList());
         $contractManager = new ContractManager(
             $this->getBaseMock(ContractCreator::class),
@@ -256,7 +256,7 @@ class ContractManagerCase extends UnitTestBase
             ->method('sendCheckEmail');
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())
-            ->method('validate')
+            ->method('validateValue')
             ->willReturn(new ConstraintViolationList());
         $contractManager = new ContractManager(
             $this->getBaseMock(ContractCreator::class),
@@ -296,7 +296,7 @@ class ContractManagerCase extends UnitTestBase
             ->method('sendCheckEmail');
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())
-            ->method('validate')
+            ->method('validateValue')
             ->willReturn(new ConstraintViolationList());
         $contractManager = new ContractManager(
             $this->getBaseMock(ContractCreator::class),
