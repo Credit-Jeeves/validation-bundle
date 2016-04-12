@@ -42,7 +42,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportFile()
     {
@@ -257,7 +257,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends shouldImportFile
      */
     public function shouldImportFileWithCheckboxOnlyNewAndException()
@@ -315,7 +315,6 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function waitingRoom()
     {
-        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
@@ -376,7 +375,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $this->logout();
         }
 
-        $this->getWaitingRoom();
+        $this->getContractInWaitingStatus();
     }
 
     /**
@@ -385,8 +384,8 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function createContractFromWaiting()
     {
-        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
-        $contractWaiting = $this->getWaitingRoom();
+        $contractInWaitingStatus = $this->getContractInWaitingStatus();
+        $tenantWithoutEmail = $contractInWaitingStatus->getTenant();
         $em = $this->getEntityManager();
         /**
          * @var $property Property
@@ -407,8 +406,8 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_first_name' => $contractWaiting->getFirstName() . 'Wr',
-                'rentjeeves_publicbundle_tenanttype_last_name' => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_first_name' => $tenantWithoutEmail->getFirstName() . 'Wr',
+                'rentjeeves_publicbundle_tenanttype_last_name' => $tenantWithoutEmail->getLastName(),
                 'rentjeeves_publicbundle_tenanttype_email' => 'hi@mail.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
@@ -417,7 +416,7 @@ class ImportCsvCase extends ImportBaseAbstract
         );
 
         $this->assertNotNull($selectUnit = $this->page->find('css', '.select-unit'));
-        $selectUnit->selectOption($contractWaiting->getUnit()->getName());
+        $selectUnit->selectOption($contractInWaitingStatus->getUnit()->getName());
 
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
@@ -428,8 +427,8 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_tenanttype_first_name' => $contractWaiting->getFirstName(),
-                'rentjeeves_publicbundle_tenanttype_last_name' => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_first_name' => $tenantWithoutEmail->getFirstName(),
+                'rentjeeves_publicbundle_tenanttype_last_name' => $tenantWithoutEmail->getLastName(),
                 'rentjeeves_publicbundle_tenanttype_email' => 'hi@mail.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
@@ -453,12 +452,12 @@ class ImportCsvCase extends ImportBaseAbstract
          * @var Contract $contract
          */
         $contract = $contracts[0];
-        $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
-        $this->assertEquals($contract->getFinishAt(), $contractWaiting->getFinishAt());
-        $this->assertEquals($contract->getRent(), $contractWaiting->getRent());
-        $this->assertEquals($contract->getIntegratedBalance(), $contractWaiting->getIntegratedBalance());
-        $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
-        $this->assertEquals($contract->getUnit()->getId(), $contractWaiting->getUnit()->getId());
+        $this->assertEquals($contract->getStartAt(), $contractInWaitingStatus->getStartAt());
+        $this->assertEquals($contract->getFinishAt(), $contractInWaitingStatus->getFinishAt());
+        $this->assertEquals($contract->getRent(), $contractInWaitingStatus->getRent());
+        $this->assertEquals($contract->getIntegratedBalance(), $contractInWaitingStatus->getIntegratedBalance());
+        $this->assertEquals($contract->getStartAt(), $contractInWaitingStatus->getStartAt());
+        $this->assertEquals($contract->getUnit()->getId(), $contractInWaitingStatus->getUnit()->getId());
 
         $mapping = $tenant->getResidentsMapping();
         $this->assertEquals(1, count($mapping));
@@ -466,9 +465,9 @@ class ImportCsvCase extends ImportBaseAbstract
          * @var $mapping ResidentMapping
          */
         $mapping = $mapping[0];
-        $this->assertEquals($mapping->getResidentId(), $contractWaiting->getResidentId());
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
-        $this->assertNotNull($contractWaiting);
+        $this->assertEquals($mapping->getResidentId(), $contractInWaitingStatus->getResidentId());
+        $contractInWaitingStatus = $em->getRepository('RjDataBundle:Contract')->find($contractInWaitingStatus->getId());
+        $this->assertNotNull($contractInWaitingStatus);
     }
 
     /**
@@ -529,7 +528,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function checkFormatDate()
     {
@@ -591,7 +590,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function importMultipleProperties()
     {
@@ -712,12 +711,11 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
     {
-        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         # Check this issue
         #$this->markTestSkipped('Temporarily skip this test due to: PHP Fatal error:  Allowed memory size exhausted');
         $this->setDefaultSession('selenium2');
@@ -792,7 +790,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function alreadyHaveAccount()
     {
@@ -864,7 +862,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @depends alreadyHaveAccount
      */
     public function checkMatchedUser()
@@ -894,7 +892,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function matchWaitingContract()
     {
@@ -986,7 +984,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @dataProvider providerForMatchWaitingContractWithMoveContract
      */
     public function matchWaitingContractWithMoveContract($balanceIn)
@@ -1090,7 +1088,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function importMultipleGroups()
     {
@@ -1154,7 +1152,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldOnlyNewAndException()
     {
@@ -1214,7 +1212,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldThrowExceptionForImportSinglePropertyWithoutUnit()
     {
@@ -1287,7 +1285,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldGetMappingForImport()
     {
@@ -1307,7 +1305,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportPromasExtraField()
     {
@@ -1403,7 +1401,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
@@ -1458,7 +1456,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportCurrentPromasTenantsAndSetMonthToMonthToTrueIfMonthToMonthIsNo()
     {
@@ -1504,7 +1502,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function duplicateResidentIdShouldBeSkippedWithError()
     {
@@ -1554,7 +1552,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function skippedMessageAndInfoDateInvalid()
     {
@@ -1621,7 +1619,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      */
     public function shouldImportFileWithExternalLeaseId()
     {
@@ -1686,7 +1684,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * @test
+     * #test
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function mriBostonPostImport()

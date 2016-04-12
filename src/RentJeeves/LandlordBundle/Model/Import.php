@@ -9,7 +9,6 @@ use RentJeeves\DataBundle\Entity\PropertyMapping;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\LandlordBundle\Accounting\Import\Handler\HandlerAbstract;
 use Symfony\Component\Form\Form;
 
@@ -43,12 +42,6 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $skippedMessage;
-
-    /**
-     * @Serializer\Type("boolean")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $hasContractWaiting = false;
 
     /**
      * @Serializer\Type("boolean")
@@ -137,14 +130,30 @@ class Import
     protected $isMultipleProperty;
 
     /**
-     * @var ContractWaiting
-     */
-    protected $contractWaiting;
-
-    /**
      * @var HandlerAbstract
      */
     protected $handler;
+
+    /**
+     * @var boolean
+     */
+    protected $isHaveEmailOnDB;
+
+    /**
+     * @return boolean
+     */
+    public function isHaveEmailOnDB()
+    {
+        return $this->isHaveEmailOnDB;
+    }
+
+    /**
+     * @param boolean $isHaveEmailOnDB
+     */
+    public function setIsHaveEmailOnDB($isHaveEmailOnDB)
+    {
+        $this->isHaveEmailOnDB = $isHaveEmailOnDB;
+    }
 
     /**
      * @return array
@@ -272,38 +281,6 @@ class Import
     public function setIsValidDateFormat($isValidDateFormat)
     {
         $this->isValidDateFormat = $isValidDateFormat;
-    }
-
-    /**
-     * @return ContractWaiting
-     */
-    public function getContractWaiting()
-    {
-        return $this->contractWaiting;
-    }
-
-    /**
-     * @param ContractWaiting $contractWaiting
-     */
-    public function setContractWaiting(ContractWaiting $contractWaiting)
-    {
-        $this->contractWaiting = $contractWaiting;
-    }
-
-    /**
-     * @param boolean $hasContractWaiting
-     */
-    public function setHasContractWaiting($hasContractWaiting)
-    {
-        $this->hasContractWaiting = $hasContractWaiting;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getHasContractWaiting()
-    {
-        return $this->hasContractWaiting;
     }
 
     /**
@@ -484,6 +461,12 @@ class Import
     public function setTenant($tenant)
     {
         $this->tenant = $tenant;
+
+        if (empty($tenant->getEmail())) {
+            $this->setIsHaveEmailOnDB(false);
+        } else {
+            $this->setIsHaveEmailOnDB(true);
+        }
     }
 
     /**
@@ -510,7 +493,7 @@ class Import
      *
      * @return boolean
      */
-    public function isNeedUpdateRent($forceHasContractWaiting = false)
+    public function isNeedUpdateRent()
     {
         if (!$this->getContract() || !$holding = $this->getContract()->getHolding()) {
             return true;
@@ -518,10 +501,6 @@ class Import
 
         if (!$holding->getUseRecurringCharges()) {
             return true;
-        }
-
-        if ($this->getHasContractWaiting() || $forceHasContractWaiting) {
-            return false;
         }
 
         if ($this->getContract()->getId()) {

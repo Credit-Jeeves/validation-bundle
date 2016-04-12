@@ -85,7 +85,6 @@ trait Forms
     {
         $tenant   = $this->currentImportModel->getTenant();
         $contract = $this->currentImportModel->getContract();
-        $hasContractWaiting = $this->currentImportModel->getHasContractWaiting();
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
         $contractStatus = $contract->getStatus();
@@ -93,11 +92,10 @@ trait Forms
 
         $this->logger->debug(
             sprintf(
-                "getForm: tId:'%s', cId:'%s', cStatus:'%s', waiting:%s, skip:%s",
+                "getForm: tId:'%s', cId:'%s', cStatus:'%s', skip:%s",
                 $tenantId,
                 $contractId,
                 $contractStatus,
-                ($hasContractWaiting) ? "true" : "false",
                 ($isSkipped) ? "true" : "false"
             )
         );
@@ -114,7 +112,6 @@ trait Forms
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
-            || $hasContractWaiting
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
