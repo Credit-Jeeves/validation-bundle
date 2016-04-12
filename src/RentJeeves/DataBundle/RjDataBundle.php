@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle;
 
+use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Doctrine\DBAL\Types\Type;
@@ -31,6 +32,7 @@ class RjDataBundle extends Bundle
             Type::overrideType(Type::DATE, 'RentJeeves\DataBundle\DBAL\Types\DateType');
             Type::addType('PaymentTypeACH', 'RentJeeves\DataBundle\Enum\PaymentTypeACH');
             Type::addType('PaymentTypeCC', 'RentJeeves\DataBundle\Enum\PaymentTypeCC');
+            Type::addType('PaymentTypeScannedCheck', PaymentTypeScannedCheck::class);
             Type::addType('ExternalApi', 'RentJeeves\DataBundle\Enum\ExternalApi');
             Type::addType('PaymentAccepted', 'RentJeeves\DataBundle\Enum\PaymentAccepted');
             Type::addType('AccountingSystem', 'RentJeeves\DataBundle\Enum\AccountingSystem');
