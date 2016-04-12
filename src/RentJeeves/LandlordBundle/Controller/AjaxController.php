@@ -776,9 +776,12 @@ class AjaxController extends Controller
         $tenant->setFirstName($details['first_name']);
         $tenant->setLastName($details['last_name']);
 
-        if (($email = trim($details['email'])) && !($email = filter_var($email, FILTER_VALIDATE_EMAIL))) {
+        if (!$tenant->getEmail() &&
+            ($email = trim($details['email'])) &&
+            !($email = filter_var($email, FILTER_VALIDATE_EMAIL))
+        ) {
             $errors[] = $translator->trans('contract.error.email.invalid');
-        } elseif(!empty($email)) {
+        } elseif (!empty($email)) {
               /** @var ContractManager $contractManager */
             $contractManager = $this->get('renttrack.contract_manager');
             $contractStatus = $contract->getStatus();

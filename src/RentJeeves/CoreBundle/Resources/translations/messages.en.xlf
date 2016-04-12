@@ -1230,6 +1230,10 @@
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
             </trans-unit>
+            <trans-unit id="contract.error.email.invalid">
+                <source>contract.error.email.invalid</source>
+                <target>Email is invalid</target>
+            </trans-unit>
             <trans-unit id="contract.error.start">
                 <source>contract.error.start</source>
                 <target>Start At could not be empty</target>
