@@ -220,7 +220,7 @@ class ContractProcessor
             $landlord->setFirstName($trustedLandlordDTO->getFirstName());
             $landlord->setLastName($trustedLandlordDTO->getLastName());
             $landlord->setPhone($trustedLandlordDTO->getPhone());
-            $landlord->setPassword(md5(md5(1)));
+            $landlord->setPassword(md5(md5(rand())));
             $landlord->setCulture($this->locale);
             $landlord->setHolding($group->getHolding());
             $landlord->setAgentGroups($group);
@@ -265,8 +265,7 @@ class ContractProcessor
             }
         }
 
-        //TODO return last need understand how it will be fix
-        return $contract;
+        throw new \LogicException('Contract should be created');
     }
 
     /**

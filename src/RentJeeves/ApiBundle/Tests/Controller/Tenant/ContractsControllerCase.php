@@ -243,7 +243,7 @@ class ContractsControllerCase extends BaseApiTestCase
         /** @var Contract $contractInDB */
         $contractInDB = $repo->find($contractId);
         $this->assertEquals(
-            $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress()->getLocationId(),
+            $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress()->getExternalLocationId(),
             $mailingAddress['location_id'],
             'Location_id should be equals external group id on DB'
         );

@@ -115,6 +115,6 @@ class CheckMailingAddress extends ResponseResource
      */
     public function getLocationId()
     {
-        return $this->entity->getLocationId();
+        return $this->entity->getExternalLocationId();
     }
 }

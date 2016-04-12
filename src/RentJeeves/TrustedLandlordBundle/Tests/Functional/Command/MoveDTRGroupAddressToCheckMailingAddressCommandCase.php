@@ -56,7 +56,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommandCase extends BaseTestCase
         $this->assertEquals(1, count($mailingAddress), 'Only one check mailing address should be created');
         $this->assertEquals(
             $group2->getExternalGroupId(),
-            $mailingAddress[0]->getLocationId(),
+            $mailingAddress[0]->getExternalLocationId(),
             'Should be set location_id from external_group_id'
         );
         $this->assertNotNull($group2->getTrustedLandlord(), 'TrustedLandlord is expected to be set for Group#2');

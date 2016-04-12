@@ -16,7 +16,7 @@ class Version20160407164451 extends AbstractMigration
         
         $this->addSql(
             "ALTER TABLE rj_check_mailing_address
-                ADD location_id VARCHAR(255) DEFAULT NULL"
+                ADD external_location_id VARCHAR(255) DEFAULT NULL"
         );
     }
 
@@ -29,7 +29,7 @@ class Version20160407164451 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_check_mailing_address
-                DROP location_id"
+                DROP external_location_id"
         );
     }
 }

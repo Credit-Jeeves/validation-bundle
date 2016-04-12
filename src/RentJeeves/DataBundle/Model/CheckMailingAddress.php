@@ -64,9 +64,9 @@ abstract class CheckMailingAddress
     /**
      * @var string
      *
-     * @ORM\Column(name="location_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="external_location_id", type="string", length=255, nullable=true)
      */
-    protected $locationId;
+    protected $externalLocationId;
 
     /**
      * @var string
@@ -206,17 +206,17 @@ abstract class CheckMailingAddress
     /**
      * @return string
      */
-    public function getLocationId()
+    public function getExternalLocationId()
     {
-        return $this->locationId;
+        return $this->externalLocationId;
     }
 
     /**
-     * @param string $locationId
+     * @param string $externalLocationId
      */
-    public function setLocationId($locationId)
+    public function setExternalLocationId($externalLocationId)
     {
-        $this->locationId = $locationId;
+        $this->externalLocationId = $externalLocationId;
     }
 
     /**
