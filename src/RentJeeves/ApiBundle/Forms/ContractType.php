@@ -92,8 +92,7 @@ class ContractType extends AbstractType
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $submittedData = $event->getData();
-            if (!empty($submittedData['new_unit'])) {
+            if (!empty($event->getData()['new_unit'])) {
                 $this->submit = true;
             }
         });
@@ -118,7 +117,6 @@ class ContractType extends AbstractType
                     $unit = $form->get('unit_url')->getViewData();
                     if (is_null($unit) || $unit === '') {
                         $groups[] = 'new_unit';
-                        $groups[] = 'invitationApi';
                     } else {
                         $groups[] = 'unit_url';
                     }

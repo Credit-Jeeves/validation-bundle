@@ -3,6 +3,7 @@
 namespace RentJeeves\TrustedLandlordBundle\Tests\Functional\Services;
 
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
 
@@ -17,6 +18,7 @@ class TrustedLandlordServiceCase extends BaseTestCase
         $trustedLandlordService = $this->getTrustedLandlordService();
 
         $trustedLandlordDTO = new TrustedLandlordDTO();
+        $trustedLandlordDTO->setType(TrustedLandlordType::PERSON);
         $trustedLandlordDTO->setAddressee('testAddressee');
         $trustedLandlordDTO->setFirstName('testFirstName');
         $trustedLandlordDTO->setLastName('testLastName');
@@ -41,6 +43,7 @@ class TrustedLandlordServiceCase extends BaseTestCase
         $trustedLandlordService = $this->getTrustedLandlordService();
 
         $trustedLandlordDTO = new TrustedLandlordDTO();
+        $trustedLandlordDTO->setType(TrustedLandlordType::PERSON);
         $trustedLandlordDTO->setAddressee('testAddressee');
         $trustedLandlordDTO->setFirstName('testFirstName');
         $trustedLandlordDTO->setLastName('testLastName');
@@ -65,6 +68,7 @@ class TrustedLandlordServiceCase extends BaseTestCase
         $trustedLandlordService = $this->getTrustedLandlordService();
 
         $trustedLandlordDTO = new TrustedLandlordDTO();
+        $trustedLandlordDTO->setType(TrustedLandlordType::PERSON);
         $trustedLandlordDTO->setAddressee('testAddressee');
         $trustedLandlordDTO->setFirstName('testFirstName');
         $trustedLandlordDTO->setLastName('testLastName');
@@ -93,6 +97,7 @@ class TrustedLandlordServiceCase extends BaseTestCase
         $trustedLandlordService = $this->getTrustedLandlordService();
 
         $trustedLandlordDTO = new TrustedLandlordDTO();
+        $trustedLandlordDTO->setType(TrustedLandlordType::PERSON);
         $trustedLandlordDTO->setAddressee('testAddressee');
         $trustedLandlordDTO->setFirstName('testFirstName');
         $trustedLandlordDTO->setLastName('testLastName');

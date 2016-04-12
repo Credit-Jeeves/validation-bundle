@@ -110,6 +110,7 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $newCheckMailingAddress->setAddressee($trustedLandlordDTO->getAddressee());
         $newCheckMailingAddress->setState($address->getState());
         $newCheckMailingAddress->setCity($address->getCity());
+        $newCheckMailingAddress->setExternalLocationId($trustedLandlordDTO->getLocationId());
         $newCheckMailingAddress->setAddress1($address->getAddress1());
 
         $address2 = $address->getUnitDesignator() . $address->getUnitName();
@@ -129,6 +130,8 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $this->em->persist($newTrustedLandlord);
         $this->em->flush();
         $this->updateStatus($newTrustedLandlord, TrustedLandlordStatus::NEWONE);
+
+        return $newTrustedLandlord;
     }
 
     /**

@@ -287,8 +287,6 @@ class MailerCase extends BaseTestCase
      */
     public function shouldUseReplyToEmailIfNoReplyFalse()
     {
-//        $this->load(true);
-
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
         $this
@@ -310,8 +308,6 @@ class MailerCase extends BaseTestCase
      */
     public function shouldNotUseReplyToEmailIfNoReplyTrue()
     {
-//        $this->load(true);
-
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
         $this

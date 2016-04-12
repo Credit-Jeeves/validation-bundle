@@ -4,12 +4,12 @@ namespace RentJeeves\ApiBundle\Response;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
-use CreditJeeves\DataBundle\Entity\Group as Entity;
+use RentJeeves\DataBundle\Entity\CheckMailingAddress as Entity;
 
 /**
- * @DI\Service("response_resource.group")
+ * @DI\Service("response_resource.check_mailing_address")
  */
-class Group extends ResponseResource
+class CheckMailingAddress extends ResponseResource
 {
     /**
      * @var Entity
@@ -40,13 +40,14 @@ class Group extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("payee_name")
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\Type("string")
      * @return string
      */
     public function getName()
     {
-        return $this->entity->getMailingAddressName();
+        return $this->entity->getAddressee();
     }
 
     /**
@@ -58,7 +59,7 @@ class Group extends ResponseResource
      */
     public function getStreetAddress1()
     {
-        return $this->entity->getStreetAddress1();
+        return $this->entity->getAddress1();
     }
 
     /**
@@ -70,7 +71,7 @@ class Group extends ResponseResource
      */
     public function getStreetAddress2()
     {
-        return $this->entity->getStreetAddress2();
+        return (string) $this->entity->getAddress2();
     }
 
     /**
@@ -114,6 +115,6 @@ class Group extends ResponseResource
      */
     public function getLocationId()
     {
-        return $this->entity->getExternalGroupId();
+        return $this->entity->getExternalLocationId();
     }
 }

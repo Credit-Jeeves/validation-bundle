@@ -70,6 +70,42 @@
                 <source>api.errors.property.zip.empty</source>
                 <target>Zip is required.</target>
             </trans-unit>
+            <trans-unit id="api.errors.landlord.type.invalid">
+                <source>api.errors.landlord.type.invalid</source>
+                <target>Landlord type can be only "person" or "company".</target>
+            </trans-unit>
+            <trans-unit id="api.errors.landlord.first_name.empty">
+                <source>api.errors.landlord.first_name.empty</source>
+                <target>Landlord first name is required for type "person".</target>
+            </trans-unit>
+            <trans-unit id="api.errors.landlord.last_name.empty">
+                <source>api.errors.landlord.last_name.empty</source>
+                <target>Landlord last name is required for type "person".</target>
+            </trans-unit>
+            <trans-unit id="api.errors.landlord.company_name.empty">
+                <source>api.errors.landlord.company_name.empty</source>
+                <target>Landlord company name is required for type "company".</target>
+            </trans-unit>
+            <trans-unit id="api.errors.mailing_address.payee_name.empty">
+                <source>api.errors.mailing_address.payee_name.empty</source>
+                <target>Payee name is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.mailing_address.street_address_1.empty">
+                <source>api.errors.mailing_address.street_address_1.empty</source>
+                <target>Street Address1 is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.mailing_address.state.empty">
+                <source>api.errors.mailing_address.state.empty</source>
+                <target>State is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.mailing_address.city.empty">
+                <source>api.errors.mailing_address.city.empty</source>
+                <target>City is required.</target>
+            </trans-unit>
+            <trans-unit id="api.errors.mailing_address.zip.empty">
+                <source>api.errors.mailing_address.zip.empty</source>
+                <target>Zip is required.</target>
+            </trans-unit>
             <trans-unit id="api.errors.user.password_required">
                 <source>api.errors.user.password_required</source>
                 <target>Password is required</target>

@@ -111,6 +111,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         $mailingAddress->setCity($group->getCity());
 
         $mailingAddress->setZip($group->getZip());
+        $mailingAddress->setExternalLocationId($group->getExternalGroupId());
         $mailingAddress->setIndex($address->getIndex());
         $mailingAddress->setUpdatedAt($group->getUpdatedAt());
         $mailingAddress->setCreatedAt($group->getCreatedAt());
