@@ -107,11 +107,13 @@ trait Forms
                     [
                         ContractStatus::INVITE,
                         ContractStatus::APPROVED,
-                        ContractStatus::CURRENT
+                        ContractStatus::CURRENT,
+                        ContractStatus::WAITING
                     ]
                 )
                 && $contractId)
             || ($tenantId && empty($contractId))
+            || empty($tenant->getEmail())
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);

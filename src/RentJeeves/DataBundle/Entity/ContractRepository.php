@@ -584,7 +584,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
-        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->where('contract.status in (:statuses)');
         $query->andWhere('contract.tenant = :tenantId');
         $query->andWhere('contract.externalLeaseId = :externalLeaseId');
 
@@ -599,9 +599,10 @@ class ContractRepository extends EntityRepository
         }
 
         $query->setParameter('externalLeaseId', $externalLeaseId);
-        $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter(
+            'statuses',
+            [ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::INVITE, ContractStatus::WAITING]
+        );
         $query->setParameter('tenantId', $tenant->getId());
 
         $query = $query->getQuery();
@@ -631,7 +632,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('contract.tenant', 'tenant');
-        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->where('contract.status in (:statuses)');
         $query->andWhere('tenant.id = :tenantId');
         if (!empty($externalUnitId)) {
             $query->innerJoin('unit.unitMapping', 'uMap');
@@ -657,9 +658,10 @@ class ContractRepository extends EntityRepository
             $query->setParameter('group', $group);
         }
 
-        $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter(
+            'statuses',
+            [ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::INVITE, ContractStatus::WAITING]
+        );
         $query->setParameter('tenantId', $tenantId);
 
         $query = $query->getQuery();

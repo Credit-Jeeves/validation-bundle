@@ -1,6 +1,6 @@
 {% form_theme form "LandlordBundle::form_import.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !is_skipped && !contract.id && !tenant.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !is_skipped &&  ((!contract.id && !tenant.id) || (tenant.email == null && tenant.id)) && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == 'true' %}
@@ -121,7 +121,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: tenant.email,
+                        "value: (tenant.email == '') ? email : tenant.email,
                          attr: {
                             'class': number+'_email import_new_user_with_contract_tenant_email '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_email'),
                             'title': $root.getErrorTitle($data, 'import_new_user_with_contract_tenant_email')

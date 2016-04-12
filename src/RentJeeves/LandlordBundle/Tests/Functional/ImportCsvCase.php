@@ -42,7 +42,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
 
     /**
-     * #test
+     * @test
      */
     public function shouldImportFile()
     {
@@ -257,7 +257,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      * @depends shouldImportFile
      */
     public function shouldImportFileWithCheckboxOnlyNewAndException()
@@ -465,7 +465,11 @@ class ImportCsvCase extends ImportBaseAbstract
          * @var $mapping ResidentMapping
          */
         $mapping = $mapping[0];
-        $this->assertEquals($mapping->getResidentId(), $contractInWaitingStatus->getResidentId());
+        $this->assertEquals(
+            $mapping->getResidentId(),
+            $contractInWaitingStatus->getTenant()->getResidentsMapping()->first()->getResidentId(),
+            'ResidentID doesn\'t exist'
+        );
         $contractInWaitingStatus = $em->getRepository('RjDataBundle:Contract')->find($contractInWaitingStatus->getId());
         $this->assertNotNull($contractInWaitingStatus);
     }
@@ -480,13 +484,9 @@ class ImportCsvCase extends ImportBaseAbstract
         /**
          * @var $tenant Tenant
          */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => 'hi@mail.com',
-            )
-        );
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => 'hi@mail.com']);
 
-        $tenant->setEmail('h1_changed@mail.com');
+        $tenant->setEmailField('h1_changed@mail.com');
         $em->persist($tenant);
         $em->flush();
 
@@ -528,7 +528,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function checkFormatDate()
     {
@@ -590,7 +590,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function importMultipleProperties()
     {
@@ -608,7 +608,10 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
         $this->getEntityManager()->flush();
 
-        $this->assertEquals(1, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+        $this->assertEquals(
+            0,
+            count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
+        );
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -685,33 +688,37 @@ class ImportCsvCase extends ImportBaseAbstract
         //Check notify tenant invite for new user
         $this->assertCount(0, $this->getEmails(), 'Wrong number of emails');
         $unitMapping = $em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
-            array('externalUnitId' => 'SP1152-C')
+            ['externalUnitId' => 'SP1152-C']
         );
         $this->assertNotNull($unitMapping);
         $this->assertNotNull($unit = $unitMapping->getUnit());
 
-        /** @var ContractWaiting $waitingContract */
-        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
-            array(
-                'residentId' => 'ABBOTT,MIT',
-                'firstName' => 'Logan',
-                'lastName' => 'Cooper',
-                'property' => $unit->getProperty()->getId(),
-                'unit' => $unit->getId(),
-            )
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            [
+                'first_name' => 'Logan',
+                'last_name' => 'Cooper',
+            ]
         );
-        $this->assertNotNull($waitingContract);
-        $this->assertEquals(975, $waitingContract->getRent());
-        $this->assertEquals(193, $waitingContract->getIntegratedBalance());
-        $this->assertEquals('2014-01-01', $waitingContract->getStartAt()->format('Y-m-d'));
-        $this->assertEquals('2025-01-31', $waitingContract->getFinishAt()->format('Y-m-d'));
+        $this->assertNotNull($tenant, 'Empty tenant Logan Cooper');
+        $residentMapping = $tenant->getResidentsMapping()->first();
+        $this->assertEquals('ABBOTT,MIT', $residentMapping->getResidentId(), 'Resident ID should be equlas');
+        $contract = $tenant->getContracts()->first();
+        $this->assertNotNull($contract);
+        $this->assertEquals(975, $contract->getRent());
+        $this->assertEquals(193, $contract->getIntegratedBalance());
+        $this->assertEquals('2014-01-01', $contract->getStartAt()->format('Y-m-d'));
+        $this->assertEquals('2025-01-31', $contract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->getPropertyAddress()->isSingle());
 
-        $this->assertEquals(21, count($em->getRepository('RjDataBundle:ContractWaiting')->findAll()));
+        $this->assertEquals(
+            20,
+            count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
+        );
     }
 
     /**
-     * #test
+     * @test
      * @depends importMultipleProperties
      */
     public function signUpFromImportedWaitingContract()
@@ -729,18 +736,15 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($unit = $unitMapping->getUnit());
 
         $waitingContractParams = array(
-            'residentId' => 'ALDRICH,JOSHUA',
-            'firstName' => 'Daniel',
-            'lastName' => 'Price',
-            'property' => $unit->getProperty()->getId(),
-            'unit' => $unit->getId(),
+            'first_name' => 'Daniel',
+            'last_name' => 'Price',
         );
-        /** @var ContractWaiting $waitingContract */
-        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+        /** @var Tenant $tenant */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             $waitingContractParams
         );
-        $this->assertNotNull($waitingContract);
-
+        $this->assertNotNull($tenant);
+        $this->assertEmpty($tenant->getEmail(), 'Email should empty');
         $this->session->visit($this->getUrl() . 'iframe');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
 
@@ -749,9 +753,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-add'));
         $this->fillForm(
             $form,
-            array(
-                'property-search' => $address,
-            )
+            ['property-search' => $address]
         );
 
         $propertySearch->click();
@@ -761,28 +763,23 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
         $this->fillForm(
             $form,
-            array(
+            [
                 'rentjeeves_publicbundle_tenanttype_first_name' => "Daniel",
                 'rentjeeves_publicbundle_tenanttype_last_name' => "Price",
                 'rentjeeves_publicbundle_tenanttype_email' => 'dan.price@mail.com',
                 'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
                 'rentjeeves_publicbundle_tenanttype_tos' => true,
-            )
+            ]
         );
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
 
-        $waitingContract = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
-            $waitingContractParams
-        );
-
-        $this->assertTrue(is_null($waitingContract), 'Should remove contract waiting');
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array('email' => 'dan.price@mail.com')
+            ['email' => 'dan.price@mail.com']
         );
         $this->assertNotNull($tenant);
         $this->assertEquals('Daniel', $tenant->getFirstName());
@@ -790,7 +787,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function alreadyHaveAccount()
     {
@@ -862,7 +859,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      * @depends alreadyHaveAccount
      */
     public function checkMatchedUser()
@@ -892,7 +889,9 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * I stop work on this test, should start tomorow from this.
+     *
+     * @test
      */
     public function matchWaitingContract()
     {
@@ -984,7 +983,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      * @dataProvider providerForMatchWaitingContractWithMoveContract
      */
     public function matchWaitingContractWithMoveContract($balanceIn)
@@ -1088,7 +1087,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function importMultipleGroups()
     {
@@ -1152,7 +1151,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldOnlyNewAndException()
     {
@@ -1212,7 +1211,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldThrowExceptionForImportSinglePropertyWithoutUnit()
     {
@@ -1285,7 +1284,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldGetMappingForImport()
     {
@@ -1305,7 +1304,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldImportPromasExtraField()
     {
@@ -1401,7 +1400,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
@@ -1456,7 +1455,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldImportCurrentPromasTenantsAndSetMonthToMonthToTrueIfMonthToMonthIsNo()
     {
@@ -1502,7 +1501,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function duplicateResidentIdShouldBeSkippedWithError()
     {
@@ -1552,7 +1551,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function skippedMessageAndInfoDateInvalid()
     {
@@ -1619,7 +1618,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      */
     public function shouldImportFileWithExternalLeaseId()
     {
@@ -1684,7 +1683,7 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * #test
+     * @test
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function mriBostonPostImport()

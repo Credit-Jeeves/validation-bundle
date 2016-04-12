@@ -4,6 +4,7 @@
     attr: {'class': $root.getClassLine($data)},
     if: !is_skipped
         && contract.status != 'finished'
+        && tenant.email != null
         && $root.isValidFieldsWhichNotContainsInForm($data)
         && tenant.id">
     {{ form_start(form) }}
@@ -13,7 +14,7 @@
                 <span data-bind="text: contract.property.full_address">
                 </span>
             </td>
-            <td  class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
+            <td  class="errorField" data-bind="if: contract.property == null, visible: (contract.property == null)">
                 <span  data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
             </td>
     {% endif %}

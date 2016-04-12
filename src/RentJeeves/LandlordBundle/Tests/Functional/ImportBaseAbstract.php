@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
