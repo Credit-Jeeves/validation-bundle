@@ -3080,6 +3080,10 @@
                 <source>common.payment_type_ach</source>
                 <target>Payment Type ACH</target>
             </trans-unit>
+            <trans-unit id="common.payment_type_scanned_check">
+                <source>common.payment_type_scanned_check</source>
+                <target>Payment Type Scanned Check</target>
+            </trans-unit>
             <trans-unit id="common.payment_type_cc.notes">
                 <source>common.payment_type_cc.notes</source>
                 <target>Notes for CC</target>
@@ -3087,6 +3091,10 @@
             <trans-unit id="common.payment_type_ach.notes">
                 <source>common.payment_type_ach.notes</source>
                 <target>Notes for ACH</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_scanned_check.notes">
+                <source>common.payment_type_scanned_check.notes</source>
+                <target>Notes for Scanned Check</target>
             </trans-unit>
             <trans-unit id="yardi.regexp.error.url">
                 <source>yardi.regexp.error.url</source>

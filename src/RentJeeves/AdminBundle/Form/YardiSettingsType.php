@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Form;
 
+use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Enum\YardiNsfPostMonthOption;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
@@ -109,6 +110,27 @@ class YardiSettingsType extends Base
                 'error_bubbling'    => true,
                 'label'             => 'common.payment_type_cc.notes',
             )
+        );
+
+        $builder->add(
+            'paymentTypeScannedCheck',
+            'choice',
+            [
+                'error_bubbling' => true,
+                'choices' => array_map(
+                    'strtoupper',
+                    array_change_key_case(
+                        PaymentTypeScannedCheck::all(),
+                        CASE_LOWER
+                    )
+                ),
+                'label' => 'common.payment_type_scanned_check',
+            ]
+        );
+        $builder->add(
+            'notesScannedCheck',
+            null,
+            ['error_bubbling' => true, 'label' => 'common.payment_type_scanned_check.notes']
         );
 
         $builder->add(
