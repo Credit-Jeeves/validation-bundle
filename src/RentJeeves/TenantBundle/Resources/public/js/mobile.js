@@ -225,20 +225,44 @@ function init() {
 function renderPayAccounts(contract) {
 
     if (contract.allowDebitCard) {
-        $("#" + accountPrefix + "type_2").parent().show()
-        $("#" + accountPrefix + "type_2").show()
+        $("#" + accountPrefix + "type_2")
+            .show()
+            .parent().show();
 
     } else {
-        $("#" + accountPrefix + "type_2").parent().hide()
-        $("#" + accountPrefix + "type_2").hide()
+        $("#" + accountPrefix + "type_2")
+            .hide()
+            .parent().hide();
     }
-
-    $(prefix + "paymentAccount").html("")
+    if (contract.allowCreditCard) {
+        $("#" + accountPrefix + "type_1")
+            .show()
+            .parent().show()
+            .find('label').click();
+    } else {
+        $("#" + accountPrefix + "type_1")
+            .hide()
+            .parent().hide();
+    }
+    if (contract.allowBank) {
+        $("#" + accountPrefix + "type_0")
+            .show()
+            .parent().show()
+            .find('label').click();
+    } else {
+        $("#" + accountPrefix + "type_0")
+            .hide()
+            .parent().hide();
+    }
+    $(prefix + "paymentAccount").html("");
     $.each(payAccounts, function(index, payAccount){
-        if((payAccount.type == "debit_card" && contract.allowDebitCard) || payAccount.type != "debit_Card") {
-            $(prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>")
+        if((payAccount.type == "debit_card" && contract.allowDebitCard) ||
+            (payAccount.type == "card" && contract.allowCreditCard) ||
+            (payAccount.type == "bank" && contract.allowBank)
+        ) {
+            $(prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>");
         }
-    })
+    });
 
     //add "Add new payment source"
     $(prefix + "paymentAccount").append("<option value='-2'>----</option>") //we need this as to bind something to onchange
