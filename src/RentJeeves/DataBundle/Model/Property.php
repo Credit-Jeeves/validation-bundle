@@ -100,18 +100,6 @@ abstract class Property
     protected $propertyMappings;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
-     *     mappedBy="property",
-     *     cascade={
-     *       "persist"
-     *     }
-     * )
-     * @Serializer\Exclude
-     */
-    protected $contractsWaiting;
-
-    /**
      * @ORM\Column(
      *     name="is_multiple_buildings",
      *     type="boolean"
@@ -151,7 +139,6 @@ abstract class Property
         $this->property_groups = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
-        $this->contractsWaiting = new ArrayCollection();
         $this->propertyMappings = new ArrayCollection();
     }
 
@@ -161,22 +148,6 @@ abstract class Property
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param ContractWaiting $contractsWaiting
-     */
-    public function addContractsWaiting(ContractWaiting $contractsWaiting)
-    {
-        $this->contractsWaiting = $contractsWaiting;
-    }
-
-    /**
-     * @return ContractWaiting
-     */
-    public function getContractsWaiting()
-    {
-        return $this->contractsWaiting;
     }
 
     /**

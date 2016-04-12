@@ -3,11 +3,14 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
+use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSItemStatus;
@@ -31,6 +34,9 @@ class RemoteDepositLoader
     /** @var LoggerInterface */
     protected $logger;
 
+    /** @var ContractManager */
+    protected $contractManager;
+
     /** @var integer */
     protected $countChecks;
 
@@ -39,17 +45,20 @@ class RemoteDepositLoader
      * @param ScannedCheckTransformer $checkTransformer
      * @param EntityManager $em
      * @param LoggerInterface $logger
+     * @param ContractManager $contractManager
      */
     public function __construct(
         RDCClient $client,
         ScannedCheckTransformer $checkTransformer,
         EntityManager $em,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ContractManager $contractManager
     ) {
         $this->client = $client;
         $this->checkTransformer = $checkTransformer;
         $this->em = $em;
         $this->logger = $logger;
+        $this->contractManager = $contractManager;
     }
 
     /**
@@ -141,8 +150,11 @@ class RemoteDepositLoader
         $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
         foreach ($batchItems as $batchItem) {
             if ($this->isAllowedItemStatus($batchItem)) {
-                $isCreatedNewOrder = $this->createOrderIfItIsNew($batchItem);
-                $this->incrementCountChecks($isCreatedNewOrder);
+                $newOrder = $this->createOrderIfItIsNew($batchItem);
+                if (false !== $newOrder) {
+                    $this->incrementCountChecks();
+                    $this->updateContractStatus($newOrder);
+                }
             } else {
                 $this->logger->alert(sprintf(
                     'Item id#%s from Batch "%s" has alert state "%s". Skipping.',
@@ -266,7 +278,7 @@ class RemoteDepositLoader
 
     /**
      * @param WSRemoteDepositItem $depositItem
-     * @return bool
+     * @return Order|false
      */
     protected function createOrderIfItIsNew(WSRemoteDepositItem $depositItem)
     {
@@ -295,7 +307,7 @@ class RemoteDepositLoader
                 $this->em->persist($order);
                 $this->em->flush();
 
-                return true;
+                return $order;
             } catch (\Exception $e) {
                 $this->logger->alert(sprintf(
                     'An error occurred when trying to create new order with referenceNumber "%s", batchNumber "%s": %s',
@@ -364,12 +376,9 @@ class RemoteDepositLoader
         return $batch->getBatchStatus() === WSBatchStatus::SENTTOTRANSACTIONPROCESSING;
     }
 
-    /**
-     * @param bool $shouldIncrement
-     */
-    protected function incrementCountChecks($shouldIncrement)
+    protected function incrementCountChecks()
     {
-        $this->countChecks = true === $shouldIncrement ? $this->countChecks + 1 : $this->countChecks;
+        $this->countChecks++;
     }
 
     /**
@@ -387,6 +396,17 @@ class RemoteDepositLoader
             ));
             $transaction->setTransactionId($depositItem->getReferenceNumber());
             $this->em->flush();
+        }
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function updateContractStatus(Order $order)
+    {
+        $contract = $order->getContract();
+        if (false === empty($contract) && $contract->getStatus() === ContractStatus::WAITING) {
+            $this->contractManager->moveContractOutOfWaitingByLandlord($contract, ContractStatus::CURRENT);
         }
     }
 }

@@ -1450,7 +1450,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('rm.residentId = :residentId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
@@ -1525,7 +1528,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('unitName', $unitName)
@@ -1562,7 +1568,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
@@ -1719,5 +1728,55 @@ class ContractRepository extends EntityRepository
             ->setParameter('date', $date);
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @return Contract[]
+     */
+    public function getAllWaitingForTenant(Tenant $tenant)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :waiting')
+            ->andWhere('c.tenant = :tenant')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('tenant', $tenant->getId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Unit $unit
+     * @return Contract[]
+     */
+    public function getAllWaitingForUnit(Unit $unit)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :waiting')
+            ->andWhere('c.unit = :unit')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('unit', $unit->getId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $residentId
+     * @return Contract[]
+     */
+    public function getAllWaitingByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status = :waiting')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->execute();
     }
 }

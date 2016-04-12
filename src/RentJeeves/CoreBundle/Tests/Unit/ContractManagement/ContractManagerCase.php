@@ -253,7 +253,7 @@ class ContractManagerCase extends UnitTestBase
             ->method('flush');
         $mailer = $this->getMailerMock();
         $mailer->expects($this->once())
-            ->method('sendCheckEmail');
+            ->method('sendRjCheckEmail');
         $validator = $this->getValidatorMock();
         $validator->expects($this->once())
             ->method('validateValue')

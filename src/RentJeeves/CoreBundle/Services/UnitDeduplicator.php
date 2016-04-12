@@ -108,7 +108,6 @@ class UnitDeduplicator
             );
         }
 
-        $this->updateContractsWaitingForUnit($sourceUnit, $destinationUnit);
         $this->updateContractsForUnit($sourceUnit, $destinationUnit);
         $this->updateExternalUnitMapping($sourceUnit, $destinationUnit);
 
@@ -197,25 +196,6 @@ class UnitDeduplicator
         }
 
         $this->em->flush($sourceUnitMapping);
-    }
-
-    /**
-     * @param Unit $srcUnit
-     * @param Unit $dstUnit
-     */
-    protected function updateContractsWaitingForUnit(Unit $srcUnit, Unit $dstUnit)
-    {
-        foreach ($srcUnit->getContractsWaiting() as $contractWaiting) {
-            $contractWaiting->setProperty($dstUnit->getProperty());
-            $contractWaiting->setUnit($dstUnit);
-
-            $this->logger->info(
-                sprintf(
-                    'The contractWaiting#%d is updated.',
-                    $contractWaiting->getId()
-                )
-            );
-        }
     }
 
     /**

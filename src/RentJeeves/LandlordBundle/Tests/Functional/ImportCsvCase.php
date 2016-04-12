@@ -315,6 +315,7 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function waitingRoom()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
@@ -384,6 +385,7 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function createContractFromWaiting()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $contractWaiting = $this->getWaitingRoom();
         $em = $this->getEntityManager();
         /**
@@ -714,6 +716,7 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function signUpFromImportedWaitingContract()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         # Check this issue
         #$this->markTestSkipped('Temporarily skip this test due to: PHP Fatal error:  Allowed memory size exhausted');
         $this->setDefaultSession('selenium2');

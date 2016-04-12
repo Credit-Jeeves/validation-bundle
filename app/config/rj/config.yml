@@ -97,7 +97,6 @@ sonata_admin:
                 - sonata.admin.rj_group_phone
                 - sonata.admin.landlord
                 - sonata.admin.tenant
-                - sonata.admin.contract_waiting
                 - sonata.admin.resident_mapping
                 - sonata.admin.property_mapping
                 - sonata.admin.unit_mapping

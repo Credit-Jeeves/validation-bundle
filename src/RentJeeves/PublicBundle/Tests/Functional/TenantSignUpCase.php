@@ -3,7 +3,8 @@
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -30,20 +31,29 @@ class TenantSignUpCase extends BaseTestCase
         $em->flush($groupSettings);
         $this->assertFalse($groupSettings->isAllowPayAnything(), 'PayAnything should be disabled');
 
-        $contractWaiting = new ContractWaiting();
+        /** @var Tenant $tenant */
+        $tenant = $this->getContainer()->get('renttrack.user_creator')->createTenant('Mark', 'Totti');
+
+        $contractWaiting = new Contract();
+        $contractWaiting->setStatus(ContractStatus::WAITING);
         $contractWaiting->setUnit($unit);
         $contractWaiting->setProperty($unit->getProperty());
         $contractWaiting->setGroup($unit->getGroup());
-        $contractWaiting->setFirstName('Mark');
-        $contractWaiting->setLastName('Totti');
+        $contractWaiting->setHolding($unit->getHolding());
+
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setHolding($contractWaiting->getHolding());
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setResidentId('r548787');
+        $tenant->addResidentsMapping($residentMapping);
+        $contractWaiting->setTenant($tenant);
+
         $contractWaiting->setRent(111);
-        $contractWaiting->setResidentId('r548787');
         $contractWaiting->setStartAt(new \DateTime());
         $contractWaiting->setFinishAt(new \DateTime());
+        $em->persist($residentMapping);
         $em->persist($contractWaiting);
-        $em->flush($contractWaiting);
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneByUnit($unit);
-        $this->assertNull($contract, 'Contract with unit #27 should not exist');
+        $em->flush();
 
         $this->setDefaultSession('selenium2');
         $this->session->visit(
@@ -93,10 +103,12 @@ class TenantSignUpCase extends BaseTestCase
         $this->assertContains('/new/send/', $this->session->getCurrentUrl(), 'Location should be /new/send/');
 
         /** @var Contract $contract */
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneByUnit($unit);
-        $this->assertNotNull($contract, 'Contract with unit #27 should be created from waiting!');
-        $this->assertEquals(ContractStatus::PENDING, $contract->getStatus(), 'Contract should be created as PENDING');
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneByUnit($unit);
-        $this->assertNotNull($contractWaiting, 'ContractWaiting with unit #27 should remain in the DB');
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractWaiting->getId());
+        $this->assertNotNull($contract, 'Contract with unit #27 should be moved out of waiting!');
+        $this->assertEquals(ContractStatus::WAITING, $contract->getStatus(), 'Contract should not change its state');
+
+        $newTenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('frank_gaudi@mail.com');
+        $this->assertNotNull($newTenant, 'New tenant should be created');
+        $this->assertCount(1, $newTenant->getContracts(), 'New contract should be created b/c WAITING didn\'t match');
     }
 }
