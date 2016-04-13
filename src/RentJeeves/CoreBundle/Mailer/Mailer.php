@@ -725,8 +725,7 @@ class Mailer extends BaseMailer
                 'propertyAddress' => $contract->getTenantRentAddress(),
                 'jiraTicket' => $jiraTicket
             ],
-            $tenant->getEmail(),
-            $tenant->getCulture(),
+            $tenant,
             null,
             false
         );
@@ -946,8 +945,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjTrustedLandlordDenied',
             $params,
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
         );
     }
 
@@ -968,8 +966,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjTrustedLandlordApproved',
             $params,
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
         );
     }
 
