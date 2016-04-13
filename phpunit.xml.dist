@@ -18,7 +18,6 @@
         <!-- Default TestSuite run by Jenkins -->
         <!--                                  -->
         <testsuite name="Project Test Suite">
-            <directory suffix="Case.php">vendor/credit-jeeves/api-bundle/CreditJeeves/*/Tests/CreditJeeves</directory>
             <!-- Not pic up this test by reg link -->
             <directory suffix="Case.php">src/RentJeeves/ExternalApiBundle/Tests/Services/*</directory>
             <!-- end -->

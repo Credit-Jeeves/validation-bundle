@@ -26,8 +26,7 @@ class Mailer extends BaseMailer implements MailerInterface
     /**
      * @param string $templateName
      * @param array $params
-     * @param string $emailTo
-     * @param string $culture
+     * @param User $user
      * @param string $filePath
      * @param bool $noReply
      *
@@ -37,11 +36,11 @@ class Mailer extends BaseMailer implements MailerInterface
     {
         if (false === $this->isValidEmailSettings($user)) {
             $this->logger->alert(sprintf(
-               'Error when sending %s: Notification settings enabled for user (%s %s) without an email address. ' .
-               'Either disable notifications or add email to avoid this alert',
-               $templateName,
-               $user->getFirstName(),
-               $user->getLastName()
+                'Error when sending %s: Notification settings enabled for user (%s %s) without an email address. ' .
+                'Either disable notifications or add email to avoid this alert',
+                $templateName,
+                $user->getFirstName(),
+                $user->getLastName()
             ));
         }
 
