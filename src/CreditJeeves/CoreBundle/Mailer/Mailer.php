@@ -8,8 +8,6 @@ use FOS\UserBundle\Model\UserInterface;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 
 class Mailer extends BaseMailer implements MailerInterface
 {
@@ -28,16 +26,25 @@ class Mailer extends BaseMailer implements MailerInterface
     /**
      * @param string $templateName
      * @param array $params
-     * @param string $emailTo
-     * @param string $culture
+     * @param User $user
      * @param string $filePath
      * @param bool $noReply
      *
      * @return bool
      */
-    public function sendBaseLetter($templateName, $params, $emailTo, $culture, $filePath = null, $noReply = true)
+    public function sendBaseLetter($templateName, $params, User $user, $filePath = null, $noReply = true)
     {
-        if (false == $this->isValidEmail($emailTo)) {
+        if (false === $this->isValidEmailSettings($user)) {
+            $this->logger->alert(sprintf(
+                'Error when sending %s: Notification settings enabled for user (%s %s) without an email address. ' .
+                'Either disable notifications or add email to avoid this alert',
+                $templateName,
+                $user->getFirstName(),
+                $user->getLastName()
+            ));
+        }
+
+        if (false == $this->isValidEmail($user->getEmail())) {
             $this->handleException(
                 new \InvalidArgumentException(sprintf('"%s": this value is not a valid email address.', $templateName))
             );
@@ -53,16 +60,16 @@ class Mailer extends BaseMailer implements MailerInterface
             return false;
         }
 
-        if (null !== $recipientUser = $this->getUserByEmail($emailTo)) {
-            if (false === MailAuthorizer::isAllowed($templateName, $recipientUser)) {
-                return false;
-            }
+
+        if (false === MailAuthorizer::isAllowed($templateName, $user)) {
+            return false;
         }
 
-        $params = $this->prepareParameters($params, $emailTo, $recipientUser);
+
+        $params = $this->prepareParameters($params, $user);
 
         try {
-            $htmlContent = $this->manager->renderEmail($template->getName(), $culture, $params);
+            $htmlContent = $this->manager->renderEmail($template->getName(), $user->getCulture(), $params);
 
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
@@ -71,14 +78,14 @@ class Mailer extends BaseMailer implements MailerInterface
                 $message->setReplyTo($params['replyToEmail'], $params['partnerName']);
             }
 
-            $message->setTo($emailTo);
+            $message->setTo($user->getEmail());
 
             if (!empty($filePath)) {
                 $message->attach(\Swift_Attachment::fromPath($filePath));
             }
 
             if (false != $template->getEnTranslation()->getMandrillSlug()) {
-                $message = $this->prepareMessageForMandrill($message, $template, $params, $recipientUser);
+                $message = $this->prepareMessageForMandrill($message, $template, $params, $user);
             }
 
             $message->addPart($htmlContent['body'], 'text/html');
@@ -92,7 +99,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 sprintf(
                     'Error when sending email (%s) to user %s : %s',
                     $templateName,
-                    $emailTo,
+                    $user->getEmail(),
                     $e->getMessage()
                 )
             );
@@ -108,24 +115,23 @@ class Mailer extends BaseMailer implements MailerInterface
      *
      * @return array
      */
-    protected function prepareParameters(array $params, $emailTo, User $user = null)
+    protected function prepareParameters(array $params, User $user)
     {
         // $params is second for higher priority (for test email)
         $params = array_merge($this->defaultValuesForEmail, $params);
-        if (null !== $user) {
-            if (false != $partner = $user->getPartner()) {
-                if (true === $partner->isPoweredBy()) {
-                    $params['logoName'] = $partner->getLogoName();
-                    $params['partnerName'] = $partner->getName();
-                    $params['partnerAddress'] = $partner->getAddress();
-                    $params['loginUrl'] = $partner->getLoginUrl();
-                    $params['isPoweredBy'] = $partner->isPoweredBy();
-                    $params['replyToEmail'] = $partner->getReplyToEmail();
-                }
+
+        if (false != $partner = $user->getPartner()) {
+            if (true === $partner->isPoweredBy()) {
+                $params['logoName'] = $partner->getLogoName();
+                $params['partnerName'] = $partner->getName();
+                $params['partnerAddress'] = $partner->getAddress();
+                $params['loginUrl'] = $partner->getLoginUrl();
+                $params['isPoweredBy'] = $partner->isPoweredBy();
+                $params['replyToEmail'] = $partner->getReplyToEmail();
             }
         }
 
-        $params['emailTo'] = urlencode($emailTo);
+        $params['emailTo'] = urlencode($user->getEmail());
 
         return $params;
     }
@@ -178,6 +184,22 @@ class Mailer extends BaseMailer implements MailerInterface
         return true;
     }
 
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    protected function isValidEmailSettings(User $user)
+    {
+        if (null == $user->getEmail() &&
+            (true === $user->getEmailNotification() || true === $user->getOfferNotification())
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @param User $user
      * @param string $sTemplate
@@ -192,7 +214,7 @@ class Mailer extends BaseMailer implements MailerInterface
         }
         $vars['user'] = $this->prepareUser($user);
 
-        return $this->sendBaseLetter($sTemplate, $vars, $user->getEmail(), $user->getCulture());
+        return $this->sendBaseLetter($sTemplate, $vars, $user);
     }
 
     public function sendConfirmationEmailMessage(UserInterface $user)
@@ -302,7 +324,7 @@ class Mailer extends BaseMailer implements MailerInterface
             'targetScore' => $lead->getTargetScore(),
         );
 
-        return $this->sendBaseLetter($template, $vars, $user->getEmail(), $user->getCulture());
+        return $this->sendBaseLetter($template, $vars, $user);
     }
 
     /**

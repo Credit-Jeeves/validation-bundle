@@ -3,9 +3,9 @@
 namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
@@ -29,11 +29,12 @@ class TestEmailController extends BaseController
                 $this->getTranslator()->trans('admin.email.actions.send_test.wrong_json')
             );
         } else {
+            $user = new Tenant();
+            $user->setEmailField($enTranslation->getTestEmailTo());
             $result = $this->getMailer()->sendBaseLetter(
                 current(explode('.', $emailTemplate->getName())),
                 $parameters ?: [],
-                $enTranslation->getTestEmailTo(),
-                self::TEST_CULTURE
+                $user
             );
             if ($result === true) {
                 $this->getSession()->getFlashBag()->add(

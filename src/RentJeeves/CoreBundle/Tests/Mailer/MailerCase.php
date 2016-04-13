@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PartnerUser;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Model\EmailNotifier\FailedPostPaymentDetail;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
@@ -75,7 +76,9 @@ class MailerCase extends BaseTestCase
         $template->getEnTranslation()->setMandrillSlug('testSlug');
         $this->getEntityManager()->flush($template);
 
-        $this->getMailer()->sendBaseLetter('invite', [], $email = 'test@mail.com', 'en');
+        $user = $this->getEntityManager()->getRepository('DataBundle:User')->findOneByEmail('tenant11@example.com');
+        $vars = ['groupName' => 'Group1', 'inviteLink' => 'http://a.dc'];
+        $this->getMailer()->sendBaseLetter('invite', $vars, $user);
 
         $this->assertCount(1, $plugin->getPreSendMessages());
         $message =  $plugin->getPreSendMessage(0);
@@ -89,12 +92,12 @@ class MailerCase extends BaseTestCase
             $header->get('X-MC-GoogleAnalytics')->getFieldBody()
         );
         $this->assertTrue($header->has('X-MC-Tags'));
-        $this->assertEquals('invite.html', $header->get('X-MC-Tags')->getFieldBody());
+        $this->assertEquals('invite.html, tenant', $header->get('X-MC-Tags')->getFieldBody());
         $this->assertTrue($header->has('X-MC-Template'));
         $this->assertEquals('testSlug', $header->get('X-MC-Template')->getFieldBody());
         $this->assertTrue($header->has('X-MC-MergeVars'));
 
-        $expectedParams = array_merge($this->defaultValuesForEmail, ['emailTo' => urlencode($email)]);
+        $expectedParams = array_merge($this->defaultValuesForEmail, $vars, ['emailTo' => urlencode($user->getEmail())]);
         $this->assertEquals(
             json_encode($expectedParams, true),
             $header->get('X-MC-MergeVars')->getFieldBody()
@@ -289,10 +292,12 @@ class MailerCase extends BaseTestCase
     {
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
+        $tenant = $this->getEntityManager()->getRepository('DataBundle:User')->findOneByEmail('tenant11@example.com');
+        $vars = ['groupName' => 'Group1', 'inviteLink' => 'http://a.dc'];
         $this
             ->getContainer()
             ->get('project.mailer')
-            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en', null, false);
+            ->sendBaseLetter('invite', $vars, $tenant, null, false);
 
         $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
 
@@ -310,10 +315,12 @@ class MailerCase extends BaseTestCase
     {
         $emailPlugin = $this->registerEmailListener();
         $emailPlugin->clean();
+        $tenant = $this->getEntityManager()->getRepository('DataBundle:User')->findOneByEmail('tenant11@example.com');
+        $vars = ['groupName' => 'Group1', 'inviteLink' => 'http://a.dc'];
         $this
             ->getContainer()
             ->get('project.mailer')
-            ->sendBaseLetter('invite', [], 'tenant11@example.com', 'en');
+            ->sendBaseLetter('invite', $vars, $tenant);
 
         $this->assertCount(1, $emailPlugin->getPreSendMessages(), 'Should be send 1 message');
 
