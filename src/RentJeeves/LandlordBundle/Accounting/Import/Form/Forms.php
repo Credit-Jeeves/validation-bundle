@@ -101,7 +101,7 @@ trait Forms
         );
 
         //Update contract or Create contract with exist User
-        if (($tenantId &&
+        if ((($tenantId &&
                 in_array(
                     $contractStatus,
                     [
@@ -112,8 +112,7 @@ trait Forms
                     ]
                 )
                 && $contractId)
-            || ($tenantId && empty($contractId))
-            || empty($tenant->getEmail())
+            || ($tenantId && empty($contractId))) && $this->currentImportModel->isHaveEmailOnDB()
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
@@ -128,9 +127,8 @@ trait Forms
         }
 
         //Create contract and create user
-        if (empty($tenantId) &&
-            $contractStatus === ContractStatus::INVITE &&
-            empty($contractId)
+        if ((empty($tenantId) && $contractStatus === ContractStatus::INVITE && empty($contractId))
+            || (!empty($tenantId) && $this->currentImportModel->isHaveEmailOnDB() === false)
         ) {
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);

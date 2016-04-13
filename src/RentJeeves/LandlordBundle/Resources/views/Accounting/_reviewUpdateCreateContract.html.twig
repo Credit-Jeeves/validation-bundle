@@ -4,9 +4,8 @@
     attr: {'class': $root.getClassLine($data)},
     if: !is_skipped
         && contract.status != 'finished'
-        && tenant.email != null
         && $root.isValidFieldsWhichNotContainsInForm($data)
-        && tenant.id">
+        && (tenant.id && is_have_email_on_db == true)">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == "true" %}

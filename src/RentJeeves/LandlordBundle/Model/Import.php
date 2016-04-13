@@ -135,6 +135,10 @@ class Import
     protected $handler;
 
     /**
+     * @Serializer\SerializedName("is_have_email_on_db")
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"RentJeevesImport"})
+     *
      * @var boolean
      */
     protected $isHaveEmailOnDB;

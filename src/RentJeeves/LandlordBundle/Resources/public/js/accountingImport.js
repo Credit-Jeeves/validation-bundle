@@ -177,7 +177,7 @@ function accountingImport(superclass) {
         ko.utils.arrayForEach(jQuery('.properties-table tr'), function (value) {
             var element = jQuery(value);
             //not allow send knockout duplicate
-               if (element.find('td').length == 0) {
+            if (element.find('td').length == 0) {
                 return;
             }
             var form = new Object();

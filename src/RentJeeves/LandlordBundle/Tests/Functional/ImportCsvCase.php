@@ -889,8 +889,6 @@ class ImportCsvCase extends ImportBaseAbstract
     }
 
     /**
-     * I stop work on this test, should start tomorow from this.
-     *
      * @test
      */
     public function matchWaitingContract()
@@ -1416,8 +1414,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $beforeWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $beforeContracts = $em->getRepository('RjDataBundle:Contract')->findAll();
+        $beforeContracts = $em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]);
 
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -1447,10 +1444,7 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->waitRedirectToSummaryPage();
 
-        $afterWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $afterContracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-
-        $this->assertCount(count($beforeWaiting) - 1, $afterWaiting);
+        $afterContracts = $em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]);
         $this->assertCount(count($beforeContracts) + 1, $afterContracts);
     }
 
