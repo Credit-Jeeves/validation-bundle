@@ -154,6 +154,8 @@ class ContractManager
             $tenant = $contract->getTenant();
             $tenant->setEmailField($tenantEmail);
             $tenant->setEmailCanonical(strtolower($tenantEmail));
+            $tenant->setUsername(strtolower($tenantEmail));
+            $tenant->setUsernameCanonical(strtolower($tenantEmail));
             $tenant->setEmailNotification(true);
             $tenant->setOfferNotification(true);
 
@@ -193,6 +195,8 @@ class ContractManager
             $tenant = $contract->getTenant();
             $tenant->setEmailField($tenantEmail);
             $tenant->setEmailCanonical(strtolower($tenantEmail));
+            $tenant->setUsername(strtolower($tenantEmail));
+            $tenant->setUsernameCanonical(strtolower($tenantEmail));
             $tenant->setEmailNotification(true);
             $tenant->setOfferNotification(true);
 

@@ -530,16 +530,22 @@ class PublicController extends Controller
         // If contract in WAITING found, move it out of waiting.
         /** @var Contract $contractWaiting */
         $contractWaiting = $form->get('contractWaiting')->getData();
-        if (false === empty($contractWaiting) && false === empty($contractWaiting->getTenant()->getEmail())) {
+        if (false === empty($contractWaiting) && false === empty($form->getData()->getEmail())) {
             /** @var ContractManager $contractManager */
             $contractManager = $this->get('renttrack.contract_manager');
             $contractManager->moveContractOutOfWaitingByTenant(
                 $contractWaiting,
                 ContractStatus::APPROVED,
-                $contractWaiting->getTenant()->getEmail()
+                $form->getData()->getEmail()
             );
+            $tenant = $contractWaiting->getTenant();
+            $password = $this->get('user.security.encoder.digest')
+                ->encodePassword($form->get('password')->getData(), $tenant->getSalt());
+            $tenant->setPassword($password);
+            $tenant->setPhone($form->getData()->getPhone());
+            $this->getEntityManager()->flush($tenant);
 
-            return $contractWaiting->getTenant();
+            return $tenant;
         }
 
         // If user is not integrated and no contract in WAITING state.
