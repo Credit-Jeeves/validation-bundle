@@ -15,7 +15,6 @@ class ImportResManCase extends ImportBaseAbstract
      */
     public function resmanBaseImport()
     {
-        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
@@ -77,7 +76,6 @@ class ImportResManCase extends ImportBaseAbstract
      */
     public function checkByResManRecurringChargeImport()
     {
-        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->setDefaultSession('selenium2');
         $em = $this->getEntityManager();
         /** @var Landlord $landlord */
