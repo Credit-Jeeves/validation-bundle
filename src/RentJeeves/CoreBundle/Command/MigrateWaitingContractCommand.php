@@ -5,7 +5,11 @@ namespace RentJeeves\CoreBundle\Command;
 use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\CoreBundle\ContractManagement\Model\ContractDTO;
 use RentJeeves\CoreBundle\Exception\ContractManagerException;
+use RentJeeves\CoreBundle\Exception\UserCreatorException;
+use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\UserManagement\UserCreator;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,80 +28,101 @@ class MigrateWaitingContractCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var ContractManager $contractManager */
-        $contractManager = $this->getContainer()->get('renttrack.contract_manager');
+        $this->getLogger()->info('Started migration from ContractWaiting to Contract');
+        /** @var ContractProcess $contractManager */
+        $contractManager = $this->getContainer()->get('contract.process');
+        $contractManager->setIsValidateContract(true);
+        /** @var UserCreator $userCreator */
+        $userCreator = $this->getContainer()->get('renttrack.user_creator');
 
-        $query = $this->getEntityManager()
-            ->createQuery('SELECT c FROM RentJeeves\DataBundle\Entity\ContractWaiting as c');
-        $iterable = $query->iterate();
-        $i = 0;
-        while (($contractsWaitingArray = $iterable->next()) !== false) {
-            $i++;
-            /** @var ContractWaiting $contractWaiting */
-            $contractWaiting =  reset($contractsWaitingArray);
-
+        $iterableResult = $this
+            ->getEntityManager()
+            ->createQuery('SELECT c FROM RentJeeves\DataBundle\Entity\ContractWaiting as c')
+            ->iterate();
+        /** @var ContractWaiting $contractWaiting */
+        while ((list($contractWaiting) = $iterableResult->next()) !== false) {
+            $this->getLogger()->info(
+                sprintf(
+                    'Started processing ContractWaiting#%d',
+                    $contractWaiting->getId()
+                )
+            );
             if ($this->isDuplicate($contractWaiting)) {
                 continue;
             }
-
-            $contractDTO = $this->mapContractWaitingToContractDTO($contractWaiting);
-
             try {
-                $contractManager->createContract($contractWaiting->getUnit(), $contractDTO);
-            } catch (ContractManagerException $e) {
-                $this->getLogger()->alert(
+                $this->getLogger()->info(
                     sprintf(
-                        'Got exception by command %s message %s',
-                        MigrateWaitingContractCommand::class,
+                        'Trying create new waiting tenant with name: %s %s',
+                        $contractWaiting->getFirstName(),
+                        $contractWaiting->getLastName()
+                    )
+                );
+                $tenant = $userCreator->createTenant($contractWaiting->getFirstName(), $contractWaiting->getLastName());
+            } catch (UserCreatorException $e) {
+                $this->getLogger()->warning(
+                    sprintf(
+                        'Got error when trying create new tenant for ContractWaiting#%d: %s',
+                        $contractWaiting->getId(),
                         $e->getMessage()
+                    )
+                );
+                continue;
+            }
+
+            $contract = $contractManager->createContractFromWaiting(
+                $tenant,
+                $contractWaiting,
+                $contractWaiting->getGroup()->isAllowedEditResidentId()
+            );
+
+            if (!$contract) {
+                $this->getLogger()->warning(
+                    sprintf(
+                        'Got errors when trying move Contract from ContractWaiting#%d: %s',
+                        $contractWaiting->getId(),
+                        implode(', ', $contractManager->getErrors())
                     )
                 );
             }
 
-            if ($i % 30 == 0) {
-                $this->getLogger()->debug('Clear entity manager on migrate waiting contract command');
-                $this->getEntityManager()->clear();
-            }
+            $contract->setStatus(ContractStatus::WAITING);
+            $this->getEntityManager()->flush();
+            $this->getLogger()->info(
+                sprintf(
+                    'Migrated Contract#%d from ContractWaiting#%d',
+                    $contract->getId(),
+                    $contractWaiting->getId()
+                )
+            );
+
+            $this->getLogger()->info('Clear entity manager on migrate waiting contract command');
+            $this->getEntityManager()->clear();
         }
+
+        $this->getLogger()->info('Finished migration from ContractWaiting to Contract');
     }
 
     /**
      * @param ContractWaiting $contractWaiting
-     * @return ContractDTO
-     */
-    protected function mapContractWaitingToContractDTO(ContractWaiting $contractWaiting)
-    {
-        $contractDTO = new ContractDTO();
-        $contractDTO->setExternalLeaseId($contractWaiting->getExternalLeaseId());
-        $contractDTO->setFirstName($contractWaiting->getFirstName());
-        $contractDTO->setLastName($contractWaiting->getLastName());
-        $contractDTO->setIntegratedBalance($contractWaiting->getIntegratedBalance());
-        $contractDTO->setExternalResidentId($contractWaiting->getResidentId());
-        $contractDTO->setRent($contractWaiting->getRent());
-        $contractDTO->setPaymentAccepted($contractWaiting->getPaymentAccepted());
-        $contractDTO->setStartAt($contractWaiting->getStartAt());
-        $contractDTO->setFinishAt($contractWaiting->getFinishAt());
-
-        return $contractDTO;
-    }
-
-    /**
-     * @param ContractWaiting $contractWaiting
+     * @return boolean
      */
     protected function isDuplicate(ContractWaiting $contractWaiting)
     {
-        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')
+        $contracts = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Contract')
             ->findDuplicateContractPerContractWaiting($contractWaiting);
 
         if (empty($contracts)) {
             return false;
         }
 
-        $this->getLogger()->debug(
-            print_r(
-                'ContractWaiting#%s has duplicate contracts#%s',
+        $this->getLogger()->warning(
+            sprintf(
+                'ContractWaiting#%d has duplicate contracts with ids %s',
                 $contractWaiting->getId(),
-                implode(',', $contracts)
+                implode(', ', $contracts)
             )
         );
 
