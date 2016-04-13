@@ -1381,7 +1381,7 @@ class TenantCase extends BaseTestCase
 
         $this
             ->getDomElement('.group-select>a', 'Can not find group selector')
-            ->click();;
+            ->click();
 
         $this
             ->getDomElement(
@@ -1395,7 +1395,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#contracts-block .properties-table").length > 0');
         $editBtn = $this->getDomElement('.edit', 'Can not find edit button');
         $editBtn->click();
-        $contractId = str_replace('edit-', '',$editBtn->getAttribute('id'));
+        $contractId = str_replace('edit-', '', $editBtn->getAttribute('id'));
         $this->assertNotEmpty($contractId, 'Contract id is empty');
         $em = $this->getEntityManager();
         $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);

@@ -13,7 +13,10 @@ class ScanningControllerCase extends BaseTestCase
     public function shouldFindAndShowContracts()
     {
         $this->load(true);
-        $landlord = $this->getEntityManager()->find('RjDataBundle:Landlord', 65);
+        $landlord = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Landlord')
+            ->findOneByEmail('landlord1@example.com');
         $profitStarsSettings = new ProfitStarsSettings();
         $profitStarsSettings->setMerchantId('test');
         $profitStarsSettings->setHolding($landlord->getHolding());
@@ -73,7 +76,10 @@ class ScanningControllerCase extends BaseTestCase
     public function shouldShowMessageIfAddressFilterContainShortWord()
     {
         $this->load(true);
-        $landlord = $this->getEntityManager()->find('RjDataBundle:Landlord', 65);
+        $landlord = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Landlord')
+            ->findOneByEmail('landlord1@example.com');
         $profitStarsSettings = new ProfitStarsSettings();
         $profitStarsSettings->setMerchantId('test');
         $profitStarsSettings->setHolding($landlord->getHolding());
