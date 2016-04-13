@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\DateTime;
 use Exception;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @Route("/ajax")
@@ -776,20 +777,6 @@ class AjaxController extends Controller
         $tenant->setFirstName($details['first_name']);
         $tenant->setLastName($details['last_name']);
 
-        if (!$tenant->getEmail() &&
-            ($email = trim($details['email'])) &&
-            !($email = filter_var($email, FILTER_VALIDATE_EMAIL))
-        ) {
-            $errors[] = $translator->trans('contract.error.email.invalid');
-        } elseif (!empty($email)) {
-              /** @var ContractManager $contractManager */
-            $contractManager = $this->get('renttrack.contract_manager');
-            $contractStatus = $contract->getStatus();
-            if ($contractStatus === ContractStatus::WAITING) {
-                $contractStatus = ContractStatus::APPROVED;
-            }
-            $contractManager->moveContractOutOfWaitingByLandlord($contract, $contractStatus, $email);
-        }
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
 
@@ -861,6 +848,22 @@ class AjaxController extends Controller
                 $errors,
                 $resident->validate($this->getUser(), $residentMapping)
             );
+        }
+
+        if (!$tenant->getEmail() && $email = trim($details['email'])) {
+            $emailConstraint = new Assert\Email();
+            $errorList = $this->get('validator')->validateValue($email, $emailConstraint);
+            if (count($errorList) > 0) {
+                $errors[] = $translator->trans('contract.error.email.invalid');
+            } elseif (empty($errors)) {
+                /** @var ContractManager $contractManager */
+                $contractManager = $this->get('renttrack.contract_manager');
+                $contractStatus = $contract->getStatus();
+                if ($contractStatus === ContractStatus::WAITING) {
+                    $contractStatus = ContractStatus::APPROVED;
+                }
+                $contractManager->moveContractOutOfWaitingByLandlord($contract, $contractStatus, $email);
+            }
         }
         $response = [];
 
