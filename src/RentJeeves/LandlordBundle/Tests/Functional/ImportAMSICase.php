@@ -14,6 +14,7 @@ class ImportAMSICase extends ImportBaseAbstract
      */
     public function shouldImportAMSI()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
