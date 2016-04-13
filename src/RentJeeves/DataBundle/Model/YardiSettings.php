@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Enum\PaymentTypeACH;
 use RentJeeves\DataBundle\Enum\PaymentTypeCC;
+use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Enum\YardiNsfPostMonthOption;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
@@ -107,6 +108,17 @@ abstract class YardiSettings
 
     /**
      * @ORM\Column(
+     *     type="PaymentTypeScannedCheck",
+     *     name="payment_type_scanned_check",
+     *     options={
+     *          "default":"check"
+     *     }
+     * )
+     */
+    protected $paymentTypeScannedCheck = PaymentTypeScannedCheck::CHECK;
+
+    /**
+     * @ORM\Column(
      *     type="PaymentTypeCC",
      *     name="payment_type_cc",
      *     options={
@@ -133,6 +145,15 @@ abstract class YardiSettings
      * )
      */
     protected $notesCC;
+
+    /**
+     * @ORM\Column(
+     *      type="encrypt",
+     *      name="notes_scanned_check",
+     *      nullable=true
+     * )
+     */
+    protected $notesScannedCheck;
 
     /**
      * @ORM\OneToOne(
@@ -467,5 +488,37 @@ abstract class YardiSettings
     public function setNsfPostMonthNode($nsfPostMonthNode)
     {
         $this->nsfPostMonthNode = $nsfPostMonthNode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentTypeScannedCheck()
+    {
+        return $this->paymentTypeScannedCheck;
+    }
+
+    /**
+     * @param string $paymentTypeScannedCheck
+     */
+    public function setPaymentTypeScannedCheck($paymentTypeScannedCheck)
+    {
+        $this->paymentTypeScannedCheck = $paymentTypeScannedCheck;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotesScannedCheck()
+    {
+        return $this->notesScannedCheck;
+    }
+
+    /**
+     * @param string $notesScannedCheck
+     */
+    public function setNotesScannedCheck($notesScannedCheck)
+    {
+        $this->notesScannedCheck = $notesScannedCheck;
     }
 }

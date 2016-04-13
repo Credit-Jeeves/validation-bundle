@@ -8,6 +8,8 @@ use CreditJeeves\DataBundle\Entity\Order;
 
 class Payment
 {
+    const SCANNED_CHECK_RETURN_TYPE = 'Check';
+
     /**
      * @Serializer\SerializedName("Type")
      * @Serializer\XmlAttribute
@@ -30,6 +32,13 @@ class Payment
         $this->type = self::getType($order);
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
     public static function getType(Order $order)
     {
         $type = $order->getPaymentType();
@@ -40,6 +49,9 @@ class Payment
                 break;
             case OrderPaymentType::BANK:
                 $typeReturn = 'ACH';
+                break;
+            case OrderPaymentType::SCANNED_CHECK:
+                $typeReturn = self::SCANNED_CHECK_RETURN_TYPE;
                 break;
             default:
                 $message = 'Not supported type of order(%s) it must be %s or %s';
