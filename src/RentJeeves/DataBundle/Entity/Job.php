@@ -49,7 +49,6 @@ class Job extends Base
      */
     protected $dependencies;
 
-
     /**
      * @param string $command
      * @param array $args
@@ -164,5 +163,17 @@ class Job extends Base
     public function setArgs($args)
     {
         $this->args = $args;
+    }
+
+    /**
+     * @param Base $job
+     */
+    public function setOriginalJob(Base $job)
+    {
+        if (self::STATE_PENDING !== $this->state) {
+            throw new \LogicException($this.' must be in state "PENDING".');
+        }
+
+        $this->originalJob = $job;
     }
 }
