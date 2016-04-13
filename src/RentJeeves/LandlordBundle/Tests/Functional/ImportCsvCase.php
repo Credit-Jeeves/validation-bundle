@@ -595,6 +595,7 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function importMultipleProperties()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
         $em = $this->getEntityManager();
 
@@ -1406,6 +1407,7 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     public function shouldCreateContractFromWaitingOnOnlyNewAndException()
     {
+        $this->markTestSkipped('Skipping ContractWaiting. Should be removed in RT-2241');
         $this->load(true);
 
         $importGroupSettings = $this->getImportGroupSettings();
