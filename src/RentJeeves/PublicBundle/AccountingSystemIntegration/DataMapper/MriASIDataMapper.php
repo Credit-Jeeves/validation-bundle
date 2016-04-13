@@ -80,9 +80,9 @@ class MriASIDataMapper implements ASIDataMapperInterface
 
         $this->validate($integratedModel, ['Default', 'mri']);
         if ($this->hasErrors()) {
-            throw new \InvalidArgumentException(
-                sprintf('Request has errors: %s', implode('; ', $this->getErrors()))
-            );
+            $message = sprintf('MRI Resident Connect: Request has errors: %s', implode('; ', $this->getErrors()));
+            $this->logger->alert($message);
+            throw new \InvalidArgumentException($message);
         }
 
         return $integratedModel;

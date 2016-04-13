@@ -68,19 +68,20 @@ class HMACGenerator
     {
         if (empty($data[$this->signParamName])) {
             $this->logger->warning(
-                sprintf('No HMAC signature param in data. Exp+ected \'%s\' param', $this->signParamName)
+                sprintf('No HMAC signature param in data. Expected \'%s\' param', $this->signParamName)
             );
             return false;
         }
-        $this->logger->debug(sprintf('Given HMAC Data: %s', http_build_query($data)));
+        $this->logger->debug(sprintf('Given HMAC Data: %s', json_encode($data)));
         $inputHMAC = $data[$this->signParamName];
         $originHMAC = $this->generateHMAC($data);
-        $this->logger->debug(sprintf('Given HMAC: %s  Calculated HMAC: %s', $inputHMAC, $originHMAC));
-        if (strtolower($originHMAC) === strtolower($inputHMAC)) {
-            return true;
+
+        if (strtolower($originHMAC) !== strtolower($inputHMAC)) {
+            $this->logger->error(sprintf('Given HMAC: %s != Calculated HMAC: %s', $inputHMAC, $originHMAC));
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
