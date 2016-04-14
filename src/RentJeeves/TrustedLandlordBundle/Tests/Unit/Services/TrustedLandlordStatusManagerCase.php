@@ -227,6 +227,8 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
         );
 
         $paymentDebit = new Payment();
+        $paymentDebit->setStatus(PaymentStatus::FLAGGED);
+        $paymentDebit->setFlaggedReason('Not trusted');
         $accountDebit = new PaymentAccount();
         $paymentDebit->setStartDate('now');
         $accountDebit->setType(PaymentAccountType::DEBIT_CARD);
@@ -278,6 +280,9 @@ class TrustedLandlordStatusManagerCase extends UnitTestBase
             'Start date of payment debit don\'t set to tomorrow'
         );
         $this->assertEquals($trustedLandlord->getStatus(), TrustedLandlordStatus::TRUSTED, 'Status didn\'t update');
+        $this->assertEquals($paymentDebit->getStatus(), PaymentStatus::ACTIVE, 'Payment Status didn\'t update');
+        $this->assertNull($paymentDebit->getFlaggedReason(), 'Flagged Reason not null');
+
     }
 
     /**

@@ -8,6 +8,7 @@ use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\PaymentAccountType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
 use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordStatusException;
 
@@ -166,6 +167,8 @@ class TrustedLandlordStatusManager
         $today = new \DateTime();
         foreach ($payments as $payment) {
             $currentStartDate = $payment->getStartDate();
+            $payment->setStatus(PaymentStatus::ACTIVE);
+            $payment->setFlaggedReason(null);
             $paymentType = $payment->getPaymentAccount()->getType();
             if ($paymentType === PaymentAccountType::DEBIT_CARD) {
                 list($hours, $minutes) = explode(':', $this->debitPaymentUntilTime);
