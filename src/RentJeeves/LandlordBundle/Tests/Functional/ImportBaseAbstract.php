@@ -1,7 +1,10 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
 
@@ -72,29 +75,25 @@ class ImportBaseAbstract extends BaseTestCase
     }
 
     /**
-     * @return ContractWaiting
+     * @return Contract
      */
-    protected function getWaitingRoom()
+    protected function getContractInWaitingStatus()
     {
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(
-            array(
-                'residentId' => 't0019851',
-            )
-        );
+        $em = $this->getEntityManager();
+        $residentsMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findBy([ 'residentId' => 't0019851']);
 
-        $this->assertNotNull($contractWaiting);
-        $this->assertEquals(1, count($contractWaiting));
-        /**
-         * @var $contractWaiting ContractWaiting
-         */
-        $contractWaiting = reset($contractWaiting);
-        $this->assertNotNull($contractWaiting);
+        $this->assertNotNull($residentsMapping);
+        $this->assertEquals(1, count($residentsMapping), 'should be just one resident mapping');
+        /** @var $residentMapping ResidentMapping */
+        $residentMapping = reset($residentsMapping);
 
-        return $contractWaiting;
+        $tenant = $residentMapping->getTenant();
+        $this->assertNotNull($tenant);
+        $contract = $tenant->getContracts()->first();
+        $this->assertNotNull($contract, 'Should be one contract');
+        $this->assertEquals(ContractStatus::WAITING, $contract->getStatus(), 'Status not equals to waiting');
+
+        return $contract;
     }
 
     protected function setPropertyFirst()

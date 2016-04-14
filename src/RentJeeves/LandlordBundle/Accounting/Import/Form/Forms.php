@@ -85,7 +85,6 @@ trait Forms
     {
         $tenant   = $this->currentImportModel->getTenant();
         $contract = $this->currentImportModel->getContract();
-        $hasContractWaiting = $this->currentImportModel->getHasContractWaiting();
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
         $contractStatus = $contract->getStatus();
@@ -93,28 +92,27 @@ trait Forms
 
         $this->logger->debug(
             sprintf(
-                "getForm: tId:'%s', cId:'%s', cStatus:'%s', waiting:%s, skip:%s",
+                "getForm: tId:'%s', cId:'%s', cStatus:'%s', skip:%s",
                 $tenantId,
                 $contractId,
                 $contractStatus,
-                ($hasContractWaiting) ? "true" : "false",
                 ($isSkipped) ? "true" : "false"
             )
         );
 
         //Update contract or Create contract with exist User
-        if (($tenantId &&
+        if ((($tenantId &&
                 in_array(
                     $contractStatus,
                     [
                         ContractStatus::INVITE,
                         ContractStatus::APPROVED,
-                        ContractStatus::CURRENT
+                        ContractStatus::CURRENT,
+                        ContractStatus::WAITING
                     ]
                 )
                 && $contractId)
-            || ($tenantId && empty($contractId))
-            || $hasContractWaiting
+            || ($tenantId && empty($contractId))) && $this->currentImportModel->isHasEmailOnDB()
         ) {
             $form = $this->getContractForm($isUseToken = true);
             $form->setData($contract);
@@ -129,9 +127,8 @@ trait Forms
         }
 
         //Create contract and create user
-        if (empty($tenantId) &&
-            $contractStatus === ContractStatus::INVITE &&
-            empty($contractId)
+        if ((empty($tenantId) && $contractStatus === ContractStatus::INVITE && empty($contractId))
+            || (!empty($tenantId) && $this->currentImportModel->isHasEmailOnDB() === false)
         ) {
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);

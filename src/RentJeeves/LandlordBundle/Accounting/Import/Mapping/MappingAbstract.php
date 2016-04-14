@@ -164,43 +164,6 @@ abstract class MappingAbstract implements MappingInterface
     }
 
     /**
-     * @param Tenant          $tenant
-     * @param Contract        $contract
-     * @param ResidentMapping $residentMapping
-     *
-     * @return ContractWaiting
-     */
-    public function createContractWaiting(
-        Tenant $tenant,
-        Contract $contract,
-        ResidentMapping $residentMapping = null
-    ) {
-        $waitingRoom = new ContractWaiting();
-        $waitingRoom->setStartAt($contract->getStartAt());
-        $waitingRoom->setFinishAt($contract->getFinishAt());
-        $waitingRoom->setRent($contract->getRent());
-        $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
-        $waitingRoom->setExternalLeaseId($contract->getExternalLeaseId());
-        /**
-         * Property can be null because it can be not valid
-         */
-        if ($property = $contract->getProperty()) {
-            $waitingRoom->setUnit($contract->getUnit());
-            $waitingRoom->setProperty($property);
-        }
-
-        $waitingRoom->setFirstName($tenant->getFirstName());
-        $waitingRoom->setLastName($tenant->getLastName());
-        !$contract->getGroup() || $waitingRoom->setGroup($contract->getGroup());
-
-        if ($residentMapping) {
-            $waitingRoom->setResidentId($residentMapping->getResidentId());
-        }
-
-        return $waitingRoom;
-    }
-
-    /**
      * @param array $row
      *
      * @return Property
