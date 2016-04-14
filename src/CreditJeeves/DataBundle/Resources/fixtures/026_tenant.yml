@@ -481,3 +481,21 @@ fixtures:
         lastLogin: '-1 hour'
         created_at: '-50 days'
         updated_at: '-3 days'
+    Tenant_dtr_1:
+        first_name: John
+        last_name: Treewolta
+        username: treewolta
+        date_of_birth: '1980-12-12'
+        ssn: 880884088
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: false
+        offer_notification: false
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'

@@ -28,3 +28,6 @@ fixtures:
     feeCC: "0"
     feeACH: "0"
     passedAch: 1
+  setting_dtr_1:
+    isIntegrated: 1
+    group: DTRGroup_1

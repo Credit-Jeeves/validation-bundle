@@ -5,6 +5,7 @@ fixtures:
             - RentGroup_1
             - RentGroup_2
             - RentGroup_6
+            - DTRGroup_1
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         propertyAddress: PropertyAddress_1

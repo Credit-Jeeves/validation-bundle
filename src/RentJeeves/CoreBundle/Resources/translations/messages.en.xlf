@@ -1230,6 +1230,10 @@
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
             </trans-unit>
+            <trans-unit id="contract.error.email.invalid">
+                <source>contract.error.email.invalid</source>
+                <target>Email is invalid</target>
+            </trans-unit>
             <trans-unit id="contract.error.start">
                 <source>contract.error.start</source>
                 <target>Start At could not be empty</target>
@@ -3413,6 +3417,18 @@
             <trans-unit id="reported.lease">
                 <source>reported.lease</source>
                 <target>Reported Lease</target>
+            </trans-unit>
+            <trans-unit id="landlord.contract_edit.add_email.title">
+                <source>landlord.contract_edit.add_email.title</source>
+                <target>Add Email</target>
+            </trans-unit>
+            <trans-unit id="landlord.contract_edit.add_email.description">
+                <source>landlord.contract_edit.add_email.description</source>
+                <target>Resident will receive an invitation when you save the lease.</target>
+            </trans-unit>
+            <trans-unit id="landlord.contract_edit.contract_waiting">
+                <source>landlord.contract_edit.contract_waiting</source>
+                <target>Contract Waiting</target>
             </trans-unit>
             <trans-unit id="contract.in_waiting_status">
                 <source>contract.in_waiting_status</source>

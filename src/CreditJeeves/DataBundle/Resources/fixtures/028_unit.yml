@@ -243,3 +243,32 @@ fixtures:
         createdAt: '-60 days'
         updatedAt: '-8 days'
         deletedAt: '-60 days'
+# DTR Units
+    Unit_dtr_1:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-A
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_dtr_2:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-B
+        createdAt: '-60 days'
+        updatedAt: '-6 days'
+    Unit_dtr_3:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-C
+        createdAt: '-60 days'
+        updatedAt: '-9 days'
+    Unit_dtr_4:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-D
+        createdAt: '-60 days'
+        updatedAt: '-7 days'

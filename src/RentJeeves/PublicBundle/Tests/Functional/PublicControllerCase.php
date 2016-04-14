@@ -113,12 +113,6 @@ class PublicControllerCase extends BaseTestCase
         $this->getEntityManager()->persist($residentMapping);
         $this->getEntityManager()->flush();
 
-        $contracts = $this->getEntityManager()
-            ->getRepository('RjDataBundle:Contract')
-            ->findByStatus(ContractStatus::WAITING);
-
-        $this->assertEquals(1, count($contracts), 'Only one contract in WAITING state expected');
-
         $this->session->visit(
             $this->getUrl() . '?holding_id=' . $contractWaiting->getHolding()->getId() . '&resident_id=t0013535'
         );
