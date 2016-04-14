@@ -27,7 +27,7 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('validateHMAC')
             ->willReturn(false);
 
-        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator);
+        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator, $this->getLoggerMock());
 
         $request = $this->getBaseMock('Symfony\Component\HttpFoundation\Request');
 
@@ -83,7 +83,7 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('validateHMAC')
             ->willReturn(true);
 
-        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator);
+        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator, $this->getLoggerMock());
 
         $request = $this->getBaseMock('Symfony\Component\HttpFoundation\Request');
 
@@ -129,7 +129,7 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('generateHMAC')
             ->willReturn('Digest_Test');
 
-        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator);
+        $dataMapper = new MriASIDataMapper($validator, $hmacGenerator, $this->getLoggerMock());
 
         $request = $this->getBaseMock('Symfony\Component\HttpFoundation\Request');
 

@@ -4,10 +4,13 @@ namespace RentJeeves\CoreBundle\Tests\Unit\Services;
 
 use RentJeeves\CoreBundle\Services\HMACGenerator;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class HMACGeneratorCase extends UnitTestBase
 {
     const SECRET_KEY = 'testSecretKey';
+
+    use CreateSystemMocksExtensionTrait;
 
     /**
      * @test
@@ -16,7 +19,7 @@ class HMACGeneratorCase extends UnitTestBase
      */
     public function shouldThrowExceptionOnInvalidHashAlgorithm()
     {
-        $generator = new HMACGenerator(self::SECRET_KEY, 'hmac', 'bla-bla-bla');
+        $generator = new HMACGenerator($this->getLoggerMock(), self::SECRET_KEY, 'hmac', 'bla-bla-bla');
 
         $generator->validateHMAC(['hmac' => 'invalidHMAC', 'data' => 'hmmm']);
     }
@@ -144,7 +147,7 @@ class HMACGeneratorCase extends UnitTestBase
      */
     public function shouldCreateRightSignature($data, $resultSignature)
     {
-        $generator = new HMACGenerator(self::SECRET_KEY);
+        $generator = new HMACGenerator($this->getLoggerMock(), self::SECRET_KEY);
 
         $this->assertEquals($resultSignature, $generator->generateHMAC($data), 'Invalid creation signature');
     }
@@ -157,7 +160,7 @@ class HMACGeneratorCase extends UnitTestBase
      */
     public function shouldBeValidSignature($data)
     {
-        $generator = new HMACGenerator(self::SECRET_KEY);
+        $generator = new HMACGenerator($this->getLoggerMock(), self::SECRET_KEY);
 
         $this->assertTrue($generator->validateHMAC($data), 'Signature should be valid');
     }
@@ -197,7 +200,7 @@ class HMACGeneratorCase extends UnitTestBase
      */
     public function shouldBeInValidSignature($data)
     {
-        $generator = new HMACGenerator(self::SECRET_KEY);
+        $generator = new HMACGenerator($this->getLoggerMock(), self::SECRET_KEY);
 
         $this->assertFalse($generator->validateHMAC($data), 'Signature should be invalid');
     }

@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIIntegratedModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator;
+use Psr\Log\LoggerInterface;
 
 /**
  * DI\Service('accounting_system.integration.data_mapper.mri')
@@ -23,13 +24,19 @@ class MriASIDataMapper implements ASIDataMapperInterface
     protected $HMACGenerator;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param Validator $validator
      * @param HMACGenerator $HMACGenerator
      */
-    public function __construct(Validator $validator, HMACGenerator $HMACGenerator)
+    public function __construct(Validator $validator, HMACGenerator $HMACGenerator, LoggerInterface $logger)
     {
         $this->validator = $validator;
         $this->HMACGenerator = $HMACGenerator;
+        $this->logger = $logger;
     }
 
     /**
@@ -73,9 +80,9 @@ class MriASIDataMapper implements ASIDataMapperInterface
 
         $this->validate($integratedModel, ['Default', 'mri']);
         if ($this->hasErrors()) {
-            throw new \InvalidArgumentException(
-                sprintf('Request has errors: %s', implode('; ', $this->getErrors()))
-            );
+            $message = sprintf('MRI Resident Connect: Request has errors: %s', implode('; ', $this->getErrors()));
+            $this->logger->alert($message);
+            throw new \InvalidArgumentException($message);
         }
 
         return $integratedModel;

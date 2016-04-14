@@ -16,8 +16,9 @@ services:
     mri.hmac.generator:
         parent: hmac.generator
         arguments:
-            - "%mri.digest_key%"
-            - "Digest"
+            - '@logger'
+            - '%mri.digest_key%'
+            - 'Digest'
 
     renttrack.email_canonicalizer:
         class: RentJeeves\CoreBundle\Services\EmailCanonicalizer
