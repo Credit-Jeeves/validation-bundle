@@ -606,7 +606,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->assertEquals(
-            0,
+            1,
             count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
         );
         $this->setDefaultSession('selenium2');
@@ -709,7 +709,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertTrue($unit->getProperty()->getPropertyAddress()->isSingle());
 
         $this->assertEquals(
-            20,
+            21,
             count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
         );
     }
