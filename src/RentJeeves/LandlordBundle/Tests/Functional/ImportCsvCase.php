@@ -470,8 +470,6 @@ class ImportCsvCase extends ImportBaseAbstract
             $contractInWaitingStatus->getTenant()->getResidentsMapping()->first()->getResidentId(),
             'ResidentID doesn\'t exist'
         );
-        $contractInWaitingStatus = $em->getRepository('RjDataBundle:Contract')->find($contractInWaitingStatus->getId());
-        $this->assertNotNull($contractInWaitingStatus);
     }
 
     /**
@@ -486,7 +484,7 @@ class ImportCsvCase extends ImportBaseAbstract
          */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => 'hi@mail.com']);
 
-        $tenant->setEmailField('h1_changed@mail.com');
+        $tenant->setEmail('h1_changed@mail.com');
         $em->persist($tenant);
         $em->flush();
 

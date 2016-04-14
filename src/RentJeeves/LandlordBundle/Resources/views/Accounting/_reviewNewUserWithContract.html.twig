@@ -4,7 +4,7 @@
          attr: {
             'class': $root.getClassLine($data)
          },
-         if: !is_skipped && ((!contract.id && !tenant.id) || (is_have_email_on_db == false && tenant.id)) && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)"
+         if: !is_skipped && ((!contract.id && !tenant.id) || (is_has_email_on_db == false && tenant.id)) && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)"
     >
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>

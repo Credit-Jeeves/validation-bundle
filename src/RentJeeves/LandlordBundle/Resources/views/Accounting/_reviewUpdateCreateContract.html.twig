@@ -5,7 +5,7 @@
     if: !is_skipped
         && contract.status != 'finished'
         && $root.isValidFieldsWhichNotContainsInForm($data)
-        && (tenant.id && is_have_email_on_db == true)">
+        && (tenant.id && is_has_email_on_db == true)">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == "true" %}

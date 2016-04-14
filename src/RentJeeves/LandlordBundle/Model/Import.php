@@ -135,28 +135,28 @@ class Import
     protected $handler;
 
     /**
-     * @Serializer\SerializedName("is_have_email_on_db")
+     * @Serializer\SerializedName("is_has_email_on_db")
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"RentJeevesImport"})
      *
      * @var boolean
      */
-    protected $isHaveEmailOnDB;
+    protected $isHasEmailOnDB;
 
     /**
      * @return boolean
      */
-    public function isHaveEmailOnDB()
+    public function isHasEmailOnDB()
     {
-        return $this->isHaveEmailOnDB;
+        return $this->isHasEmailOnDB;
     }
 
     /**
-     * @param boolean $isHaveEmailOnDB
+     * @param boolean $isHasEmailOnDB
      */
-    public function setIsHaveEmailOnDB($isHaveEmailOnDB)
+    public function setIsHasEmailOnDB($isHasEmailOnDB)
     {
-        $this->isHaveEmailOnDB = $isHaveEmailOnDB;
+        $this->isHasEmailOnDB = $isHasEmailOnDB;
     }
 
     /**
@@ -467,9 +467,9 @@ class Import
         $this->tenant = $tenant;
 
         if (empty($tenant->getEmail())) {
-            $this->setIsHaveEmailOnDB(false);
+            $this->setIsHasEmailOnDB(false);
         } else {
-            $this->setIsHaveEmailOnDB(true);
+            $this->setIsHasEmailOnDB(true);
         }
     }
 

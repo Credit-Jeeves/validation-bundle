@@ -95,7 +95,7 @@ trait FormBind
         $contract = $form->getData();
         $sendInvite = $form->get('sendInvite')->getNormData();
         $email = $this->currentImportModel->getTenant()->getEmail();
-        if (!$this->currentImportModel->isHaveEmailOnDB() && $sendInvite && !empty($email)) {
+        if (!$this->currentImportModel->isHasEmailOnDB() && $sendInvite && !empty($email)) {
             $this->isNeedSendInvite = true;
         }
 
