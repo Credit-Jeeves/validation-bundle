@@ -107,7 +107,7 @@ function init() {
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
-        var dueDate = contract.startAt.substr(5, 2)
+        var dueDate = contract.startAt.substr(8, 2)
         if (dueDate.charAt(0) == "0") {
             dueDate = dueDate.charAt(1);
         }
@@ -413,6 +413,8 @@ function setupPayForm(id) {
 
             var contract = contractsArr[i]
 
+            var dueDate = parseInt(contractsArr[0].startAt.substr(8,2))
+
             if (contract.groupSetting.pay_balance_only) {
                 currentPaymentForm = paymentBalanceForm;
                 $('#integratedBalanceBox').show();
@@ -508,7 +510,7 @@ function setupPayForm(id) {
             for (i = 1; i < 32; i++) {
                 a = "";
                 if (contract.payment) {
-                    if (i == contract.payment.dueDate) {
+                    if (i == dueDate) {
                         a = " selected"
                     }
                 } else if (i == (new Date()).getDate()) {
