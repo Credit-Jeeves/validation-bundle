@@ -224,6 +224,15 @@ services:
             - RentJeeves\DataBundle\Entity\TrustedLandlord
             - 'SonataAdminBundle:CRUD'
 
+    sonata.admin.payment_history:
+        class: RentJeeves\AdminBundle\Admin\PaymentHistoryAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payment History" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\PaymentHistory
+            - 'SonataAdminBundle:CRUD'
+
     sonata.admin.user_partner:
         class: RentJeeves\AdminBundle\Admin\PartnerUsersAdmin
         tags:

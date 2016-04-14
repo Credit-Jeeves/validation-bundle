@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class DepositAccountAdmin extends Admin
 {
@@ -73,4 +74,17 @@ class DepositAccountAdmin extends Admin
                 ]
             );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('merchantName')
+            ->add('type')
+            ->add('paymentProcessor')
+            ->add('status');
+    }
+
 }
