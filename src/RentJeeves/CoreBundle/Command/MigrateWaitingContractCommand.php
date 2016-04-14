@@ -50,6 +50,7 @@ class MigrateWaitingContractCommand extends BaseCommand
             if ($this->isDuplicate($contractWaiting)) {
                 continue;
             }
+            $this->getEntityManager()->beginTransaction();
             try {
                 $this->getLogger()->info(
                     sprintf(
@@ -60,6 +61,7 @@ class MigrateWaitingContractCommand extends BaseCommand
                 );
                 $tenant = $userCreator->createTenant($contractWaiting->getFirstName(), $contractWaiting->getLastName());
             } catch (UserCreatorException $e) {
+                $this->getEntityManager()->rollback();
                 $this->getLogger()->warning(
                     sprintf(
                         'Got error when trying create new tenant for ContractWaiting#%d: %s',
@@ -70,16 +72,29 @@ class MigrateWaitingContractCommand extends BaseCommand
                 continue;
             }
 
-            $contract = $contractManager->createContractFromWaiting(
-                $tenant,
-                $contractWaiting,
-                $contractWaiting->getGroup()->isAllowedEditResidentId()
-            );
-
-            if (!$contract) {
+            try {
+                $contract = $contractManager->createContractFromWaiting(
+                    $tenant,
+                    $contractWaiting,
+                    $contractWaiting->getGroup()->isAllowedEditResidentId()
+                );
+            } catch (\Exception $e) {
+                $this->getEntityManager()->rollback();
                 $this->getLogger()->warning(
                     sprintf(
-                        'Got errors when trying move Contract from ContractWaiting#%d: %s',
+                        'Got error when trying move Contract from ContractWaiting#%d: %s',
+                        $contractWaiting->getId(),
+                        $e->getMessage()
+                    )
+                );
+                continue;
+            }
+
+            if (!$contract) {
+                $this->getEntityManager()->rollback();
+                $this->getLogger()->warning(
+                    sprintf(
+                        'Got validation errors when trying move Contract from ContractWaiting#%d: %s',
                         $contractWaiting->getId(),
                         implode(', ', $contractManager->getErrors())
                     )
@@ -88,6 +103,7 @@ class MigrateWaitingContractCommand extends BaseCommand
 
             $contract->setStatus(ContractStatus::WAITING);
             $this->getEntityManager()->flush();
+            $this->getEntityManager()->commit();
             $this->getLogger()->info(
                 sprintf(
                     'Migrated Contract#%d from ContractWaiting#%d',
@@ -109,10 +125,7 @@ class MigrateWaitingContractCommand extends BaseCommand
      */
     protected function isDuplicate(ContractWaiting $contractWaiting)
     {
-        $contracts = $this
-            ->getEntityManager()
-            ->getRepository('RjDataBundle:Contract')
-            ->findDuplicateContractPerContractWaiting($contractWaiting);
+        $contracts = $this->findDuplicateContractPerContractWaiting($contractWaiting);
 
         if (empty($contracts)) {
             return false;
@@ -127,5 +140,43 @@ class MigrateWaitingContractCommand extends BaseCommand
         );
 
         return true;
+    }
+
+    /**
+     * @param ContractWaiting $contractWaiting
+     * @return array
+     */
+    protected function findDuplicateContractPerContractWaiting(ContractWaiting $contractWaiting)
+    {
+        $query = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Contract')
+            ->createQueryBuilder('c')
+            ->select('c.id')
+            ->innerJoin('c.unit', 'u')
+            ->innerJoin('c.tenant', 't')
+            ->leftJoin('t.residentsMapping', 'rm')
+            ->where('u.id = :unit')
+            ->andWhere('c.status not in (:statuses)')
+            ->setParameter('statuses', [ContractStatus::FINISHED, ContractStatus::DELETED])
+            ->setParameter('unit', $contractWaiting->getUnit()->getId());
+
+        if (!empty($contractWaiting->getExternalLeaseId())) {
+            $query->andWhere('c.externalLeaseId = :leaseId')
+                ->setParameter('leaseId', $contractWaiting->getExternalLeaseId());
+        }
+
+        if (!empty($contractWaiting->getResidentId())) {
+            $query->andWhere('rm.residentId = :residentId')
+                ->setParameter('residentId', $contractWaiting->getExternalLeaseId());
+        }
+
+        $result = $query->getQuery()->getScalarResult();
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return array_map('current', $result);
     }
 }

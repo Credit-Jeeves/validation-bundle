@@ -1731,41 +1731,6 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param ContractWaiting $contractWaiting
-     * @return array
-     */
-    public function findDuplicateContractPerContractWaiting(ContractWaiting $contractWaiting)
-    {
-        $query = $this->createQueryBuilder('c')
-            ->select('c.id')
-            ->innerJoin('c.unit', 'u')
-            ->innerJoin('c.tenant', 't')
-            ->leftJoin('t.residentsMapping', 'rm')
-            ->where('u.id = :unit')
-            ->andWhere('c.status not in (:statuses)')
-            ->setParameter('statuses', [ContractStatus::FINISHED, ContractStatus::DELETED])
-            ->setParameter('unit', $contractWaiting->getUnit()->getId());
-
-        if (!empty($contractWaiting->getExternalLeaseId())) {
-            $query->andWhere('c.externalLeaseId = :leaseId')
-                ->setParameter('leaseId', $contractWaiting->getExternalLeaseId());
-        }
-
-        if (!empty($contractWaiting->getResidentId())) {
-            $query->andWhere('rm.residentId = :residentId')
-                ->setParameter('residentId', $contractWaiting->getExternalLeaseId());
-        }
-
-        $result = $query->getQuery()->getScalarResult();
-
-        if (empty($result)) {
-            return [];
-        }
-
-        return array_map('current', $result);
-    }
-
-    /**
      * @param Tenant $tenant
      * @return Contract[]
      */
