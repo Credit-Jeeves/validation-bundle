@@ -92,7 +92,7 @@ class Property extends Base
     {
         $result = null;
         foreach ($this->getUnits() as $unit) {
-            if ($unitSearch === $unit->getName()) {
+            if (strtolower($unitSearch) === strtolower($unit->getName())) {
                 $result = $unit;
                 break;
             }

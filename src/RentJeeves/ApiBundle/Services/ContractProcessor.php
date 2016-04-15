@@ -26,6 +26,7 @@ use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
 use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @DI\Service("api.contract.processor")
@@ -241,6 +242,19 @@ class ContractProcessor
         $this->em->persist($property);
         $this->em->persist($group);
         $this->em->flush();
+
+        if (!$property->isSingle()) {
+            try {
+                $unit = $this->propertyManager->getOrCreateUnit($group, $property, $unitName);
+            } catch (\InvalidArgumentException $e) {
+                throw new BadRequestHttpException($e->getMessage(), $e);
+            } catch (\LogicException $e) {
+                throw new HttpException(409, $e->getMessage(), $e);
+            }
+
+            $this->em->persist($unit);
+            $this->em->flush();
+        }
 
         $contracts = $this
             ->contractProcess

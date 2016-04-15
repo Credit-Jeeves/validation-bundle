@@ -686,6 +686,10 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $answer = $this->parseContent($response->getContent());
 
+        $this->assertArrayHasKey('id', $answer, 'Should have "id" on answer');
+        $this->assertArrayHasKey('url', $answer, 'Should have "url" on answer');
+        $this->assertArrayHasKey('unit_url', $answer, 'Should have "unit_url" on answer');
+
         $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
