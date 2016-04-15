@@ -1055,8 +1055,7 @@ function loadOrderTable(tenantPayments, address, contractId) { //HISTORICAL ENTR
         date = date[2] + "-" + date[0] + "-" + date[1]
         if (new Date(curDate - entryDate).getTime() < 259200000) { //check for within 3 days
             if (entry.status.toString() == "pending") {
-                if( $("contractStatus"+contractId).html()!="Payment En Route"))
-                    $("contractStatus"+contractId).html("Payment En Route")
+                $("#contractStatus"+contractId).html("Payment En Route")
                 orderBox("<b>Payment En Route</b> - $" + entry.total, address, entry.status.toString(), date, contractId, paymentType)
             }
             if (entry.status.toString() == "complete") {
