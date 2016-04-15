@@ -8,13 +8,13 @@
               <DocumentNumber>123123</DocumentNumber>
               <TransactionDate>%date%</TransactionDate>
               <BatchID>testBatchId</BatchID>
-              <UnitID>1102</UnitID>
+              <UnitID>12001</UnitID>
               <CustomerID></CustomerID>
               <PaidBy>TIMOTHY APPLEGATE</PaidBy>
               <Amount>1500.00</Amount>
               <Comment>770 Broadway, New York, NY 10003</Comment>
               <Description>770 Broadway, New York, NY 10003</Description>
-              <PropertyPrimaryID>b342e58c-f5ba-4c63-b050-cf44439bb37d</PropertyPrimaryID>
+              <PropertyPrimaryID>4fb18691-c894-4b84-805b-c62da481ca63</PropertyPrimaryID>
             </Detail>
           </Payment>
         </Transactions>

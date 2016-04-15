@@ -22,15 +22,15 @@ class ResManClientCase extends Base
     use TransactionAvailableTrait;
     use ContractAvailableTrait;
 
-    const EXTERNAL_PROPERTY_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d';
+    const EXTERNAL_PROPERTY_ID = '4fb18691-c894-4b84-805b-c62da481ca63';
 
-    const RESIDENT_ID = 'e0278ce2-a4c5-4c61-af79-d3c0689d92e9';
+    const RESIDENT_ID = '59754031-53e8-4f1c-9b95-ba4db3d40ba2';
 
-    const EXTERNAL_LEASE_ID = 'e724deb6-56e5-49b0-9583-b12b3bebdc9e';
+    const EXTERNAL_LEASE_ID = 'c99570ab-aaa0-4b5c-b956-f70d791269e9';
 
-    const EXTERNAL_UNIT_ID = 'b342e58c-f5ba-4c63-b050-cf44439bb37d|1|1102';
+    const EXTERNAL_UNIT_ID = '4fb18691-c894-4b84-805b-c62da481ca63|1|12001';
 
-    const RESMAN_UNIT_ID = '1108';
+    const RESMAN_UNIT_ID = '12001';
 
     /**
      * @test
@@ -40,9 +40,7 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         /** @var $resManClient ResManClient */
         $resManClient = $container->get('resman.client');
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $settings->setUrl('https://api.myresman.com/MITS/');
+        $settings = $this->getEntityManager()->getRepository('RjDataBundle:ResManSettings')->findOneBy([]);
         $resManClient->setSettings($settings);
         /** @var $residentTransactions ResidentTransactions */
         $residentTransactions = $resManClient->getResidentTransactions(self::EXTERNAL_PROPERTY_ID);
@@ -84,10 +82,7 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         /** @var $resManClient ResManClient */
         $resManClient = $container->get('resman.client');
-
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $settings->setUrl('https://api.myresman.com/MITS/');
+        $settings = $this->getEntityManager()->getRepository('RjDataBundle:ResManSettings')->findOneBy([]);
         $resManClient->setSettings($settings);
 
         $batchId = $resManClient->openBatch(self::EXTERNAL_PROPERTY_ID, new \DateTime());
@@ -110,9 +105,7 @@ class ResManClientCase extends Base
         $container = $this->getKernel()->getContainer();
         $resManClient = $container->get('resman.client');
 
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $settings->setUrl('https://api.myresman.com/MITS/');
+        $settings = $this->getEntityManager()->getRepository('RjDataBundle:ResManSettings')->findOneBy([]);
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
             AccountingSystem::RESMAN,
@@ -145,9 +138,7 @@ class ResManClientCase extends Base
         /** @var ResManClient $resManClient */
         $resManClient = $container->get('resman.client');
 
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $settings->setUrl('https://api.myresman.com/MITS/');
+        $settings = $this->getEntityManager()->getRepository('RjDataBundle:ResManSettings')->findOneBy([]);
         $resManClient->setSettings($settings);
         $transaction = $this->createTransaction(
             AccountingSystem::RESMAN,
@@ -240,9 +231,7 @@ class ResManClientCase extends Base
         /** @var $resManClient ResManClient */
         $resManClient = $container->get('resman.client');
 
-        $settings = new ResManSettings();
-        $settings->setAccountId('400');
-        $settings->setUrl('https://api.myresman.com/MITS/');
+        $settings = $this->getEntityManager()->getRepository('RjDataBundle:ResManSettings')->findOneBy([]);
         $resManClient->setSettings($settings);
 
         $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);
