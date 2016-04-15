@@ -3,11 +3,10 @@
 namespace RentJeeves\OAuthServerBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\CoreBundle\Services\ContractProcess;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
-use RentJeeves\DataBundle\Entity\ContractWaitingRepository;
+use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\TenantRepository;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\OAuthServerBundle\Form\TenantType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +35,6 @@ class PublicController extends Controller
             $this->isTenantAlreadyExists($tenant) ? ['inviteEmail' => false] : []
         );
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             /** @var $tenant Tenant */
             $tenant = $form->getData();
@@ -56,24 +54,22 @@ class PublicController extends Controller
 
             if (!$isTenantAlreadyExists) {
                 $this->get('project.mailer')->sendRjCheckEmail($tenant);
-            }
-
-            /** @var $contractWaiting ContractWaiting */
-            if ($contractWaitingId = $request->getSession()->get('contract_waiting_id') and
-                $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaitingId)
-            ) {
-                /** @var ContractProcess $contractProcessor */
-                $contractProcessor = $this->container->get('contract.process');
-                $contract = $contractProcessor->createContractFromWaiting($tenant, $contractWaiting);
-
-                if (!$contract) {
-                    $this->container->get('logger')->alert(
-                        '[OAuth Registration]Can not create new contract from contractWaiting #' . $contractWaitingId,
-                        $contractProcessor->getErrors()
-                    );
+            } else {
+                /**
+                 * If tenant exists, check if email set and contracts in WAITING exist -- then move out of waiting.
+                 */
+                $contractsWaiting = $em->getRepository('RjDataBundle:Contract')->getAllWaitingForTenant($tenant);
+                if (false === empty($tenant->getEmail())) {
+                    /** @var ContractManager $contractManager */
+                    $contractManager = $this->get('renttrack.contract_manager');
+                    foreach ($contractsWaiting as $contract) {
+                        $contractManager->moveContractOutOfWaitingByTenant(
+                            $contract,
+                            ContractStatus::APPROVED,
+                            $tenant->getEmail()
+                        );
+                    }
                 }
-
-                $request->getSession()->remove('contract_waiting_id');
             }
 
             $request->getSession()->remove('holding_id');
@@ -122,23 +118,6 @@ class PublicController extends Controller
             $tenant = $repo->getTenantWithPendingInvitationByHoldingAndResidentId($holding, $residentId);
 
             if ($tenant) {
-                return $tenant;
-            }
-
-            // Try to find waiting contract by resident_id.
-            /** @var ContractWaitingRepository $repo */
-            $repo = $em->getRepository('RjDataBundle:ContractWaiting');
-            $contractsWaiting = $repo->findAllByHoldingAndResidentId($holding, $residentId, $sortReverse = true);
-
-            if (count($contractsWaiting) > 0) {
-                $contractWaiting = $contractsWaiting[0];
-
-                $tenant = new Tenant();
-                $tenant->setFirstName($contractWaiting->getFirstName());
-                $tenant->setLastName($contractWaiting->getLastName());
-
-                $session->set('contract_waiting_id', $contractWaiting->getId());
-
                 return $tenant;
             }
         }

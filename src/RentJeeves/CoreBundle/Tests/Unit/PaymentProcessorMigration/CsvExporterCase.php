@@ -97,57 +97,9 @@ class CsvExporterCase extends BaseTestCase
             ->will($this->returnValue($result = "csvDataHere"));
 
         $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-        $csvExporter->export($this->getDirPath(), 'test', 1000, [$holding, $holding2]);
+        $csvExporter->export($this->getDirPath(), 'test', 1000, [ $holding->getId(), $holding2->getId() ]);
 
         $this->assertContains($result, file_get_contents($this->getDirPath() . '/test0.csv'));
-    }
-
-    /**
-     * @test
-     */
-    public function shouldCreateFileWithDataForAllHoldingIfNotSendHoldings()
-    {
-        $holding = null;
-
-        $profile1 = new AciImportProfileMap();
-        $profile1->setUser(new Tenant());
-
-        $emResponse = [$profile1];
-        $em = $this->getEmMock();
-        $aciProfileMapRepositoryMock = $this->getAciProfileMapRepositoryMock();
-        // For all holdings
-        $aciProfileMapRepositoryMock->expects($this->once())
-            ->method('findAll')
-            ->will($this->returnValue($emResponse));
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($aciProfileMapRepositoryMock));
-
-        $mapper = $this->getMapperMock();
-        $mapper->expects($this->once())
-            ->method('mapUser')
-            ->will($this->returnValue([$consumerRecord = new ConsumerRecord()]));
-        $mapper->expects($this->never())
-            ->method('mapGroup');
-
-        $validator = $this->getValidatorMock();
-        $validator->expects($this->once())
-            ->method('validate')
-            ->will($this->returnValue(new ConstraintViolationList()));
-
-        $serializer = $this->getSerializerMock();
-        $serializer->expects($this->once())
-            ->method('serialize')
-            ->will($this->returnValue($result = "csvDataHere"));
-
-        $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-        $csvExporter->export($this->getDirPath(), 'test', 1000, $holding);
-
-        $csvExporter = new CsvExporter($em, $mapper, $serializer, $validator);
-
-        $fileData = file_get_contents($this->getDirPath() . '/test0.csv');
-        $this->assertContains($result, $fileData);
     }
 
     /**

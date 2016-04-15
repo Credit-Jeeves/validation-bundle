@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\DoD\Rule;
 
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 
 /**
  * Service name "dod.payment_execution_allowed"
@@ -27,9 +28,17 @@ class PaymentExecutionAllowed implements DodPaymentRuleInterface
     /**
      * {@inheritdoc}
      */
-    public function getReason()
+    public function getReasonMessage()
     {
         return 'Execution of payment is disallowed for this contract';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonCode()
+    {
+        return PaymentFlaggedReason::EXECUTION_DISALLOWED;
     }
 
     /**

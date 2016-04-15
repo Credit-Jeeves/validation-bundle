@@ -19,6 +19,7 @@ services:
             - "@soap.client.factory"
             - "@jms_serializer"
             - "@logger"
+
     yardi.resident_data:
         class: RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager
         arguments:

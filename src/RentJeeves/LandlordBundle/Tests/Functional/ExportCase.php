@@ -1033,10 +1033,10 @@ class ExportCase extends BaseTestCase
     public function exportByBostonCsv()
     {
         return [
-            ['deposits', 13, 'uncheck', 1500, '-49 days', '-49 days'],
-            ['payments', 14, 'uncheck', 1500, '-21 days', '-21 days'],
-            ['deposits', 13, 'check', 1500, '-49 days', '-49 days'],
-            ['payments', 14, 'check',  1500, '-21 days', '-21 days'],
+            ['deposits', 13, 'uncheck', '1500.00', '150000', '-49 days', '-49 days'],
+            ['payments', 14, 'uncheck', '1500.00', '150000', '-21 days', '-21 days'],
+            ['deposits', 13, 'check', '1500.00', '150000', '-49 days', '-49 days'],
+            ['payments', 14, 'check',  '1500.00', '150000', '-21 days', '-21 days'],
         ];
     }
 
@@ -1044,7 +1044,8 @@ class ExportCase extends BaseTestCase
      * @param string $exportBy
      * @param integer $countRows
      * @param string $methodForAllGroups
-     * @param float $sum
+     * @param string $sum
+     * @param string $checkSum
      * @param string $dueDate
      * @param string $depositDate
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -1057,6 +1058,7 @@ class ExportCase extends BaseTestCase
         $countRows,
         $methodForAllGroups,
         $sum,
+        $checkSum,
         $dueDate,
         $depositDate
     ) {
@@ -1101,7 +1103,7 @@ class ExportCase extends BaseTestCase
         $this->page->pressButton('order.report.download');
 
         $csv = $this->page->getContent();
-        $csvArr = explode("\n", $csv);
+        $csvArr = explode("\r", $csv);
 
         $this->assertCount($countRows, $csvArr, 'Actual row count should equal to expected.');
 
@@ -1114,7 +1116,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('', $csvArrRow[4], 'We should live 4 field empty');
         $this->assertEquals('', $csvArrRow[5], 'We should live 5 field empty');
         $this->assertNotEmpty($csvArrRow[6], 'CheckNumber should be filled in');
-        $this->assertEquals($sum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
+        $this->assertEquals($checkSum, $csvArrRow[7], 'CheckAmount id should be ' . $sum);
         $this->assertEquals(
             $depositDate->format('mdY'),
             $csvArrRow[8],
@@ -1171,13 +1173,13 @@ class ExportCase extends BaseTestCase
 
         // check file with unit id
         $file = $archive->getFromIndex(1);
-        $rows = explode("\n", trim($file));
+        $rows = explode("\r", trim($file));
         $this->assertCount(2, $rows, 'Should be two row');
         $columns = explode(",", $rows[1]);
 
         $this->assertEquals('777777777', $columns[0], 'Unit id should be 777777777');
         $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');
-        $this->assertEquals(1500, $columns[2], 'Amount should be 1500');
+        $this->assertEquals('1500.00', $columns[2], 'Amount should be 1500');
         $this->assertEquals('123123', $columns[6], 'Transaction ID should be');
     }
 }

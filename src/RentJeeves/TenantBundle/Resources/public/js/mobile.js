@@ -107,7 +107,7 @@ function init() {
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName)
-        var dueDate = contract.startAt.substr(5, 2)
+        var dueDate = contract.startAt.substr(8, 2)
         if (dueDate.charAt(0) == "0") {
             dueDate = dueDate.charAt(1);
         }
@@ -225,20 +225,44 @@ function init() {
 function renderPayAccounts(contract) {
 
     if (contract.allowDebitCard) {
-        $("#" + accountPrefix + "type_2").parent().show()
-        $("#" + accountPrefix + "type_2").show()
+        $("#" + accountPrefix + "type_2")
+            .show()
+            .parent().show();
 
     } else {
-        $("#" + accountPrefix + "type_2").parent().hide()
-        $("#" + accountPrefix + "type_2").hide()
+        $("#" + accountPrefix + "type_2")
+            .hide()
+            .parent().hide();
     }
-
-    $(prefix + "paymentAccount").html("")
+    if (contract.allowCreditCard) {
+        $("#" + accountPrefix + "type_1")
+            .show()
+            .parent().show()
+            .find('label').click();
+    } else {
+        $("#" + accountPrefix + "type_1")
+            .hide()
+            .parent().hide();
+    }
+    if (contract.allowBank) {
+        $("#" + accountPrefix + "type_0")
+            .show()
+            .parent().show()
+            .find('label').click();
+    } else {
+        $("#" + accountPrefix + "type_0")
+            .hide()
+            .parent().hide();
+    }
+    $(prefix + "paymentAccount").html("");
     $.each(payAccounts, function(index, payAccount){
-        if((payAccount.type == "debit_card" && contract.allowDebitCard) || payAccount.type != "debit_Card") {
-            $(prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>")
+        if((payAccount.type == "debit_card" && contract.allowDebitCard) ||
+            (payAccount.type == "card" && contract.allowCreditCard) ||
+            (payAccount.type == "bank" && contract.allowBank)
+        ) {
+            $(prefix + "paymentAccount").append("<option value='" + payAccount.id + "'>" + payAccount.name + "</option>");
         }
-    })
+    });
 
     //add "Add new payment source"
     $(prefix + "paymentAccount").append("<option value='-2'>----</option>") //we need this as to bind something to onchange
@@ -389,6 +413,8 @@ function setupPayForm(id) {
 
             var contract = contractsArr[i]
 
+            var dueDate = parseInt(contractsArr[0].startAt.substr(8,2))
+
             if (contract.groupSetting.pay_balance_only) {
                 currentPaymentForm = paymentBalanceForm;
                 $('#integratedBalanceBox').show();
@@ -484,7 +510,7 @@ function setupPayForm(id) {
             for (i = 1; i < 32; i++) {
                 a = "";
                 if (contract.payment) {
-                    if (i == contract.payment.dueDate) {
+                    if (i == dueDate) {
                         a = " selected"
                     }
                 } else if (i == (new Date()).getDate()) {

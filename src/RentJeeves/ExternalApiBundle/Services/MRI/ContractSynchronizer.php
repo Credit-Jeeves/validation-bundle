@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services\MRI;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Helpers\DateChecker;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Model\MRI\Charge;
 use RentJeeves\ExternalApiBundle\Model\MRI\Resident;
@@ -36,7 +35,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      * @param Holding $holding
      * @param Value $resident
      * @param string $externalPropertyId
-     * @return Contract[]|ContractWaiting[]
+     * @return Contract[]
      */
     protected function getContractsForUpdatingBalance(
         Holding $holding,
@@ -72,7 +71,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      * @param string $externalPropertyId
      * @param string $residentId
      * @param string $externalUnitId
-     * @return Contract[]|ContractWaiting[]
+     * @return Contract[]
      */
     protected function getContracts(Holding $holding, $externalPropertyId, $residentId, $externalUnitId)
     {
@@ -88,27 +87,16 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
-        $contractsWaiting = $this
-            ->getContractWaitingRepository()
-            ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
-                $holding,
-                $externalPropertyId,
-                $residentId,
-                $externalUnitId
-            );
-
-        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
-
         return $allContracts;
     }
 
     /**
-     * @param Contract|ContractWaiting $contract
+     * @param Contract $contract
      * @param Value $resident
      * @throws \Exception
      */
     protected function updateContractBalanceForResidentTransaction(
-        $contract,
+        Contract $contract,
         $resident
     ) {
         $contract->setPaymentAccepted($resident->getPaymentAccepted());

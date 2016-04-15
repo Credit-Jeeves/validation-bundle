@@ -218,46 +218,6 @@ trait Contract
         }
     }
 
-    protected function getContractWaiting()
-    {
-        $contractWaiting = $this->mapping->createContractWaiting(
-            $this->currentImportModel->getTenant(),
-            $this->currentImportModel->getContract(),
-            $this->currentImportModel->getResidentMapping()
-        );
-
-        $contractWaiting->setPaymentAccepted(
-            $this->currentImportModel->getContract()->getPaymentAccepted()
-        );
-
-        if (!$contractWaiting->getProperty()) {
-            return $contractWaiting;
-        }
-        /**
-         * @var $contractWaitingInDb ContractWaiting
-         */
-        $contractWaitingInDb = $this->em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
-            $contractWaiting->getImportDataForFind()
-        );
-
-        if ($contractWaitingInDb) {
-            // update some fields
-            $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
-            $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
-            $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
-            $contractWaitingInDb->setPaymentAccepted($contractWaiting->getPaymentAccepted());
-
-            if ($this->currentImportModel->isNeedUpdateRent(true)) {
-                // but conditionally update rent
-                $contractWaitingInDb->setRent($contractWaiting->getRent());
-            }
-
-            return $contractWaitingInDb;
-        }
-
-        return $contractWaiting;
-    }
-
     public function setFinishedContract()
     {
         $moveOut = $this->currentImportModel->getMoveOut();

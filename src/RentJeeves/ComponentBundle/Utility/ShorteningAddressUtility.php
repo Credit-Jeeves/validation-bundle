@@ -10,10 +10,16 @@ class ShorteningAddressUtility extends ShorteningUtility
         'West' => 'W',
         'North' => 'N',
         'South' => 'S',
+        'Southwest' => 'SW',
+        'Southeast' => 'SE',
+        'Northwest' => 'NW',
+        'Northeast' => 'NE',
 
         'Street' => 'St',
         'Avenue' => 'Ave',
         'Boulevard' => 'Blvd',
+        'Highway' => 'Hwy',
+        'Parkway' => 'Pkwy',
     ];
 
     /**

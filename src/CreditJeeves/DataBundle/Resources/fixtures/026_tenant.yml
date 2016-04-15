@@ -1,0 +1,501 @@
+model: RentJeeves\DataBundle\Entity\Tenant
+fixtures:
+    Tenant_1:
+        first_name: TIMOTHY
+        middle_initial: A
+        last_name: APPLEGATE
+        email: tenant11@example.com
+        phone_type: 2
+        phone: 7858655392
+        date_of_birth: '1937-11-10'
+        ssn: 666309041
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: none
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'
+    Tenant_2:
+        first_name: John
+        middle_initial: WAKEFIELD
+        last_name: BREEN
+        email: john@rentrack.com
+        phone_type: 2
+        phone: 9137644215
+        date_of_birth: '1957-02-19'
+        ssn: 666042073
+        is_active: true #false
+        invite_code: null #77777TEST
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: true
+        is_verified: passed
+        lastLogin: '-1 days'
+        created_at: '-45 days'
+        updated_at: '-2 days'
+    Tenant_3:
+        first_name: ALEX
+        middle_initial:
+        last_name: JORDAN
+        email: alex@rentrack.com
+        phone_type: '2'
+        phone: '8603790319'
+        date_of_birth: '1951-01-01'
+        ssn: '666254052'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: true
+        is_verified: passed
+        lastLogin: '-1 days'
+        created_at: '-43 days'
+        updated_at: '-8 days'
+    Tenant_4:
+        first_name: OLA
+        middle_initial: MAE
+        last_name: TAYLOR
+        email: ola@rentrack.com
+        phone_type: '2'
+        phone: '3097458439'
+        date_of_birth: '1955-09-14'
+        ssn: '666302442'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: false
+        has_report: null
+        is_verified: passed
+        lastLogin: '-5 days'
+        created_at: '-40 days'
+        updated_at: '-7 days'
+    Tenant_5:
+        first_name: BRIAN
+        middle_initial: P
+        last_name: KURTH
+        email: emilio1@rentrack.com
+        phone_type: '2'
+        phone: '7188491319'
+        date_of_birth: '1957-02-19'
+        ssn: '666810987'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: true
+        is_verified: passed
+        lastLogin: '-1 days'
+        created_at: '-38 days'
+        updated_at: '-2 days'
+    Tenant_6:
+        first_name:      Ivan
+        middle_initial:  Petrovich
+        last_name:       Gates
+        email:   ivan@rentrack.com
+        phone_type:      '2'
+        phone:           '3751181804'
+        date_of_birth:   '1980-10-22'
+        ssn:             '656803283'
+        is_active:       true
+        invite_code:     null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: true
+        is_verified: none
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_7:
+        first_name: ROBERT
+        middle_initial: SCOTT
+        last_name: BIRMINGHAM
+        email: robert@rentrack.com
+        phone_type: '2'
+        phone: '7818945369'
+        date_of_birth: '1957-02-19'
+        ssn: '666522949'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: false
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_8:
+        first_name: WILLIAM
+        middle_initial: N
+        last_name: JOHNSON
+        email: mamazza@rentrack.com
+        phone_type: '2'
+        phone: '7818945369'
+        date_of_birth: '1970-01-01'
+        ssn: '666235464'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_9:
+        first_name: MARION
+        middle_initial: R
+        last_name: BRIEN
+        email: marion@rentrack.com
+        phone_type: '2'
+        phone: '7818945369'
+        date_of_birth: '1970-01-01'
+        ssn: '666560093'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_10:
+        first_name: HUGO
+        middle_initial: WOSBELLY
+        last_name: RODRIGUEZ
+        email: hugo@rentrack.com
+        phone_type: '2'
+        phone: '7818945369'
+        date_of_birth: '1970-01-01'
+        ssn: '666640803'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_11:
+        first_name: MIGUEL
+        middle_initial: M
+        last_name: CENTENO
+        email: miguel@rentrack.com
+        phone_type: '2'
+        phone: '7818945369'
+        date_of_birth: '1970-01-01'
+        ssn: '666845724'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_12:
+        first_name: CONNIE
+        middle_initial: S
+        last_name: WEBSTER
+        email: connie@rentrack.com
+        phone_type: '2'
+        phone: ''
+        date_of_birth: '1941-01-01'
+        ssn: '666316880'
+        is_active: false
+        invite_code: 77777TEST
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_13:
+        first_name: LORY
+        middle_initial: M
+        last_name: STEFFANS
+        email: lory@rentrack.com
+        phone_type: '2'
+        phone: ''
+        date_of_birth: '1962-09-19'
+        ssn: '666089202'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_14:
+        first_name: MATHEW
+        middle_initial: J
+        last_name: DOYLE
+        email: mathew@rentrack.com
+        phone_type:
+        phone: ''
+        date_of_birth: '1933-09-02'
+        ssn: '666361452'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_15:
+        first_name: ANTHONY
+        middle_initial: D
+        last_name: DELLISANTI
+        email: anthony@rentrack.com
+        phone_type: '2'
+        phone: '4105367237'
+        date_of_birth: '1956-08-09'
+        ssn: '666506697'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_16:
+        first_name: LINDA
+        middle_initial: A
+        last_name: LEMOINE
+        email: linda@rentrack.com
+        phone_type: '2'
+        phone: '9137644215'
+        date_of_birth: '1940'
+        ssn: '666626090'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_17:
+        first_name: THOMAS
+        middle_initial: DENNIS
+        last_name: LOPES
+        email: thomas@rentrack.com
+        phone_type: '2'
+        phone: ''
+        date_of_birth: '1928'
+        ssn: '666348363'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_18:
+        first_name: ROBYN
+        middle_initial: L
+        last_name: PIPER
+        email: robyn@rentrack.com
+        phone_type: '2'
+        phone: '7034910325'
+        date_of_birth: '1968'
+        ssn: '666611480'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_19:
+        first_name:       LAURIEANN
+        middle_initial:   KATHLEEN
+        last_name:        RADLEIN
+        email:            laurieann@rentrack.com
+        phone_type:
+        phone: ''
+        date_of_birth: '1968-02-14'
+        ssn: '666135502'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_20:
+        first_name: null
+        middle_initial: null
+        last_name: null
+        email: invite@rentrack.com
+        phone_type: null
+        phone: null
+        date_of_birth: null
+        ssn: null
+        is_active: true
+        invite_code: TESTFULL_RJ
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture:  %locale%
+        has_data: true
+        has_report: null
+        is_verified: failed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_21:
+        first_name: ROGER
+        middle_initial: D
+        last_name: STANLEY
+        email: roger@rentrack.com
+        phone_type: 2
+        phone: 6165311574
+        date_of_birth: '1949-12-09'
+        ssn: '666542396'
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt: ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        created_at: '-5 days'
+        updated_at: '-5 days'
+    Tenant_22:
+        first_name: Anne
+        last_name: Test
+        email: transU@example.com
+        phone_type: 2
+        phone: 7858655392
+        date_of_birth: '1980-11-10'
+        ssn: 130314050
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'
+    Tenant_23:
+        first_name: DANIEL
+        last_name: Nader
+        email: transU+datapull@example.com
+        phone_type: 2
+        phone: 8058675309
+        date_of_birth: '1972-11-10'
+        ssn: 130314052
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: true
+        offer_notification: true
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'
+    Tenant_dtr_1:
+        first_name: John
+        last_name: Treewolta
+        username: treewolta
+        date_of_birth: '1980-12-12'
+        ssn: 880884088
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        emailNotification: false
+        offer_notification: false
+        culture: %locale%
+        has_data: true
+        has_report: null
+        is_verified: passed
+        lastLogin: '-1 hour'
+        created_at: '-50 days'
+        updated_at: '-3 days'

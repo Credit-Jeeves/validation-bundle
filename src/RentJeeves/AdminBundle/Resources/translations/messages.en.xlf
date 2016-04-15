@@ -18,9 +18,17 @@
                 <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
+            <trans-unit id="common.groups">
+                <source>common.groups</source>
+                <target>Groups</target>
+            </trans-unit>
             <trans-unit id="create.csv.mapping">
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
+            </trans-unit>
+            <trans-unit id="upload.csv.create_job">
+                <source>upload.csv.create_job</source>
+                <target>Upload csv and create job for import property</target>
             </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
@@ -37,6 +45,10 @@
             <trans-unit id="csv.mapping.success">
                 <source>csv.mapping.success</source>
                 <target>You have successfully created/updated csv mapping</target>
+            </trans-unit>
+            <trans-unit id="csv.job.successfully_created">
+                <source>csv.job.successfully_created</source>
+                <target>You have successfully created a job for process your csv file</target>
             </trans-unit>
             <trans-unit id="map.csv.file">
                 <source>map.csv.file</source>
@@ -113,14 +125,6 @@
             <trans-unit id="admin.deposit_account.fee_ach">
                 <source>admin.deposit_account.fee_ach</source>
                 <target>ACH Fee ($)</target>
-            </trans-unit>
-            <trans-unit id="admin.form.contract_waiting.error.property">
-                <source>admin.form.contract_waiting.error.property</source>
-                <target>This property does not belong to this group.</target>
-            </trans-unit>
-            <trans-unit id="admin.form.contract_waiting.error.unit">
-                <source>admin.form.contract_waiting.error.unit</source>
-                <target>This unit does not belong to this property.</target>
             </trans-unit>
             <trans-unit id="admin.form.contract_waiting.error.residentId">
                 <source>admin.form.contract_waiting.error.residentId</source>

@@ -49,7 +49,7 @@ class DodManager
                     $this->logger->alert(sprintf(
                         'Payment failed DoD checking. Moved to FLAGGED state. Reason: %s . Payment details: ' .
                         'Tenant: %s, Amount: %s, Contract: %s, Type: %s, DepositType: %s.',
-                        $rule->getReason(),
+                        $rule->getReasonMessage(),
                         $payment->getContract()->getTenant()->getEmail(),
                         $payment->getTotal(),
                         $payment->getContract()->getId(),
@@ -57,6 +57,7 @@ class DodManager
                         $payment->getDepositAccount()->getType()
                     ));
                     $payment->setStatus(PaymentStatus::FLAGGED);
+                    $payment->setFlaggedReason($rule->getReasonCode());
 
                     return false;
                 }

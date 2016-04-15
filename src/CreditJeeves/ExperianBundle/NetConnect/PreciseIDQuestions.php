@@ -2,8 +2,9 @@
 namespace CreditJeeves\ExperianBundle\NetConnect;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
-use CreditJeeves\DataBundle\Model\User;
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\ExperianBundle\NetConnect\PreciseID as PreciseIDApi;
+use CreditJeeves\UserBundle\Helper\UserNormalizerForPidkiq;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -124,7 +125,7 @@ class PreciseIDQuestions
 
     protected function getPidkiqCheckSum()
     {
-        return md5(serialize($this->getUser()->getArrayForPidkiq()));
+        return md5(serialize(UserNormalizerForPidkiq::normalizeUserForPidkiq($this->getUser())));
     }
 
     /**

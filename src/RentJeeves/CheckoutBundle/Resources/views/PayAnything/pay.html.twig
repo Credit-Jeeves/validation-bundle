@@ -55,6 +55,15 @@
             }
         } -->
         <!-- /ko -->
+        <!-- ko component: {
+            name: 'virtualForm-widget',
+            params: {
+                elements: postProcessedForm.elements,
+                method: postProcessedForm.method,
+                url: postProcessedForm.url
+            }
+        } -->
+        <!-- /ko -->
         <div class="col" data-bind="visible: 'details' == step()">
             {% include 'RjCheckoutBundle:PayAnything:_step-1-details.html.twig' %}
         </div>

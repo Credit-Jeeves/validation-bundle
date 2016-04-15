@@ -2,6 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
+use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\CoreBundle\Services\PropertyManager;
@@ -11,7 +12,7 @@ use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use RentJeeves\PublicBundle\Services\AccountingSystemIntegrationDataManager;
+use RentJeeves\PublicBundle\AccountingSystemIntegration\ASIDataManager;
 use RentJeeves\PublicBundle\Services\TenantProcessor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -203,7 +204,7 @@ class PublicController extends Controller
      * @Route(
      *     "/user/integration/new/{accountingSystem}",
      *     requirements={
-     *         "accountingSystem" = "mri|resman|yardi|amsi"
+     *         "accountingSystem" = "mri|resman"
      *     },
      *     name="new_integration_user"
      * )
@@ -302,33 +303,35 @@ class PublicController extends Controller
                 $session->remove('holding_id');
                 $session->remove('resident_id');
                 if (null != $inviteCode = $resident->getTenant()->getInviteCode()) { // not NULL or not ""
+                    if (false === empty($resident->getTenant()->getEmail())) {
+                        return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
+                    } else {
+                        $contracts = $em->getRepository('RjDataBundle:Contract')
+                            ->getAllWaitingByHoldingAndResidentId($holding, $residentId);
+                        if (!empty($contracts)) {
+                            $contractIds = [];
+                            foreach ($contracts as $contract) {
+                                $contractIds[] = $contract->getId();
+                            }
+                            $contractUnits =
+                                $em->getRepository('RjDataBundle:Unit')->findAllByContractIds($contractIds);
+                            $contractProperties = [];
+                            foreach ($contractUnits as $unit) {
+                                $contractProperties[] = $unit->getProperty();
+                            }
+                            $contractProperties = array_unique($contractProperties);
 
-                    return $this->redirectToRoute('tenant_invite', ['code' => $inviteCode]);
+                            $tenant->setFirstName($contracts[0]->getTenant()->getFirstName());
+                            $tenant->setLastName($contracts[0]->getTenant()->getLastName());
+                        } else {
+                            $holdingPropertyList = $em->getRepository('RjDataBundle:Property')
+                                ->findByHoldingOrderedByAddress($holding);
+                        }
+                    }
                 } else {
                     $session->getFlashBag()->add('error', 'new.user.error.without_invite_code');
 
                     return $this->redirectToRoute('fos_user_security_login');
-                }
-            } else {
-                $contracts = $em->getRepository('RjDataBundle:ContractWaiting')
-                    ->findAllByHoldingAndResidentId($holding, $residentId);
-                if (!empty($contracts)) {
-                    $contractIds = [];
-                    foreach ($contracts as $contract) {
-                        $contractIds[] = $contract->getId();
-                    }
-                    $contractUnits = $em->getRepository('RjDataBundle:Unit')->findAllByContractWaitingIds($contractIds);
-                    $contractProperties = [];
-                    foreach ($contractUnits as $unit) {
-                        $contractProperties[] = $unit->getProperty();
-                    }
-                    $contractProperties = array_unique($contractProperties);
-
-                    $tenant->setFirstName($contracts[0]->getFirstName());
-                    $tenant->setLastName($contracts[0]->getLastName());
-                } else {
-                    $holdingPropertyList = $em->getRepository('RjDataBundle:Property')
-                        ->findByHoldingOrderedByAddress($holding);
                 }
             }
         }
@@ -490,19 +493,19 @@ class PublicController extends Controller
      */
     protected function processNewTenantForm(FormInterface $form)
     {
+        /** @var ASIDataManager $integrationDataManager */
+        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         /** @var TenantProcessor $tenantProcessor */
         $tenantProcessor = $this->get('tenant.processor');
-        /** @var AccountingSystemIntegrationDataManager $integrationDataManager */
-        $integrationDataManager = $this->get('accounting_system.integration.data_manager');
+        /** @var ContractProcess $contractProcess */
+        $contractProcess = $this->get('contract.process');
         /** @var Property $property */
         $property = $form->get('propertyId')->getData();
         /** @var Unit $unit */
         $unit = $form->get('unit')->getData();
-        $externalLeaseId = null;
-        $rent = null;
-        if (!$integrationDataManager->hasIntegrationData()) {
-            $tenant = $tenantProcessor->createNewTenant($form->getData(), $form->get('password')->getData());
-        } else {
+
+        // If user comes from MRI/ResMan --> process it first, don't use contract in WAITING
+        if ($integrationDataManager->hasIntegrationData()) {
             $residentMapping = $integrationDataManager->createResidentMapping($property, $unit->getActualName());
             $tenant = $tenantProcessor->createNewIntegratedTenant(
                 $form->getData(),
@@ -511,18 +514,47 @@ class PublicController extends Controller
             );
             $externalLeaseId = $integrationDataManager->getExternalLeaseId();
             $rent = $integrationDataManager->getRent();
+            $contractProcess->createContractFromTenantSide(
+                $tenant,
+                $property,
+                $unit->getActualName(),
+                null,
+                $externalLeaseId,
+                $rent
+            );
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            return $tenant;
         }
-        /** @var ContractProcess $contractProcess */
-        $contractProcess = $this->get('contract.process');
+
+        // If contract in WAITING found, move it out of waiting.
+        /** @var Contract $contractWaiting */
+        $contractWaiting = $form->get('contractWaiting')->getData();
+        if (false === empty($contractWaiting) && false === empty($form->getData()->getEmail())) {
+            /** @var ContractManager $contractManager */
+            $contractManager = $this->get('renttrack.contract_manager');
+            $contractManager->moveContractOutOfWaitingByTenant(
+                $contractWaiting,
+                ContractStatus::APPROVED,
+                $form->getData()->getEmail()
+            );
+            $tenant = $contractWaiting->getTenant();
+            $password = $this->get('user.security.encoder.digest')
+                ->encodePassword($form->get('password')->getData(), $tenant->getSalt());
+            $tenant->setPassword($password);
+            $tenant->setPhone($form->getData()->getPhone());
+            $this->getEntityManager()->flush($tenant);
+
+            return $tenant;
+        }
+
+        // If user is not integrated and no contract in WAITING state.
+        $tenant = $tenantProcessor->createNewTenant($form->getData(), $form->get('password')->getData());
         $contractProcess->createContractFromTenantSide(
             $tenant,
             $property,
-            $unit->getActualName(),
-            $form->get('contractWaiting')->getData(),
-            $externalLeaseId,
-            $rent
+            $unit->getActualName()
         );
-
         $this->get('project.mailer')->sendRjCheckEmail($tenant);
 
         return $tenant;

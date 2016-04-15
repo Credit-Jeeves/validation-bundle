@@ -2,7 +2,9 @@
 namespace RentJeeves\CoreBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CoreBundle\Command\EmailLandlordCommand;
@@ -48,22 +50,23 @@ class EmailLandlordCommandCase extends BaseTestCase
     public function executePending()
     {
         $this->load();
-        $this->startTransaction();
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new EmailLandlordCommand());
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        $command = $application->find('Email:landlord');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            array(
-                'command' => $command->getName(),
-                '--type' => 'pending'
-            )
-        );
-        $this->assertCount(4, $plugin->getPreSendMessages());
-        $this->assertRegExp('/Story-2042/', $commandTester->getDisplay());
+        $this->executeCommandTester(new EmailLandlordCommand(), ['--type' => 'pending']);
+        $this->assertCount(0, $plugin->getPreSendMessages(), 'No email should be sent b/c no pending orders in 3d');
+        $em = $this->getEntityManager();
+        /** @var $contract Contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneByStatus(ContractStatus::PENDING);
+
+        $date = new \DateTime();
+        $date->modify('-2 days');
+        $contract->setCreatedAt($date);
+        $em->flush();
+
+        $plugin->clean();
+        $this->executeCommandTester(new EmailLandlordCommand(), ['--type' => 'pending']);
+        $this->assertCount(1, $plugin->getPreSendMessages(), 'One email is expected');
+        $this->assertEquals('Your Tenant Needs Approval', $plugin->getPreSendMessage(0)->getSubject());
     }
 
     /**

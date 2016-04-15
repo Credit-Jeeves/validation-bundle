@@ -3,7 +3,7 @@
 namespace RentJeeves\PublicBundle\Form;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Validators\TenantEmail;
@@ -126,7 +126,7 @@ class TenantType extends AbstractType
             'entity_hidden',
             [
                 'mapped' =>false,
-                'class' => 'RentJeeves\DataBundle\Entity\ContractWaiting',
+                'class' => 'RentJeeves\DataBundle\Entity\Contract',
             ]
         );
 
@@ -167,18 +167,18 @@ class TenantType extends AbstractType
                     }
                 }
 
-                $contractsWaiting = $unit->getContractsWaiting();
+                $contractsWaiting = $this->em->getRepository('RjDataBundle:Contract')->getAllWaitingForUnit($unit);
                 $firstName = strtolower($data['first_name']);
                 $lastName = strtolower($data['last_name']);
 
                 /**
-                 * @var $contractWaiting ContractWaiting
+                 * @var Contract $contractWaiting
                  */
                 foreach ($contractsWaiting as $contractWaiting) {
-                    if (strtolower($contractWaiting->getFirstName()) !== $firstName) {
+                    if (strtolower($contractWaiting->getTenant()->getFirstName()) !== $firstName) {
                         continue;
                     }
-                    if (strtolower($contractWaiting->getLastName()) !== $lastName) {
+                    if (strtolower($contractWaiting->getTenant()->getLastName()) !== $lastName) {
                         continue;
                     }
                     $data['contractWaiting'] = $contractWaiting->getId();

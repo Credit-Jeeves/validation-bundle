@@ -35,13 +35,13 @@ class LandlordCsvImporterCase extends BaseTestCase
         );
         $this->assertCount(1, $partnerToUsers);
         $allGroups = $this->getEntityManager()->getRepository('DataBundle:Group')->findAll();
-        $this->assertCount(32, $allGroups);
+        $this->assertCount(33, $allGroups);
         $allHoldings = $this->getEntityManager()->getRepository('DataBundle:Holding')->findAll();
         $this->assertCount(9, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(20, $allProperties);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
-        $this->assertCount(33, $allUnits);
+        $this->assertCount(37, $allUnits);
 
         $importer->importPartnerLandlords(__DIR__ . '/../../../Fixtures/importFile.csv', $partner);
         $errors = $importer->getMappingErrors();
@@ -57,13 +57,13 @@ class LandlordCsvImporterCase extends BaseTestCase
         );
         $this->assertCount(3, $partnerToUsers);
         $allGroups = $this->getEntityManager()->getRepository('DataBundle:Group')->findAll();
-        $this->assertCount(34, $allGroups);
+        $this->assertCount(35, $allGroups);
         $allHoldings = $this->getEntityManager()->getRepository('DataBundle:Holding')->findAll();
         $this->assertCount(11, $allHoldings);
         $allProperties = $this->getEntityManager()->getRepository('RjDataBundle:Property')->findAll();
         $this->assertCount(22, $allProperties);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
-        $this->assertCount(35, $allUnits);
+        $this->assertCount(39, $allUnits);
     }
 
     /**

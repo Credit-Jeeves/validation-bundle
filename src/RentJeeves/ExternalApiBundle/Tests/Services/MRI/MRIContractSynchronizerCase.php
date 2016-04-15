@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\MRI;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
@@ -101,54 +100,6 @@ class MRIContractSynchronizerCase extends Base
     /**
      * @test
      */
-    public function shouldSyncContracWaitingBalanceForMRI()
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
-        /** @var ContractWaiting $contractWaiting */
-        $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
-        $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance(), 'Balance should be 0');
-        $contractWaiting->setPaymentAccepted(null);
-        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
-        $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
-            $contractWaiting->getGroup()->getHolding()
-        );
-        $propertyMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
-        $unit = $contractWaiting->getUnit();
-        $unitExternalMapping = new UnitMapping();
-        $unitExternalMapping->setExternalUnitId('500|01|101');
-        $unitExternalMapping->setUnit($unit);
-        $unit->setUnitMapping($unitExternalMapping);
-        $unit->setName('101');
-        $contractWaiting->setResidentId('0000000091');
-
-        $em->flush();
-
-        $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
-        $balanceSynchronizer->syncBalance();
-
-        $externalPropertyId = $contractWaiting
-            ->getProperty()
-            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
-            ->getExternalPropertyId();
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
-        $this->assertNotEmpty($jobs, 'Should be find at least one job');
-        $lastJob = end($jobs);
-        $this->assertBalanceSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        $this->runSyncBalanceCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        /** @var ContractWaiting $updatedContractWaiting */
-        $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
-        $this->assertGreaterThan(8340, (int) $updatedContractWaiting->getIntegratedBalance(), 'Balance not updated');
-        $this->assertEquals(0, $updatedContractWaiting->getPaymentAccepted(), 'PaymentAccepted should be set');
-    }
-
-    /**
-     * @test
-     */
     public function shouldSyncContractRentForMRI()
     {
         $this->load(true);
@@ -191,53 +142,5 @@ class MRIContractSynchronizerCase extends Base
 
         $updatedContract = $repo->find($contract->getId());
         $this->assertGreaterThan(0, (int) $updatedContract->getRent(), 'Rent not updated');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSyncContracWaitingRentForMRI()
-    {
-        $this->load(true);
-        $em = $this->getEntityManager();
-        $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
-        /** @var ContractWaiting $contractWaiting */
-        $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
-        $this->assertNotNull($contractWaiting, 'We should find contract waiting with resident t0013535');
-        $contractWaiting->setRent(0);
-        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
-        $contractWaiting->getGroup()->getHolding()->setUseRecurringCharges(true);
-        $contractWaiting->getGroup()->getHolding()->setRecurringCodes('RNT, YY');
-        $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
-            $contractWaiting->getGroup()->getHolding()
-        );
-        $propertyMapping->setExternalPropertyId(MRIClientCase::PROPERTY_ID);
-        $unit = $contractWaiting->getUnit();
-        $unitExternalMapping = new UnitMapping();
-        $unitExternalMapping->setExternalUnitId('500|01|101');
-        $unitExternalMapping->setUnit($unit);
-        $unit->setUnitMapping($unitExternalMapping);
-        $unit->setName('101');
-        $contractWaiting->setResidentId('0000000091');
-
-        $em->flush();
-
-        $balanceSynchronizer = $this->getContainer()->get('mri.contract_sync');
-        $balanceSynchronizer->syncRent();
-
-        $externalPropertyId = $contractWaiting
-            ->getProperty()
-            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
-            ->getExternalPropertyId();
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
-        $this->assertNotEmpty($jobs, 'Should be find at least one job');
-        $lastJob = end($jobs);
-        $this->assertRentSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        $this->runSyncRentCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        /** @var ContractWaiting $updatedContractWaiting */
-        $updatedContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
-        $this->assertGreaterThan(0, (int) $updatedContractWaiting->getRent(), 'Balance not updated');
     }
 }

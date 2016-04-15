@@ -104,3 +104,11 @@ fixtures:
         name: rjScoreTrackOrderError.html
     email_53:
         name: rjPostPaymentError.html
+    email_54:
+        name: rjOrderPayDirectComplete.html
+    email_55:
+        name: rjTrustedLandlordDenied.html
+    email_56:
+        name: rjTrustedLandlordApproved.html
+    email_57:
+        name: rjPaymentFlaggedByUntrustedLandlordRule.html

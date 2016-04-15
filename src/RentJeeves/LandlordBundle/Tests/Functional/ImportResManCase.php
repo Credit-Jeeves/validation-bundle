@@ -41,9 +41,7 @@ class ImportResManCase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertCount(23, $contract, 'Check fixtures, should be present just 23 contracts on DB');
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(1, $contractWaiting, 'We should get just one contract waiting from fixtures');
+        $this->assertCount(24, $contract, 'Check fixtures, should be present just 23 contracts on DB');
 
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -66,8 +64,6 @@ class ImportResManCase extends ImportBaseAbstract
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
         $this->assertGreaterThan(30, count($contracts), 'Contracts should be added');
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertGreaterThan(5, count($contractsWaiting), 'Contract waiting should be added');
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => ResManClientCase::EXTERNAL_LEASE_ID]
         );
@@ -99,7 +95,7 @@ class ImportResManCase extends ImportBaseAbstract
         );
         //First page
         $rentNotEditable = $this->getDomElements('.rentNotEditable', 'We should show element span with rent');
-        $this->assertCount(9, $rentNotEditable, 'All contracts should be mathced, so all rent not editable');
+        $this->assertCount(9, $rentNotEditable, 'All contracts should be matched, so all rent not editable');
         //Reverse check
         $holding = $landlord->getHolding();
         $holding->setUseRecurringCharges(false);

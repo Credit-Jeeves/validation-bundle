@@ -3,7 +3,6 @@
 namespace RentJeeves\ExternalApiBundle\Tests\Services\AMSI;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Tests\Services\ContractSynchronizerTestBase as Base;
@@ -103,52 +102,6 @@ class AMSIContractSynchronizerCase extends Base
         $this->runSyncBalanceCommand($contract->getHolding(), $externalPropertyId);
 
         $updatedContract = $repo->find($contract->getId());
-        $this->assertEquals('1605.00', $updatedContract->getIntegratedBalance(), 'Balance should update');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldSyncContractWaitingBalanceForAMSI()
-    {
-        $this->load(true);
-
-        $em = $this->getEntityManager();
-        $repositoryContractWaiting = $em->getRepository('RjDataBundle:ContractWaiting');
-        /** @var ContractWaiting $contractWaiting */
-        $contractWaiting = $repositoryContractWaiting->findOneBy(['residentId' => 't0013535']);
-        $this->assertNotNull($contractWaiting);
-        $this->assertEquals(0, $contractWaiting->getIntegratedBalance());
-        $contractWaiting->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::AMSI);
-        $propertyMapping = $contractWaiting->getProperty()->getPropertyMappingByHolding(
-            $contractWaiting->getGroup()->getHolding()
-        );
-        $propertyMapping->setExternalPropertyId(AMSIClientCase::EXTERNAL_PROPERTY_ID);
-        $unit = $contractWaiting->getUnit();
-        $contractWaiting->setExternalLeaseId(21);
-        $unitExternalMapping = new UnitMapping();
-        $unitExternalMapping->setExternalUnitId('001|01|101');
-        $unitExternalMapping->setUnit($unit);
-        $unit->setUnitMapping($unitExternalMapping);
-        $settings = $contractWaiting->getGroup()->getHolding()->getAmsiSettings();
-        $settings->setSyncBalance(true);
-        $em->flush();
-
-        $balanceSynchronizer = $this->getContainer()->get('amsi.contract_sync');
-        $balanceSynchronizer->syncBalance();
-
-        $externalPropertyId = $contractWaiting
-            ->getProperty()
-            ->getPropertyMappingByHolding($contractWaiting->getGroup()->getHolding())
-            ->getExternalPropertyId();
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll();
-        $this->assertNotEmpty($jobs, 'Should be find at least one job');
-        $lastJob = end($jobs);
-        $this->assertBalanceSyncJob($lastJob, $contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        $this->runSyncBalanceCommand($contractWaiting->getGroup()->getHolding(), $externalPropertyId);
-
-        $updatedContract = $repositoryContractWaiting->find($contractWaiting->getId());
         $this->assertEquals('1605.00', $updatedContract->getIntegratedBalance(), 'Balance should update');
     }
 }

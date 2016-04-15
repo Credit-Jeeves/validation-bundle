@@ -29,9 +29,9 @@ class AciProfileMapper
     protected $profile;
 
     /**
-     * @var Holding[]
+     * @var array
      */
-    protected $holdings;
+    protected $holdingIds;
 
     /**
      * @var string
@@ -66,14 +66,14 @@ class AciProfileMapper
      * return these models
      *
      * @param AciImportProfileMap $profileMap
-     * @param array               $holdings
+     * @param array               $holdingIds
      *
      * @return array
      */
-    public function map(AciImportProfileMap $profileMap, array $holdings = null)
+    public function map(AciImportProfileMap $profileMap, array $holdingIds)
     {
         $this->profile = $profileMap;
-        $this->holdings = $holdings;
+        $this->holdingIds = $holdingIds;
 
         if (null !== $this->profile->getUser()) {
             $records = $this->mapUser();
@@ -312,7 +312,7 @@ class AciProfileMapper
     protected function mapGroupAccountRecord()
     {
         $group = $this->profile->getGroup();
-        if (($this->holdings !== null && false === in_array($group->getHolding(), $this->holdings)) ||
+        if ((false === in_array($group->getHolding()->getId(), $this->holdingIds)) ||
             null !== $group->getAciCollectPayProfile()
         ) {
             return null;

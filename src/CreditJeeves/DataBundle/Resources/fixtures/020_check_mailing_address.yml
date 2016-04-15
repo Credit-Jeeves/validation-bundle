@@ -1,0 +1,24 @@
+model: RentJeeves\DataBundle\Entity\CheckMailingAddress
+fixtures:
+    CheckMailingAddress1:
+        addressee:      Alexander Radionovich Borodach
+        address1:       770 Broadway
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          770BroadwayNewYorkNY
+    CheckMailingAddress2:
+        addressee:      John Brown
+        address1:       60 University Pl
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          60UniversityPlNewYorkNY
+        external_location_id:    ExternalGroupId
+    CheckMailingAddress3:
+        addressee:      Lux Corp LTD
+        address1:       61 University Pl
+        city:           New York
+        state:          NY
+        zip:            10003
+        index:          61UniversityPlNewYorkNY

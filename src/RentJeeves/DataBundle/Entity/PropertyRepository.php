@@ -421,17 +421,20 @@ EOT;
      * @param  string $externalPropertyId
      * @param  string $externalUnitId
      * @param  string $externalBuildingId
+     * @param  string|null $holdingId
      * @return null|Property
+     * @throws NonUniqueResultException
      */
     public function getPropertyByExternalPropertyUnitIds(
         $accountingSystem,
         $externalPropertyId,
         $externalUnitId,
-        $externalBuildingId = null
+        $externalBuildingId = null,
+        $holdingId = null
     ) {
         AccountingSystem::throwsInvalid($accountingSystem);
 
-        return $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('p.units', 'units')
             ->innerJoin('units.unitMapping', 'um')
@@ -450,50 +453,69 @@ EOT;
                     $externalBuildingId ?: '%',
                     $externalUnitId
                 )
-            )
-            ->getQuery()
-            ->getOneOrNullResult();
+            );
+
+        if ($holdingId) {
+            $query
+                ->andWhere('h.id = :holdingId')
+                ->setParameter('holdingId', $holdingId);
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 
     /**
      * @param  string $accountingSystem
      * @param  string $externalPropertyId
-     * @return Property|null
+     * @param  string|null $holdingId
+     * @return null|Property
      * @throws NonUniqueResultException
      */
-    public function getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId)
+    public function getPropertyByExternalPropertyId($accountingSystem, $externalPropertyId, $holdingId = null)
     {
         AccountingSystem::throwsInvalid($accountingSystem);
 
-        return $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('accountingSystem', $accountingSystem)
-            ->setParameter('externalPropertyId', $externalPropertyId)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setParameter('externalPropertyId', $externalPropertyId);
+
+        if ($holdingId) {
+            $query
+                ->andWhere('h.id = :holdingId')
+                ->setParameter('holdingId', $holdingId);
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 
     /**
      * @param  string $accountingSystem
      * @param  string $externalPropertyId
+     * @param  string|null $holdingId
      * @return Property[]
      */
-    public function getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId)
+    public function getPropertiesByExternalPropertyId($accountingSystem, $externalPropertyId, $holdingId = null)
     {
         AccountingSystem::throwsInvalid($accountingSystem);
 
-        return $this->createQueryBuilder('p')
+         $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->setParameter('accountingSystem', $accountingSystem)
-            ->setParameter('externalPropertyId', $externalPropertyId)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('externalPropertyId', $externalPropertyId);
+        if ($holdingId) {
+            $query
+                ->andWhere('h.id = :holdingId')
+                ->setParameter('holdingId', $holdingId);
+        }
+
+        return $query->getQuery()->getResult();
     }
 
     /**

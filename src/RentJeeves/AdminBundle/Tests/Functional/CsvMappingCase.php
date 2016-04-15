@@ -14,6 +14,10 @@ class CsvMappingCase extends ImportBaseAbstract
     {
         $this->load(true);
         $this->setDefaultSession('symfony');
+        $group = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(['name' => 'Generic group']);
+        $this->assertNotEmpty($group, 'Group should exist in documentation');
+        $group->getGroupSettings()->setIsIntegrated(true);
+        $this->getEntityManager()->flush();
         $importMappingChoice = $this->getEntityManager()->getRepository('RjDataBundle:ImportMappingChoice')->findAll();
         $this->assertCount(0, $importMappingChoice, 'We should don\'t have mapping in fixtures');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
@@ -33,7 +37,7 @@ class CsvMappingCase extends ImportBaseAbstract
             $attFile = $this->page->find('css', '#upload_csv_file_attachment'),
             'Attach does not exist'
         );
-        $filePath = $this->getFilePathByName('import.csv');
+        $filePath = $this->getFixtureFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->assertNotEmpty(
             $buttonUpload = $this->page->find('css', '#upload_csv_file_upload'),

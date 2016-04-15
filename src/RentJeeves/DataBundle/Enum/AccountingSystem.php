@@ -43,4 +43,9 @@ class AccountingSystem extends Enum
         self::YARDI_GENESIS_2,
         self::PROMAS,
     ];
+
+    public static $paymentHostIntegrated = [
+        self::RESMAN        => 'resman',
+        self::MRI           => 'mri',
+    ];
 }

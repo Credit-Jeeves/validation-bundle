@@ -86,7 +86,6 @@ class ResidentManager
 
         //Create action
         if (empty($errors) && empty($existingMappingTenant)) {
-            $this->clearWaitingRoom($landlord, $residentMapping);
             $this->em->persist($residentMapping);
 
             return [];
@@ -133,20 +132,6 @@ class ResidentManager
         }
 
         return false;
-    }
-
-    /**
-     * @param Landlord        $landlord
-     * @param ResidentMapping $residentMapping
-     */
-    protected function clearWaitingRoom(Landlord $landlord, ResidentMapping $residentMapping)
-    {
-        foreach ($landlord->getGroups() as $group) {
-            $this->em->getRepository('RjDataBundle:ContractWaiting')->clearResidentContracts(
-                $residentMapping->getResidentId(),
-                $group->getId()
-            );
-        }
     }
 
     /**

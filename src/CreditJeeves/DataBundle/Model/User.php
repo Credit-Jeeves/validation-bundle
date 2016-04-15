@@ -57,7 +57,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Length(
@@ -75,7 +76,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Regex(
@@ -134,7 +136,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Length(
@@ -152,7 +155,8 @@ abstract class User extends BaseUser
      *         "api_identity_check",
      *         "import",
      *         "api",
-     *         "landlordImport"
+     *         "landlordImport",
+     *         "userCreationManager"
      *     }
      * )
      * @Assert\Regex(
@@ -208,104 +212,6 @@ abstract class User extends BaseUser
      * @Serializer\Type("string")
      */
     protected $email;
-
-    /**
-     * @ORM\Column(type="encrypt", nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.address.empty",
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=2,
-     *     max=255,
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     *
-     * @deprecated would be removed in 2.2
-     */
-    protected $street_address1;
-
-    /**
-     * @ORM\Column(type="encrypt", nullable=true)
-     */
-    protected $street_address2;
-
-    /**
-     * @ORM\Column(type="string", length=31, nullable=true)
-     * @Assert\Length(
-     *     max=31,
-     *     groups={
-     *         "user_address"
-     *     }
-     * )
-     *
-     * @deprecated would be removed in 2.2
-     */
-    protected $unit_no;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.city.empty",
-     *     groups={
-     *         "buy_report"
-     *     }
-     * )
-     *
-     * @deprecated would be removed in 2.2
-     */
-    protected $city;
-
-    /**
-     * @ORM\Column(type="string", length=7, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.state.empty",
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=2,
-     *     max=255,
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     *
-     * @deprecated would be removed in 2.2
-     */
-    protected $state;
-
-    /**
-     * @ORM\Column(type="string", length=15, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.zip.empty",
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=1,
-     *     max=15,
-     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
-     *     groups={
-     *         "user_address",
-     *         "buy_report"
-     *     }
-     * )
-     *
-     * @deprecated would be removed in 2.2
-     */
-    protected $zip;
 
     /**
      * @Assert\Length(
@@ -729,6 +635,16 @@ abstract class User extends BaseUser
      */
     protected $partner;
 
+    /**
+     * @Assert\NotBlank(groups={"userCreationManager"})
+     */
+    protected $username;
+
+    /**
+     * @Assert\NotBlank(groups={"userCreationManager"})
+     */
+    protected $usernameCanonical;
+
     public function __construct()
     {
         parent::__construct();
@@ -786,50 +702,6 @@ abstract class User extends BaseUser
     public function getApiUpdate()
     {
         return $this->apiUpdate;
-    }
-
-    public function getRoles()
-    {
-
-        if (!empty($this->roles)) {
-            return $this->roles;
-        }
-
-        switch ($this->getType()) {
-            case UserType::APPLICANT:
-                return array('ROLE_USER');
-            case UserType::DEALER:
-                return array('ROLE_DEALER');
-            case UserType::ADMIN:
-                return array(
-                    'ROLE_USER',
-                    'ROLE_DEALER',
-                    'ROLE_ADMIN',
-                    'ROLE_TENANT',
-                    'ROLE_LANDLORD',
-                    'ROLE_PARTNER'
-                );
-            case UserType::TETNANT:
-                return array('ROLE_TENANT');
-            case UserType::LANDLORD:
-                return array('ROLE_LANDLORD');
-            case UserType::PARTNER:
-                return array('ROLE_PARTNER');
-        }
-        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
-    }
-
-    /**
-     * Get id
-     *
-     * @param  int  $id
-     * @return User
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -912,174 +784,6 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Set street_address1
-     *
-     * @param encrypt $streetAddress1
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setStreetAddress1($streetAddress1)
-    {
-        $this->street_address1 = $streetAddress1;
-
-        return $this;
-    }
-
-    /**
-     * Get street_address1
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return encrypt
-     */
-    public function getStreetAddress1()
-    {
-        return $this->street_address1;
-    }
-
-    /**
-     * Set street_address2
-     *
-     * @param encrypt $streetAddress2
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setStreetAddress2($streetAddress2)
-    {
-        $this->street_address2 = $streetAddress2;
-
-        return $this;
-    }
-
-    /**
-     * Get street_address2
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return encrypt
-     */
-    public function getStreetAddress2()
-    {
-        return $this->street_address2;
-    }
-
-    /**
-     * Set unit_no
-     *
-     * @param string $unitNo
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setUnitNo($unitNo)
-    {
-        $this->unit_no = $unitNo;
-
-        return $this;
-    }
-
-    /**
-     * Get unit_no
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return string
-     */
-    public function getUnitNo()
-    {
-        return $this->unit_no;
-    }
-
-    /**
-     * Set city
-     *
-     * @param string $city
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set state
-     *
-     * @param string $state
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * Set zip
-     *
-     * @param string $zip
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return User
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-
-        return $this;
-    }
-
-    /**
-     * Get zip
-     *
-     * @deprecated would be removed in 2.2
-     *
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
      * Set phone_type
      *
      * @param  integer $phoneType
@@ -1151,7 +855,7 @@ abstract class User extends BaseUser
     /**
      * Set ssn
      *
-     * @param  encrypt $ssn
+     * @param string $ssn
      * @return User
      */
     public function setSsn($ssn)
@@ -2119,5 +1823,16 @@ abstract class User extends BaseUser
     public function getLastIp()
     {
         return $this->lastIp;
+    }
+
+    /**
+     * @Assert\True(
+     *     groups={"userCreationManager"},
+     *     message = "Username cannot be different from email."
+     * )
+     */
+    public function isUsernameValid()
+    {
+        return $this->emailCanonical === null || $this->emailCanonical === $this->usernameCanonical;
     }
 }

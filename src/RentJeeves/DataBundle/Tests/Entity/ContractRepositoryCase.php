@@ -4,7 +4,6 @@ namespace RentJeeves\DataBundle\Tests\Entity;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\DateTime;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -328,60 +327,5 @@ class ContractRepositoryCase extends BaseTestCase
         }
 
         $this->assertEquals($isLate, 1 == count($contracts));
-    }
-
-    /**
-     * @test
-     */
-    public function makeSureContractWaitingIsRemoved()
-    {
-        $this->load(true);
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine')->getManager();
-        /**
-         * @var $unit Unit
-         */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name' => '1-a'
-            )
-        );
-        $this->assertNotNull($unit);
-        $this->assertCount(1, $unit->getContractsWaiting(), 'Should be one contract waiting in fixtures');
-
-        $contractWaiting = new ContractWaiting();
-        $contractWaiting->setProperty($unit->getProperty());
-        $contractWaiting->setUnit($unit);
-        $contractWaiting->setGroup($unit->getGroup());
-        $contractWaiting->setResidentId('test');
-        $contractWaiting->setIntegratedBalance('3333');
-        $contractWaiting->setFinishAt(new DateTime());
-        $contractWaiting->setStartAt(new DateTime());
-        $contractWaiting->setRent('7777');
-        $contractWaiting->setFirstName('Hi');
-        $contractWaiting->setLastName('ho');
-        $unit->addContractWaiting($contractWaiting);
-
-        $em->persist($contractWaiting);
-        $em->flush();
-        $id = $contractWaiting->getId();
-        /**
-         * @var $unit Unit
-         */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name' => '1-a'
-            )
-        );
-        $this->assertNotNull($unit);
-        $this->assertCount(2, $unit->getContractsWaiting(), 'We added one more contract should have +1');
-        $em->remove($unit);
-        $em->flush();
-        $em->clear();
-
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
-        $this->assertEmpty($contractWaiting);
     }
 }

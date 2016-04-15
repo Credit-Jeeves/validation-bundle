@@ -48,8 +48,8 @@ class ReportSynchronizer
     protected $paymentProcessor;
 
     /**
-     * @param EntityManager $em
-     * @param LoggerInterface $logger
+     * @param EntityManager               $em
+     * @param LoggerInterface             $logger
      * @param OrderStatusManagerInterface $orderStatusManager
      */
     public function __construct(
@@ -65,9 +65,9 @@ class ReportSynchronizer
     /**
      * Synchronizes payment processor report's data.
      *
-     * @param  PaymentProcessorReport $report
+     * @param  PaymentProcessorReport    $report
      * @param  PaymentProcessorInterface $paymentProcessor
-     * @param  boolean $alertIfEmpty - should we send an alert if there are no transactions?
+     * @param  boolean                   $alertIfEmpty - should we send an alert if there are no transactions?
      * @return int
      * @throws \Exception
      */
@@ -97,24 +97,28 @@ class ReportSynchronizer
 
         /** @var PaymentProcessorReportTransaction $reportTransaction */
         foreach ($report->getTransactions() as $reportTransaction) {
-            switch ($reportTransaction) {
-                case $reportTransaction instanceof DepositReportTransaction:
-                    $this->processDepositTransaction($reportTransaction);
-                    break;
-                case $reportTransaction instanceof ReversalReportTransaction:
-                    $this->processReversalTransaction($reportTransaction);
-                    break;
-                case $reportTransaction instanceof PayDirectDepositReportTransaction:
-                    $this->processPayDirectDepositTransaction($reportTransaction);
-                    break;
-                case $reportTransaction instanceof PayDirectResponseReportTransaction:
-                    $this->processPayDirectResponseTransaction($reportTransaction);
-                    break;
-                case $reportTransaction instanceof PayDirectReversalReportTransaction:
-                    $this->processPayDirectReversalReportTransaction($reportTransaction);
-                    break;
-                default:
-                    throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
+            try {
+                switch ($reportTransaction) {
+                    case $reportTransaction instanceof DepositReportTransaction:
+                        $this->processDepositTransaction($reportTransaction);
+                        break;
+                    case $reportTransaction instanceof ReversalReportTransaction:
+                        $this->processReversalTransaction($reportTransaction);
+                        break;
+                    case $reportTransaction instanceof PayDirectDepositReportTransaction:
+                        $this->processPayDirectDepositTransaction($reportTransaction);
+                        break;
+                    case $reportTransaction instanceof PayDirectResponseReportTransaction:
+                        $this->processPayDirectResponseTransaction($reportTransaction);
+                        break;
+                    case $reportTransaction instanceof PayDirectReversalReportTransaction:
+                        $this->processPayDirectReversalReportTransaction($reportTransaction);
+                        break;
+                    default:
+                        throw new \Exception('Report synchronizer: Unknown report transaction type to synchronize');
+                }
+            } catch (\Exception $e) {
+                $this->logger->emergency($e->getMessage());
             }
             $this->periodicExecutor->increment();
         }
@@ -414,7 +418,7 @@ class ReportSynchronizer
     }
 
     /**
-     * @param  Order $order
+     * @param  Order                     $order
      * @param  ReversalReportTransaction $reportTransaction
      * @return HeartlandTransaction
      */

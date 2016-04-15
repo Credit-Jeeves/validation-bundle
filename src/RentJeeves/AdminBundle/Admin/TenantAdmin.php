@@ -1,6 +1,11 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use Doctrine\ORM\EntityManager;
+use RentJeeves\CoreBundle\ContractManagement\ContractManager;
+use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TenantBundle\Form\DataTransformer\PhoneNumberTransformer;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -187,6 +192,35 @@ class TenantAdmin extends Admin
     public function preUpdate($user)
     {
         $user = $this->checkPassword($user);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function postUpdate($user)
+    {
+        /** @var Tenant $user */
+        if (false === empty($user->getEmail())) {
+            $container = $this->getConfigurationPool()->getContainer();
+            /** @var EntityManager $em */
+            $em = $container->get('doctrine.orm.default_entity_manager');
+            /** @var ContractManager $contractManager */
+            $contractManager = $container->get('renttrack.contract_manager');
+            /** @var Mailer $mailer */
+            $mailer = $container->get('project.mailer');
+            $contracts = $em->getRepository('RjDataBundle:Contract')->getAllWaitingForTenant($user);
+            foreach ($contracts as $contract) {
+                $contractManager->moveContractOutOfWaitingByLandlord(
+                    $contract,
+                    ContractStatus::APPROVED,
+                    $user->getEmail(),
+                    false // we need to pass isImported to sendRjTenantInvite, which is not supported in contractManager
+                );
+                if (false != $landlord = $contract->getHolding()->getLandlords()->first()) {
+                    $mailer->sendRjTenantInvite($user, $landlord, $contract, true);
+                }
+            }
+        }
     }
 
     /**

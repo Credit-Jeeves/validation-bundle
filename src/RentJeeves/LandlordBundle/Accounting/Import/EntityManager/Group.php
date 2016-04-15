@@ -16,6 +16,11 @@ use RentJeeves\LandlordBundle\Accounting\Import\Storage\StorageInterface;
  */
 trait Group
 {
+    /**
+     * @param array $row
+     * @return EntityGroup|null
+     * @throws \Exception
+     */
     protected function getGroup(array $row)
     {
         if (!$this->storage->isMultipleGroup()) {

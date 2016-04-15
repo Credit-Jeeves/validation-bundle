@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -48,7 +49,7 @@ class Mailer extends BaseMailer
             'inviteCode' => $landlord->getInviteCode(),
         ];
 
-        return $this->sendBaseLetter('rjLandLordInvite', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjLandLordInvite', $vars, $landlord);
     }
 
     /**
@@ -73,7 +74,7 @@ class Mailer extends BaseMailer
             'isImported' => $isImported,
         ];
 
-        return $this->sendBaseLetter('rjTenantInvite', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjTenantInvite', $vars, $tenant);
     }
 
     /**
@@ -95,7 +96,7 @@ class Mailer extends BaseMailer
             'inviteCode' => $tenant->getInviteCode(),
         ];
 
-        return $this->sendBaseLetter('rjTenantLatePayment', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjTenantLatePayment', $vars, $tenant);
     }
 
     /**
@@ -116,7 +117,7 @@ class Mailer extends BaseMailer
             'rentAmount' => $contract->getRent(),
         ];
 
-        return $this->sendBaseLetter('rjLandlordComeFromInvite', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjLandlordComeFromInvite', $vars, $tenant);
     }
 
     /**
@@ -145,8 +146,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjPaymentDue',
             $vars,
-            $contract->getTenant()->getEmail(),
-            $contract->getTenant()->getCulture()
+            $contract->getTenant()
         );
     }
 
@@ -165,28 +165,26 @@ class Mailer extends BaseMailer
                 'landlordName' => $landlord->getFullName(),
                 'details' => $failureBatchDetails,
             ],
-            $landlord->getEmail(),
-            $landlord->getCulture(),
+            $landlord,
             $filePath
         );
     }
 
     /**
      * @param Landlord $landlord
-     * @param Tenant   $tenant
      * @param Contract $contract
      *
      * @return bool
      */
-    public function sendPendingContractToLandlord(Landlord $landlord, Tenant $tenant, Contract $contract)
+    public function sendPendingContractToLandlord(Landlord $landlord, Contract $contract)
     {
         $vars = [
             'nameLandlord' => $landlord->getFullName(),
-            'nameTenant' => $tenant->getFullName(),
-            'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+            'nameTenant' => $contract->getTenant()->getFullName(),
+            'address' => $contract->getRentAddress(),
         ];
 
-        return $this->sendBaseLetter('rjPendingContract', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjPendingContract', $vars, $landlord);
     }
 
     /**
@@ -203,7 +201,7 @@ class Mailer extends BaseMailer
             'amount' => $amount,
         ];
 
-        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord);
     }
 
     /**
@@ -219,7 +217,7 @@ class Mailer extends BaseMailer
             'report' => $report,
         ];
 
-        return $this->sendBaseLetter('rjDailyReport', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjDailyReport', $vars, $landlord);
     }
 
     /**
@@ -237,7 +235,7 @@ class Mailer extends BaseMailer
             'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
         ];
 
-        return $this->sendBaseLetter('rjTenantLateContract', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjTenantLateContract', $vars, $tenant);
     }
 
     /**
@@ -253,7 +251,7 @@ class Mailer extends BaseMailer
             'tenants' => $tenants,
         ];
 
-        return $this->sendBaseLetter('rjListLateContracts', $vars, $landlord->getEmail(), $landlord->getCulture());
+        return $this->sendBaseLetter('rjListLateContracts', $vars, $landlord);
     }
 
     /**
@@ -288,7 +286,7 @@ class Mailer extends BaseMailer
             'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
-        return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderReceipt', $vars, $tenant);
     }
 
     /**
@@ -317,7 +315,7 @@ class Mailer extends BaseMailer
             'orderType' => $order->getPaymentType(),
         ];
 
-        return $this->sendBaseLetter('rjOrderError', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderError', $vars, $tenant);
     }
 
     /**
@@ -338,8 +336,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjScoreTrackOrderError',
             $vars,
-            $order->getUser()->getEmail(),
-            $order->getUser()->getCulture()
+            $order->getUser()
         );
     }
 
@@ -362,7 +359,7 @@ class Mailer extends BaseMailer
             'inviteCode' => $tenant->getInviteCode(),
         ];
 
-        return $this->sendBaseLetter('rjTenantInviteReminder', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjTenantInviteReminder', $vars, $tenant);
     }
 
     /**
@@ -375,7 +372,7 @@ class Mailer extends BaseMailer
         $tenant = $contract->getTenant();
         $vars = ['nameTenant' => $tenant->getFullName()];
 
-        return $this->sendBaseLetter('rjContractApproved', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjContractApproved', $vars, $tenant);
     }
 
     /**
@@ -397,8 +394,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjContractRemovedFromDbByLandlord',
             $vars,
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
         );
     }
 
@@ -421,8 +417,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjContractRemovedFromDbByTenant',
             $vars,
-            $landlord->getEmail(),
-            $landlord->getCulture()
+            $landlord
         );
     }
 
@@ -449,7 +444,7 @@ class Mailer extends BaseMailer
             'unitName' => $unitName,
         ];
 
-        return $this->sendBaseLetter('rjEndContract', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjEndContract', $vars, $tenant);
     }
 
     /**
@@ -469,7 +464,7 @@ class Mailer extends BaseMailer
             'reversalDescription' => $order->getReversalDescription(),
         ];
 
-        return $this->sendBaseLetter('rjOrderCancel', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderCancel', $vars, $tenant);
     }
 
     /**
@@ -491,7 +486,7 @@ class Mailer extends BaseMailer
         /** @var Landlord $landlord */
         foreach ($group->getGroupAgents() as $landlord) {
             $vars['landlordFirstName'] = $landlord->getFirstName();
-            $this->sendBaseLetter('rjOrderCancelToLandlord', $vars, $landlord->getEmail(), $landlord->getCulture());
+            $this->sendBaseLetter('rjOrderCancelToLandlord', $vars, $landlord);
         }
     }
 
@@ -525,7 +520,7 @@ class Mailer extends BaseMailer
             'lastFour' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getLastFour() : '',
         ];
 
-        return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjPendingOrder', $vars, $tenant);
     }
 
     /**
@@ -545,7 +540,7 @@ class Mailer extends BaseMailer
             'holdingName' => $contract->getGroup()->getHolding()
         ];
 
-        return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant);
     }
 
     /**
@@ -570,8 +565,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjBatchDepositReportHolding',
             $vars,
-            $landlord->getEmail(),
-            $landlord->getCulture()
+            $landlord
         );
     }
 
@@ -608,8 +602,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjBatchDepositReportLandlord',
             $vars,
-            $landlord->getEmail(),
-            $landlord->getCulture()
+            $landlord
         );
     }
 
@@ -668,8 +661,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjPushBatchReceiptsReport',
             ['data' => $data],
-            $landlord->getEmail(),
-            $landlord->getCulture()
+            $landlord
         );
     }
 
@@ -695,8 +687,7 @@ class Mailer extends BaseMailer
                 'TenantName' => $tenant->getFullName(),
                 'href' => $url,
             ],
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
         );
     }
 
@@ -710,8 +701,33 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjYardiPaymentAcceptedTurnOff',
             ['TenantName' => $tenant->getFullName()],
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
+        );
+    }
+
+    /**
+     * @param Contract $contract
+     *
+     * @return bool
+     */
+    public function sendEmailPaymentFlaggedByUntrustedLandlordRule(Contract $contract)
+    {
+        $tenant = $contract->getTenant();
+        $jiraTicket = null;
+        if ($trustedLandlord = $contract->getGroup()->getTrustedLandlord() and $trustedLandlord->getJiraMapping()) {
+            $jiraTicket = $trustedLandlord->getJiraMapping()->getJiraKey();
+        }
+
+        return $this->sendBaseLetter(
+            $template = 'rjPaymentFlaggedByUntrustedLandlordRule',
+            [
+                'firstName' => $tenant->getFirstName(),
+                'propertyAddress' => $contract->getTenantRentAddress(),
+                'jiraTicket' => $jiraTicket
+            ],
+            $tenant,
+            null,
+            false
         );
     }
 
@@ -731,8 +747,7 @@ class Mailer extends BaseMailer
                 'contracts' => $contracts,
                 'month' => $month,
             ],
-            $landlord->getEmail(),
-            $landlord->getCulture()
+            $landlord
         );
     }
 
@@ -750,8 +765,7 @@ class Mailer extends BaseMailer
                 'tenantName' => $tenant->getFullName(),
                 'month' => $month,
             ],
-            $tenant->getEmail(),
-            $tenant->getCulture()
+            $tenant
         );
     }
 
@@ -787,7 +801,24 @@ class Mailer extends BaseMailer
             'mailingAddressName' => $group->getMailingAddressName(),
         ];
 
-        return $this->sendBaseLetter('rjOrderSending', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderSending', $vars, $tenant);
+    }
+
+    /**
+     * @param OrderPayDirect $order
+     * @return bool
+     */
+    public function sendOrderPayDirectCompleteNotification(OrderPayDirect $order)
+    {
+        $tenant = $order->getUser();
+        $vars = [
+            'firstName' => $tenant->getFirstName(),
+            'groupName' => $order->getGroupName(),
+            'amount' => $order->getSum(),
+            'date' => $order->getUpdatedAt()->format('m/d/Y'),
+        ];
+
+        return $this->sendBaseLetter('rjOrderPayDirectComplete', $vars, $tenant);
     }
 
     /**
@@ -806,7 +837,7 @@ class Mailer extends BaseMailer
             'paymentAcctName' => $order->getPaymentAccount() ? $order->getPaymentAccount()->getName() : '',
         ];
 
-        return $this->sendBaseLetter('rjOrderRefunding', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderRefunding', $vars, $tenant);
     }
 
     /**
@@ -824,7 +855,7 @@ class Mailer extends BaseMailer
             'rentalAddress' => $order->getContract()->getRentAddress(),
         ];
 
-        return $this->sendBaseLetter('rjOrderReissued', $vars, $tenant->getEmail(), $tenant->getCulture());
+        return $this->sendBaseLetter('rjOrderReissued', $vars, $tenant);
     }
 
     /**
@@ -864,8 +895,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjSecondChanceForContract',
             $params,
-            $contract->getTenant()->getEmail(),
-            $contract->getTenant()->getCulture()
+            $contract->getTenant()
         );
     }
 
@@ -897,8 +927,46 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             $template = 'rjChurnRecapture',
             $params,
-            $order->getUser()->getEmail(),
-            $order->getUser()->getCulture()
+            $order->getUser()
+        );
+    }
+
+    /**
+     * @param Payment $payment
+     * @return bool
+     */
+    public function sendTrustedLandlordDenied(Payment $payment)
+    {
+        $tenant = $payment->getContract()->getTenant();
+        $params = [
+            'tenantFirstName' => $tenant->getFirstName(),
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjTrustedLandlordDenied',
+            $params,
+            $tenant
+        );
+    }
+
+    /**
+     * @param Payment $payment
+     * @return bool
+     */
+    public function sendTrustedLandlordApproved(Payment $payment)
+    {
+        $tenant = $payment->getContract()->getTenant();
+        $trustedLandlord = $payment->getContract()->getGroup()->getTrustedLandlord();
+        $params = [
+            'tenantFirstName' => $tenant->getFirstName(),
+            'trustedLandlordFullName' => $trustedLandlord->getFullName(),
+            'trustedLandlordAddress' => $trustedLandlord->getCheckMailingAddress()->getFullAddress()
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjTrustedLandlordApproved',
+            $params,
+            $tenant
         );
     }
 

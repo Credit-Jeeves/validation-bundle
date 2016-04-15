@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 
@@ -38,10 +39,7 @@ class ImportAMSICase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertCount(23, $contract, 'Check fixtures, should be present just 23 contracts on DB');
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $this->assertCount(1, $contractWaiting, 'We should get just one contract waiting from fixtures');
-
+        $this->assertCount(24, $contract, 'Check fixtures, should be present just 23 contracts on DB');
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
@@ -63,7 +61,5 @@ class ImportAMSICase extends ImportBaseAbstract
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(['externalLeaseId' => 21]);
         $this->assertCount(2, $contracts);
-        $contracts = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(['externalLeaseId' => 13]);
-        $this->assertCount(1, $contracts);
     }
 }

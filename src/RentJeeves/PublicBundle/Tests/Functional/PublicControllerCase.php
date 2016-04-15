@@ -3,6 +3,10 @@ namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class PublicControllerCase extends BaseTestCase
@@ -92,16 +96,26 @@ class PublicControllerCase extends BaseTestCase
         set_time_limit(0); //@TODO fixed fatal: Maximum execution time of 120 seconds exceeded
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $holding = $this->getEntityManager()
-            ->getRepository('DataBundle:Holding')->find(5);
-        $contracts = $this->getEntityManager()
-            ->getRepository('RjDataBundle:ContractWaiting')
-            ->findAllByHoldingAndResidentId($holding, 't0013535');
 
-        $this->assertEquals(1, count($contracts));
-        $contract = $contracts[0];
+        /** @var Contract $contractWaiting */
+        $contractWaiting = $this->getEntityManager()->find('RjDataBundle:Contract', 2);
+        $this->assertNotNull($contractWaiting, 'Contract#2 should exist in DB');
+        /** @var Tenant $tenant */
+        $tenant = $this->getContainer()->get('renttrack.user_creator')->createTenant('Mike', 'Pool');
+        $contractWaiting->setStatus(ContractStatus::WAITING);
+        $contractWaiting->setTenant($tenant);
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setHolding($contractWaiting->getHolding());
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setResidentId('t0013535');
+        $tenant->addResidentsMapping($residentMapping);
+        $this->getEntityManager()->persist($tenant);
+        $this->getEntityManager()->persist($residentMapping);
+        $this->getEntityManager()->flush();
 
-        $this->session->visit($this->getUrl() . '?holding_id=5&resident_id=t0013535');
+        $this->session->visit(
+            $this->getUrl() . '?holding_id=' . $contractWaiting->getHolding()->getId() . '&resident_id=t0013535'
+        );
         $this->assertNotNull($createAccount = $this->page->find('css', '#create-user'));
         $createAccount->click();
 
@@ -110,11 +124,11 @@ class PublicControllerCase extends BaseTestCase
         $this->assertCount(3, $this->page->findAll('css', 'select.select-unit>option'));
 
         $this->assertEquals(
-            $contract->getFirstName(),
+            $tenant->getFirstName(),
             $this->page->find('css', '#rentjeeves_publicbundle_tenanttype_first_name')->getValue()
         );
         $this->assertEquals(
-            $contract->getLastName(),
+            $tenant->getLastName(),
             $this->page->find('css', '#rentjeeves_publicbundle_tenanttype_last_name')->getValue()
         );
     }

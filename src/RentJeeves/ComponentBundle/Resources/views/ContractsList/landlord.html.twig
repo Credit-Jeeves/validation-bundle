@@ -212,7 +212,8 @@
                 <div class="form-row clearfix">
                     <label>{{'name'|trans}}<b>*</b></label>
                     <div class="fields-box">
-                        <span data-bind="text: tenant"></span>
+                        <span data-bind="text: tenant, visible: email"></span>
+                        <span data-bind="visible: !email">{{ 'landlord.contract_edit.contract_waiting' | trans }}</span>
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -222,9 +223,14 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'email'|trans }}<b>*</b></label>
+                    <label>{{ 'email'|trans }}</label>
                     <div class="fields-box">
-                        <span data-bind="text: email"></span>
+                        <span data-bind="text: email, visible: email" id="email-view"></span>
+                        <input data-bind="value: email, visible: !email" type="text" id="email-edit" class="half-of-right">
+                        <div data-bind="visible: !email" class="tooltip-box type1 pie-el">
+                            <h4>{{ 'landlord.contract_edit.add_email.title' | trans }}</h4>
+                            <p>{{ 'landlord.contract_edit.add_email.description' | trans }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
@@ -750,6 +756,7 @@
                         <option value='approved'>{{ 'contract.status.approved' | trans() }}</option>
                         <option value='current'>{{ 'contract.status.select.current' | trans() }}</option>
                         <option value='finished'>{{ 'contract.status.finished' | trans() }}</option>
+                        <option value='waiting'>{{ 'contract.statuses.waiting' | trans() }}</option>
                         <!--option value='deleted'>{{ 'contract.status.deleted' | trans() }}</option-->
                     </select>
                     <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
@@ -858,7 +865,7 @@
                     <td align="center"  data-bind="text: balance"></td>
                 {% endif %}
                 <td class="type-box">
-                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status || 'late' == status_name -->
+                    <!-- ko if: 'CURRENT' == status || 'WAITING' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status || 'late' == status_name -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
@@ -871,7 +878,7 @@
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
-                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status || 'CONTRACT ENDED' == status || 'late' == status_name -->
+                    <!-- ko ifnot: 'PENDING' == status || 'WAITING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status || 'CONTRACT ENDED' == status || 'late' == status_name -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>

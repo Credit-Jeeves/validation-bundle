@@ -66,6 +66,7 @@ function LeaseListViewModel() {
             dataType: 'json',
             success: function (data) {
                 self.processedInfoMessage(Translator.trans('landlord.scanning.process_scan.result', {'COUNT': data.count}));
+                window.location.replace(Routing.generate('accounting_deposit'));
             },
             error: function (data) {
                 self.processedErrorMessage(Translator.trans('landlord.scanning.process_scan.error'));

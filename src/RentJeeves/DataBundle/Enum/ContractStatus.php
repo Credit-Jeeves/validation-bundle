@@ -27,39 +27,35 @@ class ContractStatus extends Enum
 {
     /**
      * Contract was ordered by Tenant
-     * @var string
      */
     const PENDING = 'pending';
 
     /**
      * Contract was oredred by Landlord
-     * @var string
      */
     const INVITE = 'invite';
 
     /**
      * Contract was approved with another side
-     * @var string
      */
     const APPROVED = 'approved';
 
     /**
      * Approved contract with payments
-     * @var string
      */
     const CURRENT = 'current';
 
     /**
      * Contract was finished
-     * @var string
      */
     const FINISHED = 'finished';
 
     /**
      * Contract was deleted
-     * @var string
      */
     const DELETED = 'deleted';
+
+    const WAITING = 'waiting';
 
     /**
      * Returns an array of statuses with currentStatus as a first value
@@ -78,6 +74,7 @@ class ContractStatus extends Enum
         foreach (($currentStatus + $otherStatuses) as $key => $value) {
             $result[$value]= $value;
         }
+
         return $result;
     }
 }

@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\OrderExternalApi;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
+use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
@@ -235,6 +236,17 @@ abstract class Order
      * @var string
      */
     protected $checkNumber;
+
+    /**
+     * @var ProfitStarsTransaction
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\ProfitStarsTransaction",
+     *     mappedBy="order",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $profitStarsTransaction;
 
     public function __construct()
     {
@@ -648,5 +660,21 @@ abstract class Order
     public function getObjectType()
     {
         return 'base';
+    }
+
+    /**
+     * @return ProfitStarsTransaction
+     */
+    public function getProfitStarsTransaction()
+    {
+        return $this->profitStarsTransaction;
+    }
+
+    /**
+     * @param ProfitStarsTransaction $profitStarsTransaction
+     */
+    public function setProfitStarsTransaction(ProfitStarsTransaction $profitStarsTransaction)
+    {
+        $this->profitStarsTransaction = $profitStarsTransaction;
     }
 }

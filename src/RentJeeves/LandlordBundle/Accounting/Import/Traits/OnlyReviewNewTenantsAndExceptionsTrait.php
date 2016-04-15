@@ -152,26 +152,12 @@ trait OnlyReviewNewTenantsAndExceptionsTrait
                 return;
             }
 
-            if (!$this->currentImportModel->getHasContractWaiting() &&
-                !is_null($contract->getId()) &&
+            if (!is_null($contract->getId()) &&
                 !$this->isChangedImportantField($contract, $repository = 'Contract') &&
                 !$this->isContractEndedAndActiveInOurDB($contract)
             ) {
                 $report->incrementMatched();
                 $this->em->flush($contract);
-                call_user_func($callbackSuccess);
-
-                return;
-            }
-
-            $contractWaiting = $this->currentImportModel->getContractWaiting();
-
-            if ($this->currentImportModel->getHasContractWaiting() &&
-                !is_null($contractWaiting->getId()) &&
-                !$this->isChangedImportantField($contractWaiting, $repository = 'ContractWaiting')
-            ) {
-                $report->incrementMatched();
-                $this->em->flush($contractWaiting);
                 call_user_func($callbackSuccess);
 
                 return;

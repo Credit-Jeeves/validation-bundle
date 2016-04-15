@@ -13,10 +13,9 @@ services:
     accounting.export.renttrack:
         class: RentJeeves\LandlordBundle\Accounting\Export\Report\RentTrackReport
         arguments:
-            - @doctrine.orm.default_entity_manager
-            - @export.serializer.renttrack
-            - @soft.deleteable.control
-
+            - "@doctrine.orm.default_entity_manager"
+            - "@export.serializer.renttrack"
+            - "@soft.deleteable.control"
     export.serializer.mri_boston_post:
          class: RentJeeves\LandlordBundle\Accounting\Export\Serializer\MRIBostonPostCsvSerializer
          arguments:

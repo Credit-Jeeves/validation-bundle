@@ -5,7 +5,7 @@ fos_oauth_server:
     refresh_token_class: CreditJeeves\DataBundle\Entity\RefreshToken
     auth_code_class:     CreditJeeves\DataBundle\Entity\AuthCode
     service:
-        user_provider: user.user_provider
+        user_provider: fos_user.user_provider.username_email
         options:
             enforce_redirect: false
             refresh_token_lifetime: 946080000 # 30 Years

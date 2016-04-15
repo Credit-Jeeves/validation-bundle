@@ -129,6 +129,8 @@ class ContractsController extends Controller
      * )
      * @RequestParam(
      *     name="lease_start",
+     *     strict=true,
+     *     nullable=false,
      *     requirements="\d{4}-\d{2}-\d{2}",
      *     description="Lease start date. Format YYYY-mm-dd."
      * )

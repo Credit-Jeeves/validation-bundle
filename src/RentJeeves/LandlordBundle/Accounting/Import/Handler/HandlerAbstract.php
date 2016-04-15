@@ -180,12 +180,29 @@ abstract class HandlerAbstract implements HandlerInterface
      *
      * @var bool
      */
-    public $isSupportResidentId = true;
+    protected $isSupportResidentId = true;
 
     public function __construct()
     {
         ini_set('auto_detect_line_endings', true);
         $this->currentImportModel = new ModelImport();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSupportResidentId()
+    {
+        if ($this->isSupportResidentId === false) {
+            return false;
+        }
+
+        $group = $this->getGroup($this->currentImportModel->getRow());
+        if ($group) {
+            return $group->isAllowedEditResidentId();
+        }
+
+        return $this->isSupportResidentId;
     }
 
     public function updateMatchedContracts()
@@ -434,7 +451,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $token = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $this->currentImportModel->setCsrfToken($token);
 
-        if ($this->isSupportResidentId) {
+        if ($this->isSupportResidentId()) {
             $this->setResident($row);
         }
 
@@ -442,17 +459,6 @@ abstract class HandlerAbstract implements HandlerInterface
             $this->currentImportModel->setUnitMapping($this->getUnitMapping($row, $unit));
         } else {
             $this->currentImportModel->setUnitMapping(new UnitMapping());
-        }
-
-        $contractWaiting = $this->getContractWaiting();
-        if ($contractWaiting->getId() && !$this->currentImportModel->getContract()->getId()) {
-            $this->currentImportModel->setHasContractWaiting(true);
-            $this->currentImportModel->setContractWaiting($contractWaiting);
-            $this->currentImportModel->getTenant()->setFirstName($contractWaiting->getFirstName());
-            $this->currentImportModel->getTenant()->setLastName($contractWaiting->getLastName());
-        } elseif ($this->currentImportModel->getContract()->getId() && $contractWaiting->getId()) {
-            $this->em->remove($contractWaiting);
-            $this->currentImportModel->setHasContractWaiting(false);
         }
 
         if (!$this->currentImportModel->isSkipped() &&
@@ -744,56 +750,41 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function tryToSaveRow($lineNumber)
     {
         try {
-            $tenantEmail = $this->currentImportModel->getTenant()->getEmail();
+            $tenant = $this->currentImportModel->getTenant();
+            $tenantEmail = $tenant->getEmail();
             if ($this->currentImportModel->getPropertyMapping()) {
                 $this->flushEntity($this->currentImportModel->getPropertyMapping());
             }
-
-            if (empty($tenantEmail)) {
-                $contractWaiting = $this->getContractWaiting();
-                $this->flushEntity($contractWaiting);
-
-                return true;
-            }
-
             $contract = $this->currentImportModel->getContract();
             $contractId = $contract->getId();
+            if (empty($tenantEmail) && empty($contractId)) {
+                $contract->setStatus(ContractStatus::WAITING);
+            } elseif (!empty($tenantEmail) && $contract->getStatus() === ContractStatus::WAITING) {
+                $contract->setStatus(ContractStatus::APPROVED);
+            }
+
+            if (empty($tenantEmail) && empty($tenant->getUsername())) {
+                $tenant->setUsername(
+                    $this->generateUserName($tenant->getFirstName(), $tenant->getLastName())
+                );
+            }
+
             if (!empty($contractId)) {
                 $this->getReport()->incrementMatched();
             } else {
                 $this->getReport()->incrementNewContract();
             }
+
+            $this->flushEntity($tenant);
+            $this->flushEntity($contract);
+            $this->flushEntity($this->currentImportModel->getResidentMapping());
             $this->flushEntity($unit = $contract->getUnit());
+
             $unitMapping = $unit->getUnitMapping();
             if ($unitMapping instanceof UnitMapping) {
                 $this->flushEntity($unitMapping);
             }
 
-            if (!empty($tenantEmail) && $this->currentImportModel->getHasContractWaiting()) {
-                //Remove contract because we get duplicate contract
-                $this->currentImportModel->getTenant()->removeContract($contract);
-                $this->flushEntity($this->currentImportModel->getTenant());
-                $contractFromWaiting = $this->contractProcess->createContractFromWaiting(
-                    $this->currentImportModel->getTenant(),
-                    $this->currentImportModel->getContractWaiting(),
-                    $this->isSupportResidentId
-                );
-
-                $contractFromWaiting->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
-                $contractFromWaiting->setStatus(ContractStatus::INVITE);
-                $contractFromWaiting->setIntegratedBalance($contract->getIntegratedBalance());
-                $contractFromWaiting->setRent($contract->getRent());
-                $contractFromWaiting->setStartAt($contract->getStartAt());
-                $contractFromWaiting->setFinishAt($contract->getFinishAt());
-                $this->flushEntity($contractFromWaiting);
-                $this->sendInviteEmail();
-
-                return true;
-            }
-
-            $this->flushEntity($this->currentImportModel->getTenant());
-            $this->flushEntity($contract);
-            $this->flushEntity($this->currentImportModel->getResidentMapping());
             if ($this->currentImportModel->getOrder() instanceof Order) {
                 $this->flushEntity($this->currentImportModel->getOrder());
             }
@@ -807,6 +798,29 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->removeToken($lineNumber);
 
         return true;
+    }
+
+    /**
+     * Copy/Paste from UserCreator
+     *
+     * @param string $firstName
+     * @param string $lastName
+     *
+     * @return string
+     */
+    protected function generateUserName($firstName, $lastName)
+    {
+        $userName = strtolower($firstName . $lastName);
+        if (null !== $user = $this->em->getRepository('DataBundle:User')->findLastByPartOfUserName($userName)) {
+            $digits = substr($user->getUsernameCanonical(), strlen($userName));
+            if (true === empty($digits)) {
+                $userName .= 1;
+            } else {
+                $userName .= (int) $digits + 1;
+            }
+        }
+
+        return $userName;
     }
 
     /**
