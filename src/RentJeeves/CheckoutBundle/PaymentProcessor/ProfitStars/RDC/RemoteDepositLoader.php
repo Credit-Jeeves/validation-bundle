@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
@@ -330,7 +331,9 @@ class RemoteDepositLoader
                 $depositItem->getBatchNumber()
             ));
 
-            $this->updateTransactionId($transaction, $depositItem);
+            $this->updateTransaction($transaction, $depositItem);
+            $this->updateOrder($transaction->getOrder(), $depositItem);
+            $this->em->flush();
         }
 
         return false;
@@ -392,7 +395,7 @@ class RemoteDepositLoader
      * @param Transaction $transaction
      * @param WSRemoteDepositItem $depositItem
      */
-    protected function updateTransactionId(Transaction $transaction, WSRemoteDepositItem $depositItem)
+    protected function updateTransaction(Transaction $transaction, WSRemoteDepositItem $depositItem)
     {
         if (false === empty($depositItem->getReferenceNumber()) && true === empty($transaction->getTransactionId())) {
             $this->logger->info(sprintf(
@@ -402,8 +405,20 @@ class RemoteDepositLoader
                 $depositItem->getItemId()
             ));
             $transaction->setTransactionId($depositItem->getReferenceNumber());
-            $this->em->flush();
             $this->accountingPaymentSync->manageAccountingSynchronization($transaction);
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @param WSRemoteDepositItem $depositItem
+     */
+    protected function updateOrder(Order $order, WSRemoteDepositItem $depositItem)
+    {
+        if (WSItemStatus::SENTTOTRANSACTIONPROCESSING === $depositItem->getItemStatus() &&
+            OrderStatus::PENDING === $order->getStatus()
+        ) {
+            $order->setStatus(OrderStatus::COMPLETE);
         }
     }
 
