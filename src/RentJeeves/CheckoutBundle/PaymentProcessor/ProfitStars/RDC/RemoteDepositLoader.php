@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
+use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSItemStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSRemoteDepositBatch;
@@ -37,6 +38,9 @@ class RemoteDepositLoader
     /** @var ContractManager */
     protected $contractManager;
 
+    /** @var AccountingPaymentSynchronizer */
+    protected $accountingPaymentSync;
+
     /** @var integer */
     protected $countChecks;
 
@@ -46,19 +50,22 @@ class RemoteDepositLoader
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param ContractManager $contractManager
+     * @param AccountingPaymentSynchronizer $accountingPaymentSync
      */
     public function __construct(
         RDCClient $client,
         ScannedCheckTransformer $checkTransformer,
         EntityManager $em,
         LoggerInterface $logger,
-        ContractManager $contractManager
+        ContractManager $contractManager,
+        AccountingPaymentSynchronizer $accountingPaymentSync
     ) {
         $this->client = $client;
         $this->checkTransformer = $checkTransformer;
         $this->em = $em;
         $this->logger = $logger;
         $this->contractManager = $contractManager;
+        $this->accountingPaymentSync = $accountingPaymentSync;
     }
 
     /**
@@ -396,6 +403,7 @@ class RemoteDepositLoader
             ));
             $transaction->setTransactionId($depositItem->getReferenceNumber());
             $this->em->flush();
+            $this->accountingPaymentSync->manageAccountingSynchronization($transaction);
         }
     }
 

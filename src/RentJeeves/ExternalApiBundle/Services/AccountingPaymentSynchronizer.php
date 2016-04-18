@@ -6,6 +6,7 @@ namespace RentJeeves\ExternalApiBundle\Services;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use JMS\Serializer\Serializer;
 use RentJeeves\DataBundle\Entity\Job;
@@ -14,6 +15,7 @@ use RentJeeves\DataBundle\Entity\PaymentBatchMappingRepository;
 use Monolog\Logger;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\PaymentBatchStatus;
+use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\ExternalApiBundle\Services\EmailNotifier\FailedPostPaymentNotifier;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ClientInterface;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\SettingsInterface;
@@ -162,7 +164,7 @@ class AccountingPaymentSynchronizer
     /**
      * @param Order $order
      */
-    public function createJob(Order $order)
+    protected function createJob(Order $order)
     {
         $this->logger->debug(sprintf('Order(%s) added to queue for sending to accounting system.', $order->getId()));
 
@@ -471,6 +473,64 @@ class AccountingPaymentSynchronizer
                 $holding,
                 $mappingBatch->getAccountingBatchId()
             );
+        }
+    }
+
+    /**
+     * @param Transaction $transaction
+     */
+    public function manageAccountingSynchronization(Transaction $transaction)
+    {
+        // do nothing if transaction is not complete
+        if ($transaction->getStatus() !== TransactionStatus::COMPLETE) {
+            return;
+        }
+
+        if (!$transaction->getIsSuccessful() ||
+            !$transaction->getBatchId() ||
+            !$transaction->getTransactionId()
+        ) {
+            $message = "Don't send transaction(%s) to api, because some parameters missing:\n";
+            $message .= "IsSuccessful(%s), BatchId(%s),  TransactionId(%s)";
+            $this->logger->debug(
+                sprintf(
+                    $message,
+                    $transaction->getId(),
+                    $transaction->getIsSuccessful(),
+                    $transaction->getBatchId(),
+                    $transaction->getTransactionId()
+                )
+            );
+
+            return;
+        }
+
+        if (!$order = $transaction->getOrder()) {
+            $this->logger->debug(
+                sprintf(
+                    'Transaction %s does not have order, we don\'t send it to external API',
+                    $transaction->getId()
+                )
+            );
+
+            return;
+        }
+
+        if (!$order->getContract()) {
+            $this->logger->debug(
+                sprintf(
+                    'Transaction %s does not have contract, we don\'t send it to external API',
+                    $transaction->getId()
+                )
+            );
+
+            return;
+        }
+
+        $this->setDebug(true);
+
+        if ($this->isAllowedToSend($order)) {
+            $this->createJob($order);
         }
     }
 

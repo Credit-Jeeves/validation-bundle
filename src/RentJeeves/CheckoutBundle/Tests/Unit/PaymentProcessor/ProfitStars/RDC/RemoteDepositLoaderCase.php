@@ -16,6 +16,7 @@ use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
@@ -124,7 +125,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
-            $this->getBaseMock(ContractManager::class)
+            $this->getBaseMock(ContractManager::class),
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -247,7 +249,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
-            $this->getBaseMock(ContractManager::class)
+            $this->getBaseMock(ContractManager::class),
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -382,7 +385,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $checkTransformerMock,
             $emMock,
             $this->getLoggerMock(),
-            $this->getBaseMock(ContractManager::class)
+            $this->getBaseMock(ContractManager::class),
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -452,7 +456,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
-            $this->getBaseMock(ContractManager::class)
+            $this->getBaseMock(ContractManager::class),
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -558,7 +563,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
-            $this->getBaseMock(ContractManager::class)
+            $this->getBaseMock(ContractManager::class),
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -694,7 +700,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $checkTransformerMock,
             $emMock,
             $this->getLoggerMock(),
-            $contractManagerMock
+            $contractManagerMock,
+            $this->getBaseMock(AccountingPaymentSynchronizer::class)
         );
 
         $result = $loader->loadScannedChecks($group, $date);
