@@ -401,8 +401,8 @@ class PaymentAccountType extends AbstractType
                     'html' =>
                         '<!-- ko foreach: newAddresses -->' .
                             '<label class="checkbox radio">' .
-                                '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
-                                    'required="required"' .
+                                '<input type="radio" name="' . $this->getName() . '[address_choice]" ' .
+                                    'required="required" ' .
                                     'data-bind="' .
                                         'checked: $parent.billingaddress.addressChoice, ' .
                                         'attr: {\'id\': \'' . $this->getName() . '_address_choice_\' + $data.id() }, ' .

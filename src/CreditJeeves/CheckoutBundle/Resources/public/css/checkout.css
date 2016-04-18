@@ -60,6 +60,6 @@ div.total-amount {
     font-weight: bold;
 }
 .paid-for {
-    position: fixed;
+    position: relative;
     z-index: 1;
 }
