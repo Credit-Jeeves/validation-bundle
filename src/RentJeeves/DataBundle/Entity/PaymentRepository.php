@@ -307,7 +307,7 @@ class PaymentRepository extends EntityRepository
             ->andWhere('p.status in (:activeStatuses)')
             ->andWhere('p.flaggedReason = :flaggedReason')
             ->setParameter('groupId', $group->getId())
-            ->setParameter('flaggedReason', PaymentFlaggedReason::DTR_PAYMENT_TO_UNTRUSTED_LANDLORD)
+            ->setParameter('flaggedReason', PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD)
             ->setParameter('activeStatuses', [PaymentStatus::FLAGGED])
             ->getQuery()
             ->execute();

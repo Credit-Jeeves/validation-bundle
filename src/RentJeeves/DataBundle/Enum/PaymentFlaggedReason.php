@@ -17,6 +17,4 @@ class PaymentFlaggedReason extends Enum
     const DTR_MONTH_LIMIT_OVERFLOWED = 'dtr_month_limit_overflowed';
 
     const DTR_UNTRUSTED_LANDLORD = 'dtr_untrusted_landlord';
-
-    const DTR_PAYMENT_TO_UNTRUSTED_LANDLORD = 'dtr_payment_to_untrusted_landlord';
 }
