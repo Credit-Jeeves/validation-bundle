@@ -9,16 +9,17 @@ class UserRepository extends EntityRepository
     /**
      * @param string $userName
      *
-     * @return User
+     * @return string|null
      */
-    public function findLastByPartOfUserName($userName)
+    public function getLastUserNameByPartOfUserName($userName)
     {
-        return $this->createQueryBuilder('u')
-            ->where('REGEXP(u.usernameCanonical, :regexp) = true')
-            ->setParameter('regexp', sprintf('^%s[[:digit:]]*$', $userName))
-            ->orderBy('u.usernameCanonical', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+        $lastUserName = $this->_em->getConnection()->query(
+            "SELECT u.username_canonical
+             FROM cj_user u
+             WHERE ((u.username_canonical REGEXP \"^{$userName}[[:digit:]]*$\") = 1)
+             ORDER BY LENGTH(u.username_canonical) DESC, u.username_canonical DESC"
+        )->fetchColumn(0);
+
+        return $lastUserName ?: null;
     }
 }

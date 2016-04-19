@@ -9,6 +9,9 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator;
 
+/**
+ * Service`s name 'renttrack.user_creator'
+ */
 class UserCreator
 {
     /**
@@ -147,8 +150,8 @@ class UserCreator
     protected function generateUserName($firstName, $lastName)
     {
         $userName = strtolower($firstName . $lastName);
-        if (null !== $user = $this->getUserRepository()->findLastByPartOfUserName($userName)) {
-            $digits = substr($user->getUsernameCanonical(), strlen($userName));
+        if (null !== $lastExistUserName = $this->getUserRepository()->getLastUserNameByPartOfUserName($userName)) {
+            $digits = substr($lastExistUserName, strlen($userName));
             if (true === empty($digits)) {
                 $userName .= 1;
             } else {
