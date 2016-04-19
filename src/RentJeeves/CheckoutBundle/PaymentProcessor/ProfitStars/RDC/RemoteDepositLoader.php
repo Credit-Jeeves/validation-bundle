@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
@@ -12,6 +13,7 @@ use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
+use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSBatchStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSItemStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSRemoteDepositBatch;
@@ -37,6 +39,9 @@ class RemoteDepositLoader
     /** @var ContractManager */
     protected $contractManager;
 
+    /** @var AccountingPaymentSynchronizer */
+    protected $accountingPaymentSync;
+
     /** @var integer */
     protected $countChecks;
 
@@ -46,19 +51,22 @@ class RemoteDepositLoader
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param ContractManager $contractManager
+     * @param AccountingPaymentSynchronizer $accountingPaymentSync
      */
     public function __construct(
         RDCClient $client,
         ScannedCheckTransformer $checkTransformer,
         EntityManager $em,
         LoggerInterface $logger,
-        ContractManager $contractManager
+        ContractManager $contractManager,
+        AccountingPaymentSynchronizer $accountingPaymentSync
     ) {
         $this->client = $client;
         $this->checkTransformer = $checkTransformer;
         $this->em = $em;
         $this->logger = $logger;
         $this->contractManager = $contractManager;
+        $this->accountingPaymentSync = $accountingPaymentSync;
     }
 
     /**
@@ -323,7 +331,9 @@ class RemoteDepositLoader
                 $depositItem->getBatchNumber()
             ));
 
-            $this->updateTransactionId($transaction, $depositItem);
+            $this->updateTransaction($transaction, $depositItem);
+            $this->updateOrder($transaction->getOrder(), $depositItem);
+            $this->em->flush();
         }
 
         return false;
@@ -385,7 +395,7 @@ class RemoteDepositLoader
      * @param Transaction $transaction
      * @param WSRemoteDepositItem $depositItem
      */
-    protected function updateTransactionId(Transaction $transaction, WSRemoteDepositItem $depositItem)
+    protected function updateTransaction(Transaction $transaction, WSRemoteDepositItem $depositItem)
     {
         if (false === empty($depositItem->getReferenceNumber()) && true === empty($transaction->getTransactionId())) {
             $this->logger->info(sprintf(
@@ -395,7 +405,20 @@ class RemoteDepositLoader
                 $depositItem->getItemId()
             ));
             $transaction->setTransactionId($depositItem->getReferenceNumber());
-            $this->em->flush();
+            $this->accountingPaymentSync->manageAccountingSynchronization($transaction);
+        }
+    }
+
+    /**
+     * @param Order $order
+     * @param WSRemoteDepositItem $depositItem
+     */
+    protected function updateOrder(Order $order, WSRemoteDepositItem $depositItem)
+    {
+        if (WSItemStatus::SENTTOTRANSACTIONPROCESSING === $depositItem->getItemStatus() &&
+            OrderStatus::PENDING === $order->getStatus()
+        ) {
+            $order->setStatus(OrderStatus::COMPLETE);
         }
     }
 

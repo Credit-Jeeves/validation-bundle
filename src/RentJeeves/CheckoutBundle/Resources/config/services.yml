@@ -369,6 +369,7 @@ services:
             - '@doctrine.orm.default_entity_manager'
             - '@monolog.logger.profit_stars'
             - '@renttrack.contract_manager'
+            - '@accounting.payment_sync'
 
     payment_processor.profit_stars.rdc:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
