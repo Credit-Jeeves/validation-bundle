@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Services;
+namespace RentJeeves\LandlordBundle\BatchDeposits;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;

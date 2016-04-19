@@ -1,9 +1,9 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Tests\Unit\Services;
+namespace RentJeeves\LandlordBundle\Tests\Unit\BatchDeposits;
 
 use Doctrine\ORM\EntityManager;
-use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
+use RentJeeves\LandlordBundle\BatchDeposits\BatchDepositsManager;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class BatchDepositsManagerCase extends BaseTestCase
