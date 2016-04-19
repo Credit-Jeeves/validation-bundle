@@ -214,7 +214,7 @@ class ReportSynchronizer
 
         if ($reportTransaction->getAmount() > 0 && $reportDepositDate = $reportTransaction->getDepositDate()) {
             if (!$transaction->getDepositDate()) {
-                $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportDepositDate);
+                $depositDate = BusinessDaysCalculator::getNextDepositDate($reportDepositDate);
                 $transaction->setDepositDate($depositDate);
             }
             /*
@@ -270,7 +270,7 @@ class ReportSynchronizer
         $originalDepositDate = $originalTransaction->getDepositDate();
         // if original deposit date exists, set reversal deposit date
         if ($originalDepositDate) {
-            $reversalDepositDate = BusinessDaysCalculator::getNextBusinessDate(
+            $reversalDepositDate = BusinessDaysCalculator::getNextDepositDate(
                 $reportTransaction->getTransactionDate()
             );
             $reversalTransaction->setDepositDate($reversalDepositDate);
@@ -322,7 +322,7 @@ class ReportSynchronizer
         // "The funds would be removed from the merchant’s account on the next business day.
         // If processed on a Saturday, it would be deducted on Monday."
         // TODO: may be moved down to payment processor layer if this is different
-        $depositDate = BusinessDaysCalculator::getNextBusinessDate($reportTransaction->getTransactionDate());
+        $depositDate = BusinessDaysCalculator::getNextDepositDate($reportTransaction->getTransactionDate());
         $reversalTransaction->setDepositDate($depositDate);
 
         $this->em->persist($reversalTransaction);
