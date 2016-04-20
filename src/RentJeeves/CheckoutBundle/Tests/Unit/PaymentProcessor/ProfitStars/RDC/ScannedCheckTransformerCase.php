@@ -106,6 +106,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $contract = new Contract();
         $contract->setTenant(new Tenant());
         $contract->setGroup(new Group());
+        $contract->setDueDate(1);
 
         $repository = $this->getContractRepositoryMock();
         $repository
@@ -116,7 +117,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
 
         $depositItem = new WSRemoteDepositItem();
         $totalAmount = 999.99;
-        $itemDateTime = (new \DateTime())->format('Y-m-d');
+        $itemDateTime = '2016-04-01';
         $depositItem
             ->setItemId(125)
             ->setCustomerNumber('test')
@@ -234,6 +235,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $contract = new Contract();
         $contract->setTenant(new Tenant());
         $contract->setGroup(new Group());
+        $contract->setDueDate(1);
 
         $repository = $this->getContractRepositoryMock();
         $repository
@@ -244,7 +246,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
 
         $depositItem = new WSRemoteDepositItem();
         $totalAmount = 999.99;
-        $itemDateTime = (new \DateTime())->format('Y-m-d');
+        $itemDateTime = '2016-04-01';
         $depositItem
             ->setItemId('123')
             ->setCustomerNumber('test')
@@ -376,6 +378,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $contract = new Contract();
         $contract->setTenant(new Tenant());
         $contract->setGroup($group);
+        $contract->setDueDate(1);
 
         $repository = $this->getContractRepositoryMock();
         $repository
@@ -386,7 +389,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
 
         $depositItem = new WSRemoteDepositItem();
         $totalAmount = 999.99;
-        $itemDateTime = (new \DateTime())->format('Y-m-d');
+        $itemDateTime = '2016-04-01';
         $depositItem
             ->setCustomerNumber('test')
             ->setBatchNumber('b1')
@@ -485,6 +488,89 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $transaction->getDepositDate()->format('Y-m-d'),
             'Transaction\'s deposit date is wrong'
         );
+    }
+
+    /**
+     * @test
+     * @dataProvider providePaidForDates
+     */
+    public function shouldSetCorrectPaidForToOperation($dueDate, $itemDateTime, $expectedPaidFor)
+    {
+        $encoder = $this->getEncoderMock();
+        $encoder
+            ->expects($this->once())
+            ->method('decode')
+            ->with('test')
+            ->will($this->returnValue('18'));
+
+        $group = new Group();
+        $depositAccount = new DepositAccount();
+        $depositAccount->setGroup($group);
+        $depositAccount->setType(DepositAccountType::APPLICATION_FEE);
+        $depositAccount->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+        $depositAccount->setMerchantName(102588);
+        $depositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
+        $group->addDepositAccount($depositAccount);
+
+        $contract = new Contract();
+        $contract->setTenant(new Tenant());
+        $contract->setGroup($group);
+        $contract->setDueDate($dueDate);
+
+        $repository = $this->getContractRepositoryMock();
+        $repository
+            ->expects($this->once())
+            ->method('find')
+            ->with('18')
+            ->will($this->returnValue($contract));
+
+        $depositItem = new WSRemoteDepositItem();
+        $totalAmount = 999.99;
+        $depositItem
+            ->setCustomerNumber('test')
+            ->setBatchNumber('b1')
+            ->setItemStatus(WSItemStatus::SENTTOTRANSACTIONPROCESSING)
+            ->setCheckNumber('0201')
+            ->setItemDateTime($itemDateTime)
+            ->setTotalAmount($totalAmount)
+            ->setLocationId(102588)
+            ->setReferenceNumber('ref-test');
+
+        $checkTransformer = new ScannedCheckTransformer(
+            $encoder,
+            $repository,
+            $this->getLoggerMock()
+        );
+
+        $order = $checkTransformer->transformToOrder($depositItem);
+        $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
+        /** @var Operation $operation */
+        $this->assertInstanceOf(
+            Operation::class,
+            $operation = $order->getOperations()->first(),
+            'Operation entity is expected'
+        );
+
+        $this->assertEquals(
+            $expectedPaidFor,
+            $operation->getPaidFor()->format('Y-m-d'),
+            'Operation should have expected paidFor'
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function providePaidForDates()
+    {
+        return [
+            [1, '2016-04-01', '2016-04-01'],
+            [10, '2016-04-01', '2016-04-10'],
+            [10, '2016-04-15', '2016-04-10'],
+            [1, '2016-04-16', '2016-05-01'],
+            [18, '2016-04-16', '2016-05-18'],
+            [1, '2016-04-30', '2016-05-01'],
+        ];
     }
 
     /**

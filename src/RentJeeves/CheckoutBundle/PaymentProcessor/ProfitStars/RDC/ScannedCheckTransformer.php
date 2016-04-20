@@ -80,7 +80,7 @@ class ScannedCheckTransformer
         $operation->setType($operationType);
         $operation->setContract($contract);
         $operation->setAmount($depositItem->getTotalAmount());
-        $operation->setPaidFor($createdDate); // change this when we know the answer!
+        $operation->setPaidFor($this->calculatePaidFor($contract, $createdDate));
         $operation->setCreatedAt($createdDate);
         $order->addOperation($operation);
 
@@ -162,5 +162,25 @@ class ScannedCheckTransformer
         }
 
         return null;
+    }
+
+    /**
+     * If <= 15th, set paid for to contract due date for current month.
+     * If > 15th, set paid for to contract due date for next month.
+     *
+     * @param Contract $contract
+     * @param \DateTime $date
+     * @return \DateTime
+     */
+    protected function calculatePaidFor(Contract $contract, \DateTime $date)
+    {
+        $paidFor = clone $date;
+        $currentDay = $date->format('j');
+        if ($currentDay > 15) {
+            $paidFor->modify('+1 month');
+        }
+        $paidFor->setDate($paidFor->format('Y'), $paidFor->format('n'), $contract->getDueDate());
+
+        return $paidFor;
     }
 }
