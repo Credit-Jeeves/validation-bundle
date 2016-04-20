@@ -104,7 +104,7 @@ class ProfitStarsReportSynchronizer
      */
     public function sync($locationId, $entityId, \DateTime $startDate, \DateTime $endDate)
     {
-        $this->logger->debug(
+        $this->logger->info(
             'Start synchronize transactions for ProfitStars.',
             [
                 'locationId' => $locationId,
@@ -120,7 +120,8 @@ class ProfitStarsReportSynchronizer
                 case WSTransactionEvent::SETTLED:
                     $this->syncSettledReport($report);
                     break;
-                case WSTransactionEvent::RETURNED_NSF:
+//                case WSTransactionEvent::RETURNED_NSF:
+                case 'Returned NSF':
                 case WSTransactionEvent::OTHER_CHECK21_RETURNS:
                 case WSTransactionEvent::DISPUTED:
                 case WSTransactionEvent::RETURNED_BAD_ACCOUNT:
@@ -139,14 +140,14 @@ class ProfitStarsReportSynchronizer
                 case WSTransactionEvent::ORIGINATED:
                 case WSTransactionEvent::PROCESSED:
                 default:
-                    $this->logger->debug(sprintf('Skip report with event type "%s"', $report->getEventType()));
+                    $this->logger->info(sprintf('Skip report with event type "%s"', $report->getEventType()));
                     break;
             }
 
             $this->em->clear();
         }
 
-        $this->logger->debug(
+        $this->logger->info(
             'Synchronization is complete.',
             [
                 'locationId' => $locationId,
@@ -161,7 +162,7 @@ class ProfitStarsReportSynchronizer
      */
     protected function syncSettledReport(WSEventReport $report)
     {
-        $this->logger->debug(sprintf('Try to sync SettledReport for TransactionId#%s', $report->getReferenceNumber()));
+        $this->logger->info(sprintf('Try to sync SettledReport for TransactionId#%s', $report->getReferenceNumber()));
         /** @var Transaction $transaction */
         $transaction = $this->getTransactionRepository()->findOneBy(
             [
@@ -200,7 +201,7 @@ class ProfitStarsReportSynchronizer
      */
     protected function syncReversalReport(WSEventReport $report)
     {
-        $this->logger->debug(
+        $this->logger->info(
             sprintf('Try to sync ReversalReport for TransactionId#%s', $report->getTransactionNumber())
         );
         /** @var Transaction $transaction */
@@ -222,7 +223,7 @@ class ProfitStarsReportSynchronizer
         if ($order->getStatus() === OrderStatus::COMPLETE || $order->getStatus() === OrderStatus::PENDING) {
             $this->createReversalTransaction($order, $report);
         } elseif (true === in_array($order->getStatus(), $this->reversedOrderStatuses)) {
-            $this->logger->debug(sprintf('Order#%d is already reversed, skip', $order->getId()));
+            $this->logger->info(sprintf('Order#%d is already reversed, skip', $order->getId()));
 
             return;
         } else {
@@ -240,7 +241,7 @@ class ProfitStarsReportSynchronizer
      */
     protected function createReversalTransaction(Order $order, WSEventReport $report)
     {
-        $this->logger->debug(sprintf(
+        $this->logger->info(sprintf(
             'Creating reversed transaction for Order#%d, Transaction#%d.',
             $order->getId(),
             $report->getTransactionNumber()
@@ -313,7 +314,7 @@ class ProfitStarsReportSynchronizer
         );
 
         if (null === $eventReports = $response->getGetHistoricalEventReportResult()->getWSEventReport()) {
-            $this->logger->debug(
+            $this->logger->info(
                 'ProfitStars returned empty response',
                 [
                     'locationId' => $locationId,
@@ -339,9 +340,37 @@ class ProfitStarsReportSynchronizer
     protected function getArrayOfWSDisplayFields()
     {
         $additionalFields = [
-            WSDisplayFields::REFERENCE_NUMBER,
+//            WSDisplayFields::TRANSACTION_DATETIME, need check
+            WSDisplayFields::TRANSACTION_STATUS_NAME,
+            WSDisplayFields::PAYMENT_TYPE_NAME,
+            WSDisplayFields::NAME_ON_ACCOUNT,
             WSDisplayFields::TRANSACTION_NUMBER,
+            WSDisplayFields::REFERENCE_NUMBER,
+            WSDisplayFields::CUSTOMER_NUMBER,
+            WSDisplayFields::OPERATION_TYPE_NAME,
+            WSDisplayFields::LOCATION_DISPLAY_NAME,
+            WSDisplayFields::TOTAL_AMOUNT,
+            WSDisplayFields::AUTH_RESPONSE_TYPE_NAME,
+            WSDisplayFields::PAYMENT_ORIGIN_NAME,
+            WSDisplayFields::SETTLEMENT_STATUS_NAME,
+            WSDisplayFields::DISPLAY_ACCOUNT_NUMBER,
+            WSDisplayFields::CHECK_NUMBER,
+            WSDisplayFields::THIRD_PARTY_REFERENCE_NUMBER,
+            WSDisplayFields::AUDIT_USER_NAME,
+            WSDisplayFields::EVENT_DATETIME,
+            WSDisplayFields::EVENT_TYPE_NAME,
+            WSDisplayFields::EVENT_DATASTRING,
+            WSDisplayFields::OWNERAPPLICATION,
+            WSDisplayFields::RECEIVINGAPPLICATION,
+            WSDisplayFields::OWNERAPPREFERENCEID,
             WSDisplayFields::RETURNCODE,
+            WSDisplayFields::NOTICE_OF_CHANGE,
+            WSDisplayFields::SEQUENCEID,
+            WSDisplayFields::BATCHNUMBER,
+            WSDisplayFields::ORIGINATEDAS,
+            WSDisplayFields::ISDUPLICATE,
+            WSDisplayFields::EFFECTIVEDATE,
+            WSDisplayFields::FACEFEETYPE,
         ];
         $arrayOfWSDisplayFields = new ArrayOfWSDisplayFields();
         $arrayOfWSDisplayFields->setWSDisplayFields($additionalFields);
