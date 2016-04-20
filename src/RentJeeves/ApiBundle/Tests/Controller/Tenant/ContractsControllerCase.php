@@ -1059,6 +1059,45 @@ class ContractsControllerCase extends BaseApiTestCase
 
     /**
      * @test
+     */
+    public function duplicateUnitErrorOnCreateContract()
+    {
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '1-a',
+                    'street' => '770 Broadway',
+                    'city' => 'New York',
+                    'state' => 'NY',
+                    'zip' => '10003',
+                ],
+                'landlord' => [
+                    'type' => 'person',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'email' => 'test_landlord4@gmail.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown',
+                        'street_address_1' => '771 Broadway',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 409);
+    }
+
+    /**
+     * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'enable' violated a constraint/
      */

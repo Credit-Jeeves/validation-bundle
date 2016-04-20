@@ -10,6 +10,7 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\CoreBundle\Services\Exception\PropertyManagerUnitOwnershipException;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -236,9 +237,9 @@ class PropertyManager
     }
 
     /**
-     * @param $group
-     * @param $property
-     * @param $unitName
+     * @param Group $group
+     * @param Property $property
+     * @param string $unitName
      * @param null|string $externalUnitId
      * @throws \InvalidArgumentException|PropertyManagerUnitOwnershipException
      * @return Unit
@@ -253,7 +254,7 @@ class PropertyManager
             throw new \InvalidArgumentException('Unit name is invalid.');
         }
         if ($unit = $property->searchUnit($unitName) and $unit->getGroup()->getId() !== $group->getId()) {
-            throw new PropertyManagerUnitOwnershipException('Unit exists but belongs another group.');
+            throw new PropertyManagerUnitOwnershipException('Unit exists but belongs to another group.');
         }
 
         if (!$unit) {

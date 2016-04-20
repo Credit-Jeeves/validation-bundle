@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services;
+namespace RentJeeves\CoreBundle\Services\Exception;
 
 
 class PropertyManagerUnitOwnershipException extends \LogicException

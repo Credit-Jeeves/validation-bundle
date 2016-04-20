@@ -12,6 +12,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\Exception\PropertyManagerUnitOwnershipException;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -248,7 +249,7 @@ class ContractProcessor
                 $unit = $this->propertyManager->getOrCreateUnit($group, $property, $unitName);
             } catch (\InvalidArgumentException $e) {
                 throw new BadRequestHttpException($e->getMessage(), $e);
-            } catch (\LogicException $e) {
+            } catch (PropertyManagerUnitOwnershipException $e) {
                 throw new HttpException(409, $e->getMessage(), $e);
             }
 
