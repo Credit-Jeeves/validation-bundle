@@ -11,6 +11,6 @@ file that was distributed with this source code.
 {% if admin.isGranted('EDIT', object)%}
     <a href="{{ path('admin_group_properties_list', { "group_id": object.id }) }}" class="btn edit_link" title="{{ 'admin.list.landlords'|trans({}) }}">
         <i class="icon-contract"></i>
-        Proprties
+        Properties
     </a>
 {% endif %}
