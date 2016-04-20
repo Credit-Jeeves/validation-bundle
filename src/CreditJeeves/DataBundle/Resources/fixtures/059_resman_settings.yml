@@ -2,6 +2,6 @@ model: RentJeeves\DataBundle\Entity\ResManSettings
 fixtures:
     resmanSetting_1:
         holding: rjHolding_1
-        accountId: 400
+        accountId: 800
         url: https://api.myresman.com/MITS/
 

@@ -18,6 +18,12 @@ class ImportResManCase extends ImportBaseAbstract
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
+        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            ['externalPropertyId' => 'rnttrk01']
+        );
+        $this->assertNotEmpty($propertyMapping, 'We don\'t have propertyMapping in fixtures');
+        $propertyMapping->setExternalPropertyId(ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $em->flush();
         /** @var Landlord $landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
         $this->assertNotNull($landlord, 'Check fixtures, landlord with email "landlord1@example.com" should exist');

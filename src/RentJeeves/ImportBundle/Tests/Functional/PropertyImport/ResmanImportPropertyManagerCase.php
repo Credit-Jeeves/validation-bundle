@@ -66,7 +66,7 @@ class ResmanImportPropertyManagerCase extends BaseTestCase
         $allPropertyGroups = $this->getEntityManager()
             ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
 
-        $this->getImportPropertyManager()->import($newImport, ResManClientCase::EXTERNAL_PROPERTY_ID);
+        $this->getImportPropertyManager()->import($newImport, 'b342e58c-f5ba-4c63-b050-cf44439bb37d');
 
         $allImportProperties = $this->getEntityManager()->getRepository('RjDataBundle:ImportProperty')->findAll();
         $countImportPropertiesAfterImport = count($allImportProperties);
