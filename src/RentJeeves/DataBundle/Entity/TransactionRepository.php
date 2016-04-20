@@ -79,10 +79,10 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
-        $query->leftJoin('ten.residentsMapping', 'res');
-        $query->innerJoin('t.unit', 'unit');
-        $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
+        $query->leftJoin('ten.residentsMapping', 'res');
+        $query->leftJoin('t.unit', 'unit');
+        $query->leftJoin('unit.unitMapping', 'uMap');
         $query->leftJoin('g.groupSettings', 'gs');
         // order may be deposited and returned the same day, so we should count complete and reversal types
         $query->where('o.status in (:statuses)');
