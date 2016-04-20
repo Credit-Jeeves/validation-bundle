@@ -116,6 +116,8 @@ class YardiExtractor implements ApiExtractorInterface
             $fullResident = new FullResident();
             $fullResident->setProperty($property);
             $fullResident->setResidentTransactionPropertyCustomer($transaction);
+            //Sadly, PMs fill in the data wherever, so we have to be able to pull from either.
+            $fullResident->setResidentData($this->getResidentData($property, $transaction->getCustomerId()));
             $listOfFullResident[] = $fullResident;
         }
 
@@ -149,6 +151,53 @@ class YardiExtractor implements ApiExtractorInterface
         }
 
         return reset($filteredProperties);
+    }
+
+    /**
+     * @param Property $property
+     *
+     * @throws ImportExtractorException
+     *
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentsResident[]
+     */
+    protected function getResidents(Property $property)
+    {
+        $residents = $this->residentDataManager->getResidents($property->getCode());
+        if (empty($residents)) {
+            throw new ImportExtractorException(
+                sprintf('Can\'t find residents by externalPropertyID "%s"', $property->getCode())
+            );
+        }
+
+        return $residents;
+    }
+
+    /**
+     * @param Property $property
+     * @param string   $residentId
+     *
+     * @throws ImportExtractorException
+     *
+     * @return \RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseFile
+     */
+    protected function getResidentData(Property $property, $residentId)
+    {
+        try {
+            return $this->residentDataManager->getResidentData($residentId, $property->getCode());
+        } catch (\Exception $e) {
+            $message = sprintf(
+                'Can\'t get resident data for residentID:%s externalPropertyID: %s error: %s',
+                $residentId,
+                $property->getCode(),
+                $e->getMessage()
+            );
+            $this->logger->alert(
+                $message,
+                ['group' => $this->group, 'additional_parameter' => $this->externalPropertyId]
+            );
+        }
+
+        return null;
     }
 
     /**
