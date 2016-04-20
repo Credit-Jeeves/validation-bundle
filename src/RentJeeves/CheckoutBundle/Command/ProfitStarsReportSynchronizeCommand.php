@@ -16,8 +16,8 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     {
         $this
             ->setName('renttrack:payment:report:synchronize:profit-stars')
-            ->addOption('start_date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
-            ->addOption('end_date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
+            ->addOption('start-date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
+            ->addOption('end-date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
             ->setDescription('Synchronize ProfitStars reports');
     }
 
