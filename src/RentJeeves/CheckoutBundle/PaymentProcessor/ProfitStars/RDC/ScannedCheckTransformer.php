@@ -89,7 +89,7 @@ class ScannedCheckTransformer
         $transaction->setMerchantName($depositItem->getLocationId());
         $transaction->setBatchId($depositItem->getBatchNumber());
         $transaction->setBatchDate($createdDate);
-        $transaction->setDepositDate(BusinessDaysCalculator::getNextBusinessDate(clone $createdDate));
+        $transaction->setDepositDate(BusinessDaysCalculator::getNextDepositDate(clone $createdDate));
         $transaction->setAmount($depositItem->getTotalAmount());
         $transaction->setIsSuccessful(true);
         $transaction->setTransactionId($depositItem->getReferenceNumber());

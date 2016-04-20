@@ -786,7 +786,7 @@ class Mailer extends BaseMailer
             $group->getZip()
         );
 
-        $estimatedDeliveryDate = BusinessDaysCalculator::getBusinessDate(
+        $estimatedDeliveryDate = BusinessDaysCalculator::getDepositDate(
             $order->getCreatedAt(),
             PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK
         );

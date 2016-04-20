@@ -346,7 +346,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $this->assertTrue($transaction->getIsSuccessful(), 'Transaction should be successful');
         $this->assertNotNull($transaction->getDepositDate(), 'Complete order should have deposit date');
         $this->assertEquals(
-            BusinessDaysCalculator::getNextBusinessDate(new \DateTime($itemDateTime))->format('Y-m-d'),
+            BusinessDaysCalculator::getNextDepositDate(new \DateTime($itemDateTime))->format('Y-m-d'),
             $transaction->getDepositDate()->format('Y-m-d'),
             'Transaction\'s deposit date is wrong'
         );
@@ -481,7 +481,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
         $this->assertTrue($transaction->getIsSuccessful(), 'Transaction should be successful');
         $this->assertNotNull($transaction->getDepositDate(), 'Complete order should have deposit date');
         $this->assertEquals(
-            BusinessDaysCalculator::getNextBusinessDate(new \DateTime($itemDateTime))->format('Y-m-d'),
+            BusinessDaysCalculator::getNextDepositDate(new \DateTime($itemDateTime))->format('Y-m-d'),
             $transaction->getDepositDate()->format('Y-m-d'),
             'Transaction\'s deposit date is wrong'
         );
