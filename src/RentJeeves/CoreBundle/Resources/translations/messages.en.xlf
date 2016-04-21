@@ -2343,7 +2343,7 @@
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.batchId">
                 <source>filter.group_by.deposit.batchId</source>
-                <target>BatchId</target>
+                <target>Batch ID</target>
             </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>
