@@ -811,8 +811,9 @@ abstract class HandlerAbstract implements HandlerInterface
     protected function generateUserName($firstName, $lastName)
     {
         $userName = strtolower($firstName . $lastName);
-        if (null !== $user = $this->em->getRepository('DataBundle:User')->findLastByPartOfUserName($userName)) {
-            $digits = substr($user->getUsernameCanonical(), strlen($userName));
+        $lastExistUserName = $this->em->getRepository('DataBundle:User')->getLastUserNameByPartOfUserName($userName);
+        if (null !== $lastExistUserName) {
+            $digits = substr($lastExistUserName, strlen($userName));
             if (true === empty($digits)) {
                 $userName .= 1;
             } else {
