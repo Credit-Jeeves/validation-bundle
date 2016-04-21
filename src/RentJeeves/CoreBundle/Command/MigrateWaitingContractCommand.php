@@ -28,6 +28,7 @@ class MigrateWaitingContractCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->getEntityManager()->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->getLogger()->info('Started migration from ContractWaiting to Contract');
         /** @var ContractProcess $contractManager */
         $contractManager = $this->getContainer()->get('contract.process');
@@ -41,10 +42,12 @@ class MigrateWaitingContractCommand extends BaseCommand
             ->iterate();
         /** @var ContractWaiting $contractWaiting */
         while ((list($contractWaiting) = $iterableResult->next()) !== false) {
-            $this->getLogger()->info(
+            $contractWaitingId = $contractWaiting->getId();
+            $this->printMemoryUsage();
+            $this->getLogger()->debug(
                 sprintf(
                     'Started processing ContractWaiting#%d',
-                    $contractWaiting->getId()
+                    $contractWaitingId
                 )
             );
             if ($this->isDuplicate($contractWaiting)) {
@@ -52,7 +55,7 @@ class MigrateWaitingContractCommand extends BaseCommand
             }
             $this->getEntityManager()->beginTransaction();
             try {
-                $this->getLogger()->info(
+                $this->getLogger()->debug(
                     sprintf(
                         'Trying create new waiting tenant with name: %s %s',
                         $contractWaiting->getFirstName(),
@@ -65,7 +68,7 @@ class MigrateWaitingContractCommand extends BaseCommand
                 $this->getLogger()->warning(
                     sprintf(
                         'Got error when trying create new tenant for ContractWaiting#%d: %s',
-                        $contractWaiting->getId(),
+                        $contractWaitingId,
                         $e->getMessage()
                     )
                 );
@@ -83,7 +86,7 @@ class MigrateWaitingContractCommand extends BaseCommand
                 $this->getLogger()->warning(
                     sprintf(
                         'Got error when trying move Contract from ContractWaiting#%d: %s',
-                        $contractWaiting->getId(),
+                        $contractWaitingId,
                         $e->getMessage()
                     )
                 );
@@ -95,10 +98,11 @@ class MigrateWaitingContractCommand extends BaseCommand
                 $this->getLogger()->warning(
                     sprintf(
                         'Got validation errors when trying move Contract from ContractWaiting#%d: %s',
-                        $contractWaiting->getId(),
+                        $contractWaitingId,
                         implode(', ', $contractManager->getErrors())
                     )
                 );
+                continue;
             }
 
             $contract->setStatus(ContractStatus::WAITING);
@@ -108,11 +112,11 @@ class MigrateWaitingContractCommand extends BaseCommand
                 sprintf(
                     'Migrated Contract#%d from ContractWaiting#%d',
                     $contract->getId(),
-                    $contractWaiting->getId()
+                    $contractWaitingId
                 )
             );
 
-            $this->getLogger()->info('Clear entity manager on migrate waiting contract command');
+            $this->getLogger()->debug('Clear entity manager on migrate waiting contract command');
             $this->getEntityManager()->clear();
         }
 
