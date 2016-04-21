@@ -10,9 +10,11 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\CoreBundle\Services\Exception\PropertyManagerUnitOwnershipException;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 
 /**
  * Service name "property.manager"
@@ -232,6 +234,63 @@ class PropertyManager
         }
 
         return $this->createPropertyByAddress($address);
+    }
+
+    /**
+     * @param Group $group
+     * @param Property $property
+     * @param string $unitName
+     * @param null|string $externalUnitId
+     * @throws \InvalidArgumentException|PropertyManagerUnitOwnershipException
+     * @return Unit
+     */
+    public function getOrCreateUnit(Group $group, Property $property, $unitName, $externalUnitId = null)
+    {
+        $unitName = $this->prepareUnitName($unitName);
+        if ($unitName === '' ||
+            $unitName === strtolower(Unit::SINGLE_PROPERTY_UNIT_NAME) ||
+            $unitName === strtolower(Unit::SEARCH_UNIT_UNASSIGNED)
+        ) {
+            throw new \InvalidArgumentException('Unit name is invalid.');
+        }
+        if ($unit = $property->searchUnit($unitName) and $unit->getGroup()->getId() !== $group->getId()) {
+            throw new PropertyManagerUnitOwnershipException('Unit exists but belongs to another group.');
+        }
+
+        if (!$unit) {
+            $unit = new Unit();
+            $unit->setHolding($group->getHolding());
+            $unit->setGroup($group);
+            $unit->setProperty($property);
+            $unit->setName($unitName);
+
+            $property->addUnit($unit);
+        }
+
+        if (!empty($externalUnitId)) {
+            if ($unit->getUnitMapping() && $unit->getUnitMapping()->getExternalUnitId() !== $externalUnitId) {
+                throw new \InvalidArgumentException('Unit mapping is invalid.');
+            }
+
+            if (!$unit->getUnitMapping()) {
+                $unitMapping = new UnitMapping();
+                $unitMapping->setExternalUnitId($externalUnitId);
+                $unitMapping->setUnit($unit);
+
+                $unit->setUnitMapping($unitMapping);
+            }
+        }
+
+        return $unit;
+    }
+
+    /**
+     * @param string $unitName
+     * @return string
+     */
+    protected function prepareUnitName($unitName)
+    {
+        return strtolower(str_replace('#', '', (string) $unitName));
     }
 
     /**

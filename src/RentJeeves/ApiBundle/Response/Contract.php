@@ -27,7 +27,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Groups({"Base"})
      * @Serializer\Type("string")
      * @return string
      */
