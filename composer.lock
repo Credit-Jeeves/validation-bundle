@@ -4547,7 +4547,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "e7adf9fc123052fafec404ae38a72f2d87006dd9"
+                "reference": "8fec00a939b5f03a62fc21c225e11e20466841d6"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",

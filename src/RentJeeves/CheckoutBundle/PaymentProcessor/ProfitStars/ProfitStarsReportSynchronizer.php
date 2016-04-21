@@ -120,8 +120,7 @@ class ProfitStarsReportSynchronizer
                 case WSTransactionEvent::SETTLED:
                     $this->syncSettledReport($report);
                     break;
-//                case WSTransactionEvent::RETURNED_NSF:
-                case 'Returned NSF':
+                case WSTransactionEvent::RETURNED_NSF:
                 case WSTransactionEvent::OTHER_CHECK21_RETURNS:
                 case WSTransactionEvent::DISPUTED:
                 case WSTransactionEvent::RETURNED_BAD_ACCOUNT:
@@ -340,7 +339,6 @@ class ProfitStarsReportSynchronizer
     protected function getArrayOfWSDisplayFields()
     {
         $additionalFields = [
-//            WSDisplayFields::TRANSACTION_DATETIME, need check
             WSDisplayFields::TRANSACTION_STATUS_NAME,
             WSDisplayFields::PAYMENT_TYPE_NAME,
             WSDisplayFields::NAME_ON_ACCOUNT,
