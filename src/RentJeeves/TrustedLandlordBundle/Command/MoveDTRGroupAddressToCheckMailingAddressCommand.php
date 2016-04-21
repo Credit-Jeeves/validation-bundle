@@ -44,9 +44,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         $groupsId = $input->getOption('groups-id');
 
         if (!empty($groupsId)) {
-            $this->moveGroupsAddressToCheckMailingAddress(explode(',', $groupsId));
-
-            return;
+            return $this->moveGroupsAddressToCheckMailingAddress(explode(',', $groupsId));
         }
         $query = "SELECT g FROM CreditJeeves\DataBundle\Entity\Group as g WHERE g.orderAlgorithm='%s' AND";
         $query .= " g.trustedLandlord IS NULL";
@@ -54,7 +52,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         $iterableResult = $this
             ->getEntityManager()
             ->createQuery(sprintf($query, OrderAlgorithmType::PAYDIRECT))
-            ->iterate(null,  Query::HYDRATE_ARRAY);
+            ->iterate(null, Query::HYDRATE_ARRAY);
         $groupsId = [];
 
         /** @var Group $group */
@@ -78,7 +76,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
     protected function createJob($groupsId)
     {
         $command = 'renttrack:group:move-mailing-address';
-        $parameter = '--groups-id="' . implode(',', $groupsId);
+        $parameter = '--groups-id=' . implode(',', $groupsId) ;
         $job = new Job($command, [$parameter]);
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->flush();
@@ -91,6 +89,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
      */
     protected function moveGroupsAddressToCheckMailingAddress(array $groupsId)
     {
+        $hadErrors = false;
         $this->getLogger()->info(
             sprintf('Start moving DTR groups (%s) mailing address to CheckMailingAddress...', implode(',', $groupsId))
         );
@@ -98,6 +97,12 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         /** @var $group \CreditJeeves\DataBundle\Entity\Group */
         foreach ($groupsId as $groupId) {
             $group = $em->getRepository('DataBundle:Group')->find($groupId);
+            if ($group === null) {
+                $this->getLogger()->error('Group ID not found: ' . $groupId);
+                $hadErrors = true;
+                continue;
+            }
+
             $this->getLogger()->info(sprintf('Moving address for Group #%d "%s":', $group->getId(), $group->getName()));
             if (null !== $group->getTrustedLandlord()) {
                 $this->getLogger()->info(sprintf(
@@ -145,6 +150,9 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         }
 
         $this->getLogger()->info(sprintf('DTR groups(%s) have been processed.', implode(',', $groupsId)));
+
+        $returnValue = ($hadErrors) ? 1 : 0;
+        return $returnValue;
     }
 
     /**
