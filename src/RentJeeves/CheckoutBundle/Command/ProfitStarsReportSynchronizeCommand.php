@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Command;
 
 use RentJeeves\CoreBundle\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ProfitStarsReportSynchronizeCommand extends BaseCommand
@@ -15,6 +16,8 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     {
         $this
             ->setName('renttrack:payment:report:synchronize:profit-stars')
+            ->addOption('start-date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
+            ->addOption('end-date', null, InputOption::VALUE_OPTIONAL, 'Format : Y-m-d')
             ->setDescription('Synchronize ProfitStars reports');
     }
 
@@ -25,10 +28,10 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     {
         $output->writeln('Start sync ProfitStars reports.');
 
-        $startDate = new \DateTime();
+        $startDate = new \DateTime($input->getOption('start-date'));
         $startDate->setTime(0, 0, 0);
 
-        $endDate = clone $startDate;
+        $endDate = new \DateTime($input->getOption('end-date'));
         $endDate->setTime(23, 59, 59);
 
         try {
