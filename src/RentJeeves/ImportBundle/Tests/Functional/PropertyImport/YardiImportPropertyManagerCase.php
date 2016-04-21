@@ -209,14 +209,14 @@ class YardiImportPropertyManagerCase extends BaseTestCase
     */
     protected function getResidentDataResponse()
     {
-       $pathToFile = $this->getFileLocator()->locate(
-           '@ImportBundle/Tests/Fixtures/getResidentDataResponse.xml'
-       );
+        $pathToFile = $this->getFileLocator()->locate(
+            '@ImportBundle/Tests/Fixtures/getResidentDataResponse.xml'
+        );
 
-       return $this->deserialize(
-           file_get_contents($pathToFile),
-           'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse'
-       );
+        return $this->deserialize(
+            file_get_contents($pathToFile),
+            'RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentDataResponse'
+        );
     }
 
     /**
