@@ -28,10 +28,10 @@ class ProfitStarsReportSynchronizeCommand extends BaseCommand
     {
         $output->writeln('Start sync ProfitStars reports.');
 
-        $startDate = new \DateTime($input->getOption('start_date'));
+        $startDate = new \DateTime($input->getOption('start-date'));
         $startDate->setTime(0, 0, 0);
 
-        $endDate = new \DateTime($input->getOption('end_date'));
+        $endDate = new \DateTime($input->getOption('end-date'));
         $endDate->setTime(23, 59, 59);
 
         try {
