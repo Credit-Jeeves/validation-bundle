@@ -2065,6 +2065,10 @@
                 <source>order.type.cash</source>
                 <target>External</target>
             </trans-unit>
+            <trans-unit id="order.type.scanned_check">
+                <source>order.type.scanned_check</source>
+                <target>Scanned Check</target>
+            </trans-unit>
             <trans-unit id="base.order.report">
                 <source>base.order.report</source>
                 <target>Base order report</target>
