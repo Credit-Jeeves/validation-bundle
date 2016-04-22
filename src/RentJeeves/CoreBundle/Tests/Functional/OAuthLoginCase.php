@@ -13,7 +13,7 @@ class OAuthLoginCase extends BaseTestCase
     {
         $this->setDefaultSession('goutte');
         $this->load(true);
-        $this->session->visit($this->getUrl() . '?access_token=test');
+        $this->session->visit($this->getUrl() . '?access_token=tenant11@example.com');
         $this->assertNotNull($paymentsTable = $this->page->find('css', '#tenant-payments'));
     }
 
@@ -24,7 +24,7 @@ class OAuthLoginCase extends BaseTestCase
     {
         $this->setDefaultSession('goutte');
         $this->load(true);
-        $this->session->visit($this->getUrl() . '?access_token=test_landlord');
+        $this->session->visit($this->getUrl() . '?access_token=landlord1@example.com');
         $this->assertNotNull($this->page->findAll('css', '#payments-block td'));
     }
 }

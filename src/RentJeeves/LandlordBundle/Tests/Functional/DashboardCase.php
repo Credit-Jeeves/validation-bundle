@@ -14,7 +14,7 @@ class DashboardCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
 
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->assertNotNull($this->page->findAll('css', '#payments-block td'));
@@ -51,7 +51,7 @@ class DashboardCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load();
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
@@ -87,7 +87,7 @@ class DashboardCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
 
@@ -128,7 +128,7 @@ class DashboardCase extends BaseTestCase
         $order = $em->getRepository('DataBundle:Order')->findOneBy(['sum' => 3700]);
         $order->setPaymentType(OrderPaymentType::CASH);
         $em->flush($order);
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait(5000, "!$('img.processPayment').is(':visible')");
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));

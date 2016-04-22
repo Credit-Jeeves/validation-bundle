@@ -2,7 +2,6 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -39,8 +38,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $lastName->setValue('Jr');
     }
 
-
-
     /**
      * @test
      */
@@ -57,8 +54,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
 
@@ -263,8 +259,7 @@ class ImportCsvCase extends ImportBaseAbstract
     public function shouldImportFileWithCheckboxOnlyNewAndException()
     {
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->setPropertyFirst();
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
@@ -328,8 +323,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         for ($i = 0; $i < 2; $i++) {
-            $this->login('landlord1@example.com', 'pass');
-            $this->page->clickLink('tab.accounting');
+            $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
             //First Step
             $this->session->wait(5000, "typeof jQuery != 'undefined'");
             $this->setPropertyFirst();
@@ -488,8 +482,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $em->persist($tenant);
         $em->flush();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFixtureFilePathByName('import_waiting_room.csv');
@@ -543,8 +536,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFixtureFilePathByName('import_date_format.csv');
@@ -610,8 +602,7 @@ class ImportCsvCase extends ImportBaseAbstract
             count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
         );
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
 
         //First Step
@@ -801,8 +792,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -862,8 +852,7 @@ class ImportCsvCase extends ImportBaseAbstract
     public function checkMatchedUser()
     {
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -902,8 +891,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -992,8 +980,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -1097,8 +1084,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
 
         //First Step
@@ -1161,8 +1147,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->setPropertyFirst();
@@ -1244,8 +1229,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -1312,8 +1296,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -1413,8 +1396,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $beforeContracts = $em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]);
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->setPropertyFirst();
@@ -1458,8 +1440,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
 
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
@@ -1504,8 +1485,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -1561,8 +1541,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $count = $repo->createQueryBuilder('p')->select('count(p.id)')->getQuery()->getSingleScalarResult();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
@@ -1633,8 +1612,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
@@ -1694,8 +1672,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));

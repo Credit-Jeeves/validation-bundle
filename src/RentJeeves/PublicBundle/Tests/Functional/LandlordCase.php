@@ -29,8 +29,8 @@ class LandlordCase extends BaseTestCase
      */
     public function landlordRegisterTest()
     {
-        $this->setDefaultSession('selenium2');
         $this->load(true);
+        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'landlord/register/');
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();

@@ -113,6 +113,28 @@ abstract class BaseTestCase extends Base
     }
 
     /**
+     * @param string      $userName
+     * @param string|null $url
+     */
+    protected function loginByAccessToken($userName, $url = null)
+    {
+        if ($url === null) {
+            $url = $this->getUrl();
+        }
+
+        $this->session->visit($url . '?access_token=' . $userName);
+
+        $this->assertNull(
+            $this->page->find('css', '#login_form'),
+            sprintf(
+                'Pls check fixtures: user with username "%s" should has row in "access_token" table with token "%s".',
+                $userName,
+                $userName
+            )
+        );
+    }
+
+    /**
      * Logout
      */
     protected function logout()
@@ -124,7 +146,7 @@ abstract class BaseTestCase extends Base
      * Fill form
      *
      * @param \Behat\Mink\Element\NodeElement $form
-     * @param array $fields
+     * @param array                           $fields
      */
     protected function fillForm(\Behat\Mink\Element\NodeElement $form, array $fields)
     {
@@ -325,7 +347,6 @@ abstract class BaseTestCase extends Base
 
         return $elements;
     }
-
 
     /**
      * @param string $fileName

@@ -8,17 +8,13 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class LandlordCase extends BaseTestCase
 {
-
     /**
      * @test
      */
     public function adminManageLandlords()
     {
         $this->load(true);
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
-
-        $tableBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/landlord/list');
 
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(7, $landlords);
@@ -60,8 +56,8 @@ class LandlordCase extends BaseTestCase
      */
     public function observeLandlord()
     {
-        $this->load(false);
-        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->setDefaultSession('goutte');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
         $tableBlock->clickLink('link_list');
@@ -71,6 +67,5 @@ class LandlordCase extends BaseTestCase
         $this->page->clickLink('tabs.tenants');
         $this->page->clickLink('tabs.properties');
         $this->page->clickLink('back.to.admin');
-        $this->logout();
     }
 }

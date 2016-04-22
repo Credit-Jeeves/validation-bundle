@@ -3,7 +3,7 @@ fixtures:
   access_token_1:
     user: Tenant_1
     client: client_2
-    token: test
+    token: tenant11@example.com
   access_token_2:
     user: partner_user_1
     client: client_3
@@ -11,4 +11,12 @@ fixtures:
   access_token_3:
     user: Landlord_1
     client: client_2
-    token: test_landlord
+    token: landlord1@example.com
+  access_token_4:
+    user: Landlord_2
+    client: client_2
+    token: landlord2@example.com
+  access_token_5:
+    user: cjAdminAccount_1
+    client: client_2
+    token: admin@creditjeeves.com

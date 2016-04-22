@@ -50,8 +50,7 @@ class ImportResManCase extends ImportBaseAbstract
         $this->assertCount(24, $contract, 'Check fixtures, should be present just 23 contracts on DB');
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');

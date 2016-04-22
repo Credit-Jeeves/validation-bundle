@@ -36,7 +36,6 @@ class ImportMRICase extends ImportBaseAbstract
         $this->getEntityManager()->persist($propertyMapping500);
         $this->getEntityManager()->flush();
 
-
         $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findAll();
         $countContracts = count($contracts);
 
@@ -54,8 +53,7 @@ class ImportMRICase extends ImportBaseAbstract
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::MRI);
         $this->getEntityManager()->flush();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');
@@ -81,7 +79,6 @@ class ImportMRICase extends ImportBaseAbstract
             count($this->getEntityManager()->getRepository('RjDataBundle:Contract')->findAll()),
             'We not save any contracts'
         );
-
 
         $this->assertGreaterThan(
             $countContractsWaiting,

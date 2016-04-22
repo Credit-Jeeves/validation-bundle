@@ -2,7 +2,6 @@
 namespace RentJeeves\AdminBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Enum\PaymentCloseReason;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -17,10 +16,7 @@ class PaymentCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('symfony');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
-        $block->clickLink('link_list');
-
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rentjeeves/data/payment/list');
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         $this->assertCount(6, $editLinks = $table->findAll('css', '.edit_link'));
         $editLinks[0]->click();
@@ -54,9 +50,7 @@ class PaymentCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
-        $block->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rentjeeves/data/payment/list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         $this->assertNotNull($checkBoxes = $table->findAll('css', '.sonata-ba-list-field input'));

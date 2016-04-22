@@ -2,7 +2,6 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
@@ -84,8 +83,7 @@ class ImportYardiCase extends ImportBaseAbstract
 
         $this->assertCount($residentMappingCount, $residentMapping);
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));
         $submitImport->click();
@@ -159,8 +157,7 @@ class ImportYardiCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
         /** @var Landlord $landlord */
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));

@@ -25,9 +25,7 @@ class ScanningControllerCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-
-        $this->session->visit($this->getUrl() . 'landlord/scanning/');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/scanning/');
 
         $rows = $this->page->findAll('css', 'tbody>tr');
         $this->assertCount(0, $rows, 'Table should be empty if filters are empty');
@@ -88,9 +86,7 @@ class ScanningControllerCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-
-        $this->session->visit($this->getUrl() . 'landlord/scanning/');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/scanning/');
 
         $errorMessage = $this->getDomElement('div.error-message>span');
         $this->assertEmpty($errorMessage->getText(), 'Error message should be empty');

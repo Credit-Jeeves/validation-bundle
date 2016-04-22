@@ -27,15 +27,13 @@ class ImportPermissionCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $this->getEntityManager()->flush();
         $this->setDefaultSession('goutte');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->getDomElement('.submitImportFile', 'Submit button should exist');
         $this->logout();
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::YARDI_VOYAGER);
         $importGroupSettings->setSource(ImportSource::INTEGRATED_API);
         $this->getEntityManager()->flush();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->getDomElement('.submitImportFile', 'Submit button should exist');
     }
 
@@ -58,8 +56,7 @@ class ImportPermissionCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $this->getEntityManager()->flush();
         $this->setDefaultSession('goutte');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->assertNull($this->page->find('css', '.submitImportFile'), 'Submit button should not exist');
     }
 }
