@@ -16,9 +16,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateWaitingContractCommand extends BaseCommand
 {
+    const DEFAULT_MAX_RESULT = 5000;
+
     protected function configure()
     {
         $this
+            ->addOption(
+                'max-result',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Options for set max result contractWaitings from databases',
+                self::DEFAULT_MAX_RESULT
+            )
+            ->addOption(
+                'start-id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Options for set started id',
+                0
+            )
             ->setName('renttrack:contract:migrate-waiting-contracts')
             ->setDescription('Migrate Contract Waiting to Contract, User, ResidentMapping');
     }
@@ -28,6 +44,8 @@ class MigrateWaitingContractCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $maxResult = (int) $input->getOption('max-result');
+        $startId = (int) $input->getOption('start-id');
         $this->getEntityManager()->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->getLogger()->info('Started migration from ContractWaiting to Contract');
         /** @var ContractProcess $contractManager */
@@ -38,7 +56,9 @@ class MigrateWaitingContractCommand extends BaseCommand
 
         $iterableResult = $this
             ->getEntityManager()
-            ->createQuery('SELECT c FROM RentJeeves\DataBundle\Entity\ContractWaiting as c')
+            ->createQuery('SELECT c FROM RentJeeves\DataBundle\Entity\ContractWaiting as c WHERE c.id >= :startId')
+            ->setMaxResults($maxResult)
+            ->setParameter('startId', $startId)
             ->iterate();
         /** @var ContractWaiting $contractWaiting */
         while ((list($contractWaiting) = $iterableResult->next()) !== false) {
@@ -50,74 +70,71 @@ class MigrateWaitingContractCommand extends BaseCommand
                     $contractWaitingId
                 )
             );
-            if ($this->isDuplicate($contractWaiting)) {
-                continue;
-            }
-            $this->getEntityManager()->beginTransaction();
-            try {
-                $this->getLogger()->debug(
-                    sprintf(
-                        'Trying create new waiting tenant with name: %s %s',
+            if (!$this->isDuplicate($contractWaiting)) {
+                $this->getEntityManager()->beginTransaction();
+                try {
+                    $this->getLogger()->debug(
+                        sprintf(
+                            'Trying create new waiting tenant with name: %s %s',
+                            $contractWaiting->getFirstName(),
+                            $contractWaiting->getLastName()
+                        )
+                    );
+
+                    $tenant = $userCreator->createTenant(
                         $contractWaiting->getFirstName(),
                         $contractWaiting->getLastName()
-                    )
-                );
-                $tenant = $userCreator->createTenant($contractWaiting->getFirstName(), $contractWaiting->getLastName());
-            } catch (UserCreatorException $e) {
-                $this->getEntityManager()->rollback();
-                $this->getLogger()->warning(
-                    sprintf(
-                        'Got error when trying create new tenant for ContractWaiting#%d: %s',
-                        $contractWaitingId,
-                        $e->getMessage()
-                    )
-                );
-                continue;
+                    );
+
+                    $contract = $contractManager->createContractFromWaiting(
+                        $tenant,
+                        $contractWaiting,
+                        $contractWaiting->getGroup()->isAllowedEditResidentId()
+                    );
+
+                    if ($contract) {
+                        $contract->setStatus(ContractStatus::WAITING);
+                        $this->getEntityManager()->flush();
+                        $this->getEntityManager()->commit();
+                        $this->getLogger()->info(
+                            sprintf(
+                                'Migrated Contract#%d from ContractWaiting#%d',
+                                $contract->getId(),
+                                $contractWaitingId
+                            )
+                        );
+                        $this->getLogger()->debug('Clear entity manager on migrate waiting contract command');
+                        $this->getEntityManager()->clear();
+                    } else {
+                        $this->getEntityManager()->rollback();
+                        $this->getLogger()->warning(
+                            sprintf(
+                                'Got validation errors when trying move Contract from ContractWaiting#%d: %s',
+                                $contractWaitingId,
+                                implode(', ', $contractManager->getErrors())
+                            )
+                        );
+                    }
+                } catch (UserCreatorException $e) {
+                    $this->getEntityManager()->rollback();
+                    $this->getLogger()->warning(
+                        sprintf(
+                            'Got error when trying create new tenant for ContractWaiting#%d: %s',
+                            $contractWaitingId,
+                            $e->getMessage()
+                        )
+                    );
+                } catch (\Exception $e) {
+                    $this->getEntityManager()->rollback();
+                    $this->getLogger()->warning(
+                        sprintf(
+                            'Got error when trying move Contract from ContractWaiting#%d: %s',
+                            $contractWaitingId,
+                            $e->getMessage()
+                        )
+                    );
+                }
             }
-
-            try {
-                $contract = $contractManager->createContractFromWaiting(
-                    $tenant,
-                    $contractWaiting,
-                    $contractWaiting->getGroup()->isAllowedEditResidentId()
-                );
-            } catch (\Exception $e) {
-                $this->getEntityManager()->rollback();
-                $this->getLogger()->warning(
-                    sprintf(
-                        'Got error when trying move Contract from ContractWaiting#%d: %s',
-                        $contractWaitingId,
-                        $e->getMessage()
-                    )
-                );
-                continue;
-            }
-
-            if (!$contract) {
-                $this->getEntityManager()->rollback();
-                $this->getLogger()->warning(
-                    sprintf(
-                        'Got validation errors when trying move Contract from ContractWaiting#%d: %s',
-                        $contractWaitingId,
-                        implode(', ', $contractManager->getErrors())
-                    )
-                );
-                continue;
-            }
-
-            $contract->setStatus(ContractStatus::WAITING);
-            $this->getEntityManager()->flush();
-            $this->getEntityManager()->commit();
-            $this->getLogger()->info(
-                sprintf(
-                    'Migrated Contract#%d from ContractWaiting#%d',
-                    $contract->getId(),
-                    $contractWaitingId
-                )
-            );
-
-            $this->getLogger()->debug('Clear entity manager on migrate waiting contract command');
-            $this->getEntityManager()->clear();
         }
 
         $this->getLogger()->info('Finished migration from ContractWaiting to Contract');
