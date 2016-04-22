@@ -7,29 +7,6 @@ class ReturnedCase extends BaseTestCase
 {
     /**
      * @test
-     */
-    public function userRemoveData()
-    {
-        $this->markTestSkipped('We no longer support CJ. Therefore, this test can be skipped');
-        $this->load(true);
-        $this->setDefaultSession('symfony');
-        $this->login('emilio@example.com', 'pass');
-        $this->page->clickLink('tabs.settings');
-        $this->page->clickLink('settings.remove');
-        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->fillForm(
-            $form,
-            array(
-                'remove_password' => 'pass'
-            )
-        );
-        $form->pressButton('common.remove');
-        $this->assertNotNull($messageBody = $this->page->find('css', '.message-body'));
-        $this->assertEquals('authorization.description.removed', $messageBody->getText());
-    }
-
-    /**
-     * @test
      * @depends userRemoveData
      */
     public function userReturned()

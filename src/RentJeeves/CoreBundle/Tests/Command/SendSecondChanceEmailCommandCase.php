@@ -16,7 +16,6 @@ class SendSecondChanceEmailCommandCase extends BaseTestCase
      */
     public function shouldSendEmailForContractWithNeededParams()
     {
-
         $this->markTestSkipped(
             'Delete resman settings from holding. see https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/pull/1654'
         );
