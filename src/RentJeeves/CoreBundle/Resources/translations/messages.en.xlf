@@ -160,6 +160,14 @@
                 <source>terms.service.link.text</source>
                 <target>Terms of Service</target>
             </trans-unit>
+            <trans-unit id="terms.service.link.mobile-text">
+                <source>terms.service.link.mobile-text</source>
+                <target>Terms of Use</target>
+            </trans-unit>
+            <trans-unit id="register.tenant.email_invite.notice">
+                <source>register.tenant.email_invite.notice</source>
+                <target>Your landlord %fullNameLandlord% has request that you pay your rent for %rentAddress%.</target>
+            </trans-unit>
             <trans-unit id="email.verifed.text1">
                 <source>email.verifed.text1</source>
                 <target><![CDATA[Thanks for verifying your email. A small step to make sure <br />
