@@ -28,6 +28,12 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
         $this
             ->setName('renttrack:group:move-mailing-address')
             ->addOption(
+                'jms-job-id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'ID of job'
+            )
+            ->addOption(
                 'groups-id',
                 null,
                 InputOption::VALUE_OPTIONAL,
