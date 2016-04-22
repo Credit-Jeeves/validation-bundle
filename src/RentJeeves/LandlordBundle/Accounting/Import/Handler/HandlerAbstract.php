@@ -55,8 +55,6 @@ abstract class HandlerAbstract implements HandlerInterface
     use Group;
     use FormErrors;
 
-    const ROW_ON_PAGE = 9;
-
     /**
      * @Inject("doctrine.orm.default_entity_manager")
      * @var EntityManager
@@ -133,6 +131,13 @@ abstract class HandlerAbstract implements HandlerInterface
      * @var ImportSummaryManager
      */
     public $reportSummaryManager;
+
+    /**
+     * @Inject("%import_1_0_rows_on_the_page%")
+     * @var integer
+     */
+    public $rowsOnThePage;
+
     /**
      * @var SessionUser
      */
@@ -631,7 +636,7 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     public function initCollectionImportModel()
     {
-        $data = $this->mapping->getData($this->storage->getOffsetStart(), $rowCount = self::ROW_ON_PAGE);
+        $data = $this->mapping->getData($this->storage->getOffsetStart(), $this->rowsOnThePage);
         $this->getReport()->setTotal($this->mapping->getTotalContent());
         $this->collectionImportModel = new ArrayCollection([]);
 
