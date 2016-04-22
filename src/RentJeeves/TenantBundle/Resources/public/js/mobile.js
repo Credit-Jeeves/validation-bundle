@@ -269,9 +269,10 @@ function renderPayAccounts(contract) {
     $(prefix + "paymentAccount").append("<option value='-1'>Add new payment source</option>")
     $(prefix+"paymentAccount").bind( "change", function(event, ui) {
         if (this.value == -1) {
-            $("#" + accountPrefix + "groupId").val(contract.groupId)
+            $("#" + accountPrefix + "group").val(contract.groupId)
             //get contractId
-            $("#" + accountPrefix + "contractId").val(contract.id)
+            $("#" + accountPrefix + "contract").val(contract.id)
+            $(prefix + "contractId").val(contract.id)
             saving = false;
             $("#deleteSource").parent().hide()
             $.mobile.changePage('#addNewPayAccount')
@@ -473,7 +474,7 @@ function setupPayForm(id) {
 
             //input contract id into hidden field
 
-            jQuery(prefix + "contractId").val(id);
+            jQuery(prefix + "contract").val(id);
             
             if (debug) {
                 console.log(contract)
