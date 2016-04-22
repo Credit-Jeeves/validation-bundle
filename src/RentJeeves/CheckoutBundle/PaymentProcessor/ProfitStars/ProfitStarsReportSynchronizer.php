@@ -306,8 +306,8 @@ class ProfitStarsReportSynchronizer
             $this->getArrayOfWSSettlementStatus(),
             WSAuthResponseCode::__NONE,
             WSOperationType::__NONE,
-            $startDate->format('Y-m-d'),
-            $endDate->format('Y-m-d'),
+            $startDate->format('Y-m-d\TH:i:s'),
+            $endDate->format('Y-m-d\TH:i:s'),
             0,
             99999
         );
