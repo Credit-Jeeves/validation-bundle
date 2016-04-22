@@ -13,7 +13,7 @@ require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppCjKernel.php';
 require_once __DIR__.'/../app/AppRjKernel.php';
 
-use JMS\JobQueueBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
 
