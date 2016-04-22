@@ -76,7 +76,7 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
     protected function createJob($groupsId)
     {
         $command = 'renttrack:group:move-mailing-address';
-        $parameter = '--groups-id=' . implode(',', $groupsId) ;
+        $parameter = '--groups-id=' . implode(',', $groupsId);
         $job = new Job($command, [$parameter]);
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->flush();
@@ -144,14 +144,15 @@ class MoveDTRGroupAddressToCheckMailingAddressCommand extends BaseCommand
                 ));
             } catch (\Exception $e) {
                 $this->getLogger()->error(sprintf('Error occurred: %s', $e->getMessage()));
+                $hadErrors = true;
 
                 continue;
             }
         }
 
         $this->getLogger()->info(sprintf('DTR groups(%s) have been processed.', implode(',', $groupsId)));
-
         $returnValue = ($hadErrors) ? 1 : 0;
+
         return $returnValue;
     }
 
