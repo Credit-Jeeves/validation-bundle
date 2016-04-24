@@ -128,7 +128,14 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('end', $end);
 
         $query->andWhere('o.paymentType in (:paymentTypes)');
-        $query->setParameter('paymentTypes', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
+        $query->setParameter(
+            'paymentTypes',
+            [
+                OrderPaymentType::CARD,
+                OrderPaymentType::BANK,
+                OrderPaymentType::SCANNED_CHECK
+            ]
+        );
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
