@@ -387,7 +387,14 @@ class OrderRepository extends EntityRepository
         foreach ($groups as $group) {
             $groupsId[] = $group->getId();
         }
-        $query->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
+        $query->setParameter(
+            'paymentType',
+            [
+                OrderPaymentType::CARD,
+                OrderPaymentType::BANK,
+                OrderPaymentType::SCANNED_CHECK
+            ]
+        );
         $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
         $query->orderBy('res.residentId', 'ASC');
@@ -689,7 +696,14 @@ class OrderRepository extends EntityRepository
             ->andWhere('t.holding = :holding')
             ->setParameter('end', $end)
             ->setParameter('start', $start)
-            ->setParameter('paymentType', [OrderPaymentType::CARD, OrderPaymentType::BANK])
+            ->setParameter(
+                'paymentType',
+                [
+                    OrderPaymentType::CARD,
+                    OrderPaymentType::BANK,
+                    OrderPaymentType::SCANNED_CHECK,
+                ]
+            )
             ->setParameter('groups', $groups)
             ->setParameter('holding', $group->getHolding())
             ->orderBy('transaction.batchId', 'ASC');
