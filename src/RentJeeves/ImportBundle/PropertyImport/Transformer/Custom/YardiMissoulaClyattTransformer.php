@@ -14,7 +14,6 @@ class YardiMissoulaClyattTransformer extends YardiTransformer
      */
     protected function getAddress1(FullResident $accountingSystemRecord)
     {
-        $blee = $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
         return $accountingSystemRecord->getProperty()->getMarketingName();
     }
 }
