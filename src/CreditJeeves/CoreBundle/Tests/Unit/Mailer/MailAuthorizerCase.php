@@ -87,7 +87,10 @@ class MailAuthorizerCase extends UnitTestBase
             ["rjOrderReissued.html"],
             ["rjOrderSending.html"],
             ["rjPaymentDue.html"],
-            ["rjPendingOrder.html"]
+            ["rjPendingOrder.html"],
+            ["rjTrustedLandlordDenied.html"],
+            ["rjTrustedLandlordApproved.html"],
+            ["rjPaymentFlaggedByUntrustedLandlordRule.html"]
         ];
     }
 
