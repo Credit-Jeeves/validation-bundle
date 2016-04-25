@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 
+use RentJeeves\DataBundle\Entity\Landlord;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -164,6 +165,9 @@ class LandlordAdmin extends Admin
                         'sortable'  => 'position',
                     )
                 )
+                ->with('ProfitStars')
+                    ->add('profitStarsCmid.cmid', 'text', ['required' => false, 'label' => 'cmid'])
+                ->end()
             ->end();
     }
 
@@ -234,6 +238,7 @@ class LandlordAdmin extends Admin
      */
     public function preUpdate($user)
     {
+        /** @var Landlord $user */
         $user = $this->checkPassword($user);
         $settings = $user->getSettings();
         $settings->setUser($user);
@@ -244,6 +249,7 @@ class LandlordAdmin extends Admin
      */
     public function prePersist($user)
     {
+        /** @var Landlord $user */
         $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
         $settings = $user->getSettings();
