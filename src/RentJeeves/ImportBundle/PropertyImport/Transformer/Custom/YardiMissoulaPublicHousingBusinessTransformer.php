@@ -87,7 +87,8 @@ class YardiMissoulaPublicHousingBusinessTransformer extends YardiTransformer
         return 'MT';
     }
 
-    protected function getAddressParts(FullResident $accountingSystemRecord) {
+    protected function getAddressParts(FullResident $accountingSystemRecord)
+    {
         $address = $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
         $parts = explode('#', $address);
 
