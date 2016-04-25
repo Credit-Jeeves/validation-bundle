@@ -94,6 +94,11 @@ class ContractProcessor
     protected $defaultPayDirectInboundMerchantAccount;
 
     /**
+     * @var int
+     */
+    protected $defaultMaxLimitPerMonth = 0;
+
+    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param Mailer $mailer
@@ -101,9 +106,10 @@ class ContractProcessor
      * @param ContractProcess $contractProcess
      * @param PropertyManager $propertyProcess
      * @param TrustedLandlordService $trustedLandlordService
-     * @param $defaultFeeCC
-     * @param $defaultFeeACH
-     * @param $defaultPayDirectInboundMerchantAccount
+     * @param float $defaultFeeCC
+     * @param float $defaultFeeACH
+     * @param string $defaultPayDirectInboundMerchantAccount
+     * @param int $defaultMaxLimitPerMonth
      *
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
@@ -115,7 +121,8 @@ class ContractProcessor
      *     "trustedLandlordService" = @DI\Inject("trusted_landlord_service"),
      *     "defaultFeeCC" = @DI\Inject("%paydirect_fee_cc%"),
      *     "defaultFeeACH" = @DI\Inject("%paydirect_fee_ach%"),
-     *     "defaultPayDirectInboundMerchantAccount" = @DI\Inject("%aci.collect_pay.pay_direct_escrow_account%")
+     *     "defaultPayDirectInboundMerchantAccount" = @DI\Inject("%aci.collect_pay.pay_direct_escrow_account%"),
+     *     "defaultMaxLimitPerMonth" = @DI\Inject("%dod_limit_max_payment%")
      * })
      */
     public function __construct(
@@ -128,7 +135,8 @@ class ContractProcessor
         TrustedLandlordService $trustedLandlordService,
         $defaultFeeCC,
         $defaultFeeACH,
-        $defaultPayDirectInboundMerchantAccount
+        $defaultPayDirectInboundMerchantAccount,
+        $defaultMaxLimitPerMonth
     ) {
         $this->em = $em;
         $this->logger = $logger;
@@ -140,6 +148,7 @@ class ContractProcessor
         $this->defaultFeeCC = $defaultFeeCC;
         $this->defaultFeeACH = $defaultFeeACH;
         $this->defaultPayDirectInboundMerchantAccount = $defaultPayDirectInboundMerchantAccount;
+        $this->defaultMaxLimitPerMonth = $defaultMaxLimitPerMonth;
     }
 
     /**
@@ -345,6 +354,7 @@ class ContractProcessor
         $newGroupSettings->setPassedAch(true);
         $newGroupSettings->setFeeCC($this->defaultFeeCC);
         $newGroupSettings->setFeeACH($this->defaultFeeACH);
+        $newGroupSettings->setMaxLimitPerMonth($this->defaultMaxLimitPerMonth);
 
         return $newGroupSettings;
     }
