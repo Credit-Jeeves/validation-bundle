@@ -1844,6 +1844,10 @@
                 <source>order.type.card</source>
                 <target>CC</target>
             </trans-unit>
+            <trans-unit id="order.type.scanned_check">
+                <source>order.type.scanned_check</source>
+                <target>Scanned check</target>
+            </trans-unit>
             <trans-unit id="order.type.bank">
                 <source>order.type.bank</source>
                 <target>ACH</target>
