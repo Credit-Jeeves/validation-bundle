@@ -44,7 +44,8 @@ class Landlord extends User
      *
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ProfitStarsCmid",
-     *     mappedBy="landlord"
+     *     mappedBy="landlord",
+     *     cascade={"persist"}
      * )
      */
     protected $profitStarsCmid;
