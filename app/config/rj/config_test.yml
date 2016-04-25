@@ -13,6 +13,7 @@ parameters:
     allow_score_track: true
 
     credit_summary_vendor: experian # supported values are 'transunion' or 'experian'
+    scanning_cutoff_time: '23:59' # to avoid failed tests for scanning tab whe tests run after cutoff time
 
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_test.yml" }

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -8,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\PaymentFlaggedReason;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -275,5 +277,39 @@ class PaymentRepository extends EntityRepository
             ->setParameter('contract', $contract)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @param Group $group
+     * @return ArrayCollection|Payment[]
+     */
+    public function findAllActiveAndFlaggedPaymentsForGroup(Group $group)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.contract', 'c')
+            ->where('c.group = :groupId')
+            ->andWhere('p.status in (:activeStatuses)')
+            ->setParameter('groupId', $group->getId())
+            ->setParameter('activeStatuses', [PaymentStatus::ACTIVE, PaymentStatus::FLAGGED])
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Group $group
+     * @return ArrayCollection|Payment[]
+     */
+    public function findAllFlaggedPaymentToUntrustedLandlord(Group $group)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.contract', 'c')
+            ->where('c.group = :groupId')
+            ->andWhere('p.status in (:activeStatuses)')
+            ->andWhere('p.flaggedReason = :flaggedReason')
+            ->setParameter('groupId', $group->getId())
+            ->setParameter('flaggedReason', PaymentFlaggedReason::DTR_UNTRUSTED_LANDLORD)
+            ->setParameter('activeStatuses', [PaymentStatus::FLAGGED])
+            ->getQuery()
+            ->execute();
     }
 }

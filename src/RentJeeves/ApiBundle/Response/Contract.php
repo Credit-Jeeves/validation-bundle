@@ -27,7 +27,7 @@ class Contract extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"ContractDetails", "ContractShort"})
+     * @Serializer\Groups({"Base"})
      * @Serializer\Type("string")
      * @return string
      */
@@ -173,13 +173,19 @@ class Contract extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"ContractDetails"})
      * @Serializer\SerializedName("mailing_address")
-     * @Serializer\Type("RentJeeves\ApiBundle\Response\Group")
-     * @return Group
+     * @Serializer\Type("RentJeeves\ApiBundle\Response\CheckMailingAddress")
+     * @return null|CheckMailingAddress
      */
     public function getMailingAddress()
     {
-        return $this
-            ->resourceFactory
-            ->getResponse($this->entity->getGroup());
+        if ($trustedLandlord = $this->entity->getGroup()->getTrustedLandlord() and
+            $trustedLandlord->getCheckMailingAddress()
+        ) {
+            return $this
+                ->resourceFactory
+                ->getResponse($trustedLandlord->getCheckMailingAddress());
+        }
+
+        return null;
     }
 }

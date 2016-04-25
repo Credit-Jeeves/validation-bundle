@@ -23,6 +23,7 @@ doctrine:
                 field: DoctrineExtensions\Query\Mysql\Field
                 concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
                 if: DoctrineExtensions\Query\Mysql\IfElse
+                regexp: DoctrineExtensions\Query\Mysql\Regexp
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

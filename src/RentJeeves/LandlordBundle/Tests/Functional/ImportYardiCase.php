@@ -72,12 +72,6 @@ class ImportYardiCase extends ImportBaseAbstract
 
         $this->assertCount($countCountractsCashEquivalent, $contracts);
 
-        $contractsWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy([
-            'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
-        ]);
-
-        $this->assertCount($countCountractsDontAcceptEquivalent, $contractsWaiting);
-
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
             'externalLeaseId' => 't0012020',
         ]);
@@ -136,17 +130,6 @@ class ImportYardiCase extends ImportBaseAbstract
         ]);
 
         $this->assertNotEmpty($contract);
-
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findOneBy([
-            'paymentAccepted' => PaymentAccepted::DO_NOT_ACCEPT,
-        ]);
-
-        $this->assertNotEmpty($contractWaiting);
-
-        $contractWaitings = $em->getRepository('RjDataBundle:ContractWaiting')->findBy([
-            'residentId' => 't0011982',
-        ]);
-        $this->assertCount(1, $contractWaitings);
 
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy([
             'externalLeaseId' => 't0012020',

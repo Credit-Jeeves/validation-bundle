@@ -240,6 +240,44 @@
     padding:15px 20px 0;
 }
 
+.pricing-popup.dashboard-popup .col-box .col .tooltip-box h4 {
+    padding-bottom:4px;
+    color:#693;
+    font:bold 12px/15px 'ABeeZee',sans-serif;
+}
+
+.pricing-popup.dashboard-popup .col-box .col .tooltip-box h4 span {
+    float:none;
+}
+
+.pricing-popup.dashboard-popup .tooltip-box {
+    right:auto;
+    padding:10px;
+}
+
+.pricing-popup.dashboard-popup .tooltip-box.type1 {
+    left:246px;
+    top:-19px;
+    width:205px;
+}
+
+.pricing-popup.dashboard-popup .tooltip-box.type1:before {
+    bottom:22px;
+    top:auto;
+    margin-top:0;
+    margin-bottom:-7px;
+}
+
+.pricing-popup.dashboard-popup .tooltip-box.type1:after {
+    bottom:22px;
+    top:auto;
+}
+
+.pricing-popup.dashboard-popup .tooltip-box p {
+    color:#693;
+    font:12px/15px 'ABeeZee',sans-serif;
+}
+
 .pricing-popup.properties-popup h1 {
     text-align:left;
     padding:15px 35px 0;

@@ -190,24 +190,24 @@ class UnitRepository extends EntityRepository
     }
 
     /**
-     * @param array $contractWaitingIds
+     * @param array $contractIds
      *
      * @return Unit[]
      */
-    public function findAllByContractWaitingIds(array $contractWaitingIds)
+    public function findAllByContractIds(array $contractIds)
     {
-        if (true === empty($contractWaitingIds)) {
+        if (true === empty($contractIds)) {
             return [];
         }
 
         return $this->createQueryBuilder('u')
             ->addSelect('CONCAT(propertyAddress.number, propertyAddress.street) AS HIDDEN sortField')
-            ->innerJoin('u.contractsWaiting', 'cw')
+            ->innerJoin('u.contracts', 'c')
             ->innerJoin('u.property', 'property')
             ->innerJoin('property.propertyAddress', 'propertyAddress')
-            ->where('cw.id IN (:ids)')
+            ->where('c.id IN (:ids)')
             ->orderBy('sortField')
-            ->setParameter('ids', implode(' , ', $contractWaitingIds))
+            ->setParameter('ids', implode(' , ', $contractIds))
             ->getQuery()
             ->execute();
     }

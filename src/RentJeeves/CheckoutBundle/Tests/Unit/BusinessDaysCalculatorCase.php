@@ -38,11 +38,11 @@ class BusinessDaysCalculatorCase extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider provideBusinessDates
      */
-    public function shouldCalcBusinessDate($startDate, $targetShift, $expectedBusinessDate)
+    public function shouldCalcDepositDate($startDate, $targetShift, $expectedBusinessDate)
     {
         $calc = new BusinessDaysCalculator();
 
-        $result = $calc->getBusinessDate($startDate, $targetShift);
+        $result = $calc->getDepositDate($startDate, $targetShift);
 
         $this->assertEquals($expectedBusinessDate, $result);
     }
@@ -61,6 +61,60 @@ class BusinessDaysCalculatorCase extends \PHPUnit_Framework_TestCase
             [new DateTime("2015-04-16"), 3, new DateTime("2015-04-21")], // Thu + 3 = Tue
             [new DateTime("2015-04-13"), 10, new DateTime("2015-04-27")], // Mon + 10 = Mon
             [new DateTime("2015-04-13"), 14, new DateTime("2015-05-01")], // Mon + 14 = Fr
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provideDepositDates
+     */
+    public function shouldCalcNextDepositDate($startDate, $expectedDepositDate)
+    {
+        $result = BusinessDaysCalculator::getNextDepositDate($startDate);
+
+        $this->assertEquals($expectedDepositDate, $result, 'Next deposit date is wrong');
+    }
+
+    /**
+     * @return array
+     */
+    public function provideDepositDates()
+    {
+        return [
+            [new DateTime('2016-04-18'), new DateTime('2016-04-19')], // Mon -> Tue
+            [new DateTime('2016-04-19'), new DateTime('2016-04-20')], // Tue -> Wed
+            [new DateTime('2016-04-20'), new DateTime('2016-04-21')], // Wed -> Thu
+            [new DateTime('2016-04-21'), new DateTime('2016-04-22')], // Thu -> Fri
+            [new DateTime('2016-04-22'), new DateTime('2016-04-25')], // Fri -> Mon
+            [new DateTime('2016-04-23'), new DateTime('2016-04-26')], // Sat -> Tue
+            [new DateTime('2016-04-24'), new DateTime('2016-04-26')], // Sun -> Tue
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provideWeekdays
+     */
+    public function shouldCalcBusinessDate($startDate, $expectedBusinessDate)
+    {
+        $result = BusinessDaysCalculator::getBusinessDate($startDate);
+
+        $this->assertEquals($expectedBusinessDate, $result, 'Business date is wrong');
+    }
+
+    /**
+     * @return array
+     */
+    public function provideWeekdays()
+    {
+        return [
+            [new DateTime('2016-04-18'), new DateTime('2016-04-18')], // Mon -> Mon
+            [new DateTime('2016-04-19'), new DateTime('2016-04-19')], // Tue -> Tue
+            [new DateTime('2016-04-20'), new DateTime('2016-04-20')], // Wed -> Wed
+            [new DateTime('2016-04-21'), new DateTime('2016-04-21')], // Thu -> Thu
+            [new DateTime('2016-04-22'), new DateTime('2016-04-22')], // Fri -> Fri
+            [new DateTime('2016-04-23'), new DateTime('2016-04-25')], // Sat -> Mon
+            [new DateTime('2016-04-24'), new DateTime('2016-04-25')], // Sun -> Mon
         ];
     }
 }

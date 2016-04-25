@@ -1,0 +1,274 @@
+model: RentJeeves\DataBundle\Entity\Unit
+fixtures:
+    Unit_1_1:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_2:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-b
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_3:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-c
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_4:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-d
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_5:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_6:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-f
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_7:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_8:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-b
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_9:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-c
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_10:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      108
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_11:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_12:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-f
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+
+    Unit_2_1:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_2:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-b
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_3:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-c
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_4:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-d
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_5:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_6:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      5-f
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_7:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      7-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_8:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      25-b
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_9:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      45-c
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_10:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      4-d
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_11:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      11-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_2_12:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      27-f
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_18:
+        property:  Property_18
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_19:
+        property:  Property_18
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        name:      HH-1
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_20:
+        property:  Property_19
+        holding:   rjHolding_1
+        group:     RentGroup_3
+        name:      'SINGLE_PROPERTY'
+        createdAt: '-1 day'
+        updatedAt: '-1 day'
+    Unit_21:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_22:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        name:      2-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_23:
+        property:  Property_1
+        holding:   rjHolding_2
+        group:     RentGroup_6
+        name:      2-U
+        createdAt: '-160 days'
+        updatedAt: '-160 days'
+    Unit_for_Normalized_Property_1:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      101
+    Unit_for_Normalized_Property_2:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      201
+    Unit_for_Normalized_Property_3:
+        property:  Property_Normalized
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      301
+
+    Unit_1_1_deleted:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+        deletedAt: '-60 days'
+    Unit_2_13_deleted:
+        property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      1-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+        deletedAt: '-60 days'
+# DTR Units
+    Unit_dtr_1:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-A
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_dtr_2:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-B
+        createdAt: '-60 days'
+        updatedAt: '-6 days'
+    Unit_dtr_3:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-C
+        createdAt: '-60 days'
+        updatedAt: '-9 days'
+    Unit_dtr_4:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        name:      1-1-D
+        createdAt: '-60 days'
+        updatedAt: '-7 days'

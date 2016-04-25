@@ -7,11 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
@@ -238,13 +238,6 @@ abstract class Group
     protected $created_at;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="disable_credit_card", type="boolean", options={"default"="0"})
-     */
-    protected $disableCreditCard;
-
-    /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -388,6 +381,8 @@ abstract class Group
      *     fetch="EAGER"
      * )
      * @Assert\Valid
+     * @Serializer\SerializedName("groupSettings")
+     * @Serializer\Groups({"paymentAccounts"})
      */
     protected $groupSettings;
 
@@ -414,15 +409,6 @@ abstract class Group
      * )
      */
     protected $aciCollectPayProfile;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
-     *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"}
-     * )
-     */
-    protected $waitingContracts;
 
     /**
     * @ORM\Column(
@@ -476,6 +462,20 @@ abstract class Group
      */
     protected $externalGroupId;
 
+    /**
+     * @ORM\OneToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\TrustedLandlord",
+     *      inversedBy="group"
+     * )
+     * @ORM\JoinColumn(
+     *      name="trusted_landlord_id",
+     *      referencedColumnName="id"
+     * )
+     *
+     * @var TrustedLandlord
+     */
+    protected $trustedLandlord;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -490,9 +490,7 @@ abstract class Group
         $this->contracts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
-        $this->waitingContracts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
-        $this->disableCreditCard = false;
         $this->depositAccounts = new ArrayCollection();
     }
 
@@ -1420,22 +1418,6 @@ abstract class Group
     }
 
     /**
-     * @param ContractWaiting $waitingContract
-     */
-    public function addWaitingContract(ContractWaiting $waitingContract)
-    {
-        $this->waitingContracts[] = $waitingContract;
-    }
-
-    /**
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getWaitingContracts()
-    {
-        return $this->waitingContracts;
-    }
-
-    /**
      * @return string
      */
     public function getStatementDescriptor()
@@ -1449,22 +1431,6 @@ abstract class Group
     public function setStatementDescriptor($statementDescriptor)
     {
         $this->statementDescriptor = $statementDescriptor;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function isDisableCreditCard()
-    {
-        return $this->disableCreditCard;
-    }
-
-    /**
-     * @param mixed $disableCreditCard
-     */
-    public function setDisableCreditCard($disableCreditCard)
-    {
-        $this->disableCreditCard = $disableCreditCard;
     }
 
     /**
@@ -1544,5 +1510,21 @@ abstract class Group
         }
 
         return true;
+    }
+
+    /**
+     * @return TrustedLandlord
+     */
+    public function getTrustedLandlord()
+    {
+        return $this->trustedLandlord;
+    }
+
+    /**
+     * @param TrustedLandlord $trustedLandlord
+     */
+    public function setTrustedLandlord(TrustedLandlord $trustedLandlord)
+    {
+        $this->trustedLandlord = $trustedLandlord;
     }
 }

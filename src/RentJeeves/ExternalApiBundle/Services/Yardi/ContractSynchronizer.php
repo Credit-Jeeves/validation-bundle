@@ -4,7 +4,6 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Helpers\DateChecker;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ExternalApiBundle\Services\AbstractContractSynchronizer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
@@ -36,7 +35,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
      * @param Holding $holding
      * @param ResidentTransactionPropertyCustomer $resident
      * @param string $externalPropertyId
-     * @return Contract[]|ContractWaiting[]
+     * @return Contract[]
      */
     protected function getContractsForUpdatingBalance(
         Holding $holding,
@@ -60,17 +59,6 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $externalUnitId
                 );
             empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
-
-            $contractsWaiting = $this
-                ->getContractWaitingRepository()
-                ->findContractsByHoldingExternalPropertyResidentExternalUnitId(
-                    $holding,
-                    $externalPropertyId,
-                    $residentId,
-                    $externalUnitId
-                );
-
-            empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
         }
 
         $count = count($allContracts);
@@ -90,12 +78,12 @@ class ContractSynchronizer extends AbstractContractSynchronizer
     }
 
     /**
-     * @param Contract|ContractWaiting $contract
+     * @param Contract $contract
      * @param ResidentTransactionPropertyCustomer $resident
      * @throws \Exception
      */
     protected function updateContractBalanceForResidentTransaction(
-        $contract,
+        Contract $contract,
         $resident
     ) {
         $balance = $this->calcResidentBalance($resident);
@@ -222,18 +210,7 @@ class ContractSynchronizer extends AbstractContractSynchronizer
 
         empty($contracts) || $allContracts = array_merge($allContracts, $contracts);
 
-        $contractsWaiting = $this
-            ->getContractWaitingRepository()
-            ->findContractsByHoldingExternalPropertyLeaseExternalUnitId(
-                $holding,
-                $externalPropertyId,
-                $leaseId,
-                $externalUnitId
-            );
-
-        empty($contractsWaiting) || $allContracts = array_merge($allContracts, $contractsWaiting);
-
-        /** @var Contract|ContractWaiting $contract */
+        /** @var Contract $contract */
         foreach ($allContracts as $contract) {
             $contract->setRent($amount);
             try {

@@ -3009,9 +3009,11 @@ label.checkbox input[type="radio"]:checked + i {
 .clarification.cash i {
   background-position: -141px -347px;
 }
-
 .clarification.credit-card i {
   background-position:-240px -240px;
+}
+.clarification.scanned-check i {
+  background-position:-361px -240px;
 }
 
 .clarification.recurring i {

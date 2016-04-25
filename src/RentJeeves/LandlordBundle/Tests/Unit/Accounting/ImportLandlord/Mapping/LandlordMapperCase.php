@@ -84,7 +84,10 @@ class LandlordMapperCase extends BaseTestCase
         $this->load(true);
 
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
-        $landlord = $this->getEntityManager()->find('RjDataBundle:Landlord', 65);
+        $landlord = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Landlord')
+            ->findOneByEmail('landlord1@example.com');
         $landlord->setExternalLandlordId('testLandlordID');
 
         $this->getEntityManager()->flush($landlord);

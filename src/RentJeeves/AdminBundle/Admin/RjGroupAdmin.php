@@ -22,7 +22,7 @@ class RjGroupAdmin extends Admin
     const TYPE = 'group';
 
     protected $formOptions = [
-        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee', 'import_settings']
+        'validation_groups' => ['holding', 'unique_mapping', 'debit_fee', 'import_settings', 'allowed_payments_source']
     ];
 
     /**
@@ -108,7 +108,6 @@ class RjGroupAdmin extends Admin
             ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
-            ->add('disableCreditCard')
             ->add(
                 '_action',
                 'actions',
@@ -127,7 +126,7 @@ class RjGroupAdmin extends Admin
                         ),
                         'import_properties' => [
                             'template' => 'AdminBundle:CRUD:list__action_import_property.html.twig'
-                        ]
+                        ],
                     )
                 )
             );

@@ -3,7 +3,6 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\ContractWaiting as ContractWaitingEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -141,19 +140,6 @@ abstract class Unit
     protected $contracts;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
-     *     mappedBy="unit",
-     *     cascade={
-     *       "persist"
-     *     }
-     * )
-     *
-     * @var ArrayCollection
-     */
-    protected $contractsWaiting;
-
-    /**
      * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\UnitMapping",
      *     mappedBy="unit",
@@ -166,23 +152,6 @@ abstract class Unit
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
-        $this->contractsWaiting = new ArrayCollection();
-    }
-
-    /**
-     * @param ContractWaitingEntity $contractsWaiting
-     */
-    public function addContractsWaiting(ContractWaitingEntity $contractsWaiting)
-    {
-        $this->contractsWaiting = $contractsWaiting;
-    }
-
-    /**
-     * @return ArrayCollection|\RentJeeves\DataBundle\Entity\ContractWaiting[]
-     */
-    public function getContractsWaiting()
-    {
-        return $this->contractsWaiting;
     }
 
     /**
@@ -427,34 +396,6 @@ abstract class Unit
     public function getContracts()
     {
         return $this->contracts;
-    }
-
-    /**
-     * Add ContractWaiting
-     *
-     * @param ContractWaitingEntity $contract
-     * @return $this
-     */
-    public function addContractWaiting(ContractWaitingEntity $contract)
-    {
-        $this->contractsWaiting[] = $contract;
-
-        return $this;
-    }
-
-    /**
-     * Remove ContractWaiting
-     *
-     * @param ContractWaitingEntity Contract
-     * @return $this
-     */
-    public function removeContractWaiting(ContractWaitingEntity $contract)
-    {
-        if ($this->contractsWaiting->contains($contract)) {
-            $this->contractsWaiting->removeElement($contract);
-        }
-
-        return $this;
     }
 
     /**

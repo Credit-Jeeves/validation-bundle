@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\Serializer\SerializationContext;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\SynchronizationStrategy;
 use RentJeeves\DataBundle\Enum\YardiPostMonthOption;
 use RentJeeves\ExternalApiBundle\Model\Yardi\ResidentTransactions;
@@ -166,5 +168,44 @@ class ResidentTransactionsCase extends BaseTestCase
                 '<PostMonth>2015-12-02</PostMonth>' // next business day for ACI card
             ],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetCorrectPaymentTypeForScannedCheck()
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+        /** @var YardiSettings $yardiSettings */
+        $yardiSettings = $em->find('RjDataBundle:YardiSettings', 1);
+        $this->assertNotNull($yardiSettings, 'YardiSettings not found');
+        $yardiSettings->setPaymentTypeScannedCheck(PaymentTypeScannedCheck::CASH);
+
+        /** @var Order $order */
+        $order = $em->find('DataBundle:Order', 2);
+        $this->assertNotNull($order, 'Order with ID#2 not found');
+
+        $order->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+        $order->setPaymentType(OrderPaymentType::SCANNED_CHECK);
+
+        $em->flush();
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('withPostMonth');
+
+        $residentTransactions = new ResidentTransactions(
+            $yardiSettings,
+            [$order]
+        );
+        $serializer = $this->getContainer()->get('jms_serializer');
+        $xml = $serializer->serialize(
+            $residentTransactions,
+            'xml',
+            $context
+        );
+
+        $this->assertContains('<Payment Type="Cash">', $xml);
     }
 }

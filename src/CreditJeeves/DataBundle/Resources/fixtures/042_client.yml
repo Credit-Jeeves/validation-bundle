@@ -1,0 +1,30 @@
+model: CreditJeeves\DataBundle\Entity\Client
+fixtures:
+  client_1:
+    secret: 39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo
+    random_id: qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s
+    allowed_grant_types:
+      - refresh_token
+      - password
+  client_2:
+    secret: 20h1hdqkgeaswo8kw8o800ck00wk4o8okck48wgskg0gwcco0w
+    random_id: 3fjeg33hn944o0o88woc8w04c0c0gsso000ggk0848skkkkw84
+    redirect_uris:
+      - http://localhost
+    allowed_grant_types:
+      - token
+      - authorization_code
+      - refresh_token
+      - password
+    name: TestApp
+  client_3:
+    secret: 2qeobwbv72ecosgk4g0w8sokwkco0cwwo0sg4sg0cwskssk880
+    random_id: 3iui2vbjxtwksskk88os8040408ccwwkss80o4c4c88skoc804
+    redirect_uris:
+      - http://localhost
+    allowed_grant_types:
+      - token
+      - authorization_code
+      - refresh_token
+      - password
+    name: CreditComClient

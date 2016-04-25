@@ -40,8 +40,7 @@ class PaymentSourceController extends Controller
         $paymentAccountType = $this->createForm(
             new PaymentAccountType(
                 $this->getUser(),
-                $formNameSuffix,
-                $this->getDoctrine()->getManager()
+                $formNameSuffix
             )
         );
         $pageVars = ['paymentAccountType' => $paymentAccountType->createView()];
@@ -139,22 +138,17 @@ class PaymentSourceController extends Controller
         }
 
         try {
-            $contractId = $paymentAccountType->get('contractId')->getData();
-            $groupId = $request->get('group_id');
+            /** @var Contract $contract */
+            $contract = $paymentAccountType->get('contract')->getData();
+            /** @var Group $group */
+            $group = $paymentAccountType->get('group')->getData();
             $depositAccountType = $request->get('deposit_account_type', DepositAccountType::RENT);
 
-            if ($contractId) {
-                /** @var Contract $contract */
-                $contract = $this->getDoctrine()
-                    ->getRepository('RjDataBundle:Contract')
-                    ->find($contractId);
+            if ($contract) {
                 $group = $contract->getGroup();
                 $tenant = $contract->getTenant();
                 $depositAccount = $group->getDepositAccountForCurrentPaymentProcessor($depositAccountType);
-            } elseif ($groupId) {
-                $group = $this->getDoctrine()
-                    ->getRepository('DataBundle:Group')
-                    ->find($groupId);
+            } elseif ($group) {
                 $tenant = $this->getUser();
                 $depositAccount = $group->getDepositAccount(
                     $depositAccountType,
@@ -209,8 +203,7 @@ class PaymentSourceController extends Controller
     {
         $formType = new PaymentAccountType(
             $this->getUser(),
-            $formNameSuffix,
-            $this->getDoctrine()->getManager()
+            $formNameSuffix
         );
         $formData = $request->get($formType->getName());
 

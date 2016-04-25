@@ -1,0 +1,351 @@
+model: RentJeeves\DataBundle\Entity\Contract
+fixtures:
+    Contract_1:
+        tenant:   Tenant_1
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_1
+        status:   pending
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_2:
+        tenant:    Tenant_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        property:  Property_1
+        unit:      Unit_1_2
+        rent:      1400
+        status:    approved
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
+        paidTo:    'now'
+        startAt:   'now'
+        finishAt:  '3 months'
+        createdAt: '-11 months'
+        updatedAt: 'now'
+# Finished contract #
+    Contract_3:
+        tenant:   Tenant_1
+        holding:  rjHolding_1
+        group:    RentGroup_2
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1500
+        externalLeaseId: t0012020
+        status:   finished
+        paidTo:  '-60 days'
+        startAt:   '-365 days'
+        finishAt: '-60 days'
+        createdAt: '-400 days'
+        updatedAt: '-60 days'
+    Contract_4:
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1250
+        status:   finished
+        paidTo:  '-2 months'
+        startAt:   '-8 months'
+        finishAt: '-2 months'
+        createdAt: '-8 months -4 days'
+        updatedAt: '-1 months'
+    Contract_41: #5
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1250
+        status:   approved
+        paidTo:  '5 days'
+        startAt:   '-8 months 5 days'
+        finishAt: '2 months'
+        createdAt: '-8 months 5 days'
+        updatedAt: '-1 months 5 days'
+    Contract_5: #6
+        tenant:   Tenant_3
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_1
+        status:   pending
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_6: #7
+        tenant:   Tenant_4
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_6
+        rent:     1700
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
+        status:   approved
+        paidTo:  '-1 days'
+        startAt:   '-9 month -5 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_66: #8
+        tenant:   Tenant_6
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_6
+        rent:     3700
+        status:   approved
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
+        paidTo:  '20 days'
+        startAt:   '-90 days'
+        finishAt: '-20 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_7: #9
+        tenant:   Tenant_1
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_7
+        rent:     1750
+        status:   current
+        paidTo:  '20 days'
+        startAt:   '-10 month'
+        finishAt: '2 month'
+        createdAt: '-11 month'
+        updatedAt: '-10 month'
+    Contract_8: #10
+        tenant:   Tenant_6
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_8
+        rent:     1750
+        status:   current
+        paidTo:  '3 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_9: #11
+        tenant:   Tenant_7
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_9
+        rent:     1750
+        status:   current
+        paidTo:  '15 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        externalLeaseId: 'test'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_10: #12
+        tenant:   Tenant_8
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_10
+        rent:     1750
+        status:   current
+        paidTo:  '15 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_11: #13
+        tenant:   Tenant_9
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_11
+        rent:     2100
+        dueDate:  11
+        status:   current
+        paidTo:  '-1 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_12: #14
+        tenant:   Tenant_10
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_12
+        rent:     2100
+        status:   approved
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_13: #15
+        tenant:   Tenant_11
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_1
+        rent:     2100
+        status:   finished
+        paidTo:  '-120 days'
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_14: #16
+        tenant:   Tenant_12
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   finished
+        paidTo:  '-120 days'
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_15: #17
+        tenant:   Tenant_12
+        holding:  rjHolding_2
+        group:    RentGroup_6
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   finished
+        paidTo:  '-120 days'
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_19: #18
+        tenant:   Tenant_12
+        holding:  rjHolding_2
+        group:    RentGroup_6
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   invite
+        paidTo:  '1 days'
+        startAt:   '30 days'
+        createdAt: '-20 days'
+        updatedAt: '-20 days'
+    Contract_20:
+        tenant:   Tenant_3
+        holding:  rjHolding_2
+        group:    RentGroup_6
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   invite
+        paidTo:  '1 days'
+        startAt:   '30 days'
+        createdAt: '-20 days'
+        updatedAt: '-20 days'
+    Contract_16:
+        tenant:   Tenant_12
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_10
+        rent:     850
+        status:   current
+        paidTo:  '1 days'
+        startAt:   '30 days'
+        createdAt: '-20 days'
+        updatedAt: '-20 days'
+    Contract_17:
+        tenant:   Tenant_5
+        holding:  rjHolding_1
+        group:    RentGroup_2
+        property: Property_1
+        unit:     Unit_1_1
+        status:   pending
+        createdAt: '-50 days'
+        updatedAt: '-50 days'        
+    Contract_18:
+        tenant:   Tenant_9
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_11
+        rent:     199.10
+        status:   current
+        paidTo:  '1 days'
+        startAt:   '-90 days'
+        finishAt: '-10 days'
+        createdAt: '-150 days'
+        updatedAt: '-150 days'
+    Contract_19:
+        tenant:    Tenant_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        property:  Property_1
+        unit:      Unit_1_3
+        rent:      987
+        status:    current
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
+        reportToEquifax: true
+        equifaxStartAt: '2014-01-01'
+        paidTo:    '-27 days'
+        startAt:   '2015-01-01'
+        finishAt:  '2018-01-01'
+        createdAt: '2014-01-01'
+        updatedAt: '2014-01-01'
+    Contract_20:
+        tenant:    Tenant_3
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        property:  Property_1
+        unit:      Unit_1_2
+        rent:      66661
+        status:    pending
+        paidTo:    'now'
+        startAt:   'now'
+        finishAt:  '3 months'
+        createdAt: '-11 months'
+        updatedAt: 'now'
+    Contract_21:
+        tenant:    Tenant_16
+        holding:   rjHolding_1
+        group:     RentGroup_2
+        property:  Property_1
+        unit:      Unit_1_3
+        rent:      500
+        status:    current
+        paidTo:    '+2 months'
+        startAt:   'now'
+        finishAt:  '+12 months'
+        createdAt: '-1 days'
+        updatedAt: '-1 days'
+    Contract_waiting_1:
+        tenant:   Tenant_dtr_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        property:  Property_1
+        unit:      Unit_dtr_1
+        rent:      1250
+        status:    waiting
+        paidTo:    null
+        createdAt: '-1 days'
+        updatedAt: '-1 days'

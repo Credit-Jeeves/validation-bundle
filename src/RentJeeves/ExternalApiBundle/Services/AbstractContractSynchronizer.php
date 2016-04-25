@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
@@ -397,14 +396,6 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity\ContractWaitingRepository
-     */
-    protected function getContractWaitingRepository()
-    {
-        return $this->em->getRepository('RjDataBundle:ContractWaiting');
-    }
-
-    /**
      * @param Holding $holding
      */
     abstract protected function setExternalSettings(Holding $holding);
@@ -418,7 +409,7 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
      * @param Holding $holding
      * @param mixed $resident
      * @param string $externalPropertyId
-     * @return Contract[]|ContractWaiting[]
+     * @return Contract[]
      */
     abstract protected function getContractsForUpdatingBalance(
         Holding $holding,
@@ -427,10 +418,10 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     );
 
     /**
-     * @param Contract|ContractWaiting $contract
+     * @param Contract $contract
      * @param mixed $resident
      */
-    abstract protected function updateContractBalanceForResidentTransaction($contract, $resident);
+    abstract protected function updateContractBalanceForResidentTransaction(Contract $contract, $resident);
 
     /**
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult

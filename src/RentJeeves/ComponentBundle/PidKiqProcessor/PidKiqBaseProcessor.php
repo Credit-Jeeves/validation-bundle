@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Pidkiq as PidkiqModel;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\PidkiqStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\UserBundle\Helper\UserNormalizerForPidkiq;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use RentJeeves\ComponentBundle\PidKiqProcessor\Exception\PidKiqRuntimeException;
 use Symfony\Component\Security\Core\SecurityContextInterface as SecurityContext;
@@ -248,7 +249,7 @@ abstract class PidKiqBaseProcessor implements PidKiqProcessorInterface, PidKiqSt
      */
     protected function getPidkiqCheckSum()
     {
-        return md5(serialize($this->getUser()->getArrayForPidkiq()));
+        return md5(serialize(UserNormalizerForPidkiq::normalizeUserForPidkiq($this->getUser())));
     }
 
     /**

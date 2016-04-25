@@ -79,10 +79,10 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
-        $query->leftJoin('ten.residentsMapping', 'res');
-        $query->innerJoin('t.unit', 'unit');
-        $query->leftJoin('unit.unitMapping', 'uMap');
         $query->innerJoin('t.group', 'g');
+        $query->leftJoin('ten.residentsMapping', 'res');
+        $query->leftJoin('t.unit', 'unit');
+        $query->leftJoin('unit.unitMapping', 'uMap');
         $query->leftJoin('g.groupSettings', 'gs');
         // order may be deposited and returned the same day, so we should count complete and reversal types
         $query->where('o.status in (:statuses)');
@@ -128,7 +128,14 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('end', $end);
 
         $query->andWhere('o.paymentType in (:paymentTypes)');
-        $query->setParameter('paymentTypes', [OrderPaymentType::CARD, OrderPaymentType::BANK]);
+        $query->setParameter(
+            'paymentTypes',
+            [
+                OrderPaymentType::CARD,
+                OrderPaymentType::BANK,
+                OrderPaymentType::SCANNED_CHECK
+            ]
+        );
 
         $query->andWhere('g.id in (:groups)');
         $query->setParameter('groups', $this->getGroupIds($groups));
@@ -306,5 +313,41 @@ class TransactionRepository extends EntityRepository
         }
 
         return null;
+    }
+
+    /**
+     * @param string $transactionNumber
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Transaction
+     */
+    public function findOneCompletedByProfitStarsTransactionId($transactionNumber)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.order', 'o')
+            ->innerJoin('o.profitStarsTransaction', 'pst')
+            ->where('t.status = :status')
+            ->andWhere('pst.transactionNumber = :transactionNumber')
+            ->setParameter('status', TransactionStatus::COMPLETE)
+            ->setParameter('transactionNumber', $transactionNumber)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param string $itemId
+     * @return Transaction|null
+     */
+    public function getTransactionByProfitStarsItemId($itemId)
+    {
+        return $this
+            ->createQueryBuilder('t')
+            ->innerJoin('t.order', 'o')
+            ->innerJoin('o.profitStarsTransaction', 'pst')
+            ->where('pst.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

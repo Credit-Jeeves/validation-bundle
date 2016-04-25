@@ -78,7 +78,7 @@ trait Resident
      */
     public function isUsedResidentId()
     {
-        if (!$this->isSupportResidentId) {
+        if (!$this->isSupportResidentId()) {
             return false;
         }
 
@@ -94,7 +94,7 @@ trait Resident
      */
     public function setResident(array $row)
     {
-        if (!$this->isSupportResidentId) {
+        if (!$this->isSupportResidentId()) {
             return;
         }
 

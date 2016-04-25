@@ -109,6 +109,6 @@ class SettlementData
             $date = $batchDate;
         }
 
-        return BusinessDaysCalculator::getBusinessDate($date, 3); // Amount of days to get payment deposited = 3
+        return BusinessDaysCalculator::getDepositDate($date, 3); // Amount of days to get payment deposited = 3
     }
 }

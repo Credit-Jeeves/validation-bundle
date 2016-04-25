@@ -2,6 +2,7 @@ function ImportSettings() {
     var self = this;
     var options = [];
     var createCsvMappingLink = $('#createCsvMappingLink');
+
     var selected = $('select[id*="_importSettings_importType"]>option:selected').val();
     $('select[id*="_importSettings_importType"]>option').each(function (i, el) {
         options.push({"value" :$(el).val(), "text" : $(el).text()});

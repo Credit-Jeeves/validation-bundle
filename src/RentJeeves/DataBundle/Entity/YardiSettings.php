@@ -47,6 +47,11 @@ class YardiSettings extends Base implements SettingsInterface
         return false;
     }
 
+    /**
+     * @param Order $order
+     *
+     * @return null|string
+     */
     public function getOrderPaymentType(Order $order)
     {
         if (OrderPaymentType::BANK == $order->getPaymentType()) {
@@ -54,6 +59,9 @@ class YardiSettings extends Base implements SettingsInterface
         }
         if (OrderPaymentType::CARD == $order->getPaymentType()) {
             return $this->getPaymentTypeCC();
+        }
+        if (OrderPaymentType::SCANNED_CHECK === $order->getPaymentType()) {
+            return $this->getPaymentTypeScannedCheck();
         }
 
         return null;
@@ -68,6 +76,10 @@ class YardiSettings extends Base implements SettingsInterface
      */
     public function getReversalType(Order $order)
     {
+        if (OrderPaymentType::SCANNED_CHECK === $order->getPaymentType()) {
+            return self::REVERSAL_TRANSACTION_NSF;
+        }
+
         $originalOrderType = $this->getOrderPaymentType($order);
         if (strtolower($originalOrderType) == strtolower(self::PAYMENT_TYPE_CASH)) {
             return self::REVERSAL_TRANSACTION_REVERSE;

@@ -18,9 +18,17 @@
                 <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
+            <trans-unit id="common.groups">
+                <source>common.groups</source>
+                <target>Groups</target>
+            </trans-unit>
             <trans-unit id="create.csv.mapping">
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
+            </trans-unit>
+            <trans-unit id="upload.csv.create_job">
+                <source>upload.csv.create_job</source>
+                <target>Upload csv and create job for import property</target>
             </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
@@ -37,6 +45,10 @@
             <trans-unit id="csv.mapping.success">
                 <source>csv.mapping.success</source>
                 <target>You have successfully created/updated csv mapping</target>
+            </trans-unit>
+            <trans-unit id="csv.job.successfully_created">
+                <source>csv.job.successfully_created</source>
+                <target>You have successfully created a job for process your csv file</target>
             </trans-unit>
             <trans-unit id="map.csv.file">
                 <source>map.csv.file</source>
@@ -113,14 +125,6 @@
             <trans-unit id="admin.deposit_account.fee_ach">
                 <source>admin.deposit_account.fee_ach</source>
                 <target>ACH Fee ($)</target>
-            </trans-unit>
-            <trans-unit id="admin.form.contract_waiting.error.property">
-                <source>admin.form.contract_waiting.error.property</source>
-                <target>This property does not belong to this group.</target>
-            </trans-unit>
-            <trans-unit id="admin.form.contract_waiting.error.unit">
-                <source>admin.form.contract_waiting.error.unit</source>
-                <target>This unit does not belong to this property.</target>
             </trans-unit>
             <trans-unit id="admin.form.contract_waiting.error.residentId">
                 <source>admin.form.contract_waiting.error.residentId</source>
@@ -254,6 +258,14 @@
                 <source>admin.late_report.choose_contract</source>
                 <target>Choose a contract please</target>
             </trans-unit>
+            <trans-unit id="admin.error.should_be_allowed_payment_source_type">
+                <source>admin.error.should_be_allowed_payment_source_type</source>
+                <target>You should allow at least one payment source type. Please set ach or credit card to "allowed".</target>
+            </trans-unit>
+            <trans-unit id="admin.error.should_be_allowed_credit_card_for_debit">
+                <source>admin.error.should_be_allowed_credit_card_for_debit</source>
+                <target>To allow debit fee, you should also allow credit card.</target>
+            </trans-unit>
             <trans-unit id="admin.error.deposit_account">
                 <source>admin.error.deposit_account</source>
                 <target>You already have deposit account with such type and payment processor.</target>
@@ -325,6 +337,14 @@
             <trans-unit id="admin.group_settings.label.show_rent_wizard">
                 <source>admin.group_settings.label.show_rent_wizard</source>
                 <target>Fill Rent on Wizard</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.allowed_ach">
+                <source>admin.group_settings.label.allowed_ach</source>
+                <target>Is Allowed ACH?</target>
+            </trans-unit>
+            <trans-unit id="admin.group_settings.label.allowed_credit_card">
+                <source>admin.group_settings.label.allowed_credit_card</source>
+                <target>Is Allowed Credit Card?</target>
             </trans-unit>
             <trans-unit id="admin.group_settings.label.max_limit_per_month">
                 <source>admin.group_settings.label.max_limit_per_month</source>

@@ -5,12 +5,7 @@
     if: !is_skipped
         && contract.status != 'finished'
         && $root.isValidFieldsWhichNotContainsInForm($data)
-        &&
-        (
-            tenant.id
-            ||
-            has_contract_waiting
-        )">
+        && (tenant.id && is_has_email_on_db == true)">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)+' import_status_text'}"></td>
     {% if isMultipleProperty == "true" %}
@@ -18,7 +13,7 @@
                 <span data-bind="text: contract.property.full_address">
                 </span>
             </td>
-            <td  class="errorField" data-bind="if: contract.property === null, visible: (contract.property === null)">
+            <td  class="errorField" data-bind="if: contract.property == null, visible: (contract.property == null)">
                 <span  data-bind="html: address, attr: {title: '{{ 'property.cannot.map'|trans }}'}"></span>
             </td>
     {% endif %}
@@ -180,8 +175,7 @@
             "attr": {
             "data-bind": "
                 attr: {
-                    'visible': has_contract_waiting,
-                    'checked': (has_contract_waiting && email)? true : false,
+                    'checked': false,
                     'class': number+'_sendInvite '+$root.getErrorClass($data, 'import_new_user_with_sendInvite'),
                 }"}
         }

@@ -277,6 +277,13 @@ class Payment
     protected $closeDetails;
 
     /**
+     * @ORM\Column(name="flagged_reason", type="string", nullable=true)
+     *
+     * @var string
+     */
+    protected $flaggedReason;
+
+    /**
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Order",
      *      mappedBy="payment",
@@ -289,6 +296,22 @@ class Payment
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFlaggedReason()
+    {
+        return $this->flaggedReason;
+    }
+
+    /**
+     * @param string $flaggedReason
+     */
+    public function setFlaggedReason($flaggedReason)
+    {
+        $this->flaggedReason = $flaggedReason;
     }
 
     /**

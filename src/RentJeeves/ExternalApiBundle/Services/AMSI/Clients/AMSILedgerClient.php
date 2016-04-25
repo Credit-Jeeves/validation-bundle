@@ -262,6 +262,9 @@ class AMSILedgerClient extends AMSIBaseClient
             case OrderPaymentType::BANK:
                 $payment->setPaymentType('C');
                 break;
+            case OrderPaymentType::SCANNED_CHECK:
+                $payment->setPaymentType('C');
+                break;
             default:
                 throw new \LogicException(
                     sprintf(

@@ -34,3 +34,44 @@ ko.components.register('infoMessage-widget', {
         '</div>',
     synchronous: true
 });
+
+/**
+ * Component virtualForm-widget
+ * name : 'virtualForm-widget'
+ * params
+ *  - elements
+ *  - method
+ *  - url
+ */
+function VirtualFormViewModel(params) {
+    this.elements = (params && params.elements !== undefined) ?
+        ko.computed(function () {
+            return typeof(params.elements) == 'function' ? params.elements() : params.elements;
+        }, this) :
+        ko.observableArray([]);
+    this.method = (params && params.method !== undefined) ?
+        ko.computed(function () {
+            return typeof(params.method) == 'function' ? params.method() : params.method;
+        }, this) :
+        ko.observable('get');
+    this.url = (params && params.url !== undefined) ?
+        ko.computed(function () {
+            return typeof(params.url) == 'function' ? params.url() : params.url;
+        }, this) :
+        ko.observable('');
+    this.submitHandler = function() {
+        var form = document.getElementById("virtualForm-widget");
+        if (form) {
+            form.submit();
+        }
+    };
+}
+ko.components.register('virtualForm-widget', {
+    viewModel: VirtualFormViewModel,
+    template:
+        '<form id="virtualForm-widget"' +
+            ' data-bind="attr: {method: method, action : url}, foreach: elements"' +
+            ' style="display:none;">' +
+            '<input type="hidden" data-bind="attr: {name: name}, value: value">' +
+        '</form>'
+});

@@ -3,7 +3,6 @@ namespace RentJeeves\CoreBundle\Tests\Command;
 
 use RentJeeves\CoreBundle\Command\UnitDeduplicateCommand;
 use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
@@ -53,10 +52,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var Contract $lastContract
          */
         $lastContract = $contracts->last();
-        /**
-         * @var ContractWaiting $contractWaiting
-         */
-        $contractWaiting = $unit->getContractsWaiting()->first();
+
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 18]);
         $this->getEntityManager()->clear();
         $this->assertEmpty(
@@ -90,18 +86,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $newLastUnit->getProperty()->getId(),
             $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
-        );
-
-        $this->assertEquals(
-            $newLastUnit->getId(),
-            $contractWaiting->getUnit()->getId(),
-            'contractWaiting has incorrect Unit'
-        );
-
-        $this->assertEquals(
-            $newLastUnit->getProperty()->getId(),
-            $contractWaiting->getProperty()->getId(),
-            'contractWaiting has incorrect Property'
         );
     }
 
@@ -138,10 +122,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var Contract $lastContract
          */
         $lastContract = $contracts->last();
-        /**
-         * @var ContractWaiting $contractWaiting
-         */
-        $contractWaiting = $unit->getContractsWaiting()->first();
 
         $this->getEntityManager()->getFilters()->enable('softdeleteable');
 
@@ -178,18 +158,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $unitWithSameName->getProperty()->getId(),
             $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
-        );
-
-        $this->assertEquals($unitWithSameName, $contractWaiting->getUnit(), 'contractWaiting has incorrect Unit');
-        $this->assertEquals(
-            $unitWithSameName->getId(),
-            $contractWaiting->getUnit()->getId(),
-            'contractWaiting has incorrect Unit'
-        );
-        $this->assertEquals(
-            $unitWithSameName->getProperty()->getId(),
-            $contractWaiting->getProperty()->getId(),
-            'contractWaiting has incorrect Property'
         );
     }
 
@@ -236,10 +204,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var Contract $lastContract
          */
         $lastContract = $contracts->last();
-        /**
-         * @var ContractWaiting $contractWaiting
-         */
-        $contractWaiting = $unit->getContractsWaiting()->first();
 
         $this->getEntityManager()->getFilters()->enable('softdeleteable');
         $this->executeCommandTester(new UnitDeduplicateCommand(), ['--src-unit-id' => 1, '--dst-property-id' => 1]);
@@ -273,17 +237,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $lastContract->getProperty()->getId(),
             'lastContract has incorrect Property'
         );
-
-        $this->assertEquals(
-            $unitWithSameName->getId(),
-            $contractWaiting->getUnit()->getId(),
-            'contractWaiting has incorrect Unit'
-        );
-        $this->assertEquals(
-            $unitWithSameName->getProperty()->getId(),
-            $contractWaiting->getProperty()->getId(),
-            'contractWaiting has incorrect Property'
-        );
     }
 
     /**
@@ -306,10 +259,7 @@ class UnitDeduplicateCommandCase extends BaseTestCase
          * @var Contract $lastContract
          */
         $lastContract = $contracts->last();
-        /**
-         * @var ContractWaiting $contractWaiting
-         */
-        $contractWaiting = $unit->getContractsWaiting()->first();
+
         $this->executeCommandTester(
             new UnitDeduplicateCommand(),
             [
@@ -326,7 +276,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
 
         $this->getEntityManager()->refresh($firstContract);
         $this->getEntityManager()->refresh($lastContract);
-        $this->getEntityManager()->refresh($contractWaiting);
         $this->assertEquals(
             $unit->getId(),
             $firstContract->getUnit()->getId(),
@@ -336,11 +285,6 @@ class UnitDeduplicateCommandCase extends BaseTestCase
             $unit->getId(),
             $lastContract->getUnit()->getId(),
             'lastContract is updated in dryRun mode.'
-        );
-        $this->assertEquals(
-            $unit->getId(),
-            $contractWaiting->getUnit()->getId(),
-            'contractWaiting is updated in dryRun mode.'
         );
     }
 

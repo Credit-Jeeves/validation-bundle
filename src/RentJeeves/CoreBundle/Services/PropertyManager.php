@@ -10,9 +10,11 @@ use RentJeeves\ComponentBundle\Service\Google;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\CoreBundle\Services\Exception\PropertyManagerUnitOwnershipException;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 
 /**
  * Service name "property.manager"
@@ -172,22 +174,62 @@ class PropertyManager
     }
 
     /**
+     * @param Address $address
+     *
+     * @return null|Property
+     */
+    public function getOrCreatePropertyByAddress(Address $address)
+    {
+        $property = $this->getPropertyRepository()->findOneByAddress($address);
+
+        if (null !== $property) {
+            return $property;
+        }
+
+        try {
+            $address = $this->addressLookupService->lookupFreeform(
+                sprintf(
+                    '%s %s, %s, %s, %s',
+                    $address->getAddress1(),
+                    $address->getUnitName(),
+                    $address->getCity(),
+                    $address->getState(),
+                    $address->getZip()
+                )
+            );
+        } catch (AddressLookupException $e) {
+            return null;
+        }
+
+        $newProperty = new Property();
+        $propertyAddress = new PropertyAddress();
+
+        $propertyAddress->setAddressFields($address);
+
+        $newProperty->setPropertyAddress($propertyAddress);
+
+        return $newProperty;
+    }
+
+    /**
      * @param string $number
      * @param string $street
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string $unitName
      *
      * @return null|Property
      */
-    public function getOrCreatePropertyByAddress($number, $street, $city, $state, $zipCode)
+    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode, $unitName = '')
     {
         $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
         if (null !== $property) {
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+        $address1 = trim(sprintf('%s %s %s', $number, $street, $unitName));
+        if (null === $address = $this->lookupAddress($address1, $city, $state, $zipCode)) {
             return null;
         }
 
@@ -195,17 +237,74 @@ class PropertyManager
     }
 
     /**
-     * @param string $street
+     * @param Group $group
+     * @param Property $property
+     * @param string $unitName
+     * @param null|string $externalUnitId
+     * @throws \InvalidArgumentException|PropertyManagerUnitOwnershipException
+     * @return Unit
+     */
+    public function getOrCreateUnit(Group $group, Property $property, $unitName, $externalUnitId = null)
+    {
+        $unitName = $this->prepareUnitName($unitName);
+        if ($unitName === '' ||
+            $unitName === strtolower(Unit::SINGLE_PROPERTY_UNIT_NAME) ||
+            $unitName === strtolower(Unit::SEARCH_UNIT_UNASSIGNED)
+        ) {
+            throw new \InvalidArgumentException('Unit name is invalid.');
+        }
+        if ($unit = $property->searchUnit($unitName) and $unit->getGroup()->getId() !== $group->getId()) {
+            throw new PropertyManagerUnitOwnershipException('Unit exists but belongs to another group.');
+        }
+
+        if (!$unit) {
+            $unit = new Unit();
+            $unit->setHolding($group->getHolding());
+            $unit->setGroup($group);
+            $unit->setProperty($property);
+            $unit->setName($unitName);
+
+            $property->addUnit($unit);
+        }
+
+        if (!empty($externalUnitId)) {
+            if ($unit->getUnitMapping() && $unit->getUnitMapping()->getExternalUnitId() !== $externalUnitId) {
+                throw new \InvalidArgumentException('Unit mapping is invalid.');
+            }
+
+            if (!$unit->getUnitMapping()) {
+                $unitMapping = new UnitMapping();
+                $unitMapping->setExternalUnitId($externalUnitId);
+                $unitMapping->setUnit($unit);
+
+                $unit->setUnitMapping($unitMapping);
+            }
+        }
+
+        return $unit;
+    }
+
+    /**
+     * @param string $unitName
+     * @return string
+     */
+    protected function prepareUnitName($unitName)
+    {
+        return strtolower(str_replace('#', '', (string) $unitName));
+    }
+
+    /**
+     * @param string $address1
      * @param string $city
      * @param string $state
      * @param string $zipCode
      *
      * @return Address|null
      */
-    public function lookupAddress($street, $city, $state, $zipCode)
+    public function lookupAddress($address1, $city, $state, $zipCode)
     {
         try {
-            return $this->addressLookupService->lookup($street, $city, $state, $zipCode);
+            return $this->addressLookupService->lookup($address1, $city, $state, $zipCode);
         } catch (AddressLookupException $e) {
             return null;
         }

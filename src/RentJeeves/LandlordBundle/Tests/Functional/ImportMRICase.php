@@ -3,6 +3,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 
@@ -39,8 +40,10 @@ class ImportMRICase extends ImportBaseAbstract
         $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findAll();
         $countContracts = count($contracts);
 
-        $contractsWaiting = $this->getEntityManager()->getRepository('RjDataBundle:ContractWaiting')->findAll();
-        $countContractsWaiting = count($contractsWaiting);
+        $contractsInWaitingStatus = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+            ['status' => ContractStatus::WAITING]
+        );
+        $countContractsWaiting = count($contractsInWaitingStatus);
 
         $this->setDefaultSession('selenium2');
         $importGroupSettings = $this->getImportGroupSettings();
@@ -82,8 +85,12 @@ class ImportMRICase extends ImportBaseAbstract
 
         $this->assertGreaterThan(
             $countContractsWaiting,
-            count($this->getEntityManager()->getRepository('RjDataBundle:ContractWaiting')->findAll()),
-            'We not save any waiting contracts'
+            count(
+                $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+                    ['status' => ContractStatus::WAITING]
+                )
+            ),
+            'We not save any contracts in waiting'
         );
     }
 }

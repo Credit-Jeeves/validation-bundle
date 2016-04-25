@@ -2,13 +2,20 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ApiBundle\Response\Contract as ContractResponseEntity;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 
 class ContractsControllerCase extends BaseApiTestCase
 {
@@ -104,40 +111,6 @@ class ContractsControllerCase extends BaseApiTestCase
             $answerFromApi['delivery_method']
         );
 
-        $this->assertArrayHasKey(
-            'mailing_address',
-            $answerFromApi
-        );
-
-        $mailingAddress = $answerFromApi['mailing_address'];
-        $this->assertEquals(
-            $contractInDB->getGroup()->getMailingAddressName(),
-            $mailingAddress['name']
-        );
-        $this->assertEquals(
-            $contractInDB->getGroup()->getStreetAddress1(),
-            $mailingAddress['street_address_1']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getStreetAddress2(),
-            $mailingAddress['street_address_2']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getCity(),
-            $mailingAddress['city']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getState(),
-            $mailingAddress['state']
-        );
-
-        $this->assertEquals(
-            $contractInDB->getGroup()->getZip(),
-            $mailingAddress['zip']
-        );
 
         $leaseEndResult = $contractInDB->getFinishAt() ? $contractInDB->getFinishAt()->format('Y-m-d') : '';
 
@@ -159,6 +132,64 @@ class ContractsControllerCase extends BaseApiTestCase
         );
 
         return [$id, $answerFromApi];
+    }
+
+    /**
+     * @param array $data
+     *
+     * @test
+     * @depends getContract-1
+     */
+    public function shouldBePresentCheckingMailingAddressOnTrustedLandlordGroup(array $data)
+    {
+        list($contractId, $answerFromApi) = $data;
+        $repo = $this->getEntityRepository(self::WORK_ENTITY);
+        /** @var Contract $contractInDB */
+        $contractInDB = $repo->find($contractId);
+        $this->assertNotNull(
+            $contractInDB->getGroup()->getTrustedLandlord(),
+            'Group should have trusted landlord'
+        );
+        $this->assertNotNull(
+            $checkingAddressInDB = $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress(),
+            'Group should have checking mailing address'
+        );
+        $this->assertArrayHasKey(
+            'mailing_address',
+            $answerFromApi
+        );
+
+        $mailingAddress = $answerFromApi['mailing_address'];
+        $checkingAddressInDB = $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress();
+
+        $this->assertEquals(
+            $checkingAddressInDB->getAddressee(),
+            $mailingAddress['payee_name']
+        );
+        $this->assertEquals(
+            $checkingAddressInDB->getAddress1(),
+            $mailingAddress['street_address_1']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getAddress2(),
+            $mailingAddress['street_address_2']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getCity(),
+            $mailingAddress['city']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getState(),
+            $mailingAddress['state']
+        );
+
+        $this->assertEquals(
+            $checkingAddressInDB->getZip(),
+            $mailingAddress['zip']
+        );
     }
 
     /**
@@ -204,7 +235,7 @@ class ContractsControllerCase extends BaseApiTestCase
      * @test
      * @depends getContract-1
      */
-    public function shouldBePresentExternalGroupIdOnGetContractWhenNotNull(array $data)
+    public function shouldBePresentLocationIdOnGetContractWhenNotNull(array $data)
     {
         list($contractId, $answerFromApi) = $data;
         $this->assertArrayHasKey(
@@ -219,7 +250,7 @@ class ContractsControllerCase extends BaseApiTestCase
         /** @var Contract $contractInDB */
         $contractInDB = $repo->find($contractId);
         $this->assertEquals(
-            $contractInDB->getGroup()->getExternalGroupId(),
+            $contractInDB->getGroup()->getTrustedLandlord()->getCheckMailingAddress()->getExternalLocationId(),
             $mailingAddress['location_id'],
             'Location_id should be equals external group id on DB'
         );
@@ -396,10 +427,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '60654',
                     ],
                     'landlord' => [
+                        'type' => 'person',
                         'first_name' => 'Test',
                         'last_name' => 'Name',
                         'email' => 'test_landlord1@gmail.com',
                         'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'rent' => 700,
@@ -418,7 +457,16 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '10003',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord2@gmail.com',
+                        'type' => 'company',
+                        'company_name' => 'Test Company Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'experian_reporting' => 'enabled',
@@ -450,6 +498,7 @@ class ContractsControllerCase extends BaseApiTestCase
                         'street' => '22Broadway',
                     ],
                     'landlord' => [
+                        'type' => 'campany',
                         'email' => 'test_landlord3gmail.com',
                         'phone' => '111-111-111'
                     ],
@@ -478,7 +527,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '222222',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord3@gmail.com',
+                        'type' => 'person',
+                        'first_name' => 'Test',
+                        'last_name' => 'Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'rent' => 800,
@@ -497,7 +557,18 @@ class ContractsControllerCase extends BaseApiTestCase
                         'zip' => '10003',
                     ],
                     'landlord' => [
-                        'email' => 'test_landlord4@gmail.com',
+                        'type' => 'person',
+                        'first_name' => 'Test',
+                        'last_name' => 'Name',
+                        'email' => 'test_landlord1@gmail.com',
+                        'phone' => '999-555-5555',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
                     ],
                 ],
                 'experian_reporting' => 'enabled',
@@ -529,6 +600,60 @@ class ContractsControllerCase extends BaseApiTestCase
             // 10
             [
                 'experian_reporting' => 'enable',
+            ],
+            // 11
+            [
+                'new_unit' => [
+                    'address' => [
+                        'street' => '770 Broadway',
+                        'unit_name' => '3-a',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003',
+                    ],
+                    'landlord' => [
+                        'type' => 'person',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
+                    ],
+                ],
+                'experian_reporting' => 'enabled',
+                'rent' => 600,
+                'due_date' => 5,
+                'lease_start' => '2015-03-03',
+                'lease_end' => '2020-03-03',
+            ],
+            // 12
+            [
+                'new_unit' => [
+                    'address' => [
+                        'street' => '770 Broadway',
+                        'unit_name' => '3-a',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003',
+                    ],
+                    'landlord' => [
+                        'type' => 'company',
+                        'mailing_address' => [
+                            'payee_name' => 'Test Name',
+                            'street_address_1' => '770 Broadway',
+                            'city' => 'New York',
+                            'state' => 'NY',
+                            'zip' => '10003'
+                        ],
+                    ],
+                ],
+                'experian_reporting' => 'enabled',
+                'rent' => 600,
+                'due_date' => 5,
+                'lease_start' => '2015-03-03',
+                'lease_end' => '2020-03-03',
             ],
         ];
     }
@@ -567,6 +692,10 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertResponse($response, $statusCode);
 
         $answer = $this->parseContent($response->getContent());
+
+        $this->assertArrayHasKey('id', $answer, 'Should have "id" on answer');
+        $this->assertArrayHasKey('url', $answer, 'Should have "url" on answer');
+        $this->assertArrayHasKey('unit_url', $answer, 'Should have "unit_url" on answer');
 
         $tenant = $this->getUser();
 
@@ -610,7 +739,18 @@ class ContractsControllerCase extends BaseApiTestCase
                     'zip' => '60654',
                 ],
                 'landlord' => [
-                    'email' => 'landlord1@example.com',
+                    'type' => 'person',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'email' => 'test_landlord4@gmail.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown',
+                        'street_address_1' => '60 University Pl',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
                 ],
             ],
             'rent' => 700,
@@ -758,14 +898,38 @@ class ContractsControllerCase extends BaseApiTestCase
                         'message' => 'api.errors.property.zip.empty'
                     ],
                     [
-                        'parameter' => 'new_unit_landlord_email',
-                        'value' => 'test_landlord3gmail.com',
-                        'message' => 'This value is not a valid email address.',
+                        'parameter' => 'new_unit_landlord_type',
+                        'message' => 'api.errors.landlord.type.invalid',
                     ],
                     [
                         'parameter' => 'new_unit_landlord_phone',
                         'value' => '111111111',
                         'message' => 'error.user.phone.format',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_email',
+                        'value' => 'test_landlord3gmail.com',
+                        'message' => 'This value is not a valid email address.',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_payee_name',
+                        'message' => 'api.errors.mailing_address.payee_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_street_address_1',
+                        'message' => 'api.errors.mailing_address.street_address_1.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_state',
+                        'message' => 'api.errors.mailing_address.state.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_city',
+                        'message' => 'api.errors.mailing_address.city.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_zip',
+                        'message' => 'api.errors.mailing_address.zip.empty',
                     ],
                 ]
             ],
@@ -798,8 +962,28 @@ class ContractsControllerCase extends BaseApiTestCase
                         'message' => 'api.errors.property.zip.empty'
                     ],
                     [
-                        'parameter' => 'new_unit_landlord_email',
-                        'message' => 'email.required',
+                        'parameter' => 'new_unit_landlord_type',
+                        'message' => 'api.errors.landlord.type.invalid',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_payee_name',
+                        'message' => 'api.errors.mailing_address.payee_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_street_address_1',
+                        'message' => 'api.errors.mailing_address.street_address_1.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_state',
+                        'message' => 'api.errors.mailing_address.state.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_city',
+                        'message' => 'api.errors.mailing_address.city.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_mailing_address_zip',
+                        'message' => 'api.errors.mailing_address.zip.empty',
                     ],
                 ]
             ],
@@ -836,6 +1020,30 @@ class ContractsControllerCase extends BaseApiTestCase
                     ],
                 ]
             ],
+            // 6
+            [
+                self::contractsDataProvider()[11],
+                [
+                    [
+                        'parameter' => 'new_unit_landlord_first_name',
+                        'message' => 'api.errors.landlord.first_name.empty',
+                    ],
+                    [
+                        'parameter' => 'new_unit_landlord_last_name',
+                        'message' => 'api.errors.landlord.last_name.empty',
+                    ],
+                ]
+            ],
+            // 7
+            [
+                self::contractsDataProvider()[12],
+                [
+                    [
+                        'parameter' => 'new_unit_landlord_company_name',
+                        'message' => 'api.errors.landlord.company_name.empty',
+                    ],
+                ]
+            ],
         ];
     }
 
@@ -858,12 +1066,55 @@ class ContractsControllerCase extends BaseApiTestCase
 
     /**
      * @test
+     */
+    public function duplicateUnitErrorOnCreateContract()
+    {
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '1-a',
+                    'street' => '770 Broadway',
+                    'city' => 'New York',
+                    'state' => 'NY',
+                    'zip' => '10003',
+                ],
+                'landlord' => [
+                    'type' => 'person',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'email' => 'test_landlord4@gmail.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown',
+                        'street_address_1' => '771 Broadway',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 409);
+    }
+
+    /**
+     * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'enable' violated a constraint/
      */
     public function wrongEnabledCreate()
     {
         $requestParams = [
             'unit_url' => 'unit_url/2974582658',
+            'rent' => '1200.0',
+            'due_date' => 1,
+            'lease_start' => '2012-12-12',
             'experian_reporting' => 'enable',
         ];
 
@@ -873,10 +1124,14 @@ class ContractsControllerCase extends BaseApiTestCase
     /**
      * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'disable' violated a constraint/
      */
     public function wrongEnabledEdit()
     {
         $requestParams = [
+            'rent' => '1200.0',
+            'due_date' => 1,
+            'lease_start' => '2012-12-12',
             'experian_reporting' => 'disable',
         ];
 
@@ -1091,5 +1346,229 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals($requestParams['due_date'], $contract->getDueDate());
         $this->assertEquals($requestParams['lease_start'], $contract->getStartAt()->format('Y-m-d'));
         $this->assertNull($contract->getFinishAt(), 'FinishAt is expected to be NULL');
+    }
+
+    /**
+     * @test
+     * This test checks :
+     *  - created new contract
+     *  - created new dtr group
+     *  - created new holding
+     *  - created new landlord
+     *  - created new trustedLandlord
+     *  - added new unit for exist property
+     */
+    public function shouldCreateFullStructure()
+    {
+        $groupRepo = $this->getEntityManager()->getRepository('DataBundle:Group');
+        $landlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:Landlord');
+        $trustedLandlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:TrustedLandlord');
+        $unitRepo = $this->getEntityManager()->getRepository('RjDataBundle:Unit');
+
+        $countGroupsBefore = count($groupRepo->findAll());
+        $countLandlordsBefore = count($landlordRepo->findAll());
+        $countTrustedLandlordsBefore = count($trustedLandlordRepo->findAll());
+        $countUnitsBefore = count($unitRepo->findAll());
+
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '10001-a',
+                    'street' => '770 Broadway',
+                    'city' => 'New York',
+                    'state' => 'NY',
+                    'zip' => '10003',
+                ],
+                'landlord' => [
+                    'type' => 'company',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'company_name' => 'John Brown Ltd.',
+                    'email' => 'test_landlord1001@landlord.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown Ltd.',
+                        'street_address_1' => '771 Broadway',
+                        'street_address_2' => '#444',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 201);
+
+        $trustedLandlordsAfter = $trustedLandlordRepo->findAll();
+        $this->assertCount(
+            $countTrustedLandlordsBefore + 1,
+            $trustedLandlordsAfter,
+            'Should be created new trusted landlord'
+        );
+        $groupsAfter = $groupRepo->findAll();
+        $this->assertCount(
+            $countGroupsBefore + 1,
+            $groupsAfter,
+            'Should be created new group'
+        );
+        $landlordsAfter = $landlordRepo->findAll();
+        $this->assertCount(
+            $countLandlordsBefore + 1,
+            $landlordsAfter,
+            'Should be created new landlord'
+        );
+        $unitsAfter = $unitRepo->findAll();
+        $this->assertCount(
+            $countUnitsBefore + 1,
+            $unitsAfter,
+            'Should be created new unit'
+        );
+        /** @var TrustedLandlord $newTrustedLandlord */
+        $newTrustedLandlord = end($trustedLandlordsAfter);
+        $this->assertEquals(
+            TrustedLandlordType::COMPANY,
+            $newTrustedLandlord->getType(),
+            'Should be created company trusted landlord'
+        );
+        $this->assertEquals(
+            'John Brown Ltd.',
+            $newTrustedLandlord->getCompanyName(),
+            'Should be set company_name to "John Brown Ltd." on trusted landlord'
+        );
+        $this->assertEquals(
+            'John',
+            $newTrustedLandlord->getFirstName(),
+            'Should be set first_name to John on trusted landlord'
+        );
+        $this->assertEquals(
+            'Brown',
+            $newTrustedLandlord->getLastName(),
+            'Should be set last_name to Brown on trusted landlord'
+        );
+        $this->assertEquals(
+            '9995555555',
+            $newTrustedLandlord->getPhone(),
+            'Should be set phone to "9995555555" on trusted landlord'
+        );
+
+        $this->assertNotNull($newTrustedLandlord->getCheckMailingAddress(), 'Should be created check_mailing_address');
+
+        $this->assertEquals(
+            'John Brown Ltd.',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddressee(),
+            'Should be set addressee to "John Brown Ltd." on check mailing address'
+        );
+        $this->assertEquals(
+            '771 Broadway',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddress1(),
+            'Should be set address1 to "771 Broadway" on check mailing address'
+        );
+        $this->assertEquals(
+            '#444',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddress2(),
+            'Should be set address2 to "#444" on check mailing address'
+        );
+        $this->assertEquals(
+            'New York',
+            $newTrustedLandlord->getCheckMailingAddress()->getCity(),
+            'Should be set city to "New York" on check mailing address'
+        );
+        $this->assertEquals(
+            'NY',
+            $newTrustedLandlord->getCheckMailingAddress()->getState(),
+            'Should be set state to "NY" on check mailing address'
+        );
+        $this->assertEquals(
+            '10003',
+            $newTrustedLandlord->getCheckMailingAddress()->getZip(),
+            'Should be set zip to "10003" on check mailing address'
+        );
+        /** @var Landlord $newLandlord */
+        $newLandlord = end($landlordsAfter);
+        $this->assertEquals(
+            'John',
+            $newLandlord->getFirstName(),
+            'Should be set first_name to John on landlord'
+        );
+        $this->assertEquals(
+            'Brown',
+            $newLandlord->getLastName(),
+            'Should be set last_name to Brown on landlord'
+        );
+        $this->assertEquals(
+            '9995555555',
+            $newLandlord->getPhone(),
+            'Should be set phone to "9995555555" on landlord'
+        );
+        $this->assertEquals(
+            'test_landlord1001@landlord.com',
+            $newLandlord->getEmail(),
+            'Should be set phone to "test_landlord1001@landlord.com" on landlord'
+        );
+        /** @var Group $newGroup */
+        $newGroup = end($groupsAfter);
+        $this->assertEquals(
+            $newTrustedLandlord->getCompanyName(),
+            $newGroup->getName(),
+            'Should be set name to trusted landlord company name on group'
+        );
+        $this->assertEquals(
+            GroupType::RENT,
+            $newGroup->getType(),
+            'Should be set type to rent on group'
+        );
+        $this->assertEquals(
+            OrderAlgorithmType::PAYDIRECT,
+            $newGroup->getOrderAlgorithm(),
+            'Should be created dtr group'
+        );
+        $this->assertNotNull(
+            $newGroup->getGroupSettings(),
+            'Should be created group settings for group'
+        );
+        $this->assertEquals(
+            PaymentProcessor::ACI,
+            $newGroup->getGroupSettings()->getPaymentProcessor(),
+            'Should be set payment processor "ACI" on group settings'
+        );
+        $this->assertTrue(
+            $newGroup->getGroupSettings()->isAutoApproveContracts(),
+            'Should be created auto approved contracts group'
+        );
+        $this->assertTrue(
+            $newGroup->getGroupSettings()->isPassedAch(),
+            'Should be created passed ach group'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('paydirect_fee_cc'),
+            $newGroup->getGroupSettings()->getFeeCC(),
+            'Should be set default fee cc on group settings'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('paydirect_fee_ach'),
+            $newGroup->getGroupSettings()->getFeeACH(),
+            'Should be set default fee ach on group settings'
+        );
+        $depositAccount = $newGroup->getRentDepositAccountForCurrentPaymentProcessor();
+        $this->assertNotNull(
+            $depositAccount,
+            'Should be created new deposit account for group'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('aci.collect_pay.pay_direct_escrow_account'),
+            $depositAccount->getMerchantName(),
+            'Should be set merchant name to default on deposit account'
+        );
+        $this->assertEquals(
+            DepositAccountStatus::DA_COMPLETE,
+            $depositAccount->getStatus(),
+            'Should be set status to complete on deposit account'
+        );
     }
 }

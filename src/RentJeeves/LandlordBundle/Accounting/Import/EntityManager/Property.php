@@ -248,7 +248,7 @@ trait Property
             return $this->propertyList[$key];
         }
 
-        $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddress(
+        $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddressFields(
             $propertyAddress->getNumber(),
             $propertyAddress->getStreet(),
             $propertyAddress->getCity(),

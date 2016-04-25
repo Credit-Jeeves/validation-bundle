@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
@@ -726,8 +727,7 @@ class TenantCase extends BaseTestCase
         $this->getEntityManager()->flush($tenant);
         $this->setDefaultSession('selenium2');
         $this->login('test@email.ru', 'pass');
-        $this->assertNotNull($payButton = $this->page->find('css', '.button-contract-pay'));
-        $payButton->click();
+
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
 
@@ -1047,7 +1047,11 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.default>li').text() == 'contract.reminder.error.already.send'");
 
         $this->assertNotNull($error = $this->page->find('css', '.default>li'));
-        $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
+        $this->assertEquals(
+            'contract.reminder.error.already.send',
+            $error->getText(),
+            'Wrong text error : ' . $error->getText()
+        );
         $this->logout();
         // check email
         $this->assertCount($nCountEmails, $this->getEmails(), 'Wrong number of emails');
@@ -1363,5 +1367,80 @@ class TenantCase extends BaseTestCase
         $this->logout();
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(['externalLeaseId' => '322323']);
         $this->assertNotEmpty($contract, 'Contract not created');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldMoveContractOutOfWaitingAfterAddedEmail()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+
+        $this->loadTenantTab();
+
+        $this
+            ->getDomElement('.group-select>a', 'Can not find group selector')
+            ->click();
+
+        $this
+            ->getDomElement(
+                '#holding-group_list span:contains("First DTR Group")',
+                'Can not find group option in group selector'
+            )
+            ->click();
+        $this->session->wait($this->timeout - 25000, "false"); // wait refresh page, try set less time
+
+        $this->session->wait($this->timeout, 'typeof jQuery != "undefined"');
+        $this->session->wait($this->timeout, '$("#contracts-block .properties-table").length > 0');
+        $editBtn = $this->getDomElement('.edit', 'Can not find edit button');
+        $editBtn->click();
+        $contractId = str_replace('edit-', '', $editBtn->getAttribute('id'));
+        $this->assertNotEmpty($contractId, 'Contract id is empty');
+        $em = $this->getEntityManager();
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+        $this->assertNotNull($contract, 'Should be found contract by id #' . $contractId);
+        $this->assertEquals(ContractStatus::WAITING, $contract->getStatus(), 'Contract should be waiting');
+        $this->assertEmpty($contract->getTenant()->getEmail(), 'Tenant should not have email');
+
+        $this->session->wait($this->timeout, '$("#tenant-edit-property-popup .footer-button-box").is(":visible")');
+
+        $residentField = $this->getDomElement('#resident-edit', 'Resident id field not found');
+        $residentField->setValue('test_dtr_resident_1');
+
+        $startDate = $this->getDomElement('#contractEditStart', 'Can not find #contractEditStart on the page');
+        $startDate->setValue((new \DateTime())->format('m/d/Y'));
+
+        $emailField = $this->getDomElement('#email-edit', 'Email field not found');
+        $emailView = $this->getDomElement('#email-view', 'Email span not found');
+        $this->assertTrue($emailField->isVisible(), 'Email input should be visible');
+        $this->assertFalse($emailView->isVisible(), 'Email input should be hidden');
+        $emailField->setValue('testdtr@example.com');
+
+        $this->page->pressButton('savechanges');
+        $this->session->wait($this->timeout, '!$("#tenant-edit-property-popup").is(":visible")');
+        $this->session->wait($this->timeout, '$("#contracts-block .properties-table").length > 0');
+
+        $editBtn->click();
+        $this->session->wait($this->timeout, '$("#tenant-edit-property-popup .footer-button-box").is(":visible")');
+
+        $this->assertFalse($emailField->isVisible(), 'Email input should be hidden');
+        $this->assertTrue($emailView->isVisible(), 'Email span should be visible');
+
+        $this->assertEquals('testdtr@example.com', $emailView->getText(), 'Email should be saved');
+
+        $em->clear();
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+        $this->assertNotNull($contract, 'Contract should not be removed');
+        $this->assertEquals(
+            ContractStatus::APPROVED,
+            $contract->getStatus(),
+            'Contract should be moved from waiting to approved'
+        );
+        $this->assertEquals(
+            'testdtr@example.com',
+            $contract->getTenant()->getEmail(),
+            'Should be updated email for tenant'
+        );
     }
 }

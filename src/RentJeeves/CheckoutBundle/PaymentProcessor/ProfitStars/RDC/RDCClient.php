@@ -163,6 +163,12 @@ class RDCClient
             ));
         }
 
-        return $response->getGetItemsByBatchNumberResult()->getWSRemoteDepositItem();
+        $result = $response->getGetItemsByBatchNumberResult()->getWSRemoteDepositItem();
+        // if there is only 1 item in the batch, result is not array, but it is expected to be.
+        if ($result instanceof WSRemoteDepositItem) {
+            $result = [$result];
+        }
+
+        return $result;
     }
 }

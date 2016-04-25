@@ -296,6 +296,11 @@ services:
         arguments:
             - @operation.repository
 
+    dod.payment_to_trusted_landlord_dtr:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentToTrustedLandlordDTR
+        arguments:
+            - @project.mailer
+
     dod.payment_amount_max:
         class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentAmountMaxLimit
         arguments:
@@ -309,6 +314,7 @@ services:
         arguments:
             - @logger
         calls:
+            - [addRule, ["@dod.payment_to_trusted_landlord_dtr"]]
             - [addRule, ["@dod.payment_amount_max"]]
             - [addRule, ["@dod.payment_execution_allowed"]]
             - [addRule, ["@dod.payment_rolling_window_dtr"]]
@@ -358,14 +364,26 @@ services:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RemoteDepositLoader
         public: false
         arguments:
-            - @payment_processor.profit_stars.rdc.client
-            - @payment_processor.profit_stars.rdc.check_transformer
-            - @doctrine.orm.default_entity_manager
-            - @monolog.logger.profit_stars
+            - '@payment_processor.profit_stars.rdc.client'
+            - '@payment_processor.profit_stars.rdc.check_transformer'
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.profit_stars'
+            - '@renttrack.contract_manager'
+            - '@accounting.payment_sync'
 
     payment_processor.profit_stars.rdc:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc
         arguments:
-            - @payment_processor.profit_stars.rdc.report_loader
-            - @payment_processor.profit_stars.rdc.contract_registry
-            - @payment_processor.profit_stars.rdc.remote_deposit_loader
+            - '@payment_processor.profit_stars.rdc.report_loader'
+            - '@payment_processor.profit_stars.rdc.contract_registry'
+            - '@payment_processor.profit_stars.rdc.remote_deposit_loader'
+
+    payment_processor.profit_stars.report_synchronizer:
+        class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\ProfitStarsReportSynchronizer
+        arguments:
+            - '@profit_stars.transaction_reporting.client'
+            - '@payment_processor.order_status_manager'
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.profit_stars'
+            - '%profit_stars.store_id%'
+            - '%profit_stars.store_key%'

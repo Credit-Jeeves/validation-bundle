@@ -49,13 +49,37 @@ class Job extends Base
      */
     protected $dependencies;
 
-    public function __construct($command = '', array $args = [], $confirmed = true)
-    {
+    /**
+     * @param string $command
+     * @param array $args
+     * @param bool|true $confirmed
+     * @param string $queue
+     * @param int $priority
+     *
+     * @return Job
+     */
+    public static function create(
+        $command,
+        array $args = [],
+        $confirmed = true,
+        $queue = self::DEFAULT_QUEUE,
+        $priority = self::PRIORITY_DEFAULT
+    ) {
+        return new self($command, $args, $confirmed, $queue, $priority);
+    }
+
+    public function __construct(
+        $command = '',
+        array $args = [],
+        $confirmed = true,
+        $queue = self::DEFAULT_QUEUE,
+        $priority = self::PRIORITY_DEFAULT
+    ) {
         if (false === in_array('--app=rj', $args)) {
             $args[] = '--app=rj';
         }
 
-        parent::__construct($command, $args, $confirmed);
+        parent::__construct($command, $args, $confirmed, $queue, $priority);
     }
 
     public function setRelatedEntities(ArrayCollection $relatedEntities)
@@ -139,5 +163,17 @@ class Job extends Base
     public function setArgs($args)
     {
         $this->args = $args;
+    }
+
+    /**
+     * @param Base $job
+     */
+    public function setOriginalJob(Base $job)
+    {
+        if (self::STATE_PENDING !== $this->state) {
+            throw new \LogicException($this.' must be in state "PENDING".');
+        }
+
+        $this->originalJob = $job;
     }
 }

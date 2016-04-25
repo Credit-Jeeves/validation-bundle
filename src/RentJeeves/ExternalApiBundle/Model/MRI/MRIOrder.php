@@ -55,6 +55,10 @@ class MRIOrder
             return 'C';
         }
 
+        if ($this->order->getPaymentType() === OrderPaymentType::SCANNED_CHECK) {
+            return 'C';
+        }
+
         return null;
     }
 

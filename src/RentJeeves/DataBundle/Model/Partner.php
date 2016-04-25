@@ -37,6 +37,11 @@ abstract class Partner
     protected $loginUrl;
 
     /**
+     * @ORM\Column(name="reply_to_email", type="string", nullable=true)
+     */
+    protected $replyToEmail;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      */
     protected $address;
@@ -183,6 +188,22 @@ abstract class Partner
     public function setLoginUrl($loginUrl)
     {
         $this->loginUrl = $loginUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReplyToEmail()
+    {
+        return $this->replyToEmail;
+    }
+
+    /**
+     * @param string $replyToEmail
+     */
+    public function setReplyToEmail($replyToEmail)
+    {
+        $this->replyToEmail = $replyToEmail;
     }
 
     /**

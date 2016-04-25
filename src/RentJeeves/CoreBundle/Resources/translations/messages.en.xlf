@@ -1186,6 +1186,10 @@
                 <source>contract.statuses.current</source>
                 <target>ACTIVE</target>
             </trans-unit>
+            <trans-unit id="contract.statuses.waiting">
+                <source>contract.statuses.waiting</source>
+                <target>WAITING</target>
+            </trans-unit>
             <trans-unit id="contract.statuses.contract_ended">
                 <source>contract.statuses.contract_ended</source>
                 <target>%status% (CONTRACT ENDED)</target>
@@ -1225,6 +1229,10 @@
             <trans-unit id="contract.error.rent">
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
+            </trans-unit>
+            <trans-unit id="contract.error.email.invalid">
+                <source>contract.error.email.invalid</source>
+                <target>Email is invalid</target>
             </trans-unit>
             <trans-unit id="contract.error.start">
                 <source>contract.error.start</source>
@@ -2057,6 +2065,10 @@
                 <source>order.type.cash</source>
                 <target>External</target>
             </trans-unit>
+            <trans-unit id="order.type.scanned_check">
+                <source>order.type.scanned_check</source>
+                <target>Scanned Check</target>
+            </trans-unit>
             <trans-unit id="base.order.report">
                 <source>base.order.report</source>
                 <target>Base order report</target>
@@ -2335,7 +2347,7 @@
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.batchId">
                 <source>filter.group_by.deposit.batchId</source>
-                <target>BatchId</target>
+                <target>Batch ID</target>
             </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>
@@ -3076,6 +3088,10 @@
                 <source>common.payment_type_ach</source>
                 <target>Payment Type ACH</target>
             </trans-unit>
+            <trans-unit id="common.payment_type_scanned_check">
+                <source>common.payment_type_scanned_check</source>
+                <target>Payment Type Scanned Check</target>
+            </trans-unit>
             <trans-unit id="common.payment_type_cc.notes">
                 <source>common.payment_type_cc.notes</source>
                 <target>Notes for CC</target>
@@ -3083,6 +3099,10 @@
             <trans-unit id="common.payment_type_ach.notes">
                 <source>common.payment_type_ach.notes</source>
                 <target>Notes for ACH</target>
+            </trans-unit>
+            <trans-unit id="common.payment_type_scanned_check.notes">
+                <source>common.payment_type_scanned_check.notes</source>
+                <target>Notes for Scanned Check</target>
             </trans-unit>
             <trans-unit id="yardi.regexp.error.url">
                 <source>yardi.regexp.error.url</source>
@@ -3401,6 +3421,18 @@
             <trans-unit id="reported.lease">
                 <source>reported.lease</source>
                 <target>Reported Lease</target>
+            </trans-unit>
+            <trans-unit id="landlord.contract_edit.add_email.title">
+                <source>landlord.contract_edit.add_email.title</source>
+                <target>Add Email</target>
+            </trans-unit>
+            <trans-unit id="landlord.contract_edit.add_email.description">
+                <source>landlord.contract_edit.add_email.description</source>
+                <target>Resident will receive an invitation when you save the lease.</target>
+            </trans-unit>
+            <trans-unit id="contract.in_waiting_status">
+                <source>contract.in_waiting_status</source>
+                <target>Contract is in waiting status.</target>
             </trans-unit>
         </body>
     </file>

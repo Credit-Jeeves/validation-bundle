@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CoreBundle\Command;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
@@ -10,19 +12,14 @@ use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\LandlordRepository;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use RentJeeves\DataBundle\Enum\PaymentType;
-use RentJeeves\DataBundle\Enum\PaymentStatus;
-use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 
-class EmailLandlordCommand extends ContainerAwareCommand
+class EmailLandlordCommand extends BaseCommand
 {
     use DateCommon;
 
@@ -87,6 +84,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $this->getContainer()->get('soft.deleteable.control')->disable();
         
         $type = $input->getOption('type');
+        /** @var Mailer $mailer */
         $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $this->getContainer()->get('doctrine');
         $translator = $this->getContainer()->get('translator.default');
@@ -96,26 +94,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $output->writeln('Story-1553');
                 break;
             case self::OPTION_TYPE_PENDING: //Email:landlord --type=pending
-                $repo = $doctrine->getRepository('RjDataBundle:Contract');
-                $contracts = $repo->findByStatus(ContractStatus::PENDING);
-                /**
-                 * @var Contract $contract
-                 */
-                foreach ($contracts as $contract) {
-                    $holding = $contract->getHolding();
-                    $group = $contract->getGroup();
-                    //RT-92
-                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
-                    /**
-                     * @var Landlord $landlord
-                     */
-                    foreach ($landlords as $landlord) {
-                        if ($landlord->getIsActive()) {
-                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
-                        }
-                    }
-                }
-                $output->writeln('Story-2042');
+                $this->sendPendingContractEmails();
                 break;
             case self::OPTION_TYPE_NFS: //Email:landlord --type=nsf
                 // Story-1560
@@ -132,7 +111,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
                     $group = $doctrine->getRepository('DataBundle:Group')->find($payment['group_id']);
                     //RT-92
-                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
+                    $landlords = $this->getLandlordsByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendTodayPayments($landlord, $payment['amount'], 'rjTodayNotPaid');
                     }
@@ -151,7 +130,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
                     $group = $doctrine->getRepository('DataBundle:Group')->find($payment['group_id']);
                     //RT-92
-                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
+                    $landlords = $this->getLandlordsByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendTodayPayments($landlord, $payment['amount']);
                     }
@@ -181,7 +160,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     );
                     $group = $contract->getGroup();
                     //RT-92
-                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
+                    $landlords = $this->getLandlordsByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendRjDailyReport($landlord, $report);
                     }
@@ -237,7 +216,12 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $output->writeln('.');
     }
 
-    private function getLandlordByHoldingAndGroup($holding, $group)
+    /**
+     * @param Holding $holding
+     * @param Group $group
+     * @return Landlord[]
+     */
+    private function getLandlordsByHoldingAndGroup(Holding $holding, Group $group)
     {
         $result = array();
         $landlords = $this->getContainer()
@@ -265,5 +249,20 @@ class EmailLandlordCommand extends ContainerAwareCommand
         }
 
         return $result;
+    }
+
+    protected function sendPendingContractEmails()
+    {
+        $mailer = $this->getContainer()->get('project.mailer');
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->getLastPendingContracts();
+        /** @var Contract $contract */
+        foreach ($contracts as $contract) {
+            $landlords = $this->getLandlordsByHoldingAndGroup($contract->getHolding(), $contract->getGroup());
+            foreach ($landlords as $landlord) {
+                if ($landlord->getIsActive()) {
+                    $mailer->sendPendingContractToLandlord($landlord, $contract);
+                }
+            }
+        }
     }
 }

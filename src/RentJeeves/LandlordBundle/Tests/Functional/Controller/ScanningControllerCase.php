@@ -13,7 +13,10 @@ class ScanningControllerCase extends BaseTestCase
     public function shouldFindAndShowContracts()
     {
         $this->load(true);
-        $landlord = $this->getEntityManager()->find('RjDataBundle:Landlord', 65);
+        $landlord = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Landlord')
+            ->findOneByEmail('landlord1@example.com');
         $profitStarsSettings = new ProfitStarsSettings();
         $profitStarsSettings->setMerchantId('test');
         $profitStarsSettings->setHolding($landlord->getHolding());
@@ -38,14 +41,14 @@ class ScanningControllerCase extends BaseTestCase
         $nameFilter->setValue('Joh');
         $searchButton->click();
 
-        $this->session->wait(3000, "$('#loading-gif').is(':hidden')");
+        $this->session->wait(3000, "document.getElementById('loading-gif').style.display == 'none'");
 
         $rows = $this->page->findAll('css', 'tbody>tr');
         $this->assertCount(3, $rows, 'Table should contain 3 rows');
 
         $emailFilter->setValue('john@rentrack.com');
         $searchButton->click();
-        $this->session->wait(3000, "$('#loading-gif').is(':hidden')");
+        $this->session->wait(3000, "document.getElementById('loading-gif').style.display == 'none'");
 
         $rows = $this->page->findAll('css', 'tbody>tr');
         $this->assertCount(2, $rows, 'Table should contain 2 rows');
@@ -54,14 +57,14 @@ class ScanningControllerCase extends BaseTestCase
         $emailFilter->setValue('');
         $addressFilter->setValue('Broad');
         $searchButton->click();
-        $this->session->wait(3000, "$('#loading-gif').is(':hidden')");
+        $this->session->wait(3000, "document.getElementById('loading-gif').style.display == 'none'");
 
         $rows = $this->page->findAll('css', 'tbody>tr');
         $this->assertCount(18, $rows, 'Table should contain 18 rows');
 
         $unitFilter->setValue('234');
         $searchButton->click();
-        $this->session->wait(3000, "$('#loading-gif').is(':hidden')");
+        $this->session->wait(3000, "document.getElementById('loading-gif').style.display == 'none'");
 
         $rows = $this->page->findAll('css', 'tbody>tr');
         $this->assertCount(0, $rows, 'Table should contain 0 rows');
@@ -73,7 +76,10 @@ class ScanningControllerCase extends BaseTestCase
     public function shouldShowMessageIfAddressFilterContainShortWord()
     {
         $this->load(true);
-        $landlord = $this->getEntityManager()->find('RjDataBundle:Landlord', 65);
+        $landlord = $this
+            ->getEntityManager()
+            ->getRepository('RjDataBundle:Landlord')
+            ->findOneByEmail('landlord1@example.com');
         $profitStarsSettings = new ProfitStarsSettings();
         $profitStarsSettings->setMerchantId('test');
         $profitStarsSettings->setHolding($landlord->getHolding());
@@ -95,7 +101,7 @@ class ScanningControllerCase extends BaseTestCase
         $emailFilter->setValue('@');
         $searchButton->click();
 
-        $errorMessage = $this->getDomElement('div.lease-lookup .error-message>span');
+        $errorMessage = $this->getDomElement('div.pod-large .error-message>span');
         $this->assertNotEmpty($errorMessage->getText(), 'Error message should contain message');
     }
 }

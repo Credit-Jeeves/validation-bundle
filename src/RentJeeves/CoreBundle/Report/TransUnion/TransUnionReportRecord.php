@@ -6,6 +6,7 @@ use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\DisputeCode;
+use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 
 class TransUnionReportRecord
 {
@@ -180,13 +181,13 @@ class TransUnionReportRecord
     }
 
     /**
-     * TU does not want a unique unit ID, only property
+     * @return string
      */
     public function getPropertyIdentificationNumber()
     {
-        $propertyNumber = $this->contract->getProperty()->getId();
+        $number = $this->contract->getHolding()->getId();
 
-        return str_pad(sprintf('p%s', $propertyNumber), 20);
+        return str_pad(sprintf('h%s', $number), 20);
     }
 
     public function getLeaseNumber()
@@ -201,12 +202,18 @@ class TransUnionReportRecord
 
     public function getTotalRentalObligationAmount()
     {
-        return $this->getFormattedRentAmount();
+        $amount = $this->getFormattedRentAmount();
+
+        // if contract rent amount is 0, return the payment amount
+        return ($amount > 0) ? $amount : $this->getLeasePaymentAmountConfirmed();
     }
 
     public function getLeaseAmount()
     {
-        return $this->getFormattedRentAmount();
+        $amount =  $this->getFormattedRentAmount();
+
+        // if contract rent amount is 0, return the payment amount
+        return ($amount > 0) ? $amount : $this->getLeasePaymentAmountConfirmed();
     }
 
     public function getLeasePaymentAmountConfirmed()
@@ -236,9 +243,10 @@ class TransUnionReportRecord
         if (!$this->reportLeaseStatus) {
             $this->getLeaseStatus();
         }
-        if ($this->reportLeaseStatus == self::LEASE_STATUS_CLOSED_AND_PAID ||
-            $this->reportLeaseStatus == self::LEASE_STATUS_TRANSFERRED
-        ) {
+        if ($this->reportLeaseStatus == self::LEASE_STATUS_CLOSED_AND_PAID) {
+            return 0;
+        }
+        if ($this->reportLeaseStatus == self::LEASE_STATUS_TRANSFERRED) {
             $interval = $this->getUnpaidInterval();
             $leaseStatus = $this->getLateLeaseStatus($interval);
 
@@ -318,7 +326,7 @@ class TransUnionReportRecord
             return str_pad($uncollectedBalance, 9, '0', STR_PAD_LEFT);
         }
 
-        return $this->getFormattedRentAmount();
+        return str_repeat('0', 9); // zero fill balance if positive reporting
     }
 
     public function getAmountPastDue()
@@ -373,22 +381,28 @@ class TransUnionReportRecord
 
     public function getTenantSSN()
     {
-        return $this->contract->getTenant()->getSsn();
+        if (($ssn = $this->contract->getTenant()->getSsn()) && strlen($ssn) == 9) {
+            return $ssn;
+        }
+
+        return str_repeat('0', 9); // zero fill SSN
     }
 
     public function getTenantDOB()
     {
         if ($dob = $this->contract->getTenant()->getDateOfBirth()) {
-            return $dob->format('mdY');
+            if (($dob->format('Y') != '1904') && ($dob->format('Y') != '1905')) { // blank fill if bad default year
+                return $dob->format('mdY');
+            }
         }
 
-        return str_repeat(' ', 8);
+        return str_repeat('0', 8); // zero fill DOB
     }
 
     public function getTenantPhoneNumber()
     {
         if (($phone = $this->contract->getTenant()->getPhone()) && strlen($phone) == 10) {
-            return $phone;
+            return str_pad($phone, 10);
         }
 
         return str_repeat(' ', 10);
@@ -401,6 +415,7 @@ class TransUnionReportRecord
     {
         $addressLine = $this->contract->getProperty()->getPropertyAddress()->getAddress();
 
+        $addressLine = ShorteningAddressUtility::shrinkAddress($addressLine, 32);
         return str_pad($addressLine, 32);
     }
 
@@ -418,13 +433,14 @@ class TransUnionReportRecord
     public function getContractAddressCity()
     {
         $city = $this->contract->getProperty()->getPropertyAddress()->getCity();
+        $city = substr($city, 0, 20);
 
         return str_pad($city, 20);
     }
 
     public function getContractAddressState()
     {
-        return $this->contract->getProperty()->getPropertyAddress()->getState();
+        return substr($this->contract->getProperty()->getPropertyAddress()->getState(), 0, 2);
     }
 
     public function getContractAddressZip()

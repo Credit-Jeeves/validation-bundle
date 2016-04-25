@@ -648,6 +648,9 @@ class Order extends Base
             case OrderPaymentType::CASH:
                 $result = 'cash';
                 break;
+            case OrderPaymentType::SCANNED_CHECK:
+                $result = 'scanned-check';
+                break;
             default:
                 $result = '';
                 break;

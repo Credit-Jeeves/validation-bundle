@@ -584,7 +584,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
-        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->where('contract.status in (:statuses)');
         $query->andWhere('contract.tenant = :tenantId');
         $query->andWhere('contract.externalLeaseId = :externalLeaseId');
 
@@ -599,9 +599,10 @@ class ContractRepository extends EntityRepository
         }
 
         $query->setParameter('externalLeaseId', $externalLeaseId);
-        $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter(
+            'statuses',
+            [ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::INVITE, ContractStatus::WAITING]
+        );
         $query->setParameter('tenantId', $tenant->getId());
 
         $query = $query->getQuery();
@@ -631,7 +632,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('contract.unit', 'unit');
         $query->innerJoin('contract.property', 'property');
         $query->innerJoin('contract.tenant', 'tenant');
-        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
+        $query->where('contract.status in (:statuses)');
         $query->andWhere('tenant.id = :tenantId');
         if (!empty($externalUnitId)) {
             $query->innerJoin('unit.unitMapping', 'uMap');
@@ -657,9 +658,10 @@ class ContractRepository extends EntityRepository
             $query->setParameter('group', $group);
         }
 
-        $query->setParameter('approved', ContractStatus::APPROVED);
-        $query->setParameter('current', ContractStatus::CURRENT);
-        $query->setParameter('invite', ContractStatus::INVITE);
+        $query->setParameter(
+            'statuses',
+            [ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::INVITE, ContractStatus::WAITING]
+        );
         $query->setParameter('tenantId', $tenantId);
 
         $query = $query->getQuery();
@@ -1450,7 +1452,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('rm.residentId = :residentId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
@@ -1525,7 +1530,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('(u.name = :unitName OR (u.name = :singleUnitName AND propertyAddress.isSingle = 1))')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('unitName', $unitName)
@@ -1562,7 +1570,10 @@ class ContractRepository extends EntityRepository
             ->andWhere('gs.isIntegrated = 1')
             ->andWhere('um.externalUnitId = :externalUnitId')
             ->andWhere('c.externalLeaseId = :externalLeaseId')
-            ->setParameter('statuses', [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT])
+            ->setParameter(
+                'statuses',
+                [ContractStatus::INVITE, ContractStatus::APPROVED, ContractStatus::CURRENT, ContractStatus::WAITING]
+            )
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter('holding', $holding)
             ->setParameter('externalUnitId', $externalUnitId)
@@ -1701,5 +1712,73 @@ class ContractRepository extends EntityRepository
         }
 
         return $query->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param int $periodInDays
+     * @return array
+     */
+    public function getLastPendingContracts($periodInDays = 3)
+    {
+        $date = new DateTime();
+        $date->modify("-{$periodInDays} days");
+
+        $query = $this->createQueryBuilder('c')
+            ->andWhere('c.status = :pending')
+            ->andWhere('c.createdAt >= :date')
+            ->setParameter('pending', ContractStatus::PENDING)
+            ->setParameter('date', $date);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @return Contract[]
+     */
+    public function getAllWaitingForTenant(Tenant $tenant)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :waiting')
+            ->andWhere('c.tenant = :tenant')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('tenant', $tenant->getId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Unit $unit
+     * @return Contract[]
+     */
+    public function getAllWaitingForUnit(Unit $unit)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.status = :waiting')
+            ->andWhere('c.unit = :unit')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('unit', $unit->getId())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param Holding $holding
+     * @param string $residentId
+     * @return Contract[]
+     */
+    public function getAllWaitingByHoldingAndResidentId(Holding $holding, $residentId)
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.tenant', 't')
+            ->innerJoin('t.residentsMapping', 'rm')
+            ->where('c.status = :waiting')
+            ->andWhere('c.holding = :holding')
+            ->andWhere('rm.residentId = :residentId')
+            ->setParameter('waiting', ContractStatus::WAITING)
+            ->setParameter('holding', $holding)
+            ->setParameter('residentId', $residentId)
+            ->getQuery()
+            ->execute();
     }
 }

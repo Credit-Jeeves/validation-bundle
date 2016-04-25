@@ -54,8 +54,13 @@ class DoDManagerCase extends UnitTestBase
             ->will($this->returnValue(false));
         $rule
             ->expects($this->once())
-            ->method('getReason')
+            ->method('getReasonMessage')
             ->will($this->returnValue('Reason to be flagged'));
+
+        $rule
+            ->expects($this->once())
+            ->method('getReasonCode')
+            ->will($this->returnValue('reason_to_be_flagged'));
 
         $payment = new Payment();
         $tenant = new Tenant();
@@ -77,6 +82,11 @@ class DoDManagerCase extends UnitTestBase
 
         $this->assertFalse($dodManager->checkPayment($payment), 'DoD manager should return false if rule is invalid');
         $this->assertEquals(PaymentStatus::FLAGGED, $payment->getStatus(), 'DoD manager should set status to FLAGGED');
+        $this->assertEquals(
+            'reason_to_be_flagged',
+            $payment->getFlaggedReason(),
+            'DoD manager should set flagged reason'
+        );
     }
 
     /**

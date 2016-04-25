@@ -73,6 +73,8 @@ parameters:
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
 
+    mri.digest_key: e2344f3b0fd6482c8978e0dcab3d42db
+
     pdo.db_options:
         db_table:        session
         db_id_col:       session_id
@@ -91,3 +93,8 @@ parameters:
     monolog.email_from:         developers@renttrack.com
     monolog.alert.email_to:     staging@renttrack.com
     monolog.emergency.email_to: staging@renttrack.com
+
+    jira_api.hostname: https://credit.atlassian.net
+    jira_api.user: RentTrackAppStage #staging@renttrack.com
+    jira_api.password: svzB10KC3B0Z
+    jira_api.key: TLDTEST

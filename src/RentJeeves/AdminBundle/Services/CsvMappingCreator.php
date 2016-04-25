@@ -113,6 +113,7 @@ class CsvMappingCreator
 
         return $this->formFactory->create(
             new MatchFileType(
+                $group,
                 $this->translator,
                 $group->getImportSettings(),
                 count($dataView),

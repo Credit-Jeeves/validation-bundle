@@ -10,7 +10,7 @@ interface PropertyLoaderInterface
      * Process ImportProperties and create project`s Entities
      *
      * @param Import $import
-     * @param string|null $externalPropertyId
+     * @param string|null $additionalParameter
      */
-    public function loadData(Import $import, $externalPropertyId = null);
+    public function loadData(Import $import, $additionalParameter = null);
 }

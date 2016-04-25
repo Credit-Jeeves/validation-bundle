@@ -12,6 +12,7 @@ parameters:
 
     credit_summary_vendor: transunion #experian # supported values are 'transunion' or 'experian'
     payment_debit_one_time_until_value: '15:25'
+    scanning_cutoff_time: '19:00'
 
 simulation:
     entity_name: '\CreditJeeves\DataBundle\Entity\Atb'

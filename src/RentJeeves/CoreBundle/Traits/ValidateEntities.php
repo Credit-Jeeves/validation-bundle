@@ -49,6 +49,8 @@ trait ValidateEntities
      */
     protected function validate($dataForValidation, $baseValidationGroups = null)
     {
+        $this->errors = [];
+
         if (!is_array($dataForValidation)) {
             $dataForValidation = [$dataForValidation];
         }
