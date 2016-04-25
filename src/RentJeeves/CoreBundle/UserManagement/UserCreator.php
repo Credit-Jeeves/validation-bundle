@@ -167,7 +167,7 @@ class UserCreator
      */
     protected function generatePassword()
     {
-        return md5(md5(1));
+        return md5(uniqid());
     }
 
     /**
