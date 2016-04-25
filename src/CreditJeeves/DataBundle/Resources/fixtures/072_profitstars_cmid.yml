@@ -1,0 +1,5 @@
+model: RentJeeves\DataBundle\Entity\ProfitStarsCmid
+fixtures:
+    ProfitStarsCmid1:
+        landlord: Landlord_1
+        cmid: Unknown

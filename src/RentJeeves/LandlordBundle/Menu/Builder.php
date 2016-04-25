@@ -54,7 +54,9 @@ class Builder extends ContainerAware
             }
         }
 
-        if (null !== $permission->getUser()->getHolding()->getProfitStarsSettings()) {
+        if (null !== $permission->getUser()->getHolding()->getProfitStarsSettings() &&
+            null !== $permission->getUser()->getProfitStarsCmid()
+        ) {
             $menu->addChild(
                 'tabs.scanning',
                 array(
