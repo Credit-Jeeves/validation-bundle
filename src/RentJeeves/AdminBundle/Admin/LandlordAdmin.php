@@ -262,7 +262,7 @@ class LandlordAdmin extends Admin
         $user = $this->checkPassword($user);
         $settings = $user->getSettings();
         $settings->setUser($user);
-        
+
         $profitStarsCmid = $user->getProfitStarsCmid();
         if ($profitStarsCmid && $profitStarsCmid->getCmid()) {
             $profitStarsCmid->setLandlord($user);
