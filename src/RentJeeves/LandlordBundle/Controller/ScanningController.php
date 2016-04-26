@@ -44,15 +44,24 @@ class ScanningController extends LandlordController
      */
     public function sendFormAction(Request $request)
     {
-        /** @var Holding $holding */
-        $holding = $this->getUser()->getHolding();
+        $landlord = $this->getUser();
+        if (null === $landlord->getProfitStarsCmid() || null == $landlord->getProfitStarsCmid()->getCmid()) {
+            $this->getLogger()->warning(
+                $message = 'Pls add ProfitStarsCmid for Landlord#' . $landlord->getId()
+            );
+            throw new AccessDeniedHttpException($message);
+        }
+        $holding = $landlord->getHolding();
         if (null == $holding->getProfitStarsSettings() || null == $holding->getProfitStarsSettings()->getMerchantId()) {
-            throw new AccessDeniedHttpException();
+            $this->getLogger()->warning(
+                $message = 'Pls add ProfitStarsSettings for Holding#' . $holding->getId()
+            );
+            throw new AccessDeniedHttpException($message);
         }
 
         $netTellerId = $holding->getProfitStarsSettings()->getMerchantId();
         $secret = $this->container->getParameter('profit_stars.shared_secret');
-        $cmid = $this->container->getParameter('profit_stars.cmid');
+        $cmid = $landlord->getProfitStarsCmid()->getCmid();
 
         $form = $this->createNamedForm(
             '',

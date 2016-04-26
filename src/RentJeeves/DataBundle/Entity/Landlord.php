@@ -39,6 +39,17 @@ class Landlord extends User
      */
     protected $externalLandlordId;
 
+    /**
+     * @var \RentJeeves\DataBundle\Entity\ProfitStarsCmid
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ProfitStarsCmid",
+     *     mappedBy="landlord",
+     *     cascade={"persist"}
+     * )
+     */
+    protected $profitStarsCmid;
+
     public function __construct()
     {
         parent::__construct();
@@ -194,5 +205,21 @@ class Landlord extends User
         }
 
         return true;
+    }
+
+    /**
+     * @return ProfitStarsCmid
+     */
+    public function getProfitStarsCmid()
+    {
+        return $this->profitStarsCmid;
+    }
+
+    /**
+     * @param ProfitStarsCmid $profitStarsCmid
+     */
+    public function setProfitStarsCmid(ProfitStarsCmid $profitStarsCmid)
+    {
+        $this->profitStarsCmid = $profitStarsCmid;
     }
 }
