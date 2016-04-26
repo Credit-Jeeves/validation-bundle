@@ -474,7 +474,7 @@ function setupPayForm(id) {
 
             //input contract id into hidden field
 
-            jQuery(prefix + "contract").val(id);
+            jQuery(prefix + "contractId").val(id);
             
             if (debug) {
                 console.log(contract)
@@ -985,13 +985,20 @@ function updateLocalPaymentSource(entry) {
     payAccounts[i] = entry;
 }
 
-function submitForm() {
+var submitting = false;
 
+function submitForm() {
+    if (submitting) {
+        return;
+    }
+    submitting = true;
     var data =  $(currentPaymentForm).serializeArray();
     data.push({
         'name': 'contract_id',
         'value': $("#contract_id").val()
     });
+
+    $('#payRentBttn').prop('disabled', true);
 
     $.ajax({
         url: 'checkout/exec',
@@ -1021,12 +1028,16 @@ function submitForm() {
                     window.location.reload(true)
                 }, 500)
             }
+            submitting = false;
+            $('#payRentBttn').prop('disabled', false);
         },
         error: function(request, error) { //ajax error!
-            $.mobile.changePage('#pay')
-            msg = "An error occurred. (" + error + ")"
-            $("#errorMsg").html(msg)
-            $("#errorMsg").show()
+            $.mobile.changePage('#pay');
+            msg = "An error occurred. (" + error + ")";
+            $("#errorMsg").html(msg);
+            $("#errorMsg").show();
+            submitting = false;
+            $('#payRentBttn').prop('disabled', false);
         }
     });
 }
