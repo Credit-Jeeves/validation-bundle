@@ -114,7 +114,7 @@ class PaymentsController extends Controller
      *     }
      * )
      * @Rest\Post("/payments")
-     * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=201)
+     * @Rest\View(serializerGroups={"Base", "ApiErrors", "PaymentShort"}, statusCode=201)
      * @RequestParam(
      *     name="contract_url",
      *     encoder="api.default_url_encoder",

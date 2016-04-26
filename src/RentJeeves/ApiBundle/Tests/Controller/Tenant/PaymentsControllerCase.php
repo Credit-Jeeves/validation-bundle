@@ -181,6 +181,12 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         $answer = $this->parseContent($response->getContent());
 
+        $this->assertArrayHasKey('id', $answer, 'Should have "id" on answer');
+        $this->assertArrayHasKey('url', $answer, 'Should have "url" on answer');
+        $this->assertArrayHasKey('status', $answer, 'Should have "status" on answer');
+
+        $this->assertEquals(PaymentStatus::ACTIVE, $answer['status'], 'Should be created "active" payment');
+
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
 
