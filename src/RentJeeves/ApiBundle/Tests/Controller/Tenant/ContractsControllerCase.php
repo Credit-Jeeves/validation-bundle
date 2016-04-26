@@ -1555,6 +1555,11 @@ class ContractsControllerCase extends BaseApiTestCase
             $newGroup->getGroupSettings()->getFeeACH(),
             'Should be set default fee ach on group settings'
         );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('dod_limit_max_payment'),
+            $newGroup->getGroupSettings()->getMaxLimitPerMonth(),
+            'Should be set default max_limit_per_month on group settings'
+        );
         $depositAccount = $newGroup->getRentDepositAccountForCurrentPaymentProcessor();
         $this->assertNotNull(
             $depositAccount,
