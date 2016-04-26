@@ -16,7 +16,10 @@ class MailAuthorizer
         "rjOrderSending.html",
         "rjPaymentDue.html",
         "rjPendingOrder.html",
-        "rjOrderPayDirectComplete.html"
+        "rjOrderPayDirectComplete.html",
+        "rjTrustedLandlordDenied.html",
+        "rjTrustedLandlordApproved.html",
+        "rjPaymentFlaggedByUntrustedLandlordRule.html"
     ];
 
     public static function isAllowed($emailTemplateName, User $user)
