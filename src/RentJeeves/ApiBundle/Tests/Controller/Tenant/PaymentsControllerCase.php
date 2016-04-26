@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\Payment as PaymentEntity;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
@@ -173,6 +174,7 @@ class PaymentsControllerCase extends BaseApiTestCase
     public function createPayment($requestParams, $statusCode = 201)
     {
         $this->load(true);
+        $this->prepareUser();
         $response = $this->postRequest($requestParams);
 
         $this->assertResponse($response, $statusCode);
@@ -200,6 +202,7 @@ class PaymentsControllerCase extends BaseApiTestCase
     public function shouldReturnErrorWhenTryingToCreateSecondActivePaymentForContract()
     {
         $this->load(true);
+        $this->prepareUser();
 
         $date = new \DateTime();
         $requestParams = [
@@ -219,6 +222,39 @@ class PaymentsControllerCase extends BaseApiTestCase
         $answer = $this->parseContent($response->getContent());
         $this->assertNotEmpty($answer[0]['message'], 'Response does not have error message');
         $this->assertEquals('checkout.duplicate_payment.error', $answer[0]['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldReturnErrorWhenTryingToCreatePaymentForNotVerifiedUser()
+    {
+        $this->load(true);
+
+        $this->assertNotEquals(
+            UserIsVerified::PASSED,
+            $this->getUser()->getIsVerified(),
+            'User should not be verified.'
+        );
+
+        $date = new \DateTime();
+        $requestParams = [
+            'contract_url' => 'contract_url/1758512013',
+            'payment_account_url' => 'payment_account_url/656765400',
+            'type' => 'one_time',
+            'rent' => 1200.00,
+            'other' => 75.00,
+            'day' => $date->modify('+ 1 day')->format('j'),
+            'month' => $date->modify('+ 1 month')->format('n'),
+            'year' => $date->format('Y'),
+            'paid_for' => $date->format('Y-m')
+        ];
+        $response = $this->postRequest($requestParams);
+
+        $this->assertResponse($response, 400);
+        $answer = $this->parseContent($response->getContent());
+        $this->assertNotEmpty($answer[0]['message'], 'Response does not have error message');
+        $this->assertEquals('User verification failed', $answer[0]['message']);
     }
 
     /**
@@ -251,6 +287,7 @@ class PaymentsControllerCase extends BaseApiTestCase
      */
     public function editPayment($requestParams, $statusCode = 204)
     {
+        $this->prepareUser();
         /** @var PaymentRepository $repo */
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
         $tenant = $this->getUser();
@@ -432,5 +469,11 @@ class PaymentsControllerCase extends BaseApiTestCase
 
         $this->assertEquals(false, $answer['result']);
         $this->assertEquals('Payment is already closed.', $answer['message']);
+    }
+
+    protected function prepareUser()
+    {
+        $this->getUser()->setIsVerified(UserIsVerified::PASSED);
+        $this->getEntityManager()->flush();
     }
 }
