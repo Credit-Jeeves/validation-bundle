@@ -254,6 +254,10 @@ class ContractProcessor
 
             $landlord = $this->createLandlord($trustedLandlordDTO, $group);
             $this->em->persist($landlord);
+
+            if ($tenant->getPartner()) {
+                $landlord->setPartner($tenant->getPartner());
+            }
         }
 
         $group->addGroupProperty($property);
