@@ -35,6 +35,10 @@ class Mailer extends BaseMailer implements MailerInterface
     public function sendBaseLetter($templateName, $params, User $user, $filePath = null, $noReply = true)
     {
         if (false === MailAuthorizer::isAllowed($templateName, $user)) {
+            $this->logger->info(
+                sprintf('MailAuthorizer disallowed templateName %s and userID %s', $templateName, $user->getId())
+            );
+            
             return false;
         }
 

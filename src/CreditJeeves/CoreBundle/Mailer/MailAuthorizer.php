@@ -8,15 +8,18 @@ use RentJeeves\DataBundle\Entity\Partner;
 class MailAuthorizer
 {
     protected static $westsideWhitelist = [
-        "rjOrderCancel.html",
-        "rjOrderError.html",
-        "rjOrderReceipt.html",
-        "rjOrderRefunding.html",
-        "rjOrderReissued.html",
-        "rjOrderSending.html",
-        "rjPaymentDue.html",
-        "rjPendingOrder.html",
-        "rjOrderPayDirectComplete.html"
+        "rjOrderCancel",
+        "rjOrderError",
+        "rjOrderReceipt",
+        "rjOrderRefunding",
+        "rjOrderReissued",
+        "rjOrderSending",
+        "rjPaymentDue",
+        "rjPendingOrder",
+        "rjOrderPayDirectComplete",
+        "rjTrustedLandlordDenied",
+        "rjTrustedLandlordApproved",
+        "rjPaymentFlaggedByUntrustedLandlordRule"
     ];
 
     public static function isAllowed($emailTemplateName, User $user)

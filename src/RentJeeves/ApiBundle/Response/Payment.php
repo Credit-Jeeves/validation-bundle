@@ -52,7 +52,7 @@ class Payment extends ResponseResource
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Groups({"PaymentDetails", "PaymentShort"})
      *
      * @return string
      */

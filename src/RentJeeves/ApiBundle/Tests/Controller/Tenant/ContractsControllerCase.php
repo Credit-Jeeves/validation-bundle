@@ -1360,6 +1360,11 @@ class ContractsControllerCase extends BaseApiTestCase
      */
     public function shouldCreateFullStructure()
     {
+        $partner = $this->getEntityManager()->find('RjDataBundle:Partner', 1);
+        $this->assertNotNull($partner, 'Check fixtures, should be exist partner');
+        $this->getUser()->setPartner($partner);
+        $this->getEntityManager()->flush();
+
         $groupRepo = $this->getEntityManager()->getRepository('DataBundle:Group');
         $landlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:Landlord');
         $trustedLandlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:TrustedLandlord');
@@ -1511,6 +1516,7 @@ class ContractsControllerCase extends BaseApiTestCase
             $newLandlord->getEmail(),
             'Should be set phone to "test_landlord1001@landlord.com" on landlord'
         );
+        $this->assertNotNull($newLandlord->getPartner(), 'Should be added partner for landlord');
         /** @var Group $newGroup */
         $newGroup = end($groupsAfter);
         $this->assertEquals(
@@ -1554,6 +1560,11 @@ class ContractsControllerCase extends BaseApiTestCase
             $this->getContainer()->getParameter('paydirect_fee_ach'),
             $newGroup->getGroupSettings()->getFeeACH(),
             'Should be set default fee ach on group settings'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('dod_limit_max_payment'),
+            $newGroup->getGroupSettings()->getMaxLimitPerMonth(),
+            'Should be set default max_limit_per_month on group settings'
         );
         $depositAccount = $newGroup->getRentDepositAccountForCurrentPaymentProcessor();
         $this->assertNotNull(
