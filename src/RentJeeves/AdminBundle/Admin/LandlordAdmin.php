@@ -3,8 +3,6 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 
-use RentJeeves\AdminBundle\Form\ProfitStarsCmidType;
-use RentJeeves\DataBundle\Entity\Landlord;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -166,9 +164,6 @@ class LandlordAdmin extends Admin
                         'sortable'  => 'position',
                     )
                 )
-                ->with('ProfitStars')
-                    ->add('profitStarsCmid', new ProfitStarsCmidType(), ['required' => false])
-                ->end()
             ->end();
     }
 
@@ -239,17 +234,9 @@ class LandlordAdmin extends Admin
      */
     public function preUpdate($user)
     {
-        /** @var Landlord $user */
         $user = $this->checkPassword($user);
         $settings = $user->getSettings();
         $settings->setUser($user);
-
-        $profitStarsCmid = $user->getProfitStarsCmid();
-        if ($profitStarsCmid && $profitStarsCmid->getCmid()) {
-            $profitStarsCmid->setLandlord($user);
-        } else {
-            $profitStarsCmid->setLandlord(null);
-        }
     }
 
     /**
@@ -257,18 +244,10 @@ class LandlordAdmin extends Admin
      */
     public function prePersist($user)
     {
-        /** @var Landlord $user */
         $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
         $settings = $user->getSettings();
         $settings->setUser($user);
-
-        $profitStarsCmid = $user->getProfitStarsCmid();
-        if ($profitStarsCmid && $profitStarsCmid->getCmid()) {
-            $profitStarsCmid->setLandlord($user);
-        } else {
-            $profitStarsCmid->setLandlord(null);
-        }
     }
 
     private function checkPassword($user)
