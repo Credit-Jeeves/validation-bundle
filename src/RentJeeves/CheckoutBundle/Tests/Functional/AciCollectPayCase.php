@@ -250,7 +250,7 @@ class AciCollectPayCase extends BaseTestCase
                     'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                     'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                     'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
-                    'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5110200200001115',
+                    'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',
                     'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
                     'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
                     'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
@@ -482,7 +482,7 @@ class AciCollectPayCase extends BaseTestCase
         $binlistBank->setLowDebitFee(true);
         $binlistCard = new DebitCardBinlist();
         $binlistCard->setBinlistBank($binlistBank);
-        $binlistCard->setIin('511020');
+        $binlistCard->setIin('402400');
         $binlistCard->setCardType(BinlistCard::TYPE_DEBIT);
         $em->persist($binlistCard);
 
@@ -633,7 +633,7 @@ class AciCollectPayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5110200200001115',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',
                 'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
@@ -732,7 +732,7 @@ class AciCollectPayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
-                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5110200200001115',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',
                 'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => '12',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationYear' => '2025',
