@@ -250,7 +250,8 @@ class AddPropertyCase extends BaseTestCase
      */
     public function checkEmailInviteLandlordAlreadyExist()
     {
-        $this->loginByAccessToken('landlord2@example.com', $this->getUrl() . 'landlord/tenants/');
+        $this->login('landlord2@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");

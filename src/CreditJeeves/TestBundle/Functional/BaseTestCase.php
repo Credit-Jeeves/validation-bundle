@@ -113,6 +113,8 @@ abstract class BaseTestCase extends Base
     }
 
     /**
+     * Pls don`t use for depends tests
+     *
      * @param string      $userName
      * @param string|null $url
      */

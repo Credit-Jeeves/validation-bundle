@@ -666,7 +666,9 @@ class TenantCase extends BaseTestCase
     {
         # use already created tenant on depends test
         $this->setDefaultSession('selenium2');
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         // set group - "Sea side Rent Group" to be able to change isIntegrated setting
@@ -849,7 +851,8 @@ class TenantCase extends BaseTestCase
         $em->persist($setting);
         $em->flush();
         $em->clear();
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         // set group - "Sea side Rent Group"
@@ -1279,7 +1282,8 @@ class TenantCase extends BaseTestCase
         $em->flush();
         $em->clear();
         $this->clearEmail();
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         // set group - "Sea side Rent Group" to be able to change isIntegrated setting
