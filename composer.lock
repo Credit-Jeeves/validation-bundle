@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "61ae04ee3b2ad3d5a327e5ab50a02bce",
-    "content-hash": "9e9662d1fb8d53d18955e23dd24ade70",
+    "hash": "16f37a07f9747ef4bbd4cbd802167ae6",
+    "content-hash": "d6bef29146c85f3ed82252fe8dbc34bf",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -345,17 +345,17 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "v0.2.6",
+            "version": "v0.2.7",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Credit-Jeeves/BeSimpleSoapClient.git",
-                "reference": "9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80"
+                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80",
-                "reference": "9aff5726fe58d17b57b4f65c9fffecfcd6a2fa80",
+                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
+                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
                 "shasum": ""
             },
             "require": {
@@ -405,9 +405,9 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.6"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.7"
             },
-            "time": "2015-12-25 11:40:10"
+            "time": "2016-04-26 09:57:50"
         },
         {
             "name": "besimple/soap-common",
@@ -4651,12 +4651,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
-                "reference": "4e754ba22d9c1857dbdac84c8cc17208af9a15a4"
+                "reference": "83a17a51c741f3a8fa31682923df342252c97f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/4e754ba22d9c1857dbdac84c8cc17208af9a15a4",
-                "reference": "4e754ba22d9c1857dbdac84c8cc17208af9a15a4",
+                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/83a17a51c741f3a8fa31682923df342252c97f33",
+                "reference": "83a17a51c741f3a8fa31682923df342252c97f33",
                 "shasum": ""
             },
             "require": {
@@ -4668,7 +4668,8 @@
             "require-dev": {
                 "besimple/wsdl2php": "1.0.0",
                 "monolog/monolog": "dev-master",
-                "phpunit/phpunit": "4.5.*"
+                "phpunit/phpunit": "4.5.*",
+                "vlucas/phpdotenv": "^2.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -4698,7 +4699,7 @@
                 "source": "https://github.com/Credit-Jeeves/TransUnionBundle/tree/master",
                 "issues": "https://github.com/Credit-Jeeves/TransUnionBundle/issues"
             },
-            "time": "2015-10-16 18:35:46"
+            "time": "2016-04-27 09:50:09"
         },
         {
             "name": "rj/email-bundle",
@@ -8071,7 +8072,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.6.0",
+            "version": "0.2.7.0",
             "package": "besimple/soap-client"
         },
         {

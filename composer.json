@@ -210,7 +210,7 @@
         "renttrack/transunion-bundle": "dev-master",
         "renttrack/smarty-streets-bundle": "dev-master",
         "doctrine/orm": "v2.4.8",
-        "besimple/soap-client": "v0.2.6 as dev-master",
+        "besimple/soap-client": "v0.2.7 as dev-master",
         "apy/jsfv-bundle":"dev-master as 2.1",
         "doctrine/migrations": "dev-master as 1.0.0",
         "renttrack/profit-stars-client-bundle": "dev-master",
