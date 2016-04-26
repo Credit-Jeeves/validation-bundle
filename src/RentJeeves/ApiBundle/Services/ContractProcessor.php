@@ -297,13 +297,8 @@ class ContractProcessor
         /** @var Contract[] $contracts */
         foreach ($contracts as $contract) {
             if ($group->getId() == $contract->getGroup()->getId()) {
-                if (!empty($landlord) && !$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                    throw new \Exception(
-                        sprintf(
-                            'Invitation email to "%s" can\'t be send. Please contact with administrator.',
-                            $landlord->getEmail()
-                        )
-                    );
+                if (!empty($landlord)) {
+                    $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
                 }
 
                 return $contract;
