@@ -113,13 +113,17 @@ abstract class BaseTestCase extends Base
     }
 
     /**
-     * Pls don`t use for depends tests
-     *
      * @param string      $userName
      * @param string|null $url
      */
     protected function loginByAccessToken($userName, $url = null)
     {
+        if (true === $this->hasDependencies()) {
+            throw new \LogicException(
+                'U can`t use "loginByAccessToken" for tests with dependencies. Pls use "$this->login()".'
+            );
+        }
+
         if ($url === null) {
             $url = $this->getUrl();
         }
