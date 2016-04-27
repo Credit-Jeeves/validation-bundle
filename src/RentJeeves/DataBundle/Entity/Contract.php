@@ -472,8 +472,9 @@ class Contract extends Base
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
                 // if month is between startDate and createDate or date is before 1st paid month
-                if ($date <= $createDate && $startDate <= $date ||
-                    (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth)
+                if (!$this->equalMonthDates($date, $createDate) && $date <= $createDate && $startDate <= $date ||
+                    (null !== $lastPaidMonth && ($date >= $createDate && $date <= $lastPaidMonth) ||
+                        $lastPaidMonth >= $createDate && $this->equalMonthDates($date, $createDate))
                 ) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
@@ -488,6 +489,16 @@ class Contract extends Base
         }
 
         return $result;
+    }
+
+    /**
+     * @param \DateTime $firstDate
+     * @param \DateTime $secondDate
+     * @return bool
+     */
+    private function equalMonthDates(\DateTime $firstDate, \DateTime $secondDate)
+    {
+        return $firstDate->format('Y-m') === $secondDate->format('Y-m');
     }
 
     /**
@@ -644,7 +655,6 @@ class Contract extends Base
         } catch (\RuntimeException $e) {
             $result['payment_status'] = 'duplicated';
         }
-
 
         $result['hasCustomPayments'] = false;
 
