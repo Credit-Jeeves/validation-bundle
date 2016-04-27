@@ -139,7 +139,11 @@ class TransformerFactory
 
         $accountingSystemName = $group->getHolding()->getAccountingSystem();
         $baseTransformer = $this->defaultTransformers[$accountingSystemName];
-        if (get_parent_class($customTransformerClass) !== get_class($baseTransformer)) {
+        $baseTransformerClass = get_class($baseTransformer);
+
+        $customTransformer = new $customTransformerClass($this->em, $this->logger);
+
+        if (!$customTransformer instanceof $baseTransformerClass) {
             $this->logger->warning(
                 $message = sprintf(
                     'Custom transformer for this Group must be override "%s".',
@@ -151,7 +155,7 @@ class TransformerFactory
             throw new ImportException($message);
         }
 
-        return new $customTransformerClass($this->em, $this->logger);
+        return $customTransformer;
     }
 
     /**
