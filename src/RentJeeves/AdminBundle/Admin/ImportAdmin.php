@@ -19,7 +19,7 @@ class ImportAdmin extends Admin
     {
         parent::configure();
 
-        $this->datagridValues['_sort_by']    = 'id';
+        $this->datagridValues['_sort_by'] = 'id';
         $this->datagridValues['_sort_order'] = 'DESC';
     }
 
