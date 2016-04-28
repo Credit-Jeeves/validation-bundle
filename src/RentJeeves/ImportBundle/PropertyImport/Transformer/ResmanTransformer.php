@@ -15,6 +15,16 @@ use RentJeeves\ExternalApiBundle\Model\ResMan\RtUnit;
 class ResmanTransformer implements TransformerInterface
 {
     /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @var array
      */
     protected $arrayCache = [];
@@ -23,7 +33,7 @@ class ResmanTransformer implements TransformerInterface
      * @param EntityManagerInterface $em
      * @param LoggerInterface        $logger
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    final public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->logger = $logger;

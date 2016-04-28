@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerFactory;
+use RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
@@ -18,37 +19,49 @@ class TransformerFactoryCase extends UnitTestBase
     use CreateSystemMocksExtensionTrait;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $tmpFile;
+    protected $tmpFiles = [];
 
     protected function createCustomTransformerFile()
     {
         $customFileDist = __DIR__ . '/../../../../PropertyImport/Transformer/Custom/ExampleCustomTransformer.php.dist';
-        $this->tmpFile = __DIR__ . '/../../../../PropertyImport/Transformer/Custom/ExampleCustomTransformer.php';
-        copy($customFileDist, $this->tmpFile);
+        $this->tmpFiles[] = __DIR__ . '/../../../../PropertyImport/Transformer/Custom/ExampleCustomTransformer.php';
+        copy($customFileDist, $this->tmpFiles[0]);
+    }
+
+    protected function createCustomAndParentTransformersFile()
+    {
+        $customFileDist = __DIR__ . '/../../../../PropertyImport/Transformer/Custom/ExampleCustomTransformer.php.dist';
+        $this->tmpFiles[] = __DIR__ . '/../../../../PropertyImport/Transformer/Custom/ExampleCustomTransformer.php';
+        copy($customFileDist, $this->tmpFiles[0]);
+        $customFileDist = __DIR__ . '/../../../Fixtures/ChildExampleCustomTransformer.php.dist';
+        $this->tmpFiles[] = __DIR__ . '/../../../Fixtures/ChildExampleCustomTransformer.php';
+        copy($customFileDist, $this->tmpFiles[1]);
     }
 
     protected function createInvalidCustomTransformerFile()
     {
         $customFileDist = __DIR__ . '/../../../Fixtures/InvalidCustomTransformer.php.dist';
-        $this->tmpFile = __DIR__ . '/../../../Fixtures/InvalidCustomTransformer.php';
-        copy($customFileDist, $this->tmpFile);
+        $this->tmpFiles[] = __DIR__ . '/../../../Fixtures/InvalidCustomTransformer.php';
+        copy($customFileDist, $this->tmpFiles[0]);
     }
 
     protected function createCustomTransformerWithInvalidNamespace()
     {
         $customFileDist = __DIR__ . '/../../../Fixtures/CustomTransformerWithInvalidNamespace.php.dist';
-        $this->tmpFile = __DIR__ . '/../../../Fixtures/CustomTransformerWithInvalidNamespace.php';
-        copy($customFileDist, $this->tmpFile);
+        $this->tmpFiles[] = __DIR__ . '/../../../Fixtures/CustomTransformerWithInvalidNamespace.php';
+        copy($customFileDist, $this->tmpFiles[0]);
     }
 
     public function tearDown()
     {
         parent::tearDown();
 
-        if (true === file_exists($this->tmpFile)) {
-            unlink($this->tmpFile);
+        foreach ($this->tmpFiles as $tmpFile) {
+            if (true === file_exists($tmpFile)) {
+                unlink($tmpFile);
+            }
         }
     }
 
@@ -204,6 +217,48 @@ class TransformerFactoryCase extends UnitTestBase
             'RentJeeves\ImportBundle\PropertyImport\Transformer\TransformerInterface',
             $transformer
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateCustomTransformerIfDbHasRecordAndCustomTransformerOverridesNotBaseTransformer()
+    {
+        $this->createCustomAndParentTransformersFile();
+
+        $group = new Group();
+        $groupImportSettings = new ImportGroupSettings();
+        $groupImportSettings->setSource(ImportSource::INTEGRATED_API);
+        $group->setImportSettings($groupImportSettings);
+        $holding = new Holding();
+        $holding->setAccountingSystem(AccountingSystem::MRI);
+        $group->setHolding($holding);
+
+        $repoMock = $this->getImportTransformerRepositoryMock();
+        $repoMock->expects($this->once())
+            ->method('findClassNameWithPriorityByGroupAndExternalPropertyId')
+            ->will($this->returnValue('ChildExampleCustomTransformer'));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repoMock));
+
+        $mriTransformer = new MRITransformer($this->getEntityManagerMock(), $this->getLoggerMock());
+        $factory = new TransformerFactory(
+            $em,
+            $this->getLoggerMock(),
+            [
+                __DIR__ . '/../../../../PropertyImport/Transformer/Custom',
+                __DIR__ . '/../../../Fixtures',
+            ],
+            [AccountingSystem::MRI => $mriTransformer],
+            $this->geCsvTransformerMock()
+        );
+
+        $transformer = $factory->getTransformer($group, 'test');
+
+        $this->assertInstanceOf(TransformerInterface::class, $transformer);
     }
 
     /**
