@@ -20,6 +20,7 @@ use Payum\Core\Payment as PaymentProcessor;
 use Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry as PayumAwareRegistry;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\AbstractManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
+use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorLogicException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\OutboundTransaction;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
@@ -218,14 +219,21 @@ class PaymentManager
     {
         $payee = new Payee();
 
-        $payeeAddress = new Address();
-        $payeeAddress->setAddress1($group->getStreetAddress1());
-        $payeeAddress->setCity($group->getCity());
-        $payeeAddress->setState($group->getState());
-        $payeeAddress->setPostalCode($group->getZip());
-        $payeeAddress->setCountryCode($group->getCountry());
+        if (null === $trustedLandlord = $group->getTrustedLandlord()) {
+            throw new PaymentProcessorLogicException(
+                sprintf('Group#%d doesn`t contain relation with CheckMailingAddress.', $group->getId())
+            );
+        }
+        $checkMailingAddress = $trustedLandlord->getCheckMailingAddress();
 
-        $payee->setName($group->getMailingAddressName());
+        $payeeAddress = new Address();
+        $payeeAddress->setAddress1($checkMailingAddress->getAddress1());
+        $payeeAddress->setCity($checkMailingAddress->getCity());
+        $payeeAddress->setState($checkMailingAddress->getState());
+        $payeeAddress->setPostalCode($checkMailingAddress->getZip());
+        $payeeAddress->setCountryCode(self::COUNTRY);
+
+        $payee->setName($checkMailingAddress->getAddressee());
         $payee->setAddress($payeeAddress);
 
         return $payee;
