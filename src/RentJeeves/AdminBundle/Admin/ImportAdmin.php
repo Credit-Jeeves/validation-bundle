@@ -6,12 +6,22 @@ use Doctrine\ORM\EntityManager;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
 class ImportAdmin extends Admin
 {
     const TYPE = 'import';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configure()
+    {
+        parent::configure();
+
+        $this->datagridValues['_sort_by'] = 'id';
+        $this->datagridValues['_sort_order'] = 'DESC';
+    }
 
     /**
      * {@inheritdoc}
