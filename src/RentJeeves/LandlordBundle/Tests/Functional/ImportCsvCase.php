@@ -259,7 +259,8 @@ class ImportCsvCase extends ImportBaseAbstract
     public function shouldImportFileWithCheckboxOnlyNewAndException()
     {
         $this->setDefaultSession('selenium2');
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
         //First Step
         $this->setPropertyFirst();
         $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
@@ -323,7 +324,8 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         for ($i = 0; $i < 2; $i++) {
-            $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+            $this->login('landlord1@example.com', 'pass');
+            $this->page->clickLink('tab.accounting');
             //First Step
             $this->session->wait(5000, "typeof jQuery != 'undefined'");
             $this->setPropertyFirst();
@@ -482,7 +484,8 @@ class ImportCsvCase extends ImportBaseAbstract
         $em->persist($tenant);
         $em->flush();
 
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFixtureFilePathByName('import_waiting_room.csv');
@@ -852,7 +855,8 @@ class ImportCsvCase extends ImportBaseAbstract
     public function checkMatchedUser()
     {
         $this->setDefaultSession('selenium2');
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:

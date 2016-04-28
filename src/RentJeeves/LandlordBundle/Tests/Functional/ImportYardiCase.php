@@ -157,7 +157,8 @@ class ImportYardiCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
         /** @var Landlord $landlord */
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImport = $this->page->find('css', '.submitImportFile'));

@@ -1134,7 +1134,8 @@ class TenantCase extends BaseTestCase
         $this->clearEmail();
 
         $this->setDefaultSession('selenium2');
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, '$("img.processLoading").length == 0');
         //Check created contracts
         $this->chooseLinkSelect('searchPaymentsStatus', 'invite');
