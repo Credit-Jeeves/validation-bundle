@@ -164,6 +164,13 @@ class TrustedLandlordStatusManager
         $payments = $this->em->getRepository('RjDataBundle:Payment')->findAllFlaggedPaymentToUntrustedLandlord(
             $trustedLandlord->getGroup()
         );
+        $this->logger->debug(
+            sprintf(
+                'TrustedLandlordStatusManager will unlock flagged payments for group#%s in an amount %s',
+                $trustedLandlord->getGroup()->getId(),
+                count($payments)
+            )
+        );
         $today = new \DateTime();
         foreach ($payments as $payment) {
             $currentStartDate = $payment->getStartDate();
@@ -204,6 +211,13 @@ class TrustedLandlordStatusManager
     {
         $activePayments = $this->em->getRepository('RjDataBundle:Payment')->findAllActiveAndFlaggedPaymentsForGroup(
             $trustedLandlord->getGroup()
+        );
+        $this->logger->debug(
+            sprintf(
+                'TrustedLandlordStatusManager will close active payments for group#%s in an amount %s',
+                $trustedLandlord->getGroup()->getId(),
+                count($activePayments)
+            )
         );
         foreach ($activePayments as $activePayment) {
             $activePayment->setClosed($this, 'We were unable to verify your Property Manager');

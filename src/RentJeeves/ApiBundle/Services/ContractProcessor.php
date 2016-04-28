@@ -12,26 +12,34 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Services\ContractProcess;
+use RentJeeves\CoreBundle\Services\Exception\PropertyManagerUnitOwnershipException;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
-use RentJeeves\DataBundle\Enum\TrustedLandlordType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TrustedLandlordBundle\Exception\TrustedLandlordServiceException;
 use RentJeeves\TrustedLandlordBundle\Model\TrustedLandlordDTO;
 use RentJeeves\TrustedLandlordBundle\Services\TrustedLandlordService;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @DI\Service("api.contract.processor")
  */
 class ContractProcessor
 {
+    const DEFAULT_STATEMENT_DESCRIPTOR = 'RENTTRK-WSR RENT PAY';
+
     /**
      * @var EntityManager
      */
@@ -68,6 +76,29 @@ class ContractProcessor
     protected $trustedLandlordService;
 
     /**
+     * @see parameter paydirect_fee_cc
+     * @var float
+     */
+    protected $defaultFeeCC;
+
+    /**
+     * @see parameter paydirect_fee_ach
+     * @var float
+     */
+    protected $defaultFeeACH;
+
+    /**
+     * @see parameter aci.collect_pay.pay_direct_escrow_account
+     * @var string
+     */
+    protected $defaultPayDirectInboundMerchantAccount;
+
+    /**
+     * @var int
+     */
+    protected $defaultMaxLimitPerMonth = 0;
+
+    /**
      * @param EntityManager $em
      * @param LoggerInterface $logger
      * @param Mailer $mailer
@@ -75,6 +106,10 @@ class ContractProcessor
      * @param ContractProcess $contractProcess
      * @param PropertyManager $propertyProcess
      * @param TrustedLandlordService $trustedLandlordService
+     * @param float $defaultFeeCC
+     * @param float $defaultFeeACH
+     * @param string $defaultPayDirectInboundMerchantAccount
+     * @param int $defaultMaxLimitPerMonth
      *
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
@@ -83,7 +118,11 @@ class ContractProcessor
      *     "locale" = @DI\Inject("%kernel.default_locale%"),
      *     "contractProcess" = @DI\Inject("contract.process"),
      *     "propertyProcess" = @DI\Inject("property.manager"),
-     *     "trustedLandlordService" = @DI\Inject("trusted_landlord_service")
+     *     "trustedLandlordService" = @DI\Inject("trusted_landlord_service"),
+     *     "defaultFeeCC" = @DI\Inject("%paydirect_fee_cc%"),
+     *     "defaultFeeACH" = @DI\Inject("%paydirect_fee_ach%"),
+     *     "defaultPayDirectInboundMerchantAccount" = @DI\Inject("%aci.collect_pay.pay_direct_escrow_account%"),
+     *     "defaultMaxLimitPerMonth" = @DI\Inject("%dod_limit_max_payment%")
      * })
      */
     public function __construct(
@@ -93,7 +132,11 @@ class ContractProcessor
         $locale,
         ContractProcess $contractProcess,
         PropertyManager $propertyProcess,
-        TrustedLandlordService $trustedLandlordService
+        TrustedLandlordService $trustedLandlordService,
+        $defaultFeeCC,
+        $defaultFeeACH,
+        $defaultPayDirectInboundMerchantAccount,
+        $defaultMaxLimitPerMonth
     ) {
         $this->em = $em;
         $this->logger = $logger;
@@ -102,6 +145,10 @@ class ContractProcessor
         $this->contractProcess = $contractProcess;
         $this->propertyManager = $propertyProcess;
         $this->trustedLandlordService = $trustedLandlordService;
+        $this->defaultFeeCC = $defaultFeeCC;
+        $this->defaultFeeACH = $defaultFeeACH;
+        $this->defaultPayDirectInboundMerchantAccount = $defaultPayDirectInboundMerchantAccount;
+        $this->defaultMaxLimitPerMonth = $defaultMaxLimitPerMonth;
     }
 
     /**
@@ -197,35 +244,20 @@ class ContractProcessor
         }
 
         if (!$group = $trustedLandlord->getGroup()) {
-            $holding = new Holding();
-            $holding->setName($this->generateCommercialName($trustedLandlordDTO));
-
-            $group = new Group();
-            $group->setName($this->generateCommercialName($trustedLandlordDTO));
-            $group->setType(GroupType::RENT);
-            $group->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
-            $group->setHolding($holding);
+            $group = $this->createGroup($trustedLandlordDTO);
             $group->setTrustedLandlord($trustedLandlord);
-
-            $holding->addGroup($group);
-
-            $this->em->persist($holding);
         }
 
         if ($email = $trustedLandlordDTO->getEmail() and
             !$this->em->getRepository('DataBundle:User')->findOneByEmail($email)
         ) {
-            $landlord = new Landlord();
-            $landlord->setEmail($email);
-            $landlord->setFirstName($trustedLandlordDTO->getFirstName());
-            $landlord->setLastName($trustedLandlordDTO->getLastName());
-            $landlord->setPhone($trustedLandlordDTO->getPhone());
-            $landlord->setPassword(md5(md5(rand())));
-            $landlord->setCulture($this->locale);
-            $landlord->setHolding($group->getHolding());
-            $landlord->setAgentGroups($group);
 
+            $landlord = $this->createLandlord($trustedLandlordDTO, $group);
             $this->em->persist($landlord);
+
+            if ($tenant->getPartner()) {
+                $landlord->setPartner($tenant->getPartner());
+            }
         }
 
         $group->addGroupProperty($property);
@@ -242,6 +274,19 @@ class ContractProcessor
         $this->em->persist($group);
         $this->em->flush();
 
+        if (!$property->isSingle()) {
+            try {
+                $unit = $this->propertyManager->getOrCreateUnit($group, $property, $unitName);
+            } catch (\InvalidArgumentException $e) {
+                throw new BadRequestHttpException($e->getMessage(), $e);
+            } catch (PropertyManagerUnitOwnershipException $e) {
+                throw new HttpException(409, $e->getMessage(), $e);
+            }
+
+            $this->em->persist($unit);
+            $this->em->flush();
+        }
+
         $contracts = $this
             ->contractProcess
             ->setContract($contract)
@@ -252,13 +297,8 @@ class ContractProcessor
         /** @var Contract[] $contracts */
         foreach ($contracts as $contract) {
             if ($group->getId() == $contract->getGroup()->getId()) {
-                if (!empty($landlord) && !$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                    throw new \Exception(
-                        sprintf(
-                            'Invitation email to "%s" can\'t be send. Please contact with administrator.',
-                            $landlord->getEmail()
-                        )
-                    );
+                if (!empty($landlord)) {
+                    $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
                 }
 
                 return $contract;
@@ -266,6 +306,96 @@ class ContractProcessor
         }
 
         throw new \LogicException('Contract should be created');
+    }
+
+    /**
+     * @param TrustedLandlordDTO $trustedLandlordDTO
+     * @return Group
+     */
+    protected function createGroup(TrustedLandlordDTO $trustedLandlordDTO)
+    {
+        $newGroup = new Group();
+
+        $newGroup->setName($this->generateCommercialName($trustedLandlordDTO));
+        $newGroup->setHolding($this->createHolding($newGroup->getName()));
+        $newGroup->setType(GroupType::RENT);
+        $newGroup->setStatementDescriptor(self::DEFAULT_STATEMENT_DESCRIPTOR);
+        $newGroup->setOrderAlgorithm(OrderAlgorithmType::PAYDIRECT);
+
+        $this->createGroupSetting($newGroup);
+        $this->createDepositAccount($newGroup);
+
+        return $newGroup;
+    }
+
+    /**
+     * @param string $holdingName
+     * @return Holding
+     */
+    protected function createHolding($holdingName)
+    {
+        $newHolding = new Holding();
+        $newHolding->setName($holdingName);
+
+        return $newHolding;
+    }
+
+    /**
+     * @param Group $group
+     *
+     * @return GroupSettings
+     */
+    protected function createGroupSetting(Group $group)
+    {
+        $newGroupSettings = $group->getGroupSettings();
+        $newGroupSettings->setPaymentProcessor(PaymentProcessor::ACI);
+        $newGroupSettings->setAutoApproveContracts(true);
+        $newGroupSettings->setPassedAch(true);
+        $newGroupSettings->setFeeCC($this->defaultFeeCC);
+        $newGroupSettings->setFeeACH($this->defaultFeeACH);
+        $newGroupSettings->setMaxLimitPerMonth($this->defaultMaxLimitPerMonth);
+
+        return $newGroupSettings;
+    }
+
+    /**
+     * @param Group $group
+     *
+     * @return DepositAccount
+     */
+    protected function createDepositAccount(Group $group)
+    {
+        $newDepositAccount = new DepositAccount($group);
+        $newDepositAccount->setType(DepositAccountType::RENT);
+        $newDepositAccount->setMerchantName($this->defaultPayDirectInboundMerchantAccount);
+        if ($this->defaultPayDirectInboundMerchantAccount) {
+            $newDepositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
+        }
+        $newDepositAccount->setPaymentProcessor(PaymentProcessor::ACI);
+
+        $group->addDepositAccount($newDepositAccount);
+
+        return $newDepositAccount;
+    }
+
+    /**
+     * @param TrustedLandlordDTO $trustedLandlordDTO
+     * @param Group $group
+     * @return Landlord
+     */
+    protected function createLandlord(TrustedLandlordDTO $trustedLandlordDTO, Group $group)
+    {
+        $landlord = new Landlord();
+        $landlord->setEmail($trustedLandlordDTO->getEmail());
+        $landlord->setFirstName($trustedLandlordDTO->getFirstName());
+        $landlord->setLastName($trustedLandlordDTO->getLastName());
+        $landlord->setPhone($trustedLandlordDTO->getPhone());
+        $landlord->setPassword(md5(md5(rand())));
+        $landlord->setCulture($this->locale);
+        $landlord->setHolding($group->getHolding());
+        $landlord->setAgentGroups($group);
+
+        return $landlord;
     }
 
     /**

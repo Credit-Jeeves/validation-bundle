@@ -49,13 +49,10 @@ class UserCreatorCase extends UnitTestBase
         $inputUserName,
         $outputUserName
     ) {
-        $user = new Tenant();
-        $user->setUsernameCanonical($inputUserName);
-
         $userRepository = $this->getBaseMock(UserRepository::class);
         $userRepository->expects($this->once())
-            ->method('findLastByPartOfUserName')
-            ->willReturn($user);
+            ->method('getLastUserNameByPartOfUserName')
+            ->willReturn($inputUserName);
 
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -92,7 +89,7 @@ class UserCreatorCase extends UnitTestBase
     {
         $userRepository = $this->getBaseMock(UserRepository::class);
         $userRepository->expects($this->once())
-            ->method('findLastByPartOfUserName')
+            ->method('getLastUserNameByPartOfUserName')
             ->willReturn(null);
 
         $em = $this->getEntityManagerMock();

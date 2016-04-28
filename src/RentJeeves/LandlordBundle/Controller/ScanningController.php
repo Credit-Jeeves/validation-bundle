@@ -52,7 +52,7 @@ class ScanningController extends LandlordController
 
         $netTellerId = $holding->getProfitStarsSettings()->getMerchantId();
         $secret = $this->container->getParameter('profit_stars.shared_secret');
-        $cmid = $this->container->getParameter('profit_stars.cmid');
+        $cmid = $this->getUser()->getId();
 
         $form = $this->createNamedForm(
             '',

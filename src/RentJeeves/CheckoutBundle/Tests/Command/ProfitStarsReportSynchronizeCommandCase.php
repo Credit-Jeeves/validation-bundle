@@ -79,9 +79,9 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
             ->getRepository('RjDataBundle:Transaction')->findAll();
 
         $this->assertEquals(
-            count($allTransaction) + 1,
+            count($allTransaction) + 2,
             count($allTransactionAfterSync),
-            'New transaction is not created.'
+            'New transactions are not created.'
         );
         /** @var Transaction $lastTransaction */
         $lastTransaction = end($allTransactionAfterSync);
@@ -91,12 +91,12 @@ class ProfitStarsReportSynchronizeCommandCase extends BaseTestCase
             'Incorrect status for new transaction.'
         );
         $this->assertEquals(
-            'ZMC825CFBA2',
+            '7VC825CFBA2',
             $lastTransaction->getTransactionId(),
             'Incorrect TransactionId for new transaction.'
         );
         $this->assertEquals(
-            3,
+            2,
             $lastTransaction->getOrder()->getId(),
             'Incorrect Order for new transaction.'
         );

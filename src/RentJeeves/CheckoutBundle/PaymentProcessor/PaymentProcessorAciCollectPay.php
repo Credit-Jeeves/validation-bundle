@@ -191,7 +191,7 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
      */
     public function calculateDepositDate($paymentType, \DateTime $executeDate)
     {
-        return BusinessDaysCalculator::getBusinessDate($executeDate, 1);
+        return BusinessDaysCalculator::getNextDepositDate($executeDate);
     }
 
     /**

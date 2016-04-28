@@ -285,7 +285,9 @@ class CsvImporter
         $newPaymentAccount = new PaymentAccount();
         $newPaymentAccount->setPaymentProcessor(PaymentProcessor::ACI);
         $newPaymentAccount->setUser($paymentAccount->getUser());
-        if (null === $address = $paymentAccount->getAddress()) {
+        $address = null;
+        $type = $paymentAccount->getType();
+        if ($type !== PaymentAccountType::BANK && null === $address = $paymentAccount->getAddress()) {
             $this->logger->debug(
                 sprintf(
                     'FundingResponseRecord: PaymentAccount#%d doesn`t have MailingAddress.Creating new MailingAddress.',

@@ -56,11 +56,10 @@ p.find-message {
 
 img.copy {
     position: relative;
-    top: 2px;
     margin-left: 5px;
     display: block;
-    height: 11px;
-    width: 11px;
+    height: 14px;
+    width: 14px;
     left: 2px;
 }
 

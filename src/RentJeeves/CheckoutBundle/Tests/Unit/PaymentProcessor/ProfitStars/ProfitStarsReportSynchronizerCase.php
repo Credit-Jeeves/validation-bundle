@@ -167,7 +167,7 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
             ->method('persist');
         $logger = $this->getLoggerMock();
         $logger->expects($this->at(1))
-            ->method('debug')
+            ->method('info')
             ->with($this->stringContains('Skip report'));
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,

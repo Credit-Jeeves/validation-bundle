@@ -148,7 +148,7 @@ class AccountingController extends Controller
     {
         /** @var ImportSettingsValidator $importSettingsValidator */
         $importSettingsValidator = $this->get('import.settings.validator');
-        if ($importSettingsValidator->isValidImportSettings($this->getUser()->getCurrentGroup()) === false) {
+        if ($importSettingsValidator->isValidImportSettings($this->getCurrentGroup()) === false) {
             return $this->render(
                 'LandlordBundle:Accounting:import_error.html.twig',
                 ['message' => $importSettingsValidator->getErrorMessage()]
@@ -238,7 +238,7 @@ class AccountingController extends Controller
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
             new ImportMatchFileType(
-                $this->getUser()->getCurrentGroup(),
+                $this->getCurrentGroup(),
                 $this->get('translator'),
                 $importStorage,
                 count($dataView),

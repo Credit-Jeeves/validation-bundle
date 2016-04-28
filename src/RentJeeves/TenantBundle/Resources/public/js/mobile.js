@@ -269,9 +269,10 @@ function renderPayAccounts(contract) {
     $(prefix + "paymentAccount").append("<option value='-1'>Add new payment source</option>")
     $(prefix+"paymentAccount").bind( "change", function(event, ui) {
         if (this.value == -1) {
-            $("#" + accountPrefix + "groupId").val(contract.groupId)
+            $("#" + accountPrefix + "group").val(contract.groupId)
             //get contractId
-            $("#" + accountPrefix + "contractId").val(contract.id)
+            $("#" + accountPrefix + "contract").val(contract.id)
+            $(prefix + "contractId").val(contract.id)
             saving = false;
             $("#deleteSource").parent().hide()
             $.mobile.changePage('#addNewPayAccount')
@@ -984,13 +985,20 @@ function updateLocalPaymentSource(entry) {
     payAccounts[i] = entry;
 }
 
-function submitForm() {
+var submitting = false;
 
+function submitForm() {
+    if (submitting) {
+        return;
+    }
+    submitting = true;
     var data =  $(currentPaymentForm).serializeArray();
     data.push({
         'name': 'contract_id',
         'value': $("#contract_id").val()
     });
+
+    $('#payRentBttn').prop('disabled', true);
 
     $.ajax({
         url: 'checkout/exec',
@@ -1020,12 +1028,16 @@ function submitForm() {
                     window.location.reload(true)
                 }, 500)
             }
+            submitting = false;
+            $('#payRentBttn').prop('disabled', false);
         },
         error: function(request, error) { //ajax error!
-            $.mobile.changePage('#pay')
-            msg = "An error occurred. (" + error + ")"
-            $("#errorMsg").html(msg)
-            $("#errorMsg").show()
+            $.mobile.changePage('#pay');
+            msg = "An error occurred. (" + error + ")";
+            $("#errorMsg").html(msg);
+            $("#errorMsg").show();
+            submitting = false;
+            $('#payRentBttn').prop('disabled', false);
         }
     });
 }

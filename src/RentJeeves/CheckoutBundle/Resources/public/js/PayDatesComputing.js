@@ -60,6 +60,16 @@ function PayDatesComputing(parent) {
         var businessDate = date;
         var shiftedDays = 0;
 
+        // if date is Sat or Sun --> treat it as Mon
+        switch (date.getDay()) {
+            case 0: // Sun
+                date.add(1).day();
+                break;
+            case 6: // Sat
+                date.add(2).day();
+                break;
+        }
+
         while (shiftedDays < targetShift) {
             businessDate = self.shiftToNextBusinessDay(date);
             shiftedDays++;

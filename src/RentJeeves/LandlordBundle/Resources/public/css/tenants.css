@@ -198,6 +198,7 @@ td .clarification {
 }
 td .clarification>.one {
     margin-left: 20px;
+    margin-top: 10px;
 }
 
 .footer-button-box .button {

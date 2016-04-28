@@ -2,13 +2,20 @@
 
 namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
 
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use RentJeeves\ApiBundle\Forms\Enum\ReportingType;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\ApiBundle\Response\Contract as ContractResponseEntity;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
+use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 
 class ContractsControllerCase extends BaseApiTestCase
 {
@@ -686,6 +693,10 @@ class ContractsControllerCase extends BaseApiTestCase
 
         $answer = $this->parseContent($response->getContent());
 
+        $this->assertArrayHasKey('id', $answer, 'Should have "id" on answer');
+        $this->assertArrayHasKey('url', $answer, 'Should have "url" on answer');
+        $this->assertArrayHasKey('unit_url', $answer, 'Should have "unit_url" on answer');
+
         $tenant = $this->getUser();
 
         $repo = $this->getEntityRepository(self::WORK_ENTITY);
@@ -1055,6 +1066,45 @@ class ContractsControllerCase extends BaseApiTestCase
 
     /**
      * @test
+     */
+    public function duplicateUnitErrorOnCreateContract()
+    {
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '1-a',
+                    'street' => '770 Broadway',
+                    'city' => 'New York',
+                    'state' => 'NY',
+                    'zip' => '10003',
+                ],
+                'landlord' => [
+                    'type' => 'person',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'email' => 'test_landlord4@gmail.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown',
+                        'street_address_1' => '771 Broadway',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 409);
+    }
+
+    /**
+     * @test
      * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      * @expectedExceptionMessageRegExp /Request parameter experian_reporting value 'enable' violated a constraint/
      */
@@ -1296,5 +1346,240 @@ class ContractsControllerCase extends BaseApiTestCase
         $this->assertEquals($requestParams['due_date'], $contract->getDueDate());
         $this->assertEquals($requestParams['lease_start'], $contract->getStartAt()->format('Y-m-d'));
         $this->assertNull($contract->getFinishAt(), 'FinishAt is expected to be NULL');
+    }
+
+    /**
+     * @test
+     * This test checks :
+     *  - created new contract
+     *  - created new dtr group
+     *  - created new holding
+     *  - created new landlord
+     *  - created new trustedLandlord
+     *  - added new unit for exist property
+     */
+    public function shouldCreateFullStructure()
+    {
+        $partner = $this->getEntityManager()->find('RjDataBundle:Partner', 1);
+        $this->assertNotNull($partner, 'Check fixtures, should be exist partner');
+        $this->getUser()->setPartner($partner);
+        $this->getEntityManager()->flush();
+
+        $groupRepo = $this->getEntityManager()->getRepository('DataBundle:Group');
+        $landlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:Landlord');
+        $trustedLandlordRepo = $this->getEntityManager()->getRepository('RjDataBundle:TrustedLandlord');
+        $unitRepo = $this->getEntityManager()->getRepository('RjDataBundle:Unit');
+
+        $countGroupsBefore = count($groupRepo->findAll());
+        $countLandlordsBefore = count($landlordRepo->findAll());
+        $countTrustedLandlordsBefore = count($trustedLandlordRepo->findAll());
+        $countUnitsBefore = count($unitRepo->findAll());
+
+        $params = [
+            'new_unit' => [
+                'address' => [
+                    'unit_name' => '10001-a',
+                    'street' => '770 Broadway',
+                    'city' => 'New York',
+                    'state' => 'NY',
+                    'zip' => '10003',
+                ],
+                'landlord' => [
+                    'type' => 'company',
+                    'first_name' => 'John',
+                    'last_name' => 'Brown',
+                    'company_name' => 'John Brown Ltd.',
+                    'email' => 'test_landlord1001@landlord.com',
+                    'phone' => '999-555-5555',
+                    'mailing_address' => [
+                        'payee_name' => 'John Brown Ltd.',
+                        'street_address_1' => '771 Broadway',
+                        'street_address_2' => '#444',
+                        'city' => 'New York',
+                        'state' => 'NY',
+                        'zip' => '10003'
+                    ],
+                ],
+            ],
+            'rent' => 700,
+            'due_date' => 1,
+            'lease_start' => '2015-02-02',
+            'lease_end' => '2020-02-02',
+        ];
+
+        $response = $this->postRequest($params);
+        $this->assertResponse($response, 201);
+
+        $trustedLandlordsAfter = $trustedLandlordRepo->findAll();
+        $this->assertCount(
+            $countTrustedLandlordsBefore + 1,
+            $trustedLandlordsAfter,
+            'Should be created new trusted landlord'
+        );
+        $groupsAfter = $groupRepo->findAll();
+        $this->assertCount(
+            $countGroupsBefore + 1,
+            $groupsAfter,
+            'Should be created new group'
+        );
+        $landlordsAfter = $landlordRepo->findAll();
+        $this->assertCount(
+            $countLandlordsBefore + 1,
+            $landlordsAfter,
+            'Should be created new landlord'
+        );
+        $unitsAfter = $unitRepo->findAll();
+        $this->assertCount(
+            $countUnitsBefore + 1,
+            $unitsAfter,
+            'Should be created new unit'
+        );
+        /** @var TrustedLandlord $newTrustedLandlord */
+        $newTrustedLandlord = end($trustedLandlordsAfter);
+        $this->assertEquals(
+            TrustedLandlordType::COMPANY,
+            $newTrustedLandlord->getType(),
+            'Should be created company trusted landlord'
+        );
+        $this->assertEquals(
+            'John Brown Ltd.',
+            $newTrustedLandlord->getCompanyName(),
+            'Should be set company_name to "John Brown Ltd." on trusted landlord'
+        );
+        $this->assertEquals(
+            'John',
+            $newTrustedLandlord->getFirstName(),
+            'Should be set first_name to John on trusted landlord'
+        );
+        $this->assertEquals(
+            'Brown',
+            $newTrustedLandlord->getLastName(),
+            'Should be set last_name to Brown on trusted landlord'
+        );
+        $this->assertEquals(
+            '9995555555',
+            $newTrustedLandlord->getPhone(),
+            'Should be set phone to "9995555555" on trusted landlord'
+        );
+
+        $this->assertNotNull($newTrustedLandlord->getCheckMailingAddress(), 'Should be created check_mailing_address');
+
+        $this->assertEquals(
+            'John Brown Ltd.',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddressee(),
+            'Should be set addressee to "John Brown Ltd." on check mailing address'
+        );
+        $this->assertEquals(
+            '771 Broadway',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddress1(),
+            'Should be set address1 to "771 Broadway" on check mailing address'
+        );
+        $this->assertEquals(
+            '#444',
+            $newTrustedLandlord->getCheckMailingAddress()->getAddress2(),
+            'Should be set address2 to "#444" on check mailing address'
+        );
+        $this->assertEquals(
+            'New York',
+            $newTrustedLandlord->getCheckMailingAddress()->getCity(),
+            'Should be set city to "New York" on check mailing address'
+        );
+        $this->assertEquals(
+            'NY',
+            $newTrustedLandlord->getCheckMailingAddress()->getState(),
+            'Should be set state to "NY" on check mailing address'
+        );
+        $this->assertEquals(
+            '10003',
+            $newTrustedLandlord->getCheckMailingAddress()->getZip(),
+            'Should be set zip to "10003" on check mailing address'
+        );
+        /** @var Landlord $newLandlord */
+        $newLandlord = end($landlordsAfter);
+        $this->assertEquals(
+            'John',
+            $newLandlord->getFirstName(),
+            'Should be set first_name to John on landlord'
+        );
+        $this->assertEquals(
+            'Brown',
+            $newLandlord->getLastName(),
+            'Should be set last_name to Brown on landlord'
+        );
+        $this->assertEquals(
+            '9995555555',
+            $newLandlord->getPhone(),
+            'Should be set phone to "9995555555" on landlord'
+        );
+        $this->assertEquals(
+            'test_landlord1001@landlord.com',
+            $newLandlord->getEmail(),
+            'Should be set phone to "test_landlord1001@landlord.com" on landlord'
+        );
+        $this->assertNotNull($newLandlord->getPartner(), 'Should be added partner for landlord');
+        /** @var Group $newGroup */
+        $newGroup = end($groupsAfter);
+        $this->assertEquals(
+            $newTrustedLandlord->getCompanyName(),
+            $newGroup->getName(),
+            'Should be set name to trusted landlord company name on group'
+        );
+        $this->assertEquals(
+            GroupType::RENT,
+            $newGroup->getType(),
+            'Should be set type to rent on group'
+        );
+        $this->assertEquals(
+            OrderAlgorithmType::PAYDIRECT,
+            $newGroup->getOrderAlgorithm(),
+            'Should be created dtr group'
+        );
+        $this->assertNotNull(
+            $newGroup->getGroupSettings(),
+            'Should be created group settings for group'
+        );
+        $this->assertEquals(
+            PaymentProcessor::ACI,
+            $newGroup->getGroupSettings()->getPaymentProcessor(),
+            'Should be set payment processor "ACI" on group settings'
+        );
+        $this->assertTrue(
+            $newGroup->getGroupSettings()->isAutoApproveContracts(),
+            'Should be created auto approved contracts group'
+        );
+        $this->assertTrue(
+            $newGroup->getGroupSettings()->isPassedAch(),
+            'Should be created passed ach group'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('paydirect_fee_cc'),
+            $newGroup->getGroupSettings()->getFeeCC(),
+            'Should be set default fee cc on group settings'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('paydirect_fee_ach'),
+            $newGroup->getGroupSettings()->getFeeACH(),
+            'Should be set default fee ach on group settings'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('dod_limit_max_payment'),
+            $newGroup->getGroupSettings()->getMaxLimitPerMonth(),
+            'Should be set default max_limit_per_month on group settings'
+        );
+        $depositAccount = $newGroup->getRentDepositAccountForCurrentPaymentProcessor();
+        $this->assertNotNull(
+            $depositAccount,
+            'Should be created new deposit account for group'
+        );
+        $this->assertEquals(
+            $this->getContainer()->getParameter('aci.collect_pay.pay_direct_escrow_account'),
+            $depositAccount->getMerchantName(),
+            'Should be set merchant name to default on deposit account'
+        );
+        $this->assertEquals(
+            DepositAccountStatus::DA_COMPLETE,
+            $depositAccount->getStatus(),
+            'Should be set status to complete on deposit account'
+        );
     }
 }

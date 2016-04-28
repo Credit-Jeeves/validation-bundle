@@ -197,7 +197,7 @@ class PaymentDetail
 
             if (SynchronizationStrategy::REAL_TIME === $synchronizationStrategy) {
                 // estimate to 3 business days into the future
-                return BusinessDaysCalculator::getBusinessDate($this->order->getCreatedAt(), 3);
+                return BusinessDaysCalculator::getDepositDate($this->order->getCreatedAt(), 3);
             }
 
             if (SynchronizationStrategy::DEPOSITED === $synchronizationStrategy and
@@ -211,7 +211,7 @@ class PaymentDetail
         if (OrderPaymentType::CARD === $this->order->getPaymentType() &&
             PaymentProcessor::HEARTLAND === $this->order->getPaymentProcessor()
         ) {
-            return BusinessDaysCalculator::getBusinessDate($this->order->getCreatedAt(), 2);
+            return BusinessDaysCalculator::getDepositDate($this->order->getCreatedAt(), 2);
         }
 
         return BusinessDaysCalculator::getNextBusinessDate($this->order->getCreatedAt());

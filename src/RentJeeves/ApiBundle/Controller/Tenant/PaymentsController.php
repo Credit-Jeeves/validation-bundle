@@ -114,7 +114,7 @@ class PaymentsController extends Controller
      *     }
      * )
      * @Rest\Post("/payments")
-     * @Rest\View(serializerGroups={"Base", "ApiErrors"}, statusCode=201)
+     * @Rest\View(serializerGroups={"Base", "ApiErrors", "PaymentShort"}, statusCode=201)
      * @RequestParam(
      *     name="contract_url",
      *     encoder="api.default_url_encoder",
@@ -327,7 +327,7 @@ class PaymentsController extends Controller
             /** @var PaymentEntity $paymentEntity */
             $paymentEntity = $form->getData();
             $isRecurring = $form->get('type')->getData() ==  PaymentTypeEnum::RECURRING;
-            $verifyByPidKiq = false; # TODO: add Pid/Kiq support to API. See https://credit.atlassian.net/browse/RT-853
+            $verifyByPidKiq = true;
             try {
                 $this->savePayment(
                     $request,

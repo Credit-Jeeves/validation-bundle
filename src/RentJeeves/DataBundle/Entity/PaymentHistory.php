@@ -32,7 +32,7 @@ class PaymentHistory extends BasePaymentHistory
         foreach ($data as $key => $value) {
             $method = 'set' . ucfirst($key);
             if (true === in_array($key, $this->relations)) { // For relation with another Entities
-                $value = isset($value['id']) ? isset($value['id']) : $value[1];
+                $value = isset($value['id']) ? $value['id'] : $value[1];
                 $method .= 'Id';
             }
             if (true === in_array($key, $this->loggedFields) && true === method_exists($this, $method)) {

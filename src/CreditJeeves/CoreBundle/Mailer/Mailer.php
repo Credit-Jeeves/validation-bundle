@@ -34,6 +34,14 @@ class Mailer extends BaseMailer implements MailerInterface
      */
     public function sendBaseLetter($templateName, $params, User $user, $filePath = null, $noReply = true)
     {
+        if (false === MailAuthorizer::isAllowed($templateName, $user)) {
+            $this->logger->info(
+                sprintf('MailAuthorizer disallowed templateName %s and userID %s', $templateName, $user->getId())
+            );
+            
+            return false;
+        }
+
         if (false === $this->isValidEmailSettings($user)) {
             $this->logger->alert(sprintf(
                 'Error when sending %s: Notification settings enabled for user (%s %s) without an email address. ' .
@@ -46,11 +54,14 @@ class Mailer extends BaseMailer implements MailerInterface
 
         if (false == $this->isValidEmail($user->getEmail())) {
             $this->handleException(
-                new \InvalidArgumentException(sprintf('"%s": this value is not a valid email address.', $templateName))
+                new \InvalidArgumentException(
+                    sprintf('"%s": this value is not a valid email address.', $user->getEmail())
+                )
             );
 
             return false;
         }
+
         /** \Rj\EmailBundle\Entity\EmailTemplate $template */
         if (null == $template = $this->manager->findTemplateByName($templateName . '.html')) {
             $this->handleException(
@@ -59,12 +70,6 @@ class Mailer extends BaseMailer implements MailerInterface
 
             return false;
         }
-
-
-        if (false === MailAuthorizer::isAllowed($templateName, $user)) {
-            return false;
-        }
-
 
         $params = $this->prepareParameters($params, $user);
 
@@ -183,7 +188,6 @@ class Mailer extends BaseMailer implements MailerInterface
 
         return true;
     }
-
 
     /**
      * @param User $user
