@@ -87,7 +87,8 @@ class PayAnyoneSendCheckCommandCase extends BaseTestCase
         $order->addOperation($operation);
 
         $newAddress = new CheckMailingAddress();
-        $newAddress->setAddress1('Street');
+        $newAddress->setAddress1('Address1');
+        $newAddress->setAddress2('Address2');
         $newAddress->setAddressee('Addressee');
         $newAddress->setCity('City');
         $newAddress->setState('State');

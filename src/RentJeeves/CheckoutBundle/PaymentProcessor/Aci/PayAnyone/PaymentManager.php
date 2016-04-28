@@ -228,6 +228,7 @@ class PaymentManager
 
         $payeeAddress = new Address();
         $payeeAddress->setAddress1($checkMailingAddress->getAddress1());
+        $payeeAddress->setAddress2($checkMailingAddress->getAddress2());
         $payeeAddress->setCity($checkMailingAddress->getCity());
         $payeeAddress->setState($checkMailingAddress->getState());
         $payeeAddress->setPostalCode($checkMailingAddress->getZip());
