@@ -472,7 +472,7 @@ class Contract extends Base
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
 
-                if ($this->isPaidMonth($date, $startDate, $createDate, $lastPaidMonth)) {
+                if ($this->checkStatusDate($date, $startDate, $createDate, $lastPaidMonth)) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
                     $text   = self::PAYMENT_OK;
@@ -495,7 +495,7 @@ class Contract extends Base
      * @param \DateTime|null $lastPaidMonth
      * @return bool
      */
-    private function isPaidMonth(
+    private function checkStatusDate(
         \DateTime $date,
         \DateTime $startDate,
         \DateTime $createDate,
@@ -505,7 +505,7 @@ class Contract extends Base
             return true;
         }
 
-        if ($lastPaidMonth && ($date >= $createDate && $date <= $lastPaidMonth)) {
+        if ($lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth) {
             return true;
         }
 
