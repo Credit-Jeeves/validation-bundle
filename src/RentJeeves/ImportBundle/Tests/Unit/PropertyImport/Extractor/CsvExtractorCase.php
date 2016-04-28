@@ -46,7 +46,7 @@ class CsvExtractorCase extends UnitTestBase
         $csvExtractor->setPathToFile(__DIR__ . '/../../../Fixtures/csvExample.csv');
         $result = $csvExtractor->extractData();
 
-        $this->assertEquals(8, count($result['data']), 'File contains 8 row with data.');
+        $this->assertEquals(3, count($result['data']), 'File contains 8 row with data.');
         $this->assertNotEmpty($result['hashHeader'], 'HashHeader should be not empty.');
     }
 }
