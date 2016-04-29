@@ -15,7 +15,7 @@ class RentalReportControllerCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->loginByAccessToken('admin@creditjeeves.com');
         $this->assertNotNull($reviewLateReportLink = $this->page->find('css', $linkId));
 
         $reviewLateReportLink->click();

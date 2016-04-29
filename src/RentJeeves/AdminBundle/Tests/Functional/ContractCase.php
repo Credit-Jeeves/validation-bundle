@@ -13,9 +13,7 @@ class ContractCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('symfony');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_tenants'));
-        $tableBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/tenant/list');
         $this->assertNotNull($contractList = $this->page->find('css', '.contract_link'));
         $contractList->click();
         $this->assertNotNull($editContract = $this->page->find('css', 'i.icon-edit'));

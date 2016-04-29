@@ -21,8 +21,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($cityColumn = $this->page->find('css', '#city'));
@@ -35,7 +34,6 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td.city'));
         $this->assertEquals('Billings', $firstTd->getText(), 'Wrong notice2');
-        $this->logout();
     }
 
     /**
@@ -46,8 +44,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
@@ -80,8 +77,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
@@ -150,8 +146,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord2@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord2@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
@@ -226,8 +221,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
@@ -280,8 +274,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.properties');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/properties');
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($all = $this->page->find('css', '#all'));
@@ -306,7 +299,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $tabs = $this->page->findAll('css', '.header-tabs .top-nav>ul>li');
         $this->assertCount(4, $tabs, 'By default TestRentGroup should have 4 visible tabs.');
         $this->logout();
@@ -320,7 +313,7 @@ class PropertiesCase extends BaseTestCase
         $em->persist($groupSettings);
         $em->flush($groupSettings);
 
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $tabs = $this->page->findAll('css', '.header-tabs .top-nav>ul>li');
         $this->assertCount(3, $tabs, '3 tabs should be shown if showPropertiesTab is off');
         $this->assertEquals('tabs.dashboard', $tabs[0]->getText(), 'The 1st tab should be "dashboard"');

@@ -12,11 +12,10 @@ class ResidentMappingCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_resident_mapping'));
-
-        $tableBlock->clickLink('link_list');
-
+        $this->loginByAccessToken(
+            'admin@creditjeeves.com',
+            $this->getUrl() . 'admin/rentjeeves/data/residentmapping/list'
+        );
         $this->assertNotNull($residents = $this->page->findAll('css', 'tbody tr'));
         $this->assertEquals(4, count($residents));
 

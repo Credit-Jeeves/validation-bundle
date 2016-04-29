@@ -20,9 +20,7 @@ class CsvMappingCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
         $importMappingChoice = $this->getEntityManager()->getRepository('RjDataBundle:ImportMappingChoice')->findAll();
         $this->assertCount(0, $importMappingChoice, 'We should don\'t have mapping in fixtures');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
         $editLink = $this->getDomElement('a:contains("Generic group")', 'Edit link doesn\'t find for group');
         $editLink->click();
         $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Import Defaults")');

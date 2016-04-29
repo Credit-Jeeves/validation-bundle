@@ -14,8 +14,7 @@ class BatchedDepositsCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->page->clickLink('accounting.menu.batched_deposits');
 
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");

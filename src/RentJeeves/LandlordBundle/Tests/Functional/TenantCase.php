@@ -25,11 +25,13 @@ class TenantCase extends BaseTestCase
 
     protected function loadTenantTab()
     {
+        $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->session->getDriver()->resizeWindow(1600, 1200);
-        $this->load(true);
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
+
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
     }
@@ -186,9 +188,6 @@ class TenantCase extends BaseTestCase
      */
     public function edit($isIntegrated)
     {
-        $this->load(true);
-        $this->setDefaultSession('selenium2');
-
         $this->loadTenantTab();
         // Prepare Group for test
         $em = $this->getEntityManager();
@@ -398,11 +397,10 @@ class TenantCase extends BaseTestCase
      */
     public function remove()
     {
+        $this->load(true);
         $this->clearEmail();
         $this->setDefaultSession('selenium2');
-        $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout + 15000, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
@@ -429,8 +427,7 @@ class TenantCase extends BaseTestCase
         $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout + 2000, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
@@ -476,8 +473,7 @@ class TenantCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
@@ -988,8 +984,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->clearEmail();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, '$("img.processLoading").length <= 0');
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
@@ -1017,8 +1012,7 @@ class TenantCase extends BaseTestCase
     private function sendReminder($nCountEmails = 1)
     {
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         //Check created contracts
@@ -1066,8 +1060,7 @@ class TenantCase extends BaseTestCase
         $this->clearEmail();
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
@@ -1142,7 +1135,6 @@ class TenantCase extends BaseTestCase
 
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
-
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, '$("img.processLoading").length == 0');
         //Check created contracts
@@ -1180,8 +1172,7 @@ class TenantCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull(
@@ -1244,7 +1235,6 @@ class TenantCase extends BaseTestCase
     public function editContractAndAddLeaseId($accountingSystem)
     {
         $this->loadTenantTab();
-        $this->setDefaultSession('selenium2');
         // Prepare Group for test
         $em = $this->getEntityManager();
         /** @var $group Group */
@@ -1374,9 +1364,6 @@ class TenantCase extends BaseTestCase
      */
     public function shouldMoveContractOutOfWaitingAfterAddedEmail()
     {
-        $this->load(true);
-        $this->setDefaultSession('selenium2');
-
         $this->loadTenantTab();
 
         $this
