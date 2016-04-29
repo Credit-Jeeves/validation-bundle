@@ -77,7 +77,7 @@ class CsvTransformerCase extends UnitTestBase
         $this->writeIdAttribute($group, 1);
 
         $mapping = new ImportMappingChoice();
-        $mapping->setMappingData(serialize(['test' => 'test']));
+        $mapping->setMappingData(['test' => 'test']);
 
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock->expects($this->once())
@@ -137,7 +137,7 @@ class CsvTransformerCase extends UnitTestBase
             6 => 'unit',
             7 => 'unit_id'
         ];
-        $mapping->setMappingData(serialize($mappingData));
+        $mapping->setMappingData($mappingData);
 
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock->expects($this->once())
