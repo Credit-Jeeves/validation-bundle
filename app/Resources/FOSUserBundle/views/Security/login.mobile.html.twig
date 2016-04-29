@@ -2,7 +2,7 @@
 
 {% block header %}
     <div data-role="navbar" data-iconpos="left">
-      <h1>RentTrack</h1>
+        <h1>RentTrack</h1>
     </div>
 
 {% endblock %}
@@ -61,27 +61,26 @@
                        value=""
                        placeholder="Password" style="height: 40px; font-family: PT Sans Caption;"/>
                 <br/>
-                    <div style="width: 150px;">
+                <div style="width: 150px;">
                     <input type="checkbox" onchange="if($(this).is(':checked')){$('#password').get(0).type='text'}else{$('#password').get(0).type='password'}" autocomplete="off"> <div style="color: white; position: relative; top: -9px; left: 20px;">Show Password</div>
-                    </div>
-                <br/>
-                <br/>
+                </div>
+
                 <input {#  class="button large green"#}
-                       data-ajax="false"
-                       type="submit"
-                       data-role="none"
-                       role="none"
-                       id="_submit"
-                       name="_submit"
-                       value="{#
+                        data-ajax="false"
+                        type="submit"
+                        data-role="none"
+                        role="none"
+                        id="_submit"
+                        name="_submit"
+                        value="{#
                        {{ 'login.submit' | trans }}
                        #}LOG IN"
-                       style="height: 52px;background: #00aeef; color: white; font-family: PT Sans Caption !important; text-align: center; border-radius: 3px; width: 300px; border: 0; box-shadow: 0px; font-size: 14pt;font-weight: normal;-webkit-appearance: none; -webkit-border-radius: 0;" />
+                        style="height: 52px;background: #00aeef; color: white; font-family: PT Sans Caption !important; text-align: center; border-radius: 3px; width: 300px; border: 0; box-shadow: 0px; font-size: 14pt;font-weight: normal;-webkit-appearance: none; -webkit-border-radius: 0;" />
 
             </form>
 
-            <div style="color: white; font-size: 11; position: absolute; top: 115%;">
-            To create an account during our Mobile Web Beta, please use a computer.
+            <div style="color: white; font-size: 11; position: absolute; top: 105%;">
+                To create an account during our Mobile Web Beta, please use a computer.
             </div>
 
         </div>
@@ -99,23 +98,32 @@
         {% endif %}
         #}
         <div class="clearboth"></div>
-        <p class="login-pod-footer" style="position: absolute; bottom: 25px; left: 50%; margin-left: -92px;">
-        {# TODO: Feature Comming Soon!
-        <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">{{ 'resetting.title' | trans }}</a>
-        #}
-        <br>
-        <a href="https://my.renttrack.com/resetting" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
-            Reset Password
-        </a><br>
-        <a href="http://www.renttrack.com/terms-of-service/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
-            Terms of Service
+        <p class="login-pod-footer" id='footerLinks' style="position: fixed; bottom: 5px; left: 50%; margin-left: -92px;">
+            {# TODO: Feature Comming Soon!
+            <a href="{{ path('fos_user_resetting_request') }}" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">{{ 'resetting.title' | trans }}</a>
+            #}
+            <a href="https://my.renttrack.com/resetting" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
+                Reset Password
+            </a><br>
+            <a href="http://www.renttrack.com/terms-of-service/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
+                Terms of Service
             </a> <span style="color: white">|</span>
-        <a href="http://renttrack.uservoice.com/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
-            Help
+            <a href="http://renttrack.uservoice.com/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
+                Help
             </a>
         </p>
+
+        <script>
+            $("input").focus(function(){
+                $('#footerLinks').hide();
+            });
+
+            $("input").blur(function(){
+                $('#footerLinks').show();
+            });
+        </script>
     </div>
-    {% endblock %}
+{% endblock %}
 
     {% block footer %}
 
