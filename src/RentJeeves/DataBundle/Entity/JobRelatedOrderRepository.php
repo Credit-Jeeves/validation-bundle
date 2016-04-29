@@ -13,6 +13,10 @@ class JobRelatedOrderRepository extends EntityRepository
      */
     public function getFailedPushJobsToExternalApi(array $groups, \DateTime $date)
     {
+        if (empty($groups)) {
+            return [];
+        }
+
         return $this->createQueryBuilder('job_related')
             ->innerJoin('job_related.job', 'job')
             ->innerJoin('job_related.order', 'order')

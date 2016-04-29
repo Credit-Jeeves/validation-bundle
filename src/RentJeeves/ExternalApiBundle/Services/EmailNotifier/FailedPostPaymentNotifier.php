@@ -116,7 +116,7 @@ class FailedPostPaymentNotifier
 
     /**
      * @param Holding $holding
-     * @param null $accountingSystemBatchNumber
+     * @param string|null $accountingSystemBatchNumber
      */
     protected function notifyHoldingNoneAdmins(Holding $holding, $accountingSystemBatchNumber = null)
     {
@@ -151,7 +151,7 @@ class FailedPostPaymentNotifier
 
     /**
      * @param Holding $holding
-     * @param null $accountingSystemBatchNumber
+     * @param string|null $accountingSystemBatchNumber
      */
     protected function nofityHoldingAdmins(Holding $holding, $accountingSystemBatchNumber = null)
     {
@@ -182,7 +182,7 @@ class FailedPostPaymentNotifier
      * @param Collection $groups
      * @param array $batchCloseFailureModels
      */
-    protected function doNotify(Landlord $landlord, Collection $groups, $batchCloseFailureModels)
+    protected function doNotify(Landlord $landlord, Collection $groups, array $batchCloseFailureModels)
     {
         $pathToCsvFileReport = $this->getPathToCsvFileReport($groups);
 
@@ -260,8 +260,11 @@ class FailedPostPaymentNotifier
      * @param string $accountingSystemBatchNumber
      * @return FailedPostPaymentDetail[]
      */
-    protected function mapJobsToFailedPostPaymentDetail(Holding $holding, $failureJobs, $accountingSystemBatchNumber = null)
-    {
+    protected function mapJobsToFailedPostPaymentDetail(
+        Holding $holding,
+        array $failureJobs,
+        $accountingSystemBatchNumber = null
+    ) {
         $result = [];
         /** @var JobRelatedOrder $job */
         foreach ($failureJobs as $job) {
@@ -287,7 +290,7 @@ class FailedPostPaymentNotifier
      * @param FailedPostPaymentDetail[] $batchCloseFailureDetail
      * @param string $filePath
      */
-    protected function sendEmails(Landlord $landlord, $batchCloseFailureDetail, $filePath)
+    protected function sendEmails(Landlord $landlord, array $batchCloseFailureDetail, $filePath)
     {
         $this->logger->debug('Send email about failed push for landlord#' . $landlord->getEmail());
         $result = $this->mailer->sendPostPaymentError($landlord, $batchCloseFailureDetail, $filePath);
@@ -307,7 +310,7 @@ class FailedPostPaymentNotifier
      * @param array $groups
      * @return array
      */
-    protected function convertGroupsToArrayIds($groups)
+    protected function convertGroupsToArrayIds(Collection $groups)
     {
         $ids = [];
 
