@@ -250,7 +250,7 @@ class AMSILedgerClient extends AMSIBaseClient
         $payment->setUnitId($unitId);
         $payment->setResiId($contract->getExternalLeaseId());
         $payment->setAmount($order->getSum());
-        $payment->setClientJnlNo($order->getCompleteTransaction()->getBatchId());
+        $payment->setClientJnlNo(preg_replace('/\D/', '', $order->getCompleteTransaction()->getBatchId()));
         $payment->setClientMerchantId($contract->getGroup()->getId());
         $payment->setClientTransactionDate($order->getCreatedAt());
         $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());

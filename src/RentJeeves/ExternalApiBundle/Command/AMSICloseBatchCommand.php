@@ -55,7 +55,7 @@ class AMSICloseBatchCommand extends ContainerAwareCommand
                 foreach ($batches as $batch) {
                     $settlementDate = $this->getSettlementDate($batch['batchDate'], $batch['depositDate']);
                     $result = $apiClient->updateSettlementData(
-                        $batch['batchId'],
+                        preg_replace('/\D/', '', $batch['batchId']),
                         $batch['groupId'],
                         $batch['amount'],
                         $settlementDate
