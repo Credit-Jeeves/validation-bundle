@@ -16,68 +16,6 @@ use RentJeeves\DataBundle\Enum\AccountingSystem;
 class PropertyRepository extends EntityRepository
 {
     /**
-     * @return mixed
-     */
-    public function getDuplicateProperties()
-    {
-        return $this->createQueryBuilder('property')
-            ->select(
-                '
-                    property.id,
-                    propertyAddress.zip,
-                    propertyAddress.number,
-                    propertyAddress.street,
-                    COUNT(propertyAddress.street) AS street_c,
-                    COUNT(propertyAddress.number) AS number_c,
-                    COUNT(propertyAddress.zip) AS zip_c
-                    '
-            )
-            ->innerJoin('property.propertyAddress', 'propertyAddress')
-            ->groupBy(
-                'propertyAddress.street',
-                'propertyAddress.number',
-                'propertyAddress.zip'
-            )
-            ->having(
-                'street_c > 1
-                    AND number_c > 1
-                    AND zip_c > 1'
-            )
-            ->getQuery()
-            ->execute();
-    }
-
-    /**
-     * @return array
-     */
-    public function getDublicatePropertiesWithContract()
-    {
-        $sql = <<< EOT
-SELECT (
-COUNT( property.id ) - COUNT(DISTINCT(property.id))) AS difference,
-property.id AS property_id, propertyAddress.zip AS zip, propertyAddress.number AS number,
-propertyAddress.street AS street, contract.id AS contract_id,
-COUNT( contract.id ) AS count_contract, COUNT( propertyAddress.zip ) AS count_zip,
-COUNT( propertyAddress.number ) AS count_number, COUNT( propertyAddress.street ) AS count_street
-FROM rj_property as property
-INNER JOIN rj_contract as contract ON property.id = contract.property_id
-INNER JOIN rj_property_address as propertyAddress ON property.property_address_id = propertyAddress.id
-GROUP BY propertyAddress.street, propertyAddress.number, propertyAddress.zip
-HAVING count_street > 1
-AND count_number > 1
-AND count_zip > 1
-AND difference = 0
-
-EOT;
-        $stmt = $this->getEntityManager()
-            ->getConnection()
-            ->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-    /**
      * @param Group $group
      *
      * @return Property[]
