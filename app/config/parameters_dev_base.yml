@@ -98,3 +98,4 @@ parameters:
     jira_api.user: RentTrackAppStage #staging@renttrack.com
     jira_api.password: svzB10KC3B0Z
     jira_api.key: TLDTEST
+    import_1_0_rows_on_the_page: 9

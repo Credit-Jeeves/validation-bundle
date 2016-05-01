@@ -2,6 +2,7 @@ imports:
     - { resource: config_dev.yml }
 
 parameters:
+    import_1_0_rows_on_the_page: 9
     router.request_context.base_url: '/rj_test.php'
     doctrine.dbal.connection.wrapper_class: 'CreditJeeves\TestBundle\Doctrine\DBAL\PersistedConnection'
 
