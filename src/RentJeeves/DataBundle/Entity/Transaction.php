@@ -188,7 +188,7 @@ class Transaction extends Base
      * @Serializer\SerializedName("TransactionID")
      * @Serializer\Groups({"rentTrackReport"})
      */
-    public function getHeartlandTransactionId()
+    public function getReportTransactionId()
     {
         return $this->getTransactionId();
     }
@@ -199,7 +199,7 @@ class Transaction extends Base
      * @Serializer\Groups({"rentTrackReport"})
      *
      */
-    public function getHeartlandBatchId()
+    public function getReportBatchId()
     {
         return $this->getBatchId();
     }

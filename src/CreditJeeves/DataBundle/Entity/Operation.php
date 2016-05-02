@@ -19,7 +19,7 @@ use RentJeeves\DataBundle\Enum\CreditSummaryVendor;
 class Operation extends Base
 {
     /**
-     * Date time of actual payment transaction with Heartland
+     * Date time of actual payment transaction with Payment Processor
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
@@ -320,7 +320,7 @@ class Operation extends Base
             $code = '';
         }
 
-        return sprintf('%s %d', $code, $this->getHeartlandTransactionId());
+        return sprintf('%s %d', $code, $this->getTransactionId());
     }
 
     /**
@@ -438,12 +438,20 @@ class Operation extends Base
         return $days;
     }
 
+    /**
+     * @var array
+     */
     protected $reversalOrderTypes = [
         OrderStatus::RETURNED,
         OrderStatus::REFUNDED,
     ];
 
-    public function getHeartlandTransactionId($original = true)
+    /**
+     * @param bool $original
+     * @return int|null|string
+     * @todo should be removed to proxy object for serialization
+     */
+    protected function getTransactionId($original = true)
     {
         $order = $this->getOrder();
 

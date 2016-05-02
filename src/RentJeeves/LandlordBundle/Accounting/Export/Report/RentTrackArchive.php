@@ -69,7 +69,7 @@ class RentTrackArchive extends ExportReport
         $orders = $this->exportReport->getData($settings);
         /** @var Transaction $transaction */
         foreach ($orders as $transaction) {
-            $transactionBatchId = $transaction->getOrder()->getCompleteTransaction()->getHeartlandBatchId();
+            $transactionBatchId = $transaction->getOrder()->getCompleteTransaction()->getBatchId();
             $result[$transactionBatchId][] = $transaction;
         }
 
