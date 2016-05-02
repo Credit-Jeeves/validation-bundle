@@ -382,7 +382,7 @@ class AccountingPaymentSynchronizer
 
             $paymentBatchDate = new \DateTime();
             $description = sprintf(
-                'RentTrack Online Payments Batch #%s',
+                'Batch #%s',
                 $paymentBatchId
             );
             $apiClient = $this->getApiClientByOrder($order);

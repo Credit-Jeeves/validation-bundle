@@ -7,9 +7,13 @@ use CreditJeeves\DataBundle\Entity\OrderPayDirect;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
+use RentJeeves\DataBundle\Entity\CheckMailingAddress;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\OutboundTransactionStatus;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
+use RentJeeves\DataBundle\Enum\TrustedLandlordStatus;
+use RentJeeves\DataBundle\Enum\TrustedLandlordType;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
@@ -36,12 +40,31 @@ class PaymentProcessorAciPayAnyoneCase extends BaseTestCase
         $operation->setAmount(600);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
-        $operation->setGroup($contract->getGroup());
+        $operation->setGroup($group = $contract->getGroup());
         $operation->setContract($contract);
         $operation->setPaidFor(new \DateTime());
 
+        $newAddress = new CheckMailingAddress();
+        $newAddress->setAddress1('Address1');
+        $newAddress->setAddress2('Address2');
+        $newAddress->setAddressee('Addressee');
+        $newAddress->setCity('City');
+        $newAddress->setState('State');
+        $newAddress->setZip('11111');
+
+        $newTrustedLandlord = new TrustedLandlord();
+        $newTrustedLandlord->setGroup($group);
+        $newTrustedLandlord->setCheckMailingAddress($newAddress);
+        $newTrustedLandlord->setCompanyName('MyCompany');
+        $newTrustedLandlord->setType(TrustedLandlordType::COMPANY);
+        $newTrustedLandlord->setStatus(TrustedLandlordStatus::WAITING_FOR_INFO);
+
+        $group->setTrustedLandlord($newTrustedLandlord);
+
         $order->addOperation($operation);
 
+        $this->getEntityManager()->persist($newAddress);
+        $this->getEntityManager()->persist($newTrustedLandlord);
         $this->getEntityManager()->persist($operation);
         $this->getEntityManager()->persist($order);
         $this->getEntityManager()->flush();

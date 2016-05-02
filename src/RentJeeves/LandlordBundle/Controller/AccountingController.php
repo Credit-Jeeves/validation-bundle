@@ -364,18 +364,18 @@ class AccountingController extends Controller
         $storage = $importFactory->getStorage();
         $this->getImportLogger()->debug("Getting Import Mapping");
         $mapping = $importFactory->getMapping();
-
+        $handler = $importFactory->getHandler();
         $this->getImportLogger()->debug("Import ready!");
 
         // convert from string to boolean
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         $this->getImportLogger()->debug(
-            sprintf("Import fetching %s rows at offset %s", ImportHandler::ROW_ON_PAGE, $storage->getOffsetStart())
+            sprintf("Import fetching %s rows at offset %s", $handler->rowsOnThePage, $storage->getOffsetStart())
         );
 
         if ($newRows) {
-            $storage->setOffsetStart($storage->getOffsetStart() + ImportHandler::ROW_ON_PAGE);
+            $storage->setOffsetStart($storage->getOffsetStart() + $handler->rowsOnThePage);
         }
 
         $collection = [];
