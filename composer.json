@@ -199,7 +199,7 @@
         "credit-jeeves/api-bundle": "dev-master",
         "rj/email-bundle": "dev-master",
         "hat/environment": "dev-ton",
-        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
+        "jms/job-queue-bundle": "dev-renttrack as 0.1.x-dev",
         "payum/aci" : "dev-master",
         "payum2/payum": "dev-master as 0.5.x-dev",
         "payum2/payum-bundle": "dev-heartland",
