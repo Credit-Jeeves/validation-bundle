@@ -1910,7 +1910,7 @@
             </trans-unit>
             <trans-unit id="fill.full.address">
                 <source>fill.full.address</source>
-                <target>Please fill full address and try again. It's very short or invalid.</target>
+                <target>Invalid address. Please check and try again.</target>
             </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
