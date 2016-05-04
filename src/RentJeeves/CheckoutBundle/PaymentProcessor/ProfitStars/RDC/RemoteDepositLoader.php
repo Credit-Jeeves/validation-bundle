@@ -127,8 +127,9 @@ class RemoteDepositLoader
     {
         $profitStarsBatch = $this->getProfitStarsBatch($batch->getBatchNumber());
         if (null !== $profitStarsBatch) {
-            if ($profitStarsBatch->isOpen() && !$this->isSentToTransactionProcessingBatch($batch)) {
-                $this->logger->emergency(
+            if ($profitStarsBatch->isOpen() && !($this->isSentToTransactionProcessingBatch($batch) ||
+                                                 $this->isPartialDeposit($batch))) {
+                $this->logger->alert(
                     sprintf(
                         'ProfitStars CheckScanning batch #%s for group #%d is in unexpected state %s.',
                         $batch->getBatchNumber(),
@@ -163,6 +164,12 @@ class RemoteDepositLoader
                     $this->incrementCountChecks();
                     $this->updateContractStatus($newOrder);
                 }
+            } elseif ($this->isErrorItemStatus($batchItem)) {
+                $transaction = $this->getExistingTransaction($batchItem);
+                if ($transaction) {
+                    $transaction->getOrder()->setStatus(OrderStatus::ERROR);
+                    $transaction->setMessages("Check Scanning Error: Refer to Check Scanning Interface.");
+                }
             } else {
                 $this->logger->alert(sprintf(
                     'Item id#%s from Batch "%s" has alert state "%s". Skipping.',
@@ -173,7 +180,7 @@ class RemoteDepositLoader
             }
         }
 
-        if ($this->isSentToTransactionProcessingBatch($batch)) {
+        if ($this->isSentToTransactionProcessingBatch($batch) || $this->isPartialDeposit($batch)) {
             $this->closeProfitStarsBatch($profitStarsBatch);
         }
     }
@@ -189,6 +196,7 @@ class RemoteDepositLoader
             WSBatchStatus::CLOSED,
             WSBatchStatus::READYFORPROCESSING,
             WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+            WSBatchStatus::PARTIALDEPOSIT,
         ];
         if (in_array($batch->getBatchStatus(), $allowedStatuses)) {
             return true;
@@ -207,8 +215,26 @@ class RemoteDepositLoader
             WSItemStatus::CREATED,
             WSItemStatus::APPROVED,
             WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+            WSItemStatus::RESOLVED,
+            WSItemStatus::RESCANNED,
         ];
         if (in_array($item->getItemStatus(), $allowedStatuses)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param WSRemoteDepositItem $item
+     * @return bool
+     */
+    protected function isErrorItemStatus(WSRemoteDepositItem $item)
+    {
+        $errorStatuses = [
+            WSItemStatus::TPERROR,
+        ];
+        if (in_array($item->getItemStatus(), $errorStatuses)) {
             return true;
         }
 
@@ -384,6 +410,11 @@ class RemoteDepositLoader
     protected function isSentToTransactionProcessingBatch(WSRemoteDepositBatch $batch)
     {
         return $batch->getBatchStatus() === WSBatchStatus::SENTTOTRANSACTIONPROCESSING;
+    }
+
+    protected function isPartialDeposit(WSRemoteDepositBatch $batch)
+    {
+        return $batch->getBatchStatus() === WSBatchStatus::PARTIALDEPOSIT;
     }
 
     protected function incrementCountChecks()
