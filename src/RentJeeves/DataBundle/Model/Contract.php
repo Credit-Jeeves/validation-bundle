@@ -416,7 +416,9 @@ abstract class Contract
      *
      * @ORM\OneToMany(
      *      targetEntity="RentJeeves\DataBundle\Entity\ProfitStarsRegisteredContract",
-     *      mappedBy="contract"
+     *      mappedBy="contract",
+     *      cascade={"remove"},
+     *      orphanRemoval=true
      * )
      */
     protected $profitStarsRegisteredContracts;
