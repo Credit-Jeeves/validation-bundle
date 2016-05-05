@@ -309,6 +309,9 @@ services:
     dod.payment_execution_allowed:
         class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentExecutionAllowed
 
+    dod.payment_match_check_mailing_address_and_unit_address_dtr:
+        class: RentJeeves\CheckoutBundle\DoD\Rule\PaymentMatchCheckMailingAddressAndUnitAddressDTR
+
     dod:
         class: RentJeeves\CheckoutBundle\DoD\DodManager
         arguments:
@@ -320,6 +323,8 @@ services:
             - [addRule, ["@dod.payment_rolling_window_dtr"]]
             - [addRule, ["@dod.payment_first_time_dtr"]]
             - [addRule, ["@dod.payment_sum_limit_per_month_dtr"]]
+            - [addRule, ["@dod.payment_to_trusted_landlord_dtr"]]
+            - [addRule, ["@dod.payment_match_check_mailing_address_and_unit_address_dtr"]]
 
     payment_processor.profit_stars.rdc.client:
         class: RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC\RDCClient
