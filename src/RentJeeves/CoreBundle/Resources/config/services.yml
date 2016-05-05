@@ -10,8 +10,12 @@ parameters:
 
 services:
     sftp_client:
-        class: RentJeeves\CoreBundle\Services\SftpClient
+        class: RentJeeves\CoreBundle\Sftp\SftpClient
         public: false
+
+    sftp_file_manager:
+        class: RentJeeves\CoreBundle\Sftp\SftpFileManager
+        abstract: true
 
     hmac.generator:
         abstract: true

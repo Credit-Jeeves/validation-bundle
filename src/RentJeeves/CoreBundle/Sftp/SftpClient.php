@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services;
+namespace RentJeeves\CoreBundle\Sftp;
 
 /**
  * This class is added to be able to write UNIT tests.

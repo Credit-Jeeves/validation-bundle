@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services;
+namespace RentJeeves\CoreBundle\Sftp;
 
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Exception\SftpFileManagerException;
@@ -85,6 +85,7 @@ class SftpFileManager
             );
             throw new SftpFileManagerException($message);
         }
+        $this->logger->debug('File was downloaded successfully.');
     }
 
     /**
@@ -115,6 +116,8 @@ class SftpFileManager
             );
             throw new SftpFileManagerException($message);
         }
+
+        $this->logger->debug('Data was downloaded successfully.');
 
         return $data;
     }
@@ -147,6 +150,8 @@ class SftpFileManager
             );
             throw new SftpFileManagerException($message);
         }
+
+        $this->logger->debug('Data was uploaded successfully.');
     }
 
     /**
@@ -162,7 +167,7 @@ class SftpFileManager
         $inputPathToFile = $this->getSftpPath() . $inputPathToFile;
         $outputPathToFile = $this->getSftpPath() . $outputPathToFile;
 
-        if (true === file_exists($inputPathToFile) || true === is_file($inputPathToFile)) {
+        if (false === file_exists($inputPathToFile) || false === is_file($inputPathToFile)) {
             $this->logger->debug($message = sprintf('File %s not found.', $inputPathToFile));
             throw new SftpFileManagerException($message);
         }
@@ -185,6 +190,7 @@ class SftpFileManager
             );
             throw new SftpFileManagerException($message);
         }
+        $this->logger->debug('File was moved successfully.');
     }
 
     protected function configureRemoteConnection()
@@ -238,7 +244,7 @@ class SftpFileManager
                 if ($i === self::NUMBER_OF_RETRY) {
                     throw new SftpFileManagerException($e->getMessage());
                 }
-                $this->logger->debug('ACI: Waiting before attempting to initialize the SSH connection.');
+                $this->logger->debug('Waiting before attempting to initialize the SSH connection.');
                 sleep((int) exp($i));
                 $i++;
             }
