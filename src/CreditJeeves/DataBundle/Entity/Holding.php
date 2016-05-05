@@ -41,28 +41,6 @@ class Holding extends BaseHolding
         return $usersAdmin;
     }
 
-    /**
-     * @return array
-     */
-    public function getNoneHoldingAdmin()
-    {
-        $usersNoneAdmin = [];
-
-        if (empty($this->users)) {
-            return $usersNoneAdmin;
-        }
-
-        foreach ($this->users as $user) {
-            if ($user->getIsSuperAdmin()) {
-                continue;
-            }
-
-            $usersNoneAdmin[] = $user;
-        }
-
-        return $usersNoneAdmin;
-    }
-
     public function getLandlords()
     {
         $landlords = new ArrayCollection();

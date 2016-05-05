@@ -25,9 +25,13 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $this->load(true);
         /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(22);
-
+        $landlord = $this->getEntityManager()->getRepository('RjDataBundle:Landlord')->findOneBy(
+            ['email' => 'landlord1@example.com']
+        );
+        $this->assertNotEmpty($landlord, 'We don\'t have fixture landlord1@example.com');
         $this->assertNotEmpty($contract, 'Please check fixtures');
-
+        $landlord->setIsSuperAdmin(true);
+        $landlord->setIsHoldingAdmin(true);
         $order = new OrderSubmerchant();
         $order->setUser($contract->getTenant());
         $order->setStatus(OrderStatus::COMPLETE);
@@ -41,7 +45,6 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $operation->setAmount(600);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
-        $operation->setGroup(null);
         $operation->setContract($contract);
         $operation->setPaidFor(new \DateTime());
 
@@ -71,6 +74,8 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $this->assertEquals('Unable to Post Payment to Accounting System', $message->getSubject());
         $this->assertArrayHasKey(0, $message->getChildren(), 'Attachment should be');
         $this->assertArrayHasKey(1, $message->getChildren(), 'Body should be');
+        $body = $message->getChildren()[1]->getBody();
+        $this->assertContains($landlord->getFullName(), $body, 'We should send email to admin');
     }
 
     /**
@@ -83,9 +88,10 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->find(22);
         $holdingAdmins = $contract->getGroup()->getHolding()->getHoldingAdmin();
         $this->assertArrayHasKey(0, $holdingAdmins, 'Holding admins not return correct array');
-        /** @var Landlord $landlordAdmin */
-        $landlordAdmin = $holdingAdmins[0];
-        $landlordAdmin->setIsHoldingAdmin(false);
+        /** @var Landlord $landlord */
+        $landlord = $holdingAdmins[0];
+        $landlord->setIsHoldingAdmin(false);
+        $landlord->setIsSuperAdmin(false);
         $this->assertNotEmpty($contract, 'Please check fixtures');
 
         $order = new OrderSubmerchant();
@@ -101,7 +107,6 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $operation->setAmount(600);
         $operation->setType(OperationType::RENT);
         $operation->setOrder($order);
-        $operation->setGroup(null);
         $operation->setContract($contract);
         $operation->setPaidFor(new \DateTime());
 
@@ -131,5 +136,7 @@ class FailedPostPaymentNotifierCase extends BaseTestCase
         $this->assertEquals('Unable to Post Payment to Accounting System', $message->getSubject());
         $this->assertArrayHasKey(0, $message->getChildren(), 'Attachment should be');
         $this->assertArrayHasKey(1, $message->getChildren(), 'Body should be');
+        $body = $message->getChildren()[1]->getBody();
+        $this->assertContains($landlord->getFullName(), $body, 'We should send email to none admin');
     }
 }

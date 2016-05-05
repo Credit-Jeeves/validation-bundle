@@ -51,11 +51,30 @@ class LandlordRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param integer $holdingId
+     * @return Landlord[]
+     */
     public function getHoldingAdmins($holdingId)
     {
         $query = $this->createQueryBuilder('c');
         $query->where('c.holding = :holdingId');
         $query->andWhere('c.is_holding_admin = 1 OR c.is_super_admin = 1');
+        $query->setParameter('holdingId', $holdingId);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param integer $holdingId
+     * @return Landlord[]
+     */
+    public function getHoldingNoneAdmins($holdingId)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.holding = :holdingId');
+        $query->andWhere('c.is_holding_admin = 0 and c.is_super_admin = 0');
         $query->setParameter('holdingId', $holdingId);
         $query = $query->getQuery();
 

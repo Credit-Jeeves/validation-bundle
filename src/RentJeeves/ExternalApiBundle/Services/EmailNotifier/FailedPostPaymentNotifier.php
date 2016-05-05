@@ -65,7 +65,7 @@ class FailedPostPaymentNotifier
         }
 
         if (!$this->isExistFailedPushPaymentJobsToExternalApi($holding)) {
-            $this->logger->debug(sprintf('Don\'t have failed jobs about payment push group#%s', $holding->getId()));
+            $this->logger->debug(sprintf('Don\'t have failed jobs about payment push holding#%s', $holding->getId()));
 
             return;
         }
@@ -74,7 +74,7 @@ class FailedPostPaymentNotifier
         $job = new Job('renttrack:notify:batch-close-failure', $parameters);
         $this->em->persist($job);
 
-        $this->logger->debug(sprintf('We have failure jobs about payment push group#%s', $holding->getId()));
+        $this->logger->debug(sprintf('We have failure jobs about payment push holding#%s', $holding->getId()));
 
         $this->em->flush();
     }
@@ -103,7 +103,7 @@ class FailedPostPaymentNotifier
             )
         );
 
-        $this->nofityHoldingAdmins($holding, $accountingSystemBatchNumber);
+        $this->notifyHoldingAdmins($holding, $accountingSystemBatchNumber);
         $this->notifyHoldingNoneAdmins($holding, $accountingSystemBatchNumber);
 
         $this->logger->debug(
@@ -120,7 +120,7 @@ class FailedPostPaymentNotifier
      */
     protected function notifyHoldingNoneAdmins(Holding $holding, $accountingSystemBatchNumber = null)
     {
-        $landlords = $holding->getNoneHoldingAdmin();
+        $landlords = $this->em->getRepository("RjDataBundle:Landlord")->getHoldingNoneAdmins($holding->getId());
         /** @var Landlord $landlord */
         foreach ($landlords as $landlord) {
             $groups = $landlord->getGroups();
@@ -153,7 +153,7 @@ class FailedPostPaymentNotifier
      * @param Holding $holding
      * @param string|null $accountingSystemBatchNumber
      */
-    protected function nofityHoldingAdmins(Holding $holding, $accountingSystemBatchNumber = null)
+    protected function notifyHoldingAdmins(Holding $holding, $accountingSystemBatchNumber = null)
     {
         $failureJobs = $this->getFailedPushPaymentJobsToExternalApi(
             $this->convertGroupsToArrayIds($holding->getGroups())
@@ -172,7 +172,9 @@ class FailedPostPaymentNotifier
             $accountingSystemBatchNumber
         );
 
-        foreach ($holding->getHoldingAdmin() as $landlord) {
+        $landlords = $this->em->getRepository('RjDataBundle:Landlord')->getHoldingAdmins($holding->getId());
+
+        foreach ($landlords as $landlord) {
             $this->doNotify($landlord, $holding->getGroups(), $batchCloseFailureModels);
         }
     }
