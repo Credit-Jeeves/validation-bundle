@@ -27,28 +27,19 @@ class StartDateValidator extends ConstraintValidator
             $minDateTime = $nowDateTime;
         }
 
-        if ($dateValidation > $minDateTime && $minDateTime >= $nowDateTime) {
-            return;
+        if ($dateValidation->format('Y-m-d') < $minDateTime->format('Y-m-d')) {
+            return $minDateTime > $nowDateTime ?
+                $this->context->addViolation(
+                    $constraint->messageDateOutsideRollingWindow,
+                    ['%day%' => $minDateTime->format('jS')]
+                ) :
+                $this->context->addViolation($constraint->messageDateInPast);
         }
 
-        /**
-         * If it's today, need check time
-         */
-        if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d') && $minDateTime <= $nowDateTime) {
-            if (self::isPastCutoffTime($dateValidation, $constraint->oneTimeUntilValue)) {
-                return $this->context->addViolation($constraint->messageDateCutoffTime);
-            }
-
-            return;
+        if (self::isPastCutoffTime($dateValidation, $constraint->oneTimeUntilValue)) {
+            return $this->context->addViolation($constraint->messageDateCutoffTime);
         }
-
-        return $minDateTime > $nowDateTime ?
-            $this->context->addViolation(
-                $constraint->messageDateOutsideRollingWindow,
-                ['%day%' => $minDateTime->format('jS')]
-            ) :
-            $this->context->addViolation($constraint->messageDateInPast);
-    }
+  }
 
     /**
      * @param \DateTime $dateValidation

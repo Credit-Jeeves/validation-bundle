@@ -1685,7 +1685,7 @@ class PayCase extends BaseTestCase
         $em->flush($contract->getGroup());
 
         $this->setDefaultSession('selenium2');
-        $this->login('tenant11@example.com', 'pass');
+        $this->loginByAccessToken('tenant11@example.com');
 
         $this->page->pressButton($this->payButtonName);
         $popupDialog = $this->getDomElement('#pay-popup');
@@ -1718,7 +1718,8 @@ class PayCase extends BaseTestCase
             $firstAvailableStartDate->format('n/j/Y'),
             $startDateInput->getValue()
         );
-        $startDateInput->setValue($firstAvailableStartDate->modify('-1 day')->format('n/j/Y'));
+        $invalidStartDate = clone $firstAvailableStartDate;
+        $startDateInput->setValue($invalidStartDate->modify('-1 day')->format('n/j/Y'));
 
         $form->click();
         $this->session->wait(100);
@@ -1733,5 +1734,18 @@ class PayCase extends BaseTestCase
             $errors[0]->getText(),
             'Should be displayed error with text "payment.start_date.error.outside_rolling_window"'
         );
+
+        $startDateInput->setValue($firstAvailableStartDate->format('n/j/Y'));
+
+        $form->click();
+        $this->session->wait(100);
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
+
+        $sourceStep = $this->getDomElement('#id-source-step');
+
+        $this->assertTrue($sourceStep->isVisible(), 'Should be show next step without errors');
     }
 }
