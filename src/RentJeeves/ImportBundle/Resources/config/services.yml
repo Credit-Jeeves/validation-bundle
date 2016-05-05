@@ -50,6 +50,7 @@ services:
             - @import.property.transformer_factory
             - @import.property.loader_factory
             - @monolog.logger.property_import
+            - @doctrine.orm.default_entity_manager
 
     import.property.settings_provider:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider

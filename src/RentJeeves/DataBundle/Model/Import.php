@@ -54,6 +54,16 @@ abstract class Import
 
     /**
      * @ORM\Column(
+     *      name="error_message",
+     *      type="text",
+     *      nullable=true
+     * )
+     * @var string
+     */
+    protected $errorMessage;
+
+    /**
+     * @ORM\Column(
      *     type="ImportStatus",
      *     nullable=false
      * )
@@ -150,6 +160,22 @@ abstract class Import
     public function setImportType($importType)
     {
         $this->importType = $importType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
 
     /**
