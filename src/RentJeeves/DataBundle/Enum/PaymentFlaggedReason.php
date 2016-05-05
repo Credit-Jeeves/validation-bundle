@@ -18,7 +18,5 @@ class PaymentFlaggedReason extends Enum
 
     const DTR_UNTRUSTED_LANDLORD = 'dtr_untrusted_landlord';
 
-    const DTR_PAYMENT_TO_UNTRUSTED_LANDLORD = 'dtr_payment_to_untrusted_landlord';
-
     const DTR_PAYMENT_MATCH_ADDRESSES = 'dtr_payment_match_addresses';
 }
