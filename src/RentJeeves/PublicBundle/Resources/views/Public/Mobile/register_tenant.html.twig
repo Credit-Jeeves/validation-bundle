@@ -1,0 +1,102 @@
+{% extends "RjCoreBundle::layout.mobile.html.twig" %}
+
+{% block header %}
+    <div data-role="navbar" data-iconpos="left">
+      <h1>RentTrack</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div data-role="page"
+        style="background-image: url(/bundles/rjcore/images/mobile/home-bgnd.png);
+        background-size: cover; text-align: center; font-family: PT Sans Caption;">
+
+        <img src="{{ asset('/bundles/rjcore/images/mobile/home-logo.png') }}" style="margin-top: 30px;margin-bottom: 30px;">
+
+        <div class="notice">
+            {% if isEmailInvite is defined and isEmailInvite == true %}
+                {{ 'register.tenant.email_invite.notice' | trans({'%fullNameLandlord%': fullNameLandlord, '%rentAddress%': rentAddress}) }}
+            {% endif %}
+        </div>
+
+        <hr class="register-line">
+
+        <form id="m-form-new-user" data-ajax="false" action="{{ path('tenant_invite', {"code": code}) }}"
+              method="post" {{ form_enctype(form) }}
+              style="padding-left: 10%;padding-right: 10%">
+
+            <div class="reg-input">
+                {{ form_widget(form.first_name, {attr: {'placeholder' : 'First'}}) }}
+                {{ form_errors(form.first_name) }}
+            </div>
+            <div class="reg-input">
+                {{ form_widget(form.last_name, {attr: {'placeholder' : 'Last'}}) }}
+                {{ form_errors(form.last_name) }}
+            </div>
+            <div class="reg-input">
+                {{ form_widget(form.email, {attr: {'placeholder' : 'Email'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div class="reg-input">
+                {{ form_widget(form.phone, {attr: {'placeholder' : 'Phone'}}) }}
+                {{ form_errors(form.phone) }}
+            </div>
+            <div class="reg-input">
+                {{ form_widget(form.password.Password, {attr: {'placeholder' : 'Password'}, 'class' : 'reg-input'}) }}
+                {{ form_errors(form.password.Password) }}
+            </div>
+            <div class="reg-input">
+                {{ form_widget(form.password.Verify_Password, {attr: {'placeholder' : 'Verify Password'}, 'class' : 'reg-input'}) }}
+                {{ form_errors(form.password.Verify_Password) }}
+            </div>
+
+            <div class="form-row checkboxes clearfix">
+                <label id="checkboxterms" class="checkbox" style="z-index: 1;-moz-box-shadow: none;-webkit-box-shadow: none;box-shadow: none;">
+                    {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
+                    <i class="tos-label"> </i>
+                    <span class="big">
+                        {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+                        {{'terms.service.pre-link'|trans }}
+                    </span>
+                </label>
+                <span>
+                    <a class="term-link" href="{{ link }}" title="{{ 'terms.service.link.text'|trans }}">
+                        {{'terms.service.link.mobile-text'|trans }}
+                    </a>
+                </span>
+            </div>
+
+            <div class="tos-description">
+                {{ 'terms.service'|trans }}
+            </div>
+
+            <input
+                type="submit"
+                data-role="none"
+                role="none"
+                id="_submit"
+                name="_submit"
+                value="{{ 'continue'|trans }}"
+                style=""/>
+        {{ form_end(form) }}
+        </form>
+        <p class="login-pod-footer" style="position: absolute; left: 50%; margin-left: -92px; margin-bottom: 25px">
+            <a href="http://www.renttrack.com/terms-of-service/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
+                {{ 'rj.footer.terms'|trans }}
+            </a> <span style="color: white">|</span>
+            <a href="http://renttrack.uservoice.com/" style="color: white; text-decoration: none; font-size: 12pt; font-family: PT Sans Caption; text-shadow: none;">
+                {{ 'help'|trans }}
+            </a>
+        </p>
+    <div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/mobile/register_tenant.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
