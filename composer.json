@@ -253,7 +253,7 @@
         "jms/serializer-bundle": "0.13.0 as dev-master",
         "jms/serializer": "0.16 as dev-master",
         "friendsofsymfony/rest-bundle": "1.4 as dev-master",
-        "nelmio/api-doc-bundle": "2.5.0 as dev-master",
+        "nelmio/api-doc-bundle": "2.12.0 as dev-master",
         "besimple/soap-bundle": "v0.2.5 as dev-master",
         "besimple/soap-common": "0.2.x-dev as dev-master",
         "besimple/soap-wsdl": "v0.2.4 as dev-master",
