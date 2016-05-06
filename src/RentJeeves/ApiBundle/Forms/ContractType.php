@@ -14,11 +14,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface as OptionsResolve
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Null;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 class ContractType extends AbstractType
 {
-    const NAME = '';
+    const NAME = 'api_form_contract';
 
     /**
      * @var bool
@@ -26,15 +27,26 @@ class ContractType extends AbstractType
     public $submit = false;
 
     /**
+     * @var UnitRepository
+     */
+    protected $unitRepository;
+
+    /**
+     * @param UnitRepository $unitRepository
+     */
+    public function __construct(UnitRepository $unitRepository)
+    {
+        $this->unitRepository = $unitRepository;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilder $builder, array $options)
     {
-        /** @var UnitRepository $unitRepository */
-        $unitRepository = $options['unit_repository'];
         $builder->add('unit_url', 'entity', [
             'class' => 'RentJeeves\DataBundle\Entity\Unit',
-            'query_builder' => $unitRepository->createQueryBuilder('unit'),
+            'query_builder' => $this->unitRepository->createQueryBuilder('unit'),
             'mapped' => false,
             'constraints' => [
                 new NotBlank([
@@ -64,18 +76,41 @@ class ContractType extends AbstractType
             ],
         ]);
 
-        $builder->add('rent', null);
-
-        $builder->add('due_date', null);
-
-        $builder->add('lease_start', 'datetime', [
-            'property_path' => 'startAt',
-            'widget' => 'single_text',
+        $builder->add('rent', 'number', [
+            'constraints' => [
+                new NotBlank([
+                    'message' => 'api.errors.contract.rent.empty',
+                    'groups' => ['unit_url', 'new_unit']
+                ]),
+            ],
+            'precision' => '2'
         ]);
 
-        $builder->add('lease_end', 'datetime', [
-            'property_path' => 'finishAt',
+        $builder->add('due_date', 'integer', [
+            'constraints' => [
+                new Range([
+                    'min' => 1,
+                    'max' => 31,
+                    'groups' => ['unit_url', 'new_unit']
+                ])
+            ]
+        ]);
+
+        $builder->add('lease_start', 'date', [
+            'property_path' => 'startAt',
             'widget' => 'single_text',
+            'constraints' => [
+                new NotBlank([
+                    'message' => 'api.errors.contract.lease_start.empty',
+                    'groups' => ['unit_url', 'new_unit']
+                ]),
+            ]
+        ]);
+
+        $builder->add('lease_end', 'date', [
+            'required' => false,
+            'property_path' => 'finishAt',
+            'widget' => 'single_text'
         ]);
 
         $builder->add('experian_reporting', new ReportingType(), [
@@ -103,7 +138,6 @@ class ContractType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['unit_repository']);
         $resolver->setDefaults([
             'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
             'csrf_protection' => false,

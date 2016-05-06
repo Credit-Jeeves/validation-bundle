@@ -21,7 +21,7 @@ class MailingAddressType extends AbstractType
         $builder->add('state');
         $builder->add('city');
         $builder->add('zip');
-        $builder->add('location_id', 'text', ['property_path' => 'locationId']);
+        $builder->add('location_id', 'text', ['property_path' => 'locationId', 'required' => false]);
     }
 
     /**

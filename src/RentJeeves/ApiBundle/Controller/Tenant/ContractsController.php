@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ApiBundle\Controller\Tenant;
 
+use CreditJeeves\CoreBundle\Controller\BaseController;
 use FOS\RestBundle\Controller\FOSRestController as Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use RentJeeves\ApiBundle\Forms\ContractType;
@@ -18,7 +19,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\RequestParam;
 
-class ContractsController extends Controller
+class ContractsController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -29,6 +30,11 @@ class ContractsController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Contract",
+     *         "groups"={"Base", "ContractShort"},
+     *         "collection" = true
      *     }
      * )
      * @Rest\Get("/contracts")
@@ -103,6 +109,16 @@ class ContractsController extends Controller
      *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     input={
+     *         "class"="api_form_contract",
+     *         "name" = ""
+     *     },
+     *     responseMap={
+     *         201 = {
+     *             "class"="RentJeeves\ApiBundle\Response\Contract",
+     *             "groups"={"Base"}
+     *         }
      *     }
      * )
      * @Rest\Post("/contracts")
@@ -121,16 +137,16 @@ class ContractsController extends Controller
      * )
      * @RequestParam(
      *     name="rent",
+     *     requirements="[\d]+(\.\d{1,2})?",
      *     description="Rent amount. include decimal."
      * )
      * @RequestParam(
      *     name="due_date",
+     *     requirements="\d{1,2}",
      *     description="Day of the month."
      * )
      * @RequestParam(
      *     name="lease_start",
-     *     strict=true,
-     *     nullable=false,
      *     requirements="\d{4}-\d{2}-\d{2}",
      *     description="Lease start date. Format YYYY-mm-dd."
      * )
@@ -165,14 +181,7 @@ class ContractsController extends Controller
      */
     protected function processForm(Request $request, ContractEntity $entity, $method = 'POST')
     {
-        $form = $this->createForm(
-            new ContractType(),
-            $entity,
-            [
-                'method' => $method,
-                'unit_repository' => $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Unit')
-            ]
-        );
+        $form = $this->createNamedForm('', 'api_form_contract', $entity, ['method' => $method]);
 
         $form->handleRequest($request);
 
