@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dbc0b90546505691b2879a2d51854971",
-    "content-hash": "90bda5f2c58fd2145134832b93c43cf5",
+    "hash": "03bd5e1d2dd826ffa711e4d4ba599a7c",
+    "content-hash": "35660e9455d30d280b8c1a093d01c4ee",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -345,17 +345,17 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "v0.2.7",
+            "version": "v0.2.8",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Credit-Jeeves/BeSimpleSoapClient.git",
-                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d"
+                "reference": "da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
-                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
+                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5",
+                "reference": "da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5",
                 "shasum": ""
             },
             "require": {
@@ -405,9 +405,9 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.7"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/master"
             },
-            "time": "2016-04-26 09:57:50"
+            "time": "2016-05-06 13:59:55"
         },
         {
             "name": "besimple/soap-common",
@@ -5261,7 +5261,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/a2578dddae9c5be05b97ca555683c2acb8b36c25",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/6c0e3c7f476112e87ec48df23a81ec27c4f6a1b2",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -8319,7 +8319,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.7.0",
+            "version": "0.2.8.0",
             "package": "besimple/soap-client"
         },
         {
