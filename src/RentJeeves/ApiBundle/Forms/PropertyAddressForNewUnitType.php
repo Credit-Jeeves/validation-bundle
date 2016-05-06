@@ -34,7 +34,7 @@ class PropertyAddressForNewUnitType extends AbstractType
         ])->addViewTransformer(new UnitNameTransformer()));
 
         $builder->add('street', 'text', ['description' => 'Street should include number.']);
-        $builder->add('number', 'text', ['description' => 'Set number to street field.']);
+        $builder->add('number', 'text', ['description' => 'Do not pass this field. Set number to street field.']);
         $builder->add('state', 'text');
         $builder->add('city', 'text');
         $builder->add('zip', 'text');
