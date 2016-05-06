@@ -58,8 +58,8 @@ class ImportNewUserWithContractType extends AbstractType
     {
         $builder->add(
             'tenant',
-            new ImportTenantType(),
-            array()
+            new ImportTenantType($this->em, $this->translator),
+            []
         );
 
         $builder->add(
