@@ -229,6 +229,17 @@ class UnmappedLoader extends AbstractLoader
      */
     protected function saveData(ImportProperty $importProperty, Property $property)
     {
-        $this->em->flush($property);
+        $this->em->persist($property);
+        $this->em->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getImportProperties(Import $import, $additionalParameter)
+    {
+        return $this->em
+            ->getRepository('RjDataBundle:ImportProperty')
+            ->getNotProcessedImportProperties($import);
     }
 }
