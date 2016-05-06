@@ -70,7 +70,7 @@ class LandlordRepository extends EntityRepository
      * @param integer $holdingId
      * @return Landlord[]
      */
-    public function getHoldingNoneAdmins($holdingId)
+    public function getHoldingNonAdmins($holdingId)
     {
         $query = $this->createQueryBuilder('c');
         $query->where('c.holding = :holdingId');

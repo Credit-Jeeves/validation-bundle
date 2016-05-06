@@ -104,7 +104,7 @@ class FailedPostPaymentNotifier
         );
 
         $this->notifyHoldingAdmins($holding, $accountingSystemBatchNumber);
-        $this->notifyHoldingNoneAdmins($holding, $accountingSystemBatchNumber);
+        $this->notifyHoldingNonAdmins($holding, $accountingSystemBatchNumber);
 
         $this->logger->debug(
             sprintf(
@@ -118,9 +118,9 @@ class FailedPostPaymentNotifier
      * @param Holding $holding
      * @param string|null $accountingSystemBatchNumber
      */
-    protected function notifyHoldingNoneAdmins(Holding $holding, $accountingSystemBatchNumber = null)
+    protected function notifyHoldingNonAdmins(Holding $holding, $accountingSystemBatchNumber = null)
     {
-        $landlords = $this->em->getRepository("RjDataBundle:Landlord")->getHoldingNoneAdmins($holding->getId());
+        $landlords = $this->em->getRepository('RjDataBundle:Landlord')->getHoldingNonAdmins($holding->getId());
         /** @var Landlord $landlord */
         foreach ($landlords as $landlord) {
             $groups = $landlord->getGroups();
@@ -299,7 +299,7 @@ class FailedPostPaymentNotifier
 
         if ($result === false) {
             $this->logger->debug(
-                sprintf('Can\'nt send  send email to %s about failure batch close', $landlord->getEmail())
+                sprintf('Can\'t send  send email to %s about failure batch close', $landlord->getEmail())
             );
         } else {
             $this->logger->debug(
