@@ -31,7 +31,6 @@ class ImportFileAccountingType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $accountingSystem = $this->currentGroup->getHolding()->getAccountingSystem();
         $importSettings = $this->currentGroup->getImportSettings();
 
         if ($importSettings->getSource() === ImportSource::CSV &&
@@ -99,21 +98,19 @@ class ImportFileAccountingType extends AbstractType
             );
         }
 
-        //@TODO remove it when for resman it's will work
-        if (AccountingSystem::RESMAN !== $accountingSystem) {
-            $builder->add(
-                'onlyException',
-                'checkbox',
-                [
-                    'label' => 'import.onlyException',
-                    'required' => false,
-                    'mapped' => false,
-                    'attr' => [
-                        'class' => 'half-width original',
-                    ]
+
+        $builder->add(
+            'onlyException',
+            'checkbox',
+            [
+                'label' => 'import.onlyException',
+                'required' => false,
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'half-width original',
                 ]
-            );
-        }
+            ]
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
