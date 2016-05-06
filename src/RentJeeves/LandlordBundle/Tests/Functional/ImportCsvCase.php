@@ -1758,7 +1758,7 @@ class ImportCsvCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function shouldNotAllowImportLandlord()
+    public function shouldNotAllowImportTenantWhenSuchEmailAlreadyConnectToLandlord()
     {
         $this->load(true);
 
@@ -1788,22 +1788,38 @@ class ImportCsvCase extends ImportBaseAbstract
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We have errors on the page.');
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'We can\'t find table with data');
 
         $mapFile = $this->mapFile;
         $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
 
         $this->fillCsvMapping($mapFile, 15);
         $submitImportFile->click();
-        $this->session->wait(5000, "$('.errorField').length > 0");
-
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(1, $errorFields);
-        $this->assertEquals($errorFields[0]->getAttribute('title'), 'import.error.email_used_by_different_user_type');
+        $this->session->wait(5000, "$('.errorField').length > 0", 'We should see error');
+        //Check import view we should show error about email by default
+        $this->assertNotNull(
+            $errorFields = $this->page->findAll('css', '.errorField'),
+            'We should see error on the page'
+        );
+        $this->assertCount(1, $errorFields, 'Should be just one error for email');
+        $this->assertEquals(
+            $errorFields[0]->getAttribute('title'),
+            'import.error.email_used_by_different_user_type',
+            'Title error not equals to expected'
+        );
+        // Check import submit we should see error about email after submit the form and verify that form
+        // process correctly
         $submitImportFile->click();
         $this->waitReviewAndPost();
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(1, $errorFields);
-        $this->assertEquals($errorFields[0]->getAttribute('title'), 'import.error.email_used_by_different_user_type');
+        $this->assertNotNull(
+            $errorFields = $this->page->findAll('css', '.errorField'),
+            'We should see error on the page'
+        );
+        $this->assertCount(1, $errorFields, 'Should be just one error for email');
+        $this->assertEquals(
+            $errorFields[0]->getAttribute('title'),
+            'import.error.email_used_by_different_user_type',
+            'Title error not equals to expected'
+        );
     }
 }

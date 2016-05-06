@@ -62,8 +62,13 @@ class ImportTenantType extends AbstractType
             FormEvents::SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
+                $email = $form->get('email')->getViewData();
+                if (empty($email)) {
+                    return;
+                }
+
                 $user = $this->em->getRepository('DataBundle:User')->findOneBy(
-                    ['email' => $form->get('email')->getViewData()]
+                    ['email' => $email]
                 );
 
                 if ($user && $user->getType() !== UserType::TENANT) {
