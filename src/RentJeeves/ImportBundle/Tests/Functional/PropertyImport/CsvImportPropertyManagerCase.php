@@ -56,8 +56,6 @@ class CsvImportPropertyManagerCase extends BaseTestCase
         $countAllPropertyAddressesBeforeImport = count($allPropertiesAddresses);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
         $countAllUnitsBeforeImport = count($allUnits);
-        $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
-        $countAllUnitMappingsBeforeImport = count($allUnitMappings);
 
         $allPropertyGroups = $this->getEntityManager()
             ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
@@ -86,24 +84,22 @@ class CsvImportPropertyManagerCase extends BaseTestCase
         $countAllPropertiesAddressAfterImport = count($allPropertiesAddresses);
         $allUnits = $this->getEntityManager()->getRepository('RjDataBundle:Unit')->findAll();
         $countAllUnitsAfterImport = count($allUnits);
-        $allUnitMappings = $this->getEntityManager()->getRepository('RjDataBundle:UnitMapping')->findAll();
-        $countAllUnitMappingsAfterImport = count($allUnitMappings);
 
         $allPropertyGroupsAfterImport = $this->getEntityManager()
             ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
 
         $this->assertEquals(
-            $countImportPropertyBeforeImport + 3, // 48 unique records(unique extUnitId) from response
+            $countImportPropertyBeforeImport + 3, // 3 unique records(unique extUnitId) from response
             $countImportPropertiesAfterImport,
             'Not all ImportProperties are created.'
         );
         $this->assertEquals(
-            $countAllPropertiesBeforeImport + 3, // 1 new Property
+            $countAllPropertiesBeforeImport + 3, // 3 new Property
             $countAllPropertiesAfterImport,
             'Property is not created.'
         );
         $this->assertEquals(
-            $countAllPropertyAddressesBeforeImport + 3, // 1 new PropertyAddress
+            $countAllPropertyAddressesBeforeImport + 3, // 3 new PropertyAddress
             $countAllPropertiesAddressAfterImport,
             'PropertyAddress is not created.'
         );
@@ -113,7 +109,7 @@ class CsvImportPropertyManagerCase extends BaseTestCase
             'PropertyGroup is not created.'
         );
         $this->assertEquals(
-            $countAllUnitsBeforeImport + 3, // 48 new Unit
+            $countAllUnitsBeforeImport + 3, // 3 new Unit
             $countAllUnitsAfterImport,
             'Unit is not created.'
         );
