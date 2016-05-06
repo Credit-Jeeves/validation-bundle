@@ -109,6 +109,7 @@ services:
         public: false
         arguments:
             - @reader.csv
+            - '@import.property.sftp_file_manager'
             - @monolog.logger.property_import
 
     import.property.transformer.mri:

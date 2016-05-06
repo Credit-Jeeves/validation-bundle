@@ -75,7 +75,12 @@ class SftpFileManager
         $this->configureRemoteConnection();
         $this->logger->debug(sprintf('Trying to download file "%s".', $inputPathToFile));
         $data = $this->downloadData($inputPathToFile);
-        $result = file_put_contents($this->getSftpPath() . $outputPathToFile, $data);
+        try {
+            $result = file_put_contents($outputPathToFile, $data);
+        } catch (\Exception $e) {
+            throw new SftpFileManagerException($e->getMessage());
+        }
+
         if (false === $result) {
             $this->logger->debug(
                 $message = sprintf(
@@ -104,8 +109,11 @@ class SftpFileManager
             $this->logger->debug($message = sprintf('File %s not found.', $remotePathToFile));
             throw new SftpFileManagerException($message);
         }
-
-        $data = file_get_contents($remotePathToFile);
+        try {
+            $data = file_get_contents($remotePathToFile);
+        } catch (\Exception $e) {
+            throw new SftpFileManagerException($e->getMessage());
+        }
 
         if (false === $data) {
             $this->logger->debug(
@@ -139,7 +147,11 @@ class SftpFileManager
             throw new SftpFileManagerException($message);
         }
 
-        $result = file_put_contents($remotePathToFile, $data);
+        try {
+            $result = file_put_contents($remotePathToFile, $data);
+        } catch (\Exception $e) {
+            throw new SftpFileManagerException($e->getMessage());
+        }
 
         if (false === $result) {
             $this->logger->debug(

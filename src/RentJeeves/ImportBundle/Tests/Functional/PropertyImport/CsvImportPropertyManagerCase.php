@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ImportBundle\Tests\Functional\PropertyImport;
 
+use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\DataBundle\Entity\ImportProperty;
@@ -10,15 +11,20 @@ use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
 class CsvImportPropertyManagerCase extends BaseTestCase
 {
+    use CreateSystemMocksExtensionTrait;
+
     /**
      * @test
      */
     public function shouldImportDataFromCsvFile()
     {
         $this->load(true);
+
+        $this->configureContainer();
 
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
         $admin = $this->getEntityManager()->getRepository('DataBundle:Admin')->find(1);
@@ -60,9 +66,8 @@ class CsvImportPropertyManagerCase extends BaseTestCase
         $allPropertyGroups = $this->getEntityManager()
             ->getConnection()->query('SELECT COUNT(*) as test FROM rj_group_property')->fetchColumn(0);
 
-        $file = $this->getFileLocator()->locate('@ImportBundle/Tests/Fixtures/csvExample.csv');
         $id = $newImport->getId();
-        $this->getImportPropertyManager()->import($newImport, $file);
+        $this->getImportPropertyManager()->import($newImport, 'test');
         $importProperties = $this->getEntityManager()->getRepository('RjDataBundle:ImportProperty')
             ->findBy(['import' => $id]);
 
@@ -113,6 +118,21 @@ class CsvImportPropertyManagerCase extends BaseTestCase
             $countAllUnitsAfterImport,
             'Unit is not created.'
         );
+    }
+
+    protected function configureContainer()
+    {
+        $sftpFileManager = $this->getBaseMock(SftpFileManager::class);
+        $sftpFileManager
+            ->method('download')
+            ->will($this->returnCallback(
+                function ($inputFileName, $tmpFileName) {
+                    $file = $this->getFileLocator()->locate('@ImportBundle/Tests/Fixtures/csvExample.csv');
+                    copy($file, $tmpFileName);
+                }
+            ));
+
+        $this->getContainer()->set('import.property.sftp_file_manager', $sftpFileManager);
     }
 
     /**
