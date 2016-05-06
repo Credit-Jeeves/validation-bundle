@@ -148,6 +148,7 @@ class MriASIDataMapperCase extends UnitTestBase
                     case 'trackingid':
                         return '1111';
                     case 'appfee':
+                        return 130;
                     case 'secdep':
                         return 100;
                 }
@@ -171,7 +172,7 @@ class MriASIDataMapperCase extends UnitTestBase
             [
                 'trackingid' => '1111',
                 'apipost' => 'true',
-                'sum' => '200.00',
+                'sum' => '230.00',
                 'Digest' => 'Digest_Test'
             ],
             $integratedModel->getReturnParams(),
