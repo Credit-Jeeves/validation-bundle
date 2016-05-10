@@ -20,6 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends BaseGroup
 {
+    const ALLOWED_EDIT_LEASE_ID = [
+        AccountingSystem::MRI_BOSTONPOST,
+        AccountingSystem::AMSI,
+        AccountingSystem::PROMAS
+    ];
+
     /**
      * @return array
      */
@@ -341,7 +347,7 @@ class Group extends BaseGroup
         $accountingSystem = $this->getHolding()->getAccountingSystem();
         $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
 
-        if ($isIntegrated && in_array($accountingSystem, [AccountingSystem::MRI_BOSTONPOST, AccountingSystem::AMSI])) {
+        if ($isIntegrated && in_array($accountingSystem, self::ALLOWED_EDIT_LEASE_ID)) {
             return true;
         }
 
@@ -355,8 +361,7 @@ class Group extends BaseGroup
     {
         $accountingSystem = $this->getHolding()->getAccountingSystem();
         $isIntegrated = $this->getGroupSettings()->getIsIntegrated();
-
-        if ($isIntegrated && !in_array($accountingSystem, [AccountingSystem::MRI_BOSTONPOST, AccountingSystem::AMSI])) {
+        if ($isIntegrated && !in_array($accountingSystem, self::ALLOWED_EDIT_LEASE_ID)) {
             return true;
         }
 
