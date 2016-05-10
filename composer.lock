@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dd8ab36048c2ec880e18657a80a9d27c",
-    "content-hash": "8d90d5231eebfe3ae4bb63ed41a653c5",
+    "hash": "358e14e99d4aa939fd421447bfa030ca",
+    "content-hash": "84f6266e0fc7efb85a8ffa2992a2faaf",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -345,7 +345,7 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "v0.2.8.1",
+            "version": "v0.2.9",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
@@ -8319,7 +8319,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.8.1",
+            "version": "0.2.9.0",
             "package": "besimple/soap-client"
         },
         {
