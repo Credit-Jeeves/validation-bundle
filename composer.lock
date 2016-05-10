@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "03bd5e1d2dd826ffa711e4d4ba599a7c",
-    "content-hash": "35660e9455d30d280b8c1a093d01c4ee",
+    "hash": "dd8ab36048c2ec880e18657a80a9d27c",
+    "content-hash": "8d90d5231eebfe3ae4bb63ed41a653c5",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -345,17 +345,17 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "v0.2.8",
+            "version": "v0.2.8.1",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Credit-Jeeves/BeSimpleSoapClient.git",
-                "reference": "da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5"
+                "reference": "b24b6eee662a04b004f46f992a3d8d1be29a37c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5",
-                "reference": "da1aa8c82e4a0f5a6b0bb0339e3921a8c9b6d2a5",
+                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/b24b6eee662a04b004f46f992a3d8d1be29a37c1",
+                "reference": "b24b6eee662a04b004f46f992a3d8d1be29a37c1",
                 "shasum": ""
             },
             "require": {
@@ -405,9 +405,9 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/master"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.8.1"
             },
-            "time": "2016-05-06 13:59:55"
+            "time": "2016-05-10 08:59:04"
         },
         {
             "name": "besimple/soap-common",
@@ -1292,12 +1292,12 @@
             "target-dir": "Doctrine/Bundle/DoctrineCacheBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:doctrine/DoctrineCacheBundle.git",
-                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace"
+                "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
+                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
                 "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
                 "shasum": ""
             },
@@ -5261,7 +5261,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/6c0e3c7f476112e87ec48df23a81ec27c4f6a1b2",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8a84b75599f66a7039915a06a6f0f3737142947c",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -7057,7 +7057,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/80138299aadb590ce3fd0b75d30343fff9f8d0a8",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/7ca4182b3acbd19ebbf3ced4dfee12487d9c05aa",
                 "reference": "ce91d434b3dc443a3294c4535747765e84d11094",
                 "shasum": ""
             },
@@ -8319,7 +8319,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.8.0",
+            "version": "0.2.8.1",
             "package": "besimple/soap-client"
         },
         {
