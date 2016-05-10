@@ -326,4 +326,123 @@ class ContractManagerCase extends UnitTestBase
         $this->assertTrue($contract->getTenant()->getEmailNotification(), 'EmailNotification is not updated.');
         $this->assertTrue($contract->getTenant()->getOfferNotification(), 'OfferNotification is not updated.');
     }
+
+    /**
+     * @return array
+     */
+    public function statusProvider()
+    {
+        return [
+            [ContractStatus::APPROVED],
+            [ContractStatus::CURRENT],
+            [ContractStatus::PENDING],
+            [ContractStatus::INVITE],
+            [ContractStatus::FINISHED],
+            [ContractStatus::INVITE],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider statusProvider
+     */
+    public function shouldSetStatusDeleteForContract($status)
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('flush');
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('debug');
+
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $logger,
+            $this->getValidatorMock(),
+            $this->getMailerMock()
+        );
+
+        $contract = new Contract();
+        $contract->setStatus($status);
+
+        $contractManager->removeContract($contract);
+        $this->assertEquals(ContractStatus::DELETED, $contract->getStatus(), 'Contract should get status DELETE');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldRemoveContractWithUserFromDB()
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->exactly(2))
+            ->method('remove');
+        $em->expects($this->once())
+            ->method('flush');
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('debug');
+
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $logger,
+            $this->getValidatorMock(),
+            $this->getMailerMock()
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $tenant = new Tenant();
+        $contract->setTenant($tenant);
+
+        $contractManager->removeContract($contract);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldRemoveContractAndResidentMapping()
+    {
+        $repository = $this->getEntityRepositoryMock();
+        $em = $this->getEntityManagerMock();
+
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($repository);
+
+        $repository->expects($this->once())
+            ->method('findBy')
+            ->willReturn(new ArrayCollection([new ResidentMapping(), new ResidentMapping()]));
+
+        $em->expects($this->exactly(3))
+            ->method('remove');
+
+        $em->expects($this->once())
+            ->method('flush');
+
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('debug');
+
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $logger,
+            $this->getValidatorMock(),
+            $this->getMailerMock()
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $tenant = new Tenant();
+        $tenant->setEmail('test@email.com');
+        $contract->setTenant($tenant);
+
+        $contractManager->removeContract($contract);
+    }
 }

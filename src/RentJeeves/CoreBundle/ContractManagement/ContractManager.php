@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\ContractManagement;
 
 use CreditJeeves\DataBundle\Entity\Holding;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\ContractManagement\Model\ContractDTO;
@@ -209,6 +210,56 @@ class ContractManager
     }
 
     /**
+     * If contract not equals to status waiting we set status DELETE
+     *
+     * If contract in Waiting status we should remove:
+     * External resident ID, contract_history and waiting contract.
+     * Also hard delete the "contract waiting" user (but only if email is NULL)
+     *
+     * Cascade delete has enable for residents, operations(contract history)
+     *
+     * @param Contract $contract
+     */
+    public function removeContract(Contract $contract)
+    {
+        if ($contract->getStatus() !== ContractStatus::WAITING) {
+            $contract->setStatus(ContractStatus::DELETED);
+            $this->em->flush();
+            $this->logger->debug('Setup new status DELETE for Contract#' . $contract->getId());
+
+            return;
+        }
+
+        $this->em->remove($contract);
+
+        if (empty($contract->getTenant()->getEmail())) {
+            $this->em->remove($contract->getTenant());
+            $this->logger->debug(
+                sprintf(
+                    'Removed from DB tenant#%s without email and contract#%s',
+                    $contract->getTenant()->getId(),
+                    $contract->getId()
+                )
+            );
+        } else {
+            $this->removeResidentsMapping(
+                $this->em->getRepository('RjDataBundle:ResidentMapping')->findBy(
+                    ['holding' => $contract->getHolding(), 'tenant' => $contract->getTenant()]
+                )
+            );
+            $this->logger->debug(
+                sprintf(
+                    'Removed from DB residentMapping by tenant# and holding#%s, contract#%s removed from DB too',
+                    $contract->getTenant()->getId(),
+                    $contract->getId()
+                )
+            );
+        }
+
+        $this->em->flush();
+    }
+
+    /**
      * @param Holding $holding
      * @param Tenant  $tenant
      * @param string  $residentId
@@ -262,5 +313,15 @@ class ContractManager
         }
 
         $this->mailer->sendRjTenantInvite($tenant, $landlord, $contract);
+    }
+
+    /**
+     * @param Collection $residentsMapping
+     */
+    protected function removeResidentsMapping(Collection $residentsMapping)
+    {
+        foreach ($residentsMapping as $residentMapping) {
+            $this->em->remove($residentMapping);
+        }
     }
 }
