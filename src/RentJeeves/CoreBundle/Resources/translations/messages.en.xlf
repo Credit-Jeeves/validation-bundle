@@ -3434,6 +3434,10 @@
                 <source>contract.in_waiting_status</source>
                 <target>Contract is in waiting status.</target>
             </trans-unit>
+            <trans-unit id="import.error.email_used_by_different_user_type">
+                <source>import.error.email_used_by_different_user_type</source>
+                <target>Email already used by different user type(landlord).</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -220,7 +220,7 @@ class ResManClient implements ClientInterface
     }
 
     /**
-     * @param $externalPropertyId
+     * @param string $externalPropertyId
      *
      * @return ResidentTransactions
      */
