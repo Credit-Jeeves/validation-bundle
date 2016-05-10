@@ -19,9 +19,12 @@ class Holding extends BaseHolding
         return $this->getName() ?: '';
     }
 
+    /**
+     * @return array
+     */
     public function getHoldingAdmin()
     {
-        $usersAdmin = array();
+        $usersAdmin = [];
 
         if (empty($this->users)) {
             return $usersAdmin;
