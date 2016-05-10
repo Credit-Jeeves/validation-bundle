@@ -86,5 +86,4 @@ class DepositAccountAdmin extends Admin
             ->add('paymentProcessor')
             ->add('status');
     }
-
 }

@@ -65,10 +65,12 @@ class PaymentHistoryAdmin extends Admin
             ->addIdentifier('id', null, ['route' => ['name' => 'show']])
             ->add('object.contract', null, ['route' => ['name' => 'show'], 'label' => 'Contract'])
             ->add('object.paymentAccount', null, ['route' => ['name' => 'show'], 'label' => 'Payment Account'])
-            ->add('object', null,
+            ->add(
+                'object',
+                null,
                 [
                     'label' => 'Deposit Account',
-                    'template' => 'AdminBundle:CRUD:list__deposit_account.html.twig'
+                    'template' => 'AdminBundle:CRUD:list__deposit_account.html.twig',
                 ]
             )
             ->add('dueDate')
@@ -103,10 +105,12 @@ class PaymentHistoryAdmin extends Admin
         $showMapper
             ->add('object.contract', null, ['route' => ['name' => 'show'], 'label' => 'Contract'])
             ->add('object.paymentAccount', null, ['route' => ['name' => 'show'], 'label' => 'Payment Account'])
-            ->add('object', null,
+            ->add(
+                'object',
+                null,
                 [
                     'label' => 'Deposit Account',
-                    'template' => 'AdminBundle:CRUD:show__deposit_account.html.twig'
+                    'template' => 'AdminBundle:CRUD:show__deposit_account.html.twig',
                 ]
             )
             ->add('type')
@@ -120,7 +124,6 @@ class PaymentHistoryAdmin extends Admin
             ->add('endYear')
             ->add('object.createdAt', 'date', ['label' => 'Created At'])
             ->add('object.updatedAt', 'date', ['label' => 'Updated At'])
-            ->add('loggedAt', 'date')
-        ;
+            ->add('loggedAt', 'date');
     }
 }
