@@ -106,12 +106,9 @@ function init() {
     });
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
-        $("#contractPayTo" + contract.id).html(contract.payToName)
-        var dueDate = contract.startAt.substr(8, 2)
-        if (dueDate.charAt(0) == "0") {
-            dueDate = dueDate.charAt(1);
-        }
-        dueDate = getOrdinal(dueDate);
+        $("#contractPayTo" + contract.id).html(contract.payToName);
+
+        dueDate = getOrdinal(contract.dueDate);
         $("#contractDueNext" + contract.id).html(dueDate);
         if (contract.payment) {
             $("#contractTotal" + contract.id).html(contract.payment.total)
