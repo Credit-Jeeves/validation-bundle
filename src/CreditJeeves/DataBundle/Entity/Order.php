@@ -600,6 +600,7 @@ class Order extends Base
         $result['amount'] = number_format($this->getSum(), 2, '.', '');
         $result['tenant'] = $contract ? $contract->getTenant()->getFullName() : '';
         $result['address'] = $contract ? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
+        $result['checkNumber'] = $this->getCheckNumber();
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $depositDate = $this->getDepositDate();
         $result['depositDate'] = $depositDate ? $depositDate->format('m/d/Y') : 'N/A';
