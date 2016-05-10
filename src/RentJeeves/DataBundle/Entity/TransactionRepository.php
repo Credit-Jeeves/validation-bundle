@@ -248,7 +248,7 @@ class TransactionRepository extends EntityRepository
     {
         if (!empty($filter) && !empty($search)) {
             switch ($filter) {
-                case 'checkNumber' :
+                case 'checkNumber':
                     $query->andWhere(
                         $query->expr()->in(
                             'h.batchId',
@@ -256,8 +256,8 @@ class TransactionRepository extends EntityRepository
                         )
                     );
                     break;
-                case 'transactionId' :
-                case 'batchId' :
+                case 'transactionId':
+                case 'batchId':
                 default:
                     $query->andWhere('h.'.$filter.' = :search');
             }

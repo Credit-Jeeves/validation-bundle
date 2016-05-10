@@ -166,8 +166,10 @@ class DashboardCase extends BaseTestCase
         );
         $searchPayments_link->click();
 
-        $this->assertNotNull($checkNumberFilter = $this->page->find('css', '#searchPayments_li_4'),
-            'Should be options Check Number');
+        $this->assertNotNull(
+            $checkNumberFilter = $this->page->find('css', '#searchPayments_li_4'),
+            'Should be options Check Number'
+        );
         $checkNumberFilter->click();
         $searchField = $this->page->find('css', '#searsh-field-payments');
         $this->assertNotNull($searchField, 'Should be input for search value');
