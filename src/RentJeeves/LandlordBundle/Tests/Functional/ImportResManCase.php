@@ -47,7 +47,7 @@ class ImportResManCase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertCount(24, $contract, 'Check fixtures, should be present just 23 contracts on DB');
+        $this->assertCount(24, $contract, 'Check fixtures, should be present just 24 contracts on DB');
 
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -60,10 +60,10 @@ class ImportResManCase extends ImportBaseAbstract
             80000,
             "$('table').is(':visible')"
         );
-        //First page
+        //1
         $submitImport->click();
         $this->waitReviewAndPost();
-        //Second page
+        //2
         $submitImport->click();
         $this->waitReviewAndPost();
 
@@ -119,5 +119,52 @@ class ImportResManCase extends ImportBaseAbstract
             $this->page->find('css', '.rentNotEditable'),
             'We should not see not editable fields'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function checkOnlyReviewAndPostImport()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        // prepare fixtures
+        $em = $this->getEntityManager();
+        $propertyMapping = $em->getRepository('RjDataBundle:PropertyMapping')->findOneBy(
+            ['externalPropertyId' => 'rnttrk01']
+        );
+        $this->assertNotEmpty($propertyMapping, 'We don\'t have propertyMapping in fixtures');
+        $propertyMapping->setExternalPropertyId('test_resman_external_property_id');
+        $em->flush();
+        /** @var Landlord $landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        $this->assertNotNull($landlord, 'Check fixtures, landlord with email "landlord1@example.com" should exist');
+        $holding = $landlord->getHolding();
+        $holding->setAccountingSystem(AccountingSystem::RESMAN);
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->findOneByName('Test Rent Group');
+        $this->assertNotNull($group, 'Check fixtures, group with name "Test Rent Group" should exist');
+        $this->assertEquals(
+            $holding->getId(),
+            $group->getHolding()->getId(),
+            'Check fixtures, group with name "Test Rent Group" should belong to holding with id ' . $holding->getId()
+        );
+        $importSettings = $group->getImportSettings();
+        $importSettings->setApiPropertyIds('test_resman_external_property_id');
+        $importSettings->setImportType(ImportType::MULTI_PROPERTIES);
+        $importSettings->setSource(ImportSource::INTEGRATED_API);
+        $em->flush();
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($exceptionOnly = $this->page->find('css', '#import_file_type_onlyException'));
+        $exceptionOnly->check();
+        $submitImport = $this->getDomElement('.submitImportFile', 'Submit button should exist');
+        $submitImport->click();
+        $this->waitReview();
+        $this->waitRedirectToSummaryPage();
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
     }
 }

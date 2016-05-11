@@ -1753,4 +1753,73 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertCount(1, $trs, "Count statuses is wrong");
         $this->assertCount(2, $trs['import.status.match'], "Count contract with status 'match' wrong");
     }
+
+
+    /**
+     * @test
+     */
+    public function shouldNotAllowImportTenantWhenSuchEmailAlreadyConnectToLandlord()
+    {
+        $this->load(true);
+
+        $importGroupSettings = $this->getImportGroupSettings();
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
+        $importGroupSettings->setApiPropertyIds(null);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
+        $landlord = $this->getEntityManager()->getRepository('RjDataBundle:Landlord')->findOneBy(
+            ['email' => 'landlord1@example.com']
+        );
+        $this->assertNotEmpty($landlord, 'Landlord missed in the fixtures');
+        $landlord->setEmail('14test@mail.com');
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->login('14test@mail.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->setPropertyFirst();
+        // attach file to file input:
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFixtureFilePathByName('import_landlord.csv');
+        $attFile->attachFile($filePath);
+        $submitImportFile = $this->getDomElement('.submitImportFile');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We have errors on the page.');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'We can\'t find table with data');
+
+        $mapFile = $this->mapFile;
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
+
+        $this->fillCsvMapping($mapFile, 15);
+        $submitImportFile->click();
+        $this->session->wait(5000, "$('.errorField').length > 0", 'We should see error');
+        //Check import view we should show error about email by default
+        $this->assertNotNull(
+            $errorFields = $this->page->findAll('css', '.errorField'),
+            'We should see error on the page'
+        );
+        $this->assertCount(1, $errorFields, 'Should be just one error for email');
+        $this->assertEquals(
+            $errorFields[0]->getAttribute('title'),
+            'import.error.email_used_by_different_user_type',
+            'Title error not equals to expected'
+        );
+        // Check import submit we should see error about email after submit the form and verify that form
+        // process correctly
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $this->assertNotNull(
+            $errorFields = $this->page->findAll('css', '.errorField'),
+            'We should see error on the page'
+        );
+        $this->assertCount(1, $errorFields, 'Should be just one error for email');
+        $this->assertEquals(
+            $errorFields[0]->getAttribute('title'),
+            'import.error.email_used_by_different_user_type',
+            'Title error not equals to expected'
+        );
+    }
 }
