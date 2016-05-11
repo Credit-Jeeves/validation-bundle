@@ -109,7 +109,7 @@ class TenantAdmin extends Admin
                         'contracts' => array(
                             'template' => 'AdminBundle:CRUD:list__tenant_contracts.html.twig'
                         ),
-                        'payments' => array(
+                        'orders' => array(
                             'template' => 'AdminBundle:CRUD:list__tenant_orders.html.twig'
                         ),
                         'report' => array(
@@ -117,6 +117,9 @@ class TenantAdmin extends Admin
                         ),
                         'newReport' => array(
                             'template' => 'AdminBundle:CRUD:list__action_new_report.html.twig'
+                        ),
+                        'payments' => array(
+                            'template' => 'AdminBundle:CRUD:list__tenant_payments.html.twig'
                         ),
                     )
                 )

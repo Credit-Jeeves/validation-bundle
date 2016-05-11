@@ -40,4 +40,12 @@ class PaymentHistory extends BasePaymentHistory
             }
         }
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getId();
+    }
 }
