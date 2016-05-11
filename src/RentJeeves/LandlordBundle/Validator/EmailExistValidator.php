@@ -47,8 +47,6 @@ class EmailExistValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $value = (string) $value;
-
         if (null === $value || '' === $value) {
             return;
         }
@@ -57,6 +55,8 @@ class EmailExistValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'string');
         }
 
+        $value = (string) $value;
+
         /** @var User $user */
         if ($user = $this->userRepository->findOneByEmail($value)) {
 
@@ -64,7 +64,7 @@ class EmailExistValidator extends ConstraintValidator
                 $constraint->messageExist,
                 array_merge(
                     [
-                        '%email%' => $value,
+                        '%email%' => $this->formatValue($value),
                         '%user_fullname%' => $user->getFullName(),
                         '%support_email%' => $this->supportEmail,
                     ],
