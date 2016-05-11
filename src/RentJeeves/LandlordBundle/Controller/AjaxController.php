@@ -810,19 +810,15 @@ class AjaxController extends Controller
         }
 
         if ($action == 'remove') {
-            /**
-             * This contract don't have any payment this is just contract, so we can remove it from db
-             */
             $tenant = $contract->getTenant();
             $landlord = $this->getUser();
+
+            $this->get('renttrack.contract_manager')->removeContract($contract);
             $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
                 $tenant,
                 $landlord,
                 $contract
             );
-            $contract->setStatus(ContractStatus::DELETED);
-            $em->persist($contract);
-            $em->flush();
 
             return new JsonResponse($response);
         }
