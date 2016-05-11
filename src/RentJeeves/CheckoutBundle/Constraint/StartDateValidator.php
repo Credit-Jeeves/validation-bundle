@@ -27,7 +27,7 @@ class StartDateValidator extends ConstraintValidator
             $minDateTime = $nowDateTime;
         }
 
-        if ($dateValidation->format('Y-m-d') < $minDateTime->format('Y-m-d')) {
+        if ($dateValidation->format('Ymd') < $minDateTime->format('Ymd')) {
             return $minDateTime > $nowDateTime ?
                 $this->context->addViolation(
                     $constraint->messageDateOutsideRollingWindow,
@@ -39,7 +39,7 @@ class StartDateValidator extends ConstraintValidator
         if (self::isPastCutoffTime($dateValidation, $constraint->oneTimeUntilValue)) {
             return $this->context->addViolation($constraint->messageDateCutoffTime);
         }
-  }
+    }
 
     /**
      * @param \DateTime $dateValidation
@@ -50,11 +50,11 @@ class StartDateValidator extends ConstraintValidator
     {
         $nowDateTime = new \DateTime();
 
-        if ($dateValidation->format('Y-m-d') > $nowDateTime->format('Y-m-d')) {
+        if ($dateValidation->format('Ymd') > $nowDateTime->format('Ymd')) {
             return false;
         }
 
-        if ($dateValidation->format('Y-m-d') === $nowDateTime->format('Y-m-d')) {
+        if ($dateValidation->format('Ymd') === $nowDateTime->format('Ymd')) {
             $nowDateTimeWithCrontabTimeExecution = new \DateTime($oneTimeUntilValue);
             $timeExecution = (int) $nowDateTimeWithCrontabTimeExecution->format('U');
             $timeValidation = (int) $dateValidation->format('U');
