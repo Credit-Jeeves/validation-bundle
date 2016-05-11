@@ -7,5 +7,9 @@
         <parameter key="accounting_system.resman" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::RESMAN</parameter>
         <parameter key="accounting_system.mri" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::MRI</parameter>
         <parameter key="accounting_system.amsi" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::AMSI</parameter>
+        <parameter key="accounting_system.promas" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::PROMAS</parameter>
+        <parameter key="accounting_system.mri_bostonpost" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::MRI_BOSTONPOST</parameter>
+        <parameter key="accounting_system.yardi_genesis" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::YARDI_GENESIS</parameter>
+        <parameter key="accounting_system.yardi_genesis_v2" type="constant">RentJeeves\DataBundle\Enum\AccountingSystem::YARDI_GENESIS_2</parameter>
     </parameters>
 </container>

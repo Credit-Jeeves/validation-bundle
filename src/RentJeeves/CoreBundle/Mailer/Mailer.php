@@ -14,7 +14,6 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 
 class Mailer extends BaseMailer
@@ -548,11 +547,17 @@ class Mailer extends BaseMailer
      * @param array     $groups
      * @param \DateTime $date
      * @param string    $resend
+     * @param string    $filePath
      *
      * @return bool
      */
-    public function sendBatchDepositReportHolding(Landlord $landlord, $groups, \DateTime $date, $resend = null)
-    {
+    public function sendBatchDepositReportHolding(
+        Landlord $landlord,
+        $groups,
+        \DateTime $date,
+        $resend = null,
+        $filePath = null
+    ) {
         $currentAccountingSystem = $landlord->getHolding()->getAccountingSystem();
         $vars = [
             'landlordFirstName' => $landlord->getFirstName(),
@@ -565,7 +570,8 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjBatchDepositReportHolding',
             $vars,
-            $landlord
+            $landlord,
+            $filePath
         );
     }
 
@@ -574,8 +580,9 @@ class Mailer extends BaseMailer
      * @param Group     $group
      * @param \DateTime $date
      * @param array     $batches
-     * @param           $returns
-     * @param           $resend
+     * @param array     $returns
+     * @param string    $resend
+     * @param string    $filePath
      *
      * @return bool
      */
@@ -585,7 +592,8 @@ class Mailer extends BaseMailer
         \DateTime $date,
         $batches,
         $returns,
-        $resend = null
+        $resend = null,
+        $filePath = null
     ) {
         $currentAccountingSystem = $landlord->getHolding()->getAccountingSystem();
         $vars = [
@@ -602,7 +610,8 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter(
             'rjBatchDepositReportLandlord',
             $vars,
-            $landlord
+            $landlord,
+            $filePath
         );
     }
 
