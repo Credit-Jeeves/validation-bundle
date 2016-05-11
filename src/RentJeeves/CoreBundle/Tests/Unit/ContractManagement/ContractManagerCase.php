@@ -336,7 +336,6 @@ class ContractManagerCase extends UnitTestBase
             [ContractStatus::APPROVED],
             [ContractStatus::CURRENT],
             [ContractStatus::PENDING],
-            [ContractStatus::INVITE],
             [ContractStatus::FINISHED],
             [ContractStatus::INVITE],
         ];
@@ -346,7 +345,7 @@ class ContractManagerCase extends UnitTestBase
      * @test
      * @dataProvider statusProvider
      */
-    public function shouldSetStatusDeleteForContract($status)
+    public function shouldSetStatusDeleteForContractWhenStatusNotEqualsToWaiting($status)
     {
         $em = $this->getEntityManagerMock();
         $em->expects($this->once())
@@ -366,6 +365,7 @@ class ContractManagerCase extends UnitTestBase
 
         $contract = new Contract();
         $contract->setStatus($status);
+        $contract->setTenant(new Tenant());
 
         $contractManager->removeContract($contract);
         $this->assertEquals(ContractStatus::DELETED, $contract->getStatus(), 'Contract should get status DELETE');
@@ -374,11 +374,21 @@ class ContractManagerCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldRemoveContractWithUserFromDB()
+    public function shouldRemoveContractWithUserFromDBWhenContractStatusEqualsWaitingAndEmptyEmail()
     {
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $tenant = new Tenant();
+        $contract->setTenant($tenant);
+
         $em = $this->getEntityManagerMock();
-        $em->expects($this->exactly(2))
-            ->method('remove');
+        $em->expects($this->at(0))
+            ->method('remove')
+            ->with($this->equalTo($contract));
+        $em->expects($this->at(1))
+            ->method('remove')
+            ->with($this->equalTo($tenant));
+
         $em->expects($this->once())
             ->method('flush');
         $logger = $this->getLoggerMock();
@@ -393,49 +403,14 @@ class ContractManagerCase extends UnitTestBase
             $this->getValidatorMock(),
             $this->getMailerMock()
         );
-
-        $contract = new Contract();
-        $contract->setStatus(ContractStatus::WAITING);
-        $tenant = new Tenant();
-        $contract->setTenant($tenant);
-
         $contractManager->removeContract($contract);
     }
 
     /**
      * @test
      */
-    public function shouldRemoveContractAndResidentMapping()
+    public function shouldRemoveContractAndResidentMappingWhenContractStatusEqualsWaitingAndTenantHasEmail()
     {
-        $repository = $this->getEntityRepositoryMock();
-        $em = $this->getEntityManagerMock();
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->willReturn($repository);
-
-        $repository->expects($this->once())
-            ->method('findBy')
-            ->willReturn(new ArrayCollection([new ResidentMapping(), new ResidentMapping()]));
-
-        $em->expects($this->exactly(3))
-            ->method('remove');
-
-        $em->expects($this->once())
-            ->method('flush');
-
-        $logger = $this->getLoggerMock();
-        $logger->expects($this->once())
-            ->method('debug');
-
-        $contractManager = new ContractManager(
-            $this->getBaseMock(ContractCreator::class),
-            $this->getBaseMock(UserCreator::class),
-            $em,
-            $logger,
-            $this->getValidatorMock(),
-            $this->getMailerMock()
-        );
 
         $contract = new Contract();
         $contract->setStatus(ContractStatus::WAITING);
@@ -443,6 +418,77 @@ class ContractManagerCase extends UnitTestBase
         $tenant->setEmail('test@email.com');
         $contract->setTenant($tenant);
 
+        $repository = $this->getEntityRepositoryMock();
+        $repository->expects($this->once())
+            ->method('findBy')
+            ->willReturn($collection = new ArrayCollection([new ResidentMapping(), new ResidentMapping()]));
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->at(1))
+            ->method('getRepository')
+            ->willReturn($repository);
+
+        $em->expects($this->at(0))
+            ->method('remove')
+            ->with($this->equalTo($contract));
+        $em->expects($this->at(2))
+            ->method('remove')
+            ->with($this->equalTo($collection->get(0)));
+        $em->expects($this->at(3))
+            ->method('remove')
+            ->with($this->equalTo($collection->get(1)));
+
+        $em->expects($this->once())
+            ->method('flush');
+
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('debug');
+
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $logger,
+            $this->getValidatorMock(),
+            $this->getMailerMock()
+        );
+
         $contractManager->removeContract($contract);
+    }
+
+    /**
+     * @test
+     * @dataProvider statusProvider
+     */
+    public function shouldSetStatusDeleteForContractWhenTenantHasContractsInNonWaitingStatusContracts($status)
+    {
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('flush');
+        $logger = $this->getLoggerMock();
+        $logger->expects($this->once())
+            ->method('debug');
+
+        $contractManager = new ContractManager(
+            $this->getBaseMock(ContractCreator::class),
+            $this->getBaseMock(UserCreator::class),
+            $em,
+            $logger,
+            $this->getValidatorMock(),
+            $this->getMailerMock()
+        );
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setTenant(new Tenant());
+        $contract2 = new Contract();
+        $contract2->setStatus($status);
+        $contract2->setTenant($contract->getTenant());
+        $contract->getTenant()->addContract($contract);
+        $contract->getTenant()->addContract($contract2);
+
+        $contractManager->removeContract($contract);
+        $this->assertEquals(ContractStatus::DELETED, $contract->getStatus(), 'Contract should get status DELETE');
     }
 }

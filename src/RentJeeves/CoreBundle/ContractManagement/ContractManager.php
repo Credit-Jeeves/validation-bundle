@@ -222,7 +222,9 @@ class ContractManager
      */
     public function removeContract(Contract $contract)
     {
-        if ($contract->getStatus() !== ContractStatus::WAITING) {
+        $nonWaitingStatusContract = $contract->getTenant()->getNonWaitingStatusContract();
+
+        if ($contract->getStatus() !== ContractStatus::WAITING || !empty($nonWaitingStatusContract)) {
             $contract->setStatus(ContractStatus::DELETED);
             $this->em->flush();
             $this->logger->debug('Setup new status DELETE for Contract#' . $contract->getId());
