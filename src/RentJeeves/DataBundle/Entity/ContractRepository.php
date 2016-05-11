@@ -1781,4 +1781,19 @@ class ContractRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param $holdingId
+     * @return mixed
+     */
+    public function getContractsIdByHoldingAndEmptyLeaseId($holdingId)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->where('c.holding = :holdingId')
+            ->andWhere('c.externalLeaseId IS NULL')
+            ->setParameter('holdingId', $holdingId)
+            ->getQuery()
+            ->getResult(Query::HYDRATE_ARRAY);
+    }
 }
