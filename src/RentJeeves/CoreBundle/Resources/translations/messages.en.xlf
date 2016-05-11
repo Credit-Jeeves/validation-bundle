@@ -1245,7 +1245,7 @@
             </trans-unit>
             <trans-unit id="contract.error.start">
                 <source>contract.error.start</source>
-                <target>Start At could not be empty</target>
+                <target>Start On Date is required</target>
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
