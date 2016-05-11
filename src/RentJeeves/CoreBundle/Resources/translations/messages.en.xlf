@@ -1234,9 +1234,18 @@
                 <source>contract.error.email.invalid</source>
                 <target>Email is invalid</target>
             </trans-unit>
+            <trans-unit id="contract.error.email.exist">
+                <source>contract.error.email.exist</source>
+                <target><![CDATA[
+                The email address %email% already belongs to %user_fullname%.
+                If this is the correct resident, then please remove this lease and approve their other contract that is "pending".
+                To remove this lease, click "Remove Lease" below.
+                If you have any questions, please contact <a href="mailto:%support_email%">%support_email%</a>.
+                ]]></target>
+            </trans-unit>
             <trans-unit id="contract.error.start">
                 <source>contract.error.start</source>
-                <target>Start At could not be empty</target>
+                <target>Start On Date is required</target>
             </trans-unit>
             <trans-unit id="contract.error.unit">
                 <source>contract.error.unit</source>
