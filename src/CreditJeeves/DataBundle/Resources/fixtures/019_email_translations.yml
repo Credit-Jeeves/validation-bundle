@@ -1889,3 +1889,58 @@ fixtures:
               <p>Thank you, <br\>
               The RentTrack Team</p>
           {% endblock %}
+
+# rjOrderProfitStarsComplete.html
+  translation_58_subject:
+    translatable: email_58
+    locale: %locale%
+    property: subject
+    value: Rent Payment Receipt
+
+  translation_58_body:
+      translatable: email_58
+      locale: %locale%
+      property: body
+      value: |
+          {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+          {% block h1 %}Your Rent Check has been Processed{% endblock %}
+          {% block email %}
+              Hi {{ firstName }}!
+              <br/>
+              Your rent check payment to {{ groupName }} has been processed.
+              <p>Processed On:      {{ orderCreatedAt }}</p>
+              <p>Transaction ID:    {{ transactionId }}</p>
+              <p>Payment Method:    Paper Check  {{ checkNumber }}</p>
+              <p>Amount:            ${{ orderAmount }}</p>
+              <br/>
+              You can save time in the future by <a href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}">paying online</a>.
+              {% if isPassedACHFee %} It’s only ${{ achFee }} for e-checks{% else %}It’s free to pay by e-check{% endif %},
+              and {{ ccFee }}% for credit card payments. Flexibility – there when you need it.
+
+              <p>Pay your rent with RentTrack and build credit history with each payment.
+              RentTrack is the only company that can report your rent payments to all three major credit bureaus,
+              so you can build credit history without taking on additional debt.</p>
+
+              <a href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}"
+                  style="
+                      border: none;
+                      padding: 2px 7px;
+                      text-align: left;
+                      color: white;
+                      font-size: 14px;
+                      text-shadow: 1px 1px 3px #636363;
+                      filter: dropshadow(color=#636363, offx=1, offy=1);
+                      cursor: pointer;
+                      background-color: #669900;
+                      -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
+                      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+                      zoom: 1;
+                      text-decoration: none;
+                      -moz-border-radius: 4px;
+                      -webkit-border-radius: 4px;
+                      border-radius: 4px;
+                  ">Sign Up Today</a>
+
+              <p>We’re here to help,</p>
+              The RentTrack Team
+          {% endblock %}
