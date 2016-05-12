@@ -1907,11 +1907,29 @@ fixtures:
           {% block email %}
               Hi {{ firstName }}!
               <br/>
-              Your rent check payment to {{ groupName }} has been processed.
-              <p>Processed On:      {{ orderCreatedAt }}</p>
-              <p>Transaction ID:    {{ transactionId }}</p>
-              <p>Payment Method:    Paper Check  {{ checkNumber }}</p>
-              <p>Amount:            ${{ orderAmount }}</p>
+              <p>Your rent check payment to {{ groupName }} has been processed.</p>
+
+              <table width="100%" style="border: 1px solid #C8C8C8; border-collapse: collapse;">
+                <tbody>
+                  <tr style="border: 1px solid #C8C8C8;">
+                    <td style="padding:5px;">Processed On:</td>
+                    <td style="padding:5px;">{{ orderCreatedAt }}</td>
+                  </tr>
+                  <tr style="border: 1px solid #C8C8C8;">
+                    <td style="padding:5px;">Transaction ID:</td>
+                    <td style="padding:5px;">{{ transactionId }}</td>
+                  </tr>
+                  <tr style="border: 1px solid #C8C8C8;">
+                    <td style="padding:5px;">Payment Method:</td>
+                    <td style="padding:5px;">Paper Check  {{ checkNumber }}</td>
+                  </tr>
+                  <tr style="border: 1px solid #C8C8C8;">
+                    <td style="padding:5px;">Amount:</td>
+                    <td style="padding:5px;">${{ orderAmount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
               <br/>
               You can save time in the future by <a href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}">paying online</a>.
               {% if isPassedACHFee %} It’s only ${{ achFee }} for e-checks{% else %}It’s free to pay by e-check{% endif %},
