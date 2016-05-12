@@ -337,9 +337,7 @@ class TransactionRepository extends EntityRepository
             ->where('h.batchId = :batch')
             ->andWhere('h.isSuccessful = 1')
             ->andWhere('h.depositDate IS NOT NULL')
-            ->andWhere('o.status != :error')
             ->setParameter('batch', $batchId)
-            ->setParameter('error', OrderStatus::ERROR)
             ->getQuery()
             ->execute();
     }
