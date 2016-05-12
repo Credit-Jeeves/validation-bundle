@@ -37,7 +37,7 @@ use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
   </entry>
  */
 
-class MRIMultiPropertyStreetInBuildingAddressUnitInAddressHubbell extends MRITransformer
+class MRIHubbellDiamondBrooke extends MRITransformer
 {
     /**
      * {@inheritdoc}
@@ -65,9 +65,11 @@ class MRIMultiPropertyStreetInBuildingAddressUnitInAddressHubbell extends MRITra
      */
     protected function getUnitName(Value $accountingSystemRecord)
     {
+        $building_id = $accountingSystemRecord->getBuildingId();
         $unit_name = $accountingSystemRecord->getUnitId();
+        $unit_name = ($building_id == "NRG") ? "NRG" . "$unit_name" : $building_id . '-' . $unit_name;
 
-        return ($accountingSystemRecord->getBuildingId() == "NRG") ? "NRG" . "$unit_name" : $unit_name;
+        return $unit_name;
     }
 }
 
