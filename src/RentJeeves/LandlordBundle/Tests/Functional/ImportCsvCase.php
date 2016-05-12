@@ -1756,8 +1756,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('14test@mail.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->setPropertyFirst();
