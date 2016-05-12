@@ -167,7 +167,11 @@ class Contract extends Base
     }
 
     /**
-     * @inheritdoc
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("dueDate")
+     * @Serializer\Groups({"payRent"})
+     *
+     * @return integer
      */
     public function getDueDate()
     {

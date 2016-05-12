@@ -187,7 +187,13 @@ class OrderPayDirectStatusManager extends OrderSubmerchantStatusManager
         if (true === $result) {
             $this->setSending($order);
         } else {
-            $this->setError($order);
+            // don't fail order. Page someone so we can fix it!
+            $this->logger->emergency(
+                sprintf(
+                    '[CheckSender] Order#%d has failed to send check. Fix this or it will block all checks for today!',
+                    $order->getId()
+                )
+            );
         }
 
 //        $job = new Job('payment:pay-anyone:send-check', ['--app=rj', $order->getId()]);

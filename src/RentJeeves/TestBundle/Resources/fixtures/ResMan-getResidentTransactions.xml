@@ -1,0 +1,131 @@
+<ResMan>
+    <MethodName>GetResidentTransactions2_0</MethodName>
+    <Status>Success</Status>
+    <AccountID>400</AccountID>
+    <PropertyID>test_resman_external_property_id</PropertyID>
+    <Response>
+        <ResidentTransactions xmlns:MITS="http://www.w3.org/2005/Atom">
+            <Property>
+                <PropertyID>
+                    <MITS:Identification Type="other">
+                        <MITS:PrimaryID>test_resman_external_property_id</MITS:PrimaryID>
+                        <MITS:MarketingName>Mill Pond</MITS:MarketingName>
+                    </MITS:Identification>
+                    <MITS:Address Type="property">
+                        <MITS:Address1>1538 Cable Ranch Rd</MITS:Address1>
+                        <MITS:City>San Antonio</MITS:City>
+                        <MITS:State>TX</MITS:State>
+                        <MITS:PostalCode>78245</MITS:PostalCode>
+                    </MITS:Address>
+                </PropertyID>
+                <RT_Customer>
+                    <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+                    <Customers>
+                        <Customer Type="current resident">
+                            <MITS:Description></MITS:Description>
+                            <CustomerID>0529ec65-1310-47aa-8570-a902b927f92c</CustomerID>
+                            <MITS:Property>
+                                <MITS:PrimaryID>test_resman_external_property_id</MITS:PrimaryID>
+                                <MITS:MarketingName>Mill Pond</MITS:MarketingName>
+                                <MITS:UnitID>1101</MITS:UnitID>
+                            </MITS:Property>
+                            <MITS:Name>
+                                <MITS:FirstName>Craig</MITS:FirstName>
+                                <MITS:MiddleName/>
+                                <MITS:LastName>Griffin</MITS:LastName>
+                            </MITS:Name>
+                            <MITS:Address Type="property">
+                                <MITS:Description/>
+                                <MITS:Address1>1538 Cable Ranch Rd.</MITS:Address1>
+                                <MITS:Address2>1101</MITS:Address2>
+                                <MITS:City>San Antonio</MITS:City>
+                                <MITS:State>TX</MITS:State>
+                                <MITS:PostalCode>78245</MITS:PostalCode>
+                                <MITS:Email>dipen+craig@planetpatel.net</MITS:Email>
+                            </MITS:Address>
+                            <MITS:Phone Type="home">
+                                <MITS:PhoneNumber>804-555-1234</MITS:PhoneNumber>
+                            </MITS:Phone>
+                            <MITS:Phone Type="office">
+                                <MITS:PhoneNumber>804-555-2222</MITS:PhoneNumber>
+                            </MITS:Phone>
+                            <MITS:Phone Type="cell">
+                                <MITS:PhoneNumber>804-855-7965</MITS:PhoneNumber>
+                            </MITS:Phone>
+                            <MITS:Lease>
+                                <MITS:CurrentRent>985.00</MITS:CurrentRent>
+                                <MITS:ExpectedMoveInDate>2016-01-31</MITS:ExpectedMoveInDate>
+                                <MITS:ExpectedMoveOutDate>2016-02-01</MITS:ExpectedMoveOutDate>
+                                <MITS:LeaseFromDate>2016-02-04</MITS:LeaseFromDate>
+                                <MITS:LeaseToDate>2017-02-04</MITS:LeaseToDate>
+                                <MITS:ActualMoveIn>2016-01-31</MITS:ActualMoveIn>
+                                <MITS:ActualMoveOut>2016-02-01</MITS:ActualMoveOut>
+                                <MITS:ResponsibleForLease>true</MITS:ResponsibleForLease>
+                                <MITS:LeaseSignDate>2016-02-04</MITS:LeaseSignDate>
+                            </MITS:Lease>
+                        </Customer>
+                    </Customers>
+                    <RT_Unit>
+                        <UnitID>1101</UnitID>
+                        <NumberOccupants Total="1"/>
+                        <Unit>
+                            <MITS:Information>
+                                <MITS:UnitID>1101</MITS:UnitID>
+                                <MITS:UnitType>B1</MITS:UnitType>
+                                <MITS:UnitBedrooms>2</MITS:UnitBedrooms>
+                                <MITS:UnitBathrooms>1.00</MITS:UnitBathrooms>
+                                <MITS:MinSquareFeet>881</MITS:MinSquareFeet>
+                                <MITS:MaxSquareFeet>881</MITS:MaxSquareFeet>
+                                <MITS:MarketRent>985.00</MITS:MarketRent>
+                                <MITS:UnitEconomicStatus>residential</MITS:UnitEconomicStatus>
+                                <MITS:UnitOccupancyStatus>vacant</MITS:UnitOccupancyStatus>
+                                <MITS:UnitLeasedStatus>available</MITS:UnitLeasedStatus>
+                                <MITS:FloorPlanID>B1</MITS:FloorPlanID>
+                                <MITS:FloorplanName>Two Bedroom, One Bath</MITS:FloorplanName>
+                                <MITS:BuildingID>1</MITS:BuildingID>
+                                <MITS:Address Type="property">
+                                    <MITS:Address1>1538 Cable Ranch Rd.</MITS:Address1>
+                                    <MITS:Address2>1101</MITS:Address2>
+                                    <MITS:City>San Antonio</MITS:City>
+                                    <MITS:State>TX</MITS:State>
+                                    <MITS:PostalCode>78245</MITS:PostalCode>
+                                </MITS:Address>
+                            </MITS:Information>
+                            <MITS:PropertyPrimaryID>test_resman_external_property_id</MITS:PropertyPrimaryID>
+                            <MITS:MarketingName>Mill Pond</MITS:MarketingName>
+                        </Unit>
+                    </RT_Unit>
+                    <PaymentAccepted>Yes</PaymentAccepted>
+                    <RTServiceTransactions>
+                        <Transactions>
+                            <Charge>
+                                <Detail>
+                                    <TransactionDate>2016-02-04</TransactionDate>
+                                    <Description>Application Fee</Description>
+                                    <ChargeCode>APPF</ChargeCode>
+                                    <GLAccountNumber>4415</GLAccountNumber>
+                                    <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+                                    <UnitID>1101</UnitID>
+                                    <Amount>49.00</Amount>
+                                </Detail>
+                            </Charge>
+                        </Transactions>
+                        <Transactions>
+                            <Charge>
+                                <Detail>
+                                    <TransactionDate>2016-02-04</TransactionDate>
+                                    <Description>Administrative Fee</Description>
+                                    <ChargeCode>ADMN</ChargeCode>
+                                    <GLAccountNumber>4405</GLAccountNumber>
+                                    <CustomerID>140709f8-f98c-43d2-9964-d3a9f50528a1</CustomerID>
+                                    <UnitID>1101</UnitID>
+                                    <Amount>100.00</Amount>
+                                </Detail>
+                            </Charge>
+                        </Transactions>
+                    </RTServiceTransactions>
+                </RT_Customer>
+            </Property>
+        </ResidentTransactions>
+    </Response>
+</ResMan>

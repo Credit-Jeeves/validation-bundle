@@ -312,6 +312,8 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
+        $query->andWhere('o.status != :error');
+        $query->setParameter('error', OrderStatus::ERROR);
 
         $query = $this->initFilterForDeposits($query, $filter, $search);
 
@@ -335,7 +337,9 @@ class TransactionRepository extends EntityRepository
             ->where('h.batchId = :batch')
             ->andWhere('h.isSuccessful = 1')
             ->andWhere('h.depositDate IS NOT NULL')
+            ->andWhere('o.status != :error')
             ->setParameter('batch', $batchId)
+            ->setParameter('error', OrderStatus::ERROR)
             ->getQuery()
             ->execute();
     }

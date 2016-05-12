@@ -140,7 +140,8 @@ class ContractsListController extends Controller
 
             if (($contract->getStatus() !== ContractStatus::FINISHED) &&
                 end($contractsArr)['is_allowed_to_pay_anything'] &&
-                end($contractsArr)['payment_status'] != 'duplicated'
+                end($contractsArr)['payment_status'] != 'duplicated' &&
+                !in_array($contract, $activeContracts)
             ) {
                 $activeContracts[] = $contract;
             }

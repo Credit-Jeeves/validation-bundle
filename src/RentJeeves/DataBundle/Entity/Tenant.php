@@ -186,6 +186,25 @@ class Tenant extends User
         return $result;
     }
 
+    /**
+     * @return array
+     */
+    public function getNonWaitingStatusContract()
+    {
+        $result = [];
+        $contracts = $this->getContracts();
+
+        foreach ($contracts as $contract) {
+            if ($contract->getStatus() === ContractStatus::WAITING) {
+                continue;
+            }
+
+            $result[] = $contract;
+        }
+
+        return $result;
+    }
+
     public function getItem()
     {
         $result = array();
