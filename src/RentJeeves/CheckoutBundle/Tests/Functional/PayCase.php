@@ -865,7 +865,7 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldShowMessageIfUpdateTypePaymentFromRecurringToOneTime()
+    public function shouldShowMessageIfUpdatePaymentType()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -886,7 +886,12 @@ class PayCase extends BaseTestCase
             'Info message should be translated from "checkout.payment.switch_to_one_time"'
         );
         $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
-        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
+        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
+        $this->assertEquals(
+            'checkout.payment.switch_to_recurring',
+            $infoMessageBox->getText(),
+            'Info message should be translated from "checkout.payment.switch_to_recurring"'
+        );
 
         $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
         $closeButton->click();
@@ -996,7 +1001,6 @@ class PayCase extends BaseTestCase
 
         $contract1 = $em->getRepository('RjDataBundle:Contract')->find(18);
         $contract2 = $em->getRepository('RjDataBundle:Contract')->find(9);
-
 
         $contract1->setGroup($group1);
         $contract2->setGroup($group2);

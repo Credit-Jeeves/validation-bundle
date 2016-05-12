@@ -109,8 +109,8 @@ function Payment(parent) {
         }
         if (self.id() && 'one_time' == newValue) {
             parent.infoMessage(Translator.trans('checkout.payment.switch_to_one_time'));
-        } else if (self.id()) {
-            parent.infoMessage(null);
+        } else if(self.id() && 'recurring' == newValue) {
+            parent.infoMessage(Translator.trans('checkout.payment.switch_to_recurring'));
         }
     });
 
