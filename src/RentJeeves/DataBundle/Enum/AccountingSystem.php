@@ -48,4 +48,10 @@ class AccountingSystem extends Enum
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',
     ];
+
+    public static $allowedEditLeaseId = [
+        self::MRI_BOSTONPOST,
+        self::AMSI,
+        self::PROMAS
+    ];
 }

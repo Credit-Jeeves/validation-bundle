@@ -28,7 +28,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
                 'accounting-system',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'AccountingSystem: amsi, mri bostonpost, yardi genesis v2 etc'
+                'AccountingSystem: amsi, mri bostonpost, yardi genesis v2 etc. Use double quotes: "accounting system".'
             )
             ->addOption(
                 'jms-job-id',
@@ -42,7 +42,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
                 InputOption::VALUE_OPTIONAL,
                 'Contract id seperated by comma. Example 1,2,3,4,5'
             )
-            ->setDescription('Set up resident ID to lease ID for PROMAS');
+            ->setDescription('Set up resident ID to lease ID for PROMAS. (or other lease-id based systems)');
     }
 
     /**
@@ -54,7 +54,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
         $accountingSystem = $input->getOption('accounting-system');
 
         if (!AccountingSystem::isValid($accountingSystem)) {
-            $this->getLogger()->debug('SKIPPED|Accounting system name is wrong #' . $accountingSystem);
+            $this->getLogger()->info('SKIPPED|Accounting system name is wrong #' . $accountingSystem);
 
             return self::RESULT_FAILED;
         }
@@ -72,20 +72,25 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
      */
     protected function createJobs($accountingName)
     {
-        $query = 'SELECT h FROM CreditJeeves\DataBundle\Entity\Holding as h WHERE h.accountingSystem=\'%s\'';
+        $holdingQuery = 'SELECT h FROM CreditJeeves\DataBundle\Entity\Holding as h WHERE h.accountingSystem=\'%s\'';
 
-        $iterableResult = $this
+        $holdingIterableResult = $this
             ->getEntityManager()
-            ->createQuery(sprintf($query, $accountingName))
+            ->createQuery(sprintf($holdingQuery, $accountingName))
             ->iterate(null, Query::HYDRATE_ARRAY);
         $contractsId = [];
-        $contractRepository = $this->getEntityManager()->getRepository('RjDataBundle:Contract');
 
-        /** @var Holding $holding */
-        while ((list($holding) = $iterableResult->next()) !== false) {
-            $contracts = $contractRepository->getContractsIdByHoldingAndEmptyLeaseId($holding['id']);
+        while ((list($holding) = $holdingIterableResult->next()) !== false) {
 
-            foreach ($contracts as $contract) {
+            $contractQuery = 'SELECT h FROM RentJeeves\DataBundle\Entity\Contract as h WHERE h.holding=\'%s\'';
+            $contractQuery .= ' AND h.externalLeaseId IS NULL';
+
+            $contractIterableResult = $this
+                ->getEntityManager()
+                ->createQuery(sprintf($contractQuery, $holding['id']))
+                ->iterate(null, Query::HYDRATE_ARRAY);
+
+            while ((list($contract) = $contractIterableResult->next()) !== false) {
                 $contractsId[] = $contract['id'];
 
                 if (count($contractsId) === self::BATCH_SIZE) {
@@ -115,7 +120,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
-        $this->getLogger()->info(sprintf('Created command %s parameter %s', $command, implode(' ', $parameters)));
+        $this->getLogger()->info(sprintf('Created command %s with parameter %s', $command, implode(' ', $parameters)));
     }
 
     /**
@@ -128,26 +133,27 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
         $contractRepository = $this->getEntityManager()->getRepository('RjDataBundle:Contract');
 
         foreach ($contractsId as $id) {
+            $this->getLogger()->debug('START TO MIGRATE|Contract #' . $id);
             /** @var Contract $contract */
             $contract = $contractRepository->find($id);
 
             if (empty($contract)) {
-                $this->getLogger()->debug('SKIPPED|Contract doesn\'t exist in DB #' . $id);
+                $this->getLogger()->info('SKIPPED|Contract doesn\'t exist in DB #' . $id);
                 continue;
             }
 
             if (!empty($contract->getExternalLeaseId())) {
-                $this->getLogger()->debug('SKIPPED|Contract already has exteranalLeaseId #' . $id);
+                $this->getLogger()->info('SKIPPED|Contract already has exteranalLeaseId #' . $id);
                 continue;
             }
 
             $residentMaping = $contract->getTenant()->getResidentForHolding($contract->getHolding());
 
             if (empty($residentMaping)) {
-                $this->getLogger()->debug('SKIPPED|Tenant doesn\'t have resident #' . $id);
+                $this->getLogger()->info('SKIPPED|Tenant doesn\'t have resident #' . $id);
                 continue;
             }
-            $this->getLogger()->debug('MIGRATE|Contract #' . $id);
+            $this->getLogger()->info('MIGRATED|Contract #' . $id);
             $contract->setExternalLeaseId($residentMaping->getResidentId());
         }
 
