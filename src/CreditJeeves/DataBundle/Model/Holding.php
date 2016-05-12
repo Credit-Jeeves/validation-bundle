@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Entity\RentManagerSettings;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
@@ -182,6 +183,16 @@ abstract class Holding
 
     /**
      * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\RentManagerSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     * @var RentManagerSettings
+     */
+    protected $rentManagerSettings;
+
+    /**
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"}
@@ -309,6 +320,22 @@ abstract class Holding
         $this->accountingSystem = AccountingSystem::NONE;
         $this->depositAccounts = new ArrayCollection();
         $this->importApiMapping = new ArrayCollection();
+    }
+
+    /**
+     * @return RentManagerSettings
+     */
+    public function getRentManagerSettings()
+    {
+        return $this->rentManagerSettings;
+    }
+
+    /**
+     * @param RentManagerSettings $rentManagerSettings
+     */
+    public function setRentManagerSettings(RentManagerSettings $rentManagerSettings)
+    {
+        $this->rentManagerSettings = $rentManagerSettings;
     }
 
     /**
