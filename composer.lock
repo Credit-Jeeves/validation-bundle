@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "358e14e99d4aa939fd421447bfa030ca",
-    "content-hash": "84f6266e0fc7efb85a8ffa2992a2faaf",
+    "hash": "10f1ae3184d86d9693dbe4053f2f580d",
+    "content-hash": "d4e84f78b0d895c2061b22eff00300d5",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -405,7 +405,7 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.8.1"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.9"
             },
             "time": "2016-05-10 08:59:04"
         },
@@ -1015,7 +1015,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/4a9f909f73a2f70be8cd8cdd5b72ce376f21db26",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/9f89fd349fd2b537be8a0a0c41f87f2f640dfc8a",
                 "reference": "866e100a425b8b73d15393fd081c6bf067f05bf9",
                 "shasum": ""
             },
@@ -1292,13 +1292,13 @@
             "target-dir": "Doctrine/Bundle/DoctrineCacheBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
-                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d"
+                "url": "git@github.com:doctrine/DoctrineCacheBundle.git",
+                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
-                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
+                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
                 "shasum": ""
             },
             "require": {
@@ -2888,22 +2888,23 @@
         },
         {
             "name": "jms/job-queue-bundle",
-            "version": "dev-ton",
+            "version": "dev-renttrack",
             "target-dir": "JMS/JobQueueBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Credit-Jeeves/JMSJobQueueBundle.git",
-                "reference": "cdee98f1bd7b64113ce1b113eb5edbe11ef3a771"
+                "reference": "6227607e92e160baf8de4713046aa3239e9f8098"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/JMSJobQueueBundle/zipball/cdee98f1bd7b64113ce1b113eb5edbe11ef3a771",
-                "reference": "cdee98f1bd7b64113ce1b113eb5edbe11ef3a771",
+                "url": "https://api.github.com/repos/Credit-Jeeves/JMSJobQueueBundle/zipball/6227607e92e160baf8de4713046aa3239e9f8098",
+                "reference": "6227607e92e160baf8de4713046aa3239e9f8098",
                 "shasum": ""
             },
             "require": {
                 "doctrine/common": ">=2.3,<3.0",
                 "jms/di-extra-bundle": ">=1.1,<2.0",
+                "php": "^5.5.0",
                 "symfony/framework-bundle": ">=2.1,<3.0-dev"
             },
             "require-dev": {
@@ -2955,9 +2956,9 @@
                 "queue"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/JMSJobQueueBundle/tree/ton"
+                "source": "https://github.com/Credit-Jeeves/JMSJobQueueBundle/tree/renttrack"
             },
-            "time": "2016-03-24 10:23:48"
+            "time": "2016-05-02 04:11:42"
         },
         {
             "name": "jms/metadata",
@@ -3303,7 +3304,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -3539,6 +3540,7 @@
                 "php",
                 "url"
             ],
+            "abandoned": "league/uri",
             "time": "2015-09-24 10:19:47"
         },
         {
@@ -4656,7 +4658,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/07298bbabec9218f4f618f8e052b18221d89f2ba",
+                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/83a17a51c741f3a8fa31682923df342252c97f33",
                 "reference": "83a17a51c741f3a8fa31682923df342252c97f33",
                 "shasum": ""
             },
@@ -5261,7 +5263,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8a84b75599f66a7039915a06a6f0f3737142947c",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8e68cfd2a44fd590226f3b10b21624ced0aa9bef",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -5434,7 +5436,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/68f50da0fdd6cb0146d17d6bde20b76e0e57e7fb",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
                 "reference": "fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
                 "shasum": ""
             },
@@ -6545,66 +6547,6 @@
             "time": "2014-03-13 17:31:06"
         },
         {
-            "name": "dflydev/markdown",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dflydev/dflydev-markdown.git",
-                "reference": "dee1f7a6b60776a94c10efa8340ccd486ec834b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dflydev/dflydev-markdown/zipball/dee1f7a6b60776a94c10efa8340ccd486ec834b7",
-                "reference": "dee1f7a6b60776a94c10efa8340ccd486ec834b7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "dflydev\\markdown": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Dragonfly Development Inc.",
-                    "email": "info@dflydev.com",
-                    "homepage": "http://dflydev.com"
-                },
-                {
-                    "name": "Beau Simensen",
-                    "email": "beau@dflydev.com",
-                    "homepage": "http://beausimensen.com"
-                },
-                {
-                    "name": "Michel Fortin",
-                    "homepage": "http://michelf.com"
-                },
-                {
-                    "name": "John Gruber",
-                    "homepage": "http://daringfireball.net"
-                }
-            ],
-            "description": "PHP Markdown & Extra - DEPRECATED",
-            "homepage": "http://github.com/dflydev/dflydev-markdown",
-            "keywords": [
-                "markdown"
-            ],
-            "abandoned": "michelf/php-markdown",
-            "time": "2014-01-06 23:32:02"
-        },
-        {
             "name": "doctrine/data-fixtures",
             "version": "v1.0.2",
             "source": {
@@ -7057,7 +6999,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/7ca4182b3acbd19ebbf3ced4dfee12487d9c05aa",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/b02221e42163be673f9b44a0bc92a8b4907a7c6d",
                 "reference": "ce91d434b3dc443a3294c4535747765e84d11094",
                 "shasum": ""
             },
@@ -7610,7 +7552,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/2292b116f43c272ff4328083096114f84ea46a56",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
                 "reference": "6e7133793a8e5a5714a551a8324337374be209df",
                 "shasum": ""
             },
@@ -8295,7 +8237,7 @@
         {
             "alias": "0.1.x-dev",
             "alias_normalized": "0.1.9999999.9999999-dev",
-            "version": "dev-ton",
+            "version": "dev-renttrack",
             "package": "jms/job-queue-bundle"
         },
         {

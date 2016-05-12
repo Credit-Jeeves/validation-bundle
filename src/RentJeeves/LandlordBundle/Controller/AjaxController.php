@@ -18,7 +18,8 @@ use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\BatchDeposits\BatchDepositsManager;
+use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
+use RentJeeves\LandlordBundle\Validator\EmailExist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -810,19 +811,15 @@ class AjaxController extends Controller
         }
 
         if ($action == 'remove') {
-            /**
-             * This contract don't have any payment this is just contract, so we can remove it from db
-             */
             $tenant = $contract->getTenant();
             $landlord = $this->getUser();
+
+            $this->get('renttrack.contract_manager')->removeContract($contract);
             $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
                 $tenant,
                 $landlord,
                 $contract
             );
-            $contract->setStatus(ContractStatus::DELETED);
-            $em->persist($contract);
-            $em->flush();
 
             return new JsonResponse($response);
         }
@@ -851,10 +848,13 @@ class AjaxController extends Controller
         }
 
         if (!$tenant->getEmail() && $email = trim($details['email'])) {
-            $emailConstraint = new Assert\Email();
-            $errorList = $this->get('validator')->validateValue($email, $emailConstraint);
+            $emailConstraint = new Assert\Email(['message' => 'contract.error.email.invalid']);
+            $userEmailExistConstraint = new EmailExist();
+            $errorList = $this->get('validator')->validateValue($email, [$emailConstraint, $userEmailExistConstraint]);
             if (count($errorList) > 0) {
-                $errors[] = $translator->trans('contract.error.email.invalid');
+                foreach ($errorList as $error) {
+                    $errors[] = $error->getMessage();
+                }
             } elseif (empty($errors)) {
                 /** @var ContractManager $contractManager */
                 $contractManager = $this->get('renttrack.contract_manager');
