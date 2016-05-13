@@ -157,7 +157,7 @@ class AMSILedgerClient extends AMSIBaseClient
 
         $payment->setClientTransactionId($order->getCompleteTransaction()->getTransactionId());
         $payment->setReason(ReversalReasonEnum::getReasonByOrder($order));
-        $payment->setClientJnlNo($order->getCompleteTransaction()->getBatchId());
+        $payment->setClientJnlNo(preg_replace('/\D/', '', $order->getCompleteTransaction()->getBatchId()));
         $payment->setDescription($order->getReversedTransaction()->getMessages());
 
         $payments = new ReturnPayments();
