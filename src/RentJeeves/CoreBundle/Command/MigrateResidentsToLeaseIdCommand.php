@@ -159,7 +159,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
 
         try {
             $this->getEntityManager()->flush();
-        } catch(ORMException $e) {
+        } catch (ORMException $e) {
             $this->getLogger()->warning($e->getMessage());
             return self::RESULT_FAILED;
         }
