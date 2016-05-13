@@ -27,7 +27,7 @@ abstract class RentManagerSettings
     /**
      * @ORM\Column(
      *     name="corpid",
-     *     type="encrypt",
+     *     type="string",
      *     nullable=false
      * )
      * @Assert\NotBlank()
@@ -59,6 +59,18 @@ abstract class RentManagerSettings
      * @var string
      */
     protected $password;
+
+    /**
+     * @ORM\Column(
+     *     name="location_id",
+     *     type="string",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    protected $locationId;
 
     /**
      * @ORM\OneToOne(
@@ -142,5 +154,21 @@ abstract class RentManagerSettings
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocationId()
+    {
+        return $this->locationId;
+    }
+
+    /**
+     * @param string $locationId
+     */
+    public function setLocationId($locationId)
+    {
+        $this->locationId = $locationId;
     }
 }

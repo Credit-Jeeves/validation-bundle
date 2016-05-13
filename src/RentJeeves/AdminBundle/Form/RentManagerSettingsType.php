@@ -6,9 +6,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use JMS\DiExtraBundle\Annotation\Service;
 
-/**
- * @Service("form.rent_manager_settings")
- */
 class RentManagerSettingsType extends Base
 {
 
@@ -21,6 +18,7 @@ class RentManagerSettingsType extends Base
         $builder->add('corpid');
         $builder->add('user');
         $builder->add('password');
+        $builder->add('locationId');
     }
 
     /**
