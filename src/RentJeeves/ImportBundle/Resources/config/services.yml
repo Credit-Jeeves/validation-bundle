@@ -2,14 +2,6 @@ parameters:
     # using a path that leads into the project does not make sense. Use a path out of project if you need to.
     # Otherwise put transformers into ImportBundle.
     import.property.transformer.custom_paths: []
-#    aci.collect_pay.sftp.host: transfer.princetonecom.com
-#    aci.collect_pay.sftp.port: 10022
-#    aci.collect_pay.sftp.login: 'rntrtest'
-#    aci.collect_pay.sftp.password: 'r7QebTAa'
-    import.property.sftp.host: '%aci.collect_pay.sftp.host%'
-    import.property.sftp.port: '%aci.collect_pay.sftp.port%'
-    import.property.sftp.login: '%aci.collect_pay.sftp.login%'
-    import.property.sftp.password: '%aci.collect_pay.sftp.password%'
 
 services:
     import_transformer.repository:
