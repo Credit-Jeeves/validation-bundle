@@ -76,6 +76,9 @@ class SyncProfitStarsScannedChecksCommandCase extends BaseTestCase
         $countProfitStarsBatchesBeforeSync = count($em->getRepository('RjDataBundle:ProfitStarsBatch')->findAll());
         $countOrdersBeforeSync = count($em->getRepository('DataBundle:Order')->findAll());
 
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
         $this->executeCommandTester(
             $command,
             [
@@ -93,6 +96,10 @@ class SyncProfitStarsScannedChecksCommandCase extends BaseTestCase
 
         $ordersAfterSync = $em->getRepository('DataBundle:Order')->findAll();
         $this->assertEquals($countOrdersBeforeSync + 2, count($ordersAfterSync), '2 new orders should be added');
+
+        $this->assertCount(2, $plugin->getPreSendMessages(), '2 emails are expected to be send');
+        $this->assertEquals('Rent Payment Receipt', $plugin->getPreSendMessage(0)->getSubject(), 'Unknown email1 sent');
+        $this->assertEquals('Rent Payment Receipt', $plugin->getPreSendMessage(1)->getSubject(), 'Unknown email2 sent');
 
         /** @var Order $order */
         $order = $ordersAfterSync[0];
