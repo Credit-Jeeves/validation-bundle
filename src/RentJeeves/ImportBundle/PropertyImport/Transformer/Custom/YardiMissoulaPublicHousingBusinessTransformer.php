@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
 class YardiMissoulaPublicHousingBusinessTransformer extends YardiTransformer
@@ -11,11 +11,11 @@ class YardiMissoulaPublicHousingBusinessTransformer extends YardiTransformer
     const UNIT_PART = 1;
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
         $addressParts = $this->getAddressParts($accountingSystemRecord);
         $address = $addressParts[self::ADDRESS_PART];
@@ -24,11 +24,11 @@ class YardiMissoulaPublicHousingBusinessTransformer extends YardiTransformer
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getUnitName(FullResident $accountingSystemRecord)
+    protected function getUnitName(UnitInformation $accountingSystemRecord)
     {
         $addressParts = $this->getAddressParts($accountingSystemRecord);
 
@@ -42,54 +42,54 @@ class YardiMissoulaPublicHousingBusinessTransformer extends YardiTransformer
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return bool
      */
-    protected function isAddressHasUnits(FullResident $fullResident)
+    protected function isAddressHasUnits(UnitInformation $accountingSystemRecord)
     {
-        $addressParts = $this->getAddressParts($fullResident);
+        $addressParts = $this->getAddressParts($accountingSystemRecord);
         $result = count($addressParts) > 1;
 
         return $result;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getExternalUnitId(FullResident $accountingSystemRecord)
+    protected function getExternalUnitId(UnitInformation $accountingSystemRecord)
     {
-        $unitName = $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getUnit()->getUnitId();
+        $unitName = $accountingSystemRecord->getUnit()->getUnitId();
         $externalUnitId = $accountingSystemRecord->getProperty()->getExternalUnitId($unitName);
 
         return $externalUnitId;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getCity(FullResident $accountingSystemRecord)
+    protected function getCity(UnitInformation $accountingSystemRecord)
     {
         return 'Missoula';
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getState(FullResident $accountingSystemRecord)
+    protected function getState(UnitInformation $accountingSystemRecord)
     {
         return 'MT';
     }
 
-    protected function getAddressParts(FullResident $accountingSystemRecord)
+    protected function getAddressParts(UnitInformation $accountingSystemRecord)
     {
-        $address = $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
+        $address = $accountingSystemRecord->getUnit()->getUnit()->getInformation()->getAddress()->getAddress1();
         $parts = explode('#', $address);
 
         return $parts;

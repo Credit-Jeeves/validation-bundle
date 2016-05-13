@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 
 /**
  * Service`s name "import.property.transformer.yardi"
@@ -51,30 +51,30 @@ class YardiTransformer implements TransformerInterface
             ['group' => $import->getGroup()]
         );
 
-        /** @var FullResident $residentTransactionServiceTransactions */
-        foreach ($accountingSystemData as $fullResident) {
-            if ($this->checkExistImportPropertyInCache($import, $fullResident) === true) {
+        /** @var UnitInformation $unitInformation */
+        foreach ($accountingSystemData as $unitInformation) {
+            if ($this->checkExistImportPropertyInCache($import, $unitInformation) === true) {
                 continue;
             }
             $importProperty = new ImportProperty();
             $importProperty->setImport($import);
             $import->addImportProperty($importProperty);
 
-            $importProperty->setExternalBuildingId($this->getExternalBuildingId($fullResident));
-            $importProperty->setAddressHasUnits($this->isAddressHasUnits($fullResident));
-            $importProperty->setPropertyHasBuildings($this->isPropertyHasBuildings($fullResident));
-            $importProperty->setExternalPropertyId($this->getExternalPropertyId($fullResident));
-            $importProperty->setUnitName($this->getUnitName($fullResident));
-            $importProperty->setExternalUnitId($this->getExternalUnitId($fullResident));
-            $importProperty->setAddress1($this->getAddress1($fullResident));
-            $importProperty->setCity($this->getCity($fullResident));
-            $importProperty->setState($this->getState($fullResident));
-            $importProperty->setZip($this->getZip($fullResident));
-            $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties($fullResident));
+            $importProperty->setExternalBuildingId($this->getExternalBuildingId($unitInformation));
+            $importProperty->setAddressHasUnits($this->isAddressHasUnits($unitInformation));
+            $importProperty->setPropertyHasBuildings($this->isPropertyHasBuildings($unitInformation));
+            $importProperty->setExternalPropertyId($this->getExternalPropertyId($unitInformation));
+            $importProperty->setUnitName($this->getUnitName($unitInformation));
+            $importProperty->setExternalUnitId($this->getExternalUnitId($unitInformation));
+            $importProperty->setAddress1($this->getAddress1($unitInformation));
+            $importProperty->setCity($this->getCity($unitInformation));
+            $importProperty->setState($this->getState($unitInformation));
+            $importProperty->setZip($this->getZip($unitInformation));
+            $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties($unitInformation));
 
             $this->em->persist($importProperty);
 
-            $this->arrayCache[] = $this->getUniqueCacheKey($import, $fullResident);
+            $this->arrayCache[] = $this->getUniqueCacheKey($import, $unitInformation);
         }
 
         $this->em->flush();
@@ -89,122 +89,122 @@ class YardiTransformer implements TransformerInterface
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return bool
      */
-    public function isAllowedMultipleProperties(FullResident $fullResident)
+    public function isAllowedMultipleProperties(UnitInformation $accountingSystemRecord)
     {
         return true;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return null
      */
-    public function getExternalBuildingId(FullResident $fullResident)
+    public function getExternalBuildingId(UnitInformation $accountingSystemRecord)
     {
         return null;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return bool
      */
-    protected function isPropertyHasBuildings(FullResident $fullResident)
+    protected function isPropertyHasBuildings(UnitInformation $accountingSystemRecord)
     {
         return false;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return bool
      */
-    protected function isAddressHasUnits(FullResident $fullResident)
+    protected function isAddressHasUnits(UnitInformation $accountingSystemRecord)
     {
         return true;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getExternalPropertyId(FullResident $accountingSystemRecord)
+    protected function getExternalPropertyId(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getCode();
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getUnitName(FullResident $accountingSystemRecord)
+    protected function getUnitName(UnitInformation $accountingSystemRecord)
     {
-        return $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getUnit()->getUnitId();
+        return $accountingSystemRecord->getUnit()->getUnitId();
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getExternalUnitId(FullResident $accountingSystemRecord)
+    protected function getExternalUnitId(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getExternalUnitId($this->getUnitName($accountingSystemRecord));
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getAddressLine1();
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getCity(FullResident $accountingSystemRecord)
+    protected function getCity(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getCity();
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getState(FullResident $accountingSystemRecord)
+    protected function getState(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getState();
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getZip(FullResident $accountingSystemRecord)
+    protected function getZip(UnitInformation $accountingSystemRecord)
     {
         return $accountingSystemRecord->getProperty()->getPostalCode();
     }
 
     /**
      * @param Import $import
-     * @param FullResident  $accountingSystemRecord
+     * @param UnitInformation  $accountingSystemRecord
      *
      * @return bool
      */
-    protected function checkExistImportPropertyInCache(Import $import, FullResident $accountingSystemRecord)
+    protected function checkExistImportPropertyInCache(Import $import, UnitInformation $accountingSystemRecord)
     {
         return in_array(
             $this->getUniqueCacheKey($import, $accountingSystemRecord),
@@ -214,10 +214,11 @@ class YardiTransformer implements TransformerInterface
 
     /**
      * @param Import $import
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
+     *
      * @return string
      */
-    protected function getUniqueCacheKey(Import $import, FullResident $accountingSystemRecord)
+    protected function getUniqueCacheKey(Import $import, UnitInformation $accountingSystemRecord)
     {
         return sprintf('%s|%s', $import->getId(), $this->getExternalUnitId($accountingSystemRecord));
     }
