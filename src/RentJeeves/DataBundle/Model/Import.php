@@ -82,6 +82,16 @@ abstract class Import
     protected $importProperties;
 
     /**
+     * @ORM\Column(
+     *     type="string",
+     *     name="path_to_file",
+     *     nullable=true
+     * )
+     * @var string path to file on Sftp. Using only for Unmapped import
+     */
+    protected $pathToFile;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -165,17 +175,17 @@ abstract class Import
     /**
      * @return string
      */
-    public function getErrorMessage()
+    public function getPathToFile()
     {
-        return $this->errorMessage;
+        return $this->pathToFile;
     }
 
     /**
-     * @param string $errorMessage
+     * @param string $pathToFile
      */
-    public function setErrorMessage($errorMessage)
+    public function setPathToFile($pathToFile)
     {
-        $this->errorMessage = $errorMessage;
+        $this->pathToFile = $pathToFile;
     }
 
     /**
@@ -240,5 +250,21 @@ abstract class Import
     public function addImportProperty(\RentJeeves\DataBundle\Entity\ImportProperty $importProperty)
     {
         $this->importProperties->add($importProperty);
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
 }

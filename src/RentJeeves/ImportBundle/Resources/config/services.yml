@@ -43,6 +43,16 @@ services:
             - @import.property.transformer.csv
 
     # services
+    import.property.sftp_file_manager:
+        parent: sftp_file_manager
+        arguments:
+            - '%import.property.sftp.host%'
+            - '%import.property.sftp.port%'
+            - '%import.property.sftp.login%'
+            - '%import.property.sftp.password%'
+            - '@monolog.logger.sftp_file_manager'
+            - '@sftp_client'
+
     import.property.manager:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager
         arguments:
@@ -91,6 +101,7 @@ services:
         public: false
         arguments:
             - @reader.csv
+            - '@import.property.sftp_file_manager'
             - @monolog.logger.property_import
 
     import.property.transformer.mri:

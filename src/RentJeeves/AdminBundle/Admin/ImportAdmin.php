@@ -59,6 +59,7 @@ class ImportAdmin extends Admin
             ->add('user.email')
             ->add('importType')
             ->add('status')
+            ->add('pathToFile')
             ->add('count', null, ['template' => 'AdminBundle:CRUD:list__import_count_properties.html.twig'])
             ->add('createdAt', 'datetime', ['format' => 'Y-m-d H:i:s'])
             ->add('finishedAt', 'datetime', ['format' => 'Y-m-d H:i:s'])
