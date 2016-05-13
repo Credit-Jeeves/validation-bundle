@@ -2,20 +2,18 @@
 #
 # rt_sanitize.sh
 #
-# Take a sanitized snapshot of the renttrack DB that contains no PII
+# Create a sanitized snapshot of the renttrack DB that contains no PII
 #
 # By Cary Penniman
 #
 export SNAP_DATE=$(date +"%Y%m%d")
-export DIR="$( dirname "${BASH_SOURCE[0]}" )"
 
 #
-# Environmental Settings (Ideally these would be command line params)
+# Environmental Settings
 #
 export DB_USER="root"
 export DB_NAME="renttrack"
-#export DB_NAME="rj_stg"
-export SANITIZE_SCRIPT_SQL="${DIR}/../data/files/rt_sanitize.sql"
+export SANITIZE_SCRIPT_SQL="./rt_sanitize.sql"
 
 #
 # You should not need to change anything below this line
@@ -38,7 +36,8 @@ mysql -u $DB_USER -p$PASSWORD --execute="show databases;" # just a test
 # Create a copy of the production database, within the production environment:
 #
 echo "Dump ${DB_NAME} to ${BACKUP_FILE}..."
-mysqldump --lock-all-tables -u $DB_USER -p$PASSWORD $DB_NAME > $BACKUP_FILE
+#mysqldump --lock-all-tables -u $DB_USER -p$PASSWORD $DB_NAME --ignore-table=${DB_NAME}.jms_jobs  > $BACKUP_FILE
+mysqldump --lock-all-tables -u $DB_USER -p$PASSWORD $DB_NAME --ignore-table=${DB_NAME}.jms_jobs --ignore-table=${DB_NAME}.rj_contract_history > $BACKUP_FILE
 
 echo "Create ${CLEAN_DB_NAME} DB where sanitization will run..."
 set +e
@@ -58,8 +57,8 @@ mysqldump --lock-all-tables -u $DB_USER -p$PASSWORD $CLEAN_DB_NAME > $CLEAN_DUMP
 echo -n "Performing sanity check for proper sanitization..."
 
 if grep -iq darryl $CLEAN_DUMP_FILE; then
-    echo "  ERROR: Found PII in snapshot!!"
-    delete_snaphot
+    echo "  ERROR: Found PII in snapshot!! Please update sanitize script!"
+    #delete_snaphot
     exit 1
 else
     echo "ok."
@@ -73,7 +72,3 @@ tar -cvzf $CLEAN_DUMP_FILE.tar.gz $CLEAN_DUMP_FILE
 # TODO : upload to private S3 bucket and send email
 
 delete_snaphot
-
-
-
-
