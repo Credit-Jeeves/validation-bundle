@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
 class YardiMissoulaRusselSquareTransformer extends YardiTransformer
@@ -11,13 +11,13 @@ class YardiMissoulaRusselSquareTransformer extends YardiTransformer
     const UNIT_PART = 1;
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
-        $address = $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
+        $address = $accountingSystemRecord->getUnit()->getUnit()->getInformation()->getAddress()->getAddress1();
 
         return $address;
     }

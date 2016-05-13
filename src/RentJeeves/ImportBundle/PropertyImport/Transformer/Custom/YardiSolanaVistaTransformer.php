@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
 class YardiSolanaVistaTransformer extends YardiTransformer
@@ -10,7 +10,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
         return sprintf('%s Fishermans Dr', $this->getStreetNumber($accountingSystemRecord));
     }
@@ -18,7 +18,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getCity(FullResident $accountingSystemRecord)
+    protected function getCity(UnitInformation $accountingSystemRecord)
     {
         return 'Bradenton';
     }
@@ -26,7 +26,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getState(FullResident $accountingSystemRecord)
+    protected function getState(UnitInformation $accountingSystemRecord)
     {
         return 'FL';
     }
@@ -34,7 +34,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getZip(FullResident $accountingSystemRecord)
+    protected function getZip(UnitInformation $accountingSystemRecord)
     {
         return '35562';
     }
@@ -42,7 +42,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getStreetNumber(FullResident $accountingSystemRecord)
+    protected function getStreetNumber(UnitInformation $accountingSystemRecord)
     {
         return parent::getUnitName($accountingSystemRecord);
     }
@@ -51,7 +51,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function isAddressHasUnits(FullResident $accountingSystemRecord)
+    protected function isAddressHasUnits(UnitInformation $accountingSystemRecord)
     {
         return false;
     }
@@ -59,7 +59,7 @@ class YardiSolanaVistaTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getUnitName(FullResident $accountingSystemRecord)
+    protected function getUnitName(UnitInformation $accountingSystemRecord)
     {
         return null;
     }
