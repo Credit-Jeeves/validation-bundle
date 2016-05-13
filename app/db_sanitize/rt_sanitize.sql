@@ -12,9 +12,10 @@
 --
 delete from cj_settings;
 delete from session;
-delete from jms_jobs;
+delete from ext_log_entries;
 delete from rj_merchant_account_migration;
-
+update email_translation set value = 'staging@renttrack.com' where value like '%darryl%';
+-- delete from jms_jobs; -- excluded from backup in santitize_db.sh
 
 --
 -- User data
@@ -58,17 +59,14 @@ delete from atb_simulation;
 update cj_applicant_report set raw_data = "";
 update cj_applicant_tradelines set tradeline = "";
 
--- admin info
-update ext_log_entries set username = mid(md5(username),1,20);
-
 
 --
 -- Property Manager data
 --
 update cj_holding set name = mid(md5(name),1,16);
-update rj_group set name = mid(md5(name),1,20), statement_descriptor = mid(md5(statement_descriptor),1,16), website_url = 'http://www.example.com';
+update rj_group set name = mid(md5(name),1,20), mailing_address_name = mid(md5(name),1,20), statement_descriptor = mid(md5(statement_descriptor),1,16), website_url = 'http://www.example.com';
 update rj_billing_account set token = concat(left(token, 24),mid(md5(token),1,12)), nickname = mid(md5(nickname),1,10);
-update rj_deposit_account set merchant_name = md5(merchant_name), account_number = FLOOR(RAND() * 500000);
+update rj_deposit_account set merchant_name = md5(merchant_name), account_number = mid(md5(account_number),1,20);
 update rj_group_phone set phone = mid(md5(phone),1,10);
 delete from yardi_settings;
 delete from resman_settings;
@@ -78,7 +76,7 @@ delete from rj_profitstars_settings;
 delete from rj_amsi_settings;
 
 -- Trusted Landlord
-update rj_trusted_landlord set first_name = mid(md5(first_name),1,10),last_name = mid(md5(last_name),1,8);
+update rj_trusted_landlord set first_name = mid(md5(first_name),1,10), last_name = mid(md5(last_name),1,8), company_name = mid(md5(company_name),1,25);
 update rj_check_mailing_address set addressee = mid(md5(addressee),1,10);
 
 --
@@ -86,6 +84,8 @@ update rj_check_mailing_address set addressee = mid(md5(addressee),1,10);
 --
 -- we check for 'darryl' anywhere in the DB, so remove from street names as needed
 update rj_property_address set street = mid(md5(street),1,10) where street like "%darryl%";
+update rj_property_address set ss_index = mid(md5(ss_index),1,10) where ss_index like "%darryl%";
+update rj_group set street_address_1 = mid(md5(street_address_1),1,10) where street_address_1 like "%darryl%";
 delete from rj_smarty_streets_cache where id like "%darryl%" or value like "%darryl%";
 
 --
