@@ -12,4 +12,3 @@ use Doctrine\ORM\Mapping as ORM;
 class RentManagerSettings extends Base
 {
 }
-

@@ -331,9 +331,9 @@ abstract class Holding
     }
 
     /**
-     * @param RentManagerSettings $rentManagerSettings
+     * @param RentManagerSettings|null $rentManagerSettings
      */
-    public function setRentManagerSettings(RentManagerSettings $rentManagerSettings)
+    public function setRentManagerSettings(RentManagerSettings $rentManagerSettings = null)
     {
         $this->rentManagerSettings = $rentManagerSettings;
     }
