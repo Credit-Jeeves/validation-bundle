@@ -48,6 +48,7 @@ class ImportPropertySettingsProvider
             case AccountingSystem::AMSI:
             case AccountingSystem::MRI:
             case AccountingSystem::RESMAN:
+            case AccountingSystem::RENT_MANAGER:
                 return $this->getExternalPropertyIdsFromDb($group);
                 break;
             case AccountingSystem::YARDI_VOYAGER:
