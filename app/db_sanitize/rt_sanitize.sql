@@ -81,6 +81,12 @@ delete from rj_amsi_settings;
 update rj_trusted_landlord set first_name = mid(md5(first_name),1,10),last_name = mid(md5(last_name),1,8);
 update rj_check_mailing_address set addressee = mid(md5(addressee),1,10);
 
+--
+-- PII Check Changes
+--
+-- we check for 'darryl' anywhere in the DB, so remove from street names as needed
+update rj_property_address set street = mid(md5(street),1,10) where street like "%darryl%";
+delete from rj_smarty_streets_cache where id like "%darryl%" or value like "%darryl%";
 
 --
 -- Payment data

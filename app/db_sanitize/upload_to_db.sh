@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo Uploading this directory to db01...
+scp -r ../db_sanitize/ db01:.
