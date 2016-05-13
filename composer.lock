@@ -18,7 +18,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/a04a8db282caabc084cf9fcccd82d2fcfbee36af",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/d3cd2778573e0f9f7a0e9a2e3331de02013214f3",
                 "reference": "193a02d493494f4f230e3d41c9a46c333f933091",
                 "shasum": ""
             },
@@ -1015,7 +1015,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/9f89fd349fd2b537be8a0a0c41f87f2f640dfc8a",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/4a9f909f73a2f70be8cd8cdd5b72ce376f21db26",
                 "reference": "866e100a425b8b73d15393fd081c6bf067f05bf9",
                 "shasum": ""
             },
@@ -1292,12 +1292,12 @@
             "target-dir": "Doctrine/Bundle/DoctrineCacheBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:doctrine/DoctrineCacheBundle.git",
-                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace"
+                "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
+                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
                 "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
                 "shasum": ""
             },
@@ -4550,13 +4550,14 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "8fec00a939b5f03a62fc21c225e11e20466841d6"
+                "reference": "9fc90bd0290abb58aef9334f0a4affbf0231e03d"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",
                 "php": ">=5.4.2",
                 "symfony/finder": "2.*",
-                "symfony/framework-bundle": "2.4.*"
+                "symfony/framework-bundle": "2.4.*",
+                "symfony/monolog-bundle": "~2.4.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "4.5.*"
@@ -4587,7 +4588,7 @@
                 "soap",
                 "wsdl"
             ],
-            "time": "2016-04-21 08:29:13"
+            "time": "2016-05-13 13:43:14"
         },
         {
             "name": "renttrack/smarty-streets-bundle",
@@ -4658,7 +4659,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/83a17a51c741f3a8fa31682923df342252c97f33",
+                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/07298bbabec9218f4f618f8e052b18221d89f2ba",
                 "reference": "83a17a51c741f3a8fa31682923df342252c97f33",
                 "shasum": ""
             },
@@ -5263,7 +5264,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8e68cfd2a44fd590226f3b10b21624ced0aa9bef",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8a84b75599f66a7039915a06a6f0f3737142947c",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -5436,7 +5437,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/1460e98b53d2f916f1b4123069c96c90844a1a4d",
                 "reference": "fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
                 "shasum": ""
             },
@@ -6999,7 +7000,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/b02221e42163be673f9b44a0bc92a8b4907a7c6d",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/7ca4182b3acbd19ebbf3ced4dfee12487d9c05aa",
                 "reference": "ce91d434b3dc443a3294c4535747765e84d11094",
                 "shasum": ""
             },
@@ -7552,7 +7553,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/2292b116f43c272ff4328083096114f84ea46a56",
                 "reference": "6e7133793a8e5a5714a551a8324337374be209df",
                 "shasum": ""
             },
