@@ -86,7 +86,8 @@ class RentManagerTransformer implements TransformerInterface
 
             $this->em->persist($importProperty);
 
-            $this->arrayCache[] = $import->getId() . '|' . $this->getExternalUnitId($rentManagerProperty, $rentManagerUnit);
+            $this->arrayCache[] = $import->getId() . '|'
+                . $this->getExternalUnitId($rentManagerProperty, $rentManagerUnit);
         }
 
         $this->em->flush();

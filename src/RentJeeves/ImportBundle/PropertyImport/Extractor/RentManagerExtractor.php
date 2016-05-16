@@ -15,6 +15,7 @@ use RentTrack\RentManagerClientBundle\DataResource\PropertyResource;
 use RentTrack\RentManagerClientBundle\Model\Property;
 use RentTrack\RentManagerClientBundle\Model\RentManagerCredentials;
 use RentTrack\RentManagerClientBundle\RentManagerClient;
+
 /**
  * Service`s name "import.property.extractor.rent_manager"
  */
