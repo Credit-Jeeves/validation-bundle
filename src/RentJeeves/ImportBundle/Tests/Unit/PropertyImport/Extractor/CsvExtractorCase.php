@@ -4,6 +4,7 @@ namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport\Extractor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
+use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -19,20 +20,11 @@ class CsvExtractorCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfExtractorNotConfigured()
     {
-        $csvExtractor = new CsvExtractor(new CsvFileReader(), $this->getLoggerMock());
-        $csvExtractor->extractData();
-    }
-
-    /**
-     * @test
-     * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
-     * @expectedExceptionMessage File "test.test" not found or not readable.
-     */
-    public function shouldThrowExceptionIfPathToFileNotCorrect()
-    {
-        $csvExtractor = new CsvExtractor(new CsvFileReader(), $this->getLoggerMock());
-        $csvExtractor->setGroup(new Group());
-        $csvExtractor->setPathToFile('test.test');
+        $csvExtractor = new CsvExtractor(
+            new CsvFileReader(),
+            $this->getBaseMock(SftpFileManager::class),
+            $this->getLoggerMock()
+        );
         $csvExtractor->extractData();
     }
 
@@ -41,12 +33,26 @@ class CsvExtractorCase extends UnitTestBase
      */
     public function shouldExtractDataFromCsvFile()
     {
-        $csvExtractor = new CsvExtractor(new CsvFileReader(), $this->getLoggerMock());
+        $sftpFileManager = $this->getBaseMock(SftpFileManager::class);
+        $sftpFileManager
+            ->method('download')
+            ->will($this->returnCallback(
+                function ($inputFileName, $tmpFileName) {
+                    $file = __DIR__ . '/../../../Fixtures/csvExample.csv';
+                    copy($file, $tmpFileName);
+                }
+            ));
+        $csvExtractor = new CsvExtractor(
+            new CsvFileReader(),
+            $sftpFileManager,
+            $this->getLoggerMock()
+        );
+
         $csvExtractor->setGroup(new Group());
-        $csvExtractor->setPathToFile(__DIR__ . '/../../../Fixtures/csvExample.csv');
+        $csvExtractor->setPathToFile(__DIR__ . 'test');
         $result = $csvExtractor->extractData();
 
-        $this->assertEquals(8, count($result['data']), 'File contains 8 row with data.');
+        $this->assertEquals(3, count($result['data']), 'File contains 8 row with data.');
         $this->assertNotEmpty($result['hashHeader'], 'HashHeader should be not empty.');
     }
 }

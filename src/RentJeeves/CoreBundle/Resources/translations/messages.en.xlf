@@ -160,6 +160,14 @@
                 <source>terms.service.link.text</source>
                 <target>Terms of Service</target>
             </trans-unit>
+            <trans-unit id="terms.service.link.mobile-text">
+                <source>terms.service.link.mobile-text</source>
+                <target>Terms of Use</target>
+            </trans-unit>
+            <trans-unit id="register.tenant.email_invite.notice">
+                <source>register.tenant.email_invite.notice</source>
+                <target>Your landlord %fullNameLandlord% is requesting rent for %rentAddress%. Pay online with RentTrack to build credit history.</target>
+            </trans-unit>
             <trans-unit id="email.verifed.text1">
                 <source>email.verifed.text1</source>
                 <target><![CDATA[Thanks for verifying your email. A small step to make sure <br />
@@ -1877,6 +1885,14 @@
                 <source>order.error.title</source>
                 <target>We encountered an error when attempting to make your rent payment.</target>
             </trans-unit>
+            <trans-unit id="payment.order.check_number.title">
+                <source>payment.order.check_number.title</source>
+                <target>Check # %checkNumber%</target>
+            </trans-unit>
+            <trans-unit id="deposit.order.check_number.title">
+                <source>deposit.order.check_number.title</source>
+                <target>Check # %checkNumber%</target>
+            </trans-unit>
             <trans-unit id="scoretrack.order.error.title">
                 <source>scoretrack.order.error.title</source>
                 <target>We encountered an error when attempting to make your ScoreTrack payment.</target>
@@ -1919,7 +1935,7 @@
             </trans-unit>
             <trans-unit id="fill.full.address">
                 <source>fill.full.address</source>
-                <target>Please fill full address and try again. It's very short or invalid.</target>
+                <target>Invalid address. Please check and try again.</target>
             </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
@@ -2348,7 +2364,7 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.unanswered_questions">
                <source>pidkiq.error.unanswered_questions</source>
-               <target>Almost there. Only %COUNT% question(s) left to answer!</target>
+               <target>Scroll down. Only %COUNT% question(s) left to answer!</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.transactionId">
                 <source>filter.group_by.deposit.transactionId</source>
@@ -2357,6 +2373,10 @@
             <trans-unit id="filter.group_by.deposit.batchId">
                 <source>filter.group_by.deposit.batchId</source>
                 <target>Batch ID</target>
+            </trans-unit>
+            <trans-unit id="filter.group_by.deposit.order.check_number">
+                <source>filter.group_by.deposit.order.check_number</source>
+                <target>Check Number</target>
             </trans-unit>
             <trans-unit id="payments.deposit">
                 <source>payments.deposit</source>
@@ -2416,6 +2436,10 @@
             <trans-unit id="payments.filter.amount">
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.checkNumber">
+                <source>payments.filter.checkNumber</source>
+                <target>Search by Check #</target>
             </trans-unit>
             <trans-unit id="payments.filter.batch_deposit_report.go">
                 <source>payments.filter.batch_deposit_report.go</source>

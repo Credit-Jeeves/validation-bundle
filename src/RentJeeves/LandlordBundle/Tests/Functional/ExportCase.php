@@ -132,9 +132,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('goutte');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -246,9 +244,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $this->selectExportBy($exportBy);
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -293,9 +289,7 @@ class ExportCase extends BaseTestCase
     public function realPageBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -352,9 +346,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -395,9 +387,7 @@ class ExportCase extends BaseTestCase
     public function promasBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -458,9 +448,7 @@ class ExportCase extends BaseTestCase
         $this->assertNotNull($holding = $em->find('DataBundle:Holding', 5), 'Holding id#5 should exist');
         $holding->setExportTenantId(false);
         $em->flush($holding);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -491,9 +479,7 @@ class ExportCase extends BaseTestCase
     public function yardiBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -552,9 +538,7 @@ class ExportCase extends BaseTestCase
     public function rentTrackCsvFormat($exportBy, $countRows)
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $endD = new DateTime();
 
@@ -603,9 +587,7 @@ class ExportCase extends BaseTestCase
     public function rentTrackBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -655,9 +637,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -711,9 +691,7 @@ class ExportCase extends BaseTestCase
         $this->load(true);
         $this->createPayment();
         //$this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -757,9 +735,7 @@ class ExportCase extends BaseTestCase
     public function yardiGenesisBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -806,9 +782,7 @@ class ExportCase extends BaseTestCase
     public function yardiGenesisV2BatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -858,9 +832,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -903,9 +875,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();
@@ -945,9 +915,7 @@ class ExportCase extends BaseTestCase
     {
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $this->selectExportBy('deposits');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -1067,8 +1035,7 @@ class ExportCase extends BaseTestCase
 
         $this->load(true);
         $this->createPayment();
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->page->clickLink('accounting.menu.export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -1080,7 +1047,6 @@ class ExportCase extends BaseTestCase
             ->set('c.externalLeaseId', '777777777')
             ->getQuery()
             ->execute();
-
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'), 'This option should be');
         $type->selectOption('boston');
@@ -1131,9 +1097,7 @@ class ExportCase extends BaseTestCase
     public function bostonBatchReport()
     {
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
-        $this->page->clickLink('accounting.menu.export');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
         $endD = new DateTime();

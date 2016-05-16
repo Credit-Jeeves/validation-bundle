@@ -136,7 +136,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -263,7 +264,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -394,13 +396,20 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->expects($this->exactly(4))
             ->method('flush');
 
+        $mailerMock = $this->getMailerMock();
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendProfitStarsReceipt')
+            ->with($order2);
+
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
             $checkTransformerMock,
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $mailerMock
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -471,7 +480,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -578,7 +588,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -715,7 +726,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $contractManagerMock,
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -724,8 +736,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function shouldUpdateTransactionIdAndCreateJobToPushToASWhenTransactionIdWasEmpty()
     {
         $date = new \DateTime();
@@ -874,17 +886,344 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(FailedPostPaymentNotifier::class)
         );
 
+        $mailerMock = $this->getMailerMock();
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendProfitStarsReceipt')
+            ->with($order);
+
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $synchronizer
+            $synchronizer,
+            $mailerMock
         );
         $loader->loadScannedChecks($group, $date);
 
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus(), 'Order status should be COMPLETE');
         $this->assertEquals('ref-test', $transaction->getTransactionId(), 'TransactionId should be updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateAmountIfOrderSumDiffersWithItemAmountWhenMovingOrderToComplete()
+    {
+        $date = new \DateTime();
+        $group = new Group();
+
+        $batchNumber = 125874;
+        $orderAmount = 129.55;
+        $holding = new Holding();
+        $group->setHolding($holding);
+
+        $remoteBatch = new WSRemoteDepositBatch();
+        $remoteBatch
+            ->setBatchNumber($batchNumber)
+            ->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
+        $rdcClientMock = $this->getBaseMock(RDCClient::class);
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatches')
+            ->with(
+                $group,
+                $date,
+                [
+                    WSBatchStatus::OPEN,
+                    WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
+                    WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
+                    WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
+                ]
+            )
+            ->will($this->returnValue([$remoteBatch]));
+        $depositItem = new WSRemoteDepositItem();
+        $depositItem
+            ->setItemId(123)
+            ->setTotalAmount(120.55)
+            ->setDeleted(false)
+            ->setItemStatus(WSItemStatus::SENTTOTRANSACTIONPROCESSING)
+            ->setReferenceNumber('ref-test')
+            ->setBatchNumber('b1');
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatchItems')
+            ->with(
+                $group,
+                $batchNumber,
+                [
+                    WSItemStatus::CREATED,
+                    WSItemStatus::APPROVED,
+                    WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
+                ]
+            )
+            ->will($this->returnValue([$depositItem]));
+        $emMock = $this->getEntityManagerMock();
+        $repositoryMock = $this->getEntityRepositoryMock();
+        $repositoryMock
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['batchNumber' => $batchNumber])
+            ->will($this->returnValue(null));
+
+        $order = new Order();
+        $order->setPaymentType(OrderPaymentType::SCANNED_CHECK);
+        $order->setStatus(OrderStatus::PENDING);
+        $order->setSum($orderAmount);
+        $order->setFee(0);
+        $order->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setHolding($holding);
+        $contract->setGroup($group);
+
+        $operation = new Operation();
+        $operation->setAmount($orderAmount);
+        $operation->setContract($contract);
+        $operation->setOrder($order);
+        $order->addOperation($operation);
+        $operation->setContract($contract);
+
+        $transaction = new Transaction();
+        $transaction->setStatus(TransactionStatus::COMPLETE);
+        $transaction->setIsSuccessful(true);
+        $transaction->setBatchId(12345);
+        $transaction->setAmount($orderAmount);
+        $transaction->setOrder($order);
+
+        $order->addTransaction($transaction);
+        $transactionRepositoryMock = $this->getBaseMock(TransactionRepository::class);
+
+        $transactionRepositoryMock
+            ->expects($this->once())
+            ->method('getTransactionByProfitStarsItemId')
+            ->with($this->equalTo(123))
+            ->will($this->returnValue($transaction));
+        $emMock
+            ->expects($this->exactly(2))
+            ->method('getRepository')
+            ->withConsecutive(['RjDataBundle:ProfitStarsBatch'], ['RjDataBundle:Transaction'])
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue($repositoryMock),
+                    $this->returnValue($transactionRepositoryMock)
+                )
+            );
+        $emMock
+            ->expects($this->exactly(1))
+            ->method('persist')
+            ->with($this->isInstanceOf(ProfitStarsBatch::class));
+
+        $emMock
+            ->expects($this->exactly(3))
+            ->method('flush');
+
+        /** @var AccountingPaymentSynchronizer $synchronizer */
+        $synchronizer = new AccountingPaymentSynchronizer(
+            $emMock,
+            $this->getBaseMock(ExternalApiClientFactory::class),
+            $this->getBaseMock(SoapClientFactory::class),
+            $this->getSerializerMock(),
+            $this->getLoggerMock(),
+            $this->getBaseMock(FailedPostPaymentNotifier::class)
+        );
+
+        $loader = new RemoteDepositLoader(
+            $rdcClientMock,
+            $this->getBaseMock(ScannedCheckTransformer::class),
+            $emMock,
+            $this->getLoggerMock(),
+            $this->getBaseMock(ContractManager::class),
+            $synchronizer,
+            $this->getMailerMock()
+        );
+        $loader->loadScannedChecks($group, $date);
+
+        $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus(), 'Order status should be COMPLETE');
+        $this->assertEquals(120.55, $transaction->getAmount(), 'Transaction amount should be updated');
+        $this->assertEquals(120.55, $order->getSum(), 'Order SUM should be updated');
+        $this->assertEquals(120.55, $order->getOperations()->first()->getAmount(), 'Operation SUM should be updated');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldMoveOrderToErrorWhenTransactionExistsAndDepositItemIsInErrorState()
+    {
+        $date = new \DateTime();
+        $group = new Group();
+
+        $batchNumber = 125874;
+        $orderAmount = 100;
+        $holding = new Holding();
+        $group->setHolding($holding);
+
+        $remoteBatch = new WSRemoteDepositBatch();
+        $remoteBatch
+            ->setBatchNumber($batchNumber)
+            ->setBatchStatus(WSBatchStatus::SENTTOTRANSACTIONPROCESSING);
+        $rdcClientMock = $this->getBaseMock(RDCClient::class);
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatches')
+            ->with(
+                $group,
+                $date,
+                [
+                    WSBatchStatus::OPEN,
+                    WSBatchStatus::CLOSED,
+                    WSBatchStatus::ERROR,
+                    WSBatchStatus::READYFORPROCESSING,
+                    WSBatchStatus::REJECTED,
+                    WSBatchStatus::DELETED,
+                    WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSBatchStatus::TPERROR,
+                    WSBatchStatus::NEEDSBALANCING,
+                    WSBatchStatus::PARTIALLYPROCESSED,
+                    WSBatchStatus::TPBATCHCREATIONFAILED,
+                    WSBatchStatus::PARTIALDEPOSIT
+                ]
+            )
+            ->will($this->returnValue([$remoteBatch]));
+        $depositItem = new WSRemoteDepositItem();
+        $depositItem
+            ->setItemId(123)
+            ->setTotalAmount(120.55)
+            ->setDeleted(false)
+            ->setItemStatus(WSItemStatus::TPERROR)
+            ->setReferenceNumber('ref-test')
+            ->setBatchNumber('b1');
+        $rdcClientMock
+            ->expects($this->once())
+            ->method('getBatchItems')
+            ->with(
+                $group,
+                $batchNumber,
+                [
+                    WSItemStatus::CREATED,
+                    WSItemStatus::APPROVED,
+                    WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+                    WSItemStatus::CLOSED,
+                    WSItemStatus::DELETED,
+                    WSItemStatus::ERROR,
+                    WSItemStatus::CHECKDECISIONINGERROR,
+                    WSItemStatus::NEEDSATTENTION,
+                    WSItemStatus::NEEDSRESCAN,
+                    WSItemStatus::REJECTED,
+                    WSItemStatus::RELEASED,
+                    WSItemStatus::RESCANNED,
+                    WSItemStatus::TPERROR,
+                    WSItemStatus::RESOLVED,
+                    WSItemStatus::NONE
+                ]
+            )
+            ->will($this->returnValue([$depositItem]));
+        $emMock = $this->getEntityManagerMock();
+        $repositoryMock = $this->getEntityRepositoryMock();
+        $repositoryMock
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['batchNumber' => $batchNumber])
+            ->will($this->returnValue(null));
+
+        $order = new Order();
+        $order->setPaymentType(OrderPaymentType::SCANNED_CHECK);
+        $order->setStatus(OrderStatus::PENDING);
+        $order->setSum($orderAmount);
+        $order->setFee(0);
+        $order->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
+
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::WAITING);
+        $contract->setHolding($holding);
+        $contract->setGroup($group);
+
+        $operation = new Operation();
+        $operation->setAmount($orderAmount);
+        $operation->setContract($contract);
+        $operation->setOrder($order);
+        $order->addOperation($operation);
+        $operation->setContract($contract);
+
+        $transaction = new Transaction();
+        $transaction->setStatus(TransactionStatus::COMPLETE);
+        $transaction->setIsSuccessful(true);
+        $transaction->setBatchId(12345);
+        $transaction->setAmount($orderAmount);
+        $transaction->setOrder($order);
+
+        $order->addTransaction($transaction);
+        $transactionRepositoryMock = $this->getBaseMock(TransactionRepository::class);
+
+        $transactionRepositoryMock
+            ->expects($this->once())
+            ->method('getTransactionByProfitStarsItemId')
+            ->with($this->equalTo(123))
+            ->will($this->returnValue($transaction));
+        $emMock
+            ->expects($this->exactly(2))
+            ->method('getRepository')
+            ->withConsecutive(['RjDataBundle:ProfitStarsBatch'], ['RjDataBundle:Transaction'])
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue($repositoryMock),
+                    $this->returnValue($transactionRepositoryMock)
+                )
+            );
+        $emMock
+            ->expects($this->exactly(1))
+            ->method('persist')
+            ->with($this->isInstanceOf(ProfitStarsBatch::class));
+
+        $emMock
+            ->expects($this->exactly(3))
+            ->method('flush');
+
+        /** @var AccountingPaymentSynchronizer $synchronizer */
+        $synchronizer = new AccountingPaymentSynchronizer(
+            $emMock,
+            $this->getBaseMock(ExternalApiClientFactory::class),
+            $this->getBaseMock(SoapClientFactory::class),
+            $this->getSerializerMock(),
+            $this->getLoggerMock(),
+            $this->getBaseMock(FailedPostPaymentNotifier::class)
+        );
+
+        $loader = new RemoteDepositLoader(
+            $rdcClientMock,
+            $this->getBaseMock(ScannedCheckTransformer::class),
+            $emMock,
+            $this->getLoggerMock(),
+            $this->getBaseMock(ContractManager::class),
+            $synchronizer,
+            $this->getMailerMock()
+        );
+        $loader->loadScannedChecks($group, $date);
+
+        $this->assertEquals(OrderStatus::ERROR, $order->getStatus(), 'Order status should be COMPLETE');
+        $this->assertEquals('Check Scanning Error: Refer to Check Scanning Interface.', $transaction->getMessages());
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
@@ -12,7 +12,7 @@ use RentJeeves\ExternalApiBundle\Model\AMSI\Occupant;
 class AMSITransformer implements TransformerInterface
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $em;
 
@@ -27,10 +27,10 @@ class AMSITransformer implements TransformerInterface
     protected $arrayCache = [];
 
     /**
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, LoggerInterface $logger)
+    final public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->em = $em;
         $this->logger = $logger;

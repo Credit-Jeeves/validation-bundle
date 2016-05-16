@@ -1375,7 +1375,7 @@
 
             <trans-unit id="admin.action.orders">
                 <source>admin.action.orders</source>
-                <target>Payments</target>
+                <target>Orders</target>
             </trans-unit>
             <trans-unit id="admin.action.contracts">
                 <source>admin.action.contracts</source>

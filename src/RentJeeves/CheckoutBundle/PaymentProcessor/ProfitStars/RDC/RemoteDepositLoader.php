@@ -3,12 +3,14 @@
 namespace RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\RDC;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
 use RentJeeves\CoreBundle\ContractManagement\ContractManager;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -42,6 +44,9 @@ class RemoteDepositLoader
     /** @var AccountingPaymentSynchronizer */
     protected $accountingPaymentSync;
 
+    /** @var Mailer */
+    protected $mailer;
+
     /** @var integer */
     protected $countChecks;
 
@@ -52,6 +57,7 @@ class RemoteDepositLoader
      * @param LoggerInterface $logger
      * @param ContractManager $contractManager
      * @param AccountingPaymentSynchronizer $accountingPaymentSync
+     * @param Mailer $mailer
      */
     public function __construct(
         RDCClient $client,
@@ -59,7 +65,8 @@ class RemoteDepositLoader
         EntityManager $em,
         LoggerInterface $logger,
         ContractManager $contractManager,
-        AccountingPaymentSynchronizer $accountingPaymentSync
+        AccountingPaymentSynchronizer $accountingPaymentSync,
+        Mailer $mailer
     ) {
         $this->client = $client;
         $this->checkTransformer = $checkTransformer;
@@ -67,6 +74,7 @@ class RemoteDepositLoader
         $this->logger = $logger;
         $this->contractManager = $contractManager;
         $this->accountingPaymentSync = $accountingPaymentSync;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -127,8 +135,10 @@ class RemoteDepositLoader
     {
         $profitStarsBatch = $this->getProfitStarsBatch($batch->getBatchNumber());
         if (null !== $profitStarsBatch) {
-            if ($profitStarsBatch->isOpen() && !$this->isSentToTransactionProcessingBatch($batch)) {
-                $this->logger->emergency(
+            if ($profitStarsBatch->isOpen() &&
+                !($this->isSentToTransactionProcessingBatch($batch) || $this->isPartialDeposit($batch))
+            ) {
+                $this->logger->alert(
                     sprintf(
                         'ProfitStars CheckScanning batch #%s for group #%d is in unexpected state %s.',
                         $batch->getBatchNumber(),
@@ -163,6 +173,8 @@ class RemoteDepositLoader
                     $this->incrementCountChecks();
                     $this->updateContractStatus($newOrder);
                 }
+            } elseif ($this->isErrorItemStatus($batchItem)) {
+                $this->moveOrderToErrorState($batchItem);
             } else {
                 $this->logger->alert(sprintf(
                     'Item id#%s from Batch "%s" has alert state "%s". Skipping.',
@@ -173,7 +185,7 @@ class RemoteDepositLoader
             }
         }
 
-        if ($this->isSentToTransactionProcessingBatch($batch)) {
+        if ($this->isSentToTransactionProcessingBatch($batch) || $this->isPartialDeposit($batch)) {
             $this->closeProfitStarsBatch($profitStarsBatch);
         }
     }
@@ -189,6 +201,7 @@ class RemoteDepositLoader
             WSBatchStatus::CLOSED,
             WSBatchStatus::READYFORPROCESSING,
             WSBatchStatus::SENTTOTRANSACTIONPROCESSING,
+            WSBatchStatus::PARTIALDEPOSIT,
         ];
         if (in_array($batch->getBatchStatus(), $allowedStatuses)) {
             return true;
@@ -207,8 +220,26 @@ class RemoteDepositLoader
             WSItemStatus::CREATED,
             WSItemStatus::APPROVED,
             WSItemStatus::SENTTOTRANSACTIONPROCESSING,
+            WSItemStatus::RESOLVED,
+            WSItemStatus::RESCANNED,
         ];
         if (in_array($item->getItemStatus(), $allowedStatuses)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param WSRemoteDepositItem $item
+     * @return bool
+     */
+    protected function isErrorItemStatus(WSRemoteDepositItem $item)
+    {
+        $errorStatuses = [
+            WSItemStatus::TPERROR,
+        ];
+        if (in_array($item->getItemStatus(), $errorStatuses)) {
             return true;
         }
 
@@ -314,6 +345,9 @@ class RemoteDepositLoader
                 $order = $this->checkTransformer->transformToOrder($depositItem);
                 $this->em->persist($order);
                 $this->em->flush();
+                if (OrderStatus::COMPLETE === $order->getStatus()) {
+                    $this->mailer->sendProfitStarsReceipt($order);
+                }
 
                 return $order;
             } catch (\Exception $e) {
@@ -331,8 +365,8 @@ class RemoteDepositLoader
                 $depositItem->getBatchNumber()
             ));
 
-            $this->updateTransaction($transaction, $depositItem);
-            $this->updateOrder($transaction->getOrder(), $depositItem);
+            $this->updateTransactionData($transaction, $depositItem);
+
             $this->em->flush();
         }
 
@@ -386,6 +420,15 @@ class RemoteDepositLoader
         return $batch->getBatchStatus() === WSBatchStatus::SENTTOTRANSACTIONPROCESSING;
     }
 
+    /**
+     * @param WSRemoteDepositBatch $batch
+     * @return bool
+     */
+    protected function isPartialDeposit(WSRemoteDepositBatch $batch)
+    {
+        return $batch->getBatchStatus() === WSBatchStatus::PARTIALDEPOSIT;
+    }
+
     protected function incrementCountChecks()
     {
         $this->countChecks++;
@@ -395,7 +438,7 @@ class RemoteDepositLoader
      * @param Transaction $transaction
      * @param WSRemoteDepositItem $depositItem
      */
-    protected function updateTransaction(Transaction $transaction, WSRemoteDepositItem $depositItem)
+    protected function updateTransactionData(Transaction $transaction, WSRemoteDepositItem $depositItem)
     {
         if (false === empty($depositItem->getReferenceNumber()) && true === empty($transaction->getTransactionId())) {
             $this->logger->info(sprintf(
@@ -407,18 +450,27 @@ class RemoteDepositLoader
             $transaction->setTransactionId($depositItem->getReferenceNumber());
             $this->accountingPaymentSync->manageAccountingSynchronization($transaction);
         }
-    }
-
-    /**
-     * @param Order $order
-     * @param WSRemoteDepositItem $depositItem
-     */
-    protected function updateOrder(Order $order, WSRemoteDepositItem $depositItem)
-    {
+        $order = $transaction->getOrder();
         if (WSItemStatus::SENTTOTRANSACTIONPROCESSING === $depositItem->getItemStatus() &&
             OrderStatus::PENDING === $order->getStatus()
         ) {
+            $this->logger->info(sprintf('Moving Order#%s from pending to complete', $order->getId()));
             $order->setStatus(OrderStatus::COMPLETE);
+            if ($order->getSum() != $depositItem->getTotalAmount()) {
+                $this->logger->info(sprintf(
+                    'Updating SUM for Order#%s from %s to %s',
+                    $order->getId(),
+                    $order->getSum(),
+                    $depositItem->getTotalAmount()
+                ));
+                $order->setSum($depositItem->getTotalAmount());
+                $transaction->setAmount($depositItem->getTotalAmount());
+                /** @var Operation $operation */
+                if ($operation = $order->getOperations()->first()) {
+                    $operation->setAmount($depositItem->getTotalAmount());
+                }
+            }
+            $this->mailer->sendProfitStarsReceipt($order);
         }
     }
 
@@ -430,6 +482,19 @@ class RemoteDepositLoader
         $contract = $order->getContract();
         if (false === empty($contract) && $contract->getStatus() === ContractStatus::WAITING) {
             $this->contractManager->moveContractOutOfWaitingByLandlord($contract, ContractStatus::CURRENT);
+        }
+    }
+
+    /**
+     * @param WSRemoteDepositItem $batchItem
+     */
+    protected function moveOrderToErrorState(WSRemoteDepositItem $batchItem)
+    {
+        $transaction = $this->getExistingTransaction($batchItem);
+        if ($transaction) {
+            $transaction->getOrder()->setStatus(OrderStatus::ERROR);
+            $transaction->setMessages('Check Scanning Error: Refer to Check Scanning Interface.');
+            $this->em->flush();
         }
     }
 }

@@ -865,7 +865,7 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldShowMessageIfUpdateTypePaymentFromRecurringToOneTime()
+    public function shouldShowMessageIfUpdatePaymentType()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -886,7 +886,12 @@ class PayCase extends BaseTestCase
             'Info message should be translated from "checkout.payment.switch_to_one_time"'
         );
         $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
-        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
+        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
+        $this->assertEquals(
+            'checkout.payment.switch_to_recurring',
+            $infoMessageBox->getText(),
+            'Info message should be translated from "checkout.payment.switch_to_recurring"'
+        );
 
         $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
         $closeButton->click();
@@ -996,7 +1001,6 @@ class PayCase extends BaseTestCase
 
         $contract1 = $em->getRepository('RjDataBundle:Contract')->find(18);
         $contract2 = $em->getRepository('RjDataBundle:Contract')->find(9);
-
 
         $contract1->setGroup($group1);
         $contract2->setGroup($group2);
@@ -1685,7 +1689,7 @@ class PayCase extends BaseTestCase
         $em->flush($contract->getGroup());
 
         $this->setDefaultSession('selenium2');
-        $this->login('tenant11@example.com', 'pass');
+        $this->loginByAccessToken('tenant11@example.com');
 
         $this->page->pressButton($this->payButtonName);
         $popupDialog = $this->getDomElement('#pay-popup');
@@ -1718,7 +1722,8 @@ class PayCase extends BaseTestCase
             $firstAvailableStartDate->format('n/j/Y'),
             $startDateInput->getValue()
         );
-        $startDateInput->setValue($firstAvailableStartDate->modify('-1 day')->format('n/j/Y'));
+        $invalidStartDate = clone $firstAvailableStartDate;
+        $startDateInput->setValue($invalidStartDate->modify('-1 day')->format('n/j/Y'));
 
         $form->click();
         $this->session->wait(100);
@@ -1733,5 +1738,18 @@ class PayCase extends BaseTestCase
             $errors[0]->getText(),
             'Should be displayed error with text "payment.start_date.error.outside_rolling_window"'
         );
+
+        $startDateInput->setValue($firstAvailableStartDate->format('n/j/Y'));
+
+        $form->click();
+        $this->session->wait(100);
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
+
+        $sourceStep = $this->getDomElement('#id-source-step');
+
+        $this->assertTrue($sourceStep->isVisible(), 'Should be show next step without errors');
     }
 }

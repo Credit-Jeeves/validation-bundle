@@ -26,14 +26,6 @@ class PropertyManagerCase extends BaseTestCase
     /**
      * @test
      */
-    public function checkDuplicate()
-    {
-        $this->markTestSkipped('Move address fileds');
-    }
-
-    /**
-     * @test
-     */
     public function shouldGetNewSingleUnit()
     {
         $this->load(true);

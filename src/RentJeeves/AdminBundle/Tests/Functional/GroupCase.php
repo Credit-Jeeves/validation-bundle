@@ -12,43 +12,6 @@ class GroupCase extends BaseTestCase
 
     /**
      * @test
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
-     */
-    public function shouldCreateNewJobForImportProperties()
-    {
-        $this->load(true);
-        $this->getEntityManager()->clear();
-        $jobsBeforeTest = $this->getEntityManager()->getRepository('RjDataBundle:Job')
-            ->findAll();
-        $this->setDefaultSession('symfony');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
-        $this->assertNotEmpty(
-            $createJobButton = $this->page->find('css', '.createCsvJobForImportProperties'),
-            'Should see link csv mapping'
-        );
-        $createJobButton->click();
-        $this->assertNotNull(
-            $attFile = $this->page->find('css', '#upload_csv_file_attachment'),
-            'Attach does not exist'
-        );
-        $filePath = $this->getFixtureFilePathByName('import.csv');
-        $attFile->attachFile($filePath);
-        $this->assertNotEmpty(
-            $buttonUpload = $this->page->find('css', '#upload_csv_file_upload'),
-            'Should see upload file button'
-        );
-        $buttonUpload->click();
-
-        $this->getEntityManager()->clear();
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')
-            ->findAll();
-        $this->assertEquals(count($jobsBeforeTest)+1, count($jobs), 'New job should create');
-    }
-
-    /**
-     * @test
      */
     public function checkDepositAccountCreateAndUpdateInGroup()
     {
@@ -62,10 +25,7 @@ class GroupCase extends BaseTestCase
             'Check fixtures, group with name "Generic group" should not have deposit accounts'
         );
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
         $editLink = $this->getDomElement('a:contains("Generic group")', 'Edit link doesn\'t find for group');
         $editLink->click();
         $tabLink = $this->getDomElement('.nav-tabs li>a:contains("Deposit Accounts")');
@@ -133,9 +93,7 @@ class GroupCase extends BaseTestCase
         );
 
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
         $editLink = $this->getDomElement('a:contains("700Credit")', 'Edit link doesn\'t find for group');
         $editLink->click();
 
@@ -197,9 +155,7 @@ class GroupCase extends BaseTestCase
         );
 
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $editLink = $this->getDomElement('a:contains("Test Rent Group")', 'Edit link doesn\'t find for group');
         $editLink->click();
@@ -239,9 +195,7 @@ class GroupCase extends BaseTestCase
             'Default value for debit fee shold be empty'
         );
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $editLink = $this->getDomElement('a:contains("Test Rent Group")', 'Edit link doesn\'t find for group');
         $editLink->click();
@@ -309,9 +263,7 @@ class GroupCase extends BaseTestCase
         );
         $this->setDefaultSession('selenium2');
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $editLink = $this->getDomElement('a:contains("Generic group")', 'Edit link doesn\'t find for group');
         $editLink->click();
@@ -486,9 +438,7 @@ class GroupCase extends BaseTestCase
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
             '.import_properties_button',
@@ -514,9 +464,7 @@ class GroupCase extends BaseTestCase
         $group->getImportSettings()->setApiPropertyIds(null);
         $this->getEntityManager()->flush();
         $this->setDefaultSession('selenium2');
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $groupBlock = $this->getDomElement('#id_block_groups', 'Groups action doesn\'t show');
-        $groupBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
             '.import_properties_button',

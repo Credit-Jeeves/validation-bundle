@@ -27,13 +27,25 @@ class TrustedLandlordType extends AbstractType
                 'invalid_message' => 'api.errors.landlord.type.invalid',
             ]
         );
-        $builder->add('first_name', 'text', ['property_path' => 'firstName']);
-        $builder->add('last_name', 'text', ['property_path' => 'lastName']);
-        $builder->add('company_name', 'text', ['property_path' => 'companyName']);
+        $builder->add('first_name', 'text', [
+            'property_path' => 'firstName',
+            'required' => false,
+            'description' => 'Required for type "person" of landlord.'
+        ]);
+        $builder->add('last_name', 'text', [
+            'property_path' => 'lastName',
+            'required' => false,
+            'description' => 'Required for type "person" of landlord.'
+        ]);
+        $builder->add('company_name', 'text', [
+            'property_path' => 'companyName',
+            'required' => false,
+            'description' => 'Required for type "company" of landlord.'
+        ]);
         $builder->add(
-            $builder->create('phone', 'text')->addViewTransformer(new PhoneNumberTransformer())
+            $builder->create('phone', 'text', ['required' => false])->addViewTransformer(new PhoneNumberTransformer())
         );
-        $builder->add('email', 'email');
+        $builder->add('email', 'email', ['required' => false]);
         $builder->add('mailing_address', new MailingAddressType(), ['data_class' => $options['data_class']]);
     }
 

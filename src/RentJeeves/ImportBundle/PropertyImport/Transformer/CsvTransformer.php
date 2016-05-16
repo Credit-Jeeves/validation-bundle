@@ -145,7 +145,7 @@ class CsvTransformer implements TransformerInterface
      */
     protected function getImportMappingRule(ImportMappingChoice $importMappingChoice)
     {
-        $mappingData = unserialize($importMappingChoice->getMappingData());
+        $mappingData = $importMappingChoice->getMappingData();
         $mappingRule = array_flip($mappingData);
 
         $missingFields = [];

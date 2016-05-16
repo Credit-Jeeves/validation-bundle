@@ -55,7 +55,6 @@ class RDCClient
      * @param \DateTime $date
      * @param array $statuses
      * @return WSRemoteDepositBatch[]
-     * @throws ProfitStarsException
      */
     public function getBatches(Group $group, \DateTime $date, array $statuses)
     {
@@ -65,7 +64,7 @@ class RDCClient
         $endDate = clone $date;
         $endDate->setTime(23, 59, 59);
 
-        $this->logger->debug(sprintf(
+        $this->logger->info(sprintf(
             'Trying to load batches for Group#%d, startDate "%s", endDate "%s".',
             $group->getId(),
             $startDate->format('Y-m-d\TH:i:s'),
@@ -88,12 +87,13 @@ class RDCClient
         if (!$response instanceof GetBatchesByDateRangeResponse ||
             null === $response->getGetBatchesByDateRangeResult()
         ) {
-            $message = sprintf(
+            $this->logger->info(sprintf(
                 'GetBatchesByDateRange for group#%d and date "%s" returned empty response',
                 $group->getId(),
                 $date->format('Y-m-d')
-            );
-            throw new ProfitStarsException($message);
+            ));
+
+            return [];
         }
 
         $result = $response->getGetBatchesByDateRangeResult()->getWSRemoteDepositBatch();

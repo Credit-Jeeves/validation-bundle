@@ -137,7 +137,21 @@ class RjHoldingAdmin extends Admin
                         'required' => false,
                     ]
                 )
-            ->end();
+            ->end()
+            ->with('RentManager Settings')
+            ->add(
+                'rentManagerSettings',
+                $container->get('form.rent_manager_settings'),
+                [
+                    'required' => false,
+                ],
+                [
+                    'edit'      => 'inline',
+                    'inline'    => 'table',
+                    'sortable'  => 'position',
+                ]
+            )
+        ;
     }
 
     public function prePersist($holding)
@@ -188,6 +202,13 @@ class RjHoldingAdmin extends Admin
             $profitStarsSettings->setHolding($holding);
         } else {
             $holding->setProfitStarsSettings(null);
+        }
+
+        $rentManagerSettings = $holding->getRentManagerSettings();
+        if ($rentManagerSettings) {
+            $rentManagerSettings->setHolding($holding);
+        } else {
+            $holding->setRentManagerSettings(null);
         }
     }
 

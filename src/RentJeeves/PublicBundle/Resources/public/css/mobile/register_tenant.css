@@ -1,0 +1,98 @@
+.notice {
+    color: #fff;
+    padding: 0 10%;
+    text-shadow: none;
+    text-align: left;
+}
+
+#checkboxterms {
+    border: none;
+    background-color: transparent;
+    color: #FFFFFF;
+    text-shadow: none;
+}
+
+#rentjeeves_publicbundle_tenanttype_tos {
+    margin: -11px 0 0 2px;
+}
+
+#m-form-new-user .reg-input {
+    margin: 0 12px 30px 12px;
+    position: relative;
+}
+
+.reg-input ul {
+    padding: 0;
+    list-style-type: none;
+    position: absolute;
+    margin: 0;
+    bottom: -20px;
+}
+
+.reg-input li {
+    font-size: 0.8em;
+    margin: 0;
+    color: red;
+    text-shadow: none;
+    text-align: center;
+}
+
+.term-link {
+    text-decoration: none;
+    text-shadow: none;
+}
+
+.tos-description {
+    color: #FFFFFF;
+    text-shadow: none;
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.register-line {
+    width: 80%;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+#_submit {
+    margin: 40px 0;
+    height: 52px;
+    background: #00aeef;
+    color: white;
+    font-family: PT Sans Caption !important;
+    text-align: center;
+    border-radius: 3px;
+    max-width: 300px;
+    min-width: 100%;
+    border: 0;
+    box-shadow: 0px;
+    font-size: 14pt;
+    font-weight: normal;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
+.checkboxes {
+    text-align: left;
+}
+
+.checkboxes .ui-checkbox {
+    display: inline-flex;
+}
+
+#checkboxterms {
+    padding-right: 0;
+}
+
+.link-terms {
+    text-shadow: none;
+    text-decoration: none;
+}
+
+.login-pod-footer {
+    position: absolute;
+    left: 50%;
+    margin-left: -92px;
+    margin-bottom: 25px
+}

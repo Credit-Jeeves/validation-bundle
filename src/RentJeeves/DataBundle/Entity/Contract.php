@@ -475,10 +475,8 @@ class Contract extends Base
                 $amount = 0;
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
-                // if month is between startDate and createDate or date is before 1st paid month
-                if ($date <= $createDate && $startDate <= $date ||
-                    (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth)
-                ) {
+
+                if ($this->checkStatusDate($date, $startDate, $createDate, $lastPaidMonth)) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
                     $text   = self::PAYMENT_OK;
@@ -492,6 +490,34 @@ class Contract extends Base
         }
 
         return $result;
+    }
+
+    /**
+     * @param \DateTime $date
+     * @param \DateTime $startDate
+     * @param \DateTime $createDate
+     * @param \DateTime|null $lastPaidMonth
+     * @return bool
+     */
+    private function checkStatusDate(
+        \DateTime $date,
+        \DateTime $startDate,
+        \DateTime $createDate,
+        \DateTime $lastPaidMonth = null
+    ) {
+        if ($date->format('Y-m') !== $createDate->format('Y-m') && $date <= $createDate && $startDate <= $date) {
+            return true;
+        }
+
+        if ($lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth) {
+            return true;
+        }
+
+        if ($lastPaidMonth && $lastPaidMonth >= $createDate && $date->format('Y-m') !== $createDate->format('Y-m')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -648,7 +674,6 @@ class Contract extends Base
         } catch (\RuntimeException $e) {
             $result['payment_status'] = 'duplicated';
         }
-
 
         $result['hasCustomPayments'] = false;
 

@@ -29,11 +29,12 @@ class PropertyAddressForNewUnitType extends AbstractType
                     'groups'    => ['new_unit']
                 ])
             ],
-            'empty_data' => null
+            'empty_data' => null,
+            'description' => 'Set to "" for single-unit property',
         ])->addViewTransformer(new UnitNameTransformer()));
 
-        $builder->add('street', 'text');
-        $builder->add('number', 'text');
+        $builder->add('street', 'text', ['description' => 'Street should include number.']);
+        $builder->add('number', 'text', ['description' => 'Do not pass this field. Set number to street field.']);
         $builder->add('state', 'text');
         $builder->add('city', 'text');
         $builder->add('zip', 'text');

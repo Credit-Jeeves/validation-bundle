@@ -83,7 +83,8 @@ class AppRjKernel extends AppKernel
             new RentJeeves\ApiBundle\RjApiBundle(),
             new RentJeeves\OAuthServerBundle\OAuthServerBundle(),
             new RentJeeves\ImportBundle\ImportBundle(),
-            new RentJeeves\TrustedLandlordBundle\TrustedLandlordBundle()
+            new RentJeeves\TrustedLandlordBundle\TrustedLandlordBundle(),
+            new RentTrack\RentManagerClientBundle\RentManagerClientBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {

@@ -2,9 +2,11 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Enum\ImportModelType;
+use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder;
@@ -37,21 +39,29 @@ class ImportPropertyManager
     protected $logger;
 
     /**
-     * @param ExtractorBuilder   $extractorBuilder
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    /**
+     * @param ExtractorBuilder $extractorBuilder
      * @param TransformerFactory $transformerFactory
-     * @param LoaderFactory      $loaderFactory
-     * @param LoggerInterface    $logger
+     * @param LoaderFactory $loaderFactory
+     * @param LoggerInterface $logger
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         ExtractorBuilder $extractorBuilder,
         TransformerFactory $transformerFactory,
         LoaderFactory $loaderFactory,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        EntityManagerInterface $entityManager
     ) {
         $this->extractorBuilder = $extractorBuilder;
         $this->transformerFactory = $transformerFactory;
         $this->loaderFactory = $loaderFactory;
         $this->logger = $logger;
+        $this->em = $entityManager;
     }
 
     /**
@@ -125,6 +135,7 @@ class ImportPropertyManager
                 ),
                 ['group' => $group, 'additional_parameter' => $additionalParameter]
             );
+            $this->setImportError($import, $e->getMessage());
 
             return;
         }
@@ -136,5 +147,17 @@ class ImportPropertyManager
             ),
             ['group' => $group, 'additional_parameter' => $additionalParameter]
         );
+    }
+
+    /**
+     * @param Import $import
+     * @param string $errorMessage
+     */
+    protected function setImportError(Import $import, $errorMessage)
+    {
+        $import->setStatus(ImportStatus::ERROR);
+        $import->setErrorMessage($errorMessage);
+
+        $this->em->flush();
     }
 }

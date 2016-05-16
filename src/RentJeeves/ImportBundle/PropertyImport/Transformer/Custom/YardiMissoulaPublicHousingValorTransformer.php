@@ -2,44 +2,44 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
 class YardiMissoulaPublicHousingValorTransformer extends YardiTransformer
 {
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
-        $address = $accountingSystemRecord->getResidentData()->getUnit()->getUnitAddress()->getUnitAddressLine1();
+        $address = $accountingSystemRecord->getUnit()->getUnit()->getInformation()->getAddress()->getAddress1();
 
         return $address;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getUnitName(FullResident $accountingSystemRecord)
+    protected function getUnitName(UnitInformation $accountingSystemRecord)
     {
-        $unit = $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getUnit()->getUnitId();
+        $unit = $accountingSystemRecord->getUnit()->getUnitId();
         $unit = preg_replace('/VALOR-/', '', $unit);
 
         return $unit;
     }
 
     /**
-     * @param FullResident $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return string
      */
-    protected function getExternalUnitId(FullResident $accountingSystemRecord)
+    protected function getExternalUnitId(UnitInformation $accountingSystemRecord)
     {
-        $unitName = $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getUnit()->getUnitId();
+        $unitName = $accountingSystemRecord->getUnit()->getUnitId();
         $externalUnitId = $accountingSystemRecord->getProperty()->getExternalUnitId($unitName);
 
         return $externalUnitId;

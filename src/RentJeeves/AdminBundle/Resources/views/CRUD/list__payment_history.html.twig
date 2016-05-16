@@ -1,0 +1,8 @@
+{% if admin.isGranted('EDIT', object)%}
+    <br>
+    <a href="{{ path('admin_payment_history_list', { "payment_id": object.id}) }}"
+       class="btn btn-small">
+        <i class="icon-list"></i>
+        {{ 'admin.list.payments_history_action'|trans }}
+    </a>
+{% endif %}

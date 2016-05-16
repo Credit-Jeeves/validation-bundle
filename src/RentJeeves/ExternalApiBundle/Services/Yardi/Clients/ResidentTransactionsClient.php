@@ -4,38 +4,43 @@ namespace RentJeeves\ExternalApiBundle\Services\Yardi\Clients;
 
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetResidentTransactionLoginResponse;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetUnitInformationResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentLeaseChargesLoginResponse;
 use SoapVar;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Messages;
 
 class ResidentTransactionsClient extends AbstractClient
 {
-    protected $mapping = array(
-        'GetPropertyConfigurations' => array(
+    protected $mapping = [
+        'GetPropertyConfigurations' => [
             self::MAPPING_FIELD_STD_CLASS    => 'GetPropertyConfigurationsResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetPropertyConfigurationsResponse',
-        ),
-        'GetResidentTransactions_Login' => array(
+        ],
+        'GetUnitInformation_Login' => [
+            self::MAPPING_FIELD_STD_CLASS    => 'GetUnitInformation_LoginResult',
+            self::MAPPING_DESERIALIZER_CLASS => 'GetUnitInformationResponse',
+        ],
+        'GetResidentTransactions_Login' => [
             self::MAPPING_FIELD_STD_CLASS    => 'GetResidentTransactions_LoginResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetResidentTransactionsLoginResponse',
-        ),
-        'GetVersionNumber' => array(
+        ],
+        'GetVersionNumber' => [
             self::MAPPING_FIELD_STD_CLASS    => 'GetVersionNumberResult',
             self::MAPPING_DESERIALIZER_CLASS => 'GetVersionNumberResponse',
-        ),
-        'ImportResidentTransactions_DepositDate' => array(
+        ],
+        'ImportResidentTransactions_DepositDate' => [
             self::MAPPING_FIELD_STD_CLASS    => 'ImportResidentTransactions_DepositDateResult',
             self::MAPPING_DESERIALIZER_CLASS => 'Messages',
-        ),
-        'ImportResidentTransactions_Login' => array(
+        ],
+        'ImportResidentTransactions_Login' => [
             self::MAPPING_FIELD_STD_CLASS    => 'ImportResidentTransactions_LoginResult',
             self::MAPPING_DESERIALIZER_CLASS => 'Messages',
-        ),
-        'GetResidentLeaseCharges_Login' => array(
+        ],
+        'GetResidentLeaseCharges_Login' => [
             self::MAPPING_FIELD_STD_CLASS    => 'GetResidentLeaseCharges_LoginResult',
             self::MAPPING_DESERIALIZER_CLASS => 'ResidentLeaseChargesLoginResponse',
-        ),
-    );
+        ],
+    ];
 
     /**
      * This method don't need any parameters, from outside
@@ -46,9 +51,9 @@ class ResidentTransactionsClient extends AbstractClient
     public function getPropertyConfigurations()
     {
         $this->debugMessage('Run getPropertyConfigurations');
-        $parameters = array(
+        $parameters = [
             'GetPropertyConfigurations' => $this->getLoginCredentials()
-        );
+        ];
 
         return $this->sendRequest(
             'GetPropertyConfigurations',
@@ -56,20 +61,46 @@ class ResidentTransactionsClient extends AbstractClient
         );
     }
 
+
+    /**
+     * @param $propertyId
+     * @return GetUnitInformationResponse|null
+     * @throws \SoapFault
+     */
+    public function getUnitInformation($propertyId)
+    {
+        $this->debugMessage(sprintf('Run getUnitInformation with property id "%s"', $propertyId));
+
+        $parameters = [
+            'GetUnitInformation_Login' => array_merge(
+                $this->getLoginCredentials(),
+                [
+                    'YardiPropertyId' => $propertyId,
+                ]
+            )
+        ];
+
+        return $this->sendRequest(
+            'GetUnitInformation_Login',
+            $parameters
+        );
+    }
+
+
     /**
      * @param string $propertyId
      * @return GetResidentTransactionLoginResponse|null
      */
     public function getResidentTransactions($propertyId)
     {
-        $parameters = array(
+        $parameters = [
             'GetResidentTransactions_Login' => array_merge(
                 $this->getLoginCredentials(),
                 [
                     'YardiPropertyId' => $propertyId
                 ]
             )
-        );
+        ];
 
         return $this->sendRequest(
             'GetResidentTransactions_Login',
@@ -90,16 +121,16 @@ class ResidentTransactionsClient extends AbstractClient
     // Could not get a successful result with this method.
     public function importResidentTransactionsDepositDate($transactionXml, \DateTime $depositDate, $depositMemo = null)
     {
-        $parameters = array(
+        $parameters = [
             'ImportResidentTransactions_DepositDate' => array_merge(
                 $this->getLoginCredentials(),
-                array(
+                [
                     'TransactionXml' => new SoapVar($transactionXml, 147),
                     'DepositDate' => $depositDate,
                     'DepositMemo' => $depositMemo,
-                )
+                ]
             ),
-        );
+        ];
 
         return $this->sendRequest(
             'ImportResidentTransactions_DepositDate',
@@ -115,14 +146,14 @@ class ResidentTransactionsClient extends AbstractClient
      */
     public function importResidentTransactionsLogin($transactionXml)
     {
-        $parameters = array(
+        $parameters = [
             'ImportResidentTransactions_Login' => array_merge(
                 $this->getLoginCredentials(),
-                array(
+                [
                     'TransactionXml' => new SoapVar($transactionXml, 147)
-                )
+                ]
             ),
-        );
+        ];
 
         return $this->sendRequest(
             'ImportResidentTransactions_Login',

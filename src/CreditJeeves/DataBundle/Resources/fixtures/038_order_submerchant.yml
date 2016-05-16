@@ -36,6 +36,7 @@ fixtures:
     paymentType: card
     sum: 700
     depositAccount: DepositAccount_1
+    check_number: 111111
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_returned:
@@ -44,6 +45,7 @@ fixtures:
     paymentType: card
     sum: 750
     depositAccount: DepositAccount_1
+    check_number: 123456
     created_at: '-30 days'
     updated_at: '-30 days'
   rjOrder_3_returned_1:

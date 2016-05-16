@@ -53,6 +53,7 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails", "PaymentShort"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -64,6 +65,7 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -75,12 +77,13 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
     public function getRent()
     {
-        return $this->entity->getAmount();
+        return number_format($this->entity->getAmount(), 2, ".", ""); # no thousands separator
     }
 
     /**
@@ -98,7 +101,8 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
+     *
      * @return integer
      */
     public function getDay()
@@ -111,7 +115,7 @@ class Payment extends ResponseResource
      *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
      * @return integer
      */
@@ -125,7 +129,7 @@ class Payment extends ResponseResource
      *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
      * @return integer
      */
@@ -139,7 +143,7 @@ class Payment extends ResponseResource
      *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
      * @return integer
      */
@@ -153,7 +157,7 @@ class Payment extends ResponseResource
      *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
-     * @Serializer\Type("string")
+     * @Serializer\Type("integer")
      *
      * @return integer
      */
@@ -165,8 +169,9 @@ class Payment extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentDetails"})
+     * @Serializer\Type("string")
      *
-     * @return DateTime
+     * @return string
      */
     public function getPaidFor()
     {

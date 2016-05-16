@@ -13,7 +13,7 @@ class ResendVerificationCase extends BaseTestCase
     {
         $this->setDefaultSession('goutte');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
 
         $this->assertNotNull($alerts = $this->page->findAll('css', 'div.landlord-alert-text'));
         $this->assertEquals('landlord.alert.verify_email', $alerts[0]->getText());

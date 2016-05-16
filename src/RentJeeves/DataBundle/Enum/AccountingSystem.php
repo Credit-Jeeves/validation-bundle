@@ -16,6 +16,7 @@ class AccountingSystem extends Enum
     const YARDI_VOYAGER = 'yardi voyager';
     const YARDI_GENESIS = 'yardi genesis';
     const YARDI_GENESIS_2 = 'yardi genesis v2';
+    const RENT_MANAGER = 'rent manager';
 
     public static $importMapping = [
         self::NONE          => 'csv',
@@ -47,5 +48,11 @@ class AccountingSystem extends Enum
     public static $paymentHostIntegrated = [
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',
+    ];
+
+    public static $allowedEditLeaseId = [
+        self::MRI_BOSTONPOST,
+        self::AMSI,
+        self::PROMAS
     ];
 }

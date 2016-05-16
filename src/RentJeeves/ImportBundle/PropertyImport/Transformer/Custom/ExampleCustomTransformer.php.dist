@@ -6,7 +6,7 @@ use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer;
 
 // class name must match the name of the file
-class ExampleCustomTransformer extends MRITransformer // should override base transformer
+class ExampleCustomTransformer extends MRITransformer
 {
     /**
      * {@inheritdoc}

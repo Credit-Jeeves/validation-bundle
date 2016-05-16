@@ -30,6 +30,7 @@ class SmartyStreetsCacheService implements Cache
      */
     public function save($id, $data, $lifeTime = 0)
     {
+        $id = preg_replace('/[^A-Za-z0-9]/', '', $id);
         if (null !== $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }
@@ -53,6 +54,8 @@ class SmartyStreetsCacheService implements Cache
      */
     public function contains($id)
     {
+        $id = preg_replace('/[^A-Za-z0-9]/', '', $id);
+
         return (boolean) $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id);
     }
 
@@ -61,6 +64,8 @@ class SmartyStreetsCacheService implements Cache
      */
     public function delete($id)
     {
+        $id = preg_replace('/[^A-Za-z0-9]/', '', $id);
+
         if (null === $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }
@@ -76,6 +81,8 @@ class SmartyStreetsCacheService implements Cache
      */
     public function fetch($id)
     {
+        $id = preg_replace('/[^A-Za-z0-9]/', '', $id);
+
         if (null === $cache = $this->em->getRepository('RjDataBundle:SmartyStreetsCache')->find($id)) {
             return false;
         }

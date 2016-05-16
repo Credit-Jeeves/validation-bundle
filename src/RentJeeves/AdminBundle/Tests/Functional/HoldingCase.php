@@ -13,9 +13,7 @@ class HoldingCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
-        $tableBlock->clickLink('link_add');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/creditjeeves/data/holding/create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $action = $form->getAttribute('action');
         $uniqueId = substr($action, strpos($action, '=') + 1);
@@ -86,9 +84,7 @@ class HoldingCase extends BaseTestCase
         $resManSettings = $em->getRepository('RjDataBundle:ResManSettings')->findAll();
         $this->assertCount(1, $resManSettings, 'DB should contain 1 ResMan settings record');
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
-        $tableBlock->clickLink('link_add');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/creditjeeves/data/holding/create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $action = $form->getAttribute('action');
         $uniqueId = substr($action, strpos($action, '=') + 1);
@@ -132,9 +128,7 @@ class HoldingCase extends BaseTestCase
         $mriSettings = $em->getRepository('RjDataBundle:MRISettings')->findAll();
         $this->assertCount(1, $mriSettings, 'DB should contain 1 MRI settings record');
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
-        $tableBlock->clickLink('link_add');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/creditjeeves/data/holding/create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $action = $form->getAttribute('action');
         $uniqueId = substr($action, strpos($action, '=') + 1);
@@ -211,11 +205,8 @@ class HoldingCase extends BaseTestCase
         $em = $this->getEntityManager();
         $amsiSettings = $em->getRepository('RjDataBundle:AMSISettings')->findAll();
         $this->assertCount(1, $amsiSettings, 'DB should contain 1 AMSI settings record');
-
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_holdings'));
-        $tableBlock->clickLink('link_add');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/creditjeeves/data/holding/create');
         $action = $form->getAttribute('action');
         $uniqueId = substr($action, strpos($action, '=') + 1);
 

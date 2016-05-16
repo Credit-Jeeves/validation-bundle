@@ -14,8 +14,7 @@ class PaymentAccountCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('common.account');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/password');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->page->clickLink('settings.deposit');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
@@ -28,13 +27,13 @@ class PaymentAccountCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'billingAccountType_nickname'         => "mary",
-                'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
-                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245687",
-                'billingAccountType_RoutingNumber'    => "062202574",
+                'billingAccountType_nickname' => "mary",
+                'billingAccountType_PayorName' => "mary stone",
+                'billingAccountType_AccountNumber_AccountNumber' => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain' => "123245687",
+                'billingAccountType_RoutingNumber' => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
-                'billingAccountType_isActive'         => true,
+                'billingAccountType_isActive' => true,
             )
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
@@ -53,13 +52,13 @@ class PaymentAccountCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'billingAccountType_nickname'         => "mary",
-                'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
-                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245678",
-                'billingAccountType_RoutingNumber'    => "062202574",
+                'billingAccountType_nickname' => "mary",
+                'billingAccountType_PayorName' => "mary stone",
+                'billingAccountType_AccountNumber_AccountNumber' => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain' => "123245678",
+                'billingAccountType_RoutingNumber' => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
-                'billingAccountType_isActive'         => true,
+                'billingAccountType_isActive' => true,
             )
         );
         $save->click();
@@ -78,13 +77,13 @@ class PaymentAccountCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'billingAccountType_nickname'         => "gary",
-                'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber_AccountNumber'    => "123245678",
-                'billingAccountType_AccountNumber_AccountNumberAgain'    => "123245678",
-                'billingAccountType_RoutingNumber'    => "062202574",
+                'billingAccountType_nickname' => "gary",
+                'billingAccountType_PayorName' => "mary stone",
+                'billingAccountType_AccountNumber_AccountNumber' => "123245678",
+                'billingAccountType_AccountNumber_AccountNumberAgain' => "123245678",
+                'billingAccountType_RoutingNumber' => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
-                'billingAccountType_isActive'         => true,
+                'billingAccountType_isActive' => true,
             )
         );
         $save->click();
@@ -104,8 +103,8 @@ class PaymentAccountCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'billingAccountType_nickname'         => "mary less",
-                'billingAccountType_isActive'         => true,
+                'billingAccountType_nickname' => "mary less",
+                'billingAccountType_isActive' => true,
             )
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
@@ -159,7 +158,7 @@ class PaymentAccountCase extends BaseTestCase
      * @dataProvider dataForCheckPaymentProcessorLocker
      *
      * @param boolean $isPaymentProcessorLocked
-     * @param string $alertMessage
+     * @param string  $alertMessage
      * @param integer $availableButtonsCount
      */
     public function checkPaymentProcessorLocker($isPaymentProcessorLocked, $alertMessage, $availableButtonsCount)
@@ -174,8 +173,8 @@ class PaymentAccountCase extends BaseTestCase
         $holding->setIsPaymentProcessorLocked($isPaymentProcessorLocked);
         $em->flush();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('common.account');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/password');
+
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->page->clickLink('settings.deposit');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");

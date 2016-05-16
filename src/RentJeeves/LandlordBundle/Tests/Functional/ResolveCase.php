@@ -19,7 +19,7 @@ class ResolveCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
@@ -46,7 +46,7 @@ class ResolveCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
@@ -104,7 +104,7 @@ class ResolveCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
 
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
@@ -137,7 +137,7 @@ class ResolveCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
@@ -180,7 +180,7 @@ class ResolveCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->login('landlord1@example.com', 'pass');
+        $this->loginByAccessToken('landlord1@example.com');
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')

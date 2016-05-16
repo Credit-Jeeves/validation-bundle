@@ -11,9 +11,7 @@ class PartnerCase extends BaseTestCase
     public function adminManagePartner()
     {
         $this->load(true);
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_partners'));
-        $tableTr->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/partner/list');
         $this->assertNotNull($partner = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(1, $partner);
         $this->assertNotNull($this->page->find('css', 'table.table-bordered'));
@@ -42,9 +40,7 @@ class PartnerCase extends BaseTestCase
     public function adminManagePartnerUser()
     {
         $this->load(true);
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_partners'));
-        $tableTr->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/partner/list');
         $this->assertNotNull($this->page->find('css', 'table'));
         $this->page->clickLink('admin.list.partner_users');
         $this->assertNotNull($users = $this->page->findAll('css', 'table tbody tr'));

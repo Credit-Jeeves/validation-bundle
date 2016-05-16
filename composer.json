@@ -85,6 +85,10 @@
             "url": "git@github.com:Credit-Jeeves/BackupRestoreBundle.git"
         },
         {
+          "type": "vcs",
+          "url": "git@github.com:Credit-Jeeves/RentManagerClientBundle.git"
+        },
+        {
             "type": "vcs",
             "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git"
         },
@@ -199,7 +203,7 @@
         "credit-jeeves/api-bundle": "dev-master",
         "rj/email-bundle": "dev-master",
         "hat/environment": "dev-ton",
-        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
+        "jms/job-queue-bundle": "dev-renttrack as 0.1.x-dev",
         "payum/aci" : "dev-master",
         "payum2/payum": "dev-master as 0.5.x-dev",
         "payum2/payum-bundle": "dev-heartland",
@@ -209,8 +213,9 @@
         "braincrafted/validation-bundle": "dev-ton as dev-master",
         "renttrack/transunion-bundle": "dev-master",
         "renttrack/smarty-streets-bundle": "dev-master",
+        "renttrack/rent-manager-client-bundle": "dev-master",
         "doctrine/orm": "v2.4.8",
-        "besimple/soap-client": "v0.2.7 as dev-master",
+        "besimple/soap-client": "v0.2.9 as dev-master",
         "apy/jsfv-bundle":"dev-master as 2.1",
         "doctrine/migrations": "dev-master as 1.0.0",
         "renttrack/profit-stars-client-bundle": "dev-master",
@@ -241,6 +246,7 @@
         "sonata-project/admin-bundle": "2.2.9",
         "sonata-project/doctrine-orm-admin-bundle": "2.2.7",
         "doctrine/doctrine-migrations-bundle": "v1.0.0",
+        "react/promise": "v2.3.*", 
         "guzzle/http": "v3.5.0",
         "willdurand/js-translation-bundle": "2.1",
         "beberlei/DoctrineExtensions": "dev-master",
@@ -253,7 +259,7 @@
         "jms/serializer-bundle": "0.13.0 as dev-master",
         "jms/serializer": "0.16 as dev-master",
         "friendsofsymfony/rest-bundle": "1.4 as dev-master",
-        "nelmio/api-doc-bundle": "2.5.0 as dev-master",
+        "nelmio/api-doc-bundle": "2.12.0 as dev-master",
         "besimple/soap-bundle": "v0.2.5 as dev-master",
         "besimple/soap-common": "0.2.x-dev as dev-master",
         "besimple/soap-wsdl": "v0.2.4 as dev-master",

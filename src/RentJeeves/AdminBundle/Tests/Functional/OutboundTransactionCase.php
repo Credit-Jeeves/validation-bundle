@@ -12,10 +12,7 @@ class OutboundTransactionCase extends BaseTestCase
     public function shouldShowOutboundTransactionsForPayDirectOrders()
     {
         $this->load(true);
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_orders'), 'Block Orders not found');
-
-        $tableBlock->clickLink('link_list');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/creditjeeves/data/order/list');
         $this->assertNotNull($pagination = $this->page->find('css', 'div.pagination'), 'Pages not found');
         $pagination->clickLink('3'); // go to 3d page - there is pay_direct order
 

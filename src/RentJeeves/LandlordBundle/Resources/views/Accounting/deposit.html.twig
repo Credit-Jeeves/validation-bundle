@@ -14,6 +14,7 @@
                         <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
                             <option value='transactionId'>{{'filter.group_by.deposit.transactionId'|trans}}</option>
                             <option value='batchId'>{{'filter.group_by.deposit.batchId'|trans}}</option>
+                            <option value='checkNumber'>{{'filter.group_by.deposit.order.check_number'|trans}}</option>
                         </select>
                         <div id="searchInput" class="finder-box">
                             <input
@@ -85,6 +86,10 @@
                                         <span data-bind="text: address"></span>
                                         |
                                         <span data-bind="text: tenant"></span>
+                                        <!-- ko if: checkNumber -->
+                                        |
+                                        <span data-bind="text: Translator.trans('deposit.order.check_number.title', {'checkNumber': checkNumber()})"></span>
+                                        <!-- /ko -->
                                     </td>
                                     <td data-bind="text: amount"></td>
                                     <td data-bind="text: depositType"></td>

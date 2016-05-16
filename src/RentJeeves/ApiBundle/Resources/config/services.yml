@@ -3,9 +3,23 @@ parameters:
     collection.class: RentJeeves\ApiBundle\Response\ResponseCollection
 
 services:
+    unit.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - RentJeeves\DataBundle\Entity\Unit
+
     response_collection.handler:
         class: "%response_collection_handler.class%"
         tags:
             - { name: "jms_serializer.handler", type: "%collection.class%", format: json, method: serializeCollection }
-    api.default_id_encoder: @skip32.id_encoder
-    api.default_url_encoder: @resource.url_encoder
+    api.default_id_encoder: "@skip32.id_encoder"
+    api.default_url_encoder: "@resource.url_encoder"
+
+    api_form_contract:
+        class: RentJeeves\ApiBundle\Forms\ContractType
+        arguments:
+            - "@unit.repository"
+        tags:
+            - { name: form.type }

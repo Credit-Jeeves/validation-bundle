@@ -35,3 +35,6 @@ services:
             - @doctrine.orm.default_entity_manager
             - @user.security.encoder.digest
             - %kernel.default_locale%
+
+    form.rent_manager_settings:
+        class: RentJeeves\AdminBundle\Form\RentManagerSettingsType

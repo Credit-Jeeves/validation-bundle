@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use DateTime;
+use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\ExportReport;
 
@@ -227,12 +228,59 @@ class TransactionRepository extends EntityRepository
             ->setParameter('group', $group)
             ->groupBy('batch');
 
+        $query = $this->initFilterForDeposits($query, $filter, $search);
+
+        return count($query->getQuery()->getScalarResult());
+    }
+
+    /**
+     * Method return Expression for WHERE Stmt
+     * If filter field is checkNumber we generate sub query
+     * In other cases use simple expr for where
+     *
+     *
+     * @param QueryBuilder $query
+     * @param string $filter
+     * @param string $search
+     * @return QueryBuilder
+     */
+    protected function initFilterForDeposits(QueryBuilder $query, $filter, $search)
+    {
         if (!empty($filter) && !empty($search)) {
-            $query->andWhere('h.' . $filter . ' = :search');
+            switch ($filter) {
+                case 'checkNumber':
+                    $query->andWhere(
+                        $query->expr()->in(
+                            'h.batchId',
+                            $this->getFilterByCheckNumberSubQueryDQL()
+                        )
+                    );
+                    break;
+                case 'transactionId':
+                case 'batchId':
+                default:
+                    $query->andWhere('h.'.$filter.' = :search');
+            }
             $query->setParameter('search', $search);
         }
 
-        return count($query->getQuery()->getScalarResult());
+        return $query;
+    }
+
+    /**
+     * The method return sub query for filter Transaction by Order.checkNumber
+     *
+     * @return string
+     */
+    protected function getFilterByCheckNumberSubQueryDQL()
+    {
+        $subQuery = $this->createQueryBuilder('h1')
+            ->select('h1.batchId')
+            ->innerJoin('h1.order', 'o1')
+            ->andWhere('o1.checkNumber = :search')
+            ->getDQL();
+
+        return $subQuery;
     }
 
     /**
@@ -264,10 +312,11 @@ class TransactionRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
-        if (!empty($filter) && !empty($search)) {
-            $query->andWhere('h.' . $filter . ' = :search');
-            $query->setParameter('search', $search);
-        }
+        $query->andWhere('o.status != :error');
+        $query->setParameter('error', OrderStatus::ERROR);
+
+        $query = $this->initFilterForDeposits($query, $filter, $search);
+
         $query->groupBy('batchNumber');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);

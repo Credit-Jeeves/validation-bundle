@@ -71,7 +71,7 @@ class MriASIDataMapper implements ASIDataMapperInterface
         }
         if ($secDep = $integratedModel->getSecDep()) {
             $amounts[DepositAccountType::SECURITY_DEPOSIT] = $secDep;
-            $sum += $appFee;
+            $sum += $secDep;
         }
         $integratedModel->setAmounts($amounts);
         $integratedModel->setSum($sum);
