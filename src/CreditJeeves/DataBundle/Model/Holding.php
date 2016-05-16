@@ -443,7 +443,7 @@ abstract class Holding
     }
 
     /**
-     * @return null|SettingsInterface
+     * @return null|SettingsInterface|RentManagerSettings
      */
     public function getExternalSettings()
     {
@@ -456,6 +456,8 @@ abstract class Holding
                 return $this->getMriSettings();
             case AccountingSystem::AMSI:
                 return $this->getAmsiSettings();
+            case AccountingSystem::RENT_MANAGER:
+                return $this->getRentManagerSettings();
             case AccountingSystem::NONE:
             default:
                 return null;

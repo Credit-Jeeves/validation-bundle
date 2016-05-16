@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use RentJeeves\DataBundle\Entity\RentManagerSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
@@ -192,7 +193,7 @@ class Group extends BaseGroup
     }
 
     /**
-     * @return null|SettingsInterface
+     * @return null|SettingsInterface|RentManagerSettings
      */
     public function getIntegratedApiSettings()
     {
@@ -206,6 +207,8 @@ class Group extends BaseGroup
                 return $holding->getResManSettings();
             case AccountingSystem::YARDI_VOYAGER:
                 return $holding->getYardiSettings();
+            case AccountingSystem::RENT_MANAGER:
+                return $holding->getRentManagerSettings();
             case AccountingSystem::NONE:
             default:
                 return null;
