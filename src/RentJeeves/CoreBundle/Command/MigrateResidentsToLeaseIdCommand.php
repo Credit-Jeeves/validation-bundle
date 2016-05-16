@@ -40,7 +40,7 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
                 'leases-id',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Contract id seperated by comma. Example 1,2,3,4,5'
+                'Contract id seperated by comma. Example --lease-id="1,2,3,4,5"'
             )
             ->setDescription('Set up resident ID to lease ID for PROMAS. (or other lease-id based systems)');
     }
@@ -114,8 +114,8 @@ class MigrateResidentsToLeaseIdCommand extends BaseCommand
     protected function createJob(array $contractsId, $accountingName)
     {
         $command = 'renttrack:migrate:residents-to-lease-id';
-        $parameterLeases = sprintf('--leases-id="%s"', implode(',', $contractsId));
-        $parameterAccountingSystem  = sprintf('--accounting-system="%s"', $accountingName);
+        $parameterLeases = sprintf('--leases-id=%s', implode(',', $contractsId));
+        $parameterAccountingSystem  = sprintf('--accounting-system=%s', $accountingName);
         $job = new Job($command, $parameters = [$parameterLeases, $parameterAccountingSystem]);
         $this->getEntityManager()->persist($job);
         $this->getEntityManager()->flush();
