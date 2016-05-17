@@ -22,7 +22,7 @@ services:
     sonata.admin.payment.accounts:
         class: RentJeeves\AdminBundle\Admin\PaymentAccountAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnet accounts" }
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payment accounts" }
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\PaymentAccount
