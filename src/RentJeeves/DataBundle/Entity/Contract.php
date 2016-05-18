@@ -505,15 +505,15 @@ class Contract extends Base
         \DateTime $createDate,
         \DateTime $lastPaidMonth = null
     ) {
-        if ($date->format('Y-m') !== $createDate->format('Y-m') && $date <= $createDate && $startDate <= $date) {
+        if ($date <= $createDate && $startDate <= $date &&
+            ($lastPaidMonth || (null === $lastPaidMonth && $date->format('Y-m') !== $createDate->format('Y-m')))
+        ) {
             return true;
         }
 
-        if ($lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth) {
-            return true;
-        }
-
-        if ($lastPaidMonth && $lastPaidMonth >= $createDate && $date->format('Y-m') !== $createDate->format('Y-m')) {
+        if (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth
+            && $date->format('Y-m') !== $lastPaidMonth->format('Y-m')
+        ) {
             return true;
         }
 
