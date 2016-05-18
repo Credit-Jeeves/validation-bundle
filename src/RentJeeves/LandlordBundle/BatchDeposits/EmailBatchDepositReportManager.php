@@ -123,7 +123,7 @@ class EmailBatchDepositReportManager
 
             $exportReport = $this->getExportReport($holdingAdmin->getHolding());
             if ($exportReport) {
-                $pathToCsvReport = $this->getPathToCsvReport($exportReport, $holdingAdmin);
+                $pathToCsvReport = $this->getPathToCsvReport($exportReport, $holdingAdmin, $date, $group = null);
                 $result = $this->mailer->sendBatchDepositReportHolding(
                     $holdingAdmin,
                     $groups,
@@ -176,7 +176,7 @@ class EmailBatchDepositReportManager
         if (count($batchData) > 0 || count($reversalData) > 0) {
             $exportReport = $this->getExportReport($group->getHolding());
             if ($exportReport) {
-                $pathToCsvReport = $this->getPathToCsvReport($exportReport, $landlord, $group);
+                $pathToCsvReport = $this->getPathToCsvReport($exportReport, $landlord, $date, $group);
 
                 $result = $this->mailer->sendBatchDepositReportLandlord(
                     $landlord,
@@ -269,13 +269,18 @@ class EmailBatchDepositReportManager
     /**
      * @param ExportReport $exportReport
      * @param Landlord $landlord
+     * @param \DateTime $date
      * @param Group|null $group
      * @return string
      * @throws \RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException
      */
-    protected function getPathToCsvReport(ExportReport $exportReport, Landlord $landlord, Group $group = null)
-    {
-        $content = $this->getExportContent($exportReport, $landlord, $group);
+    protected function getPathToCsvReport(
+        ExportReport $exportReport,
+        Landlord $landlord,
+        \DateTime $date,
+        Group $group = null
+    ) {
+        $content = $this->getExportContent($exportReport, $landlord, $date, $group);
         $tmpFilePath = sprintf(
             '%s%s%s_%s',
             sys_get_temp_dir(),
@@ -294,20 +299,23 @@ class EmailBatchDepositReportManager
     /**
      * @param ExportReport $exportReport
      * @param Landlord $landlord
+     * @param \DateTime $date
      * @param Group|null $group
      * @return string
      */
-    protected function getExportContent(ExportReport $exportReport, Landlord $landlord, Group $group = null)
-    {
-        $today = new \DateTime();
-
+    protected function getExportContent(
+        ExportReport $exportReport,
+        Landlord $landlord,
+        \DateTime $date,
+        Group $group = null
+    ) {
         return $exportReport->getContent(
             [
                 'landlord' => $landlord,
                 'group' => $group,
                 'export_by' => ExportReport::EXPORT_BY_DEPOSITS,
-                'begin' => $today->format('Y-m-d'),
-                'end' => $today->format('Y-m-d'),
+                'begin' => $date->format('Y-m-d'),
+                'end' => $date->format('Y-m-d'),
             ]
         );
     }
