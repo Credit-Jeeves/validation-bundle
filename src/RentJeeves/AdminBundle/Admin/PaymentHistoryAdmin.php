@@ -89,8 +89,7 @@ class PaymentHistoryAdmin extends Admin
             ->add('status')
             ->add('amount', 'money')
             ->add('total', 'money')
-            ->add('loggedAt', 'date')
-        ;
+            ->add('loggedAt', 'date');
     }
 
     /**
@@ -109,9 +108,17 @@ class PaymentHistoryAdmin extends Admin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        $this->getConfigurationPool()->getContainer()->get('soft.deleteable.control')->disable();
         $showMapper
             ->add('object.contract', null, ['route' => ['name' => 'show'], 'label' => 'Contract'])
-            ->add('object.paymentAccount', null, ['route' => ['name' => 'show'], 'label' => 'Payment Account'])
+            ->add(
+                'object.paymentAccount',
+                null,
+                [
+                    'label' => 'Payment Account',
+                    'template' => 'AdminBundle:CRUD:show__payment_account.html.twig',
+                ]
+            )
             ->add(
                 'object',
                 null,
