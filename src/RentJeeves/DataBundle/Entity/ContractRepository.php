@@ -157,7 +157,7 @@ class ContractRepository extends EntityRepository
                             as HIDDEN status_sort_order,
                          c"
                     );
-                    $query->orderBy('status_sort_order');
+                    $query->orderBy('status_sort_order', $sortOrder);
                     break;
                 default:
                     $sortField = 'c.' . $sortField;
