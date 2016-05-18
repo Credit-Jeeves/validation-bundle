@@ -303,8 +303,12 @@ class EmailBatchDepositReportManager
      * @param Group|null $group
      * @return string
      */
-    protected function getExportContent(ExportReport $exportReport, Landlord $landlord, \DateTime $date, Group $group = null)
-    {
+    protected function getExportContent(
+        ExportReport $exportReport,
+        Landlord $landlord,
+        \DateTime $date,
+        Group $group = null
+    ) {
         return $exportReport->getContent(
             [
                 'landlord' => $landlord,
