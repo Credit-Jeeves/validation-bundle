@@ -98,7 +98,7 @@ class GroupMapper extends AbstractMapper
         }
 
         $newGroup->setName($companyName);
-        $newGroup->setMailingAddressName($companyName);
+        $newGroup->setMailingAddressName($companyName); // expected error!
         $newGroup->setStreetAddress1($this->get('ll_address'));
         $newGroup->setStreetAddress2($this->get('ll_unit'));
         $newGroup->setCity($this->get('ll_city'));

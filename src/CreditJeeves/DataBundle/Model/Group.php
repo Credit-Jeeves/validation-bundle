@@ -167,39 +167,6 @@ abstract class Group
     protected $fax;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $street_address_1;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected $street_address_2;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $city;
-
-    /**
-     * @ORM\Column(type="string", nullable=true, length=7)
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $state;
-
-    /**
-     * @ORM\Column(type="string", nullable=true, length=15)
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $zip;
-
-    /**
      * @ORM\Column(
      *     type="GroupFeeType",
      *     options={"default"="flat"}
@@ -423,19 +390,6 @@ abstract class Group
      * @var string
      *
      * @ORM\Column(
-     *      name="mailing_address_name",
-     *      type="string",
-     *      nullable=true
-     * )
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $mailingAddressName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(
      *      name="order_algorithm",
      *      type="OrderAlgorithmType",
      *      nullable=false
@@ -452,15 +406,6 @@ abstract class Group
      * @var AciImportProfileMap
      */
     protected $aciImportProfileMap;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", name="external_group_id", nullable=true)
-     *
-     * @Assert\NotBlank(groups={"landlordImport"})
-     */
-    protected $externalGroupId;
 
     /**
      * @ORM\OneToOne(
@@ -512,22 +457,6 @@ abstract class Group
         }
 
         $this->orderAlgorithm = $orderAlgorithm;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMailingAddressName()
-    {
-        return $this->mailingAddressName;
-    }
-
-    /**
-     * @param string $mailingAddressName
-     */
-    public function setMailingAddressName($mailingAddressName)
-    {
-        $this->mailingAddressName = $mailingAddressName;
     }
 
     /**
@@ -854,121 +783,6 @@ abstract class Group
     public function getFax()
     {
         return $this->fax;
-    }
-
-    /**
-     * Set street_address_1
-     *
-     * @param  string $streetAddress1
-     * @return Group
-     */
-    public function setStreetAddress1($streetAddress1)
-    {
-        $this->street_address_1 = $streetAddress1;
-
-        return $this;
-    }
-
-    /**
-     * Get street_address_1
-     *
-     * @return string
-     */
-    public function getStreetAddress1()
-    {
-        return $this->street_address_1;
-    }
-
-    /**
-     * Set street_address_2
-     *
-     * @param  string $streetAddress2
-     * @return Group
-     */
-    public function setStreetAddress2($streetAddress2)
-    {
-        $this->street_address_2 = $streetAddress2;
-
-        return $this;
-    }
-
-    /**
-     * Get street_address_2
-     *
-     * @return string
-     */
-    public function getStreetAddress2()
-    {
-        return $this->street_address_2;
-    }
-
-    /**
-     * Set city
-     *
-     * @param  string $city
-     * @return Group
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * Set state
-     *
-     * @param  string $state
-     * @return Group
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * Set zip
-     *
-     * @param  string $zip
-     * @return Group
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-
-        return $this;
-    }
-
-    /**
-     * Get zip
-     *
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
     }
 
     /**
@@ -1463,38 +1277,6 @@ abstract class Group
     public function setAciImportProfileMap(AciImportProfileMap $aciImportProfileMap)
     {
         $this->aciImportProfileMap = $aciImportProfileMap;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExternalGroupId()
-    {
-        return $this->externalGroupId;
-    }
-
-    /**
-     * @param string $externalGroupId
-     */
-    public function setExternalGroupId($externalGroupId)
-    {
-        $this->externalGroupId = $externalGroupId;
-    }
-
-    /**
-     * @Assert\True(message = "error.group.required_fields_for_paydirect", groups={"holding"})
-     */
-    public function isMailingAddressNotEmptyForPayDirect()
-    {
-        if ($this->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT &&
-            (empty($this->mailingAddressName) || empty($this->city) || empty($this->state) || empty($this->zip) ||
-                empty($this->street_address_1)
-            )
-        ) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
