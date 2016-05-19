@@ -676,7 +676,7 @@
             </trans-unit>
             <trans-unit id="checkout.payment.error.cannot_be_processed">
                 <source>checkout.payment.error.cannot_be_processed</source>
-                <target>Your payment can not be processed. Please try again later or contact %support_email%.</target>
+                <target>Your payment cannot be processed. Please try again later or contact %support_email%.</target>
             </trans-unit>
             <trans-unit id="checkout.payment.switch_to_one_time">
                 <source>checkout.payment.switch_to_one_time</source>
@@ -699,7 +699,7 @@
             </trans-unit>
             <trans-unit id="mobile.checkout.payment.error.cannot_be_processed">
                 <source>mobile.checkout.payment.error.cannot_be_processed</source>
-                <target>Your payment can not be processed.</target>
+                <target>Your payment cannot be processed.</target>
             </trans-unit>
             <trans-unit id="mobile.payment.start_date.error_range">
                 <source>mobile.payment.start_date.error_range</source>
