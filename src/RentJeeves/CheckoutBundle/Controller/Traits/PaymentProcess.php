@@ -213,7 +213,7 @@ trait PaymentProcess
 
         /** @var Validator $validator */
         $validator = $this->get('validator');
-        $errors = $validator->validate($paymentEntity, ['last_step']);
+        $errors = $validator->validate($paymentEntity, ['last_step', 'Default']);
         if (count($errors) > 0) {
             foreach ($errors as $error) {
                 $errorsMessages[] = $error->getMessage();
