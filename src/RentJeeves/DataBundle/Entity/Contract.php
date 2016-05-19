@@ -464,8 +464,8 @@ class Contract extends Base
             $startDate = $maintainedHistoryPeriod;
         }
         $startYear = $startDate->format('Y');
-        $currentYear = new DateTime('now');
-        $finishYear = $currentYear->format('Y'); // default finish year is the current one
+        $currentDate = new DateTime('now');
+        $finishYear = $currentDate->format('Y'); // default finish year is the current one
         if ($finishDate) {
             $finishYear = $finishDate->format('Y');
         }
@@ -476,7 +476,7 @@ class Contract extends Base
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
 
-                if ($this->checkStatusDate($date, $startDate, $createDate, $lastPaidMonth)) {
+                if ($this->checkStatusDate($date, $startDate, $createDate, $currentDate, $lastPaidMonth)) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
                     $text   = self::PAYMENT_OK;
@@ -496,6 +496,7 @@ class Contract extends Base
      * @param \DateTime $date
      * @param \DateTime $startDate
      * @param \DateTime $createDate
+     * @param \DateTime $currentDate
      * @param \DateTime|null $lastPaidMonth
      * @return bool
      */
@@ -503,22 +504,14 @@ class Contract extends Base
         \DateTime $date,
         \DateTime $startDate,
         \DateTime $createDate,
+        \DateTime $currentDate,
         \DateTime $lastPaidMonth = null
     ) {
-        $checkMonth = $date->format('Y-m') !== $createDate->format('Y-m');
-        if (null === $lastPaidMonth && $date <= $createDate && $startDate <= $date && $checkMonth) {
+        if ($date <= $createDate && $startDate <= $date && $currentDate->format('Y-m') !== $createDate->format('Y-m')) {
             return true;
         }
 
-        if (null !== $lastPaidMonth && $date <= $createDate && $startDate <= $date && $lastPaidMonth <= $createDate
-            && $checkMonth
-        ) {
-            return true;
-        }
-
-        if (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth
-            && $date->format('Y-m') !== $lastPaidMonth->format('Y-m')
-        ) {
+        if (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth) {
             return true;
         }
 
