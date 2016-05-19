@@ -133,6 +133,21 @@ class UnmappedLoader extends AbstractLoader
 
             if ($unitMapping) {
                 $unit = $unitMapping->getUnit();
+            } elseif ($property->isSingle()) {
+                $unit = $property->getExistingSingleUnit();
+                if (!$unit) {
+                    $this->logger->warning(
+                        $message = sprintf(
+                            'Single unit should be created for single Property#%d',
+                            $property->getId()
+                        ),
+                        [
+                            'group' => $importProperty->getImport()->getGroup(),
+                            'additional_parameter' => $importProperty->getExternalPropertyId()
+                        ]
+                    );
+                    throw new ImportLogicException($message);
+                }
             } elseif (!$unitMapping && $property->hasUnits()) {
                 $unit = $this->em
                     ->getRepository('RjDataBundle:Unit')
@@ -158,9 +173,11 @@ class UnmappedLoader extends AbstractLoader
                 $unit->setGroup($group);
             }
 
-            // @cary: Our new import 2.0 assumptions are that "The Accounting System (or CSV) is the Source of Truth".
-            //  So if the unit name is different from the A.S., then we should update it in our DB.
-            $unit->setName($importProperty->getUnitName());
+            if (!$property->isSingle()) {
+                // @cary: Our new import 2.0 assumptions are that "The Accounting System (or CSV) is the Source of Truth".
+                //  So if the unit name is different from the A.S., then we should update it in our DB.
+                $unit->setName($importProperty->getUnitName());
+            }
 
             if (!$unit->getUnitMapping()) {
                 $unitMapping = new UnitMapping();

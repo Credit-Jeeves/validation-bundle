@@ -108,12 +108,14 @@ class MappedLoaderCase extends UnitTestBase
         $import->setGroup($group);
 
         $extPropertyId = 'test';
+        $extUnitId = 'test_unit_id';
 
         $importProperty = new ImportProperty();
         $importProperty->setImport($import);
         $importProperty->setAllowMultipleProperties(true);
         $importProperty->setAddressHasUnits(false);
         $importProperty->setExternalPropertyId($extPropertyId);
+        $importProperty->setExternalUnitId($extUnitId);
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -136,6 +138,12 @@ class MappedLoaderCase extends UnitTestBase
             ->with($this->equalTo($group), $this->equalTo($extPropertyId))
             ->willReturn(null);
 
+        $unitMappingRepositoryMock = $this->getBaseMock(UnitMappingRepository::class);
+        $unitMappingRepositoryMock->expects($this->once())
+            ->method('getMappingForImport')
+            ->with($this->equalTo($group), $this->equalTo($extUnitId))
+            ->willReturn(null);
+
         $emMock = $this->getEntityManagerMock();
         $emMock->expects($this->at(0))
             ->method('getRepository')
@@ -145,7 +153,11 @@ class MappedLoaderCase extends UnitTestBase
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:Property'))
             ->will($this->returnValue($propertyRepositoryMock));
-        $emMock->expects($this->exactly(2))
+        $emMock->expects($this->at(2))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:UnitMapping'))
+            ->will($this->returnValue($unitMappingRepositoryMock));
+        $emMock->expects($this->exactly(4))
             ->method('persist');
         $emMock->expects($this->exactly(2))
             ->method('flush');
@@ -167,10 +179,13 @@ class MappedLoaderCase extends UnitTestBase
             ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
+        $validatorMock = $this->getValidatorMock();
+        $validatorMock->method('validate')->willReturn([]);
+
         $loader = new MappedLoader(
             $emMock,
             $propertyManagerMock,
-            $this->getValidatorMock(),
+            $validatorMock,
             $this->getLoggerMock()
         );
         $loader->loadData($import, $extPropertyId);
