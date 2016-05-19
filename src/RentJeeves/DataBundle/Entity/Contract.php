@@ -710,6 +710,7 @@ class Contract extends Base
         $result['isPaymentEditAllowed'] = $this->isPaymentEditAllowed();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        $result['hasDepositAccount'] = !!$this->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
         $result['is_allowed_to_pay_anything'] =
             ($groupSettings->isAllowPayAnything() &&
                 !$this->getGroup()->getNotRentDepositAccountsForCurrentPaymentProcessor()->isEmpty());
