@@ -174,7 +174,8 @@ class UnmappedLoader extends AbstractLoader
             }
 
             if (!$property->isSingle()) {
-                // @cary: Our new import 2.0 assumptions are that "The Accounting System (or CSV) is the Source of Truth".
+                // @cary: Our new import 2.0 assumptions are that
+                // "The Accounting System (or CSV) is the Source of Truth".
                 //  So if the unit name is different from the A.S., then we should update it in our DB.
                 $unit->setName($importProperty->getUnitName());
             }
