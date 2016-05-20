@@ -253,7 +253,7 @@ class TenantRepository extends EntityRepository
      * @return Tenant|null
      * @throws NonUniqueResultException
      */
-    public function getTenantByLeaseIdorUnitId($leaseId = null, $unitId = null)
+    public function getTenantByLeaseIdOrUnitId($leaseId = null, $unitId = null)
     {
         if (empty($leaseId) && empty($unitId)) {
             return null;

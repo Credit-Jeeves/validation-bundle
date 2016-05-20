@@ -1864,7 +1864,7 @@ class ImportCsvCase extends ImportBaseAbstract
     /**
      * @test
      */
-    public function matchWaitingContractByLeaseIdorUnitId()
+    public function matchWaitingContractByLeaseIdOrUnitId()
     {
         $this->load(true);
 
@@ -1882,13 +1882,16 @@ class ImportCsvCase extends ImportBaseAbstract
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
-        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'File attachment button missed'
+        );
         $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
-        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see errors');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist');
 
         $mapFile = [
             '1' => ImportMapping::KEY_EXTERNAL_LEASE_ID,
@@ -1912,9 +1915,15 @@ class ImportCsvCase extends ImportBaseAbstract
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
         $this->assertEquals(1, count($trs['import.status.waiting']), "Waiting contract is wrong number");
-        $this->assertNotNull($firstName1 = $this->page->find('css', 'input.0_first_name'));
+        $this->assertNotNull(
+            $firstName1 = $this->page->find('css', 'input.0_first_name'),
+            'First name input missed'
+        );
         $firstName1->setValue('Logan');
-        $this->assertNotNull($lastName1 = $this->page->find('css', 'input.0_last_name'));
+        $this->assertNotNull(
+            $lastName1 = $this->page->find('css', 'input.0_last_name'),
+            'Last name input missed'
+        );
         $lastName1->setValue('Cooper');
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
@@ -1928,14 +1937,15 @@ class ImportCsvCase extends ImportBaseAbstract
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         // attach file to file input:
-        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'Attchment button missed'
+        );
         $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
         $attFile->attachFile($filePath);
         $submitImportFile->click();
-        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertNotNull($table = $this->page->find('css', 'table'));
-
-        $this->fillCsvMapping($mapFile, 15);
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see any error');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist on the page');
 
         $submitImportFile->click();
         $this->waitReviewAndPost();

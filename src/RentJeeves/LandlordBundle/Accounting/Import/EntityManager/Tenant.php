@@ -84,7 +84,7 @@ trait Tenant
                     sprintf('Looking up resident by external lease id: %s or unit id: %s', $leaseId, $unitId)
                 );
                 /** @var  EntityTenant $tenant */
-                $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantByLeaseIdorUnitId(
+                $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantByLeaseIdOrUnitId(
                     $leaseId,
                     $unitId
                 );
