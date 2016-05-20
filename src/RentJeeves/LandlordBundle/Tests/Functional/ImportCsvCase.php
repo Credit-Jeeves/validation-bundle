@@ -1886,7 +1886,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $attFile = $this->page->find('css', '#import_file_type_attachment'),
             'File attachment button missed'
         );
-        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
         $attFile->attachFile($filePath);
         $submitImportFile = $this->getDomElement('.submitImportFile');
         $submitImportFile->click();
@@ -1914,24 +1914,15 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
-        $this->assertEquals(1, count($trs['import.status.waiting']), "Waiting contract is wrong number");
-        $this->assertNotNull(
-            $firstName1 = $this->page->find('css', 'input.0_first_name'),
-            'First name input missed'
-        );
-        $firstName1->setValue('Logan');
-        $this->assertNotNull(
-            $lastName1 = $this->page->find('css', 'input.0_last_name'),
-            'Last name input missed'
-        );
-        $lastName1->setValue('Cooper');
+        $this->assertEquals(2, count($trs['import.status.waiting']), "Waiting contract is wrong number");
+
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
 
         $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
             ['externalLeaseId' => 'BEASLY, MICHAEL']
         );
-        $this->assertCount(1, $contracts, 'We should import 1 contract');
+        $this->assertCount(2, $contracts, 'We should import 1 contract');
         //after that check mathced status
         $this->page->clickLink('tab.accounting');
         //First Step
@@ -1941,7 +1932,7 @@ class ImportCsvCase extends ImportBaseAbstract
             $attFile = $this->page->find('css', '#import_file_type_attachment'),
             'Attchment button missed'
         );
-        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room.csv');
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
         $attFile->attachFile($filePath);
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see any error');
@@ -1951,12 +1942,12 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->waitReviewAndPost();
         $trs = $this->getParsedTrsByStatus();
         $this->assertEquals(1, count($trs), "Count statuses is wrong");
-        $this->assertEquals(1, count($trs['import.status.match']), "We should have one contract in status MATCH");
+        $this->assertEquals(2, count($trs['import.status.match']), "We should have one contract in status MATCH");
         $submitImportFile->click();
         $this->waitRedirectToSummaryPage();
         $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
             ['externalLeaseId' => 'BEASLY, MICHAEL']
         );
-        $this->assertCount(1, $contracts, 'We should update one contract');
+        $this->assertCount(2, $contracts, 'We should update one contract');
     }
 }
