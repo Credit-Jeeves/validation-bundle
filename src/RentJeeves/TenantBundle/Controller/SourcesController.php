@@ -81,17 +81,12 @@ class SourcesController extends BaseController
         $paymentProcessor = $this
             ->get('payment_processor.factory')
             ->getPaymentProcessorByPaymentAccount($paymentAccount);
-
-        if ($paymentProcessor->unregisterPaymentAccount($paymentAccount)) {
-            return $this->redirectToRoute('tenant_payment_sources');
+        try {
+            $paymentProcessor->unregisterPaymentAccount($paymentAccount);
+        } catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }
 
-        throw new \RuntimeException(
-            sprintf(
-                'Can\'t remove payment account "%s" with id #%d',
-                $paymentAccount->getName(),
-                $paymentAccount->getId()
-            )
-        );
+        return $this->redirectToRoute('tenant_payment_sources');
     }
 }

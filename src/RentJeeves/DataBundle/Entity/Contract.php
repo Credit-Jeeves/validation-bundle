@@ -464,8 +464,8 @@ class Contract extends Base
             $startDate = $maintainedHistoryPeriod;
         }
         $startYear = $startDate->format('Y');
-        $currentYear = new DateTime('now');
-        $finishYear = $currentYear->format('Y'); // default finish year is the current one
+        $currentDate = new DateTime('now');
+        $finishYear = $currentDate->format('Y'); // default finish year is the current one
         if ($finishDate) {
             $finishYear = $finishDate->format('Y');
         }
@@ -475,10 +475,8 @@ class Contract extends Base
                 $amount = 0;
                 $text = '';
                 $date = \DateTime::createFromFormat('Y-n-d H:i:s', sprintf('%d-%d-01 00:00:00', $year, $monthIdx));
-                // if month is between startDate and createDate or date is before 1st paid month
-                if ($date <= $createDate && $startDate <= $date ||
-                    (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth)
-                ) {
+
+                if ($this->checkStatusDate($date, $startDate, $createDate, $currentDate, $lastPaidMonth)) {
                     $status = self::STATUS_OK;
                     $amount = self::PAYMENT_NA;
                     $text   = self::PAYMENT_OK;
@@ -492,6 +490,36 @@ class Contract extends Base
         }
 
         return $result;
+    }
+
+    /**
+     * @param \DateTime $date
+     * @param \DateTime $startDate
+     * @param \DateTime $createDate
+     * @param \DateTime $currentDate
+     * @param \DateTime|null $lastPaidMonth
+     * @return bool
+     */
+    private function checkStatusDate(
+        \DateTime $date,
+        \DateTime $startDate,
+        \DateTime $createDate,
+        \DateTime $currentDate,
+        \DateTime $lastPaidMonth = null
+    ) {
+        if ($date <= $createDate && $startDate <= $date) {
+            if (false === ($date->format('Y-m') === $currentDate->format('Y-m')
+                    && $currentDate->format('Y-m') === $createDate->format('Y-m'))
+            ) {
+                return true;
+            }
+        }
+
+        if (null !== $lastPaidMonth && $date >= $createDate && $date <= $lastPaidMonth) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -649,7 +677,6 @@ class Contract extends Base
             $result['payment_status'] = 'duplicated';
         }
 
-
         $result['hasCustomPayments'] = false;
 
         if ($payments = $this->getActiveCustomPayments() and !$payments->isEmpty()) {
@@ -680,6 +707,7 @@ class Contract extends Base
         $result['isPaymentEditAllowed'] = $this->isPaymentEditAllowed();
         $result['is_allowed_to_pay'] =
             ($groupSettings->getPayBalanceOnly() == true && $this->getIntegratedBalance() <= 0) ? false : true;
+        $result['hasDepositAccount'] = !!$this->getGroup()->getRentDepositAccountForCurrentPaymentProcessor();
         $result['is_allowed_to_pay_anything'] =
             ($groupSettings->isAllowPayAnything() &&
                 !$this->getGroup()->getNotRentDepositAccountsForCurrentPaymentProcessor()->isEmpty());

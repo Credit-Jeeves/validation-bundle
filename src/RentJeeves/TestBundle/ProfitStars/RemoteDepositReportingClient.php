@@ -3,6 +3,7 @@
 namespace RentJeeves\TestBundle\ProfitStars;
 
 use RentJeeves\TestBundle\ProfitStars\Mocks\RemoteDepositReportingClientMock;
+use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\ArrayOfWSItemStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\RemoteDepositReportingClient as Base;
 
 class RemoteDepositReportingClient extends Base
@@ -29,7 +30,7 @@ class RemoteDepositReportingClient extends Base
     /**
      * {@inheritdoc}
      */
-    public function GetItemsByBatchNumber($storeId, $storeKey, $entityId, $batchNumber, $itemStatus)
+    public function GetItemsByBatchNumber($storeId, $storeKey, $entityId, $batchNumber, ArrayOfWSItemStatus $itemStatus)
     {
         return RemoteDepositReportingClientMock::getMockForGetItemsByBatchNumber();
     }

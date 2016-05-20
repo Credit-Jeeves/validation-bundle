@@ -144,7 +144,7 @@ function init() {
     //Misc. HTML fixes
 
 
-    $("<span>Total to Pay: </span>$<span id='total'></span> ").insertAfter($(prefix + "amountOther"))
+    $("<b><span>Total to Pay: </span>$<span id='total'></span></b>").insertAfter($(prefix + "amountOther"))
     $(prefix + "total_row").hide()
     $(prefix + "amount").onchange = updateTotal;
     $(prefix + "amountOther").onchange = updateTotal

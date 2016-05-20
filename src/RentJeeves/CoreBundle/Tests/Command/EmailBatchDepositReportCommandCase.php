@@ -1,13 +1,13 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Command;
 
-use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\CoreBundle\Command\EmailBatchDepositReportCommand;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Command\BaseTestCase;
 use DateTime;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @TODO: we need create new test for this and remove this test (user 3 loop and related with dynamic template)
@@ -15,30 +15,40 @@ use DateTime;
 class EmailBatchDepositReportCommandCase extends BaseTestCase
 {
     /**
-     * @test
+     * @return array
      */
-    public function executeReport()
+    public function provideSupportedAccountingSystem()
+    {
+        return [
+            [AccountingSystem::PROMAS],
+            [AccountingSystem::MRI_BOSTONPOST],
+            [AccountingSystem::YARDI_GENESIS],
+            [AccountingSystem::YARDI_GENESIS_2],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provideSupportedAccountingSystem
+     */
+    public function shouldSendEmailReportWithCsvAttachForHoldingAdmins($accountingSystem)
     {
         $this->load(true);
+        $em = $this->getEntityManager();
 
-        /**
-         * First update not valid culture
-         */
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $qb = $em->createQueryBuilder();
+        $qb->update('DataBundle:Holding', 'h')
+            ->set('h.accountingSystem', $qb->expr()->literal($accountingSystem))
+            ->getQuery()
+            ->execute();
 
-        /**
-         * @var $qb \Doctrine\DBAL\Query\QueryBuilder
-         */
         $qb = $em->createQueryBuilder();
         $qb->update('RjDataBundle:Landlord', 'l')
             ->set('l.culture', $qb->expr()->literal('test'))
             ->getQuery()
             ->execute();
 
-        $date = new DateTime();
+        $date = new \DateTime();
         /**
          * Update date for all success transactions
          */
@@ -51,64 +61,132 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
             ->getQuery()
             ->execute();
 
-        $application = new Application($this->getKernel());
-        $application->add(new EmailBatchDepositReportCommand());
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $this->executeCommandTester(new EmailBatchDepositReportCommand());
+
+        $this->assertCount(1, $plugin->getPreSendMessages(), 'Expected 1 mail with CSV attachment');
+        $this->assertCount(
+            2,
+            $parts = $plugin->getPreSendMessage(0)->getChildren(),
+            'Expected 2 parts: attachment and email body'
+        );
+        $this->assertInstanceOf(\Swift_Attachment::class, $parts[0], 'Expected attachment in email');
+    }
+
+    /**
+     * @test
+     * @dataProvider provideSupportedAccountingSystem
+     */
+    public function shouldSendOnceEmailReportWithCsvAttachForLandlordIsNotAdminIfSetGroupId($accountingSystem)
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
+
+        /** @var Landlord $landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        $landlord->setEmailNotification(true);
+        $landlord->setIsSuperAdmin(false);
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->find(25);
+
+        $landlord->addAgentGroup($group);
+
+        $holding = $group->getHolding();
+        $holding->setAccountingSystem($accountingSystem);
+
+        $em->persist($holding);
+        $em->persist($landlord);
+        $em->flush();
+
+        $date = new \DateTime();
+        /**
+         * Update date for all success transactions
+         */
+        $qb = $em->createQueryBuilder();
+        $qb->update('RjDataBundle:Transaction', 'h')
+            ->set('h.depositDate', ':depositDate')
+            ->where('h.batchId iS NOT NULL')
+            ->andWhere('h.isSuccessful = 1')
+            ->setParameter('depositDate', $date)
+            ->getQuery()
+            ->execute();
 
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $command = $application->find('Email:batchDeposit:report');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([ 'command' => $command->getName() ]);
+        $this->executeCommandTester(new EmailBatchDepositReportCommand(), ['--groupid' => 25]);
 
-        $this->assertCount(1, $plugin->getPreSendMessages());
-        $this->assertCount(1, $parts = $plugin->getPreSendMessage(0)->getChildren());
-        $crawler = $this->getCrawlerObject($parts[0]->getBody());
-        $groupNamesNodes = $crawler->filter('.group-name');
-
-        $query = $em->getRepository('RjDataBundle:Transaction')->createQueryBuilder('h');
-        $query->select("h.batchId");
-        $query->groupBy('g.id'); // first group by Group, because one bathId can be included to diff group
-        $query->addGroupBy('h.batchId'); // after that be batchId remove duplicate
-        $query->orderBy('h.batchId', 'DESC');
-        $query->innerJoin('h.order', 'o');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->innerJoin('t.group', 'g');
-
-        $query->where('g.name IN (:groupNames)');
-        $groupNames = array();
-        for ($i = 0; $i < $groupNamesNodes->count(); $i++) {
-            $groupNames[] = $groupNamesNodes->getNode($i)->textContent;
-        }
-
-        $query->setParameter('groupNames', $groupNames);
-
-        $query->andWhere('h.depositDate = DATE(:date)');
-        $query->setParameter('date', $date);
-
-        $query->andWhere('h.batchId IS NOT NULL');
-        $query->andWhere('h.transactionId IS NOT NULL');
-        $query->andWhere('h.isSuccessful = 1');
-
-        $query->andWhere('o.status in (:status)');
-        $query->setParameter('status', [OrderStatus::COMPLETE, OrderStatus::REFUNDED, OrderStatus::RETURNED]);
-
-        $batches = array_map(
-            function ($value) {
-                return $value['batchId'];
-            },
-            $query->getQuery()->getScalarResult()
+        $this->assertCount(1, $plugin->getPreSendMessages(), 'Expected 1 mail with CSV attachment');
+        $this->assertCount(
+            2,
+            $parts = $plugin->getPreSendMessage(0)->getChildren(),
+            'Expected 2 parts: attachment and email body'
         );
+        $this->assertInstanceOf(\Swift_Attachment::class, $parts[0], 'Expected attachment in email');
+        /** @var \Swift_MimePart $mail */
+        $mail = $parts[1];
+        $this->assertTrue((bool) strpos($mail->getBody(), $group->getName()), 'The mail should include the group name');
+    }
 
-        $count = count($batches);
+    /**
+     * @test
+     * @dataProvider provideSupportedAccountingSystem
+     */
+    public function shouldSendEmailReportWithCsvAttachForLandlordIsNotAdmin($accountingSystem)
+    {
+        $this->load(true);
+        $em = $this->getEntityManager();
 
-        $batchesEmail = $crawler->filter('.batch-id');
+        /** @var Landlord $landlord */
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
+        $landlord->setEmailNotification(true);
+        $landlord->setIsSuperAdmin(false);
 
-        $this->assertCount($count, $batchesEmail);
+        /** @var Group $group */
+        $group = $em->getRepository('DataBundle:Group')->find(25);
+        $landlord->addAgentGroup($group);
 
-        for ($i= 0; $i < $count; $i++) {
-            $this->assertContains($batchesEmail->getNode($i)->textContent, $batches);
-        }
+        $holding = $group->getHolding();
+        $holding->setAccountingSystem($accountingSystem);
+
+        $em->persist($holding);
+        $em->persist($landlord);
+        $em->flush();
+
+        $date = new \DateTime();
+        /**
+         * Update date for all success transactions
+         */
+        $qb = $em->createQueryBuilder();
+        $qb->update('RjDataBundle:Transaction', 'h')
+            ->set('h.depositDate', ':depositDate')
+            ->where('h.batchId iS NOT NULL')
+            ->andWhere('h.isSuccessful = 1')
+            ->setParameter('depositDate', $date)
+            ->getQuery()
+            ->execute();
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $this->executeCommandTester(new EmailBatchDepositReportCommand());
+
+        $this->assertCount(2, $plugin->getPreSendMessages(), 'Expected 2 mail with CSV attachment');
+        $this->assertCount(
+            2,
+            $parts = $plugin->getPreSendMessage(0)->getChildren(),
+            'Expected 2 parts: attachment and email body'
+        );
+        $this->assertInstanceOf(\Swift_Attachment::class, $parts[0], 'Expected attachment in email');
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 }

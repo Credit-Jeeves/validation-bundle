@@ -6,6 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 abstract class BaseCommand extends ContainerAwareCommand
 {
+    const RESULT_SUCCESSFUL = 0;
+
+    const RESULT_FAILED = 1;
+
     /**
      * @return LoggerInterface
      */

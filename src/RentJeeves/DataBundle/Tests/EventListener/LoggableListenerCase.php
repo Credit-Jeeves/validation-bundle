@@ -134,7 +134,7 @@ class LoggableListenerCase extends BaseTestCase
             ['total', 9992],
             ['paidFor', new \DateTime()],
             ['dueDate', 5],
-            ['startMonth', 2],
+            ['startMonth', date('m')],
             ['startYear', 2222],
             ['updatedAt', new \DateTime()],
         ];

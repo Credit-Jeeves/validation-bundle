@@ -14,8 +14,7 @@ class BatchedDepositsCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         $this->page->clickLink('accounting.menu.batched_deposits');
 
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
@@ -103,5 +102,24 @@ class BatchedDepositsCase extends BaseTestCase
         );
         // 4 for transactions and 1 for batch
         $this->assertCount(5, $rows, 'Table should contain 2 rows for \'transaction ID\' filter');
+
+        //Test for checkNumber filtering
+        $filter->click();
+        $this->assertNotNull(
+            $checkNumberFilter = $this->page->find('css', '#depositTypeStatus_li_2'),
+            'Link for filtering by checkNumber not found'
+        );
+        $checkNumberFilter->click();
+        $searchInput->setValue('123456');
+        $submit->click();
+        $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
+
+        $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'), 'Title not found');
+        $this->assertEquals(
+            'accounting.menu.batched_deposits (2)',
+            $title->getHtml(),
+            'Batched Deposits should have 2 transaction with checkNumber 123456'
+        );
     }
 }

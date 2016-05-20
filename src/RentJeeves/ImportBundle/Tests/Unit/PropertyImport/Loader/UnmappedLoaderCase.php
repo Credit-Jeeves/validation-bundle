@@ -97,6 +97,7 @@ class UnmappedLoaderCase extends UnitTestBase
         $importProperty->setImport($import);
         $importProperty->setAllowMultipleProperties(false);
         $importProperty->setAddressHasUnits(false);
+        $importProperty->setExternalUnitId('test_ext__unit_id');
 
         $propertyAddress = new PropertyAddress();
         $property = new Property();
@@ -114,9 +115,20 @@ class UnmappedLoaderCase extends UnitTestBase
             ->will($this->returnValue($iterableResultFromDb));
 
         $emMock = $this->getEntityManagerMock();
-        $emMock->expects($this->once())
+        $emMock->expects($this->at(0))
             ->method('getRepository')
             ->with($this->equalTo('RjDataBundle:ImportProperty'))
+            ->will($this->returnValue($repositoryMock));
+
+        $repositoryMock = $this->getBaseMock(UnitMappingRepository::class);
+        $repositoryMock->expects($this->once())
+            ->method('getMappingForImport')
+            ->with($this->equalTo($group), $this->equalTo('test_ext__unit_id'))
+            ->will($this->returnValue(null));
+
+        $emMock->expects($this->at(1))
+            ->method('getRepository')
+            ->with($this->equalTo('RjDataBundle:UnitMapping'))
             ->will($this->returnValue($repositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
@@ -138,10 +150,13 @@ class UnmappedLoaderCase extends UnitTestBase
             ->method('getOrCreatePropertyByAddressFields')
             ->willReturn($property);
 
+        $validatorMock = $this->getValidatorMock();
+        $validatorMock->method('validate')->willReturn([]);
+
         $loader = new UnmappedLoader(
             $emMock,
             $propertyManagerMock,
-            $this->getValidatorMock(),
+            $validatorMock,
             $this->getLoggerMock()
         );
         $loader->loadData($import);
@@ -290,11 +305,12 @@ class UnmappedLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(3))
         ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property')
             );
 
         /**
@@ -393,11 +409,12 @@ class UnmappedLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
+        $emMock->expects($this->exactly(3))
         ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property')
             );
 
         /**
@@ -502,11 +519,12 @@ class UnmappedLoaderCase extends UnitTestBase
             ->will($this->returnValue($unitMappingRepositoryMock));
         $emMock->expects($this->exactly(2))
             ->method('flush');
-        $emMock->expects($this->exactly(2))// it checks creating Unit and UnitMapping
-        ->method('persist')
+        $emMock->expects($this->exactly(3))
+            ->method('persist')
             ->withConsecutive(
                 $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Unit'),
-                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping')
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\UnitMapping'),
+                $this->isInstanceOf('\RentJeeves\DataBundle\Entity\Property')
             );
 
         /**

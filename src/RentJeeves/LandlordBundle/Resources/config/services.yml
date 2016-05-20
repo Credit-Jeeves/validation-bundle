@@ -160,9 +160,55 @@ services:
             - @property.manager
 
     landlord.batch_deposits.manager:
-        class: RentJeeves\LandlordBundle\Services\BatchDepositsManager
+        class: RentJeeves\LandlordBundle\BatchDeposits\BatchDepositsManager
         arguments:
             - @doctrine.orm.entity_manager
+
+    landlord.batch_deposits.email_manager:
+        class: RentJeeves\LandlordBundle\BatchDeposits\EmailBatchDepositReportManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @project.mailer
+            - @logger
+            - @landlord.batch_deposit.export_report_factory
+
+    landlord.batch_deposits.export.promas:
+        class: RentJeeves\LandlordBundle\BatchDeposits\ExportReport\PromasExportReport
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @export.serializer.promas
+            - @soft.deleteable.control
+
+    landlord.batch_deposits.export.mri_boston_post:
+        class: RentJeeves\LandlordBundle\BatchDeposits\ExportReport\MRIBostonPostExportReport
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @export.serializer.mri_boston_post
+            - @soft.deleteable.control
+
+    landlord.batch_deposits.export.yardi_genesis:
+        class: RentJeeves\LandlordBundle\BatchDeposits\ExportReport\YardiGenesisExportReport
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @export.serializer.yardi_genesis
+            - @soft.deleteable.control
+
+    landlord.batch_deposits.export.yardi_genesis_v2:
+        class: RentJeeves\LandlordBundle\BatchDeposits\ExportReport\YardiGenesisV2ExportReport
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @export.serializer.yardi_genesis
+            - @soft.deleteable.control
+
+    landlord.batch_deposit.export_report_factory:
+        class: RentJeeves\LandlordBundle\BatchDeposits\ExportReport\ExportReportFactory
+        arguments:
+            - @logger
+            -
+              %accounting_system.promas%: @landlord.batch_deposits.export.promas
+              %accounting_system.mri_bostonpost%: @landlord.batch_deposits.export.mri_boston_post
+              %accounting_system.yardi_genesis%: @landlord.batch_deposits.export.yardi_genesis
+              %accounting_system.yardi_genesis_v2%: @landlord.batch_deposits.export.yardi_genesis_v2
 
     #validators
     import.settings.validator:

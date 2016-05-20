@@ -24,4 +24,32 @@ class IndexController extends Controller
             'Group' => $currentGroup,
         ];
     }
+
+    /**
+     * @Route(
+     *  "/pending-invites/",
+     * )
+     *
+     */
+    public function allInvitesAction()
+    {
+        $sHost = $this->container->getParameter('server_name');
+        $group = $this->getCurrentGroup();
+        $tenants = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->getTenantsPage($group);
+
+        /** @var Tenant $tenant */
+        $t = [];
+        foreach ($tenants as $tenant) {
+            $name = $tenant->getFullName();
+            $email = $tenant -> getEmail();
+            $item = $tenant->getInviteCode();
+            $str = "<td>".$name."</td><td>".$email."</td>";
+            $str .= "<td><a href ='http://".$sHost."/tenant/invite/".$item."'>Invitation Link</a></td>";
+            array_push($t, $str);
+        }
+        return $this->render(
+            'LandlordBundle:Index:pending-invites.html.twig',
+            ['invites' => $t]
+        );
+    }
 }

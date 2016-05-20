@@ -865,7 +865,7 @@ class PayCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldShowMessageIfUpdateTypePaymentFromRecurringToOneTime()
+    public function shouldShowMessageIfUpdatePaymentType()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -996,7 +996,6 @@ class PayCase extends BaseTestCase
 
         $contract1 = $em->getRepository('RjDataBundle:Contract')->find(18);
         $contract2 = $em->getRepository('RjDataBundle:Contract')->find(9);
-
 
         $contract1->setGroup($group1);
         $contract2->setGroup($group2);
@@ -1685,7 +1684,7 @@ class PayCase extends BaseTestCase
         $em->flush($contract->getGroup());
 
         $this->setDefaultSession('selenium2');
-        $this->login('tenant11@example.com', 'pass');
+        $this->loginByAccessToken('tenant11@example.com');
 
         $this->page->pressButton($this->payButtonName);
         $popupDialog = $this->getDomElement('#pay-popup');
@@ -1718,7 +1717,8 @@ class PayCase extends BaseTestCase
             $firstAvailableStartDate->format('n/j/Y'),
             $startDateInput->getValue()
         );
-        $startDateInput->setValue($firstAvailableStartDate->modify('-1 day')->format('n/j/Y'));
+        $invalidStartDate = clone $firstAvailableStartDate;
+        $startDateInput->setValue($invalidStartDate->modify('-1 day')->format('n/j/Y'));
 
         $form->click();
         $this->session->wait(100);
@@ -1733,5 +1733,61 @@ class PayCase extends BaseTestCase
             $errors[0]->getText(),
             'Should be displayed error with text "payment.start_date.error.outside_rolling_window"'
         );
+
+        $startDateInput->setValue($firstAvailableStartDate->format('n/j/Y'));
+
+        $form->click();
+        $this->session->wait(100);
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "$('#pay-popup>div.overlay').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#pay-popup>div.overlay').is(':visible')");
+
+        $sourceStep = $this->getDomElement('#id-source-step');
+
+        $this->assertTrue($sourceStep->isVisible(), 'Should be show next step without errors');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowMessageIfUpdateTypePaymentFromOneTimeToRecurring()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        /** @var Payment $payment */
+        $payment = $this->getEntityManager()->getRepository('RjDataBundle:Payment')->findOneBy(
+            [
+                'type' => PaymentType::RECURRING,
+                'total' => 1400.00,
+            ]
+        );
+        $this->assertNotNull($payment, "Please, check fixture. Payment should be exist");
+        $payment->setType(PaymentType::ONE_TIME);
+        $this->getEntityManager()->persist($payment);
+        $this->getEntityManager()->flush();
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton('contract-pay-4');
+        $popupDialog = $this->getDomElement('#pay-popup');
+        $this->assertTrue($popupDialog->isVisible(), 'Popup dialog should be visible');
+        $infoMessageBox = $this->getDomElement('div.information-box');
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should not be visible');
+        $paymentTypeInput = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_type');
+        $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
+        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
+        $this->assertEquals(
+            'checkout.payment.switch_to_recurring',
+            $infoMessageBox->getText(),
+            'Info message should be translated from "checkout.payment.switch_to_recurring"'
+        );
+
+        $paymentTypeInput->setValue(PaymentTypeEnum::ONE_TIME);
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
+
+        $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
+        $closeButton->click();
     }
 }

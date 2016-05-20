@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "722a7ed10ef8248a0cf764c2cec32c61",
-    "content-hash": "e7cd9c36423433c38dfc8f6d39c36fcd",
+    "hash": "179f1b271d6b4a944d9e6c3c80735287",
+    "content-hash": "bf210825746cd9787d402cebea26f733",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -18,7 +18,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/a04a8db282caabc084cf9fcccd82d2fcfbee36af",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/d3cd2778573e0f9f7a0e9a2e3331de02013214f3",
                 "reference": "193a02d493494f4f230e3d41c9a46c333f933091",
                 "shasum": ""
             },
@@ -345,17 +345,17 @@
         },
         {
             "name": "besimple/soap-client",
-            "version": "v0.2.7",
+            "version": "v0.2.9",
             "target-dir": "BeSimple/SoapClient",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Credit-Jeeves/BeSimpleSoapClient.git",
-                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d"
+                "reference": "b24b6eee662a04b004f46f992a3d8d1be29a37c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
-                "reference": "ea8b1431c0e794ab19b9ea580ab1af3073c97f9d",
+                "url": "https://api.github.com/repos/Credit-Jeeves/BeSimpleSoapClient/zipball/b24b6eee662a04b004f46f992a3d8d1be29a37c1",
+                "reference": "b24b6eee662a04b004f46f992a3d8d1be29a37c1",
                 "shasum": ""
             },
             "require": {
@@ -405,9 +405,9 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.7"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.8.1"
             },
-            "time": "2016-04-26 09:57:50"
+            "time": "2016-05-10 08:59:04"
         },
         {
             "name": "besimple/soap-common",
@@ -869,66 +869,6 @@
             "time": "2014-09-24 18:48:11"
         },
         {
-            "name": "dflydev/markdown",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dflydev/dflydev-markdown.git",
-                "reference": "dee1f7a6b60776a94c10efa8340ccd486ec834b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dflydev/dflydev-markdown/zipball/dee1f7a6b60776a94c10efa8340ccd486ec834b7",
-                "reference": "dee1f7a6b60776a94c10efa8340ccd486ec834b7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "dflydev\\markdown": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Dragonfly Development Inc.",
-                    "email": "info@dflydev.com",
-                    "homepage": "http://dflydev.com"
-                },
-                {
-                    "name": "Beau Simensen",
-                    "email": "beau@dflydev.com",
-                    "homepage": "http://beausimensen.com"
-                },
-                {
-                    "name": "Michel Fortin",
-                    "homepage": "http://michelf.com"
-                },
-                {
-                    "name": "John Gruber",
-                    "homepage": "http://daringfireball.net"
-                }
-            ],
-            "description": "PHP Markdown & Extra - DEPRECATED",
-            "homepage": "http://github.com/dflydev/dflydev-markdown",
-            "keywords": [
-                "markdown"
-            ],
-            "abandoned": "michelf/php-markdown",
-            "time": "2014-01-06 23:32:02"
-        },
-        {
             "name": "doctrine/annotations",
             "version": "dev-master",
             "source": {
@@ -1075,7 +1015,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/9f89fd349fd2b537be8a0a0c41f87f2f640dfc8a",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/4a9f909f73a2f70be8cd8cdd5b72ce376f21db26",
                 "reference": "866e100a425b8b73d15393fd081c6bf067f05bf9",
                 "shasum": ""
             },
@@ -1352,13 +1292,13 @@
             "target-dir": "Doctrine/Bundle/DoctrineCacheBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:doctrine/DoctrineCacheBundle.git",
-                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace"
+                "url": "https://github.com/doctrine/DoctrineCacheBundle.git",
+                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
-                "reference": "9b7b22cea3aaaf6d53088c46a2cb08801ea38ace",
+                "url": "https://api.github.com/repos/doctrine/DoctrineCacheBundle/zipball/e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
+                "reference": "e4b6f810aa047f9cbfe41c3d6a3d7e83d7477a9d",
                 "shasum": ""
             },
             "require": {
@@ -2248,25 +2188,25 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "90cb9c1785f7a7c406dddc5295b41e85b6c65905"
+                "reference": "v1.3.2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/90cb9c1785f7a7c406dddc5295b41e85b6c65905",
-                "reference": "90cb9c1785f7a7c406dddc5295b41e85b6c65905",
+                "reference": "v1.3.2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2",
-                "symfony/framework-bundle": "~2.1",
-                "symfony/security-bundle": "~2.1"
+                "symfony/framework-bundle": ">=2.1,<3.0",
+                "symfony/security-bundle": ">=2.1,<3.0"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "*",
-                "swiftmailer/swiftmailer": "~4.3",
-                "symfony/validator": "~2.1",
-                "symfony/yaml": "~2.1",
-                "twig/twig": "~1.5",
+                "swiftmailer/swiftmailer": ">=4.3,<5.0",
+                "symfony/validator": ">=2.1,<3.0",
+                "symfony/yaml": ">=2.1,<3.0",
+                "twig/twig": ">=1.5,<2.0",
                 "willdurand/propel-typehintable-behavior": "dev-master"
             },
             "suggest": {
@@ -2886,20 +2826,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSDiExtraBundle.git",
-                "reference": "7fffdb6c96fb922a131af06d773e1e6c5301d070"
+                "reference": "1.4.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/schmittjoh/JMSDiExtraBundle/zipball/7fffdb6c96fb922a131af06d773e1e6c5301d070",
-                "reference": "7fffdb6c96fb922a131af06d773e1e6c5301d070",
+                "reference": "1.4.0",
                 "shasum": ""
             },
             "require": {
                 "jms/aop-bundle": ">=1.0.0,<1.2-dev",
                 "jms/metadata": "1.*",
-                "symfony/finder": "~2.1",
-                "symfony/framework-bundle": "~2.1",
-                "symfony/process": "~2.1"
+                "symfony/finder": ">=2.1,<3.0",
+                "symfony/framework-bundle": ">=2.1,<3.0",
+                "symfony/process": ">=2.1,<3.0"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "*",
@@ -2932,9 +2872,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -3364,7 +3304,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -3435,12 +3375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "735cffd3982c6e8cdebe292d5db39d077f65890f"
+                "reference": "v1.1.2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/735cffd3982c6e8cdebe292d5db39d077f65890f",
-                "reference": "735cffd3982c6e8cdebe292d5db39d077f65890f",
+                "reference": "v1.1.2",
                 "shasum": ""
             },
             "require": {
@@ -3600,8 +3540,58 @@
                 "php",
                 "url"
             ],
-            "abandoned": "league/uri",
             "time": "2015-09-24 10:19:47"
+        },
+        {
+            "name": "michelf/php-markdown",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/michelf/php-markdown.git",
+                "reference": "156e56ee036505ec637d761ee62dc425d807183c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/michelf/php-markdown/zipball/156e56ee036505ec637d761ee62dc425d807183c",
+                "reference": "156e56ee036505ec637d761ee62dc425d807183c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-lib": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Michelf": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Michel Fortin",
+                    "email": "michel.fortin@michelf.ca",
+                    "homepage": "https://michelf.ca/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "John Gruber",
+                    "homepage": "https://daringfireball.net/"
+                }
+            ],
+            "description": "PHP Markdown",
+            "homepage": "https://michelf.ca/projects/php-markdown/",
+            "keywords": [
+                "markdown"
+            ],
+            "time": "2015-12-24 01:37:31"
         },
         {
             "name": "monolog/monolog",
@@ -3678,40 +3668,50 @@
         },
         {
             "name": "nelmio/api-doc-bundle",
-            "version": "2.5.0",
+            "version": "2.12.0",
             "target-dir": "Nelmio/ApiDocBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nelmio/NelmioApiDocBundle.git",
-                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a"
+                "reference": "6793b701570f5f426678309910b2440c8f5d1d9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
-                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
+                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/6793b701570f5f426678309910b2440c8f5d1d9e",
+                "reference": "6793b701570f5f426678309910b2440c8f5d1d9e",
                 "shasum": ""
             },
             "require": {
-                "dflydev/markdown": "~1.0",
-                "symfony/console": "~2.1",
-                "symfony/framework-bundle": "~2.1",
-                "symfony/twig-bundle": "~2.1"
+                "michelf/php-markdown": "~1.4",
+                "php": ">=5.3",
+                "symfony/console": "~2.3|~3.0",
+                "symfony/framework-bundle": "~2.3|~3.0",
+                "symfony/twig-bundle": "~2.3|~3.0"
             },
             "conflict": {
                 "jms/serializer": "<0.12",
-                "jms/serializer-bundle": "<0.11"
+                "jms/serializer-bundle": "<0.11",
+                "symfony/symfony": "~2.7.8",
+                "twig/twig": "<1.12"
             },
             "require-dev": {
-                "friendsofsymfony/rest-bundle": "~1.0",
+                "doctrine/doctrine-bundle": "~1.5",
+                "doctrine/orm": "~2.3",
+                "dunglas/api-bundle": "~1.0@dev",
+                "friendsofsymfony/rest-bundle": "~1.0|~2.0",
                 "jms/serializer-bundle": ">=0.11",
-                "sensio/framework-extra-bundle": "~2.1",
-                "symfony/browser-kit": "~2.1",
-                "symfony/css-selector": "~2.1",
-                "symfony/form": "~2.1",
-                "symfony/validator": "~2.1",
-                "symfony/yaml": "~2.1"
+                "sensio/framework-extra-bundle": "~3.0",
+                "symfony/browser-kit": "~2.3|~3.0",
+                "symfony/css-selector": "~2.3|~3.0",
+                "symfony/finder": "~2.3|~3.0",
+                "symfony/form": "~2.3|~3.0",
+                "symfony/phpunit-bridge": "~2.7|~3.0",
+                "symfony/serializer": "~2.7|~3.0",
+                "symfony/validator": "~2.3|~3.0",
+                "symfony/yaml": "~2.3|~3.0"
             },
             "suggest": {
+                "dunglas/api-bundle": "For making use of resources definitions of DunglasApiBundle.",
                 "friendsofsymfony/rest-bundle": "For making use of REST information in the doc.",
                 "jms/serializer": "For making use of serializer information in the doc.",
                 "symfony/form": "For using form definitions as input.",
@@ -3720,7 +3720,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5.x-dev"
+                    "dev-master": "2.12-dev"
                 }
             },
             "autoload": {
@@ -3749,7 +3749,7 @@
                 "documentation",
                 "rest"
             ],
-            "time": "2014-02-11 15:44:12"
+            "time": "2016-03-21 11:19:12"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -4549,13 +4549,14 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "8fec00a939b5f03a62fc21c225e11e20466841d6"
+                "reference": "df54ffc4d0314d00df57d98b6d9165f62948dc89"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",
                 "php": ">=5.4.2",
                 "symfony/finder": "2.*",
-                "symfony/framework-bundle": "2.4.*"
+                "symfony/framework-bundle": "2.4.*",
+                "symfony/monolog-bundle": "~2.4.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "4.5.*"
@@ -4586,7 +4587,64 @@
                 "soap",
                 "wsdl"
             ],
-            "time": "2016-04-21 08:29:13"
+            "time": "2016-05-18 08:27:18"
+        },
+        {
+            "name": "renttrack/rent-manager-client-bundle",
+            "version": "dev-master",
+            "target-dir": "RentTrack/RentManagerClientBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/RentManagerClientBundle.git",
+                "reference": "7124816efe87a304d35df492d430cdf4566e613a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Credit-Jeeves/RentManagerClientBundle/zipball/7124816efe87a304d35df492d430cdf4566e613a",
+                "reference": "7124816efe87a304d35df492d430cdf4566e613a",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/annotations": "*",
+                "doctrine/collections": "*",
+                "guzzle/guzzle": "v3.5.0",
+                "jms/serializer": "dev-master",
+                "jms/serializer-bundle": "dev-master",
+                "php": ">=5.6",
+                "symfony/finder": "2.*",
+                "symfony/framework-bundle": "2.*",
+                "symfony/monolog-bundle": "2.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*",
+                "vlucas/phpdotenv": "^2.2"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "RentTrack\\RentManagerClientBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Onatskyy",
+                    "email": "onatskyy@gmail.com"
+                }
+            ],
+            "description": "Symfony2 RentManagerClientBundle.",
+            "homepage": "https://github.com/Credit-Jeeves/RentManagerClientBundle",
+            "keywords": [
+                "rent",
+                "rentmanager"
+            ],
+            "support": {
+                "source": "https://github.com/Credit-Jeeves/RentManagerClientBundle/tree/master",
+                "issues": "https://github.com/Credit-Jeeves/RentManagerClientBundle/issues"
+            },
+            "time": "2016-05-16 08:17:10"
         },
         {
             "name": "renttrack/smarty-streets-bundle",
@@ -4653,12 +4711,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/TransUnionBundle.git",
-                "reference": "4e754ba22d9c1857dbdac84c8cc17208af9a15a4"
+                "reference": "83a17a51c741f3a8fa31682923df342252c97f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/4e754ba22d9c1857dbdac84c8cc17208af9a15a4",
-                "reference": "4e754ba22d9c1857dbdac84c8cc17208af9a15a4",
+                "url": "https://api.github.com/repos/Credit-Jeeves/TransUnionBundle/zipball/07298bbabec9218f4f618f8e052b18221d89f2ba",
+                "reference": "83a17a51c741f3a8fa31682923df342252c97f33",
                 "shasum": ""
             },
             "require": {
@@ -4670,7 +4728,8 @@
             "require-dev": {
                 "besimple/wsdl2php": "1.0.0",
                 "monolog/monolog": "dev-master",
-                "phpunit/phpunit": "4.5.*"
+                "phpunit/phpunit": "4.5.*",
+                "vlucas/phpdotenv": "^2.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -4700,7 +4759,7 @@
                 "source": "https://github.com/Credit-Jeeves/TransUnionBundle/tree/master",
                 "issues": "https://github.com/Credit-Jeeves/TransUnionBundle/issues"
             },
-            "time": "2015-10-16 18:35:46"
+            "time": "2016-04-27 09:50:09"
         },
         {
             "name": "rj/email-bundle",
@@ -4793,9 +4852,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "The base bundle for the Symfony Distributions",
@@ -4850,9 +4907,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "This bundle provides a way to configure your controllers with annotations",
@@ -5261,7 +5316,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8e68cfd2a44fd590226f3b10b21624ced0aa9bef",
+                "url": "https://api.github.com/repos/sonata-project/exporter/zipball/8a84b75599f66a7039915a06a6f0f3737142947c",
                 "reference": "474be8b9dbb8ca1c378aa24e701df940a89ec124",
                 "shasum": ""
             },
@@ -5434,7 +5489,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/1460e98b53d2f916f1b4123069c96c90844a1a4d",
                 "reference": "fffbc0e2a7e376dbb0a4b5f2ff6847330f20ccf9",
                 "shasum": ""
             },
@@ -5484,27 +5539,27 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/assetic-bundle.git",
-                "reference": "146dd3cb46b302bd471560471c6aaa930483dac1"
+                "reference": "v2.3.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/assetic-bundle/zipball/146dd3cb46b302bd471560471c6aaa930483dac1",
-                "reference": "146dd3cb46b302bd471560471c6aaa930483dac1",
+                "reference": "v2.3.0",
                 "shasum": ""
             },
             "require": {
-                "kriswallsmith/assetic": "~1.1",
+                "kriswallsmith/assetic": ">=1.1,<2.0",
                 "php": ">=5.3.0",
-                "symfony/framework-bundle": "~2.1"
+                "symfony/framework-bundle": ">=2.1,<3.0"
             },
             "require-dev": {
-                "symfony/class-loader": "~2.1",
-                "symfony/console": "~2.1",
-                "symfony/css-selector": "~2.1",
-                "symfony/dom-crawler": "~2.1",
-                "symfony/form": "~2.1",
-                "symfony/twig-bundle": "~2.1",
-                "symfony/yaml": "~2.1"
+                "symfony/class-loader": ">=2.1,<3.0",
+                "symfony/console": ">=2.1,<3.0",
+                "symfony/css-selector": ">=2.1,<3.0",
+                "symfony/dom-crawler": ">=2.1,<3.0",
+                "symfony/form": ">=2.1,<3.0",
+                "symfony/twig-bundle": ">=2.1,<3.0",
+                "symfony/yaml": ">=2.1,<3.0"
             },
             "suggest": {
                 "symfony/twig-bundle": "~2.1"
@@ -5547,18 +5602,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/icu.git",
-                "reference": "b4081efff21a8a85c57789a39f454fed244f8e46"
+                "reference": "v1.1.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/icu/zipball/b4081efff21a8a85c57789a39f454fed244f8e46",
-                "reference": "b4081efff21a8a85c57789a39f454fed244f8e46",
+                "reference": "v1.1.0",
                 "shasum": ""
             },
             "require": {
                 "lib-icu": ">=3.8",
                 "php": ">=5.3.3",
-                "symfony/intl": "~2.3"
+                "symfony/intl": ">=2.3,<3.0"
             },
             "type": "library",
             "autoload": {
@@ -5632,12 +5687,12 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony MonologBundle",
@@ -5691,12 +5746,14 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony SwiftmailerBundle",
@@ -6116,108 +6173,87 @@
         {
             "name": "zendframework/zend-mime",
             "version": "2.1.6",
+            "target-dir": "Zend/Mime",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-mime.git",
-                "reference": "066d6eecff586a7fb10e8907c032beaf1a9d6104"
+                "reference": "35ae58792d036828122a168f2e3fc5bd9f3f38c2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-mime/zipball/066d6eecff586a7fb10e8907c032beaf1a9d6104",
-                "reference": "066d6eecff586a7fb10e8907c032beaf1a9d6104",
+                "reference": "35ae58792d036828122a168f2e3fc5bd9f3f38c2",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "zendframework/zend-stdlib": "self.version"
             },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master",
-                "zendframework/zend-mail": "self.version"
-            },
-            "suggest": {
-                "zendframework/zend-mail": "Zend\\Mail component"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Mime\\": "src/"
+                "psr-0": {
+                    "Zend\\Mime\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-mime",
             "keywords": [
                 "mime",
                 "zf2"
             ],
-            "time": "2013-04-17 13:32:54"
+            "time": "2014-03-03 23:00:16"
         },
         {
             "name": "zendframework/zend-stdlib",
             "version": "2.1.6",
+            "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stdlib.git",
-                "reference": "0027339961ad3d49f91ee092e23f7269c18cb470"
+                "reference": "e646729f2274f4552b6a92e38d8e458efe08ebc5"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/0027339961ad3d49f91ee092e23f7269c18cb470",
-                "reference": "0027339961ad3d49f91ee092e23f7269c18cb470",
+                "reference": "e646729f2274f4552b6a92e38d8e458efe08ebc5",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master",
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-filter": "self.version",
-                "zendframework/zend-serializer": "self.version",
-                "zendframework/zend-servicemanager": "self.version"
-            },
             "suggest": {
-                "pecl-weakref": "Implementation of weak references for Stdlib\\CallbackHandler",
                 "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
-                "zendframework/zend-filter": "To support naming strategy hydrator usage",
-                "zendframework/zend-serializer": "Zend\\Serializer component",
                 "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Stdlib\\": "src/"
+                "psr-0": {
+                    "Zend\\Stdlib\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-stdlib",
             "keywords": [
                 "stdlib",
                 "zf2"
             ],
-            "time": "2013-04-17 13:32:54"
+            "time": "2014-01-04 13:00:28"
         }
     ],
     "packages-dev": [
@@ -6282,19 +6318,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/MinkBrowserKitDriver.git",
-                "reference": "63960c8fcad4529faad1ff33e950217980baa64c"
+                "reference": "v1.1.0"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/minkphp/MinkBrowserKitDriver/zipball/63960c8fcad4529faad1ff33e950217980baa64c",
-                "reference": "63960c8fcad4529faad1ff33e950217980baa64c",
+                "reference": "v1.1.0",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": "~1.5.0",
+                "behat/mink": ">=1.5,<1.6",
                 "php": ">=5.3.1",
-                "symfony/browser-kit": "~2.0",
-                "symfony/dom-crawler": "~2.0"
+                "symfony/browser-kit": ">=2.0,<3.0",
+                "symfony/dom-crawler": ">=2.0,<3.0"
             },
             "require-dev": {
                 "silex/silex": "@dev"
@@ -6378,12 +6414,13 @@
             ],
             "authors": [
                 {
-                    "name": "Ton Sharp",
-                    "email": "66ton99@gmail.com"
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
                 },
                 {
-                    "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com"
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
                 }
             ],
             "description": "Mink bundle for Symfony2",
@@ -6451,17 +6488,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/MinkSelenium2Driver.git",
-                "reference": "bcf1b537de37db6db0822d9e7bd97e600fd7a476"
+                "reference": "v1.1.1"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/minkphp/MinkSelenium2Driver/zipball/bcf1b537de37db6db0822d9e7bd97e600fd7a476",
-                "reference": "bcf1b537de37db6db0822d9e7bd97e600fd7a476",
+                "reference": "v1.1.1",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": "~1.5.0",
-                "instaclick/php-webdriver": "~1.0.12",
+                "behat/mink": ">=1.5,<1.6",
+                "instaclick/php-webdriver": ">=1.0.12.0,<1.1",
                 "php": ">=5.3.1"
             },
             "type": "mink-driver",
@@ -6872,7 +6909,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -6997,7 +7034,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/b02221e42163be673f9b44a0bc92a8b4907a7c6d",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/7ca4182b3acbd19ebbf3ced4dfee12487d9c05aa",
                 "reference": "ce91d434b3dc443a3294c4535747765e84d11094",
                 "shasum": ""
             },
@@ -7550,7 +7587,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4e8f0da10ac5802913afc151413bc8c53b6c2716",
                 "reference": "6e7133793a8e5a5714a551a8324337374be209df",
                 "shasum": ""
             },
@@ -7848,15 +7885,16 @@
         {
             "name": "zendframework/zend-crypt",
             "version": "2.1.6",
+            "target-dir": "Zend/Crypt",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-crypt.git",
-                "reference": "a5b8a2af1652d9ce4c9d7b37a14c06c000fa3511"
+                "reference": "72cbd425ff6f8f452f9ed1ca403a5bd66ba4a0b6"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-crypt/zipball/a5b8a2af1652d9ce4c9d7b37a14c06c000fa3511",
-                "reference": "a5b8a2af1652d9ce4c9d7b37a14c06c000fa3511",
+                "reference": "72cbd425ff6f8f452f9ed1ca403a5bd66ba4a0b6",
                 "shasum": ""
             },
             "require": {
@@ -7865,36 +7903,27 @@
                 "zendframework/zend-servicemanager": "self.version",
                 "zendframework/zend-stdlib": "self.version"
             },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master"
-            },
-            "suggest": {
-                "ext-mcrypt": "Required for most features of Zend\\Crypt"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Crypt\\": "src/"
+                "psr-0": {
+                    "Zend\\Crypt\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-crypt",
             "keywords": [
                 "crypt",
                 "zf2"
             ],
-            "time": "2013-04-17 13:32:54"
+            "time": "2014-03-03 19:00:05"
         },
         {
             "name": "zendframework/zend-i18n",
@@ -7964,63 +7993,56 @@
         {
             "name": "zendframework/zend-loader",
             "version": "2.1.6",
+            "target-dir": "Zend/Loader",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-loader.git",
-                "reference": "ef86abf0d4d7e1e386f5c75a064a718d5f9f1ea8"
+                "reference": "27a9f770630839e36cd5705f3661b5ef9abf8793"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-loader/zipball/ef86abf0d4d7e1e386f5c75a064a718d5f9f1ea8",
-                "reference": "ef86abf0d4d7e1e386f5c75a064a718d5f9f1ea8",
+                "reference": "27a9f770630839e36cd5705f3661b5ef9abf8793",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master"
-            },
-            "suggest": {
-                "zendframework/zend-stdlib": "Zend\\Stdlib component"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Loader\\": "src/"
+                "psr-0": {
+                    "Zend\\Loader\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-loader",
             "keywords": [
                 "loader",
                 "zf2"
             ],
-            "time": "2014-03-05 23:20:29"
+            "time": "2014-03-06 18:00:07"
         },
         {
             "name": "zendframework/zend-mail",
             "version": "2.1.6",
+            "target-dir": "Zend/Mail",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-mail.git",
-                "reference": "f01ac7be2756c522aea6942e4b60553527aaac66"
+                "reference": "80c8bccb70bad79b1a4f3f8b42a96bd90f065290"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-mail/zipball/f01ac7be2756c522aea6942e4b60553527aaac66",
-                "reference": "f01ac7be2756c522aea6942e4b60553527aaac66",
+                "reference": "80c8bccb70bad79b1a4f3f8b42a96bd90f065290",
                 "shasum": ""
             },
             "require": {
@@ -8028,14 +8050,7 @@
                 "zendframework/zend-crypt": "self.version",
                 "zendframework/zend-loader": "self.version",
                 "zendframework/zend-mime": "self.version",
-                "zendframework/zend-stdlib": "self.version",
-                "zendframework/zend-validator": "self.version"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master",
-                "zendframework/zend-servicemanager": "self.version"
+                "zendframework/zend-stdlib": "self.version"
             },
             "suggest": {
                 "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
@@ -8044,13 +8059,13 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Mail\\": "src/"
+                "psr-0": {
+                    "Zend\\Mail\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -8058,34 +8073,29 @@
                 "BSD-3-Clause"
             ],
             "description": "provides generalized functionality to compose and send both text and MIME-compliant multipart e-mail messages",
-            "homepage": "https://github.com/zendframework/zend-mail",
             "keywords": [
                 "mail",
                 "zf2"
             ],
-            "time": "2013-04-17 15:15:58"
+            "time": "2014-01-02 19:00:03"
         },
         {
             "name": "zendframework/zend-math",
             "version": "2.1.6",
+            "target-dir": "Zend/Math",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-math.git",
-                "reference": "ec9f1441843a463e266eb2366ca2ed0f6ade9aec"
+                "reference": "b982ee2edafd4075b22372596ab2e2fdd0f6424e"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-math/zipball/ec9f1441843a463e266eb2366ca2ed0f6ade9aec",
-                "reference": "ec9f1441843a463e266eb2366ca2ed0f6ade9aec",
+                "reference": "b982ee2edafd4075b22372596ab2e2fdd0f6424e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master"
             },
             "suggest": {
                 "ext-bcmath": "If using the bcmath functionality",
@@ -8096,47 +8106,42 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\Math\\": "src/"
+                "psr-0": {
+                    "Zend\\Math\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-math",
             "keywords": [
                 "math",
                 "zf2"
             ],
-            "time": "2013-04-17 13:32:54"
+            "time": "2014-03-05 18:00:06"
         },
         {
             "name": "zendframework/zend-servicemanager",
             "version": "2.1.6",
+            "target-dir": "Zend/ServiceManager",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-servicemanager.git",
-                "reference": "91397c12164d4d629bd70afb34f02fe4f956d2d2"
+                "reference": "de182a20dfdcf978c49570514103c7477ef16e4f"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/91397c12164d4d629bd70afb34f02fe4f956d2d2",
-                "reference": "91397c12164d4d629bd70afb34f02fe4f956d2d2",
+                "reference": "de182a20dfdcf978c49570514103c7477ef16e4f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master"
             },
             "suggest": {
                 "zendframework/zend-di": "Zend\\Di component"
@@ -8144,25 +8149,24 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Zend\\ServiceManager\\": "src/"
+                "psr-0": {
+                    "Zend\\ServiceManager\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "homepage": "https://github.com/zendframework/zend-service-manager",
             "keywords": [
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2013-04-17 13:32:54"
+            "time": "2014-03-03 21:00:04"
         },
         {
             "name": "zendframework/zend-validator",
@@ -8259,7 +8263,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "0.2.7.0",
+            "version": "0.2.9.0",
             "package": "besimple/soap-client"
         },
         {
@@ -8295,7 +8299,7 @@
         {
             "alias": "dev-master",
             "alias_normalized": "9999999-dev",
-            "version": "2.5.0.0",
+            "version": "2.12.0.0",
             "package": "nelmio/api-doc-bundle"
         },
         {
@@ -8377,6 +8381,7 @@
         "braincrafted/validation-bundle": 20,
         "renttrack/transunion-bundle": 20,
         "renttrack/smarty-streets-bundle": 20,
+        "renttrack/rent-manager-client-bundle": 20,
         "apy/jsfv-bundle": 20,
         "doctrine/migrations": 20,
         "renttrack/profit-stars-client-bundle": 20,

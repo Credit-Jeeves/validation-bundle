@@ -173,6 +173,7 @@ class IndexCase extends BaseTestCase
             $tenant->getIsVerified(),
             'Tenant should be verified.'
         );
+        $this->logout();
     }
 
     /**
@@ -202,7 +203,7 @@ class IndexCase extends BaseTestCase
             $em->persist($contract);
         }
         $em->flush();
-        $this->login('tenant11@example.com', 'pass');
+        $this->loginByAccessToken('tenant11@example.com');
         $this->assertNotNull($denied = $this->page->findAll('css', '.denied'));
         $this->assertEquals(5, count($denied));
         for ($i = 0; $i <= 3; $i++) {

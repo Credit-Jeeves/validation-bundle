@@ -5,6 +5,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
+use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
@@ -27,19 +28,26 @@ class CsvExtractor implements CsvExtractorInterface
     protected $csvReader;
 
     /**
+     * @var SftpFileManager
+     */
+    protected $sftpFileManager;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
      * @param CsvFileReader   $csvFileReader
+     * @param SftpFileManager $sftpFileManager
      * @param LoggerInterface $logger
      */
-    public function __construct(CsvFileReader $csvFileReader, LoggerInterface $logger)
+    public function __construct(CsvFileReader $csvFileReader, SftpFileManager $sftpFileManager, LoggerInterface $logger)
     {
         $this->csvReader = $csvFileReader;
         $this->csvReader->setUseHeader(false);
         $this->logger = $logger;
+        $this->sftpFileManager = $sftpFileManager;
     }
 
     /**
@@ -55,19 +63,20 @@ class CsvExtractor implements CsvExtractorInterface
             );
         }
 
-        if (false === is_file($this->pathToFile) && false === is_readable($this->pathToFile)) {
-            throw new ImportExtractorException(sprintf('File "%s" not found or not readable.', $this->pathToFile));
-        }
-
         $this->logger->info(
             'Starting process CSV extractData.',
             ['group' => $this->group, 'additional_parameter' => $this->pathToFile]
         );
 
-        $csvData = $this->csvReader->read($this->pathToFile);
+        $tmpFile = sprintf('%s%s%s.csv', sys_get_temp_dir(), DIRECTORY_SEPARATOR, uniqid());
+
+        $this->sftpFileManager->download($this->pathToFile, $tmpFile);
+
+        $csvData = $this->csvReader->read($tmpFile);
         $hashHeader = HashHeaderCreator::createHashHeader($csvData[0]);
 
         unset($csvData[0]); // remove header row
+        unlink($tmpFile); // remove tmp file
 
         return [
             'hashHeader' => $hashHeader,

@@ -1,0 +1,9 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field%}
+    {% if object.object.paymentAccount.deletedAt is null %}
+        <a href="{{ path('admin_rentjeeves_data_paymentaccount_show', { "id": object.paymentAccountId }) }}">{{ object.object.paymentAccount }}</a>
+    {% else %}
+        {{ object.object.paymentAccount }} (Deleted)
+    {% endif %}
+{% endblock %}

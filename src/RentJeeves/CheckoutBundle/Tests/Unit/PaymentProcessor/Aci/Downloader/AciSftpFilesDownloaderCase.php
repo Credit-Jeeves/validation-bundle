@@ -3,6 +3,7 @@
 namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\Aci\Downloader;
 
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader\AciSftpFilesDownloader;
+use RentJeeves\CoreBundle\Sftp\SftpClient;
 use RentJeeves\TestBundle\BaseTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -177,10 +178,10 @@ class AciSftpFilesDownloaderCase extends BaseTestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Services\SftpClient
+     * @return \PHPUnit_Framework_MockObject_MockObject|\RentJeeves\CoreBundle\Sftp\SftpClient
      */
     protected function getSftpClientMock()
     {
-        return $this->getMock('\RentJeeves\CoreBundle\Services\SftpClient', [], [], '', false);
+        return $this->getMock(SftpClient::class, [], [], '', false);
     }
 }

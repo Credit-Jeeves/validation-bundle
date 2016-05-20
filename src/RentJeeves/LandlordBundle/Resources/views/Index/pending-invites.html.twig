@@ -1,0 +1,9 @@
+<span style="font-family: verdana;">
+    Invite code list:<br><br>
+<table>
+
+{% for invite in invites %}
+    <tr>{{ invite|raw }}</tr>
+{% endfor %}
+
+</table>

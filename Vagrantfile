@@ -66,7 +66,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.gui = true
 
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
   end
   #
   # View the documentation for the provider you're using for more
@@ -122,9 +122,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      chef.chef_server_url = "https://api.opscode.com/organizations/renttrack"
      chef.validation_client_name = "renttrack-validator"
      chef.validation_key_path = "~/.chef/renttrack-validator.pem"
-     chef.environment = "devops-stage"
+     chef.environment = "staging"
      chef.json = chef_attrs
      chef.run_list = run_list
+     chef.node_name = hostname
      chef.log_level = :info # use :debug for troubleshooting
   end
 end

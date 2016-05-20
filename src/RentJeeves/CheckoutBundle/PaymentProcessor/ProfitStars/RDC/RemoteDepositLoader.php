@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException;
 use RentJeeves\CoreBundle\ContractManagement\ContractManager;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -43,6 +44,9 @@ class RemoteDepositLoader
     /** @var AccountingPaymentSynchronizer */
     protected $accountingPaymentSync;
 
+    /** @var Mailer */
+    protected $mailer;
+
     /** @var integer */
     protected $countChecks;
 
@@ -53,6 +57,7 @@ class RemoteDepositLoader
      * @param LoggerInterface $logger
      * @param ContractManager $contractManager
      * @param AccountingPaymentSynchronizer $accountingPaymentSync
+     * @param Mailer $mailer
      */
     public function __construct(
         RDCClient $client,
@@ -60,7 +65,8 @@ class RemoteDepositLoader
         EntityManager $em,
         LoggerInterface $logger,
         ContractManager $contractManager,
-        AccountingPaymentSynchronizer $accountingPaymentSync
+        AccountingPaymentSynchronizer $accountingPaymentSync,
+        Mailer $mailer
     ) {
         $this->client = $client;
         $this->checkTransformer = $checkTransformer;
@@ -68,6 +74,7 @@ class RemoteDepositLoader
         $this->logger = $logger;
         $this->contractManager = $contractManager;
         $this->accountingPaymentSync = $accountingPaymentSync;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -338,6 +345,9 @@ class RemoteDepositLoader
                 $order = $this->checkTransformer->transformToOrder($depositItem);
                 $this->em->persist($order);
                 $this->em->flush();
+                if (OrderStatus::COMPLETE === $order->getStatus()) {
+                    $this->mailer->sendProfitStarsReceipt($order);
+                }
 
                 return $order;
             } catch (\Exception $e) {
@@ -445,7 +455,7 @@ class RemoteDepositLoader
             OrderStatus::PENDING === $order->getStatus()
         ) {
             $this->logger->info(sprintf('Moving Order#%s from pending to complete', $order->getId()));
-            $transaction->getOrder()->setStatus(OrderStatus::COMPLETE);
+            $order->setStatus(OrderStatus::COMPLETE);
             if ($order->getSum() != $depositItem->getTotalAmount()) {
                 $this->logger->info(sprintf(
                     'Updating SUM for Order#%s from %s to %s',
@@ -460,6 +470,7 @@ class RemoteDepositLoader
                     $operation->setAmount($depositItem->getTotalAmount());
                 }
             }
+            $this->mailer->sendProfitStarsReceipt($order);
         }
     }
 

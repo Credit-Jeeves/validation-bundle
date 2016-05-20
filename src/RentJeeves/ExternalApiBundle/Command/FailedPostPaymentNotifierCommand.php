@@ -24,7 +24,7 @@ class FailedPostPaymentNotifierCommand extends ContainerAwareCommand
                 'Job ID'
             )
             ->addOption(
-                'group-id',
+                'holding-id',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Holding id in renttrack system'
@@ -47,14 +47,14 @@ class FailedPostPaymentNotifierCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $group = $em->getRepository('DataBundle:Group')->find($input->getOption('group-id'));
+        $holding = $em->getRepository('DataBundle:Holding')->find($input->getOption('holding-id'));
 
-        if (empty($group)) {
-            throw new \LogicException('Can\'t find holding by such holding-id#' . $input->getOption('group-id'));
+        if (empty($holding)) {
+            throw new \LogicException('Can\'t find holding by such holding-id#' . $input->getOption('holding-id'));
         }
 
         $this->getContainer()
             ->get('failed.post.payment.notifier')
-            ->notify($group, $input->getOption('accounting-batch-id'));
+            ->notify($holding, $input->getOption('accounting-batch-id'));
     }
 }

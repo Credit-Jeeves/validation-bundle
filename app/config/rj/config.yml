@@ -17,6 +17,7 @@ imports:
     - { resource: ../base/aci.yml }
     - { resource: ../base/profit_stars.yml }
     - { resource: ../base/monolog.yml }
+    - { resource: ../base/property_import_sftp.yml }
 
 parameters:
     server_name: '%server_name_rj%'

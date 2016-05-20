@@ -72,6 +72,20 @@ trait PaymentProcess
             $depositAccount = $group->getRentDepositAccountForCurrentPaymentProcessor();
         }
 
+        if (!$depositAccount) {
+            $this->get('logger')->alert(sprintf(
+                'Rent Deposit account not found when tenant tries to create a payment. Tenant email: %s, Group: %s',
+                $tenant->getEmail(),
+                $group->getName()
+            ));
+            throw new \InvalidArgumentException(
+                $this->get('translator')->trans(
+                    'checkout.payment.error.cannot_be_processed',
+                    ['%support_email%' => $this->container->getParameter('support_email')]
+                )
+            );
+        }
+
         $paymentProcessor->registerPaymentAccount($paymentAccountMapped, $depositAccount);
 
         return $paymentAccountMapped->getEntity();
@@ -213,7 +227,7 @@ trait PaymentProcess
 
         /** @var Validator $validator */
         $validator = $this->get('validator');
-        $errors = $validator->validate($paymentEntity, ['last_step']);
+        $errors = $validator->validate($paymentEntity, ['last_step', 'Default']);
         if (count($errors) > 0) {
             foreach ($errors as $error) {
                 $errorsMessages[] = $error->getMessage();

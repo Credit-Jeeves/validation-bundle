@@ -93,7 +93,6 @@ function Payment(parent) {
         owner: this
     });
 
-
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
@@ -107,8 +106,10 @@ function Payment(parent) {
             self.startMonth(null);
             self.startYear(null);
         }
-        if (self.id() && 'one_time' == newValue) {
+        if (self.id() && 'one_time' == newValue && parent.contract().payment.type !== newValue) {
             parent.infoMessage(Translator.trans('checkout.payment.switch_to_one_time'));
+        } else if(self.id() && 'recurring' == newValue && parent.contract().payment.type !== newValue) {
+            parent.infoMessage(Translator.trans('checkout.payment.switch_to_recurring'));
         } else if (self.id()) {
             parent.infoMessage(null);
         }

@@ -71,8 +71,7 @@ class VirtualTerminalCase extends BaseTestCase
         /** @var OrderSubmerchant[] $ordersBefore */
         $ordersBefore = $orderQuery->execute();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('common.account');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/password');
         $this->session->wait($this->timeout, 'typeof $ != "undefined"');
         $this->page->clickLink('settings.deposit');
         $this->session->wait($this->timeout, 'typeof $ != "undefined"');
@@ -109,9 +108,8 @@ class VirtualTerminalCase extends BaseTestCase
 
         $this->logout();
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-
-        $this->session->visit(
+        $this->loginByAccessToken(
+            'admin@creditjeeves.com',
             sprintf(
                 $this->getUrl() . 'admin/rj/group/%s/edit',
                 $group->getId()
@@ -214,8 +212,7 @@ JS;
         /** @var OrderSubmerchant[] $ordersBefore */
         $ordersBefore = $orderQuery->execute();
 
-        $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('common.account');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/password');
         $this->session->wait($this->timeout, 'typeof $ != "undefined"');
         $this->page->clickLink('settings.deposit');
         $this->session->wait($this->timeout, 'typeof $ != "undefined"');
@@ -254,9 +251,8 @@ JS;
 
         $this->logout();
 
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-
-        $this->session->visit(
+        $this->loginByAccessToken(
+            'admin@creditjeeves.com',
             sprintf(
                 $this->getUrl() . 'admin/rj/group/%s/edit',
                 $group->getId()

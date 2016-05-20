@@ -20,17 +20,4 @@ class DoctrineListener
             $this->checkCompleted($entity, $em);
         }
     }
-
-    /**
-     * @param Tradeline $tradeline
-     * @param EntityManager $em
-     */
-    private function checkCompleted(Tradeline $tradeline, $em)
-    {
-        $isCompleted = $tradeline->getIsCompleted();
-        if ($isCompleted) {
-            $incentive = new ApplicantIncentive();
-            $incentive->createIncentive($tradeline, $em);
-        }
-    }
 }

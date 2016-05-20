@@ -1,0 +1,5 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field%}
+    <a href="{{ path('admin_rentjeeves_data_depositaccount_show', { "id": object.depositAccountId }) }}">{{ object.object.depositAccount.paymentProcessor|capitalize }} | {{ object.object.depositAccount.type|capitalize }}</a>
+{% endblock %}

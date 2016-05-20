@@ -171,7 +171,7 @@ class ProfitStarsReportSynchronizer
         );
 
         if (null === $transaction) {
-            $this->logger->emergency(
+            $this->logger->info(
                 sprintf('Completed Transaction with transactionId#%s not found', $report->getReferenceNumber())
             );
 
@@ -208,7 +208,7 @@ class ProfitStarsReportSynchronizer
             $report->getTransactionNumber()
         );
         if (null === $transaction) {
-            $this->logger->emergency(
+            $this->logger->info(
                 sprintf(
                     'Completed Transaction with profitStars transactionId#%s not found.',
                     $report->getTransactionNumber()

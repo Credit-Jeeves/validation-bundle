@@ -27,6 +27,7 @@ services:
               %accounting_system.resman%: @import.property.extractor.resman
               %accounting_system.yardi%: @import.property.extractor.yardi
               %accounting_system.amsi%: @import.property.extractor.amsi
+              %accounting_system.rent_manager%: @import.property.extractor.rent_manager
             - @import.property.extractor.csv
 
     import.property.transformer_factory:
@@ -40,9 +41,20 @@ services:
               %accounting_system.yardi%: @import.property.transformer.yardi
               %accounting_system.resman%: @import.property.transformer.resman
               %accounting_system.amsi%: @import.property.transformer.amsi
+              %accounting_system.rent_manager%: @import.property.transformer.rent_manager
             - @import.property.transformer.csv
 
     # services
+    import.property.sftp_file_manager:
+        parent: sftp_file_manager
+        arguments:
+            - '%import.property.sftp.host%'
+            - '%import.property.sftp.port%'
+            - '%import.property.sftp.login%'
+            - '%import.property.sftp.password%'
+            - '@monolog.logger.sftp_file_manager'
+            - '@sftp_client'
+
     import.property.manager:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager
         arguments:
@@ -50,6 +62,7 @@ services:
             - @import.property.transformer_factory
             - @import.property.loader_factory
             - @monolog.logger.property_import
+            - @doctrine.orm.default_entity_manager
 
     import.property.settings_provider:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
@@ -85,11 +98,19 @@ services:
             - @resman.resident_data
             - @monolog.logger.property_import
 
+    import.property.extractor.rent_manager:
+        class: RentJeeves\ImportBundle\PropertyImport\Extractor\RentManagerExtractor
+        public: false
+        arguments:
+            - '@rent_manager.client'
+            - '@monolog.logger.property_import'
+
     import.property.extractor.csv:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor
         public: false
         arguments:
             - @reader.csv
+            - '@import.property.sftp_file_manager'
             - @monolog.logger.property_import
 
     import.property.transformer.mri:
@@ -115,6 +136,13 @@ services:
 
     import.property.transformer.amsi:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\AMSITransformer
+        public: false
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @monolog.logger.property_import
+
+    import.property.transformer.rent_manager:
+        class: RentJeeves\ImportBundle\PropertyImport\Transformer\RentManagerTransformer
         public: false
         arguments:
             - @doctrine.orm.default_entity_manager

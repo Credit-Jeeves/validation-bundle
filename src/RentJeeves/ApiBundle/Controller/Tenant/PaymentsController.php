@@ -37,6 +37,11 @@ class PaymentsController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Payment",
+     *         "groups"={"Base", "PaymentDetails"},
+     *         "collection" = true
      *     }
      * )
      * @Rest\Get("/payments")
@@ -67,13 +72,17 @@ class PaymentsController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Payments",
+     *     section="Payment",
      *     description="Show payment details.",
      *     statusCodes={
      *         200="Returned when successful",
      *         404="Payment not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Payment",
+     *         "groups"={"Base", "PaymentDetails"}
      *     }
      * )
      * @Rest\Get("/payments/{id}")
@@ -105,12 +114,18 @@ class PaymentsController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Payments",
+     *     section="Payment",
      *     description="Create a payment.",
      *     statusCodes={
      *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         201 = {
+     *             "class"="RentJeeves\ApiBundle\Response\Payment",
+     *             "groups"={"Base", "PaymentShort"}
+     *         }
      *     }
      * )
      * @Rest\Post("/payments")
@@ -266,7 +281,7 @@ class PaymentsController extends Controller
      *
      * @ApiDoc(
      *     resource=true,
-     *     section="Payments",
+     *     section="Payment",
      *     description="Delete a payment.",
      *     statusCodes={
      *         200="Returned when successful",

@@ -3,18 +3,18 @@
 namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Traits\MobileAware;
+use RentJeeves\DataBundle\Entity\Contract;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
 use RentJeeves\PublicBundle\Form\ReturnedType;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\DataBundle\Enum\ContractStatus;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TenantController extends Controller
 {
+    use MobileAware;
     /**
      * @Route(
      *  "/tenant/invite/{code}/{isImported}",
@@ -27,6 +27,7 @@ class TenantController extends Controller
      */
     public function tenantInviteAction($code, $isImported = null)
     {
+        /** @var Tenant $tenant */
         $tenant  = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->findOneBy(array('invite_code' => $code));
 
         if (empty($tenant)) {
@@ -54,11 +55,26 @@ class TenantController extends Controller
 
             return $this->login($tenant);
         }
-        return array(
-            'code'              => $code,
-            'form'              => $form->createView(),
-            'isImported'        => (empty($isImported))? false : true,
-        );
+
+        $parameters = [
+            'code' => $code,
+            'form' => $form->createView(),
+            'isImported' => (empty($isImported)) ? false : true,
+        ];
+
+        if ($this->isMobile($request)) {
+            /** @var Contract $contract */
+            $contract = $tenant->getContracts()->first();
+            if ($contract) {
+                $parameters['isEmailInvite'] = true;
+                $parameters['fullNameLandlord'] = $contract->getHolding()->getLandlords()->first()->getFullName();
+                $parameters['rentAddress'] = $contract->getRentAddress();
+            }
+
+            return $this->render('RjPublicBundle:Public:Mobile/register_tenant.html.twig', $parameters);
+        }
+
+        return $parameters;
     }
 
     private function login($tenant)
@@ -87,7 +103,6 @@ class TenantController extends Controller
      */
     public function returnedAction()
     {
-        
         $tenant = $this->getUser();
         $form = $this->createForm(
             new ReturnedType(),
@@ -103,9 +118,11 @@ class TenantController extends Controller
                 $tenant->setHasData(true);
                 $em->persist($tenant);
                 $em->flush();
+
                 return $this->login($tenant);
             }
         }
+
         return array(
             'form' => $form->createView(),
         );

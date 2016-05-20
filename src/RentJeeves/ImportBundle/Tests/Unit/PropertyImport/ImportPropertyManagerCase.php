@@ -6,6 +6,8 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Enum\ImportModelType;
+use RentJeeves\DataBundle\Enum\ImportStatus;
+use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
@@ -34,7 +36,8 @@ class ImportPropertyManagerCase extends UnitTestBase
             $this->getExtractorBuilderMock(),
             $this->getTransformerFactoryMock(),
             $this->getLoaderFactoryMock(),
-            $this->getLoggerMock()
+            $this->getLoggerMock(),
+            $this->getEntityManagerMock()
         );
         $propertyManager->import($import, 'test');
     }
@@ -93,9 +96,54 @@ class ImportPropertyManagerCase extends UnitTestBase
             $extractorBuilder,
             $transformerFactoryMock,
             $loaderFactory,
-            $this->getLoggerMock()
+            $this->getLoggerMock(),
+            $this->getEntityManagerMock()
         );
         $propertyManager->import($import, 'testExtPropertyId');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSetErrorToImportIfExtractorReturnImportException()
+    {
+        $holding = new Holding();
+        $holding->setAccountingSystem('testType');
+
+        $group = new Group();
+        $group->setHolding($holding);
+
+        $import = new Import();
+        $import->setGroup($group);
+        $import->setImportType(ImportModelType::PROPERTY);
+
+        $extractorMock = $this->getBaseMock(ExtractorInterface::class);
+        $extractorMock->expects($this->once())
+            ->method('extractData')
+            ->will($this->throwException(new ImportException("Test error")));
+
+        $extractorFactoryMock = $this->getExtractorFactoryMock();
+        $extractorFactoryMock->expects($this->once())
+            ->method('getExtractor')
+            ->with($this->equalTo($group))
+            ->will($this->returnValue($extractorMock));
+
+        $extractorBuilder = new ExtractorBuilder($extractorFactoryMock, $this->getLoggerMock());
+
+        $entityManagerMock = $this->getEntityManagerMock();
+        $entityManagerMock->expects($this->once()) //saving error status and error message to Import
+        ->method('flush');
+
+        $propertyManager = new ImportPropertyManager(
+            $extractorBuilder,
+            $this->getTransformerFactoryMock(),
+            $this->getLoaderFactoryMock(),
+            $this->getLoggerMock(),
+            $entityManagerMock
+        );
+        $propertyManager->import($import, 'testExtPropertyId');
+
+        $this->assertEquals(ImportStatus::ERROR, $import->getStatus(), 'Import should have error status');
     }
 
     /**

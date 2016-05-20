@@ -20,7 +20,7 @@ class RentTrackExportReport extends RentTrackReport
         $repo = $this->em->getRepository('RjDataBundle:Transaction');
 
         return $repo->getTransactionsForRentTrackReport(
-            [$settings['group']],
+            $settings['groups'],
             $beginDate,
             $endDate,
             ExportReport::EXPORT_BY_PAYMENTS
@@ -33,7 +33,7 @@ class RentTrackExportReport extends RentTrackReport
      */
     protected function validateSettings(array $settings)
     {
-        if (!isset($settings['group']) || !isset($settings['begin']) || !isset($settings['end'])) {
+        if (!isset($settings['groups']) || !isset($settings['begin']) || !isset($settings['end'])) {
             throw new ExportException('Not enough parameters for RentTrackExportReport report');
         }
     }

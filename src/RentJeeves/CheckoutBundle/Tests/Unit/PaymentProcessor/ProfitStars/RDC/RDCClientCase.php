@@ -48,44 +48,56 @@ class RDCClientCase extends UnitTestBase
 
     /**
      * @test
-     * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException
      */
-    public function shouldThrowExceptionIfResponseIsNotInstanceOfGetBatchesByDateRangeResponse()
+    public function shouldLogInfoAndReturnEmptyArrayIfResponseIsNotInstanceOfGetBatchesByDateRangeResponse()
     {
         $date = $this->initDate();
         $group = $this->createGroup();
 
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock(null);
 
+        $loggerMock = $this->getLoggerMock();
+        $loggerMock
+            ->expects($this->exactly(2))
+            ->method('info');
+
         $rdcClient = new RDCClient(
             $depositReportingClientMock,
-            $this->getLoggerMock(),
+            $loggerMock,
             $this->storeId,
             $this->storeKey
         );
 
-        $rdcClient->getBatches($group, $date, $this->statuses);
+        $result = $rdcClient->getBatches($group, $date, $this->statuses);
+
+        $this->assertEquals([], $result, 'Should return an empty array');
     }
 
     /**
      * @test
-     * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException
      */
-    public function shouldThrowExceptionIfGetBatchesByDateRangeResultIsNull()
+    public function shouldLogInfoAndReturnEmptyArrayIfGetBatchesByDateRangeResultIsNull()
     {
         $date = $this->initDate();
         $group = $this->createGroup();
 
         $depositReportingClientMock = $this->getRemoteDepositReportingClientMock(new GetBatchesByDateRangeResponse());
 
+        $loggerMock = $this->getLoggerMock();
+        $loggerMock
+            ->expects($this->exactly(2))
+            ->method('info');
+
         $rdcClient = new RDCClient(
             $depositReportingClientMock,
-            $this->getLoggerMock(),
+            $loggerMock,
             $this->storeId,
             $this->storeKey
         );
 
-        $rdcClient->getBatches($group, $date, $this->statuses);
+        $result = $rdcClient->getBatches($group, $date, $this->statuses);
+
+        $this->assertEquals([], $result, 'Should return an empty array');
     }
 
     /**
@@ -118,7 +130,7 @@ class RDCClientCase extends UnitTestBase
     /**
      * @test
      */
-    public function shouldGetBatchesResultAsArrayWhenOnlyOneBatchIbResponse()
+    public function shouldGetBatchesResultAsArrayWhenOnlyOneBatchInResponse()
     {
         $date = $this->initDate();
         $group = $this->createGroup();

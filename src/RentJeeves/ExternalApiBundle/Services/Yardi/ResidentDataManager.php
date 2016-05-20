@@ -195,6 +195,37 @@ class ResidentDataManager implements ResidentDataManagerInterface
     }
 
     /**
+     * @param string $externalPropertyId
+     *
+     * @return array|Soap\UnitInformationCustomer[]
+     */
+    public function getPropertyCustomerUnits($externalPropertyId)
+    {
+        $this->logger->debug(
+            '[Yardi Resident Manager]Try to get full unit information with customers ' .
+            ' for external property id #' . $externalPropertyId
+        );
+
+        $client = $this->getApiClient(SoapClientEnum::YARDI_RESIDENT_TRANSACTIONS);
+
+        $response = $client->getUnitInformation($externalPropertyId);
+
+        if ($client->isError()) {
+            $this->logger->alert('[Yardi Resident Manager]ERROR:' . $client->getErrorMessage());
+
+            return [];
+        }
+
+        if (empty($response) || !$response->getProperty()) {
+            $this->logger->alert('[Yardi Resident Manager]Can\'t get full unit information from yardi.');
+
+            return [];
+        }
+
+        return $response->getProperty()->getCustomers();
+    }
+
+    /**
      * @param string $clientType
      * @return ResidentDataClient|ResidentTransactionsClient
      * @throws \Exception

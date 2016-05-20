@@ -38,6 +38,7 @@ class PaymentAdmin extends Admin
     public function createQuery($context = 'list')
     {
         $orderId = $this->getRequest()->get('order_id', $this->getRequest()->get('order_id', null));
+        $tenantId = $this->getRequest()->get('tenant_id', null);
 
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
@@ -46,6 +47,12 @@ class PaymentAdmin extends Admin
             $query->innerJoin($alias.'.orders', $alias.'_o');
             $query->andWhere($alias.'_o.id = :order_id');
             $query->setParameter('order_id', $orderId);
+        }
+
+        if (!empty($tenantId)) {
+            $query->innerJoin($alias.'.contract', $alias.'_c');
+            $query->andWhere($alias.'_c.tenant = :tenant');
+            $query->setParameter('tenant', $tenantId);
         }
 
         return $query;
@@ -75,6 +82,9 @@ class PaymentAdmin extends Admin
                         'edit' => [],
                         'jobs' => ['template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'],
                         'orders' => ['template' => 'AdminBundle:CRUD:list__payment_orders.html.twig'],
+                        'paymentHistory' => [
+                            'template' => 'AdminBundle:CRUD:list__payment_history.html.twig',
+                        ],
                     ]
                 ]
             );
@@ -203,6 +213,7 @@ class PaymentAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_payment_list')
             )
         );
+
         return $this->breadcrumbs[$action] = $menu;
     }
 

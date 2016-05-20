@@ -326,6 +326,14 @@
                 <source>admin.list.order.payment_action</source>
                 <target>Payment</target>
             </trans-unit>
+            <trans-unit id="admin.list.order.payments_action">
+                <source>admin.list.order.payments_action</source>
+                <target>Payments</target>
+            </trans-unit>
+            <trans-unit id="admin.list.payments_history_action">
+                <source>admin.list.payments_history_action</source>
+                <target>History</target>
+            </trans-unit>
             <trans-unit id="admin.list.payment.orders_action">
                 <source>admin.list.payment.orders_action</source>
                 <target>Orders</target>

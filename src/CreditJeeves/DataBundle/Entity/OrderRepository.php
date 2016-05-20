@@ -144,6 +144,9 @@ class OrderRepository extends EntityRepository
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
                 break;
+            case 'checkNumber':
+                $field = 'o.checkNumber';
+                break;
             default:
                 $field = 'o.status';
                 break;
