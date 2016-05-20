@@ -886,12 +886,7 @@ class PayCase extends BaseTestCase
             'Info message should be translated from "checkout.payment.switch_to_one_time"'
         );
         $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
-        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
-        $this->assertEquals(
-            'checkout.payment.switch_to_recurring',
-            $infoMessageBox->getText(),
-            'Info message should be translated from "checkout.payment.switch_to_recurring"'
-        );
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
 
         $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
         $closeButton->click();
@@ -1751,5 +1746,48 @@ class PayCase extends BaseTestCase
         $sourceStep = $this->getDomElement('#id-source-step');
 
         $this->assertTrue($sourceStep->isVisible(), 'Should be show next step without errors');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldShowMessageIfUpdateTypePaymentFromOneTimeToRecurring()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
+        /** @var Payment $payment */
+        $payment = $this->getEntityManager()->getRepository('RjDataBundle:Payment')->findOneBy(
+            [
+                'type' => PaymentType::RECURRING,
+                'total' => 1400.00,
+            ]
+        );
+        $this->assertNotNull($payment, "Please, check fixture. Payment should be exist");
+        $payment->setType(PaymentType::ONE_TIME);
+        $this->getEntityManager()->persist($payment);
+        $this->getEntityManager()->flush();
+
+        $this->login('tenant11@example.com', 'pass');
+
+        $this->page->pressButton('contract-pay-4');
+        $popupDialog = $this->getDomElement('#pay-popup');
+        $this->assertTrue($popupDialog->isVisible(), 'Popup dialog should be visible');
+        $infoMessageBox = $this->getDomElement('div.information-box');
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should not be visible');
+        $paymentTypeInput = $this->getDomElement('#rentjeeves_checkoutbundle_paymenttype_type');
+        $paymentTypeInput->setValue(PaymentTypeEnum::RECURRING);
+        $this->assertTrue($infoMessageBox->isVisible(), 'Should be shown info message');
+        $this->assertEquals(
+            'checkout.payment.switch_to_recurring',
+            $infoMessageBox->getText(),
+            'Info message should be translated from "checkout.payment.switch_to_recurring"'
+        );
+
+        $paymentTypeInput->setValue(PaymentTypeEnum::ONE_TIME);
+        $this->assertFalse($infoMessageBox->isVisible(), 'Info message should be hidden');
+
+        $closeButton = $this->getDomElement('.ui-dialog-titlebar-close', 'Should be found dialog close btn');
+        $closeButton->click();
     }
 }

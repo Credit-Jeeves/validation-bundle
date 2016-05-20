@@ -405,7 +405,7 @@
                 "soap-client"
             ],
             "support": {
-                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.9"
+                "source": "https://github.com/Credit-Jeeves/BeSimpleSoapClient/tree/v0.2.8.1"
             },
             "time": "2016-05-10 08:59:04"
         },
@@ -4549,7 +4549,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ProfitStarsClientBundle.git",
-                "reference": "9fc90bd0290abb58aef9334f0a4affbf0231e03d"
+                "reference": "df54ffc4d0314d00df57d98b6d9165f62948dc89"
             },
             "require": {
                 "besimple/wsdl2php": "v1.0.0",
@@ -4587,7 +4587,7 @@
                 "soap",
                 "wsdl"
             ],
-            "time": "2016-05-13 13:43:14"
+            "time": "2016-05-18 08:27:18"
         },
         {
             "name": "renttrack/rent-manager-client-bundle",
@@ -7587,7 +7587,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/2292b116f43c272ff4328083096114f84ea46a56",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/4e8f0da10ac5802913afc151413bc8c53b6c2716",
                 "reference": "6e7133793a8e5a5714a551a8324337374be209df",
                 "shasum": ""
             },

@@ -23,6 +23,8 @@
                         disabled
                     {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
                         title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                    {% elseif contract.hasDepositAccount == false %}
+                        title="{{ 'checkout.payment.error.cannot_be_processed'|trans({'%support_email%':support_email}) }}" disabled
                     {% endif %}
                 {% else %}
                     disabled
@@ -51,6 +53,8 @@
                         disabled
                     {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
                         title="{{ 'tenant.no_balance.alert'|trans }}" disabled
+                    {% elseif contract.hasDepositAccount == false %}
+                        title="{{ 'checkout.payment.error.cannot_be_processed'|trans({'%support_email%':support_email}) }}" disabled
                     {% endif %}
                 {% else %}
                     disabled

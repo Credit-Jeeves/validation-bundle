@@ -1815,11 +1815,23 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
         $importGroupSettings->setApiPropertyIds(null);
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::PROMAS);
+
+        /** @var Contract $contract */
         $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
             ['rent' => '2100.00', 'status' => ContractStatus::APPROVED]
         );
         $this->assertNotEmpty($contract, 'We should have such contract in fixtures');
         $contract->setExternalLeaseId(99999999);
+
+        // Add a resident mapping to simulate a migrated promas user
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('DataBundle:User')->find(50);
+        $mapping = new ResidentMapping();
+        $mapping->setHolding($contract->getHolding());
+        $mapping->setResidentId('SOMEBOGUS_RESIDENT_ID');
+        $mapping->setTenant($tenant);
+        $this->getEntityManager()->persist($mapping);
+        $tenant->addResidentsMapping($mapping);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');

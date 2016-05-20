@@ -123,13 +123,11 @@ abstract class AbstractLoader implements PropertyLoaderInterface
         try {
             $property = $this->processProperty($importProperty);
 
-            if (!$property->isSingle()) {
-                $unit = $this->processUnit($property, $importProperty);
-            }
+            $unit = $this->processUnit($property, $importProperty);
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
-            } elseif (isset($unit) && !$unit->getId()) {
+            } elseif (!$unit->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_UNIT);
             } else {
                 $importProperty->setStatus(ImportPropertyStatus::MATCH);

@@ -119,6 +119,8 @@
                             {% set canPay = false %}
                         {% elseif contract.is_allowed_to_pay == false and not contract.isPayment %}
                             {% set canPay = false %}
+                        {% elseif contract.hasDepositAccount == false %}
+                            {% set canPay = false %}
                         {% endif %}
 
                         <div {% if canPay %}onclick="$.mobile.changePage('#contract{{ contract.id }}', { transition:'slide' } );"{% endif %} class="contractBox">
@@ -132,6 +134,8 @@
                             <br>
                             {% if not contract.isPaymentEditAllowed %}
                                 <span style="color: red;">{{ 'mobile.contract.payments.blocked' | trans }}</span>
+                            {% elseif (contract.status == 'approved' or contract.status == 'invite' or contract.status == 'current') and contract.hasDepositAccount == false %}
+                                <span style="color: red;">{{ 'mobile.checkout.payment.error.cannot_be_processed' | trans }}</span>
                             {% elseif (contract.status == 'approved' or contract.status == 'invite' or contract.status == 'current') and not contract.in_day_range %}
                                 <span style="color: red;">{{ 'mobile.payment.start_date.error_range'|trans(
                                 {

@@ -129,7 +129,7 @@
                                 {% endif %}
                             </td>
                             {# TODO Fixed inside RT-2125 #}
-                            {% if not contract.payment_status == 'duplicated'  %}
+                            {% if not (contract.payment_status == 'duplicated')  %}
                             <td class="font-helvetica">
                                 {% if not contract.isPaymentEditAllowed %}
                                     <button class="button small button-contract-pay floatleft denied"

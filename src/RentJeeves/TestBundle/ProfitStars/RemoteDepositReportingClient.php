@@ -30,7 +30,7 @@ class RemoteDepositReportingClient extends Base
     /**
      * {@inheritdoc}
      */
-    public function GetItemsByBatchNumber($StoreId, $StoreKey, $EntityId, $BatchNumber, ArrayOfWSItemStatus $ItemStatus)
+    public function GetItemsByBatchNumber($storeId, $storeKey, $entityId, $batchNumber, ArrayOfWSItemStatus $itemStatus)
     {
         return RemoteDepositReportingClientMock::getMockForGetItemsByBatchNumber();
     }
