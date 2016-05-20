@@ -1113,7 +1113,7 @@ function loadPaymentTable() { //CURRENT ENTRIES
             //date = entry.payment.startYear+"-"+entry.payment.startMonth+"-"+entry.payment.dueDate
             date = entry.payment.paidDate.split("/")
             date = date[2] + "-" + date[0] + "-" + date[1]
-            orderBox("<b>" + entry.payment.type.capitalizeFirstLetter().replace("_", " ").capitalizeFirstLetter().replace("time", "Time") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType)
+            orderBox("<b>" + entry.payment.type.capitalizeFirstLetter().replace("_", " ").capitalizeFirstLetter().replace("time", "Time") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType, true);
             //desc,address,status,date,contractId,paymentType
         }
     })
@@ -1134,7 +1134,7 @@ function formatDate(s) { //takes yyyy-dd-mm and converts to mm/dd/yyyy
     return d[1] + "/" + d[2] + "/" + d[0];
 }
 
-function orderBox(desc, address, status, date, contractId, paymentType) { //status = complete, pending, error, "" (scheduled but no order), refund
+function orderBox(desc, address, status, date, contractId, paymentType, isPayment) { //status = complete, pending, error, "" (scheduled but no order), refund
     randId = "a" + Math.floor(Math.random() * 9999999)
     if (contractId != -1) {
         getDepositDate(contractId, date, paymentType, randId)
@@ -1142,7 +1142,13 @@ function orderBox(desc, address, status, date, contractId, paymentType) { //stat
     $("#intro").hide() // we don't need default box
     htmlStr = "";
     //htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
-    htmlStr += '<div class="paymentBox"><div class="addressBox"><i class="fa fa-home"></i> ' + address + '</div>'
+    if(true === isPayment) {
+        htmlStr += '<div class="paymentBox" onclick="navigateToContract(' + contractId + ')">';
+    } else {
+        htmlStr += '<div class="paymentBox">';
+    }
+    htmlStr += '<div class="addressBox"><i class="fa fa-home"></i> ' + address + '</div>'
+
     htmlStr += '<div class="paymentStatusBox">'
     htmlStr += '<div class="paymentStatusCont">'
     if (status != "") {
@@ -1168,5 +1174,9 @@ function orderBox(desc, address, status, date, contractId, paymentType) { //stat
     htmlStr += desc
     htmlStr += '</div>'
     htmlStr += '</div></div>'
-    $("#payments").append(htmlStr)
+    $("#payments").append(htmlStr);
+}
+
+function navigateToContract(contractId) {
+    $.mobile.changePage("#contract" + contractId, {transition: 'slide'});
 }
