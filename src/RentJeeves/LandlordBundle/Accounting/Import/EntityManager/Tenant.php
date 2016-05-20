@@ -56,7 +56,8 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        if ($this->isSupportResidentId()) {
+        $useResidentMapping = $this->isSupportResidentId();
+        if ($useResidentMapping) {
             $residentId = $row[Mapping::KEY_RESIDENT_ID];
         } else {
             $residentId = null;
@@ -91,7 +92,7 @@ trait Tenant
         if (!empty($tenant)) {
             /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
-            if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
+            if ($useResidentMapping && $residentMapping && $residentMapping->getResidentId() !== $residentId) {
                 $this->logger->warn(
                     sprintf(
                         'Imported resident id: %s doesn\'t match DB %s',
