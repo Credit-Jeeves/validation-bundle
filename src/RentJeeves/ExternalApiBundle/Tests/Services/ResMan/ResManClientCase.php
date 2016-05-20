@@ -5,17 +5,18 @@ namespace RentJeeves\ExternalApiBundle\Tests\Services\ResMan;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\ORM\EntityManager;
-use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
 use RentJeeves\DataBundle\Tests\Traits\ContractAvailableTrait;
 use RentJeeves\DataBundle\Tests\Traits\TransactionAvailableTrait;
+use RentJeeves\ExternalApiBundle\Model\ResMan\Customer;
 use RentJeeves\ExternalApiBundle\Model\ResMan\ResidentTransactions;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient;
 use RentJeeves\TestBundle\Functional\BaseTestCase as Base;
+use RentJeeves\TestBundle\Services\ResMan\ResManClient as TestResManClient;
 
 class ResManClientCase extends Base
 {
@@ -186,8 +187,8 @@ class ResManClientCase extends Base
         /** @var Order $order */
         $order = $em->getRepository('DataBundle:Order')->findOneBy(
             [
-                'user'  => $tenant->getId(),
-                'paymentType' => OrderPaymentType::CARD
+                'user' => $tenant->getId(),
+                'paymentType' => OrderPaymentType::CARD,
             ]
         );
         /** @var UnitMapping $unitMapping */
@@ -237,5 +238,28 @@ class ResManClientCase extends Base
         $result = $resManClient->closeBatch($batchId, self::EXTERNAL_PROPERTY_ID);
 
         $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetResidentTransactionsWithEmptyMoveOutDate()
+    {
+        $container = $this->getKernel()->getContainer();
+        /** @var $resManClient TestResManClient */
+        $resManClient = $container->get('resman.client');
+        $resManClient->setResponseMockFileWithEmptyMoveOut();
+        $resMan = $resManClient->getResidentTransactions(TestResManClient::TEST_EXTERNAL_PROPERTY_ID);
+
+        /** @var Customer $customer */
+        $customer = $resMan->getProperty()->getRtCustomers()[0]->getCustomers()->getCustomer()->first();
+
+        $this->assertNotEmpty($customer, 'Expected: Customer should be in collection');
+        $this->assertNotEmpty($lease = $customer->getLease(), 'Expected: Customer should be in collection');
+        $this->assertEmpty($lease->getActualMoveOut(), 'Expected: Move out date should be empty string');
+        $this->assertNull(
+            $lease->getActualMoveOutDateObject(),
+            'Function getActualMoveOutDateObject should be return null when moveOut is empty string'
+        );
     }
 }
