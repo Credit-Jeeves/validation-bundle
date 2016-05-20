@@ -246,4 +246,37 @@ class TenantRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param string $leaseId
+     * @param string $unitId
+     * @return Tenant|null
+     * @throws NonUniqueResultException
+     */
+    public function getTenantByLeaseIdorUnitId($leaseId = null, $unitId = null)
+    {
+        if (empty($leaseId) && empty($unitId)) {
+            return null;
+        }
+
+        $query = $this->createQueryBuilder('tenant')
+            ->innerJoin(
+                'tenant.contracts',
+                'contracts'
+            );
+
+        if (!empty($leaseId)) {
+            $query->andWhere('contracts.externalLeaseId = :leaseId')
+                ->setParameter('leaseId', $leaseId);
+        }
+
+        if (!empty($unitId)) {
+            $query->innerJoin('contracts.unit', 'unit')
+                ->leftJoin('unit.unitMapping', 'unitMapping')
+                ->andWhere('unitMapping.externalUnitId = :unitId')
+                ->setParameter('unitId', $unitId);
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

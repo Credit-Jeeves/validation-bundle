@@ -75,6 +75,20 @@ trait Tenant
                 $residentId,
                 $this->user->getHolding()->getId()
             );
+
+            if (empty($tenant)) {
+                //Tenant not found need look up tenant by lease ID and unit ID
+                $leaseId = (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID])) ? $row[Mapping::KEY_EXTERNAL_LEASE_ID] : null;
+                $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : null;
+                $this->logger->debug(
+                    sprintf('Looking up resident by external lease id: %s or unit id: %s', $leaseId, $unitId)
+                );
+                /** @var  EntityTenant $tenant */
+                $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantByLeaseIdorUnitId(
+                    $leaseId,
+                    $unitId
+                );
+            }
         } catch (NonUniqueResultException $e) {
             $this->currentImportModel->setTenant($this->createTenant($row));
             $errors = $this->currentImportModel->getErrors();
