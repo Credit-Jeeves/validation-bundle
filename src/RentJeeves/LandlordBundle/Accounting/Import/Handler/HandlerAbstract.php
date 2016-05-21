@@ -420,14 +420,14 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setNumber($lineNumber);
         $this->setTenant($row);
         $this->currentImportModel->setEmail($row[ImportMapping::KEY_EMAIL]);
-        $this->group = $this->getGroup($row);
+        $group = $this->getGroup($row);
 
-        if (!$this->group) {
+        if (!$group) {
             $this->currentImportModel->setIsSkipped(true);
             $this->currentImportModel->setSkippedMessage($this->translator->trans('import.error.empty_group'));
         }
 
-        if ($this->group && !$this->group->getGroupSettings()->getIsIntegrated()) {
+        if ($group && !$group->getGroupSettings()->getIsIntegrated()) {
             $this->currentImportModel->setIsSkipped(true);
             $this->currentImportModel->setSkippedMessage(
                 $this->translator->trans(
