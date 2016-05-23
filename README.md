@@ -22,7 +22,7 @@ We use Chef code to configure our server infrastructure.  In the production envi
 The general prerequisites are
 
 * LNMP-stack setup
-    * Linux (preferable RHEL 6)
+    * Linux (prefer RHEL 6 or CentOS 6)
     * Nginx 1.0.x
     * MySQL 5.1    
     * PHP 5.6
