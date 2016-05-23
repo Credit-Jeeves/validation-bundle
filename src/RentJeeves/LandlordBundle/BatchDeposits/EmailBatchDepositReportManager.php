@@ -121,28 +121,33 @@ class EmailBatchDepositReportManager
         if ($needSend) {
             $this->logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
 
+            // get CSV for report (if supported)
+            $pathToCsvReport = null;
             $exportReport = $this->getExportReport($holdingAdmin->getHolding());
             if ($exportReport) {
                 $pathToCsvReport = $this->getPathToCsvReport($exportReport, $holdingAdmin, $date, $group = null);
-                $result = $this->mailer->sendBatchDepositReportHolding(
-                    $holdingAdmin,
-                    $groups,
-                    $date,
-                    $resend,
-                    $pathToCsvReport
-                );
+            }
 
+            $result = $this->mailer->sendBatchDepositReportHolding(
+                $holdingAdmin,
+                $groups,
+                $date,
+                $resend,
+                $pathToCsvReport
+            );
+
+            if ($pathToCsvReport) {
                 unlink($pathToCsvReport);
+            }
 
-                if (false === $result) {
-                    $this->logger->info(
-                        sprintf('Sending email to %s failed. Check template', $holdingAdmin->getEmail())
-                    );
-                } else {
-                    $this->logger->info(
-                        sprintf('%s:BatchDepositReportHolding successfully sent', $holdingAdmin->getEmail())
-                    );
-                }
+            if (false === $result) {
+                $this->logger->info(
+                    sprintf('Sending email to %s failed. Check template', $holdingAdmin->getEmail())
+                );
+            } else {
+                $this->logger->info(
+                    sprintf('%s:BatchDepositReportHolding successfully sent', $holdingAdmin->getEmail())
+                );
             }
         } else {
             $this->logger->info(
@@ -174,33 +179,37 @@ class EmailBatchDepositReportManager
             )
         );
         if (count($batchData) > 0 || count($reversalData) > 0) {
+            // get CSV for report (if supported)
+            $pathToCsvReport = null;
             $exportReport = $this->getExportReport($group->getHolding());
             if ($exportReport) {
                 $pathToCsvReport = $this->getPathToCsvReport($exportReport, $landlord, $date, $group);
+            }
 
-                $result = $this->mailer->sendBatchDepositReportLandlord(
-                    $landlord,
-                    $group,
-                    $date,
-                    $this->prepareBatchReportData($batchData),
-                    $this->prepareReversalTransactions($reversalData),
-                    $resend,
-                    $pathToCsvReport
-                );
+            $result = $this->mailer->sendBatchDepositReportLandlord(
+                $landlord,
+                $group,
+                $date,
+                $this->prepareBatchReportData($batchData),
+                $this->prepareReversalTransactions($reversalData),
+                $resend,
+                $pathToCsvReport
+            );
 
+            if ($pathToCsvReport) {
                 unlink($pathToCsvReport);
+            }
 
-                if (false === $result) {
-                    $this->logger->info(sprintf('Sending email to %s failed. Check template', $landlord->getEmail()));
-                } else {
-                    $this->logger->info(
-                        sprintf(
-                            '%s:BatchDepositReportLandlord successfully sent for group %d',
-                            $landlord->getEmail(),
-                            $group->getId()
-                        )
-                    );
-                }
+            if (false === $result) {
+                $this->logger->info(sprintf('Sending email to %s failed. Check template', $landlord->getEmail()));
+            } else {
+                $this->logger->info(
+                    sprintf(
+                        '%s:BatchDepositReportLandlord successfully sent for group %d',
+                        $landlord->getEmail(),
+                        $group->getId()
+                    )
+                );
             }
         } else {
             $this->logger->info(
