@@ -64,7 +64,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $this->executeCommandTester(new EmailBatchDepositReportCommand());
+        $this->executeCommandTester(new EmailBatchDepositReportCommand(), ['--group-ids' => '24,25']);
 
         $this->assertCount(1, $plugin->getPreSendMessages(), 'Expected 1 mail with CSV attachment');
         $this->assertCount(
@@ -116,7 +116,7 @@ class EmailBatchDepositReportCommandCase extends BaseTestCase
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 
-        $this->executeCommandTester(new EmailBatchDepositReportCommand(), ['--groupid' => 25]);
+        $this->executeCommandTester(new EmailBatchDepositReportCommand(), ['--group-ids' => '25']);
 
         $this->assertCount(1, $plugin->getPreSendMessages(), 'Expected 1 mail with CSV attachment');
         $this->assertCount(
