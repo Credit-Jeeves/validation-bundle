@@ -217,6 +217,19 @@ function init() {
     $("#" + accountPrefix + "VerificationCode_box").show()
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
+
+    var isUpdatePaymentTypeOrder = false;
+    $(document).on('pagebeforeshow', '#addNewPayAccount', function (event) {
+        if ($('#payment-type-with-fee').length > 0) {
+            renderFeeForPayment();
+        }
+        if (false === isUpdatePaymentTypeOrder) {
+            var paymentsType = $('.payment-type-change-order>.ui-radio');
+            $('.payment-type-change-order').prepend(paymentsType[1]);
+            isUpdatePaymentTypeOrder = true;
+        }
+        $('.payment-type-change-order .ui-radio label').first().click();
+    });
 }
 
 function renderPayAccounts(contract) {
@@ -472,7 +485,7 @@ function setupPayForm(id) {
             //input contract id into hidden field
 
             jQuery(prefix + "contractId").val(id);
-            
+
             if (debug) {
                 console.log(contract)
             }
@@ -1179,4 +1192,34 @@ function orderBox(desc, address, status, date, contractId, paymentType, isPaymen
 
 function navigateToContract(contractId) {
     $.mobile.changePage("#contract" + contractId, {transition: 'slide'});
+}
+
+function renderFeeForPayment() {
+    var contractsArr = $.map(contractsJson, function (el) {
+        return el
+    });
+    for (i = 0; i < contractsArr.length; i++) {
+        if (contractsArr[i].id == globalContractId) {
+            var contract = contractsArr[i];
+            $('#payment-type-with-fee').find('.payment-fee-value').each(function () {
+                $(this).text(getFeeForContract($(this).attr('data-payment-type'), contract.groupSettings));
+            });
+        }
+    }
+}
+
+function getFeeForContract(method, groupSettings) {
+    if ('card' == method) {
+        return parseFloat(groupSettings.feeCC) + '%';
+    } else if ('bank' == method) {
+        return '$' + parseFloat(groupSettings.isPassedACH ? groupSettings.feeACH : 0);
+    } else if ('debit_card' == method) {
+        if ('percentage' == groupSettings.typeFeeDC) {
+            return parseFloat(groupSettings.feeDC) + '%';
+        } else {
+            return '$' + parseFloat(groupSettings.feeDC);
+        }
+    } else {
+        return parseFloat(0);
+    }
 }

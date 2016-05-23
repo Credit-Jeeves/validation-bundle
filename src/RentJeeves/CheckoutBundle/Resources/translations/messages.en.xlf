@@ -705,6 +705,10 @@
                 <source>mobile.payment.start_date.error_range</source>
                 <target>Payments allowed between %OPEN_DAY% and %CLOSE_DAY%.</target>
             </trans-unit>
+            <trans-unit id="mobile.payment.type.fee_notify">
+                <source>mobile.payment.type.fee_notify</source>
+                <target>Your total technology fee will be calculated at checkout</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
