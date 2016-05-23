@@ -420,14 +420,14 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->currentImportModel->setNumber($lineNumber);
         $this->setTenant($row);
         $this->currentImportModel->setEmail($row[ImportMapping::KEY_EMAIL]);
-        $this->group = $this->getGroup($row);
+        $group = $this->getGroup($row);
 
-        if (!$this->group) {
+        if (!$group) {
             $this->currentImportModel->setIsSkipped(true);
             $this->currentImportModel->setSkippedMessage($this->translator->trans('import.error.empty_group'));
         }
 
-        if ($this->group && !$this->group->getGroupSettings()->getIsIntegrated()) {
+        if ($group && !$group->getGroupSettings()->getIsIntegrated()) {
             $this->currentImportModel->setIsSkipped(true);
             $this->currentImportModel->setSkippedMessage(
                 $this->translator->trans(
@@ -720,6 +720,14 @@ abstract class HandlerAbstract implements HandlerInterface
                         continue;
                     }
 
+                    if ($this->isDuplicateOnUnitMappingExist($this->currentImportModel->getUnitMapping())) {
+                        $keyFieldInUI = 'import_new_user_with_contract_contract_unitMapping_externalUnitId';
+                        $message = $this->translator->trans('import.unit_mapping.already_used');
+                        $errors[$lineNumber][uniqid()][$keyFieldInUI] = $message;
+
+                        continue;
+                    }
+
                     if ($this->tryToSaveRow($lineNumber)) {
                         $this->getCurrentCollectionImportModel()->remove($keyCollection);
                     }
@@ -751,6 +759,24 @@ abstract class HandlerAbstract implements HandlerInterface
 
         return $errors + $errorsNotEditableFields;
     }
+
+    /**
+     * @param UnitMapping $unitMapping
+     * @return bool
+     */
+    protected function isDuplicateOnUnitMappingExist(UnitMapping $unitMapping)
+    {
+        if ($unitMapping->getId()) {
+            return false;
+        }
+
+        $unitMappingInDB = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            ['unit' => $unitMapping->getUnit()]
+        );
+
+        return empty($unitMappingInDB) ? false : true;
+    }
+
 
     protected function tryToSaveRow($lineNumber)
     {

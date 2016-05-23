@@ -980,6 +980,37 @@ class Mailer extends BaseMailer
     }
 
     /**
+     * @param Order $order
+     * @return bool
+     */
+    public function sendProfitStarsReceipt(Order $order)
+    {
+        $contract = $order->getContract();
+
+        $params = [
+            'firstName' => $order->getUser()->getFirstName(),
+            'inviteCode' => $order->getUser()->getInviteCode(),
+            'groupName' => $contract ? $contract->getGroup()->getName() : '',
+            'orderCreatedAt' => $order->getCreatedAt()->format('Y-m-d'),
+            'transactionId' => $order->getCompleteTransaction()->getTransactionId(),
+            'checkNumber' => $order->getCheckNumber(),
+            'orderAmount' => $order->getSum(),
+            'isPassedACHFee' => $contract ?
+                $contract->getGroup()->getGroupSettings()->isPassedAch() : false,
+            'achFee' => $contract ?
+                $contract->getGroup()->getGroupSettings()->getFeeACH() : 0,
+            'ccFee' => $contract ?
+                $contract->getGroup()->getGroupSettings()->getFeeCC() : 0,
+        ];
+
+        return $this->sendBaseLetter(
+            $template = 'rjOrderProfitStarsComplete',
+            $params,
+            $order->getUser()
+        );
+    }
+
+    /**
      * Use for sendBatchDepositReportLandlord and sendBatchDepositReportLandlord
      *
      * @var string $accountingSystem

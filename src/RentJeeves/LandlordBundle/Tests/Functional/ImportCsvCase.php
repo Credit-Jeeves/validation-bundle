@@ -21,7 +21,6 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     protected function fillSecondPageWrongValue(array $trs)
     {
-
         $this->assertNotNull(
             $firstName = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_first_name')
         );
@@ -1735,7 +1734,6 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertCount(2, $trs['import.status.match'], "Count contract with status 'match' wrong");
     }
 
-
     /**
      * @test
      */
@@ -1757,8 +1755,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
-        $this->login('14test@mail.com', 'pass');
-        $this->page->clickLink('tab.accounting');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
         //First Step
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->setPropertyFirst();
@@ -1802,5 +1799,155 @@ class ImportCsvCase extends ImportBaseAbstract
             'import.error.email_used_by_different_user_type',
             'Title error not equals to expected'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function promasImport()
+    {
+        $this->load(true);
+
+        $importGroupSettings = $this->getImportGroupSettings();
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::SINGLE_PROPERTY);
+        $importGroupSettings->setApiPropertyIds(null);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::PROMAS);
+
+        /** @var Contract $contract */
+        $contract = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findOneBy(
+            ['rent' => '2100.00', 'status' => ContractStatus::APPROVED]
+        );
+        $this->assertNotEmpty($contract, 'We should have such contract in fixtures');
+        $contract->setExternalLeaseId(99999999);
+
+        // Add a resident mapping to simulate a migrated promas user
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()->getRepository('DataBundle:User')->find(50);
+        $mapping = new ResidentMapping();
+        $mapping->setHolding($contract->getHolding());
+        $mapping->setResidentId('SOMEBOGUS_RESIDENT_ID');
+        $mapping->setTenant($tenant);
+        $this->getEntityManager()->persist($mapping);
+        $tenant->addResidentsMapping($mapping);
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $filePath = $this->getFixtureFilePathByName('import_lease_id_mri_bostonpost.csv');
+        $attFile->attachFile($filePath);
+        $this->setPropertyFirst();
+        $submitImportFile = $this->getDomElement('.submitImportFile');
+        $submitImportFile->click();
+        $this->assertNull($this->page->find('css', '.error_list>li'), 'Error should not be on this page.');
+        $this->assertNotNull($this->page->find('css', 'table'), 'We should see mapping table.');
+
+        $mapFile = $this->mapFile;
+        unset($mapFile[4]); // removed resident ID mapping
+        $mapFile[15] = ImportMapping::KEY_TENANT_STATUS;
+        $mapFile[16] = ImportMapping::KEY_EXTERNAL_LEASE_ID;
+
+        $this->fillCsvMapping($mapFile, 16);
+
+        $submitImportFile->click();
+        $this->session->wait(1000, "$('table').is(':visible')");
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertCount(1, $trs, "Count statuses is wrong");
+        $this->assertCount(2, $trs['import.status.new'], "Count contract with status 'new' wrong");
+    }
+
+    /**
+     * @test
+     */
+    public function matchWaitingContractByLeaseIdOrUnitId()
+    {
+        $this->load(true);
+
+        /** @var ImportGroupSettings $importGroupSettings */
+        $importGroupSettings = $this->getImportGroupSettings();
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
+        $importGroupSettings->setApiPropertyIds(null);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::PROMAS);
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'File attachment button missed'
+        );
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
+        $attFile->attachFile($filePath);
+        $submitImportFile = $this->getDomElement('.submitImportFile');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see errors');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist');
+
+        $mapFile = [
+            '1' => ImportMapping::KEY_EXTERNAL_LEASE_ID,
+            '2' => ImportMapping::KEY_TENANT_NAME,
+            '3' => ImportMapping::KEY_RENT,
+            '4' => ImportMapping::KEY_BALANCE,
+            '5' => ImportMapping::KEY_UNIT_ID,
+            '6' => ImportMapping::KEY_STREET,
+            '7' => ImportMapping::KEY_CITY,
+            '8' => ImportMapping::KEY_STATE,
+            '9' => ImportMapping::KEY_ZIP,
+            '10' => ImportMapping::KEY_MOVE_IN,
+            '11' => ImportMapping::KEY_LEASE_END,
+            '12' => ImportMapping::KEY_MOVE_OUT,
+            '14' => ImportMapping::KEY_EMAIL,
+        ];
+        $this->fillCsvMapping($mapFile, 15);
+
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.waiting']), "Waiting contract is wrong number");
+
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+            ['externalLeaseId' => 'BEASLY, MICHAEL']
+        );
+        $this->assertCount(2, $contracts, 'We should import 1 contract');
+        //after that check mathced status
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'Attchment button missed'
+        );
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
+        $attFile->attachFile($filePath);
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see any error');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist on the page');
+
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.match']), "We should have one contract in status MATCH");
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+            ['externalLeaseId' => 'BEASLY, MICHAEL']
+        );
+        $this->assertCount(2, $contracts, 'We should update one contract');
     }
 }

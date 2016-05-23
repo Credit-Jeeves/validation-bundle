@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\CustomerAddress;
@@ -14,6 +15,8 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customers;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionProperty;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionUnit;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\UnitInformationCustomer;
+use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\UnitInformationFullUnit;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -81,7 +84,7 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([$property]);
 
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
+            ->method('getPropertyCustomerUnits')
             ->willReturn([]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
@@ -102,27 +105,31 @@ class YardiExtractorCase extends UnitTestBase
         $group->setHolding($holding);
         $property = new Property();
         $property->setCode('test');
-        $residentTransactionProperty = $this->getFakeResidentTransactionPropertyCustomer();
+        $customerUnit = $this->getFakeResidentPropertyCustomerUnit();
 
         $dataManager = $this->getYardiResidentDataManagerMock();
         $dataManager->expects($this->once())
             ->method('getProperties')
             ->willReturn([$property]);
         $dataManager->expects($this->once())
-            ->method('getResidentTransactions')
-            ->willReturn([$residentTransactionProperty]);
+            ->method('getPropertyCustomerUnits')
+            ->willReturn([$customerUnit]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
         $yardiExtractor->setExtPropertyId('test');
         $yardiExtractor->setGroup($group);
+
         $response = $yardiExtractor->extractData();
         $this->assertCount(1, $response, 'Incorrect Response from YardiExtractor.');
-        $residentTransactionProperty = reset($response);
+        /** @var UnitInformation $unitInformation */
+        $unitInformation = reset($response);
         $this->assertInstanceOf(
-            'RentJeeves\ExternalApiBundle\Model\Yardi\FullResident',
-            $residentTransactionProperty,
+            'RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation',
+            $unitInformation,
             'Incorrect class inside response'
         );
+
+        $this->assertEquals('Test', $unitInformation->getUnit()->getUnitId());
     }
 
     /**
@@ -134,18 +141,17 @@ class YardiExtractorCase extends UnitTestBase
     }
 
     /**
-     * @return ResidentTransactionPropertyCustomer
+     * @return UnitInformationCustomer
      */
-    protected function getFakeResidentTransactionPropertyCustomer()
+    protected function getFakeResidentPropertyCustomerUnit()
     {
-        $propertyCustomer = new ResidentTransactionPropertyCustomer();
-        $customers = new Customers();
-        $customers->addCustomer($customer = new Customer());
-        $propertyCustomer->setUnit($unit = new ResidentTransactionUnit());
+        $unit = new UnitInformationFullUnit();
         $unit->setUnitId('Test');
-        $propertyCustomer->setCustomers($customers);
-        $customer->setCustomerAddress(new CustomerAddress());
-        $customer->getCustomerAddress()->setCustomerAddress1('Fishermans Dr');
-        return $propertyCustomer;
+        $unitCustomer = new UnitInformationCustomer();
+
+        $unitCustomer->setCustomerId('fake_test_customer_id');
+        $unitCustomer->setUnit($unit);
+
+        return $unitCustomer;
     }
 }

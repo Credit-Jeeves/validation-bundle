@@ -138,11 +138,24 @@ class ImportPropertyManager
             $this->setImportError($import, $e->getMessage());
 
             return;
+        } catch (\Exception $e) {
+            // something unexpected happened. Send alert so someone looks into it.
+            $this->logger->alert(
+                sprintf(
+                    'Import#%d failed with unexpected exception : %s.',
+                    $import->getId(),
+                    $e->getMessage()
+                ),
+                ['group' => $group, 'additional_parameter' => $additionalParameter]
+            );
+            $this->setImportError($import, $e->getMessage());
+
+            return;
         }
 
         $this->logger->info(
             sprintf(
-                'Import data for Import#%d is finished.',
+                'Import data for Import#%d is finished Successfully.',
                 $import->getId()
             ),
             ['group' => $group, 'additional_parameter' => $additionalParameter]

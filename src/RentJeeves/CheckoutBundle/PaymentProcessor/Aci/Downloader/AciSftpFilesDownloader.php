@@ -5,7 +5,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor\Aci\Downloader;
 use Monolog\Logger;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\SftpFilesDownloaderInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\AciDownloaderException;
-use RentJeeves\CoreBundle\Services\SftpClient;
+use RentJeeves\CoreBundle\Sftp\SftpClient;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AciSftpFilesDownloader implements SftpFilesDownloaderInterface

@@ -1224,7 +1224,8 @@ class TenantCase extends BaseTestCase
     {
         return [
             [AccountingSystem::MRI_BOSTONPOST],
-            [AccountingSystem::AMSI]
+            [AccountingSystem::AMSI],
+            [AccountingSystem::PROMAS]
         ];
     }
 

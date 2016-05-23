@@ -56,7 +56,8 @@ trait Tenant
      */
     protected function setTenant(array $row)
     {
-        if ($this->isSupportResidentId()) {
+        $useResidentMapping = $this->isSupportResidentId();
+        if ($useResidentMapping) {
             $residentId = $row[Mapping::KEY_RESIDENT_ID];
         } else {
             $residentId = null;
@@ -74,7 +75,39 @@ trait Tenant
                 $residentId,
                 $this->user->getHolding()->getId()
             );
+
+            if (empty($tenant)) {
+                //Tenant not found need look up tenant by lease ID and unit ID
+                $names = $this->parseNamesFromRow($row);
+                $firstName = $names[Mapping::FIRST_NAME_TENANT];
+                $lastName = $names[Mapping::LAST_NAME_TENANT];
+                $leaseId = (isset($row[Mapping::KEY_EXTERNAL_LEASE_ID])) ? $row[Mapping::KEY_EXTERNAL_LEASE_ID] : null;
+                $unitId = (isset($row[Mapping::KEY_UNIT_ID])) ? $row[Mapping::KEY_UNIT_ID] : null;
+                $this->logger->debug(
+                    sprintf(
+                        'Looking up resident by name %s %s and external lease id: %s or unit id: %s',
+                        $firstName,
+                        $lastName,
+                        $leaseId,
+                        $unitId
+                    )
+                );
+                /** @var  EntityTenant $tenant */
+                $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantByNameAndLeaseIdOrUnitId(
+                    $firstName,
+                    $lastName,
+                    $leaseId,
+                    $unitId
+                );
+
+                if (empty($tenant)) {
+                    $this->logger->debug('Tenant not found by name');
+                } else {
+                    $this->logger->debug('Tenant found by name');
+                }
+            }
         } catch (NonUniqueResultException $e) {
+            $this->logger->error('Caught NonUniqueResultException: ' . $e->getMessage());
             $this->currentImportModel->setTenant($this->createTenant($row));
             $errors = $this->currentImportModel->getErrors();
             $this->setUnrecoverableError(
@@ -91,7 +124,7 @@ trait Tenant
         if (!empty($tenant)) {
             /** @var $residentMapping ResidentMapping */
             $residentMapping = $tenant->getResidentsMapping()->first();
-            if ($residentMapping && $residentMapping->getResidentId() !== $residentId) {
+            if ($useResidentMapping && $residentMapping && $residentMapping->getResidentId() !== $residentId) {
                 $this->logger->warn(
                     sprintf(
                         'Imported resident id: %s doesn\'t match DB %s',
@@ -138,14 +171,10 @@ trait Tenant
     protected function createTenant($row)
     {
         $tenant = new EntityTenant();
-        if (!isset($row[Mapping::FIRST_NAME_TENANT]) && !isset($row[Mapping::LAST_NAME_TENANT])) {
-            $names = Mapping::parseName($row[Mapping::KEY_TENANT_NAME]);
-            $tenant->setFirstName($names[Mapping::FIRST_NAME_TENANT]);
-            $tenant->setLastName($names[Mapping::LAST_NAME_TENANT]);
-        } else {
-            $tenant->setFirstName($row[Mapping::FIRST_NAME_TENANT]);
-            $tenant->setLastName($row[Mapping::LAST_NAME_TENANT]);
-        }
+
+        $names = $this->parseNamesFromRow($row);
+        $tenant->setFirstName($names[Mapping::FIRST_NAME_TENANT]);
+        $tenant->setLastName($names[Mapping::LAST_NAME_TENANT]);
 
         if (!empty($row[Mapping::KEY_USER_PHONE])) {
             $this->setUserPhone($tenant, $row[Mapping::KEY_USER_PHONE]);
@@ -157,6 +186,20 @@ trait Tenant
         $tenant->setCulture($this->locale);
 
         return $tenant;
+    }
+
+    protected function parseNamesFromRow($row)
+    {
+        if (!isset($row[Mapping::FIRST_NAME_TENANT]) && !isset($row[Mapping::LAST_NAME_TENANT])) {
+            $names = Mapping::parseName($row[Mapping::KEY_TENANT_NAME]);
+        } else {
+            $names = [
+                Mapping::LAST_NAME_TENANT => trim($row[Mapping::LAST_NAME_TENANT]),
+                Mapping::FIRST_NAME_TENANT => trim($row[Mapping::FIRST_NAME_TENANT]),
+            ];
+        }
+
+        return $names;
     }
 
     /**

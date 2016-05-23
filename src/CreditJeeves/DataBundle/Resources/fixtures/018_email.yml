@@ -112,3 +112,6 @@ fixtures:
         name: rjTrustedLandlordApproved.html
     email_57:
         name: rjPaymentFlaggedByUntrustedLandlordRule.html
+    email_58:
+        name: rjOrderProfitStarsComplete.html
+

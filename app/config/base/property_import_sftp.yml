@@ -1,0 +1,5 @@
+parameters:
+    import.property.sftp.host: 'transfer.princetonecom.com'
+    import.property.sftp.port: '10022'
+    import.property.sftp.login: 'rntrtest'
+    import.property.sftp.password: 'r7QebTAa'

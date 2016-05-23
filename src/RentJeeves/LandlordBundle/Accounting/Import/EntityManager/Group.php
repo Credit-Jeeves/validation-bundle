@@ -26,6 +26,13 @@ trait Group
         if (!$this->storage->isMultipleGroup()) {
             return $this->group;
         }
+        // If we don't initialize rows yet, we should use current group
+        // Like example when we initialize forms
+        // We call isSupportResident from group
+        // but we don't initialize data row and don't have KEY_GROUP_ACCOUNT_NUMBER key yet.
+        if (empty($row)) {
+            return $this->group;
+        }
 
         return $this
             ->em

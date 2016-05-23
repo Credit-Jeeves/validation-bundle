@@ -8,6 +8,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\ImportApiMapping;
 use RentJeeves\DataBundle\Entity\ProfitStarsSettings;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
+use RentJeeves\DataBundle\Entity\RentManagerSettings;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
@@ -182,6 +183,16 @@ abstract class Holding
 
     /**
      * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\RentManagerSettings",
+     *     mappedBy="holding",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     * @var RentManagerSettings
+     */
+    protected $rentManagerSettings;
+
+    /**
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\ResManSettings",
      *     mappedBy="holding",
      *     cascade={"persist", "remove", "merge"}
@@ -312,6 +323,22 @@ abstract class Holding
     }
 
     /**
+     * @return RentManagerSettings
+     */
+    public function getRentManagerSettings()
+    {
+        return $this->rentManagerSettings;
+    }
+
+    /**
+     * @param RentManagerSettings|null $rentManagerSettings
+     */
+    public function setRentManagerSettings(RentManagerSettings $rentManagerSettings = null)
+    {
+        $this->rentManagerSettings = $rentManagerSettings;
+    }
+
+    /**
      * @return boolean
      */
     public function isPaymentsEnabled()
@@ -416,7 +443,7 @@ abstract class Holding
     }
 
     /**
-     * @return null|SettingsInterface
+     * @return null|SettingsInterface|RentManagerSettings
      */
     public function getExternalSettings()
     {
@@ -429,6 +456,8 @@ abstract class Holding
                 return $this->getMriSettings();
             case AccountingSystem::AMSI:
                 return $this->getAmsiSettings();
+            case AccountingSystem::RENT_MANAGER:
+                return $this->getRentManagerSettings();
             case AccountingSystem::NONE:
             default:
                 return null;

@@ -44,7 +44,7 @@ class ImportPropertyStatusCheckCommand extends BaseCommand
             ->getQuery()
             ->execute();
 
-        if (true === empty($notFinishedJobs)) {
+        if (true === empty($notFinishedJobs) && $import->getStatus() !== ImportStatus::ERROR) {
             $import->setStatus(ImportStatus::COMPLETE);
             $import->setFinishedAt(new \DateTime());
             $this->getEntityManager()->flush();

@@ -1,14 +1,12 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services;
-
-use JMS\DiExtraBundle\Annotation as DI;
+namespace RentJeeves\CoreBundle\Sftp;
 
 /**
  * This class is added to be able to write UNIT tests.
- * Because to write tests for resources is impossible.
+ * Because to write tests for resources is hard.
  *
- * @Di\Service("sftp_client", public=false)
+ * Service`s name "sftp_client"
  */
 class SftpClient
 {

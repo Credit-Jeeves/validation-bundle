@@ -1,5 +1,5 @@
 monolog:
-    channels: ["import", "rjDueEmail", "property_import", "contract_movement_manager", "unit_deduplicator", "property_deduplicator", "contract_sync", "profit_stars"]
+    channels: ["import", "rjDueEmail", "property_import", "contract_movement_manager", "unit_deduplicator", "property_deduplicator", "contract_sync", "profit_stars", 'sftp_file_manager']
     handlers:
         main:
             type:         fingers_crossed

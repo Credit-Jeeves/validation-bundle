@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="register.tenant.email_invite.notice">
                 <source>register.tenant.email_invite.notice</source>
-                <target>Your landlord %fullNameLandlord% has request that you pay your rent for %rentAddress%.</target>
+                <target>Your landlord %fullNameLandlord% is requesting rent for %rentAddress%. Pay online with RentTrack to build credit history.</target>
             </trans-unit>
             <trans-unit id="email.verifed.text1">
                 <source>email.verifed.text1</source>

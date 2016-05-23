@@ -43,6 +43,7 @@ class PaymentHistoryAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
+        $this->getConfigurationPool()->getContainer()->get('soft.deleteable.control')->disable();
         $paymentId = $this->getRequest()->get('payment_id', null);
 
         $query = parent::createQuery($context);
@@ -64,7 +65,14 @@ class PaymentHistoryAdmin extends Admin
         $listMapper
             ->addIdentifier('id', null, ['route' => ['name' => 'show']])
             ->add('object.contract', null, ['route' => ['name' => 'show'], 'label' => 'Contract'])
-            ->add('object.paymentAccount', null, ['route' => ['name' => 'show'], 'label' => 'Payment Account'])
+            ->add(
+                'object.paymentAccount',
+                null,
+                [
+                    'label' => 'Payment Account',
+                    'template' => 'AdminBundle:CRUD:list__payment_account.html.twig',
+                ]
+            )
             ->add(
                 'object',
                 null,
@@ -81,8 +89,7 @@ class PaymentHistoryAdmin extends Admin
             ->add('status')
             ->add('amount', 'money')
             ->add('total', 'money')
-            ->add('loggedAt', 'date')
-        ;
+            ->add('loggedAt', 'date');
     }
 
     /**
@@ -91,8 +98,7 @@ class PaymentHistoryAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('object.contract', null, ['label' => 'Contract'])
-            ->add('object', null, ['label' => 'Payment'])
+            ->add('object.id', null, ['label' => 'Payment'])
             ->add('status')
             ->add('type');
     }
@@ -102,9 +108,17 @@ class PaymentHistoryAdmin extends Admin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        $this->getConfigurationPool()->getContainer()->get('soft.deleteable.control')->disable();
         $showMapper
             ->add('object.contract', null, ['route' => ['name' => 'show'], 'label' => 'Contract'])
-            ->add('object.paymentAccount', null, ['route' => ['name' => 'show'], 'label' => 'Payment Account'])
+            ->add(
+                'object.paymentAccount',
+                null,
+                [
+                    'label' => 'Payment Account',
+                    'template' => 'AdminBundle:CRUD:show__payment_account.html.twig',
+                ]
+            )
             ->add(
                 'object',
                 null,

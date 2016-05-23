@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Transformer\Custom;
 
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
+use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\YardiTransformer;
 
@@ -11,23 +11,15 @@ class YardiVirtuRosemontTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getAddress1(FullResident $accountingSystemRecord)
+    protected function getAddress1(UnitInformation $accountingSystemRecord)
     {
-        $customers = $accountingSystemRecord->getResidentTransactionPropertyCustomer()->getCustomers()->getCustomer();
-        /**
-         * We have array here and I don't know what exactly user address I should get, so I get first
-         *
-         * @var Customer $customer
-         */
-        $customer = reset($customers);
-
-        return $customer->getCustomerAddress()->getCustomerAddress1();
+        return $accountingSystemRecord->getUnit()->getUnit()->getInformation()->getAddress()->getAddress1();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function isAddressHasUnits(FullResident $accountingSystemRecord)
+    protected function isAddressHasUnits(UnitInformation $accountingSystemRecord)
     {
         return false;
     }
@@ -35,7 +27,7 @@ class YardiVirtuRosemontTransformer extends YardiTransformer
     /**
      * {@inheritdoc}
      */
-    protected function getUnitName(FullResident $accountingSystemRecord)
+    protected function getUnitName(UnitInformation $accountingSystemRecord)
     {
         return null;
     }

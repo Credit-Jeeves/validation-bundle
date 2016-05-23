@@ -322,6 +322,10 @@
                 <source>admin.yardi.label.nsf_post_month_node</source>
                 <target>NSF Post Month</target>
             </trans-unit>
+            <trans-unit id="admin.list.order.payment_action">
+                <source>admin.list.order.payment_action</source>
+                <target>Payment</target>
+            </trans-unit>
             <trans-unit id="admin.list.order.payments_action">
                 <source>admin.list.order.payments_action</source>
                 <target>Payments</target>

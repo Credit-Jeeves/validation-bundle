@@ -12,41 +12,6 @@ class GroupCase extends BaseTestCase
 
     /**
      * @test
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
-     */
-    public function shouldCreateNewJobForImportProperties()
-    {
-        $this->load(true);
-        $this->getEntityManager()->clear();
-        $jobsBeforeTest = $this->getEntityManager()->getRepository('RjDataBundle:Job')
-            ->findAll();
-        $this->setDefaultSession('symfony');
-        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
-        $this->assertNotEmpty(
-            $createJobButton = $this->page->find('css', '.createCsvJobForImportProperties'),
-            'Should see link csv mapping'
-        );
-        $createJobButton->click();
-        $this->assertNotNull(
-            $attFile = $this->page->find('css', '#upload_csv_file_attachment'),
-            'Attach does not exist'
-        );
-        $filePath = $this->getFixtureFilePathByName('import.csv');
-        $attFile->attachFile($filePath);
-        $this->assertNotEmpty(
-            $buttonUpload = $this->page->find('css', '#upload_csv_file_upload'),
-            'Should see upload file button'
-        );
-        $buttonUpload->click();
-
-        $this->getEntityManager()->clear();
-        $jobs = $this->getEntityManager()->getRepository('RjDataBundle:Job')
-            ->findAll();
-        $this->assertEquals(count($jobsBeforeTest)+1, count($jobs), 'New job should create');
-    }
-
-    /**
-     * @test
      */
     public function checkDepositAccountCreateAndUpdateInGroup()
     {

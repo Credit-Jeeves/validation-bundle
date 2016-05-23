@@ -73,9 +73,14 @@ abstract class AbstractLoader implements PropertyLoaderInterface
 
         /** @var ImportProperty $importProperty */
         while ((list($importProperty) = $iterableResult->next()) !== false) {
-            $this->processImportProperty($importProperty, $additionalParameter);
-            $this->em->flush($importProperty);
-            $this->em->clear();
+            try {
+                $this->processImportProperty($importProperty, $additionalParameter);
+                $this->em->flush($importProperty);
+                $this->em->clear();
+            } catch (\Exception $e) {
+                // if any error occurs, set record as failed and keep going!
+                $this->setImportRecordFailed($importProperty, $e);
+            }
         }
 
         $this->logger->info(
@@ -123,13 +128,11 @@ abstract class AbstractLoader implements PropertyLoaderInterface
         try {
             $property = $this->processProperty($importProperty);
 
-            if (!$property->isSingle()) {
-                $unit = $this->processUnit($property, $importProperty);
-            }
+            $unit = $this->processUnit($property, $importProperty);
 
             if (!$property->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_PROPERTY_AND_UNIT);
-            } elseif (isset($unit) && !$unit->getId()) {
+            } elseif (!$unit->getId()) {
                 $importProperty->setStatus(ImportPropertyStatus::NEW_UNIT);
             } else {
                 $importProperty->setStatus(ImportPropertyStatus::MATCH);
@@ -144,10 +147,7 @@ abstract class AbstractLoader implements PropertyLoaderInterface
                     'additional_parameter' => $additionalParameter
                 ]
             );
-            $importProperty->setStatus(ImportPropertyStatus::ERROR);
-            $importProperty->setErrorMessages([
-                $e->getMessage()
-            ]);
+            $this->setImportRecordFailed($importProperty, $e);
         }
 
         $this->logger->debug(
@@ -184,4 +184,17 @@ abstract class AbstractLoader implements PropertyLoaderInterface
      * @param Property $property
      */
     abstract protected function saveData(ImportProperty $importProperty, Property $property);
+
+    /**
+     * @param ImportProperty $importProperty
+     * @param \Exception $e
+     */
+    protected function setImportRecordFailed(ImportProperty $importProperty, \Exception $e)
+    {
+        $this->logger->error($e->getMessage());
+        $importProperty->setStatus(ImportPropertyStatus::ERROR);
+        $importProperty->setErrorMessages([
+            $e->getMessage()
+        ]);
+    }
 }

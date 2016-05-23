@@ -136,7 +136,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -263,7 +264,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -394,13 +396,20 @@ class RemoteDepositLoaderCase extends UnitTestBase
             ->expects($this->exactly(4))
             ->method('flush');
 
+        $mailerMock = $this->getMailerMock();
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendProfitStarsReceipt')
+            ->with($order2);
+
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
             $checkTransformerMock,
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $mailerMock
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -471,7 +480,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -578,7 +588,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -715,7 +726,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $contractManagerMock,
-            $this->getBaseMock(AccountingPaymentSynchronizer::class)
+            $this->getBaseMock(AccountingPaymentSynchronizer::class),
+            $this->getMailerMock()
         );
 
         $result = $loader->loadScannedChecks($group, $date);
@@ -874,13 +886,20 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $this->getBaseMock(FailedPostPaymentNotifier::class)
         );
 
+        $mailerMock = $this->getMailerMock();
+        $mailerMock
+            ->expects($this->once())
+            ->method('sendProfitStarsReceipt')
+            ->with($order);
+
         $loader = new RemoteDepositLoader(
             $rdcClientMock,
             $this->getBaseMock(ScannedCheckTransformer::class),
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $synchronizer
+            $synchronizer,
+            $mailerMock
         );
         $loader->loadScannedChecks($group, $date);
 
@@ -1038,7 +1057,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $synchronizer
+            $synchronizer,
+            $this->getMailerMock()
         );
         $loader->loadScannedChecks($group, $date);
 
@@ -1198,7 +1218,8 @@ class RemoteDepositLoaderCase extends UnitTestBase
             $emMock,
             $this->getLoggerMock(),
             $this->getBaseMock(ContractManager::class),
-            $synchronizer
+            $synchronizer,
+            $this->getMailerMock()
         );
         $loader->loadScannedChecks($group, $date);
 

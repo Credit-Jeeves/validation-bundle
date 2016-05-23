@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo Uploading this directory to db01...
+rsync -avz ../db_sanitize/ db01:~/db_sanitize/
