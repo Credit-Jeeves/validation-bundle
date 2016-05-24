@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\PropertyImport\Extractor\Traits;
+namespace RentJeeves\ImportBundle\Traits;
 
 use CreditJeeves\DataBundle\Entity\Group;
 

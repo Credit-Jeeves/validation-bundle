@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 
-interface ExtractorInterface
+interface PropertyExtractorInterface
 {
     /**
      * Extract the data from the accounting system (API or CSV file).

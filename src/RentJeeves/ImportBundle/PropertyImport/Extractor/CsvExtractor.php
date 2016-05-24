@@ -7,20 +7,17 @@ use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
 use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\Traits\SetupPathToImportFile;
 
 /**
  * Service`s name "import.property.extractor.csv"
  */
-class CsvExtractor implements CsvExtractorInterface
+class CsvExtractor implements CsvPropertyExtractorInterface
 {
     use SetupGroupTrait;
-
-    /**
-     * @var string
-     */
-    protected $pathToFile;
+    use SetupPathToImportFile;
 
     /**
      * @var CsvFileReader
@@ -82,13 +79,5 @@ class CsvExtractor implements CsvExtractorInterface
             'hashHeader' => $hashHeader,
             'data' => array_values($csvData),
         ];
-    }
-
-    /**
-     * @param string $pathToFile
-     */
-    public function setPathToFile($pathToFile)
-    {
-        $this->pathToFile = $pathToFile;
     }
 }

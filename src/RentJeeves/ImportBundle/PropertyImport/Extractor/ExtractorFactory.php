@@ -5,8 +5,8 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface as Extractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\PropertyExtractorInterface as Extractor;
 
 /**
  * Service`s name "import.property.extractor_factory"
@@ -21,15 +21,15 @@ class ExtractorFactory
     protected $supportedApiExtractors;
 
     /**
-     * @var CsvExtractorInterface
+     * @var CsvPropertyExtractorInterface
      */
     protected $csvExtractor;
 
     /**
-     * @param array                 $supportedApiExtractors
-     * @param CsvExtractorInterface $csvExtractor
+     * @param array                         $supportedApiExtractors
+     * @param CsvPropertyExtractorInterface $csvExtractor
      */
-    public function __construct(array $supportedApiExtractors, CsvExtractorInterface $csvExtractor)
+    public function __construct(array $supportedApiExtractors, CsvPropertyExtractorInterface $csvExtractor)
     {
         $this->supportedApiExtractors = $supportedApiExtractors;
         $this->csvExtractor = $csvExtractor;
@@ -37,8 +37,6 @@ class ExtractorFactory
 
     /**
      * Get an extractor for the given group.
-     *
-     * This interface is used in the property import
      *
      * @param Group $group
      *

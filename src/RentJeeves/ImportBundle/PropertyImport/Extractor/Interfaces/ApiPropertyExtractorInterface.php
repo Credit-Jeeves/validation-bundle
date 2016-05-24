@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces;
 
-interface ApiExtractorInterface extends ExtractorInterface
+interface ApiPropertyExtractorInterface extends PropertyExtractorInterface
 {
     /**
      * Setup external property id which will be use for extract data from API

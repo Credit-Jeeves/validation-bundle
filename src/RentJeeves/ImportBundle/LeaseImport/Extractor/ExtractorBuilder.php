@@ -1,15 +1,16 @@
 <?php
 
-namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
+namespace RentJeeves\ImportBundle\LeaseImport\Extractor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\PropertyExtractorInterface as Extractor;
+use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\LeaseImport\Extractor\Interfaces\ApiLeaseExtractorInterface;
+use RentJeeves\ImportBundle\LeaseImport\Extractor\Interfaces\CsvLeaseExtractorInterface;
+use RentJeeves\ImportBundle\LeaseImport\Extractor\Interfaces\LeaseExtractorInterface;
 
 /**
- * Service`s name "import.property.extractor_builder"
+ * Service`s name "import.lease.extractor_builder"
  */
 class ExtractorBuilder
 {
@@ -44,15 +45,28 @@ class ExtractorBuilder
     }
 
     /**
-     * @return Extractor
+     * @throws ImportLogicException
+     *
+     * @return LeaseExtractorInterface
      */
     public function build()
     {
+        if (null === $this->group || null === $this->additionalParameter) {
+            throw new ImportLogicException(
+                'Cant run build without required params. Pls use "setGroup" and "setAdditionalParameter".'
+            );
+        }
+
+        $this->logger->debug(
+            'Try build extractor.',
+            ['group' => $this->group, 'additional_parameter' => $this->additionalParameter]
+        );
+
         $extractor = $this->factory->getExtractor($this->group);
         $extractor->setGroup($this->group);
-        if ($extractor instanceof ApiPropertyExtractorInterface) {
+        if ($extractor instanceof ApiLeaseExtractorInterface) {
             $extractor->setExtPropertyId($this->additionalParameter);
-        } elseif ($extractor instanceof CsvPropertyExtractorInterface) {
+        } elseif ($extractor instanceof CsvLeaseExtractorInterface) {
             $extractor->setPathToFile($this->additionalParameter);
         }
 

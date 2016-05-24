@@ -7,14 +7,14 @@ use RentJeeves\DataBundle\Entity\ResManSettings;
 use RentJeeves\ExternalApiBundle\Services\ResMan\ResidentDataManager as ResmanResidentDataManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.resman"
  */
-class ResmanExtractor implements ApiExtractorInterface
+class ResmanExtractor implements ApiPropertyExtractorInterface
 {
     use SetupGroupTrait;
     use SetupExternalPropertyIdTrait;

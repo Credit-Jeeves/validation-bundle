@@ -9,14 +9,14 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\ResidentDataManager as YardiResi
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.yardi"
  */
-class YardiExtractor implements ApiExtractorInterface
+class YardiExtractor implements ApiPropertyExtractorInterface
 {
     use SetupGroupTrait;
     use SetupExternalPropertyIdTrait;
