@@ -221,7 +221,7 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function parseNameProvider()
+    public function sanitizeTenantNameProvider()
     {
         return [
             ['Jerry J. Garcia', 'Jerry', 'Garcia'],
@@ -230,18 +230,19 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
             ['Bob & Damian Marley', 'Bob', 'Marley'],
             ['Jerry J. Garcia J.', 'Jerry', 'Garcia'],
             ['Bob & Damian & Marley', '', ''],
+            ['Bob Damian Marley Denial', 'Bob', 'Denial'],
         ];
     }
 
     /**
      * @test
-     * @dataProvider parseNameProvider
+     * @dataProvider sanitizeTenantNameProvider
      *
      * @param string $name
      * @param string $expectedFirstName
      * @param string $expectedLastName
      */
-    public function parseName($name, $expectedFirstName, $expectedLastName)
+    public function sanitizeTenantName($name, $expectedFirstName, $expectedLastName)
     {
         $mapping = new MappingTest();
         $data = $mapping::parseName($name);

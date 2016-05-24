@@ -253,7 +253,7 @@ abstract class MappingAbstract implements MappingInterface
             $lastName = array_shift($names);
             $firstName = implode(' ', array_map('trim', $names));
 
-            return self::makeNameValid(
+            return self::sanitizeTenantName(
                 [
                     self::LAST_NAME_TENANT => trim($lastName),
                     self::FIRST_NAME_TENANT => trim($firstName),
@@ -295,14 +295,14 @@ abstract class MappingAbstract implements MappingInterface
                 );
         }
 
-        return self::makeNameValid($data);
+        return self::sanitizeTenantName($data);
     }
 
     /**
      * @param array $data
      * @return array
      */
-    public static function makeNameValid(array $data)
+    public static function sanitizeTenantName(array $data)
     {
         $fullName = $data[self::FIRST_NAME_TENANT]. ' ' . $data[self::LAST_NAME_TENANT];
 
@@ -314,22 +314,31 @@ abstract class MappingAbstract implements MappingInterface
         $fullName = preg_replace('/[A-Za-z]{0,6}\\.\\s*/', '', $fullName);
         //Remove all non-alpha or spaces + &
         $fullName = preg_replace('/[^a-zA-Z\\s&]/', '', $fullName);
+        $isUsedAmpersand =  false;
 
         if (preg_match('/&/', $fullName)) {
-            $fullName = explode(' ', str_replace([' ', '&'], ' ', $fullName));
-        } else {
-            $fullName = explode(' ', $fullName);
+            $fullName = str_replace('&', ' ', $fullName);
+            $isUsedAmpersand = true;
         }
+
+        $fullName = explode(' ', $fullName);
         //reindex array and remove empty element
         $fullName = array_values(array_filter($fullName));
-
+        //Step4: Use first person from duplicate people with same last name: ("Bob & Damian Marley" => "Bob Marley")
         if (count($fullName) === 3) {
             return [
                 self::FIRST_NAME_TENANT => $fullName[0],
                 self::LAST_NAME_TENANT  => $fullName[2],
             ];
+        //Step6: Use first and last words
+        } elseif (count($fullName) > 2 && $isUsedAmpersand === false) {
+            return [
+                self::FIRST_NAME_TENANT => $fullName[0],
+                self::LAST_NAME_TENANT  => end($fullName),
+            ];
         }
 
+        //Step5: Use first person from duplicate people with different last name
         return [
             self::FIRST_NAME_TENANT => $fullName[0],
             self::LAST_NAME_TENANT  => $fullName[1],
