@@ -22,13 +22,13 @@ We use Chef code to configure our server infrastructure.  In the production envi
 The general prerequisites are
 
 * LNMP-stack setup
+    * Linux (prefer RHEL 6 or CentOS 6)
+    * Nginx 1.0.x
+    * MySQL 5.1    
     * PHP 5.6
-    * MySQL 5.1
-    * and Nginx
 * Selenium server (for running function tests)
 
 The Chef source code lives at https://github.com/Credit-Jeeves/devops-collapsed
-
 
 
 Contributing
@@ -103,6 +103,7 @@ TODO
 ====
 
 Environment:
+
 1. Make sure default time zone is correct value
 2. If XDebug is installed - need to do required check for nesting level
 3. Add check for encryption keys
