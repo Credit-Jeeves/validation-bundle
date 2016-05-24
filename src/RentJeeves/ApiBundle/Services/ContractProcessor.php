@@ -6,7 +6,6 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\GroupType;
-use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -174,6 +173,8 @@ class ContractProcessor
 
             $this->em->flush($contract);
         }
+
+        $this->setReporting($contract);
 
         return $contract;
     }
@@ -406,5 +407,23 @@ class ContractProcessor
     {
         return $trustedLandlordDTO->getCompanyName() ?:
             sprintf('%s %s', $trustedLandlordDTO->getFirstName(), $trustedLandlordDTO->getLastName());
+    }
+
+    /**
+     * @param Contract $contract
+     */
+    protected function setReporting(Contract $contract)
+    {
+        $group = $contract->getGroup();
+        if ($group->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT
+            || $group->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT
+        ) {
+            $contract->setReportToTransUnion(true);
+            $contract->setTransUnionStartAt($contract->getCreatedAt());
+            $contract->setReportToEquifax(true);
+            $contract->setEquifaxStartAt($contract->getCreatedAt());
+
+            $this->em->flush($contract);
+        }
     }
 }
