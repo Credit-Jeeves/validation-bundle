@@ -253,10 +253,12 @@ abstract class MappingAbstract implements MappingInterface
             $lastName = array_shift($names);
             $firstName = implode(' ', array_map('trim', $names));
 
-            return [
-                self::LAST_NAME_TENANT => trim($lastName),
-                self::FIRST_NAME_TENANT => trim($firstName),
-            ];
+            return self::makeNameValid(
+                [
+                    self::LAST_NAME_TENANT => trim($lastName),
+                    self::FIRST_NAME_TENANT => trim($firstName),
+                ]
+            );
         }
 
         $names = explode(' ', $name);
@@ -293,7 +295,45 @@ abstract class MappingAbstract implements MappingInterface
                 );
         }
 
-        return $data;
+        return self::makeNameValid($data);
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public static function makeNameValid(array $data)
+    {
+        $fullName = $data[self::FIRST_NAME_TENANT]. ' ' . $data[self::LAST_NAME_TENANT];
+
+        if (empty(trim($fullName))) {
+            return $data;
+        }
+
+        //Remove initial
+        $fullName = preg_replace('/[A-Za-z]{0,6}\\.\\s*/', '', $fullName);
+        //Remove all non-alpha or spaces + &
+        $fullName = preg_replace('/[^a-zA-Z\\s&]/', '', $fullName);
+
+        if (preg_match('/&/', $fullName)) {
+            $fullName = explode(' ', str_replace([' ', '&'], ' ', $fullName));
+        } else {
+            $fullName = explode(' ', $fullName);
+        }
+        //reindex array and remove empty element
+        $fullName = array_values(array_filter($fullName));
+
+        if (count($fullName) === 3) {
+            return [
+                self::FIRST_NAME_TENANT => $fullName[0],
+                self::LAST_NAME_TENANT  => $fullName[2],
+            ];
+        }
+
+        return [
+            self::FIRST_NAME_TENANT => $fullName[0],
+            self::LAST_NAME_TENANT  => $fullName[1],
+        ];
     }
 
     /**
