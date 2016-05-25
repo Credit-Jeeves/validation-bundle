@@ -224,9 +224,9 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function sanitizeTenantNameProvider()
     {
         return [
+            ['Bob Damian and Marley Denial', 'Bob', 'Damian'],
             ['Bob & Damian & Marley', 'Bob', 'Marley'],
             ['Bob Damian & Marley Denial', 'Bob', 'Damian'],
-            ['Bob Damian and Marley Denial', 'Bob', 'Denial'],
             ['Jerry J. Garcia', 'Jerry', 'Garcia'],
             ['Martin Luther King Jr.', 'Martin', 'King'],
             ['Dr. Ruth Westheimer', 'Ruth', 'Westheimer'],

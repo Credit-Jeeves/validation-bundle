@@ -323,7 +323,12 @@ abstract class MappingAbstract implements MappingInterface
         $isUsedAmpersand =  false;
 
         if (preg_match('/&/', $fullName)) {
-            $fullName = str_replace(['&', ' and '], ' ', $fullName);
+            $fullName = str_replace('&', ' ', $fullName);
+            $isUsedAmpersand = true;
+        }
+
+        if (preg_match('/ and /', $fullName)) {
+            $fullName = str_replace(' and ', ' ', $fullName);
             $isUsedAmpersand = true;
         }
 
