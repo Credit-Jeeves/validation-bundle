@@ -327,13 +327,11 @@ class Order extends Base
      *
      * @return string|null
      */
-    public function getTenantExternalId()
+    public function getExternalLeaseId()
     {
         $holding = $this->getContract()->getHolding();
-        if ($holding->isExportTenantId() &&
-            $residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)
-        ) {
-            return $residentMapping->getResidentId();
+        if ($holding->isExportTenantId()) {
+            return $this->getContract()->getExternalLeaseId();
         }
 
         return null;
