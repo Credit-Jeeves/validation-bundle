@@ -4,7 +4,9 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CheckoutBundle\Payment\BusinessDaysCalculator;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\PaymentManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\PayAnyone\ReportLoader;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Exception\PaymentProcessorInvalidArgumentException;
@@ -100,5 +102,28 @@ class PaymentProcessorAciPayAnyone implements PayDirectProcessorInterface
     {
         // TODO Need validate by order type
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate)
+    {
+        return BusinessDaysCalculator::getDepositDate(
+            $executeDate,
+            $this->getBusinessDaysRequired($paymentType)
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBusinessDaysRequired($paymentType)
+    {
+        if ($paymentType === OrderPaymentType::BANK) {
+            return self::DELIVERY_BUSINESS_DAYS_FOR_BANK;
+        }
+
+        return self::DELIVERY_BUSINESS_DAYS_FOR_CARD;
     }
 }

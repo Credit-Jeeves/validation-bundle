@@ -97,7 +97,7 @@ class AttributeGeneratorWeb extends AttributeGenerator
                     '{' .
                         '\'AMOUNT\': getTotal(), ' .
                         '\'DUE_DAY\': payment.dueDate(), ' .
-                        '\'SETTLE_DAYS\': settleDays, ' .
+                        '\'SETTLE_DAYS\': getMaxBusinessDaysForDelivery(), ' .
                         '\'ENDS_ON\': getLastPaymentDay()' .
                     '})' .
                     '"></p></div>' .

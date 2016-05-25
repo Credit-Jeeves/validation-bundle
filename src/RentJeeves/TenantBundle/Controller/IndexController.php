@@ -2,6 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractRepository;
@@ -21,18 +22,16 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        /**
-         * @var $tenant Tenant
-         */
         $tenant = $this->getUser();
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         if ($this->isMobile()) {
             return $this->render('TenantBundle:Index:index.mobile.html.twig', array('user' => $tenant));
         } else {
-            return array(
+            return [
                 'user' => $tenant,
-            );
+                'businessDays' => $this->getBusinessDaysForDelivery(),
+            ];
         }
     }
 
@@ -52,7 +51,7 @@ class IndexController extends Controller
         // if ANY associated contracts have groups with reportingIsOff = true, turn off for now
         $reportingIsOff = $countReportingIsOffContracts > 0;
         $hasAccessToOptInReporting = $countCurrentContracts > 0 && !$reportingIsOff;
-        
+
         return array(
             'isReporting' => $isReporting,
             'reportingIsOff' => $reportingIsOff,
@@ -100,5 +99,30 @@ class IndexController extends Controller
         $url = $this->container->get('router')->generate('tenant_summary');
 
         return new RedirectResponse($url);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getBusinessDaysForDelivery()
+    {
+        return [
+            'heartland' => [
+                'card' => $this->get('payment_processor.heartland')->getBusinessDaysRequired(OrderPaymentType::CARD),
+                'bank' => $this->get('payment_processor.heartland')->getBusinessDaysRequired(OrderPaymentType::BANK),
+            ],
+            'aci_pay_direct' => [
+                'card' => $this->get('payment_processor.aci_pay_anyone')
+                    ->getBusinessDaysRequired(OrderPaymentType::CARD),
+                'bank' => $this->get('payment_processor.aci_pay_anyone')
+                    ->getBusinessDaysRequired(OrderPaymentType::BANK),
+            ],
+            'aci_submerchant' => [
+                'card' => $this->get('payment_processor.aci_collect_pay')
+                    ->getBusinessDaysRequired(OrderPaymentType::CARD),
+                'bank' => $this->get('payment_processor.aci_collect_pay')
+                    ->getBusinessDaysRequired(OrderPaymentType::BANK),
+            ],
+        ];
     }
 }
