@@ -288,6 +288,12 @@ abstract class MappingAbstract implements MappingInterface
                     self::LAST_NAME_TENANT  => implode(' ', array($names[2], $names[3])),
                 );
                 break;
+            case 5:
+                $data = [
+                    self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
+                    self::LAST_NAME_TENANT  => implode(' ', array($names[2], $names[3], $names[4])),
+                ];
+                break;
             default:
                 $data = array(
                     self::FIRST_NAME_TENANT => '',
@@ -317,7 +323,7 @@ abstract class MappingAbstract implements MappingInterface
         $isUsedAmpersand =  false;
 
         if (preg_match('/&/', $fullName)) {
-            $fullName = str_replace('&', ' ', $fullName);
+            $fullName = str_replace(['&', ' and '], ' ', $fullName);
             $isUsedAmpersand = true;
         }
 

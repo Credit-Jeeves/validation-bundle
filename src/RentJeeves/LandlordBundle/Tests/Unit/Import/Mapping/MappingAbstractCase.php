@@ -224,13 +224,16 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
     public function sanitizeTenantNameProvider()
     {
         return [
+            ['Bob & Damian & Marley', 'Bob', 'Marley'],
+            ['Bob Damian & Marley Denial', 'Bob', 'Damian'],
+            ['Bob Damian and Marley Denial', 'Bob', 'Denial'],
             ['Jerry J. Garcia', 'Jerry', 'Garcia'],
             ['Martin Luther King Jr.', 'Martin', 'King'],
             ['Dr. Ruth Westheimer', 'Ruth', 'Westheimer'],
             ['Bob & Damian Marley', 'Bob', 'Marley'],
             ['Jerry J. Garcia J.', 'Jerry', 'Garcia'],
-            ['Bob & Damian & Marley', '', ''],
             ['Bob Damian Marley Denial', 'Bob', 'Denial'],
+            ['Bob and Damian Marley', 'Bob', 'Marley'],
         ];
     }
 
@@ -247,7 +250,11 @@ class MappingAbstractCase extends \PHPUnit_Framework_TestCase
         $mapping = new MappingTest();
         $data = $mapping::parseName($name);
         $this->assertCount(2, $data, 'We should get two element');
-        $this->assertEquals($expectedFirstName, $data[MappingTest::FIRST_NAME_TENANT], 'First name mapped not correctly');
+        $this->assertEquals(
+            $expectedFirstName,
+            $data[MappingTest::FIRST_NAME_TENANT],
+            'First name mapped not correctly'
+        );
         $this->assertEquals($expectedLastName, $data[MappingTest::LAST_NAME_TENANT], 'Last name mapped not correctly');
     }
 }
