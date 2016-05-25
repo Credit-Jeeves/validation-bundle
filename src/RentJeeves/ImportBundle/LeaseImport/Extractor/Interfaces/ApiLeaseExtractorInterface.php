@@ -9,5 +9,5 @@ interface ApiLeaseExtractorInterface extends LeaseExtractorInterface
      *
      * @param string $extPropertyId
      */
-    public function setExtPropertyId($extPropertyId);
+    public function setExternalPropertyId($extPropertyId);
 }

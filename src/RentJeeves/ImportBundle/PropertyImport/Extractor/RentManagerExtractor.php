@@ -51,7 +51,7 @@ class RentManagerExtractor implements ApiPropertyExtractorInterface
     {
         if (null === $this->group || null === $this->externalPropertyId) {
             throw new ImportLogicException(
-                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+                'Pls configure extractor("setGroup","setExternalPropertyId") before extractData.'
             );
         }
         $this->logger->info(

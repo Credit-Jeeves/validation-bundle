@@ -65,7 +65,7 @@ class ExtractorBuilder
         $extractor = $this->factory->getExtractor($this->group);
         $extractor->setGroup($this->group);
         if ($extractor instanceof ApiLeaseExtractorInterface) {
-            $extractor->setExtPropertyId($this->additionalParameter);
+            $extractor->setExternalPropertyId($this->additionalParameter);
         } elseif ($extractor instanceof CsvLeaseExtractorInterface) {
             $extractor->setPathToFile($this->additionalParameter);
         }

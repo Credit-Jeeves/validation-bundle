@@ -26,7 +26,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGroupDoesNotHaveSettings()
     {
-        $factory = new ExtractorFactory($this->getBaseMock(CsvExtractor::class));
+        $factory = new ExtractorFactory();
         $factory->getExtractor(new Group());
     }
 
@@ -49,7 +49,7 @@ class ExtractorFactoryCase extends UnitTestBase
         $importSettings->setSource(ImportSource::INTEGRATED_API);
         $group->setImportSettings($importSettings);
 
-        $factory = new ExtractorFactory($this->getBaseMock(CsvExtractor::class));
+        $factory = new ExtractorFactory();
         $factory->getExtractor($group);
     }
 
@@ -60,7 +60,7 @@ class ExtractorFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfTryAddApiExtractorForNotApiAccountingSystem()
     {
-        $factory = new ExtractorFactory($this->getBaseMock(CsvExtractor::class));
+        $factory = new ExtractorFactory();
         $factory->addApiExtractor(
             AccountingSystem::YARDI_GENESIS_2,
             $this->getBaseMock(ApiLeaseExtractorInterface::class)
@@ -84,7 +84,7 @@ class ExtractorFactoryCase extends UnitTestBase
         $importSettings->setSource(ImportSource::INTEGRATED_API);
         $group->setImportSettings($importSettings);
 
-        $factory = new ExtractorFactory($this->getBaseMock(CsvExtractor::class));
+        $factory = new ExtractorFactory();
         $factory->addApiExtractor(AccountingSystem::RESMAN, $this->getBaseMock(ResmanExtractor::class));
         $extractor = $factory->getExtractor($group);
 
@@ -105,7 +105,8 @@ class ExtractorFactoryCase extends UnitTestBase
         $importSettings->setSource(ImportSource::CSV);
         $group->setImportSettings($importSettings);
 
-        $factory = new ExtractorFactory($this->getBaseMock(CsvExtractor::class));
+        $factory = new ExtractorFactory();
+        $factory->setCsvExtractor($this->getBaseMock(CsvExtractor::class));
         $extractor = $factory->getExtractor($group);
 
         $this->assertInstanceOf(CsvLeaseExtractorInterface::class, $extractor, 'Factory return incorrect result.');

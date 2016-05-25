@@ -30,7 +30,7 @@ class ExtractorFactory
     /**
      * @param CsvLeaseExtractorInterface $csvExtractor
      */
-    public function __construct(CsvLeaseExtractorInterface $csvExtractor)
+    public function setCsvExtractor(CsvLeaseExtractorInterface $csvExtractor)
     {
         $this->csvExtractor = $csvExtractor;
     }

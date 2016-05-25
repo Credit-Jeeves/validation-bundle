@@ -9,5 +9,5 @@ interface ApiPropertyExtractorInterface extends PropertyExtractorInterface
      *
      * @param mixed $extPropertyId
      */
-    public function setExtPropertyId($extPropertyId);
+    public function setExternalPropertyId($extPropertyId);
 }

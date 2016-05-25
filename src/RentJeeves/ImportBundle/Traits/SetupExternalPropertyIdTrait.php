@@ -12,7 +12,7 @@ trait SetupExternalPropertyIdTrait
     /**
      * @param string $extPropertyId
      */
-    public function setExtPropertyId($extPropertyId)
+    public function setExternalPropertyId($extPropertyId)
     {
         $this->externalPropertyId = $extPropertyId;
     }

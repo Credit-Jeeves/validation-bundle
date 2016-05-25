@@ -52,9 +52,9 @@ services:
 
     import.lease.extractor_factory:
         class: RentJeeves\ImportBundle\LeaseImport\Extractor\ExtractorFactory
-        arguments:
-            - '@import.lease.extractor.csv'
+        public: false
         calls:
+            - [setCsvExtractor, ['@import.lease.extractor.csv']]
             - [addApiExtractor, ['%accounting_system.resman%', '@import.lease.extractor.resman']]
 
     # services
