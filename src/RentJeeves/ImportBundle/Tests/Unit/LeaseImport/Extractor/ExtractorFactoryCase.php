@@ -68,8 +68,8 @@ class ExtractorFactoryCase extends UnitTestBase
     }
 
     /**
- * @test
- */
+     * @test
+     */
     public function shouldReturnExtractorForValidAndSupportedAccountingSystem()
     {
         $groupSettings = new GroupSettings();
