@@ -144,26 +144,13 @@ class ImportCsvCase extends ImportBaseAbstract
             $trs['import.status.skip'],
             "Count contracts with status 'skip' is wrong. On first page."
         );
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
-
         $submitImportFile->click();
 
         $this->waitReviewAndPost();
 
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertCount(1, $trs, "Count contract wrong");
-        $this->assertCount(2, $trs['import.status.new'], "Count contracts with status 'new' is wrong.");
-
-        $this->fillSecondPageWrongValue($trs);
-
-        $submitImportFile->click();
-        $this->waitReviewAndPost();
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount(1, $trs, 'Incorrect number of contracts');
         $this->assertCount(2, $trs['import.status.skip'], 'Count contract with status \'skip\' wrong');
         $submitImportFile->click();
 
@@ -175,14 +162,14 @@ class ImportCsvCase extends ImportBaseAbstract
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '2test@mail.com']);
         $this->assertNotNull($tenant);
-        $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
-        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getFirstName(), 'Trent', 'Wrong first name');
+        $this->assertEquals($tenant->getLastName(), 'Dacey', 'Wrong last name');
         $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
 
         // Check that first and last names are parsed correctly when field contains coma.
         $tenant2 = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '19test@mail.com']);
         $this->assertNotNull($tenant2);
-        $this->assertEquals('Lisa Maria', $tenant2->getFirstName());
+        $this->assertEquals('Lisa', $tenant2->getFirstName());
         $this->assertEquals('Sanders', $tenant2->getLastName());
 
         /**
@@ -619,21 +606,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->fillCsvMapping($this->mapMultiplePropertyFile, 17);
 
         $submitImportFile->click();
-        $this->session->wait(
-            5000,
-            "$('.errorField').length > 0"
-        );
         $this->waitReviewAndPost();
-
-        // first page: all contract waiting and 5 name errors.
-        $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
-        $this->assertEquals(5, count($errorFields));
-
-        $this->assertEquals('', $errorFields[0]->getValue());
-        $this->assertEquals('', $errorFields[1]->getValue());
-        $this->assertEquals('& Adelai', $errorFields[2]->getValue());
-        $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
-        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
 
         $trs = $this->getParsedTrsByStatus();
 
