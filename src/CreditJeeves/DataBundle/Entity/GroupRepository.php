@@ -192,7 +192,7 @@ class GroupRepository extends EntityRepository
     }
 
     /**
-     * @param $locationId
+     * @param int $locationId
      *
      * @return Group|null
      */
