@@ -80,7 +80,7 @@ class EmailBatchDepositReportManager
                 }
             }
 
-            $this->notifyHoldingAdmin($holdingAdmin, $groups, $date, $needSend, $resend, $groupIds);
+            $this->notifyHoldingAdmin($holdingAdmin, $groups, $date, $needSend, $resend);
         }
     }
 
@@ -116,15 +116,13 @@ class EmailBatchDepositReportManager
      * @param \DateTime $date
      * @param $needSend
      * @param $resend
-     * @param array $groupIds
      */
     protected function notifyHoldingAdmin(
         Landlord $holdingAdmin,
         array $groups,
         \DateTime $date,
         $needSend,
-        $resend,
-        $groupIds = null
+        $resend
     ) {
         if ($needSend) {
             $this->logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
@@ -138,7 +136,7 @@ class EmailBatchDepositReportManager
                     $holdingAdmin,
                     $date,
                     $group = null,
-                    $groupIds
+                    $groups
                 );
             }
 
@@ -245,6 +243,7 @@ class EmailBatchDepositReportManager
     protected function getPreparedParamsBeforeSendForGroup(Group $group, $batchData, $reversalData)
     {
         return [
+            'id' => $group->getId(),
             'groupName' => $group->getName(),
             'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
             'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
@@ -294,7 +293,7 @@ class EmailBatchDepositReportManager
      * @param Landlord $landlord
      * @param \DateTime $date
      * @param Group|null $group
-     * @param array $groupIds
+     * @param array $groups
      * @return string
      * @throws \RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException
      */
@@ -303,9 +302,9 @@ class EmailBatchDepositReportManager
         Landlord $landlord,
         \DateTime $date,
         Group $group = null,
-        $groupIds = null
+        array $groups = null
     ) {
-        $content = $this->getExportContent($exportReport, $landlord, $date, $group, $groupIds);
+        $content = $this->getExportContent($exportReport, $landlord, $date, $group, $groups);
         $tmpFilePath = sprintf(
             '%s%s%s_%s',
             sys_get_temp_dir(),
@@ -326,7 +325,7 @@ class EmailBatchDepositReportManager
      * @param Landlord $landlord
      * @param \DateTime $date
      * @param Group|null $group
-     * @param null $groupIds
+     * @param array|null $groups
      * @return string
      */
     protected function getExportContent(
@@ -334,16 +333,19 @@ class EmailBatchDepositReportManager
         Landlord $landlord,
         \DateTime $date,
         Group $group = null,
-        $groupIds = null
+        array $groups = null
     ) {
+        if (null !== $groups) {
+            $groups = array_column($groups, 'id');
+        }
         return $exportReport->getContent(
             [
                 'landlord' => $landlord,
                 'group' => $group,
+                'groupIds' => $groups,
                 'export_by' => ExportReport::EXPORT_BY_DEPOSITS,
                 'begin' => $date->format('Y-m-d'),
                 'end' => $date->format('Y-m-d'),
-                'groupIds' => $groupIds,
             ]
         );
     }
