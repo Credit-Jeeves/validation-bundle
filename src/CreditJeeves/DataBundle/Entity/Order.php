@@ -320,6 +320,20 @@ class Order extends Base
     }
 
     /**
+     * @return string|null
+     */
+    public function getTenantExternalId()
+    {
+        $holding = $this->getContract()->getHolding();
+        if ($holding->isExportTenantId() &&
+            $residentMapping = $this->getContract()->getTenant()->getResidentForHolding($holding)
+        ) {
+            return $residentMapping->getResidentId();
+        }
+        return null;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Tenant ID")
      * @Serializer\Groups({"promasReport"})
