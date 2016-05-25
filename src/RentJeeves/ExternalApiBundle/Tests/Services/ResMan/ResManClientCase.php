@@ -243,7 +243,7 @@ class ResManClientCase extends Base
     /**
      * @test
      */
-    public function testGetResidentTransactionsWithEmptyMoveOutDate()
+    public function shouldGetResidentTransactionsWithEmptyMoveOutDate()
     {
         $container = $this->getKernel()->getContainer();
         /** @var $resManClient TestResManClient */
