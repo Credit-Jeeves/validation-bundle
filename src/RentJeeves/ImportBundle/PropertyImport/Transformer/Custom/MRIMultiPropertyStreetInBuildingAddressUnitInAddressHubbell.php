@@ -70,4 +70,3 @@ class MRIMultiPropertyStreetInBuildingAddressUnitInAddressHubbell extends MRITra
         return ($accountingSystemRecord->getBuildingId() == "NRG") ? "NRG" . "$unit_name" : $unit_name;
     }
 }
-

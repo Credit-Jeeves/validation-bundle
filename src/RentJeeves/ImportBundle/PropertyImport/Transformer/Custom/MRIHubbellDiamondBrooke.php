@@ -72,4 +72,3 @@ class MRIHubbellDiamondBrooke extends MRITransformer
         return $unit_name;
     }
 }
-
