@@ -49,10 +49,10 @@ class EmailBatchDepositReportManager
 
     /**
      * @param \DateTime $date
-     * @param int $groupId
+     * @param array $groupIds
      * @param string $resend
      */
-    public function sendEmailReportToHoldingAdmins(\DateTime $date, $groupId = null, $resend = null)
+    public function sendEmailReportToHoldingAdmins(\DateTime $date, $groupIds = null, $resend = null)
     {
         $this->logger->info('Sending emails to holding admins.');
 
@@ -71,10 +71,12 @@ class EmailBatchDepositReportManager
                 $batchData = $this->getTransactionRepository()->getBatchDepositedInfo($group, $date);
                 $reversalData = $this->getTransactionRepository()->getReversalDepositedInfo($group, $date);
 
-                $groups[] = $this->getPreparedParamsBeforeSendForGroup($group, $batchData, $reversalData);
+                if (!$groupIds || ($groupIds && in_array($group->getId(), $groupIds))) {
+                    $groups[] = $this->getPreparedParamsBeforeSendForGroup($group, $batchData, $reversalData);
+                }
 
                 if (!$needSend && (count($batchData) > 0 || count($reversalData) > 0)) {
-                    $needSend = ($groupId) ? $group->getId() == $groupId : true;
+                    $needSend = ($groupIds) ? in_array($group->getId(), $groupIds) : true;
                 }
             }
 
@@ -84,10 +86,10 @@ class EmailBatchDepositReportManager
 
     /**
      * @param \DateTime $date
-     * @param int $groupId
+     * @param array $groupIds
      * @param string $resend
      */
-    public function sendEmailReportToHoldingNonAdmins(\DateTime $date, $groupId = null, $resend = null)
+    public function sendEmailReportToHoldingNonAdmins(\DateTime $date, $groupIds = null, $resend = null)
     {
         $this->logger->info('Sending emails to non-admins.');
 
@@ -101,8 +103,7 @@ class EmailBatchDepositReportManager
             }
             /** @var Group $group */
             foreach ($agentGroups as $group) {
-                // only send if no groupid option specified, or if groupId option matches current group
-                if ((!$groupId) || ($groupId && ($group->getId() == $groupId))) {
+                if (!$groupIds || ($groupIds && in_array($group->getId(), $groupIds))) {
                     $this->notifyLandlordIsNotAdmin($landlord, $group, $date, $resend);
                 }
             }
@@ -113,11 +114,16 @@ class EmailBatchDepositReportManager
      * @param Landlord $holdingAdmin
      * @param array $groups
      * @param \DateTime $date
-     * @param bool $needSend
-     * @param string $resend
+     * @param $needSend
+     * @param $resend
      */
-    protected function notifyHoldingAdmin(Landlord $holdingAdmin, array $groups, \DateTime $date, $needSend, $resend)
-    {
+    protected function notifyHoldingAdmin(
+        Landlord $holdingAdmin,
+        array $groups,
+        \DateTime $date,
+        $needSend,
+        $resend
+    ) {
         if ($needSend) {
             $this->logger->info(sprintf('Sending BatchDepositReportHolding to %s.', $holdingAdmin->getEmail()));
 
@@ -125,7 +131,13 @@ class EmailBatchDepositReportManager
             $pathToCsvReport = null;
             $exportReport = $this->getExportReport($holdingAdmin->getHolding());
             if ($exportReport) {
-                $pathToCsvReport = $this->getPathToCsvReport($exportReport, $holdingAdmin, $date, $group = null);
+                $pathToCsvReport = $this->getPathToCsvReport(
+                    $exportReport,
+                    $holdingAdmin,
+                    $date,
+                    $group = null,
+                    $groups
+                );
             }
 
             $result = $this->mailer->sendBatchDepositReportHolding(
@@ -231,6 +243,7 @@ class EmailBatchDepositReportManager
     protected function getPreparedParamsBeforeSendForGroup(Group $group, $batchData, $reversalData)
     {
         return [
+            'id' => $group->getId(),
             'groupName' => $group->getName(),
             'accountNumber' => $group->getRentAccountNumberPerCurrentPaymentProcessor(),
             'groupPaymentProcessor' => $group->getGroupSettings()->getPaymentProcessor(),
@@ -280,6 +293,7 @@ class EmailBatchDepositReportManager
      * @param Landlord $landlord
      * @param \DateTime $date
      * @param Group|null $group
+     * @param array $groups
      * @return string
      * @throws \RentJeeves\LandlordBundle\Accounting\Export\Exception\ExportException
      */
@@ -287,9 +301,10 @@ class EmailBatchDepositReportManager
         ExportReport $exportReport,
         Landlord $landlord,
         \DateTime $date,
-        Group $group = null
+        Group $group = null,
+        array $groups = null
     ) {
-        $content = $this->getExportContent($exportReport, $landlord, $date, $group);
+        $content = $this->getExportContent($exportReport, $landlord, $date, $group, $groups);
         $tmpFilePath = sprintf(
             '%s%s%s_%s',
             sys_get_temp_dir(),
@@ -310,18 +325,24 @@ class EmailBatchDepositReportManager
      * @param Landlord $landlord
      * @param \DateTime $date
      * @param Group|null $group
+     * @param array|null $groups
      * @return string
      */
     protected function getExportContent(
         ExportReport $exportReport,
         Landlord $landlord,
         \DateTime $date,
-        Group $group = null
+        Group $group = null,
+        array $groups = null
     ) {
+        if (null !== $groups) {
+            $groups = array_column($groups, 'id');
+        }
         return $exportReport->getContent(
             [
                 'landlord' => $landlord,
                 'group' => $group,
+                'groupIds' => $groups,
                 'export_by' => ExportReport::EXPORT_BY_DEPOSITS,
                 'begin' => $date->format('Y-m-d'),
                 'end' => $date->format('Y-m-d'),
