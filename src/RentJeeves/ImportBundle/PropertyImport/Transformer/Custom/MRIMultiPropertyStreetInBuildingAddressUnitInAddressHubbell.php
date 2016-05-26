@@ -65,8 +65,8 @@ class MRIMultiPropertyStreetInBuildingAddressUnitInAddressHubbell extends MRITra
      */
     protected function getUnitName(Value $accountingSystemRecord)
     {
-        $unit_name = $accountingSystemRecord->getUnitId();
+        $unitName = $accountingSystemRecord->getUnitId();
 
-        return ($accountingSystemRecord->getBuildingId() == "NRG") ? "NRG" . "$unit_name" : $unit_name;
+        return ($accountingSystemRecord->getBuildingId() == "NRG") ? "NRG" . "$unitName" : $unitName;
     }
 }

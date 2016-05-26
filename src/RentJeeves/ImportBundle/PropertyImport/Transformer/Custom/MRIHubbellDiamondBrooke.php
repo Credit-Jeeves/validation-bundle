@@ -65,10 +65,10 @@ class MRIHubbellDiamondBrooke extends MRITransformer
      */
     protected function getUnitName(Value $accountingSystemRecord)
     {
-        $building_id = $accountingSystemRecord->getBuildingId();
-        $unit_name = $accountingSystemRecord->getUnitId();
-        $unit_name = ($building_id == "NRG") ? "NRG" . "$unit_name" : $building_id . '-' . $unit_name;
+        $buildingId = $accountingSystemRecord->getBuildingId();
+        $unitName = $accountingSystemRecord->getUnitId();
+        $unitName = ($buildingId == "NRG") ? "NRG" . "$unitName" : $buildingId . '-' . $unitName;
 
-        return $unit_name;
+        return $unitName;
     }
 }
