@@ -356,7 +356,6 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
-        $query->innerJoin('ten.residentsMapping', 'res');
         $query->innerJoin('t.unit', 'unit');
         $query->innerJoin('o.transactions', 'transaction');
         $query->innerJoin('t.group', 'g');
@@ -382,7 +381,7 @@ class OrderRepository extends EntityRepository
         $query->andWhere('o.paymentType in (:paymentType)');
         $query->andWhere('g.id in (:groups)');
         $query->andWhere('gs.isIntegrated = 1');
-        $query->andWhere('res.holding = :holding');
+        $query->andWhere('t.holding = :holding');
         $query->setParameter('end', $end);
         $query->setParameter('start', $start);
 
@@ -400,7 +399,7 @@ class OrderRepository extends EntityRepository
         );
         $query->setParameter('groups', $groups);
         $query->setParameter('holding', $group->getHolding());
-        $query->orderBy('res.residentId', 'ASC');
+        $query->orderBy('t.externalLeaseId', 'ASC');
         $query->orderBy('transaction.batchId', 'ASC');
         $query = $query->getQuery();
 
