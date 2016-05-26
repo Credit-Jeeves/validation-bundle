@@ -27,16 +27,16 @@
     <script type="text/javascript">
         document.bussinesDays = {
             heartland : {
-                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
-                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorHeartland::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+                card : {{ businessDays.heartland.card }},
+                bank : {{ businessDays.heartland.bank }}
             },
             aci_pay_direct : {
-                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
-                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciPayAnyone::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+                card : {{ businessDays.aci_pay_direct.card }},
+                bank : {{ businessDays.aci_pay_direct.bank }}
             },
             aci_submerchant : {
-                card : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_CARD') }},
-                bank : {{ constant('RentJeeves\\CheckoutBundle\\PaymentProcessor\\PaymentProcessorAciCollectPay::DELIVERY_BUSINESS_DAYS_FOR_BANK') }}
+                card : {{ businessDays.aci_submerchant.card }},
+                bank : {{ businessDays.aci_submerchant.bank }}
             }
         };
     </script>

@@ -117,6 +117,14 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, C
     /**
      * {@inheritdoc}
      */
+    public function getBusinessDaysRequired($paymentType)
+    {
+        throw new PaymentProcessorLogicException('getBusinessDaysRequired is not implemented for ProfitStars');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function generateReversedBatchId(Order $order)
     {
         return null;

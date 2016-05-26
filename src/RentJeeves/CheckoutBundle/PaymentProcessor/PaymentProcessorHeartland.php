@@ -154,11 +154,22 @@ class PaymentProcessorHeartland implements SubmerchantProcessorInterface
      */
     public function calculateDepositDate($paymentType, \DateTime $executeDate)
     {
+        return BusinessDaysCalculator::getDepositDate(
+            $executeDate,
+            $this->getBusinessDaysRequired($paymentType)
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBusinessDaysRequired($paymentType)
+    {
         if ($paymentType === OrderPaymentType::BANK) {
-            return BusinessDaysCalculator::getDepositDate($executeDate, self::DELIVERY_BUSINESS_DAYS_FOR_BANK);
+            return self::DELIVERY_BUSINESS_DAYS_FOR_BANK;
         }
 
-        return BusinessDaysCalculator::getDepositDate($executeDate, self::DELIVERY_BUSINESS_DAYS_FOR_CARD);
+        return self::DELIVERY_BUSINESS_DAYS_FOR_CARD;
     }
 
     /**
