@@ -40,7 +40,7 @@ class Lease
 
     /**
      * @Serializer\SerializedName("ActualMoveOut")
-     * @Serializer\Type("DateTime<'Y-m-d'>")
+     * @Serializer\Type("string")
      * @Serializer\Groups({"ResMan"})
      * @Serializer\XmlElement(namespace="http://www.w3.org/2005/Atom")
      */
@@ -55,7 +55,7 @@ class Lease
     protected $responsibleForLease;
 
     /**
-     * @return \DateTime
+     * @return string
      */
     public function getActualMoveOut()
     {
@@ -63,11 +63,25 @@ class Lease
     }
 
     /**
-     * @param \DateTime $actualMoveOut
+     * @param string $actualMoveOut
      */
-    public function setActualMoveOut(\DateTime $actualMoveOut)
+    public function setActualMoveOut($actualMoveOut)
     {
         $this->actualMoveOut = $actualMoveOut;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getActualMoveOutDateObject()
+    {
+        if (!empty($this->actualMoveOut)) {
+            $date = \DateTime::createFromFormat('Y-m-d', $this->actualMoveOut);
+
+            return false !== $date ? $date : null;
+        }
+
+        return null;
     }
 
     /**

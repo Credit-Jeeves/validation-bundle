@@ -69,7 +69,7 @@ class StorageResman extends ExternalApiStorage
 
                 $startAt = $this->getDateString($customerUser->getLease()->getLeaseFromDate());
                 $finishAt = $this->getDateString($customerUser->getLease()->getLeaseToDate());
-                $moveOut = $this->getDateString($customerUser->getLease()->getActualMoveOut());
+                $moveOut = $this->getDateString($customerUser->getLease()->getActualMoveOutDateObject());
                 $paymentAccepted = $customerBase->getRentTrackPaymentAccepted();
                 $today = new \DateTime();
                 $finishAtObject = \DateTime::createFromFormat('Y-m-d', $finishAt);
