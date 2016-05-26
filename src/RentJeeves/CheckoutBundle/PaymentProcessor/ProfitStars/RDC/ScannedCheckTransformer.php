@@ -51,20 +51,23 @@ class ScannedCheckTransformer
 
     /**
      * @param WSRemoteDepositItem $depositItem
+     * @param Group $group
      * @return OrderSubmerchant
      * @throws ProfitStarsException
      */
-    public function transformToOrder(WSRemoteDepositItem $depositItem)
+    public function transformToOrder(WSRemoteDepositItem $depositItem, Group $group)
     {
         $contract = $this->getContract($depositItem);
 
         $order = new OrderSubmerchant();
         $order->setSum($depositItem->getTotalAmount());
-        $order->setUser($contract->getTenant());
+        if (null !== $contract) {
+            $order->setUser($contract->getTenant());
+        }
         $order->setPaymentProcessor(PaymentProcessor::PROFIT_STARS);
         $order->setPaymentType(OrderPaymentType::SCANNED_CHECK);
         $order->setCheckNumber($depositItem->getCheckNumber());
-        if ($depositAccount = $this->getDepositAccount($contract->getGroup(), $depositItem->getLocationId())) {
+        if ($depositAccount = $this->getDepositAccount($group, $depositItem->getLocationId())) {
             $order->setDepositAccount($depositAccount);
         }
         $createdDate = new \DateTime($depositItem->getItemDateTime());
@@ -78,9 +81,11 @@ class ScannedCheckTransformer
             $operationType = OperationType::CUSTOM;
         }
         $operation->setType($operationType);
-        $operation->setContract($contract);
+        if (null !== $contract) {
+            $operation->setContract($contract);
+        }
         $operation->setAmount($depositItem->getTotalAmount());
-        $operation->setPaidFor($this->calculatePaidFor($contract, $createdDate));
+        $operation->setPaidFor($this->calculatePaidFor($createdDate, $contract));
         $operation->setCreatedAt($createdDate);
         $order->addOperation($operation);
 
@@ -119,31 +124,35 @@ class ScannedCheckTransformer
 
     /**
      * @param WSRemoteDepositItem $depositItem
-     * @return Contract
+     * @return Contract|null
      * @throws ProfitStarsException
      */
     protected function getContract(WSRemoteDepositItem $depositItem)
     {
-        try {
-            $contractId = $this->encoder->decode($depositItem->getCustomerNumber());
-        } catch (ValidationEncoderException $e) {
-            throw new ProfitStarsException(sprintf(
-                'Customer number %s is invalid, can not skip32 decode.',
-                $depositItem->getCustomerNumber()
-            ));
+        $contractId = null;
+        if (!empty($depositItem->getCustomerNumber())) {
+            try {
+                $contractId = $this->encoder->decode($depositItem->getCustomerNumber());
+            } catch (ValidationEncoderException $e) {
+                throw new ProfitStarsException(sprintf(
+                    'Customer number "%s" is invalid, can not skip32 decode.',
+                    $depositItem->getCustomerNumber()
+                ));
+            }
+            $contract = $this->contractRepository->find($contractId);
+            if (null !== $contract) {
+                return $contract;
+            }
         }
 
-        $contract = $this->contractRepository->find($contractId);
-        if (null === $contract) {
-            throw new ProfitStarsException(sprintf(
-                'Contract not found for customerNumber "%s" (contractId #%s), batchNumber "%s"',
-                $depositItem->getCustomerNumber(),
-                $contractId,
-                $depositItem->getBatchNumber()
-            ));
-        }
+        $this->logger->warning(sprintf(
+            'Contract not found: customer# "%s" (contractId #%s), batch# "%s" -> creating order w/o contract',
+            $depositItem->getCustomerNumber(),
+            $contractId,
+            $depositItem->getBatchNumber()
+        ));
 
-        return $contract;
+        return null;
     }
 
     /**
@@ -168,18 +177,23 @@ class ScannedCheckTransformer
      * If <= 15th, set paid for to contract due date for current month.
      * If > 15th, set paid for to contract due date for next month.
      *
-     * @param Contract $contract
      * @param \DateTime $date
+     * @param Contract $contract
+     *
      * @return \DateTime
      */
-    protected function calculatePaidFor(Contract $contract, \DateTime $date)
+    protected function calculatePaidFor(\DateTime $date, Contract $contract = null)
     {
         $paidFor = clone $date;
         $currentDay = $date->format('j');
         if ($currentDay > 15) {
             $paidFor->modify('+1 month');
         }
-        $paidFor->setDate($paidFor->format('Y'), $paidFor->format('n'), $contract->getDueDate());
+        $dueDate = 1;
+        if (null !== $contract) {
+            $dueDate = $contract->getDueDate();
+        }
+        $paidFor->setDate($paidFor->format('Y'), $paidFor->format('n'), $dueDate);
 
         return $paidFor;
     }

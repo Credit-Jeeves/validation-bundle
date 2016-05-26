@@ -33,7 +33,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException
-     * @expectedExceptionMessage Customer number test is invalid, can not skip32 decode.
+     * @expectedExceptionMessage Customer number "test" is invalid, can not skip32 decode.
      */
     public function shouldThrowExceptionWhenCustomerNumberCanNotBeDecoded()
     {
@@ -53,15 +53,13 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $this->getLoggerMock()
         );
 
-        $checkTransformer->transformToOrder($depositItem);
+        $checkTransformer->transformToOrder($depositItem, new Group());
     }
 
     /**
      * @test
-     * @expectedException \RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\Exception\ProfitStarsException
-     * @expectedExceptionMessage Contract not found for customerNumber "test" (contractId #18), batchNumber "b1"
      */
-    public function shouldThrowExceptionIfContractNotFoundByCustomerNumber()
+    public function shouldCreateOrderWithoutContractAndLogWarningIfContractNotFoundByCustomerNumber()
     {
         $encoder = $this->getEncoderMock();
         $encoder
@@ -82,13 +80,24 @@ class ScannedCheckTransformerCase extends UnitTestBase
             ->setCustomerNumber('test')
             ->setBatchNumber('b1');
 
-        $checkTransformer = new ScannedCheckTransformer(
-            $encoder,
-            $repository,
-            $this->getLoggerMock()
-        );
+        $logger = $this->getLoggerMock();
+        $logger
+            ->expects($this->once())
+            ->method('warning');
 
-        $checkTransformer->transformToOrder($depositItem);
+        $checkTransformer = new ScannedCheckTransformer($encoder, $repository, $logger);
+
+        $order = $checkTransformer->transformToOrder($depositItem, new Group());
+
+        $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $order, 'Order entity is expected');
+        /** @var Operation $operation */
+        $this->assertInstanceOf(
+            Operation::class,
+            $operation = $order->getOperations()->first(),
+            'Operation entity is expected'
+        );
+        $this->assertNull($order->getUser(), 'User should not be set when contract not found');
+        $this->assertNull($operation->getContract(), 'Contract cannot be set when contract not found');
     }
 
     /**
@@ -105,7 +114,8 @@ class ScannedCheckTransformerCase extends UnitTestBase
 
         $contract = new Contract();
         $contract->setTenant(new Tenant());
-        $contract->setGroup(new Group());
+        $group = new Group();
+        $contract->setGroup($group);
         $contract->setDueDate(1);
 
         $repository = $this->getContractRepositoryMock();
@@ -135,7 +145,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $this->getLoggerMock()
         );
 
-        $order = $checkTransformer->transformToOrder($depositItem);
+        $order = $checkTransformer->transformToOrder($depositItem, $group);
         $this->assertInstanceOf('CreditJeeves\DataBundle\Entity\Order', $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
@@ -234,7 +244,8 @@ class ScannedCheckTransformerCase extends UnitTestBase
 
         $contract = new Contract();
         $contract->setTenant(new Tenant());
-        $contract->setGroup(new Group());
+        $group = new Group();
+        $contract->setGroup($group);
         $contract->setDueDate(1);
 
         $repository = $this->getContractRepositoryMock();
@@ -264,7 +275,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $this->getLoggerMock()
         );
 
-        $order = $checkTransformer->transformToOrder($depositItem);
+        $order = $checkTransformer->transformToOrder($depositItem, $group);
         $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
@@ -406,7 +417,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $this->getLoggerMock()
         );
 
-        $order = $checkTransformer->transformToOrder($depositItem);
+        $order = $checkTransformer->transformToOrder($depositItem, $group);
         $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
@@ -414,79 +425,11 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $operation = $order->getOperations()->first(),
             'Operation entity is expected'
         );
-        $this->assertInstanceOf(
-            Transaction::class,
-            $transaction = $order->getCompleteTransaction(),
-            'Transaction entity is expected'
-        );
         $this->assertEquals(OrderStatus::COMPLETE, $order->getStatus(), 'Order is expected to be COMPLETE');
-        $this->assertEquals($totalAmount, $order->getSum(), sprintf('Order sum should be %s', $totalAmount));
-        $this->assertEquals(
-            PaymentProcessor::PROFIT_STARS,
-            $order->getPaymentProcessor(),
-            'Order should have PROFIT_STARS payment processor'
-        );
-        $this->assertEquals(
-            OrderPaymentType::SCANNED_CHECK,
-            $order->getPaymentType(),
-            'Order should have SCANNED_CHECK type'
-        );
-        $this->assertEquals(
-            '0201',
-            $order->getCheckNumber(),
-            'Order should have check number 0201'
-        );
-        $this->assertEquals(
-            $itemDateTime,
-            $order->getCreatedAt()->format('Y-m-d'),
-            'Order should have expected createdAt'
-        );
         $this->assertEquals(
             OperationType::CUSTOM,
             $operation->getType(),
-            'Operation should have type RENT'
-        );
-        $this->assertEquals(
-            $totalAmount,
-            $operation->getTotalAmount(),
-            sprintf('Operation amount should be %s', $totalAmount)
-        );
-        $this->assertEquals(
-            $itemDateTime,
-            $operation->getCreatedAt()->format('Y-m-d'),
-            'Operation should have expected createdAt'
-        );
-        $this->assertEquals(
-            $itemDateTime,
-            $operation->getPaidFor()->format('Y-m-d'),
-            'Operation should have expected paidFor'
-        );
-        $this->assertEquals(
-            $itemDateTime,
-            $transaction->getCreatedAt()->format('Y-m-d'),
-            'Transaction should have expected createdAt'
-        );
-        $this->assertEquals(
-            $itemDateTime,
-            $transaction->getBatchDate()->format('Y-m-d'),
-            'Transaction should have expected batchDate'
-        );
-        $this->assertEquals(
-            102588,
-            $transaction->getMerchantName(),
-            'Transaction should have merchantName 102588'
-        );
-        $this->assertEquals(
-            'b1',
-            $transaction->getBatchId(),
-            'Transaction should have batchId b1'
-        );
-        $this->assertTrue($transaction->getIsSuccessful(), 'Transaction should be successful');
-        $this->assertNotNull($transaction->getDepositDate(), 'Complete order should have deposit date');
-        $this->assertEquals(
-            BusinessDaysCalculator::getNextDepositDate(new \DateTime($itemDateTime))->format('Y-m-d'),
-            $transaction->getDepositDate()->format('Y-m-d'),
-            'Transaction\'s deposit date is wrong'
+            'Operation should have type CUSTOM'
         );
     }
 
@@ -542,7 +485,7 @@ class ScannedCheckTransformerCase extends UnitTestBase
             $this->getLoggerMock()
         );
 
-        $order = $checkTransformer->transformToOrder($depositItem);
+        $order = $checkTransformer->transformToOrder($depositItem, $group);
         $this->assertInstanceOf(Order::class, $order, 'Order entity is expected');
         /** @var Operation $operation */
         $this->assertInstanceOf(
