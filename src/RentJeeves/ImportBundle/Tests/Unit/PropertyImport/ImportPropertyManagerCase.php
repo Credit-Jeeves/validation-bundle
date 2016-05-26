@@ -10,7 +10,7 @@ use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorBuilder;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\PropertyExtractorInterface;
 use RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager;
 use RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory;
 use RentJeeves\ImportBundle\PropertyImport\Loader\MappedLoader;
@@ -57,7 +57,7 @@ class ImportPropertyManagerCase extends UnitTestBase
         $import->setGroup($group);
         $import->setImportType(ImportModelType::PROPERTY);
 
-        $extractorMock = $this->getBaseMock(ExtractorInterface::class);
+        $extractorMock = $this->getBaseMock(PropertyExtractorInterface::class);
         $extractorMock->expects($this->once())
             ->method('extractData')
             ->will($this->returnValue($extData = ['testKey' => 'testValue']));
@@ -117,7 +117,7 @@ class ImportPropertyManagerCase extends UnitTestBase
         $import->setGroup($group);
         $import->setImportType(ImportModelType::PROPERTY);
 
-        $extractorMock = $this->getBaseMock(ExtractorInterface::class);
+        $extractorMock = $this->getBaseMock(PropertyExtractorInterface::class);
         $extractorMock->expects($this->once())
             ->method('extractData')
             ->will($this->throwException(new ImportException("Test error")));

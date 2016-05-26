@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\PropertyImport\Extractor\Traits;
+namespace RentJeeves\ImportBundle\Traits;
 
 trait SetupExternalPropertyIdTrait
 {
@@ -12,7 +12,7 @@ trait SetupExternalPropertyIdTrait
     /**
      * @param string $extPropertyId
      */
-    public function setExtPropertyId($extPropertyId)
+    public function setExternalPropertyId($extPropertyId)
     {
         $this->externalPropertyId = $extPropertyId;
     }

@@ -18,6 +18,12 @@ services:
             - @import.property.extractor_factory
             - @monolog.logger.property_import
 
+    import.lease.extractor_builder:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ExtractorBuilder
+        arguments:
+            - '@import.lease.extractor_factory'
+            - '@monolog.logger.lease_import'
+
     # factories
     import.property.extractor_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\ExtractorFactory
@@ -43,6 +49,13 @@ services:
               %accounting_system.amsi%: @import.property.transformer.amsi
               %accounting_system.rent_manager%: @import.property.transformer.rent_manager
             - @import.property.transformer.csv
+
+    import.lease.extractor_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ExtractorFactory
+        public: false
+        calls:
+            - [setCsvExtractor, ['@import.lease.extractor.csv']]
+            - [addApiExtractor, ['%accounting_system.resman%', '@import.lease.extractor.resman']]
 
     # services
     import.property.sftp_file_manager:
@@ -112,6 +125,14 @@ services:
             - @reader.csv
             - '@import.property.sftp_file_manager'
             - @monolog.logger.property_import
+
+    import.lease.extractor.resman:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ResmanExtractor
+        public: false
+
+    import.lease.extractor.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\CsvExtractor
+        public: false
 
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer

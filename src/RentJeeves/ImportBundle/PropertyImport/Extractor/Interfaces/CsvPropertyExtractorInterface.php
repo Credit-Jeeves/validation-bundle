@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces;
 
-interface CsvExtractorInterface extends ExtractorInterface
+interface CsvPropertyExtractorInterface extends PropertyExtractorInterface
 {
     /**
      * Setup path to CSV file which will be use for extract

@@ -6,9 +6,9 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\RentManagerSettings;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
 use RentTrack\RentManagerClientBundle\DataResource\UnitResource;
 use RentTrack\RentManagerClientBundle\Exception\RentManagerClientException;
 use RentTrack\RentManagerClientBundle\DataResource\PropertyResource;
@@ -19,7 +19,7 @@ use RentTrack\RentManagerClientBundle\RentManagerClient;
 /**
  * Service`s name "import.property.extractor.rent_manager"
  */
-class RentManagerExtractor implements ApiExtractorInterface
+class RentManagerExtractor implements ApiPropertyExtractorInterface
 {
     use SetupGroupTrait;
     use SetupExternalPropertyIdTrait;
@@ -51,7 +51,7 @@ class RentManagerExtractor implements ApiExtractorInterface
     {
         if (null === $this->group || null === $this->externalPropertyId) {
             throw new ImportLogicException(
-                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+                'Pls configure extractor("setGroup","setExternalPropertyId") before extractData.'
             );
         }
         $this->logger->info(
