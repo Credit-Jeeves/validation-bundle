@@ -391,6 +391,11 @@ class ExportCase extends BaseTestCase
     public function promasBatchReport()
     {
         $this->load(true);
+        $contract = $this->getEntityManager()->getRepository("RjDataBundle:Contract")->find(9);
+        $this->assertNotEmpty($contract, 'Contract should exist in fixture');
+        $contract->setExternalLeaseId('hello');
+        $contract->getHolding()->setExportTenantId(true);
+        $this->getEntityManager()->flush();
         $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/export');
         $beginD = new DateTime();
         $beginD->modify('-1 year');
@@ -427,7 +432,7 @@ class ExportCase extends BaseTestCase
         $this->assertEquals('AAABBB-7', $columns[1], 'Unit id should be AAABBB-7');
         $this->assertEquals(1500, $columns[2], 'Amount should be 1500');
         $this->assertEquals($columns[3], '"Trans #123123 Batch #125478"');
-        $this->assertEquals('t0013534', $columns[4], 'Resident id should be t0013534');
+        $this->assertEquals('hello', $columns[4], 'Lease Id should be hello');
 
         // check file without unit id
         $file = $archive->getFromIndex(4);
@@ -437,7 +442,7 @@ class ExportCase extends BaseTestCase
         $this->assertEmpty($columns[1], 'Unit should be empty');
         $this->assertEquals(1250, $columns[2], 'Amount should be 1250');
         $this->assertContains('Batch #555000', $columns[3]);
-        $this->assertEquals('t0011981', $columns[4], 'Resident id should be t0011981');
+        $this->assertEquals('', $columns[4], 'Lease id should be empty');
     }
 
     /**
