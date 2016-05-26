@@ -345,7 +345,7 @@ class RemoteDepositLoader
                 $order = $this->checkTransformer->transformToOrder($depositItem);
                 $this->em->persist($order);
                 $this->em->flush();
-                if (OrderStatus::COMPLETE === $order->getStatus()) {
+                if (OrderStatus::COMPLETE === $order->getStatus() && null != $order->getUser()) {
                     $this->mailer->sendProfitStarsReceipt($order);
                 }
 
@@ -470,7 +470,9 @@ class RemoteDepositLoader
                     $operation->setAmount($depositItem->getTotalAmount());
                 }
             }
-            $this->mailer->sendProfitStarsReceipt($order);
+            if (null !== $order->getUser()) {
+                $this->mailer->sendProfitStarsReceipt($order);
+            }
         }
     }
 

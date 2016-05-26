@@ -29,7 +29,7 @@ class PartnerChargingManager
 
     public function charge(Order $order)
     {
-        $partnerCode = $order->getUser()->getPartnerCode();
+        $partnerCode = $order->getUser() ? $order->getUser()->getPartnerCode() : null;
         if (!$partnerCode) {
             return false;
         }
