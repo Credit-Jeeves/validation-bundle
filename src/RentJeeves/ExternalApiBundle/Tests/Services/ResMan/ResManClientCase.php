@@ -255,7 +255,7 @@ class ResManClientCase extends Base
         $customer = $resMan->getProperty()->getRtCustomers()[0]->getCustomers()->getCustomer()->first();
 
         $this->assertNotEmpty($customer, 'Expected: Customer should be in collection');
-        $this->assertNotEmpty($lease = $customer->getLease(), 'Expected: Customer should be in collection');
+        $this->assertNotEmpty($lease = $customer->getLease(), 'Expected: Customer should be has lease');
         $this->assertEmpty($lease->getActualMoveOut(), 'Expected: Move out date should be empty string');
         $this->assertNull(
             $lease->getActualMoveOutDateObject(),
