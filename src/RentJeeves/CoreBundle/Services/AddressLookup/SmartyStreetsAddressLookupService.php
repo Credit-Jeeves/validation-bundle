@@ -6,7 +6,7 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
-use RentTrack\SmartyStreetsBundle\Model\SmartyStreetsAddress;
+use RentTrack\SmartyStreetsBundle\Model\US\USAddress;
 use RentTrack\SmartyStreetsBundle\SmartyStreetsClient;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ValidatorInterface;
@@ -57,7 +57,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             )
         );
         try {
-            $result = $this->smartyStreetsClient->getAddress($street, $city, $state, $zipCode);
+            $result = $this->smartyStreetsClient->getUSAddress($street, $city, $state, $zipCode);
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
                 $message = sprintf(
@@ -68,7 +68,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             throw new AddressLookupException($message);
         }
 
-        $address = $this->mapResponseToAddress($result);
+        $address = $this->mapUSResponseToAddress($result);
         $this->validate($address);
 
         return $address;
@@ -84,7 +84,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
 
         $this->logger->debug(sprintf('[SmartyStreetsAddressLookupService] Searching freeForm address (%s)', $address));
         try {
-            $result = $this->smartyStreetsClient->getAddress($address, '', '', '');
+            $result = $this->smartyStreetsClient->getUSAddress($address, '', '', '');
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
                 $message = sprintf('[SmartyStreetsAddressLookupService] Address not found : %s', $e->getMessage())
@@ -92,18 +92,18 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             throw new AddressLookupException($message);
         }
 
-        $address = $this->mapResponseToAddress($result);
+        $address = $this->mapUSResponseToAddress($result);
         $this->validate($address);
 
         return $address;
     }
 
     /**
-     * @param SmartyStreetsAddress $ssAddress
+     * @param USAddress $ssAddress
      *
      * @return Address
      */
-    protected function mapResponseToAddress(SmartyStreetsAddress $ssAddress)
+    protected function mapUSResponseToAddress(USAddress $ssAddress)
     {
         $addressMetadata = $ssAddress->getMetadata();
         $addressComponents = $ssAddress->getComponents();

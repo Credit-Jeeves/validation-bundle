@@ -1,13 +1,14 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Unit\Services;
 
+use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupService;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
-use RentTrack\SmartyStreetsBundle\Model\Components;
-use RentTrack\SmartyStreetsBundle\Model\Metadata;
-use RentTrack\SmartyStreetsBundle\Model\SmartyStreetsAddress;
+use RentTrack\SmartyStreetsBundle\Model\US\Components;
+use RentTrack\SmartyStreetsBundle\Model\US\Metadata;
+use RentTrack\SmartyStreetsBundle\Model\US\USAddress;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -24,7 +25,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
     {
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
-            ->method('getAddress')
+            ->method('getUSAddress')
             ->with($this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'))
             ->will($this->throwException(new SmartyStreetsException('test')));
 
@@ -43,13 +44,13 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfSmartyStreetsReturnInvalidAddress()
     {
-        $response = new SmartyStreetsAddress();
+        $response = new USAddress();
         $response->setMetadata(new Metadata());
         $response->setComponents(new Components());
 
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
-            ->method('getAddress')
+            ->method('getUSAddress')
             ->with($this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'))
             ->will($this->returnValue($response));
 
@@ -74,7 +75,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
      */
     public function shouldReturnAddressIfSmartyStreetsReturnValidAddress()
     {
-        $response = new SmartyStreetsAddress();
+        $response = new USAddress();
         $metadata = new Metadata();
         $metadata->setLatitude('test');
         $metadata->setLongitude('test');
@@ -90,7 +91,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
 
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
-            ->method('getAddress')
+            ->method('getUSAddress')
             ->with($this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'), $this->equalTo('test'))
             ->will($this->returnValue($response));
 
@@ -117,7 +118,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
         $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI, United States';
         $freeFormAddressReturn = '3839 Hunsaker Dr, East Lansing, MI';
 
-        $response = new SmartyStreetsAddress();
+        $response = new USAddress();
         $metadata = new Metadata();
         $metadata->setLatitude('test');
         $metadata->setLongitude('test');
@@ -133,7 +134,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
 
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
-            ->method('getAddress')
+            ->method('getUSAddress')
             ->with($freeFormAddressReturn, '', '', '')
             ->will($this->returnValue($response));
 
@@ -149,7 +150,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
         );
         $address = $ssAddressLookupService->lookupFreeform($freeFormAddress);
 
-        $this->assertInstanceOf('\RentJeeves\CoreBundle\Services\AddressLookup\Model\Address', $address);
+        $this->assertInstanceOf(Address::class, $address);
     }
 
     /**
