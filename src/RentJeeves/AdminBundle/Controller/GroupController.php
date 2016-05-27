@@ -42,7 +42,7 @@ class GroupController extends BaseController
         if (!ImportModelType::isValid($importType)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
-                $this->getTranslator()->trans('admin.import.lease.error.wrong_import_model_type')
+                $this->getTranslator()->trans('admin.import.error.wrong_import_model_type')
             );
 
             return $this->redirectToRoute('admin_rj_group_list');
@@ -127,11 +127,12 @@ class GroupController extends BaseController
     /**
      * @param Import $import
      * @param string $pathToCsv
+     * @param string $importType
      */
-    protected function createJobForImportCsv(Import $import, $pathToCsv)
+    protected function createJobForImportCsv(Import $import, $pathToCsv, $importType)
     {
         $dependentJob = new Job(
-            'renttrack:import:property',
+            'renttrack:import:' .  $importType,
             [
                 '--import-id=' . $import->getId(),
                 '--path-to-file=' . $pathToCsv
@@ -139,7 +140,7 @@ class GroupController extends BaseController
         );
 
         $job = new Job(
-            'renttrack:import:property:check-status',
+            sprintf('renttrack:import:%s:check-status', $importType),
             ['--import-id=' . $import->getId()]
         );
         $job->addDependency($dependentJob);
@@ -150,16 +151,30 @@ class GroupController extends BaseController
     }
 
     /**
-     * @Route("csv_import/job/properties/{id}", name="admin_create_csv_job_for_import_properties")
+     * @Route(
+     *      "csv_import/job/{id}/{importType}",
+     *      name="admin_create_csv_job_for_import",
+     *      defaults={"importType" = "property"}
+     * )
      * @ParamConverter("group", class="DataBundle:Group")
      *
      * @param Request $request
      * @param Group   $group
+     * @param string  $importType
      *
      * @return Response
      */
-    public function createCsvJobForImportPropertiesAction(Request $request, Group $group)
+    public function createCsvJobForImportAction(Request $request, Group $group, $importType)
     {
+        if (!ImportModelType::isValid($importType)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $this->getTranslator()->trans('admin.import.error.wrong_import_model_type')
+            );
+
+            return $this->redirectToRoute('admin_rj_group_list');
+        }
+
         $form = $this->createForm($this->get('form.upload_csv_file'));
         $form->handleRequest($request);
 
@@ -169,7 +184,7 @@ class GroupController extends BaseController
 
             $import = new Import();
             $import->setGroup($group);
-            $import->setImportType(ImportModelType::PROPERTY);
+            $import->setImportType($importType);
             $import->setUser($this->getUser());
             $import->setStatus(ImportStatus::RUNNING);
 
@@ -177,10 +192,15 @@ class GroupController extends BaseController
             $this->getEntityManager()->flush();
 
             $date = new \DateTime();
-            $fileName = sprintf('/PropertyImport_%d_%s.csv', $import->getId(), $date->format('Y-m-d\TH:i:s'));
+            $fileName = sprintf(
+                '/%sImport_%d_%s.csv',
+                ucfirst($importType),
+                $import->getId(),
+                $date->format('Y-m-d\TH:i:s')
+            );
             $data = file_get_contents($file->getPathname());
             $this->getImportPropertySftpFileManager()->upload($data, $fileName);
-            $this->createJobForImportCsv($import, $fileName);
+            $this->createJobForImportCsv($import, $fileName, $importType);
 
             $import->setPathToFile($fileName);
             $this->getEntityManager()->flush();
