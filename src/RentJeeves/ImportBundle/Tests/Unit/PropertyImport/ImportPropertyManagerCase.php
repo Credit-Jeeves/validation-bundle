@@ -30,7 +30,7 @@ class ImportPropertyManagerCase extends UnitTestBase
     {
         $import = new Import();
         $import->setGroup(new Group());
-        $import->setImportType(ImportModelType::CONTRACT);
+        $import->setImportType(ImportModelType::LEASE);
 
         $propertyManager = new ImportPropertyManager(
             $this->getExtractorBuilderMock(),

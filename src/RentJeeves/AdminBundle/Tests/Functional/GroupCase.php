@@ -456,6 +456,34 @@ class GroupCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldCreateImportLeasesJobsForGroupWithExtProperties()
+    {
+        $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $this->getEntityManager()->flush();
+
+        $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
+        $this->setDefaultSession('selenium2');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
+
+        $importLeases = $this->getDomElement(
+            '.import_leases_button',
+            'Import Leases link not found'
+        );
+        $importLeases->click();
+        $this->getDomElement('.alert-success', 'Should get successful message');
+        $this->assertCount(
+            $jobsCount + 6, //6 because 3 for import and 3 for check status
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
+    }
+
+    /**
+     * @test
+     */
     public function shouldShowErrorMessageIfPressImportPropertyForGroupWithoutExtPropertyId()
     {
         $this->load(true);

@@ -25,15 +25,29 @@ class GroupController extends BaseController
     /**
      * @param Group   $group
      * @param Request $request
+     * @param string  $importType
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("import/property/createJob/{group_id}", name="admin_create_import_property_job")
+     * @Route(
+     *      "import/property/createJob/{group_id}/{importType}",
+     *      name="admin_create_import_job",
+     *      defaults={"importType" = "property"}
+     * )
      * @ParamConverter("group", class="DataBundle:Group", options={"id" = "group_id"})
      * @Method({"GET"})
      */
-    public function importPropertyCreateJob(Group $group, Request $request)
+    public function importPropertyCreateJob(Group $group, $importType, Request $request)
     {
+        if (!ImportModelType::isValid($importType)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $this->getTranslator()->trans('admin.import.lease.error.wrong_import_model_type')
+            );
+
+            return $this->redirectToRoute('admin_rj_group_list');
+        }
+
         try {
             $extPropertyIds = $this->getImportSettingsProvider()->provideExternalPropertyIds($group);
         } catch (ImportLogicException $e) {
@@ -50,28 +64,36 @@ class GroupController extends BaseController
                     ['%group_name%' => $group->getName()]
                 )
             );
-        } else {
-            $newImport = new Import();
-            $newImport->setImportType(ImportModelType::PROPERTY);
-            $newImport->setUser($this->getUser());
-            $newImport->setGroup($group);
-            $newImport->setStatus(ImportStatus::RUNNING);
 
-            $this->getEntityManager()->persist($newImport);
-            $this->getEntityManager()->flush();
+            return $this->redirectToRoute('admin_rj_group_list');
+        }
 
-            foreach ($extPropertyIds as $extPropertyId) {
-                $this->createJobForExternalProperty($newImport, $extPropertyId);
-            }
+        $newImport = new Import();
+        $newImport->setImportType($importType);
+        $newImport->setUser($this->getUser());
+        $newImport->setGroup($group);
+        $newImport->setStatus(ImportStatus::RUNNING);
 
-            $request->getSession()->getFlashBag()->add(
-                'success',
-                $this->getTranslator()->trans(
-                    'admin.import_properties_job.created',
-                    ['%group_name%' => $group->getName()]
-                )
+        $this->getEntityManager()->persist($newImport);
+        $this->getEntityManager()->flush();
+
+        foreach ($extPropertyIds as $extPropertyId) {
+            $this->createJobForExternalProperty($newImport, $extPropertyId, $importType);
+        }
+
+        if ($importType === ImportModelType::PROPERTY) {
+            $successMessage = $this->getTranslator()->trans(
+                'admin.import_properties_job.created',
+                ['%group_name%' => $group->getName()]
+            );
+        } elseif ($importType === ImportModelType::LEASE) {
+            $successMessage = $this->getTranslator()->trans(
+                'admin.import_leases_job.created',
+                ['%group_name%' => $group->getName()]
             );
         }
+
+        $request->getSession()->getFlashBag()->add('success', $successMessage);
 
         return $this->redirectToRoute('admin_rj_group_list');
     }
@@ -79,11 +101,12 @@ class GroupController extends BaseController
     /**
      * @param Import $import
      * @param string $externalPropertyId
+     * @param string $importType
      */
-    protected function createJobForExternalProperty(Import $import, $externalPropertyId)
+    protected function createJobForExternalProperty(Import $import, $externalPropertyId, $importType)
     {
         $dependentJob = new Job(
-            'renttrack:import:property',
+            'renttrack:import:' . $importType,
             [
                 '--import-id=' . $import->getId(),
                 '--external-property-id=' . $externalPropertyId
@@ -91,7 +114,7 @@ class GroupController extends BaseController
         );
 
         $job = new Job(
-            'renttrack:import:property:check-status',
+            sprintf('renttrack:import:%s:check-status', $importType),
             ['--import-id=' . $import->getId()]
         );
         $job->addDependency($dependentJob);
