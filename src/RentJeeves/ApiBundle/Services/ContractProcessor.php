@@ -414,16 +414,11 @@ class ContractProcessor
      */
     protected function setReporting(Contract $contract)
     {
-        $group = $contract->getGroup();
-        if ($group->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT
-            || $group->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT
-        ) {
-            $contract->setReportToTransUnion(true);
-            $contract->setTransUnionStartAt($contract->getCreatedAt());
-            $contract->setReportToEquifax(true);
-            $contract->setEquifaxStartAt($contract->getCreatedAt());
+        $contract->setReportToTransUnion(true);
+        $contract->setTransUnionStartAt($contract->getCreatedAt());
+        $contract->setReportToEquifax(true);
+        $contract->setEquifaxStartAt($contract->getCreatedAt());
 
-            $this->em->flush($contract);
-        }
+        $this->em->flush($contract);
     }
 }

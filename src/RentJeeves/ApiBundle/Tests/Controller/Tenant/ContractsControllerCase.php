@@ -721,40 +721,18 @@ class ContractsControllerCase extends BaseApiTestCase
             'Lease end date is wrong'
         );
 
-        if (isset($requestParams['experian_reporting']) && $requestParams['experian_reporting'] === 'enabled') {
-            $this->assertTrue($contract->getReportToExperian(), 'Reporting to Experian should be enabled');
-            $this->assertEquals(
-                $contract->getExperianStartAt()->format('Y-m-d'),
-                $contract->getCreatedAt()->format('Y-m-d'),
-                'Date ExperianStartAt should be equals created date'
-            );
-        } elseif (false === isset($requestParams['experian_reporting'])
-            || isset($requestParams['experian_reporting']) && $requestParams['experian_reporting'] === 'disabled'
-        ) {
-            $this->assertFalse($contract->getReportToExperian(), 'Reporting to Experian should be disabled');
-            $this->assertNull(
-                $contract->getExperianStartAt(),
-                'Date EquifaxStartAt should be null'
-            );
-        }
-
-        $group = $contract->getGroup();
-        if ($group->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT
-            || $group->getOrderAlgorithm() === OrderAlgorithmType::PAYDIRECT
-        ) {
-            $this->assertTrue($contract->getReportToTransUnion(), 'Reporting to Trans Union should be enabled');
-            $this->assertTrue($contract->getReportToEquifax(), 'Reporting to Equifax should be enabled');
-            $this->assertEquals(
-                $contract->getTransUnionStartAt()->format('Y-m-d'),
-                $contract->getCreatedAt()->format('Y-m-d'),
-                'Date TransUnionStartAt should be equals created date'
-            );
-            $this->assertEquals(
-                $contract->getEquifaxStartAt()->format('Y-m-d'),
-                $contract->getCreatedAt()->format('Y-m-d'),
-                'Date EquifaxStartAt should be equals created date'
-            );
-        }
+        $this->assertTrue($contract->getReportToTransUnion(), 'Reporting to Trans Union should be enabled');
+        $this->assertTrue($contract->getReportToEquifax(), 'Reporting to Equifax should be enabled');
+        $this->assertEquals(
+            $contract->getTransUnionStartAt()->format('Y-m-d'),
+            $contract->getCreatedAt()->format('Y-m-d'),
+            'Date TransUnionStartAt should be equals created date'
+        );
+        $this->assertEquals(
+            $contract->getEquifaxStartAt()->format('Y-m-d'),
+            $contract->getCreatedAt()->format('Y-m-d'),
+            'Date EquifaxStartAt should be equals created date'
+        );
     }
 
     /**
