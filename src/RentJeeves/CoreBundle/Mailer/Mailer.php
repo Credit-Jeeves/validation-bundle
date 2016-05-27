@@ -650,7 +650,7 @@ class Mailer extends BaseMailer
     public function sendFreeReportUpdated(Tenant $tenant)
     {
         $router = $this->container->get('router');
-        $router->getContext()->setHost($this->container->getParameter('mailer.survey_url'));
+        $router->getContext()->setHost($this->container->getParameter('server_name_rj'));
         $params = [
             'tenantFirstName' => $tenant->getFirstName(),
             'dashboardLink' => $router->generate('tenant_summary', [], true)
