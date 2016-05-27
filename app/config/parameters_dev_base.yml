@@ -99,3 +99,6 @@ parameters:
     jira_api.password: svzB10KC3B0Z
     jira_api.key: TLDTEST
     import_1_0_rows_on_the_page: 9
+
+    smarty_streets.auth_id: 'f696f0db-df48-c3c8-df8e-dd6e62c356e7'
+    smarty_streets.auth_token: 'CXhm3W2Ll7fZwIVdFQvQ'
