@@ -23,10 +23,14 @@ function Contract() {
     this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
     this.errorsApprove = ko.observableArray([]);
     this.notificationsEdit = ko.observableArray([]);
+    this.errorsMerging = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
     this.errorsAdd = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
+
+    this.mergedContract = ko.observable();
+    this.shouldMerging = ko.observable(true);
 
     this.paymentAcceptedMessage = ko.pureComputed(function () {
         if (this.contract()) {
@@ -186,6 +190,48 @@ function Contract() {
             }
         });
         self.initControllers();
+    };
+
+    this.mergingContract = function (mergedContract) {
+        self.mergedContract(mergedContract);
+        self.errorsApprove([]);
+        self.errorsEdit([]);
+        self.notificationsEdit([]);
+
+        $('#contract_start-merge').datepicker({
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format: 'm/d/Y',
+            minDate: 0,
+            starts: 1,
+            position: 'r',
+            onChange: function (formated, dates) {
+                $('#contract_start-merge').val(formated);
+                $('#contract_start-merge').DatePickerHide();
+            }
+        });
+        $('#contract_finish-merge').datepicker({
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format: 'm/d/Y',
+            minDate: 0,
+            starts: 1,
+            position: 'r',
+            onChange: function (formated, dates) {
+                $('#contract_finish-merge').val(formated);
+                $('#contract_finish-merge').DatePickerHide();
+            }
+        });
+
+        $('#tenant-merge-contract-popup').dialog('open');
+    };
+
+    this.cancelMerging = function () {
+        self.shouldMerging(false);
+    };
+
+    this.closeMerging = function () {
+        $('#contract-duplicate-popup').dialog('close');
     };
 
     this.approveContract = function (contract) {
@@ -491,6 +537,10 @@ function Contract() {
         });
 
         return false;
+    };
+
+    this.duplicateContractMessage = function () {
+        return 'This email already belongs to Cary Penniman. Is this the same user?';
     };
 
     this.initControllers = function () {

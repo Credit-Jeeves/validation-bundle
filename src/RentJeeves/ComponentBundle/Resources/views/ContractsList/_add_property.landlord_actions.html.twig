@@ -1,0 +1,137 @@
+<div id="tenant-add-property-popup" class="pricing-popup dashboard-popup properties-popup">
+    <form novalidate action="{{ path('landlord_invite_save') }}" method="post" {{ form_enctype(form) }}>
+        <h1>{{'add.tenant'|trans}}</h1>
+        {{ form_errors(form) }}
+        <div class="clearfix col-box">
+            <div id="userExistMessage" class="information-box pie-el messageInfoUserAdd">
+                {{ 'user.alredy.in.system'|trans }}
+            </div>
+            <div id="userExistMessageLanlord" class="attention-box pie-el pie-el messageInfoUserAdd">
+                {{ 'user.itslandlord'|trans }}
+            </div>
+            <div class="attention-box pie-el" data-bind="visible: $root.countErrorsAdd() > 0" style="">
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errorsAdd() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                    <small><b>*</b>{{'required'|trans}}</small>
+                </h4>
+                <div class="form-row clearfix userInfo">
+                    <label>{{'name'|trans}}<b>*</b></label>
+                    <div class="fields-box">
+                        {{ form_widget(form.tenant.first_name, { 'attr': {'class': 'half-width', 'placeholder':"First"} }) }}
+                        {{ form_widget(form.tenant.last_name, { 'attr': {'class': 'half-width', 'placeholder':"Last"} }) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{'property'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        {{ form_widget(form.contract.property) }}
+                        {{ form_widget(form.contract.unit) }}
+                        <img id="unitLoading" src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" style="display: none">
+                    </div>
+                </div>
+                <div class="form-row clearfix userInfo">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        {{ form_widget(form.tenant.phone, { 'attr': {'class': 'half-width', 'placeholder':"Phone"} }) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        {{ form_widget(form.tenant.email) }}
+                    </div>
+                </div>
+                {% if isAllowedEditResidentId %}
+                    <div class="form-row clearfix">
+                        <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
+                        <div class="fields-box width150">
+                            {{ form_widget(form.resident.residentId) }}
+                        </div>
+                    </div>
+                {% endif %}
+                {% if isAllowedEditLeaseId %}
+                    <div class="form-row clearfix">
+                        <label>{{ 'common.lease_id'|trans }}<b>*</b></label>
+                        <div class="fields-box width150">
+                            {{ form_widget(form.contract.externalLeaseId) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{'request.payments'|trans}}</span>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{'amount'|trans}}<b>*</b></label>
+                    <div class="fields-box width150">
+                        {{ form_widget(form.contract.rent, { 'attr': {'class': 'half-width', 'placeholder':"$"} }) }}
+                    </div>
+                    <div class="fields-box width150">
+                        <label>{{ 'due_date'|trans }}<b>*</b></label>
+                        {{ form_widget(form.contract.dueDate, { 'attr': {'class': 'half-width original'} }) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <div class="fields-box">
+                            {{ form_widget(
+                            form.contract.startAt,
+                            { 'attr':
+                                {
+                                    'class': 'datepicker-field payment-start',
+                                    'placeholder':"mm/dd/YYYY",
+                                    'value': start
+                                }
+                            }
+                            )
+                            }}
+                            <label class="checkbox radio">
+                                {{ form_widget(form.contract.finishAtType[0]) }}
+                                <span>{{ 'when.cancelled' | trans }}</span>
+                                <div class="clearboth"></div>
+                            </label>
+                            <label class="checkbox radio finishAtLabel">
+                                {{ form_widget(form.contract.finishAtType[1]) }}
+                                <span class="onFinishAt">{{ 'on' | trans }}</span>
+                                {{ form_widget(
+                                form.contract.finishAt,
+                                { 'attr':
+                                    {
+                                        'class': 'datepicker-field payment-end',
+                                        'placeholder':"mm/dd/YYYY",
+                                        'value': end
+                                    }
+                                }
+                                )
+                                }}
+                                <div class="clearboth"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-button-box">
+            <button id='submit' data-bind="click: saveTenant" class="button small">
+                <span>{{ 'invite.tenant'|trans }}</span>
+            </button>
+            <div class="with-seperator-box">
+                <button id="tenant-add-property-button-cancel" class="button grey">
+                    <span>{{ 'cancel'|trans }}</span></button>
+            </div>
+        </div>
+        {{ form_rest(form) }}
+    </form>
+</div>

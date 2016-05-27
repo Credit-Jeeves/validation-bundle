@@ -1,0 +1,117 @@
+<div id="tenant-approve-property-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'approve.tenant.info'|trans }}</h1>
+    <div class="clearfix col-box"  data-bind="with: contract">
+        <div class="information-box pie-el">{{'pending.tenant.info'|trans}}</div>
+        <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsApprove() > 0">
+            <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+            <ul class="default">
+                <!-- ko foreach: $root.errorsApprove() -->
+                <li data-bind="text: $data"></li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'tenant.info'|trans }}</span>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{'name'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: tenant"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}</label>
+                <div class="fields-box">
+                    <!-- ko if: search -->
+                    <span class="value" data-bind="text: address+' ({{ 'tenant.wants.unit'|trans }} '+search+')'"></span>
+                    <!-- /ko -->
+                    <!-- ko if: !search -->
+                    <span class="value" data-bind="text: address"></span>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'phone'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value"  data-bind="text: phone"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'email'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: email"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix width150" data-bind="if: isAllowedEditResidentId">
+                <label>{{ 'common.resident_id'|trans }}</label>
+                <div class="fields-box width150">
+                    <input data-bind="value: residentId" type="text" id="residentId" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix width150" data-bind="if: isAllowedEditLeaseId">
+                <label>{{ 'common.lease_id'|trans }}</label>
+                <div class="fields-box width150">
+                    <input data-bind="value: leaseId" type="text" id="leaseId" class="half-of-right">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'request.payments'|trans }}</span>
+                <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}<b>*</b></label>
+                <div class="fields-box addressDiv"  data-bind="text: address"></div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'amount'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input type="text" id="amount-approve" data-bind="value: amount" value="" class="half-of-right">
+                </div>
+                <div class="fields-box width150">
+                    <label>{{ 'due_date'|trans }}<b>*</b></label>
+                    <select name="dueDate"
+                            class="half-width original"
+                            data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                    >
+                    </select>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractApproveStart">
+                    <label class="checkbox radio">
+                        <input type="radio" name="optionsFinishAtApprove" value="monthToMonth" data-bind="checked: $root.optionsFinishAtApprove" >
+                        <i></i>
+                        <span>{{ 'when.cancelled' | trans }}</span>
+                        <div class="clearboth"></div>
+                    </label>
+                    <label class="checkbox radio finishAtLabel">
+                        <input type="radio" name="optionsFinishAtApprove" value="finishAt" data-bind="checked: $root.optionsFinishAtApprove" >
+                        <i></i>
+                        <span class="onFinishAt">{{ 'on' | trans }}</span>
+                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractApproveFinish">
+                        <div class="clearboth"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button id="approveTenant" class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
+        <button class="button" data-bind="click: editContract"><span>{{ 'edit.Info'|trans }}</span></button>
+        <div class="with-seperator-box">
+            <button class="button grey" data-bind="click: closeApprove" onclick="return false;">
+                <span>{{ 'cancel'|trans }}</span>
+            </button>
+        </div>
+    </div>
+</div>

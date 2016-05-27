@@ -568,9 +568,56 @@
                 <source>tenant.info</source>
                 <target>Tenant (Must be Listed on Lease Agreement)</target>
             </trans-unit>
+            <trans-unit id="contract.merging.description">
+                <source>contract.merging.description</source>
+                <target><![CDATA[We have merged the two leases.<br /> Please verify and save the lease.]]></target>
+            </trans-unit>
+            <trans-unit id="merge.contract">
+                <source>merge.contract</source>
+                <target>Merging Lease</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.first_name">
+                <source>contract.merging.first_name</source>
+                <target>First Name</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.last_name">
+                <source>contract.merging.last_name</source>
+                <target>Last Name</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.phone">
+                <source>contract.merging.phone</source>
+                <target>Phone</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.email">
+                <source>contract.merging.email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="duplicate.contract">
+                <source>duplicate.contract</source>
+                <target>Matching Lease Found</target>
+            </trans-unit>
+            <trans-unit id="merging_cancel.contract.description">
+                <source>merging_cancel.contract.description</source>
+                <target><![CDATA[
+                We're sorry. Please verify the email is correct and try again.
+                Contact <a href="mailto:%support_email%">%support_email%</a> if you continue to have problems.
+                ]]></target>
+            </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
                 <target>Requested Payment</target>
+            </trans-unit>
+            <trans-unit id="yes.merge.contract">
+                <source>yes.merge.contract</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="no.merge.contract">
+                <source>no.merge.contract</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="close.merge.contract">
+                <source>close.merge.contract</source>
+                <target>Close</target>
             </trans-unit>
             <trans-unit id="lease.details">
                 <source>lease.details</source>

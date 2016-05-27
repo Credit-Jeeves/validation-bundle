@@ -1,0 +1,81 @@
+<div id="tenant-review-property-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'Information'|trans }}</h1>
+    <div class="clearfix col-box"  data-bind="with: contract">
+        <!-- ko if: !payment_setup && status == 'INVITE' -->
+        <div id="userpayment" class="information-box pie-el">
+            {{ 'you.tenant.has.no.payment'|trans }}
+        </div>
+        <!-- /ko -->
+        <div class="attention-box pie-el error" style="display: none;">
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'tenant.info'|trans }}</span>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'name'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: tenant"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: address"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'phone'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value"  data-bind="text: phone"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'email'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: email"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'request.payments'|trans }}</span>
+                <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value left">{{ 'monthly'|trans }} </span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'amount'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value left" data-bind="text: amount"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'start'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value left" data-bind="text: start"></span>
+                    <label class="fixed">{{ 'end'|trans }}</label>
+                    <span class="value left" data-bind="text: finish"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-button-box" data-bind="with: contract">
+        <!-- ko if: reminder_revoke -->
+        <button class="button" data-bind="click: $root.sendReminderInvition"><span>{{ 'send.reminder'|trans }}</span></button>
+        <!-- /ko -->
+        <button class="button grey" data-bind="click: $root.closeTenantReviewPropertyPopup" onclick="return false;">
+            <span>{{ 'legend.close'|trans|capitalize }}</span>
+        </button>
+        <!-- ko if: reminder_revoke -->
+        <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
+            {{ 'revoke.inv'|trans|raw}}
+        </a>
+        <!-- /ko -->
+    </div>
+</div>
