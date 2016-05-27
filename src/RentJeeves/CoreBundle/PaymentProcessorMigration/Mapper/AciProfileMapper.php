@@ -331,11 +331,6 @@ class AciProfileMapper
             $accountRecord->setCity((string) $mailingAddress->getCity());
             $accountRecord->setState((string) $mailingAddress->getState());
             $accountRecord->setZipCode((string) $mailingAddress->getZip());
-        } else {
-            $accountRecord->setAddress1('');
-            $accountRecord->setCity('');
-            $accountRecord->setState('');
-            $accountRecord->setZipCode('');
         }
         $accountRecord->setBusinessId($this->rentTrackApplicaitonBusinessId);
 

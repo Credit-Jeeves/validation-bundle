@@ -66,7 +66,7 @@ class GroupMapper extends AbstractMapper
     protected function mapObject()
     {
         $externalGroupId = $this->get('login_id');
-        if (false != $group = $this->getGroupRepository()->findOneBy(['externalGroupId' => $externalGroupId])) {
+        if (false != $group = $this->getGroupRepository()->getGroupByExternalLocationId($externalGroupId)) {
             return $group;
         }
 
@@ -98,7 +98,7 @@ class GroupMapper extends AbstractMapper
         }
 
         $newGroup->setName($companyName);
-        $newGroup->setMailingAddressName($companyName); // expected error!
+        $newGroup->setMailingAddressName($companyName);
         $newGroup->setStreetAddress1($this->get('ll_address'));
         $newGroup->setStreetAddress2($this->get('ll_unit'));
         $newGroup->setCity($this->get('ll_city'));

@@ -37,9 +37,9 @@ abstract class AbstractManager
     protected $virtualTerminalBusinessId;
 
     /**
-     * @param EntityManager      $em
+     * @param EntityManager $em
      * @param PayumAwareRegistry $payum
-     * @param LoggerInterface    $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(EntityManager $em, PayumAwareRegistry $payum, LoggerInterface $logger)
     {
@@ -155,11 +155,20 @@ abstract class AbstractManager
         $billingAccountAddress = new Address();
         $group = $depositAccount->getGroup();
 
-        $billingAccountAddress->setAddress1('');
-        $billingAccountAddress->setAddress2('');
-        $billingAccountAddress->setCity('');
-        $billingAccountAddress->setPostalCode('');
-        $billingAccountAddress->setState('');
+        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
+            $mailingAddress = $trustedLandlord->getCheckMailingAddress();
+            $billingAccountAddress->setAddress1((string) $mailingAddress->getAddress1());
+            $billingAccountAddress->setAddress2((string) $mailingAddress->getAddress2());
+            $billingAccountAddress->setCity((string) $mailingAddress->getCity());
+            $billingAccountAddress->setPostalCode((string) $mailingAddress->getZip());
+            $billingAccountAddress->setState((string) $mailingAddress->getState());
+        } else {
+            $billingAccountAddress->setAddress1('');
+            $billingAccountAddress->setAddress2('');
+            $billingAccountAddress->setCity('');
+            $billingAccountAddress->setPostalCode('');
+            $billingAccountAddress->setState('');
+        }
         $billingAccountAddress->setCountryCode($group->getCountry());
 
         return $billingAccountAddress;

@@ -4,7 +4,6 @@ namespace RentJeeves\CoreBundle\Tests\Unit\PaymentProcessorMigration\Mapper;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
-use RentJeeves\DataBundle\Entity\CheckMailingAddress;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper\AciProfileMapper;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
@@ -14,7 +13,6 @@ use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
@@ -215,7 +213,6 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldMapObjectIfItHasRelationWithGroup()
     {
-//        $this->markTestSkipped('Skip test because we removed mailing address fields for Group');
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
 
         $billingAccount = new BillingAccount();
@@ -270,14 +267,6 @@ class AciProfileMapperCase extends BaseTestCase
             'Group billing account number is incorrect'
         );
         $this->assertEquals('virtualTerminalDivisionId', $accountRecord->getDivisionId());
-        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
-            /** @var CheckMailingAddress $mailingAddress */
-            $mailingAddress = $trustedLandlord->getCheckMailingAddress();
-            $this->assertEquals($mailingAddress->getAddress1(), $accountRecord->getAddress1());
-            $this->assertEquals($mailingAddress->getCity(), $accountRecord->getCity());
-            $this->assertEquals($mailingAddress->getState(), $accountRecord->getState());
-            $this->assertEquals($mailingAddress->getZip(), $accountRecord->getZipCode());
-        }
         $this->assertEquals($group->getName(), $accountRecord->getNameOnBillingAccount());
 
         $this->assertEquals('testBusinessId', $accountRecord->getBusinessId());
@@ -327,8 +316,6 @@ class AciProfileMapperCase extends BaseTestCase
      */
     public function shouldNotMapToFundingRecordIfGroupHasAciBillingAccount()
     {
-//        $this->markTestSkipped('Skip test because we removed mailing address fields for Group');
-
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $billingAccount = new BillingAccount();
         $billingAccount->setPaymentProcessor(PaymentProcessor::ACI);

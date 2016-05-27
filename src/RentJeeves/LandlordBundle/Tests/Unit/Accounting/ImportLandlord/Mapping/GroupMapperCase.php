@@ -22,7 +22,6 @@ class GroupMapperCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfGetNonexistentValue()
     {
-        $this->markTestSkipped('Skip test because we remove mailing address fields');
         $mapper = new GroupMapper($this->getAddressLookupService());
         $mapper->setLogger($this->getLoggerMock());
         $mapper->setEntityManager($this->getEntityManagerMock());
