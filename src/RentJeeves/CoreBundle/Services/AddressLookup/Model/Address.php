@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Services\AddressLookup\Model;
 
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Address
@@ -10,6 +11,7 @@ class Address
      * @var string
      *
      * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
+     * @Assert\Choice(choices = {"US", "CAN"})
      */
     protected $country;
 
@@ -239,11 +241,12 @@ class Address
         }
 
         $index = sprintf(
-            '%s%s%s%s',
+            '%s%s%s%s%s',
             $this->getNumber(),
             $this->getStreet(),
             $this->getCity(),
-            $this->getState()
+            $this->getState(),
+            $this->getCountry() === AddressLookupInterface::DEFAULT_COUNTRY ? '' : $this->getCountry()
         );
 
         return str_replace(' ', '', $index);

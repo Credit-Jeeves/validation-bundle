@@ -6,8 +6,11 @@ use RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupServi
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
-use RentTrack\SmartyStreetsBundle\Model\US\Components;
-use RentTrack\SmartyStreetsBundle\Model\US\Metadata;
+use RentTrack\SmartyStreetsBundle\Model\International\InternationalAddress;
+use RentTrack\SmartyStreetsBundle\Model\International\Components as InternationalComponents;
+use RentTrack\SmartyStreetsBundle\Model\International\Metadata as InternationalMetadata;
+use RentTrack\SmartyStreetsBundle\Model\US\Components as USComponents;
+use RentTrack\SmartyStreetsBundle\Model\US\Metadata as USMetadata;
 use RentTrack\SmartyStreetsBundle\Model\US\USAddress;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -45,8 +48,8 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
     public function shouldThrowExceptionIfSmartyStreetsReturnInvalidAddress()
     {
         $response = new USAddress();
-        $response->setMetadata(new Metadata());
-        $response->setComponents(new Components());
+        $response->setMetadata(new USMetadata());
+        $response->setComponents(new USComponents());
 
         $ssClient = $this->getSmartyStreetsClientMock();
         $ssClient->expects($this->once())
@@ -76,11 +79,11 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
     public function shouldReturnAddressIfSmartyStreetsReturnValidAddress()
     {
         $response = new USAddress();
-        $metadata = new Metadata();
+        $metadata = new USMetadata();
         $metadata->setLatitude('test');
         $metadata->setLongitude('test');
         $response->setMetadata($metadata);
-        $components = new Components();
+        $components = new USComponents();
         $components->setPrimaryNumber('test');
         $components->setStreetName('test');
         $components->setStreetSuffix('test');
@@ -113,17 +116,67 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
     /**
      * @test
      */
+    public function shouldReturnAddressForInternational()
+    {
+        $response = new InternationalAddress();
+
+        $addressMetadata = new InternationalMetadata();
+        $addressMetadata->setLatitude(0);
+        $addressMetadata->setLongitude(0);
+
+        $addressComponents = new InternationalComponents();
+        $addressComponents->setPremiseNumber(1);
+        $addressComponents->setThoroughfare('test');
+        $addressComponents->setPostalCode('test');
+        $addressComponents->setLocality('test');
+        $addressComponents->setCountryISO('CAN');
+        $addressComponents->setAdministrativeArea('test');
+        $addressComponents->setSubBuildingNumber(1);
+
+        $response->setMetadata($addressMetadata);
+        $response->setComponents($addressComponents);
+
+        $ssClient = $this->getSmartyStreetsClientMock();
+        $ssClient->expects($this->once())
+            ->method('getInternationalAddress')
+            ->with(
+                $this->equalTo('test'),
+                $this->equalTo('test'),
+                $this->equalTo('test'),
+                $this->equalTo('test'),
+                $this->equalTo('CAN')
+                )
+            ->will($this->returnValue($response));
+
+        $validator = $this->getValidatorMock();
+        $validator->expects($this->once())
+            ->method('validate')
+            ->will($this->returnValue(new ConstraintViolationList()));
+
+        $ssAddressLookupService = new SmartyStreetsAddressLookupService(
+            $ssClient,
+            $validator,
+            $this->getLoggerMock()
+        );
+        $address = $ssAddressLookupService->lookup('test', 'test', 'test', 'test', 'CAN');
+
+        $this->assertInstanceOf(Address::class, $address);
+    }
+
+    /**
+     * @test
+     */
     public function shouldReturnAddressIfLookupFreeForm()
     {
         $freeFormAddress = '3839 Hunsaker Dr, East Lansing, MI, United States';
         $freeFormAddressReturn = '3839 Hunsaker Dr, East Lansing, MI';
 
         $response = new USAddress();
-        $metadata = new Metadata();
+        $metadata = new USMetadata();
         $metadata->setLatitude('test');
         $metadata->setLongitude('test');
         $response->setMetadata($metadata);
-        $components = new Components();
+        $components = new USComponents();
         $components->setPrimaryNumber('test');
         $components->setStreetName('test');
         $components->setStreetSuffix('test');
