@@ -23,6 +23,8 @@ class PaymentDate extends Constraint
 
     public $messageEndLaterThanStart = 'contract.error.is_end_later_than_start';
 
+    public $messageEndMonthIsPast = 'payment.error.end_month.is_past';
+
     /**
      * {@inheritdoc}
      */

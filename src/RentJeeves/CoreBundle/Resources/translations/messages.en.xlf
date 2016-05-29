@@ -2292,6 +2292,10 @@
                 <source>payment.year.error.past</source>
                 <target>Please check your dates. The ending year cannot be in the past.</target>
             </trans-unit>
+            <trans-unit id="payment.error.end_month.is_past">
+                <source>payment.error.end_month.is_past</source>
+                <target>Please check your dates. It appears you have set up a payment to end in the past.</target>
+            </trans-unit>
             <trans-unit id="payment.month.error.number">
                 <source>payment.month.error.number</source>
                 <target>This month has %count% days</target>
