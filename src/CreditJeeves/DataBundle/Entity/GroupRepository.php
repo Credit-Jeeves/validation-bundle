@@ -190,4 +190,21 @@ class GroupRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * @param int $locationId
+     *
+     * @return Group|null
+     */
+    public function getGroupByExternalLocationId($locationId)
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.trustedLandlord', 'tl')
+            ->innerJoin('tl.checkMailingAddress', 'cma')
+            ->where('cma.externalLocationId = :locationId')
+            ->setParameter('locationId', $locationId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

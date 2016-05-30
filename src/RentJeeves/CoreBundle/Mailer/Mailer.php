@@ -787,13 +787,20 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getUser();
         $group = $order->getContract()->getGroup();
-        $mailingAddress = sprintf(
-            '%s, %s, %s, %s',
-            $group->getStreetAddress1(),
-            $group->getCity(),
-            $group->getState(),
-            $group->getZip()
-        );
+
+        $addressee = '';
+        $mailingAddress = '';
+        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
+            $address = $trustedLandlord->getCheckMailingAddress();
+            $addressee = $address->getAddressee();
+            $mailingAddress = sprintf(
+                '%s, %s, %s, %s',
+                $address->getAddress1(),
+                $address->getCity(),
+                $address->getState(),
+                $address->getZip()
+            );
+        }
 
         $estimatedDeliveryDate = BusinessDaysCalculator::getDepositDate(
             $order->getCreatedAt(),
@@ -807,7 +814,7 @@ class Mailer extends BaseMailer
             'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
             'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
             'mailingAddress' => $mailingAddress,
-            'mailingAddressName' => $group->getMailingAddressName(),
+            'mailingAddressName' => $addressee,
         ];
 
         return $this->sendBaseLetter('rjOrderSending', $vars, $tenant);

@@ -302,11 +302,20 @@ class FundingAccountManager extends AbstractManager
             $fundingAccountAddress->setPostalCode((string) $address->getZip());
             $fundingAccountAddress->setCountryCode((string) $address->getCountry());
         } else {
-            $fundingAccountAddress->setAddress1((string) $paymentAccount->getGroup()->getStreetAddress1());
-            $fundingAccountAddress->setAddress2((string) $paymentAccount->getGroup()->getStreetAddress2());
-            $fundingAccountAddress->setCity((string) $paymentAccount->getGroup()->getCity());
-            $fundingAccountAddress->setState((string) $paymentAccount->getGroup()->getState());
-            $fundingAccountAddress->setPostalCode((string) $paymentAccount->getGroup()->getZip());
+            if (null !== $trustedLandlord = $paymentAccount->getGroup()->getTrustedLandlord()) {
+                $mailingAddress = $trustedLandlord->getCheckMailingAddress();
+                $fundingAccountAddress->setAddress1((string) $mailingAddress->getAddress1());
+                $fundingAccountAddress->setAddress2((string) $mailingAddress->getAddress2());
+                $fundingAccountAddress->setCity((string) $mailingAddress->getCity());
+                $fundingAccountAddress->setState((string) $mailingAddress->getState());
+                $fundingAccountAddress->setPostalCode((string) $mailingAddress->getZip());
+            } else {
+                $fundingAccountAddress->setAddress1('');
+                $fundingAccountAddress->setAddress2('');
+                $fundingAccountAddress->setCity('');
+                $fundingAccountAddress->setState('');
+                $fundingAccountAddress->setPostalCode('');
+            }
             $fundingAccountAddress->setCountryCode((string) $paymentAccount->getGroup()->getCountry());
         }
 
