@@ -437,7 +437,7 @@ class GroupCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
@@ -465,7 +465,7 @@ class GroupCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importLeases = $this->getDomElement(
@@ -491,7 +491,7 @@ class GroupCase extends BaseTestCase
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
         $group->getImportSettings()->setApiPropertyIds(null);
         $this->getEntityManager()->flush();
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
@@ -514,7 +514,7 @@ class GroupCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
@@ -558,7 +558,7 @@ class GroupCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
