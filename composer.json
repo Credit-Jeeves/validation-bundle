@@ -264,7 +264,7 @@
         "besimple/soap-common": "0.2.x-dev as dev-master",
         "besimple/soap-wsdl": "v0.2.4 as dev-master",
         "besimple/soap-server": "v0.2.5 as dev-master",
-    	"ass/xmlsecurity": "v1.1.1 as dev-master",
+        "ass/xmlsecurity": "v1.1.1 as dev-master",
         "rastor/jira-client": "dev-master as 0.3"
     },
     "require-dev": {
