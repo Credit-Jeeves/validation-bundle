@@ -145,7 +145,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
                 $this->equalTo('test'),
                 $this->equalTo('test'),
                 $this->equalTo('CAN')
-                )
+            )
             ->will($this->returnValue($response));
 
         $validator = $this->getValidatorMock();

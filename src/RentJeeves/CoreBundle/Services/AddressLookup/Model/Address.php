@@ -246,7 +246,7 @@ class Address
             $this->getStreet(),
             $this->getCity(),
             $this->getState(),
-            $this->getCountry() === AddressLookupInterface::DEFAULT_COUNTRY ? '' : $this->getCountry()
+            $this->getCountry() === AddressLookupInterface::COUNTRY_US ? '' : $this->getCountry()
         );
 
         return str_replace(' ', '', $index);

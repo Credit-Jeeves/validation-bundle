@@ -47,7 +47,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookup($street, $city, $state, $zipCode, $country = AddressLookupInterface::DEFAULT_COUNTRY)
+    public function lookup($street, $city, $state, $zipCode, $country = AddressLookupInterface::COUNTRY_US)
     {
         $this->logger->debug(
             sprintf(
@@ -60,7 +60,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             )
         );
 
-        if ($country === AddressLookupInterface::DEFAULT_COUNTRY) {
+        if ($country === AddressLookupInterface::COUNTRY_US) {
             $address = $this->lookupUSAddress($street, $city, $state, $zipCode);
         } else {
             $address = $this->lookupInternationalAddress($street, $city, $state, $zipCode, $country);
@@ -74,11 +74,8 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookupFreeform($address, $country = self::DEFAULT_COUNTRY)
+    public function lookupFreeform($address, $country = self::COUNTRY_US)
     {
-        // First, we have to remove ', United States' from the freeform address in case user chose Google Autocomplete
-        $address = str_replace(', United States', '', $address);
-
         $this->logger->debug(
             sprintf(
                 '[SmartyStreetsAddressLookupService] Searching freeForm address (%s %s)',
@@ -87,7 +84,10 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             )
         );
 
-        if ($country === AddressLookupInterface::DEFAULT_COUNTRY) {
+        if ($country === AddressLookupInterface::COUNTRY_US) {
+            // First, we have to remove ', United States'
+            // from the freeform address in case user chose Google Autocomplete
+            $address = str_replace(', United States', '', $address);
             $address = $this->lookupUSAddress($address, '', '', '');
         } else {
             $address = $this->lookupInternationalAddress($address, '', '', '', $country);
@@ -175,7 +175,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         $address->setStreet(trim($street));
         $address->setZip($addressComponents->getZipcode());
         $address->setCity($addressComponents->getCityName());
-        $address->setCountry(self::DEFAULT_COUNTRY);
+        $address->setCountry(self::COUNTRY_US);
         $address->setState($addressComponents->getStateAbbreviation());
         $address->setUnitName($addressComponents->getSecondaryNumber());
         $address->setUnitDesignator($addressComponents->getSecondaryDesignator());

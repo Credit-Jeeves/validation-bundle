@@ -6,7 +6,7 @@ use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 
 interface AddressLookupInterface
 {
-    const DEFAULT_COUNTRY = 'US';
+    const COUNTRY_US = 'US';
 
     /**
      * @param string $street
@@ -20,7 +20,7 @@ interface AddressLookupInterface
      *
      * @return Address
      */
-    public function lookup($street, $city, $state, $zipCode, $country = self::DEFAULT_COUNTRY);
+    public function lookup($street, $city, $state, $zipCode, $country = self::COUNTRY_US);
 
     /**
      * @param string $address
@@ -31,5 +31,5 @@ interface AddressLookupInterface
      *
      * @return Address
      */
-    public function lookupFreeform($address, $country = self::DEFAULT_COUNTRY);
+    public function lookupFreeform($address, $country = self::COUNTRY_US);
 }
