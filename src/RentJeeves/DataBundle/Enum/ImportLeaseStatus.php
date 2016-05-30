@@ -10,4 +10,12 @@ class ImportLeaseStatus extends Enum
     const MATCH = 'match';
 
     const ERROR = 'error';
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function isValid($value)
+    {
+        return is_null($value) || parent::isValid($value);
+    }
 }

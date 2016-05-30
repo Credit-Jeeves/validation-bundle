@@ -4,7 +4,6 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\ImportLeaseResidentStatus;
-use RentJeeves\DataBundle\Enum\ImportLeaseStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseUserStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 
@@ -68,16 +67,15 @@ abstract class ImportLease
     protected $externalResidentId;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(
-     *      name="external_account_id",
-     *      type="string",
-     *      nullable=true,
-     *      length=255
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="importLease")
+     * @ORM\JoinColumn(
+     *      name="group_id",
+     *      referencedColumnName="id",
+     *      nullable=true
      * )
+     * @var \CreditJeeves\DataBundle\Entity\Group
      */
-    protected $externalAccountId;
+    protected $group;
 
     /**
      * @var string
@@ -265,6 +263,22 @@ abstract class ImportLease
      * @ORM\Column(name="updated_at",type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @return \CreditJeeves\DataBundle\Entity\Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
 
     /**
      * @return int

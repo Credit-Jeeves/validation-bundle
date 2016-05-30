@@ -29,4 +29,12 @@ class ImportLeaseUserStatus extends Enum
      * an error occurred. see error_messages
      */
     const ERROR = 'error';
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function isValid($value)
+    {
+        return is_null($value) || parent::isValid($value);
+    }
 }

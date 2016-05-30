@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use RentJeeves\DataBundle\Entity\ImportLease;
 use RentJeeves\DataBundle\Entity\ImportSummary;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\TrustedLandlord;
@@ -421,6 +422,12 @@ abstract class Group
      */
     protected $trustedLandlord;
 
+    /**
+     * @ORM\OneToMany(targetEntity="RentJeeves\DataBundle\Entity\ImportLease", mappedBy="group")
+     * @var ImportLease[]
+     */
+    protected $importLease;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -437,6 +444,22 @@ abstract class Group
         $this->billingAccounts = new ArrayCollection();
         $this->importSummaries = new ArrayCollection();
         $this->depositAccounts = new ArrayCollection();
+    }
+
+    /**
+     * @return ImportLease[]
+     */
+    public function getImportLeases()
+    {
+        return $this->importLease;
+    }
+
+    /**
+     * @param ImportLease $importLease
+     */
+    public function addImportLease(ImportLease $importLease)
+    {
+        $this->importLease[] = $importLease;
     }
 
     /**
