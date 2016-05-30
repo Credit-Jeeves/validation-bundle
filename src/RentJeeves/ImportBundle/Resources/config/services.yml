@@ -133,6 +133,8 @@ services:
     import.lease.extractor.csv:
         class: RentJeeves\ImportBundle\LeaseImport\Extractor\CsvExtractor
         public: false
+        arguments:
+            - "@import.property.extractor.csv"
 
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
