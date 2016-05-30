@@ -1,9 +1,14 @@
 {% if admin.isGranted('LIST', object) and object.importSettings.source == 'integrated_api' %}
     <br />
-    <a href="{{ path('admin_create_import_property_job', { "group_id": object.id }) }}" class="btn edit_link import_properties_button"
+    <a href="{{ path('admin_create_import_job', { "group_id": object.id, "importType": "property" }) }}" class="btn edit_link import_properties_button"
        title="{{ 'admin.import.property'|trans }}">
         <i class="icon-contract"></i>
         {{ 'admin.import.property'|trans }}
+    </a>
+    <a href="{{ path('admin_create_import_job', { "group_id": object.id, "importType": "lease" }) }}" class="btn edit_link import_leases_button"
+       title="{{ 'admin.import.lease'|trans }}">
+        <i class="icon-contract"></i>
+        {{ 'admin.import.lease'|trans }}
     </a>
 {% endif %}
 

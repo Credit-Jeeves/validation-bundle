@@ -394,6 +394,14 @@
                 <source>admin.import.property</source>
                 <target>Run property import</target>
             </trans-unit>
+            <trans-unit id="admin.import.lease">
+                <source>admin.import.lease</source>
+                <target>Run lease import</target>
+            </trans-unit>
+             <trans-unit id="admin.import.lease.error.wrong_import_model_type">
+                <source>admin.import.lease.error.wrong_import_model_type</source>
+                <target>Import Type invalid. Allowed values: property, lease.</target>
+             </trans-unit>
             <trans-unit id="admin.holding.post_app_fee_security_deposit">
                 <source>admin.holding.post_app_fee_security_deposit</source>
                 <target>Post Application Fee / Security Deposit?</target>
@@ -401,6 +409,10 @@
             <trans-unit id="admin.import_properties_job.created">
                 <source>admin.import_properties_job.created</source>
                 <target>Job for import properties per group %group_name% has been created</target>
+            </trans-unit>
+            <trans-unit id="admin.import_leases_job.created">
+                <source>admin.import_leases_job.created</source>
+                <target>Job for import leases per group %group_name% has been created</target>
             </trans-unit>
             <trans-unit id="admin.import_properties_job.error.empty_external_properties">
                 <source>admin.import_properties_job.error.empty_external_properties</source>
