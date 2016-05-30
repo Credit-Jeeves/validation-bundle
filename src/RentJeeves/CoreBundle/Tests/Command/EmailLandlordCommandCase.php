@@ -1,6 +1,10 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Command;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\OrderSubmerchant;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -67,6 +71,31 @@ class EmailLandlordCommandCase extends BaseTestCase
         $this->executeCommandTester(new EmailLandlordCommand(), ['--type' => 'pending']);
         $this->assertCount(1, $plugin->getPreSendMessages(), 'One email is expected');
         $this->assertEquals('Your Tenant Needs Approval', $plugin->getPreSendMessage(0)->getSubject());
+
+        // Add a new order with CUSTOM operation and make sure email is NOT sent
+        $order = new OrderSubmerchant();
+        $order->setUser($contract->getTenant());
+        $order->setStatus(OrderStatus::COMPLETE);
+        $order->setPaymentType(OrderPaymentType::BANK);
+        $order->setSum(100);
+        $operation = new Operation();
+        $operation->setType(OperationType::CUSTOM);
+        $operation->setContract($contract);
+        $operation->setAmount(100);
+        $operation->setPaidFor(new \DateTime());
+        $operation->setOrder($order);
+        $order->addOperation($operation);
+        $em->persist($order);
+        $em->persist($operation);
+        $em->flush();
+        $plugin->clean();
+        $this->executeCommandTester(new EmailLandlordCommand(), ['--type' => 'pending']);
+        $this->assertCount(
+            0,
+            $plugin->getPreSendMessages(),
+            'Email shouldn\'t be sent if contract has CUSTOM operations'
+        );
+
     }
 
     /**
