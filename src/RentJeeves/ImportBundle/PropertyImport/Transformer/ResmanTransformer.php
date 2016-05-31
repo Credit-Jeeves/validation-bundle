@@ -4,6 +4,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\CountryNameStandardizer;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\ExternalApiBundle\Model\ResMan\RtCustomer;
@@ -53,6 +54,7 @@ class ResmanTransformer implements TransformerInterface
             ['group' => $import->getGroup()]
         );
 
+        $countryFromSettings = $import->getGroup()->getGroupSettings()->getCountryCode();
         /** @var RtCustomer $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
             $rtUnit = $accountingSystemRecord->getRtUnit();
@@ -73,6 +75,7 @@ class ResmanTransformer implements TransformerInterface
             $importProperty->setState($this->getState($rtUnit));
             $importProperty->setZip($this->getZip($rtUnit));
             $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($rtUnit));
+            $importProperty->setCountry($this->getCountry($rtUnit, $countryFromSettings));
 
             $this->em->persist($importProperty);
             $this->arrayCache[] = $import->getId() . '|' . $extUnitId;
@@ -156,6 +159,21 @@ class ResmanTransformer implements TransformerInterface
     protected function getAddress1(RtUnit $rtUnit)
     {
         return $rtUnit->getUnit()->getInformation()->getAddress()->getAddress1();
+    }
+
+    /**
+     * @param RtUnit $rtUnit
+     * @param string $countryFromSettings
+     *
+     * @return string
+     */
+    protected function getCountry(RtUnit $rtUnit, $countryFromSettings)
+    {
+        if (null === $country = $country = $rtUnit->getUnit()->getInformation()->getAddress()->getCountry()) {
+            return $countryFromSettings;
+        }
+
+        return CountryNameStandardizer::standardize($country);
     }
 
     /**

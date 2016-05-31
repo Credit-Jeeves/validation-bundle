@@ -43,6 +43,21 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
     /**
      * @test
      * @expectedException \RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException
+     * @expectedExceptionMessage [SmartyStreetsAddressLookupService] Country "badCountry" not supported.
+     */
+    public function shouldThrowExceptionIfInputCountryNotSupported()
+    {
+        $ssAddressLookupService = new SmartyStreetsAddressLookupService(
+            $this->getSmartyStreetsClientMock(),
+            $this->getValidatorMock(),
+            $this->getLoggerMock()
+        );
+        $ssAddressLookupService->lookup('test', 'test', 'test', 'test', 'badCountry');
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException
      * @expectedExceptionMessage [SmartyStreetsAddressLookupService] SmartyStreets returned invalid address
      */
     public function shouldThrowExceptionIfSmartyStreetsReturnInvalidAddress()
@@ -129,7 +144,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
         $addressComponents->setThoroughfare('test');
         $addressComponents->setPostalCode('test');
         $addressComponents->setLocality('test');
-        $addressComponents->setCountryISO('CAN');
+        $addressComponents->setCountryISO('CA');
         $addressComponents->setAdministrativeArea('test');
         $addressComponents->setSubBuildingNumber(1);
 
@@ -144,7 +159,7 @@ class SmartyStreetsAddressLookupServiceCase extends UnitTestBase
                 $this->equalTo('test'),
                 $this->equalTo('test'),
                 $this->equalTo('test'),
-                $this->equalTo('CAN')
+                $this->equalTo('CA')
             )
             ->will($this->returnValue($response));
 

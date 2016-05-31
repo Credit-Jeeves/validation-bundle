@@ -5,6 +5,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\CountryNameStandardizer;
 use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\DataBundle\Entity\Import;
@@ -86,12 +87,22 @@ class CsvTransformer implements TransformerInterface
         }
 
         $importMappingRule = $this->getImportMappingRule($importMapping);
+        $countryFromSettings = $group->getGroupSettings()->getCountryCode();
 
         foreach ($accountingSystemData['data'] as $accountingSystemRecord) {
             $street = $accountingSystemRecord[$importMappingRule['street']];
             $city = $accountingSystemRecord[$importMappingRule['city']];
             $state = $accountingSystemRecord[$importMappingRule['state']];
             $zip = $accountingSystemRecord[$importMappingRule['zip']];
+
+            if (false === isset($importMappingRule['country']) ) {
+                $country = $countryFromSettings;
+            } else {
+                $country = CountryNameStandardizer::standardize(
+                    $accountingSystemRecord[$importMappingRule['country']]
+                );
+            }
+
             $unit = isset($importMappingRule['unit']) ? $accountingSystemRecord[$importMappingRule['unit']] : '';
             $extUnitId = isset($importMappingRule['unit_id']) ?
                 $accountingSystemRecord[$importMappingRule['unit_id']] : '';
@@ -108,7 +119,8 @@ class CsvTransformer implements TransformerInterface
                         $city,
                         $state,
                         $zip
-                    )
+                    ),
+                    $country
                 );
 
                 $importProperty->setAddressHasUnits((boolean) $address->getUnitName());
@@ -128,7 +140,8 @@ class CsvTransformer implements TransformerInterface
             $importProperty->setCity($city);
             $importProperty->setState($state);
             $importProperty->setZip($zip);
-            $importProperty->setAllowMultipleProperties(false); // PLS check it
+            $importProperty->setCountry($country);
+            $importProperty->setAllowMultipleProperties(false);
 
             $this->em->persist($importProperty);
         }
