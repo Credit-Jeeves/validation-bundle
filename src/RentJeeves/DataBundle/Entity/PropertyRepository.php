@@ -310,8 +310,6 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->where('propertyAddress.index = :index')
             ->setParameter('index', $address->getIndex())
-            ->andWhere('propertyAddress.number = :number')
-            ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */
             ->getQuery()
             ->getOneOrNullResult();
