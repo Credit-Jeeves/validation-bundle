@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Form;
 
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\CountryCode;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TypeDebitFee;
 use Symfony\Component\Form\AbstractType as Base;
@@ -47,6 +48,12 @@ class GroupSettingsType extends Base
     {
         $paymentProcessors = PaymentProcessor::cacheSpecificTitles(
             [PaymentProcessor::HEARTLAND, PaymentProcessor::ACI]
+        );
+
+        $builder->add(
+            'countryCode',
+            'choice',
+            ['choices' => CountryCode::cachedTitles()]
         );
 
         $builder->add(

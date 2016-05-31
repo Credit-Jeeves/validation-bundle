@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle;
 
+use RentJeeves\DataBundle\Enum\CountryCode;
 use RentJeeves\DataBundle\Enum\ImportLeaseResidentStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseUserStatus;
@@ -63,6 +64,7 @@ class RjDataBundle extends Bundle
             Type::addType('ImportLeaseUserStatus', ImportLeaseUserStatus::class);
             Type::addType('ImportLeaseStatus', ImportLeaseStatus::class);
             Type::addType('ImportLeaseResidentStatus', ImportLeaseResidentStatus::class);
+            Type::addType('CountryCode', CountryCode::class);
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
