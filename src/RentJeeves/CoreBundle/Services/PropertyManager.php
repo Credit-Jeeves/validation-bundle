@@ -347,7 +347,15 @@ class PropertyManager
         $country = AddressLookupInterface::COUNTRY_US
     ) {
         $this->logger->debug(
-            sprintf('findPropertyByAddressInDb: %s %s, %s, %s, %s', $number, $street, $city, $state, $zipCode, $country)
+            sprintf(
+                'findPropertyByAddressInDb: %s %s, %s, %s, %s %s',
+                $number,
+                $street,
+                $city,
+                $state,
+                $zipCode,
+                $country
+            )
         );
         $params = [
             'number' => $number,

@@ -126,7 +126,7 @@ class PropertyAddress
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCountry()
     {
@@ -134,7 +134,7 @@ class PropertyAddress
     }
 
     /**
-     * @param mixed $country
+     * @param string $country
      */
     public function setCountry($country)
     {
