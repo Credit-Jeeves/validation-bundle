@@ -1723,13 +1723,25 @@ class ContractRepository extends EntityRepository
         $date = new DateTime();
         $date->modify("-{$periodInDays} days");
 
-        $query = $this->createQueryBuilder('c')
+        $subquery = $this->createQueryBuilder('c2')
+            ->select('c2.id')
+            ->distinct()
+            ->innerJoin('c2.operations', 'op', Expr\Join::WITH, 'op.type = :custom')
+            ->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :complete OR ord.status = :pending')
+            ->setParameter('custom', OperationType::CUSTOM)
+            ->setParameter('complete', OrderStatus::COMPLETE)
+            ->setParameter('pending', OrderStatus::PENDING);
+
+        return $this->createQueryBuilder('c')
             ->andWhere('c.status = :pending')
             ->andWhere('c.createdAt >= :date')
+            ->andWhere(sprintf('c.id not in (%s)', $subquery->getDQL()))
             ->setParameter('pending', ContractStatus::PENDING)
-            ->setParameter('date', $date);
-
-        return $query->getQuery()->getResult();
+            ->setParameter('custom', OperationType::CUSTOM)
+            ->setParameter('complete', OrderStatus::COMPLETE)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
