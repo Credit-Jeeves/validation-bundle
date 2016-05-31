@@ -105,7 +105,6 @@ class RjGroupAdmin extends Admin
         $listMapper
             ->addIdentifier('name')
             ->add('holding')
-            ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
             ->add(
