@@ -50,10 +50,10 @@ class PropertyManager
 
     /**
      * @param EntityManagerInterface $em
-     * @param Google $google
+     * @param Google                 $google
      * @param AddressLookupInterface $addressLookupService
-     * @param ExceptionCatcher $exceptionCatcher
-     * @param LoggerInterface $logger
+     * @param ExceptionCatcher       $exceptionCatcher
+     * @param LoggerInterface        $logger
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -84,7 +84,7 @@ class PropertyManager
      * @throws \RuntimeException
      *
      * @param Property $property
-     * @param array $options
+     * @param array    $options
      *
      * @return Unit
      */
@@ -195,7 +195,8 @@ class PropertyManager
                     $address->getCity(),
                     $address->getState(),
                     $address->getZip()
-                )
+                ),
+                $address->getCountry()
             );
         } catch (AddressLookupException $e) {
             return null;
@@ -218,18 +219,26 @@ class PropertyManager
      * @param string $state
      * @param string $zipCode
      * @param string $unitName
+     * @param string $country
      *
      * @return null|Property
      */
-    public function getOrCreatePropertyByAddressFields($number, $street, $city, $state, $zipCode, $unitName = '')
-    {
-        $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode);
+    public function getOrCreatePropertyByAddressFields(
+        $number,
+        $street,
+        $city,
+        $state,
+        $zipCode,
+        $unitName = '',
+        $country = AddressLookupInterface::COUNTRY_US
+    ) {
+        $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode, $country);
         if (null !== $property) {
             return $property;
         }
 
         $address1 = trim(sprintf('%s %s %s', $number, $street, $unitName));
-        if (null === $address = $this->lookupAddress($address1, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($address1, $city, $state, $zipCode, $country)) {
             return null;
         }
 
@@ -237,11 +246,13 @@ class PropertyManager
     }
 
     /**
-     * @param Group $group
-     * @param Property $property
-     * @param string $unitName
+     * @param Group       $group
+     * @param Property    $property
+     * @param string      $unitName
      * @param null|string $externalUnitId
+     *
      * @throws \InvalidArgumentException|PropertyManagerUnitOwnershipException
+     *
      * @return Unit
      */
     public function getOrCreateUnit(Group $group, Property $property, $unitName, $externalUnitId = null)
@@ -298,13 +309,19 @@ class PropertyManager
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string $country
      *
      * @return Address|null
      */
-    public function lookupAddress($address1, $city, $state, $zipCode)
-    {
+    public function lookupAddress(
+        $address1,
+        $city,
+        $state,
+        $zipCode,
+        $country = AddressLookupInterface::COUNTRY_US
+    ) {
         try {
-            return $this->addressLookupService->lookup($address1, $city, $state, $zipCode);
+            return $this->addressLookupService->lookup($address1, $city, $state, $zipCode, $country);
         } catch (AddressLookupException $e) {
             return null;
         }
@@ -316,13 +333,28 @@ class PropertyManager
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string $country
      *
      * @return Property|null
      */
-    public function findPropertyByAddressInDb($number, $street, $city, $state, $zipCode)
-    {
+    public function findPropertyByAddressInDb(
+        $number,
+        $street,
+        $city,
+        $state,
+        $zipCode,
+        $country = AddressLookupInterface::COUNTRY_US
+    ) {
         $this->logger->debug(
-            sprintf('findPropertyByAddressInDb: %s %s, %s, %s, %s', $number, $street, $city, $state, $zipCode)
+            sprintf(
+                'findPropertyByAddressInDb: %s %s, %s, %s, %s %s',
+                $number,
+                $street,
+                $city,
+                $state,
+                $zipCode,
+                $country
+            )
         );
         $params = [
             'number' => $number,
@@ -330,6 +362,7 @@ class PropertyManager
             'state' => $state,
             'street' => $street,
             'zip' => $zipCode,
+            'country' => $country,
         ];
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneByPropertyAddressFields($params)) {
@@ -338,14 +371,14 @@ class PropertyManager
             return $property;
         }
 
-        $invalidAddressIndex = self::generateInvalidAddressIndex($number, $street, $city, $state);
+        $invalidAddressIndex = self::generateInvalidAddressIndex($number, $street, $city, $state, $country);
         if (null !== $property = $this->findByInvalidIndex($invalidAddressIndex)) {
             $this->logger->debug(sprintf('Found manually added property(%s)', $property->getId()));
 
             return $property;
         }
 
-        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode)) {
+        if (null === $address = $this->lookupAddress($number . ' ' . $street, $city, $state, $zipCode, $country)) {
             $this->logger->debug('Address not found by external address service');
 
             return null;
@@ -362,6 +395,7 @@ class PropertyManager
             'city' => $address->getCity(),
             'state' => $address->getState(),
             'street' => $address->getStreet(),
+            'country' => $address->getCountry(),
         ];
         $params = array_filter($params); // remove empty values
         if (null !== $property = $this->getPropertyRepository()->findOneByPropertyAddressFields($params)) {
@@ -413,12 +447,22 @@ class PropertyManager
      * @param string $street
      * @param string $city
      * @param string $state
+     * @param string $country
      *
      * @return string
      */
-    public static function generateInvalidAddressIndex($number, $street, $city, $state)
-    {
-        $index = sprintf('%s%s%s%sinvalidaddress', $number, $street, $city, $state);
+    public static function generateInvalidAddressIndex(
+        $number,
+        $street,
+        $city,
+        $state,
+        $country = AddressLookupInterface::COUNTRY_US
+    ) {
+        if ($country === AddressLookupInterface::COUNTRY_US) {
+            $country = '';
+        }
+
+        $index = sprintf('%s%s%s%s%sinvalidaddress', $number, $street, $city, $state, $country);
         $index = str_replace(' ', '', $index);
         $index = str_replace('.', '', $index);
         $index = strtolower($index);
