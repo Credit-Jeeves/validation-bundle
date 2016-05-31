@@ -231,8 +231,7 @@ class PropertyManager
         $zipCode,
         $unitName = '',
         $country = AddressLookupInterface::COUNTRY_US
-    )
-    {
+    ) {
         $property = $this->findPropertyByAddressInDb($number, $street, $city, $state, $zipCode, $country);
         if (null !== $property) {
             return $property;
