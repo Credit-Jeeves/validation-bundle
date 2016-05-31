@@ -2,6 +2,9 @@
 
 namespace RentJeeves\DataBundle;
 
+use RentJeeves\DataBundle\Enum\ImportLeaseResidentStatus;
+use RentJeeves\DataBundle\Enum\ImportLeaseStatus;
+use RentJeeves\DataBundle\Enum\ImportLeaseUserStatus;
 use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -57,6 +60,9 @@ class RjDataBundle extends Bundle
             Type::addType('TrustedLandlordStatus', 'RentJeeves\DataBundle\Enum\TrustedLandlordStatus');
             Type::addType('TrustedLandlordType', 'RentJeeves\DataBundle\Enum\TrustedLandlordType');
             Type::addType('ProfitStarsBatchStatus', ProfitStarsBatchStatus::class);
+            Type::addType('ImportLeaseUserStatus', ImportLeaseUserStatus::class);
+            Type::addType('ImportLeaseStatus', ImportLeaseStatus::class);
+            Type::addType('ImportLeaseResidentStatus', ImportLeaseResidentStatus::class);
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()

@@ -111,9 +111,21 @@ abstract class Import
      */
     protected $finishedAt;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\ImportLease",
+     *     mappedBy="import",
+     *     cascade={"persist", "remove", "merge"},
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $importLeases;
+
     public function __construct()
     {
         $this->importProperties = new ArrayCollection();
+        $this->importLeases = new ArrayCollection();
     }
 
     /**
@@ -266,5 +278,21 @@ abstract class Import
     public function setErrorMessage($errorMessage)
     {
         $this->errorMessage = $errorMessage;
+    }
+
+    /**
+     * @param $importLease
+     */
+    public function addImportLease(ImportLease $importLease)
+    {
+        $this->importLeases->add($importLease);
+    }
+
+    /**
+     * @return ArrayCollection|\RentJeeves\DataBundle\Entity\ImportLease[]
+     */
+    public function getImportLeases()
+    {
+        return $this->importLeases;
     }
 }
