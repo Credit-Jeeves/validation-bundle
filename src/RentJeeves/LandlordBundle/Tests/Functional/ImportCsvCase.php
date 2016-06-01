@@ -3,6 +3,8 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -1055,8 +1057,17 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->setCsvDateFormat('d/m/y');
+        $importGroupSettings->setCsvDateFormat('m/d/y');
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
+
+        /** @var Group $group3 */
+        $group3 = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(
+            [
+                'name' => 'Campus Rent Group'
+            ]
+        );
+        $this->assertNotNull($group3, 'We do not have correct settings in fixtures');
+        $group3->getGroupSettings()->setIsIntegrated(true);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1085,9 +1096,9 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertCount(2, $trs, "Count statuses is wrong");
         $this->assertCount(
-            4,
+            1,
             $trs['import.status.skip'],
-            "One contract should be skipped, because we don't have such account number and 3 isn't integrated"
+            "One contract should be skipped, because we don't have such account number"
         );
 
         $submitImportFile->click();
@@ -1104,7 +1115,26 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($unit = $unitMapping->getUnit());
         // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
-        $this->assertEquals('Test Rent Group', $contract->getGroup()->getName());
+        $this->assertEquals(
+            'Test Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
+
+        $unitMapping = $em
+            ->getRepository('RjDataBundle:UnitMapping')
+            ->findOneBy(['externalUnitId' => 'SP1152-C']);
+
+        $this->assertNotNull($unitMapping);
+        /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+        
+        $this->assertNotNull($contract = $unit->getContracts()->first());
+        $this->assertEquals(
+            'Campus Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
     }
 
     /**
