@@ -36,6 +36,7 @@ class RentalReportController extends BaseController
         $reportType->handleRequest($request);
 
         if ($reportType->isValid()) {
+            $this->get('soft.deleteable.control')->disable();
             /** @var RentalReport $report */
             $report = $this->get('rental_report.factory')->getReport($rentalReportData);
             $report->build($rentalReportData);
