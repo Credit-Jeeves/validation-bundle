@@ -4,6 +4,7 @@ var paymentBalanceForm = '#rentjeeves_checkoutbundle_paymentbalanceonlytype';
 var currentPaymentForm = paymentForm;
 var prefix = currentPaymentForm + '_';
 var accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_";
+var contractCollection = null;
 
 //since we aren't using KO, list those visible= when card or bank and use Jquery to set
 bankVisibleFields = [
@@ -57,8 +58,6 @@ $(document).ready(function() {
 })
 
 function init() {
-
-
     //load main page payments info
 
     loadPaymentTable()
@@ -99,11 +98,12 @@ function init() {
         disabled: true
     });
 
-
     //contract individual pages info filled out from JSON
     contractsArr = $.map(contractsJson, function(el) {
-        return el
+        contractCollection[el.id] = el;
+        return el;
     });
+
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName);
@@ -218,15 +218,15 @@ function init() {
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
 
-    var isUpdatePaymentTypeOrder = false;
+    var isUpdatedPaymentTypeOrder = false;
     $(document).on('pagebeforeshow', '#addNewPayAccount', function (event) {
         if ($('#payment-type-with-fee').length > 0) {
             renderFeeForPayment();
         }
-        if (false === isUpdatePaymentTypeOrder) {
+        if (false === isUpdatedPaymentTypeOrder) {
             var paymentsType = $('.payment-type-change-order>.ui-radio');
             $('.payment-type-change-order').prepend(paymentsType[1]);
-            isUpdatePaymentTypeOrder = true;
+            isUpdatedPaymentTypeOrder = true;
         }
         $('.payment-type-change-order .ui-radio label').first().click();
     });
@@ -1195,17 +1195,11 @@ function navigateToContract(contractId) {
 }
 
 function renderFeeForPayment() {
-    var contractsArr = $.map(contractsJson, function (el) {
-        return el
+    var contract = getContractById(globalContractId);
+
+    $('#payment-type-with-fee').find('.payment-fee-value').each(function () {
+        $(this).text(getFeeForContract($(this).attr('data-payment-type'), contract.groupSettings));
     });
-    for (i = 0; i < contractsArr.length; i++) {
-        if (contractsArr[i].id == globalContractId) {
-            var contract = contractsArr[i];
-            $('#payment-type-with-fee').find('.payment-fee-value').each(function () {
-                $(this).text(getFeeForContract($(this).attr('data-payment-type'), contract.groupSettings));
-            });
-        }
-    }
 }
 
 function getFeeForContract(method, groupSettings) {
@@ -1222,4 +1216,11 @@ function getFeeForContract(method, groupSettings) {
     } else {
         return parseFloat(0);
     }
+}
+
+function getContractById(id) {
+    if (null !== contractCollection && undefined !== contractCollection[id]) {
+        return contractCollection[id];
+    }
+    return null;
 }

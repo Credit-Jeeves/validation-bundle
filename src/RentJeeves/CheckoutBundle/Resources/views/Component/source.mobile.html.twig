@@ -17,7 +17,7 @@
         <form {{ form_enctype(paymentAccountType) }} novalidate method="post" onsubmit="addNewPaymentSource(this); return false;">
             {% if mobile_payment_account_fee_field_dispay %}
                 <div id="payment-type-with-fee">
-                    {{ form_radio(paymentAccountType.type) }}
+                    {{ form_payment_type_fee_radio(paymentAccountType.type) }}
                 </div>
             {% else %}
                 <div class="payment-type-change-order">
