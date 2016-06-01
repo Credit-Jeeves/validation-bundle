@@ -81,7 +81,7 @@
 }
 
 .import_properties_button, .import_leases_button, .createCsvJobForImportLeases, .createCsvJobForImportProperties {
-    width: 135px !important;
+    width: 155px !important;
 }
 
 #createCsvMappingLink {

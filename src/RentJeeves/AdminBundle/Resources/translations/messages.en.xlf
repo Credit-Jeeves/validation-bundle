@@ -28,11 +28,11 @@
             </trans-unit>
             <trans-unit id="admin.import.csv_properties">
                 <source>admin.import.csv_properties</source>
-                <target>Run CSV Properties</target>
+                <target>Run CSV property import</target>
             </trans-unit>
             <trans-unit id="admin.import.csv_leases">
                 <source>admin.import.csv_leases</source>
-                <target>Run CSV leases</target>
+                <target>Run CSV lease import</target>
             </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
