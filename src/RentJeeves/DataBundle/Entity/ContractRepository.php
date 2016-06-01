@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -1792,5 +1793,95 @@ class ContractRepository extends EntityRepository
             ->setParameter('residentId', $residentId)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param Contract $contract
+     * @param string $residentId
+     * @param array $contractStatuses
+     * @return null|Contract
+     * @throws NonUniqueResultException
+     */
+    public function getOneOrNullDuplicateContractByResidentId(Contract $contract, $residentId, array $contractStatuses)
+    {
+        if ($contract->getUnit()) {
+            $duplicateContract = $this->createQueryBuilder('c')
+                ->innerJoin('c.tenant', 't')
+                ->innerJoin('t.residentsMapping', 'rm')
+                ->where('c.status in :contractStatuses')
+                ->andWhere('c.id <> :contractId')
+                ->andWhere('c.property = :property')
+                ->andWhere('c.group = :group')
+                ->andWhere('c.unit = :unit')
+                ->andWhere('rm.residentId = :residentId')
+                ->setParameter('contractStatuses', $contractStatuses)
+                ->setParameter('group', $contract->getGroup())
+                ->setParameter('property', $contract->getProperty())
+                ->setParameter('unit', $contract->getUnit())
+                ->setParameter('residentId', $residentId)
+                ->setParameter('contractId', $contract->getId())
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+
+        return !empty($duplicateContract) ? $duplicateContract : $this->createQueryBuilder('c')
+                ->innerJoin('c.tenant', 't')
+                ->innerJoin('t.residentsMapping', 'rm')
+                ->where('c.status in :contractStatuses')
+                ->andWhere('c.id <> :contractId')
+                ->andWhere('c.property = :property')
+                ->andWhere('c.group = :group')
+                ->andWhere('rm.residentId = :residentId')
+                ->setParameter('contractStatuses', $contractStatuses)
+                ->setParameter('group', $contract->getGroup())
+                ->setParameter('property', $contract->getProperty())
+                ->setParameter('residentId', $residentId)
+                ->setParameter('contractId', $contract->getId())
+                ->getQuery()
+                ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Contract $contract
+     * @param string $email
+     * @param array $contractStatuses
+     * @return Contract|null
+     * @throws NonUniqueResultException
+     */
+    public function getOneOrNullDuplicateContractByEmail(Contract $contract, $email, array $contractStatuses)
+    {
+        if ($contract->getUnit()) {
+            $duplicateContract = $this->createQueryBuilder('c')
+                ->innerJoin('c.tenant', 't')
+                ->where('c.status in :contractStatuses')
+                ->andWhere('c.id <> :contractId')
+                ->andWhere('c.property = :property')
+                ->andWhere('c.group = :group')
+                ->andWhere('c.unit = :unit')
+                ->andWhere('t.email = :email')
+                ->setParameter('contractStatuses', $contractStatuses)
+                ->setParameter('email', $email)
+                ->setParameter('contractId', $contract->getId())
+                ->setParameter('group', $contract->getGroup())
+                ->setParameter('property', $contract->getProperty())
+                ->setParameter('unit', $contract->getUnit())
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+
+        return !empty($duplicateContract) ? $duplicateContract : $this->createQueryBuilder('c')
+            ->innerJoin('c.tenant', 't')
+            ->where('c.status in :contractStatuses')
+            ->andWhere('c.id <> :contractId')
+            ->andWhere('c.property = :property')
+            ->andWhere('c.group = :group')
+            ->andWhere('t.email = :email')
+            ->setParameter('contractStatuses', $contractStatuses)
+            ->setParameter('email', $email)
+            ->setParameter('contractId', $contract->getId())
+            ->setParameter('group', $contract->getGroup())
+            ->setParameter('property', $contract->getProperty())
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
