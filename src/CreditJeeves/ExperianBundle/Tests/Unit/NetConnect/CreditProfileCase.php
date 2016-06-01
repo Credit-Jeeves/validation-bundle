@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ExperianBundle\Tests;
+namespace CreditJeeves\ExperianBundle\Tests\Unit\NetConnect;
 
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
@@ -65,7 +65,7 @@ class CreditProfileCase extends BaseTestCase
                 $this->callback(
                     function ($xml) {
                         $this->assertStringEqualsFile(
-                            __DIR__ . '/../../Resources/NetConnect/CreditProfile-Request.xml',
+                            __DIR__ . '/../../Data/NetConnect/CreditProfile-Request.xml',
                             $xml
                         );
 
@@ -78,7 +78,7 @@ class CreditProfileCase extends BaseTestCase
             ->method('doRequest')
             ->will(
                 $this->returnValue(
-                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/CreditProfile-Response.xml')
+                    file_get_contents(__DIR__ . '/../../Data/NetConnect/CreditProfile-Response.xml')
                 )
             );
         $this->objInstance->getNetConnectRequest()
@@ -87,7 +87,7 @@ class CreditProfileCase extends BaseTestCase
             ->setDbHost('STAR')
             ->setEai('HRPCX4RA');
         $this->assertStringEqualsFile(
-            __DIR__ . '/../../Resources/ARF/marion.arf',
+            __DIR__ . '/../../Data/NetConnect/marion.arf',
             $this->objInstance->getResponseOnUserData($this->getUser())
         );
     }
@@ -104,7 +104,7 @@ class CreditProfileCase extends BaseTestCase
             ->method('doRequest')
             ->will(
                 $this->returnValue(
-                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/CreditProfile-Response-NoRecordFound.xml')
+                    file_get_contents(__DIR__ . '/../../Data/NetConnect/CreditProfile-Response-NoRecordFound.xml')
                 )
             );
 

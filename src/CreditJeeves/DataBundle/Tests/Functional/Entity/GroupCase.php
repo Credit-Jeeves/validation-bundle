@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\DataBundle\Tests\Entity;
+namespace CreditJeeves\DataBundle\Tests\Functional\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\BillingAccount;

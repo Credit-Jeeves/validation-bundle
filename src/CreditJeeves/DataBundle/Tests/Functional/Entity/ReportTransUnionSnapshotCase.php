@@ -1,6 +1,6 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Tests\Entity;
+namespace CreditJeeves\DataBundle\Tests\Functional\Entity;
 
 use CreditJeeves\DataBundle\Entity\ReportTransunionSnapshot;
 use CreditJeeves\DataBundle\Entity\ReportSummaryInterface;
