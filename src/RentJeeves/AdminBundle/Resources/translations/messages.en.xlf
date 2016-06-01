@@ -26,9 +26,13 @@
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
             </trans-unit>
-            <trans-unit id="upload.csv.create_job">
-                <source>upload.csv.create_job</source>
-                <target>Upload csv and create job for import property</target>
+            <trans-unit id="admin.import.csv_properties">
+                <source>admin.import.csv_properties</source>
+                <target>Run CSV property import</target>
+            </trans-unit>
+            <trans-unit id="admin.import.csv_leases">
+                <source>admin.import.csv_leases</source>
+                <target>Run CSV lease import</target>
             </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
@@ -398,8 +402,8 @@
                 <source>admin.import.lease</source>
                 <target>Run lease import</target>
             </trans-unit>
-             <trans-unit id="admin.import.lease.error.wrong_import_model_type">
-                <source>admin.import.lease.error.wrong_import_model_type</source>
+             <trans-unit id="admin.import.error.wrong_import_model_type">
+                <source>admin.import.error.wrong_import_model_type</source>
                 <target>Import Type invalid. Allowed values: property, lease.</target>
              </trans-unit>
             <trans-unit id="admin.holding.post_app_fee_security_deposit">
