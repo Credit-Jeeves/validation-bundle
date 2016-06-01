@@ -3,8 +3,7 @@
 namespace RentJeeves\ImportBundle\Tests\Unit\LeaseImport\Extractor;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
-use RentJeeves\CoreBundle\Sftp\SftpFileManager;
+use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\LeaseImport\Extractor\CsvExtractor as LeaseCsvExtractor;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor as PropertyCsvExtractor;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -16,48 +15,46 @@ class CsvExtractorCase extends UnitTestBase
 
     /**
      * @test
+     */
+    public function shouldExtractData()
+    {
+        $propertyCsvExtractorMock = $this->getBaseMock(PropertyCsvExtractor::class);
+        $propertyCsvExtractorMock->expects($this->once())
+            ->method('setGroup');
+        $propertyCsvExtractorMock->expects($this->once())
+            ->method('setPathToFile');
+        $propertyCsvExtractorMock->expects($this->once())
+            ->method('extractData')
+            ->willReturn(['hashHeader' => [], 'data' => []]);
+
+        $csvLeaseExtractor = new LeaseCsvExtractor($propertyCsvExtractorMock);
+        $csvLeaseExtractor->setGroup(new Group());
+        $csvLeaseExtractor->setPathToFile(__DIR__ . 'test');
+        $result = $csvLeaseExtractor->extractData();
+
+        $this->arrayHasKey('hashHeader', $result, 'Should return array with key hashHeader');
+        $this->arrayHasKey('data', $result, 'Should return array with key data');
+    }
+
+    /**
+     * @test
      * @expectedException \RentJeeves\ImportBundle\Exception\ImportExtractorException
      * @expectedExceptionMessage Pls configure extractor("setGroup","setPathToFile") before extractData.
      */
     public function shouldThrowExceptionIfExtractorDoesNotConfigure()
     {
-        $propertyCsvExtractor = new PropertyCsvExtractor(
-            new CsvFileReader(),
-            $this->getBaseMock(SftpFileManager::class),
-            $this->getLoggerMock()
-        );
-        $csvLeaseExtractor = new LeaseCsvExtractor($propertyCsvExtractor);
+        $propertyCsvExtractorMock = $this->getBaseMock(PropertyCsvExtractor::class);
+        $propertyCsvExtractorMock->expects($this->never())
+            ->method('setGroup');
+        $propertyCsvExtractorMock->expects($this->never())
+            ->method('setPathToFile');
+        $propertyCsvExtractorMock->expects($this->once())
+            ->method('extractData')
+            ->willThrowException(
+                new ImportExtractorException('Pls configure extractor("setGroup","setPathToFile") before extractData.')
+            );
+
+        $csvLeaseExtractor = new LeaseCsvExtractor($propertyCsvExtractorMock);
         $csvLeaseExtractor->extractData();
     }
-
-    /**
-     * @test
-     */
-    public function shouldExtractDataFromCsvFile()
-    {
-        $sftpFileManager = $this->getBaseMock(SftpFileManager::class);
-        $sftpFileManager
-            ->method('download')
-            ->will($this->returnCallback(
-                function ($inputFileName, $tmpFileName) {
-                    $file = __DIR__ . '/../../../Fixtures/csvExample.csv';
-                    copy($file, $tmpFileName);
-                }
-            ));
-        $csvPropertyExtractor = new PropertyCsvExtractor(
-            new CsvFileReader(),
-            $sftpFileManager,
-            $this->getLoggerMock()
-        );
-
-        $csvPropertyExtractor->setGroup(new Group());
-        $csvPropertyExtractor->setPathToFile(__DIR__ . 'test');
-
-        $csvLeaseExtractor = new LeaseCsvExtractor($csvPropertyExtractor);
-        $result = $csvLeaseExtractor->extractData();
-
-        $this->assertEquals(3, count($result['data']), 'File contains 8 row with data.');
-        $this->assertNotEmpty($result['hashHeader'], 'HashHeader should be not empty.');
-    }
-
 }
