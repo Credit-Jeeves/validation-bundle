@@ -187,7 +187,6 @@ function Contracts() {
     };
 
     this.editContract = function (data) {
-        console.log(data);
         var position = $('#edit-' + data.id).position();
         data.top = position.top - 300;
         self.loadContract(data, 'edit');

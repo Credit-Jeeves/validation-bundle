@@ -211,9 +211,11 @@ services:
               %accounting_system.yardi_genesis_v2%: @landlord.batch_deposits.export.yardi_genesis_v2
 
     landlord.contract_merging.processor:
-        class: RentJeeves\LandlordBundle\Services\ContractMergingProcessor
+        class: RentJeeves\LandlordBundle\MergingContracts\ContractMergingProcessor
         arguments:
             - @doctrine.orm.default_entity_manager
+            - @validator
+            - @project.mailer
             - @logger
 
     #validators

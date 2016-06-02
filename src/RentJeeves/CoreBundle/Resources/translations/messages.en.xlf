@@ -576,6 +576,14 @@
                 <source>merge.contract</source>
                 <target>Merging Lease</target>
             </trans-unit>
+            <trans-unit id="contract.duplicate.error">
+                <source>contract.duplicate.error</source>
+                <target><![CDATA[
+                We're sorry but we found duplicated contracts and cannot merge them.
+                Please verify the email and the residentID are correct and try again.
+                Contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a> if you continue to have problems.
+                ]]></target>
+            </trans-unit>
             <trans-unit id="contract.merging.first_name">
                 <source>contract.merging.first_name</source>
                 <target>First Name</target>
@@ -592,36 +600,99 @@
                 <source>contract.merging.email</source>
                 <target>Email</target>
             </trans-unit>
-            <trans-unit id="duplicate.contract">
-                <source>duplicate.contract</source>
+            <trans-unit id="contract.merging.duplicate_found.title">
+                <source>contract.merging.duplicate_found.title</source>
                 <target>Matching Lease Found</target>
             </trans-unit>
-            <trans-unit id="merging_cancel.contract.description">
-                <source>merging_cancel.contract.description</source>
+            <trans-unit id="contract.merging.duplicate_found.description">
+                <source>contract.merging.duplicate_found.description</source>
+                <target>This %FIELD% already belongs to %USER%. Is this the same user?</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.cancel.description">
+                <source>contract.merging.cancel.description</source>
                 <target><![CDATA[
-                We're sorry. Please verify the email is correct and try again.
-                Contact <a href="mailto:%support_email%">%support_email%</a> if you continue to have problems.
+                We're sorry. Please verify the %FIELD% is correct and try again.
+                Contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a> if you continue to have problems.
                 ]]></target>
+            </trans-unit>
+            <trans-unit id="contract.merging.failure.description">
+                <source>contract.merging.failure.description</source>
+                <target><![CDATA[
+                We're sorry. Please verify the email and the residentID are correct and try again.
+                Contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a> if you continue to have problems.
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="contract.merging.failed">
+                <source>contract.merging.failed</source>
+                <target>Can not be merged contracts. Please try again later.</target>
             </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
                 <target>Requested Payment</target>
             </trans-unit>
-            <trans-unit id="yes.merge.contract">
-                <source>yes.merge.contract</source>
+            <trans-unit id="contract.merging.yes">
+                <source>contract.merging.yes</source>
                 <target>Yes</target>
             </trans-unit>
-            <trans-unit id="no.merge.contract">
-                <source>no.merge.contract</source>
+            <trans-unit id="contract.merging.no">
+                <source>contract.merging.no</source>
                 <target>No</target>
             </trans-unit>
-            <trans-unit id="close.merge.contract">
-                <source>close.merge.contract</source>
+            <trans-unit id="contract.merging.close">
+                <source>contract.merging.close</source>
                 <target>Close</target>
             </trans-unit>
             <trans-unit id="lease.details">
                 <source>lease.details</source>
                 <target>Lease Details</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.first_name.empty">
+                <source>contract.merging.error.first_name.empty</source>
+                <target>Tenant First Name is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.last_name.empty">
+                <source>contract.merging.error.last_name.empty</source>
+                <target>Tenant Last Name is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.email.empty">
+                <source>contract.merging.error.email.empty</source>
+                <target>Tenant Email is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.rent.empty">
+                <source>contract.merging.error.rent.empty</source>
+                <target>Lease Amount is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.due_date.empty">
+                <source>contract.merging.error.due_date.empty</source>
+                <target>Lease Due Date is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.start.empty">
+                <source>contract.merging.error.start.empty</source>
+                <target>Lease Start Date is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.property.invalid">
+                <source>contract.merging.error.property.invalid</source>
+                <target>Property is not specified or invalid.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.unit.invalid">
+                <source>contract.merging.error.unit.invalid</source>
+                <target>Unit is not specified or invalid.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.resident.empty">
+                <source>contract.merging.error.resident.empty</source>
+                <target>External Resident ID is required.</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.lease.empty">
+                <source>contract.merging.error.lease.empty</source>
+                <target>External Lease ID is required.</target>
+            </trans-unit>
+            <trans-unit id="user.error.type.invalid">
+                <source>user.error.type.invalid</source>
+                <target>User Type is invalid. Should be "%correct_user_type%" expected "%expected_user_type%".</target>
+            </trans-unit>
+            <trans-unit id="contract.merging.error.email.belongs_another_user">
+                <source>contract.merging.error.email.belongs_another_user</source>
+                <target>Email belongs to another user.</target>
             </trans-unit>
             <trans-unit id="online.payments.lease">
                 <source>online.payments.lease</source>

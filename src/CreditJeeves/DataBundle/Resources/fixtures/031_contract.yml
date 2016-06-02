@@ -339,7 +339,7 @@ fixtures:
         createdAt: '-1 days'
         updatedAt: '-1 days'
     Contract_waiting_1:
-        tenant:   Tenant_dtr_1
+        tenant:    Tenant_dtr_1
         holding:   rjHolding_1
         group:     DTRGroup_1
         property:  Property_1
@@ -349,3 +349,26 @@ fixtures:
         paidTo:    null
         createdAt: '-1 days'
         updatedAt: '-1 days'
+    Contract_invite_1:
+        tenant:    Tenant_invite_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        property:  Property_1
+        unit:      Unit_dtr_4
+        status:    invite
+        rent:      1200
+        dueDate:   15
+        startAt:   '10 days'
+        createdAt: '-1 days'
+        updatedAt: '-1 days'
+        integrated_balance: 1200
+    Contract_duplicate_pending_1:
+        tenant:    Tenant_pending_1
+        holding:   rjHolding_1
+        group:     DTRGroup_1
+        property:  Property_1
+        unit:      Unit_dtr_4
+        status:    pending
+        dueDate:   1
+        createdAt: '-2 days'
+        updatedAt: '-2 days'

@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="form-row clearfix">
-                <label>{{ 'contract.merging.email'|trans }}</label>
+                <label>{{ 'contract.merging.email'|trans }}<b>*</b></label>
                 <div class="fields-box">
                     <input data-bind="value: email" type="text" id="email-merge" class="half-of-right">
                 </div>
@@ -111,13 +111,13 @@
                 <div class="fields-box">
                     <input type="text" class="datepicker-field" data-bind="value: start" id="contract_start-merge">
                     <label class="checkbox radio finishAtLabelM2M">
-                        <input type="radio" class="monthToMonth" name="optionsFinishAtMerge" value="monthToMonth" data-bind="checked: $root.optionsFinishAtEdit" >
+                        <input type="radio" class="monthToMonth" name="optionsFinishAtMerge" value="monthToMonth" data-bind="checked: $root.optionsFinishAtMerge" >
                         <i></i>
                         <span>{{ 'when.cancelled' | trans }}</span>
                         <div class="clearboth"></div>
                     </label>
                     <label class="checkbox radio finishAtLabel">
-                        <input type="radio" class="finishAt" name="optionsFinishAtMerge" value="finishAt" data-bind="checked: $root.optionsFinishAtEdit" >
+                        <input type="radio" class="finishAt" name="optionsFinishAtMerge" value="finishAt" data-bind="checked: $root.optionsFinishAtMerge" >
                         <i></i>
                         <span class="onFinishAt">{{ 'on' | trans }}</span>
                         <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contract_finish-merge">
@@ -137,30 +137,30 @@
     </div>
     <div class="footer-button-box">
         <button class="button" data-bind="click: $root.mergeContract"><span>{{'savechanges'|trans}}</span></button>
-        <button class="button grey"  data-bind="click: $root.cancelMerge"><span>{{'cancel'|trans}}</span></button>
+        <button class="button grey"  data-bind="click: $root.cancelMergeContract"><span>{{'cancel'|trans}}</span></button>
     </div>
 </div>
 <div id="contract-duplicate-popup" class="pricing-popup dashboard-popup properties-popup">
-    <h1>{{ 'duplicate.contract'|trans }}</h1>
+    <h1>{{ 'contract.merging.duplicate_found.title'|trans }}</h1>
     <div class="clearfix col-box">
         <div class="col">
             <h4 class="clearfix">
-                <span data-bind="text: duplicateContractMessage(), visible: shouldMerging()"></span>
-                <span data-bind="visible: !shouldMerging()">
-                    {{ 'merging_cancel.contract.description' | trans({'%support_email%' : support_email}) | raw }}
+                <span
+                        data-bind="html: duplicateContractMessage(),
+                        i18n: {text: duplicateContractMessage, FIELD: duplicateContractMatchType, SUPPORT_EMAIL : '{{ support_email }}', USER: duplicateContractUser}">
                 </span>
             </h4>
         </div>
     </div>
     <div class="footer-button-box">
-        <button class="button" data-bind="visible: shouldMerging(), click: mergingContract">
-            <span>{{ 'yes.merge.contract'|trans }}</span>
+        <button class="button" data-bind="visible: shouldMerge(), click: initializeMergingContractsDialog">
+            <span>{{ 'contract.merging.yes'|trans }}</span>
         </button>
-        <button class="button grey" data-bind="visible: shouldMerging(), click: cancelMerging">
-            <span>{{ 'no.merge.contract'|trans }}</span>
+        <button class="button grey" data-bind="visible: shouldMerge(), click: cancelMergeContract">
+            <span>{{ 'contract.merging.no'|trans }}</span>
         </button>
-        <button class="button grey" data-bind="visible: !shouldMerging(), click: closeMerging">
-            <span>{{ 'close.merge.contract'|trans }}</span>
+        <button class="button grey" data-bind="visible: !shouldMerge(), click: closeMergingContractsDialog">
+            <span>{{ 'contract.merging.close'|trans }}</span>
         </button>
     </div>
 </div>

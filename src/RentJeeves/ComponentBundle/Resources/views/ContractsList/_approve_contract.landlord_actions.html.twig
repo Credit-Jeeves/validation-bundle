@@ -6,7 +6,7 @@
             <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
             <ul class="default">
                 <!-- ko foreach: $root.errorsApprove() -->
-                <li data-bind="text: $data"></li>
+                <li data-bind="html: $data"></li>
                 <!-- /ko -->
             </ul>
         </div>

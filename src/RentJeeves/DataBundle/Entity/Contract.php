@@ -29,7 +29,7 @@ use RentJeeves\DataBundle\Validators\ContractDuplicate;
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
  *
- * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"merging", "User", "Default"})
  * @ContractDuplicate()
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")

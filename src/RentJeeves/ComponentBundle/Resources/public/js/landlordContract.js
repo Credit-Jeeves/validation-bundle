@@ -33,9 +33,7 @@ $(document).ready(function () {
         autoOpen: false,
         resizable: false,
         modal: true,
-        width: '520px',
-        close: function () {
-        }
+        width: '520px'
     });
 
     $('#tenant-review-property-popup').dialog({
@@ -85,6 +83,7 @@ $(document).ready(function () {
         modal: true,
         width: '520px',
         close: function () {
+            DetailsViewModel.revertMergingContractsEvent();
         }
     });
 
