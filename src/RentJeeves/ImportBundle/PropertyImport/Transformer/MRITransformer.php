@@ -72,7 +72,7 @@ class MRITransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($accountingSystemRecord));
             $importProperty->setState($this->getState($accountingSystemRecord));
             $importProperty->setZip($this->getZip($accountingSystemRecord));
-            $importProperty->setCountry($this->getCountry($accountingSystemRecord));
+            $importProperty->setCountry($this->getCountry($accountingSystemRecord, $countryFromSettings));
             $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($accountingSystemRecord));
 
             $this->em->persist($importProperty);

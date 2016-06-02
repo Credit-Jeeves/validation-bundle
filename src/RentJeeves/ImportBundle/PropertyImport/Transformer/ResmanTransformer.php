@@ -169,7 +169,7 @@ class ResmanTransformer implements TransformerInterface
      */
     protected function getCountry(RtUnit $rtUnit, $countryFromSettings)
     {
-        if (null === $country = $country = $rtUnit->getUnit()->getInformation()->getAddress()->getCountry()) {
+        if (null === $country = $rtUnit->getUnit()->getInformation()->getAddress()->getCountry()) {
             return $countryFromSettings;
         }
 

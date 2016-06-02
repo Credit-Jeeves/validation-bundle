@@ -95,7 +95,7 @@ class CsvTransformer implements TransformerInterface
             $state = $accountingSystemRecord[$importMappingRule['state']];
             $zip = $accountingSystemRecord[$importMappingRule['zip']];
 
-            if (false === isset($importMappingRule['country']) ) {
+            if (false === isset($importMappingRule['country'])) {
                 $country = $countryFromSettings;
             } else {
                 $country = CountryNameStandardizer::standardize(

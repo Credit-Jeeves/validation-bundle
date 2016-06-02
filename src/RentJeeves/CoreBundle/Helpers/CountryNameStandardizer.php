@@ -31,7 +31,7 @@ class CountryNameStandardizer
     ];
 
     /**
-     * Standardize input country to RentTrack format country or return null
+     * Standardize input country to RentTrack format country or return input country
      *
      * @param string $country
      *

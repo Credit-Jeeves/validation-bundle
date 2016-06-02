@@ -233,7 +233,7 @@ class AMSITransformer implements TransformerInterface
      */
     protected function getCountry(Lease $lease, Occupant $occupant, $countryFromSettings)
     {
-        if (null === $country = $country = $lease->getUnit()->getCountry()) {
+        if (null === $country = $lease->getUnit()->getCountry()) {
             return $countryFromSettings;
         }
 
