@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ExperianBundle\Tests;
+namespace CreditJeeves\ExperianBundle\Tests\Unit\NetConnect;
 
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use CreditJeeves\ExperianBundle\NetConnect\Exception;
@@ -65,7 +65,7 @@ class PreciseIDCase extends BaseTestCase
                 $this->callback(
                     function ($xml) {
                         $this->assertStringEqualsFile(
-                            __DIR__ . '/../../Resources/NetConnect/PreciseID-Request.xml',
+                            __DIR__ . '/../../Data/NetConnect/PreciseID-Request.xml',
                             $xml
                         );
 
@@ -75,7 +75,7 @@ class PreciseIDCase extends BaseTestCase
             )
             ->will(
                 $this->returnValue(
-                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID-Response.xml')
+                    file_get_contents(__DIR__ . '/../../Data/NetConnect/PreciseID-Response.xml')
                 )
             );
         $this->objInstance->getNetConnectRequest()
@@ -99,7 +99,7 @@ class PreciseIDCase extends BaseTestCase
             ->will(
                 $this->returnValue(
                     file_get_contents(
-                        __DIR__ . '/../../Resources/NetConnect/PreciseID-Response-CannotFormulateQuestions.xml'
+                        __DIR__ . '/../../Data/NetConnect/PreciseID-Response-CannotFormulateQuestions.xml'
                     )
                 )
             );
@@ -120,7 +120,7 @@ class PreciseIDCase extends BaseTestCase
                 $this->returnValue(
                     file_get_contents(
                         __DIR__ .
-                        '/../../Resources/NetConnect/PreciseID-Response-NoQuestionsReturnedDueToExcessiveUse.xml'
+                        '/../../Data/NetConnect/PreciseID-Response-NoQuestionsReturnedDueToExcessiveUse.xml'
                     )
                 )
             );
@@ -142,7 +142,7 @@ class PreciseIDCase extends BaseTestCase
                 $this->returnValue(
                     file_get_contents(
                         __DIR__ .
-                        '/../../Resources/NetConnect/PreciseID-Response-Deceased.xml'
+                        '/../../Data/NetConnect/PreciseID-Response-Deceased.xml'
                     )
                 )
             );
@@ -161,7 +161,7 @@ class PreciseIDCase extends BaseTestCase
                 $this->callback(
                     function ($xml) {
                         $this->assertStringEqualsFile(
-                            __DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Request.xml',
+                            __DIR__ . '/../../Data/NetConnect/PreciseID-Questions-Request.xml',
                             $xml
                         );
 
@@ -171,7 +171,7 @@ class PreciseIDCase extends BaseTestCase
             )
             ->will(
                 $this->returnValue(
-                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Response.xml')
+                    file_get_contents(__DIR__ . '/../../Data/NetConnect/PreciseID-Questions-Response.xml')
                 )
             );
         $this->objInstance->getNetConnectRequest()
@@ -195,7 +195,7 @@ class PreciseIDCase extends BaseTestCase
             ->method('doRequest')
             ->will(
                 $this->returnValue(
-                    file_get_contents(__DIR__ . '/../../Resources/NetConnect/PreciseID-Questions-Response-Wrong.xml')
+                    file_get_contents(__DIR__ . '/../../Data/NetConnect/PreciseID-Questions-Response-Wrong.xml')
                 )
             );
         $this->assertFalse(

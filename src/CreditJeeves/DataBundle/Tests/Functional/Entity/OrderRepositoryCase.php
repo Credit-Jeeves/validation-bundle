@@ -1,6 +1,6 @@
 <?php
 
-namespace CreditJeeves\DataBundle\Tests\Entity;
+namespace CreditJeeves\DataBundle\Tests\Functional\Entity;
 
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;

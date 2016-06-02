@@ -11,8 +11,6 @@ class ResettingCase extends BaseTestCase
     public function resettingPassword()
     {
         $this->setDefaultSession('symfony');
-//        $this->setDefaultSession('goutte');
-//        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'login');
 
@@ -51,34 +49,5 @@ class ResettingCase extends BaseTestCase
         );
         $this->assertNotEmpty($matches[1]);
         $this->session->visit($matches[1]);
-    }
-//
-    /**
-     * @test
-     * @depends checkEmail
-     */
-    public function fillPassword()
-    {
-        $this->markTestIncomplete('FINISH'); //FIXME cli url generation!!!
-        $form = $this->page->find('css', '#fos_user_resetting_form');
-        $this->assertNotNull($form);
-
-        $this->fillForm(
-            $form,
-            array(
-                'fos_user_resetting_form_new_first' => '123',
-                'fos_user_resetting_form_new_second' => '123',
-            )
-        );
-        $this->page->pressButton('resetting.reset.submit');
-
-        $this->assertNotNull($title = $this->page->find('css', 'h1'));
-
-        $this->assertEquals('current_contracts.title', $title->getText());
-
-        $this->logout();
-
-        $this->login('tenant11@example.com', '123');
-        $this->logout();
     }
 }
