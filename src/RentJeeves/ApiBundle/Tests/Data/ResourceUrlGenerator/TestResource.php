@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\Fixtures;
+namespace RentJeeves\ApiBundle\Tests\Data\ResourceUrlGenerator;
 
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 

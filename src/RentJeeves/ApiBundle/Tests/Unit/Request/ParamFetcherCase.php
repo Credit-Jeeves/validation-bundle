@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\Request;
+namespace RentJeeves\ApiBundle\Tests\Unit\Request;
 
 use RentJeeves\ApiBundle\Request\Annotation\AttributeParam;
 use RentJeeves\ApiBundle\Request\Annotation\QueryParam;

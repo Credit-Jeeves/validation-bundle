@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\Controller\Tenant;
+namespace RentJeeves\ApiBundle\Tests\Functional\Controller\Tenant;
 
 use CreditJeeves\DataBundle\Entity\MailingAddress as Address;
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;

@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\ApiBundle\Tests\Controller;
+namespace RentJeeves\ApiBundle\Tests\Functional\Controller;
 
 use RentJeeves\ApiBundle\Tests\BaseApiTestCase;
 use RentJeeves\DataBundle\Entity\ResidentMapping;

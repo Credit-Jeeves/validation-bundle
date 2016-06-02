@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ApiBundle\Tests\Services\Encoders;
+namespace RentJeeves\ApiBundle\Tests\Unit\Services\Encoders;
 
 use RentJeeves\ApiBundle\Services\Encoders\AttributeEncoderInterface;
 use RentJeeves\TestBundle\BaseTestCase;
