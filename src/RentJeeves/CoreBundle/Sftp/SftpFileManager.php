@@ -87,7 +87,7 @@ class SftpFileManager
      * @param string $login
      * @param string $password
      */
-    public function setPasswordCredentials($login,  $password)
+    public function setPasswordCredentials($login, $password)
     {
         $this->login = $login;
         $this->password = $password;
