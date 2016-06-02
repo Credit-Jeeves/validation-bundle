@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests\PidKiqProcessor;
+namespace RentJeeves\ComponentBundle\Tests\Functional\PidKiqProcessor;
 
 use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
@@ -51,7 +51,10 @@ class PidKiqProcessorExperianCase extends BaseTestCase
         $this->em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         $this->fixtureLoader = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'Pidkiq']
+            [
+                __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 
+                'Data' . DIRECTORY_SEPARATOR . 'PidkiqProcessor'
+            ]
         );
 
         $this->experianMockApi = $this->getMock(

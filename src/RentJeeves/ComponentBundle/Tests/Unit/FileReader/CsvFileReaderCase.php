@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests;
+namespace RentJeeves\ComponentBundle\Tests\Unit\FileReader;
 
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 
@@ -10,8 +10,9 @@ class CsvFileReaderCase extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$reportFilename = __DIR__ . '/Fixtures/report.csv';
+        self::$reportFilename = __DIR__ . '/../../Data/FileReader/report.csv';
     }
+    
     /**
      * @test
      */
@@ -63,7 +64,7 @@ class CsvFileReaderCase extends \PHPUnit_Framework_TestCase
     public function canReadFileWithCarriageReturnAsEndOfLine()
     {
         $fileReader = new CsvFileReader();
-        $result = $fileReader->read(__DIR__ . '/Fixtures/csv_endings.csv');
+        $result = $fileReader->read(__DIR__ . '/../../Data/FileReader/csv_endings.csv');
 
         $this->assertEquals(1, count($result));
         $this->assertEquals(1018, $result[1]['Unit']);

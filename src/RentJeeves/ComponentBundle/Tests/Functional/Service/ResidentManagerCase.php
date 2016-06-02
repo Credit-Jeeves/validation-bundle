@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\ComponentBundle\Tests\Service;
+namespace RentJeeves\ComponentBundle\Tests\Functional\Service;
 
 use RentJeeves\ComponentBundle\Service\ResidentManager;
 use RentJeeves\DataBundle\Entity\ResidentMapping;

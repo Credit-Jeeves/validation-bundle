@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests\Command;
+namespace RentJeeves\ComponentBundle\Tests\Functional\Command;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\OrderStatus;

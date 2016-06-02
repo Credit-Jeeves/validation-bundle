@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\ComponentBundle\Tests\Utility;
+namespace RentJeeves\ComponentBundle\Tests\Unit\Utility;
 
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
 use RentJeeves\TestBundle\BaseTestCase;

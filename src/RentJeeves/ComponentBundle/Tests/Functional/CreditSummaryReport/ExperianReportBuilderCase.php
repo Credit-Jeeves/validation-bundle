@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests\PidKiqProcessor;
+namespace RentJeeves\ComponentBundle\Tests\Functional\CredirSummaryReport;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;

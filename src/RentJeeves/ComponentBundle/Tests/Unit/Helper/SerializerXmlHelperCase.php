@@ -1,10 +1,10 @@
 <?php
-namespace RentJeeves\ComponentBundle\Tests\Helper;
+namespace RentJeeves\ComponentBundle\Tests\Unit\Helper;
 
 use RentJeeves\ComponentBundle\Helper\SerializerXmlHelper;
-use RentJeeves\TestBundle\BaseTestCase;
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class SerializerXmlHelperCase extends BaseTestCase
+class SerializerXmlHelperCase extends UnitTestBase
 {
     /**
      * @test
