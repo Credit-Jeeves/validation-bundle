@@ -119,6 +119,9 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $resident->getLeaseId()
                 )
             );
+            if (false === empty($resident->getLeaseId())) {
+                $this->retryFailedAccountingSystemPost($contract);
+            }
         }
 
         $contract->setIntegratedBalance($resident->getLeaseBalance());
