@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use RentJeeves\CheckoutBundle\Command\RegisterContractToProfitStarsCommand;
 use RentJeeves\CheckoutBundle\PaymentProcessor\PaymentProcessorProfitStarsRdc;

@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use ACI\Utils\OldProfilesStorage;
 use CreditJeeves\DataBundle\Entity\Holding;
@@ -59,7 +59,7 @@ class PaymentCommandsCase extends BaseTestCase
         $this->plugin->clean();
 
         $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
+            [__DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 'Fixtures']
         );
     }
 

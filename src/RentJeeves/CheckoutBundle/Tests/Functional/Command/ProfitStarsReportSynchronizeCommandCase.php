@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\CheckoutBundle\Command\ProfitStarsReportSynchronizeCommand;

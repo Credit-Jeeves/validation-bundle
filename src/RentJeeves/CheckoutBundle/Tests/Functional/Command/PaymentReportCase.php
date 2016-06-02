@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -27,7 +27,7 @@ class PaymentReportCase extends BaseTestCase
     {
         $this->load(true);
 
-        $this->hpsReportPath = __DIR__ . '/../Fixtures/hps/';
+        $this->hpsReportPath = __DIR__ . '/../Data/PaymentProcessor/Heartland/ReportLoader';
         $this->depositFile = $this->hpsReportPath . 'report_' . ReportLoader::DEPOSIT_REPORT_FILENAME_SUFFIX . '.csv';
         $this->reversalFile = $this->hpsReportPath . 'report_' . ReportLoader::REVERSAL_REPORT_FILENAME_SUFFIX . '.csv';
         $this->hpsACHDepositReport = file_get_contents($this->depositFile);

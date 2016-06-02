@@ -4,7 +4,7 @@ namespace RentJeeves\ApiBundle\Tests\Unit\Services\ResourceUrlGenerator;
 
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\Annotation\UrlResourceMeta;
 use RentJeeves\ApiBundle\Services\ResourceUrlGenerator\ResourceUrlGenerator;
-use RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\Fixtures\TestResource;
+use RentJeeves\ApiBundle\Tests\Data\Services\ResourceUrlGenerator\TestResource;
 use RentJeeves\TestBundle\BaseTestCase;
 
 class ResourceUrlGeneratorCase extends BaseTestCase
@@ -72,7 +72,7 @@ class ResourceUrlGeneratorCase extends BaseTestCase
             ->will($this->returnValue(true));
 
         $this->resource = $this
-            ->getMock('RentJeeves\ApiBundle\Tests\Services\ResourceUrlGenerator\Fixtures\TestResource');
+            ->getMock('RentJeeves\ApiBundle\Tests\Data\Services\ResourceUrlGenerator\TestResource');
     }
 
     public function getResourceUrlGenerator()

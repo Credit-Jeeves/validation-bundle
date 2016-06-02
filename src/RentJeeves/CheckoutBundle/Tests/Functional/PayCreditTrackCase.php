@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Payment;
+namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderSubmerchant;

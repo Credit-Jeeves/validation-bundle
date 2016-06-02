@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use RentJeeves\DataBundle\Entity\Job;
 use Symfony\Component\Console\Tester\CommandTester;

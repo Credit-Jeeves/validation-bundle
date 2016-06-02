@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use RentJeeves\CheckoutBundle\Command\MigrateActivePaymentsCommand;
 use RentJeeves\DataBundle\Entity\DepositAccount;

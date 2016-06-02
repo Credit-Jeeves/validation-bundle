@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\Command;
 
 use RentJeeves\CheckoutBundle\Command\PaymentReportSynchronizeAciCollectV4Command;
 use Symfony\Component\Console\Tester\CommandTester;

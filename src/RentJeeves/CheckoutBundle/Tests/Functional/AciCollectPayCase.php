@@ -66,7 +66,10 @@ class AciCollectPayCase extends BaseTestCase
         $this->load(true);
 
         $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
+            [
+                __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+                'Data' . DIRECTORY_SEPARATOR . 'PaymentProcessor' . DIRECTORY_SEPARATOR . 'Aci'
+            ]
         );
 
         $contractToSelectForCreate = 2;

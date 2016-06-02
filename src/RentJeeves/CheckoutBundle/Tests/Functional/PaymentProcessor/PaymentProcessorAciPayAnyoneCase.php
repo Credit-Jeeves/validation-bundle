@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\CheckoutBundle\Tests\Functional;
+namespace RentJeeves\CheckoutBundle\Tests\Functional\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\OrderPayDirect;
