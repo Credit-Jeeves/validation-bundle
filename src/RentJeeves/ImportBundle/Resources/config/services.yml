@@ -59,14 +59,14 @@ services:
 
     # services
     import.property.sftp_file_manager:
-        parent: sftp_file_manager
+        class: RentJeeves\ImportBundle\Sftp\ImportSftpFileManager
         arguments:
             - '%import.property.sftp.host%'
             - '%import.property.sftp.port%'
-            - '%import.property.sftp.login%'
-            - '%import.property.sftp.password%'
             - '@monolog.logger.sftp_file_manager'
             - '@sftp_client'
+        calls:
+            - [setKeysCredentials, ['%import.property.sftp.login%', '%import.property.sftp.publickey%', '%import.property.sftp.privatekey%']]
 
     import.property.manager:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager

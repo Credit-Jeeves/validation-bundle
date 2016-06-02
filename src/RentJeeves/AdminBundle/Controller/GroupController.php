@@ -4,12 +4,12 @@ namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\BaseController;
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -192,15 +192,19 @@ class GroupController extends BaseController
             $this->getEntityManager()->flush();
 
             $date = new \DateTime();
+            $pathToImportDir = $this->container->getParameter('import.property.sftp.path_to_import_dir');
+
             $fileName = sprintf(
-                '/%sImport_%d_%s.csv',
+                '%s/%sPropertyImport_%d_%s.csv',
+                $pathToImportDir,
                 ucfirst($importType),
                 $import->getId(),
                 $date->format('Y-m-d\TH:i:s')
             );
             $data = file_get_contents($file->getPathname());
             $this->getImportPropertySftpFileManager()->upload($data, $fileName);
-            $this->createJobForImportCsv($import, $fileName, $importType);
+            $this->getImportPropertySftpFileManager()->disconnect();
+            $this->createJobForImportCsv($import, $fileName);
 
             $import->setPathToFile($fileName);
             $this->getEntityManager()->flush();
@@ -233,7 +237,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @return SftpFileManager
+     * @return ImportSftpFileManager
      */
     protected function getImportPropertySftpFileManager()
     {

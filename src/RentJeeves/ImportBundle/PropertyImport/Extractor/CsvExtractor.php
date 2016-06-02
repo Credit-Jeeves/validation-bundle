@@ -5,9 +5,9 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
-use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
 use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
 use RentJeeves\ImportBundle\Traits\SetupPathToImportFile;
 
@@ -25,7 +25,7 @@ class CsvExtractor implements CsvPropertyExtractorInterface
     protected $csvReader;
 
     /**
-     * @var SftpFileManager
+     * @var ImportSftpFileManager
      */
     protected $sftpFileManager;
 
@@ -36,11 +36,14 @@ class CsvExtractor implements CsvPropertyExtractorInterface
 
     /**
      * @param CsvFileReader   $csvFileReader
-     * @param SftpFileManager $sftpFileManager
+     * @param ImportSftpFileManager $sftpFileManager
      * @param LoggerInterface $logger
      */
-    public function __construct(CsvFileReader $csvFileReader, SftpFileManager $sftpFileManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        CsvFileReader $csvFileReader,
+        ImportSftpFileManager $sftpFileManager,
+        LoggerInterface $logger
+    ) {
         $this->csvReader = $csvFileReader;
         $this->csvReader->setUseHeader(false);
         $this->logger = $logger;
@@ -68,6 +71,7 @@ class CsvExtractor implements CsvPropertyExtractorInterface
         $tmpFile = sprintf('%s%s%s.csv', sys_get_temp_dir(), DIRECTORY_SEPARATOR, uniqid());
 
         $this->sftpFileManager->download($this->pathToFile, $tmpFile);
+        $this->sftpFileManager->disconnect();
 
         $csvData = $this->csvReader->read($tmpFile);
         $hashHeader = HashHeaderCreator::createHashHeader($csvData[0]);

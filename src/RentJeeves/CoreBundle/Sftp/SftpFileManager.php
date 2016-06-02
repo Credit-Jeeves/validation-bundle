@@ -6,6 +6,9 @@ use Psr\Log\LoggerInterface;
 use RentJeeves\CoreBundle\Exception\SftpFileManagerException;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Service`s name "sftp_file_manager" (abstract)
+ */
 class SftpFileManager
 {
     const NUMBER_OF_RETRY = 5;
@@ -41,27 +44,53 @@ class SftpFileManager
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $publicKey;
+
+    /**
+     * @var string
+     */
+    protected $privateKey;
+
+    /**
      * @param string          $host
      * @param string          $port
-     * @param string          $login
-     * @param string          $password
      * @param LoggerInterface $logger
      * @param SftpClient      $sftpClient
      */
     public function __construct(
         $host,
         $port,
-        $login,
-        $password,
         LoggerInterface $logger,
         SftpClient $sftpClient
     ) {
         $this->host = $host;
         $this->port = (int) $port;
-        $this->login = $login;
-        $this->password = $password;
         $this->logger = $logger;
         $this->sftpClient = $sftpClient;
+    }
+
+    /**
+     * @param string $login
+     * @param string $publicKey
+     * @param string $privateKey
+     */
+    public function setKeysCredentials($login, $publicKey, $privateKey)
+    {
+        $this->login = $login;
+        $this->publicKey = $publicKey;
+        $this->privateKey = $privateKey;
+    }
+
+    /**
+     * @param string $login
+     * @param string $password
+     */
+    public function setPasswordCredentials($login,  $password)
+    {
+        $this->login = $login;
+        $this->password = $password;
     }
 
     /**
@@ -141,7 +170,7 @@ class SftpFileManager
         $this->configureRemoteConnection();
         $this->logger->debug(sprintf('Trying to upload data to file "%s".', $pathToFile));
         $remotePathToFile = $this->getSftpPath() . $pathToFile;
-        $dir = dirname($pathToFile);
+        $dir = dirname($remotePathToFile);
         if (false === file_exists($dir)) {
             $this->logger->debug($message = sprintf('Dir %s doesn`t not exists.', $dir));
             throw new SftpFileManagerException($message);
@@ -243,7 +272,7 @@ class SftpFileManager
             try {
                 $this->logger->debug(sprintf('The %s attempt to initialize SSH connection.', $i));
                 $this->sftpClient->sshConnect($this->host, $this->port);
-                $this->sftpClient->sshAuthPassword($this->login, $this->password);
+                $this->authenticateSftpClient();
                 break;
             } catch (\Exception $e) {
                 $this->logger->debug(
@@ -294,5 +323,22 @@ class SftpFileManager
         }
 
         return 'ssh2.sftp://' . $this->getSftp();
+    }
+
+    /**
+     * @throws SftpFileManagerException
+     */
+    protected function authenticateSftpClient()
+    {
+        if (null !== $this->publicKey && null !== $this->privateKey && null !== $this->login) {
+            $this->sftpClient->sshAuthKeyFiles($this->login, $this->publicKey, $this->privateKey);
+        } elseif (null !== $this->password && null !== $this->login) {
+            $this->sftpClient->sshAuthPassword($this->login, $this->password);
+        } else {
+            throw new SftpFileManagerException(
+                'Cant do sftp auth without any auth parameters.' .
+                'Pls use "setKeysCredentials" or "setPasswordCredentials" for set auth parameters.'
+            );
+        }
     }
 }
