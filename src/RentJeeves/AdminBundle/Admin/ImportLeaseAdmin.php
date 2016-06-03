@@ -89,7 +89,14 @@ class ImportLeaseAdmin extends Admin
         $listMapper
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('tenantEmail')
-            ->add('fullName', null, ['label' => 'Tenant Name'])
+            ->add(
+                'fullName',
+                null,
+                [
+                    'label' => 'Tenant Name',
+                    'template' => 'AdminBundle:CRUD:list__import_lease_full_name.html.twig'
+                ]
+            )
             ->add('externalUnitId')
             ->add('externalLeaseId')
             ->add('residentStatus')
