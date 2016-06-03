@@ -1,0 +1,16 @@
+<?php
+
+namespace RentJeeves\ImportBundle\LeaseImport\Transformer\Custom;
+
+use RentJeeves\DataBundle\Entity\Import;
+
+class ChildExampleCustomTransformer extends ExampleCustomTransformer
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function transformData(array $accountingSystemData, Import $import)
+    {
+        throw new \LogicException('This class only for test');
+    }
+}
