@@ -53,7 +53,7 @@ class AciPgpDecoderCase extends BaseTestCase
     public function shouldDecodeFile()
     {
         $decodedData = $this->getAciPgpDecoder()->decode(
-            __DIR__ . '/../../../../Data/PaymentProcessorAci/Encoder/encodedFile.pgp'
+            __DIR__ . '/../../../../Data/PaymentProcessor/Aci/Encoder/encodedFile.pgp'
         );
         $this->assertEquals(
             file_get_contents(__DIR__ . '/../../../../Data/PaymentProcessor/Aci/Encoder/decodedFile.csv'),

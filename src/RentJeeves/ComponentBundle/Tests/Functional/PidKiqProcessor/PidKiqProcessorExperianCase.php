@@ -52,8 +52,7 @@ class PidKiqProcessorExperianCase extends BaseTestCase
 
         $this->fixtureLoader = new FileLocator(
             [
-                __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 
-                'Data' . DIRECTORY_SEPARATOR . 'PidkiqProcessor'
+                __DIR__ . '/../../Data/PidkiqProcessor'
             ]
         );
 

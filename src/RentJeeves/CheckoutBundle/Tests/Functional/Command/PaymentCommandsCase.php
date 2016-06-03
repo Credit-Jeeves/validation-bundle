@@ -59,7 +59,9 @@ class PaymentCommandsCase extends BaseTestCase
         $this->plugin->clean();
 
         $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 'Fixtures']
+            [
+                __DIR__ . '/../../Data/PaymentProcessor/Aci'
+            ]
         );
     }
 

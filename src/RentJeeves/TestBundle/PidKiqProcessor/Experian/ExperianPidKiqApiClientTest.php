@@ -28,20 +28,20 @@ class ExperianPidKiqApiClientTest extends ExperianPidKiqApiClient
 
             $rightRequestXml = file_get_contents(
                 $this->kernel->locateResource(
-                    '@RjComponentBundle/Tests/Fixtures/Pidkiq/ExperianProcessAnswers-Request.xml'
+                    '@RjComponentBundle/Tests/Data/PidkiqProcessor/ExperianProcessAnswers-Request.xml'
                 )
             );
 
             if ($requestXml == $rightRequestXml) {
                 $responseXml = file_get_contents(
                     $this->kernel->locateResource(
-                        '@RjComponentBundle/Tests/Fixtures/Pidkiq/ExperianProcessAnswers-Response.xml'
+                        '@RjComponentBundle/Tests/Data/PidkiqProcessor/ExperianProcessAnswers-Response.xml'
                     )
                 );
             } else {
                 $responseXml = file_get_contents(
                     $this->kernel->locateResource(
-                        '@RjComponentBundle/Tests/Fixtures/Pidkiq/ExperianProcessAnswers-Response-Wrong.xml'
+                        '@RjComponentBundle/Tests/Data/PidkiqProcessor/ExperianProcessAnswers-Response-Wrong.xml'
                     )
                 );
             }

@@ -46,7 +46,7 @@ class IdentityVerificationControllerCase extends BaseApiTestCase
     {
         if (!$this->questions) {
             $this->questions = Yaml::parse(
-                $this->getKernel()->locateResource('@RjComponentBundle/Tests/Fixtures/Pidkiq/questions.yml')
+                $this->getKernel()->locateResource('@RjComponentBundle/Tests/Data/PidkiqProcessor/questions.yml')
             );
         }
 
