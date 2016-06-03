@@ -681,4 +681,12 @@ abstract class ImportLease
     {
         $this->import = $import;
     }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return sprintf('%s %s', $this->firstName, $this->lastName);
+    }
 }

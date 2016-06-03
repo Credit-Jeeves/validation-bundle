@@ -338,6 +338,10 @@
                 <source>admin.list.payments_history_action</source>
                 <target>History</target>
             </trans-unit>
+            <trans-unit id="admin.list.import_lease_action">
+                <source>admin.list.import_lease_action</source>
+                <target>Import Leases</target>
+            </trans-unit>
             <trans-unit id="admin.list.payment.orders_action">
                 <source>admin.list.payment.orders_action</source>
                 <target>Orders</target>
