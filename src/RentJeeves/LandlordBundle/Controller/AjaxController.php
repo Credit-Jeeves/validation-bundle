@@ -18,7 +18,7 @@ use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
+use RentJeeves\LandlordBundle\BatchDeposits\BatchDepositsManager;
 use RentJeeves\LandlordBundle\Validator\EmailExist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

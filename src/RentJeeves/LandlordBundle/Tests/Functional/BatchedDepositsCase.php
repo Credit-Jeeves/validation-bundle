@@ -14,17 +14,13 @@ class BatchedDepositsCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
 
-        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
-        $this->page->clickLink('accounting.menu.batched_deposits');
-
-        $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/deposit');
 
         $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'), 'Title not found');
         $this->assertEquals(
-            'accounting.menu.batched_deposits (7)',
+            'accounting.menu.batched_deposits (6)',
             $title->getHtml(),
-            'Batched Deposits should have 7 items'
+            'Batched Deposits should have 6 items'
         );
 
         $this->assertNotNull(
@@ -35,14 +31,14 @@ class BatchedDepositsCase extends BaseTestCase
         $this->assertCount(
             2,
             $this->page->findAll('css', 'tr.toggled-1R20151010'),
-            'Table should has 2 rows with reversal transactions'
+            'Table should have 2 rows with reversal transactions'
         );
 
         $this->assertNotNull(
             $rows = $this->page->findAll('css', '.properties-table>tbody>tr'),
             'Lines in table not found'
         );
-        $this->assertCount(22, $rows, 'Table should contain 22 rows');
+        $this->assertCount(20, $rows, 'Table should contain 20 rows');
 
         $this->assertNotNull(
             $filter = $this->page->find('css', '#depositTypeStatus_link'),
@@ -101,7 +97,7 @@ class BatchedDepositsCase extends BaseTestCase
             'Lines in table not found'
         );
         // 4 for transactions and 1 for batch
-        $this->assertCount(5, $rows, 'Table should contain 2 rows for \'transaction ID\' filter');
+        $this->assertCount(5, $rows, 'Table should contain 5 rows for \'transaction ID\' filter');
 
         //Test for checkNumber filtering
         $filter->click();

@@ -83,11 +83,13 @@
 
                                     <td data-bind="text: transactionId"></td>
                                     <td>
+                                        <!-- ko if: address -->
                                         <span data-bind="text: address"></span>
                                         |
                                         <span data-bind="text: tenant"></span>
+                                        <!-- /ko -->
+                                        <!-- ko if: (address() && checkNumber()) -->|<!-- /ko -->
                                         <!-- ko if: checkNumber -->
-                                        |
                                         <span data-bind="text: Translator.trans('deposit.order.check_number.title', {'checkNumber': checkNumber()})"></span>
                                         <!-- /ko -->
                                     </td>

@@ -221,8 +221,7 @@ class TransactionRepository extends EntityRepository
             ->innerJoin('h.order', 'o')
             ->innerJoin('o.operations', 'p')
             ->innerJoin('o.depositAccount', 'da')
-            ->innerJoin('p.contract', 't')
-            ->where('t.group = :group')
+            ->where('da.group = :group')
             ->andWhere('h.depositDate IS NOT NULL')
             ->andWhere('h.isSuccessful = 1')
             ->setParameter('group', $group)
@@ -307,8 +306,7 @@ class TransactionRepository extends EntityRepository
         $query->innerJoin('h.order', 'o');
         $query->innerJoin('o.depositAccount', 'da');
         $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->where('t.group = :group');
+        $query->where('da.group = :group');
         $query->setParameter('group', $group);
         $query->andWhere('h.depositDate IS NOT NULL');
         $query->andWhere('h.isSuccessful = 1');
@@ -398,5 +396,23 @@ class TransactionRepository extends EntityRepository
             ->setParameter('itemId', $itemId)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param string $batchNumber
+     * @return array
+     */
+    public function getCountAllAndLeaseProfitStarsTransactionsInBatch($batchNumber)
+    {
+        return $this
+            ->createQueryBuilder('tran')
+            ->select('count(o.id) as all_transactions')
+            ->addSelect('count(oper.contract) as lease_transactions')
+            ->innerJoin('tran.order', 'o')
+            ->innerJoin('o.operations', 'oper')
+            ->where('tran.batchId = :batchNumber')
+            ->setParameter('batchNumber', $batchNumber)
+            ->getQuery()
+            ->getScalarResult();
     }
 }
