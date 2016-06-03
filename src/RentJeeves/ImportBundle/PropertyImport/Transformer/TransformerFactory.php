@@ -5,6 +5,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportException;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
@@ -94,7 +95,11 @@ class TransformerFactory
             return $this->csvTransformer;
         } else {
             $customClassName = $this->em->getRepository('RjDataBundle:ImportTransformer')
-                ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, $externalPropertyId);
+                ->findClassNameWithPriorityByGroupAndExternalPropertyId(
+                    $group,
+                    $externalPropertyId,
+                    ImportModelType::PROPERTY
+                );
 
             $accountingSystemName = $group->getHolding()->getAccountingSystem();
             if (false === in_array($accountingSystemName, array_keys($this->defaultTransformers))) {

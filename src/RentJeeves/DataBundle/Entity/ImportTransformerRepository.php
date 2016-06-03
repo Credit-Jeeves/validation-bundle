@@ -9,14 +9,19 @@ class ImportTransformerRepository extends EntityRepository
     /**
      * @param Group  $group
      * @param string $externalPropertyId
+     * @param string $importType
      *
      * @return string|null
      */
-    public function findClassNameWithPriorityByGroupAndExternalPropertyId(Group $group, $externalPropertyId)
-    {
+    public function findClassNameWithPriorityByGroupAndExternalPropertyId(
+        Group $group,
+        $externalPropertyId,
+        $importType
+    ) {
         $result = $this->createQueryBuilder('it')
             ->select('it.className')
             ->where('it.holding = :holding AND it.externalPropertyId = :externalPropertyId AND it.group is NULL')
+            ->andWhere('it.importType = :importType')
             ->orWhere('it.group = :group AND it.holding is NULL AND it.externalPropertyId is NULL')
             ->orWhere('it.holding = :holding AND it.group is NULL AND it.externalPropertyId is NULL')
             ->orderBy('it.externalPropertyId', 'desc')
@@ -24,6 +29,7 @@ class ImportTransformerRepository extends EntityRepository
             ->setParameter('holding', $group->getHolding())
             ->setParameter('group', $group)
             ->setParameter('externalPropertyId', $externalPropertyId)
+            ->setParameter('importType', $importType)
             ->setMaxResults(1)
             ->getQuery()
             ->getArrayResult();
