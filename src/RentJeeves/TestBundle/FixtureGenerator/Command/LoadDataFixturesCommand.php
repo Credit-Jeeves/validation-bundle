@@ -4,7 +4,7 @@ namespace RentJeeves\TestBundle\FixtureGenerator\Command;
 use RentJeeves\CoreBundle\Command\BaseCommand;
 
 use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureFinder;
-use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureLoadManager;
+use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureLoader;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ class LoadDataFixturesCommand extends BaseCommand
 {
     protected function configure()
     {
-        $this->setName('renttrack:fixtures:load')
+        $this->setName('renttrack:alice-fixtures:load')
             ->setDescription('Load test fixtures with Nelmio/Alice.')
             ->addOption(
                 'path',
@@ -47,7 +47,7 @@ class LoadDataFixturesCommand extends BaseCommand
 
         $output->writeln(sprintf('<info>Start loading fixtures...</info>'));
 
-        $objects = $this->getFixtureLoadManager()->load(
+        $objects = $this->getFixtureLoader()->load(
             $fixtures,
             function ($message) use ($output) {
                 $output->writeln(sprintf('<comment>></comment> <info>%s</info>', $message));
@@ -58,11 +58,11 @@ class LoadDataFixturesCommand extends BaseCommand
     }
 
     /**
-     * @return FixtureLoadManager
+     * @return FixtureLoader
      */
-    protected function getFixtureLoadManager()
+    protected function getFixtureLoader()
     {
-        return $this->getContainer()->get('renttrack.fixture_load_manager');
+        return $this->getContainer()->get('renttrack.fixture_loader');
     }
 
     /**

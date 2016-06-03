@@ -73,7 +73,7 @@ class FixtureFinder
         try {
             return $this->kernel->locateResource($path);
         } catch (\Exception $e) {
-            throw new \InvalidArgumentException('Path not found');
+            throw new \InvalidArgumentException(sprintf('Path not found: %s', $path));
         }
     }
 }

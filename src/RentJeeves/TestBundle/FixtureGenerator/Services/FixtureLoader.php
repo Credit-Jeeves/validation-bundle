@@ -2,25 +2,29 @@
 
 namespace RentJeeves\TestBundle\FixtureGenerator\Services;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\Alice\Fixtures\Loader;
-use Nelmio\Alice\Persister\Doctrine as AlicePersisterDoctrine;
+use Nelmio\Alice\Persister\Doctrine;
 
-class FixtureLoadManager
+class FixtureLoader
 {
-    /** @var Loader */
+    /**
+     * @var Loader
+     */
     protected $loader;
 
-    /** @var AlicePersisterDoctrine */
+    /**
+     * @var Doctrine
+     */
     protected $persister;
 
     /**
-     * @param EntityManagerInterface $em
+     * @param Loader $aliceLoader
+     * @param Doctrine $alicePersister
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(Loader $aliceLoader, Doctrine $alicePersister)
     {
-        $this->loader = new Loader();
-        $this->persister = new AlicePersisterDoctrine($em);
+        $this->loader = $aliceLoader;
+        $this->persister = $alicePersister;
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\TestBundle\Tests\FixtureGenerator\Command;
+namespace RentJeeves\TestBundle\Tests\Functional\FixtureGenerator\Command;
 
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\TestBundle\Command\BaseTestCase;
@@ -9,8 +9,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class LoadDataFixturesCommandCase extends BaseTestCase
 {
-    protected $commandName = 'renttrack:fixtures:load';
-    protected $pathWithTestFixtures = '@RjTestBundle/Resources/AliceFixtures/';
+    protected $commandName = 'renttrack:alice-fixtures:load';
+    protected $pathWithTestFixtures = '@RjTestBundle/Tests/Fixtures/FixtureGenerator/Services/';
 
     /**
      * @test
@@ -48,7 +48,7 @@ class LoadDataFixturesCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function shouldLoadedDataIfSetFile()
+    public function shouldLoadDataIfSetFile()
     {
         $this->load(true);
 

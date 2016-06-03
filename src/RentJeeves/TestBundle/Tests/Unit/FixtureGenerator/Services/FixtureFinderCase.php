@@ -1,39 +1,17 @@
 <?php
-namespace RentJeeves\TestBundle\Tests\FixtureGenerator\Functional\Services;
 
+namespace RentJeeves\TestBundle\Tests\Unit\FixtureGenerator\Services;
+
+use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureFinder;
-use RentJeeves\TestBundle\Functional\BaseTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class FixtureFinderCase extends BaseTestCase
+class FixtureFinderCase extends UnitTestBase
 {
     /**
      * @test
-     */
-    public function shouldReturnFixturesArrayWhenSetCorrectPath()
-    {
-        $kernel = $this->getKernel();
-        $fixtureFinder = new FixtureFinder($kernel);
-        $fixtures = $fixtureFinder->getFixtures('@RjTestBundle/Resources/AliceFixtures/');
-        $this->assertNotEmpty($fixtures, 'Expected array with element');
-    }
-
-    /**
-     * @test
-     */
-    public function shouldReturnFixturesArrayWhenSetCorrectParams()
-    {
-        $kernel = $this->getKernel();
-        $fixtureFinder = new FixtureFinder($kernel);
-        $fixtures = $fixtureFinder->getFixtures('@RjTestBundle/Resources/AliceFixtures/', ['test.yml']);
-        $this->assertNotEmpty($fixtures, 'Expected array with filename');
-        $this->assertEquals(1, count($fixtures), 'Array should be has 1 element');
-    }
-
-    /**
-     * @test
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Path not found
+     * @expectedExceptionMessage Path not found: @TestBundle/InvalidPath/
      */
     public function shouldThrowExceptionIfSetInvalidPath()
     {
@@ -73,5 +51,36 @@ class FixtureFinderCase extends BaseTestCase
             ->will($this->returnValue(__DIR__));
         $fixtureFinder = new FixtureFinder($kernelMock);
         $fixtureFinder->getFixtures('test');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFindFixturesWhenSetCorrectPath()
+    {
+        $realPath = __DIR__.'/../../../Fixtures/FixtureGenerator/Services/';
+        $kernelMock = $this->getMock(KernelInterface::class);
+        $kernelMock->expects($this->once())
+            ->method('locateResource')
+            ->will($this->returnValue($realPath));
+        $fixtureFinder = new FixtureFinder($kernelMock);
+        $fixtures = $fixtureFinder->getFixtures('test');
+        $this->assertNotEmpty($fixtures, 'Expected array with elements');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFindFixtureWhenSetCorrectFilename()
+    {
+        $realPath = __DIR__.'/../../../Fixtures/FixtureGenerator/Services/';
+        $kernelMock = $this->getMock(KernelInterface::class);
+        $kernelMock->expects($this->once())
+            ->method('locateResource')
+            ->will($this->returnValue($realPath));
+        $fixtureFinder = new FixtureFinder($kernelMock);
+        $fixtures = $fixtureFinder->getFixtures('test', ['test.yml']);
+        $this->assertNotEmpty($fixtures, 'Expected array with filename');
+        $this->assertEquals(1, count($fixtures), 'Array should has 1 element');
     }
 }

@@ -4771,7 +4771,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/Credit-Jeeves/SmartyStreetsBundle/zipball/f65431d30a9f6a90e08b6f5cf00bbd4601718dbd",
-                "reference": "bd8fbc0c716b4c6665b1eeded65b9a0fca3a1c9c",
+                "reference": "f65431d30a9f6a90e08b6f5cf00bbd4601718dbd",
                 "shasum": ""
             },
             "require": {
