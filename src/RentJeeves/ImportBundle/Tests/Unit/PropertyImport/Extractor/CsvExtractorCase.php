@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\CsvExtractor;
+use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
@@ -22,7 +23,7 @@ class CsvExtractorCase extends UnitTestBase
     {
         $csvExtractor = new CsvExtractor(
             new CsvFileReader(),
-            $this->getBaseMock(SftpFileManager::class),
+            $this->getBaseMock(ImportSftpFileManager::class),
             $this->getLoggerMock()
         );
         $csvExtractor->extractData();
@@ -33,7 +34,7 @@ class CsvExtractorCase extends UnitTestBase
      */
     public function shouldExtractDataFromCsvFile()
     {
-        $sftpFileManager = $this->getBaseMock(SftpFileManager::class);
+        $sftpFileManager = $this->getBaseMock(ImportSftpFileManager::class);
         $sftpFileManager
             ->method('download')
             ->will($this->returnCallback(
