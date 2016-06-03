@@ -3,8 +3,10 @@
 namespace RentJeeves\CoreBundle\Services\AddressLookup;
 
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\CountryNameStandardizer;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\DataBundle\Enum\CountryCode;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
 use RentTrack\SmartyStreetsBundle\Model\International\InternationalAddress;
 use RentTrack\SmartyStreetsBundle\Model\US\USAddress;
@@ -60,6 +62,13 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             )
         );
 
+        $country = CountryNameStandardizer::standardize($country);
+        if (false === CountryCode::isValid($country)) {
+            throw new AddressLookupException(
+                sprintf('[SmartyStreetsAddressLookupService] Country "%s" not supported.', $country)
+            );
+        }
+
         if ($country === AddressLookupInterface::COUNTRY_US) {
             $address = $this->lookupUSAddress($street, $city, $state, $zipCode);
         } else {
@@ -83,6 +92,13 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
                 $country
             )
         );
+
+        $country = CountryNameStandardizer::standardize($country);
+        if (false === CountryCode::isValid($country)) {
+            throw new AddressLookupException(
+                sprintf('[SmartyStreetsAddressLookupService] Country "%s" not supported.', $country)
+            );
+        }
 
         if ($country === AddressLookupInterface::COUNTRY_US) {
             // First, we have to remove ', United States'
@@ -199,7 +215,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         $address->setStreet($addressComponents->getThoroughfare());
         $address->setZip($addressComponents->getPostalCode());
         $address->setCity($addressComponents->getLocality());
-        $address->setCountry($addressComponents->getCountryISO());
+        $address->setCountry(CountryNameStandardizer::standardize($addressComponents->getCountryISO()));
         $address->setState($addressComponents->getAdministrativeArea());
         $address->setUnitName($addressComponents->getSubBuildingNumber());
 

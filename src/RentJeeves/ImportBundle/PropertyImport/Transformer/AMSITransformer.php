@@ -4,6 +4,7 @@ namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\CountryNameStandardizer;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\ExternalApiBundle\Model\AMSI\Lease;
@@ -28,7 +29,7 @@ class AMSITransformer implements TransformerInterface
 
     /**
      * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
+     * @param LoggerInterface        $logger
      */
     final public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
@@ -49,6 +50,7 @@ class AMSITransformer implements TransformerInterface
             ['group' => $import->getGroup()]
         );
 
+        $countryFromSettings = $import->getGroup()->getGroupSettings()->getCountryCode();
         /** @var Lease $lease */
         foreach ($accountingSystemData as $lease) {
             $occupants = $lease->getOccupants();
@@ -76,6 +78,7 @@ class AMSITransformer implements TransformerInterface
                 $importProperty->setCity($this->getCity($lease, $occupant));
                 $importProperty->setState($this->getState($lease, $occupant));
                 $importProperty->setZip($this->getZip($lease, $occupant));
+                $importProperty->setCountry($this->getCountry($lease, $occupant, $countryFromSettings));
                 $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties($lease, $occupant));
 
                 $this->em->persist($importProperty);
@@ -96,7 +99,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      * @return bool
      */
@@ -112,7 +115,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return bool
@@ -123,7 +126,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -134,7 +137,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return bool
@@ -145,7 +148,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return bool
@@ -156,7 +159,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -167,7 +170,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -178,7 +181,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -189,7 +192,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -200,7 +203,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -211,7 +214,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -222,8 +225,24 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Import $import
-     * @param Lease $lease
+     * @param Lease    $lease
+     * @param Occupant $occupant
+     * @param string   $countryFromSettings
+     *
+     * @return string
+     */
+    protected function getCountry(Lease $lease, Occupant $occupant, $countryFromSettings)
+    {
+        if (null === $country = $lease->getUnit()->getCountry()) {
+            return $countryFromSettings;
+        }
+
+        return CountryNameStandardizer::standardize($country);
+    }
+
+    /**
+     * @param Import   $import
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return bool
@@ -237,7 +256,7 @@ class AMSITransformer implements TransformerInterface
     }
 
     /**
-     * @param Lease $lease
+     * @param Lease    $lease
      * @param Occupant $occupant
      *
      * @return string
@@ -249,7 +268,8 @@ class AMSITransformer implements TransformerInterface
 
     /**
      * @param Import $import
-     * @param Lease $lease
+     * @param Lease  $lease
+     *
      * @return string
      */
     protected function getUniqueCacheKey(Import $import, Lease $lease, Occupant $occupant)

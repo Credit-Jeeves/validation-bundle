@@ -56,6 +56,8 @@ class RentManagerTransformer implements TransformerInterface
 
         $rentManagerProperty = $accountingSystemData['property'];
         $rentManagerUnits = $accountingSystemData['units'];
+        $countryFromSettings = $import->getGroup()->getGroupSettings()->getCountryCode();
+
         foreach ($rentManagerUnits as $rentManagerUnit) {
             if (true === $this->checkExistImportPropertyInCache($import, $rentManagerProperty, $rentManagerUnit)) {
                 continue;
@@ -80,6 +82,9 @@ class RentManagerTransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($rentManagerProperty, $rentManagerUnit));
             $importProperty->setState($this->getState($rentManagerProperty, $rentManagerUnit));
             $importProperty->setZip($this->getZip($rentManagerProperty, $rentManagerUnit));
+            $importProperty->setCountry(
+                $this->getCountry($rentManagerProperty, $rentManagerUnit, $countryFromSettings)
+            );
             $importProperty->setAllowMultipleProperties(
                 $this->getAllowMultipleProperties($rentManagerProperty, $rentManagerUnit)
             );
@@ -209,6 +214,18 @@ class RentManagerTransformer implements TransformerInterface
     protected function getZip(Property $property, Unit $unit)
     {
         return $this->getPrimaryAddressByUnit($unit)->getPostalCode();
+    }
+
+    /**
+     * @param Property $property
+     * @param Unit     $unit
+     * @param string   $countryFromSettings
+     *
+     * @return string
+     */
+    protected function getCountry(Property $property, Unit $unit, $countryFromSettings)
+    {
+        return $countryFromSettings;
     }
 
     /**
