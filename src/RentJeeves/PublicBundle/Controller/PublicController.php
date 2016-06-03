@@ -347,10 +347,16 @@ class PublicController extends Controller
                 throw new HttpException(412, 'We are scrambling our robots...');
             }
 
-            $session->remove('holding_id');
-            $session->remove('resident_id');
-
-            return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            if (!empty($session->get('resident_id')) && !empty($session->get('holding_id'))) {
+                $session->remove('holding_id');
+                $session->remove('resident_id');
+                $this->get('common.login.manager')->loginAndRedirect(
+                    $tenant,
+                    $this->generateUrl('tenant_homepage')
+                );
+            } else {
+                return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            }
         }
 
         $propertyList = [];
