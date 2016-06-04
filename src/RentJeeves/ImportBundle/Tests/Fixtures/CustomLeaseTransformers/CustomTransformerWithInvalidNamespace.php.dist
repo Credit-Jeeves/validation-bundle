@@ -1,6 +1,6 @@
 <?php
 
-namespace BadNamespace;
+namespace LeaseBadNamespace;
 
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\ImportBundle\LeaseImport\Transformer\TransformerInterface;
