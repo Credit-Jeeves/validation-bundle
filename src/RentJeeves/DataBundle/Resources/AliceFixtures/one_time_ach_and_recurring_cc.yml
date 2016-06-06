@@ -15,7 +15,7 @@ CreditJeeves\DataBundle\Entity\Group:
         updatedAt:        <dateTimeBetween('-10 days', 'now')>
         groupProperties:  ['@property1']
 RentJeeves\DataBundle\Entity\DepositAccount:
-    depositAccount:
+    depositAccount1:
         group:          '@groupA'
         holding:        '@holding1'
         merchantName:   564075
