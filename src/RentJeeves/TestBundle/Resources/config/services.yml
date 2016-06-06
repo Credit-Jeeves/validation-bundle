@@ -10,3 +10,24 @@ parameters:
     profit_stars.remote_deposit_reporting.client.class: 'RentJeeves\TestBundle\ProfitStars\RemoteDepositReportingClient'
     profit_stars.client_builder.class: 'RentJeeves\TestBundle\ProfitStars\ClientBuilder'
     resman.client.class: 'RentJeeves\TestBundle\Services\ResMan\ResManClient'
+
+services:
+    renttrack.fixtures.load:
+        class: RentJeeves\TestBundle\FixtureGenerator\Command\LoadDataFixturesCommand
+        tags:
+            - { name: console.command }
+    renttrack.fixture_loader:
+        class: RentJeeves\TestBundle\FixtureGenerator\Services\FixtureLoader
+        arguments:
+            - @nelmio_alice.fixture.loader
+            - @nelmio_alice.persister.doctrine
+    renttrack.fixture_finder:
+        class: RentJeeves\TestBundle\FixtureGenerator\Services\FixtureFinder
+        arguments:
+            - @kernel
+    nelmio_alice.fixture.loader:
+        class: Nelmio\Alice\Fixtures\Loader
+    nelmio_alice.persister.doctrine:
+        class: Nelmio\Alice\Persister\Doctrine
+        arguments:
+            - @doctrine.orm.default_entity_manager
