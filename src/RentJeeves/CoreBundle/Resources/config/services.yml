@@ -201,3 +201,9 @@ services:
             - '@logger'
             - '@validator'
             - '@project.mailer'
+
+    core.form.extension:
+        class: RentJeeves\CoreBundle\Twig\FormExtension
+        public: false
+        tags:
+            - { name: twig.extension }
