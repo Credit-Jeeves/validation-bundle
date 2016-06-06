@@ -1,0 +1,6 @@
+{% if admin.isGranted('LIST', object)%}
+    <a href="{{ path('admin_import_lease_list', { 'filter[import__id][value]': object.id }) }}" class="btn group_link import_leases_button">
+        <i class="icon-list"></i>
+        {{ 'admin.list.import_lease_action'|trans }}
+    </a>
+{% endif %}

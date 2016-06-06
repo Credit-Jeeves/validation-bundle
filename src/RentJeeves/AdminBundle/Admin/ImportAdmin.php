@@ -71,6 +71,9 @@ class ImportAdmin extends Admin
                         'import_properties' => [
                             'template' => 'AdminBundle:CRUD:list__import_properties.html.twig'
                         ],
+                        'import_leases' => [
+                            'template' => 'AdminBundle:CRUD:list__import_lease.html.twig'
+                        ]
                     ]
                 ]
             );
