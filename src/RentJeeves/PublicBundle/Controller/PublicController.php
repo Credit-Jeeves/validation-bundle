@@ -349,8 +349,16 @@ class PublicController extends Controller
 
             $session->remove('holding_id');
             $session->remove('resident_id');
-
-            return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            
+            // Redirect ResMan/MRI users to dashboard - we trust them, they don't need to verify email.
+            if (!empty($session->get(ASIDataManager::SESSION_INTEGRATION_DATA))) {
+                return $this->get('common.login.manager')->loginAndRedirect(
+                    $tenant,
+                    $this->generateUrl('tenant_homepage')
+                );
+            } else {
+                return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            }
         }
 
         $propertyList = [];
