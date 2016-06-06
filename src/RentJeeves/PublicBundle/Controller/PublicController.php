@@ -347,10 +347,12 @@ class PublicController extends Controller
                 throw new HttpException(412, 'We are scrambling our robots...');
             }
 
-            if (!empty($session->get('resident_id')) && !empty($session->get('holding_id'))) {
-                $session->remove('holding_id');
-                $session->remove('resident_id');
-                $this->get('common.login.manager')->loginAndRedirect(
+            $session->remove('holding_id');
+            $session->remove('resident_id');
+            
+            // Redirect ResMan/MRI users to dashboard - we trust them, they don't need to verify email.
+            if (!empty($session->get(ASIDataManager::SESSION_INTEGRATION_DATA))) {
+                return $this->get('common.login.manager')->loginAndRedirect(
                     $tenant,
                     $this->generateUrl('tenant_homepage')
                 );
