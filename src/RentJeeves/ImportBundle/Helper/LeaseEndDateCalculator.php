@@ -46,4 +46,3 @@ class LeaseEndDateCalculator
         return $leaseEnd;
     }
 }
-

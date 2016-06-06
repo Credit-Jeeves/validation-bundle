@@ -67,15 +67,16 @@ abstract class ImportLease
     protected $externalResidentId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="importLease")
-     * @ORM\JoinColumn(
-     *      name="group_id",
-     *      referencedColumnName="id",
-     *      nullable=true
+     * @var string
+     *
+     * @ORM\Column(
+     *      name="external_account_id",
+     *      type="string",
+     *      nullable=true,
+     *      length=255
      * )
-     * @var \CreditJeeves\DataBundle\Entity\Group
      */
-    protected $group;
+    protected $externalAccountId;
 
     /**
      * @var string
@@ -263,22 +264,6 @@ abstract class ImportLease
      * @ORM\Column(name="updated_at",type="datetime")
      */
     protected $updatedAt;
-
-    /**
-     * @return \CreditJeeves\DataBundle\Entity\Group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-    }
 
     /**
      * @return int

@@ -49,4 +49,3 @@ class ShortNameFercherCase extends UnitTestBase
         );
     }
 }
-

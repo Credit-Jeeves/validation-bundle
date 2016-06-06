@@ -74,7 +74,7 @@ class CsvTransformerCase extends BaseTestCase
                     '25/10/2015',
                     '25/10/2018',
                     '',
-                    'Y',
+                    'N',
                     'good@email.com',
                     '12345786'
                 ]
@@ -129,11 +129,7 @@ class CsvTransformerCase extends BaseTestCase
             $importLease->getResidentStatus(),
             'Current status should be here'
         );
-        $this->assertNotEquals(
-            $import->getGroup()->getId(),
-            $importLease->getGroup()->getId(),
-            'Group should be mapped to different by account_number'
-        );
+        $this->assertEquals('12345786', $importLease->getExternalAccountId(), 'account_number should be mapped');
     }
 
     protected function getCsvTransformer()
@@ -144,4 +140,3 @@ class CsvTransformerCase extends BaseTestCase
         );
     }
 }
-

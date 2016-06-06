@@ -44,8 +44,7 @@ class LeaseEndDateCalculatorCase extends UnitTestBase
         $tenantStatus = null,
         $monthToMonth = null,
         $result = null
-    )
-    {
+    ) {
         $finishAt = LeaseEndDateCalculator::calculateFinishAt($leaseEnd, $moveOut, $tenantStatus, $monthToMonth);
         $this->assertEquals($result, $finishAt, 'Should be the same');
     }

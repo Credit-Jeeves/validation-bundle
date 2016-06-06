@@ -101,8 +101,11 @@ class CsvTransformer implements TransformerInterface
      * @param array $accountingSystemRecord
      * @param array $importMappingRule
      */
-    protected function transformRecord(ImportLease $importLease, array $accountingSystemRecord, array $importMappingRule)
-    {
+    protected function transformRecord(
+        ImportLease $importLease,
+        array $accountingSystemRecord,
+        array $importMappingRule
+    ) {
         $importSettings = $importLease->getImport()->getGroup()->getImportSettings();
         $dateFormat = $importSettings->getCsvDateFormat();
 
@@ -123,7 +126,7 @@ class CsvTransformer implements TransformerInterface
         $importLease->setResidentStatus(
             $this->getResidentStatus($accountingSystemRecord, $importMappingRule, $dateFormat)
         );
-        $importLease->setGroup($this->getGroup($importLease, $accountingSystemRecord, $importMappingRule));
+        $importLease->setExternalAccountId($this->getExternalAccountId($accountingSystemRecord, $importMappingRule));
     }
 
     /**
@@ -267,42 +270,14 @@ class CsvTransformer implements TransformerInterface
         return $this->convertDateStringToObjectDate($moveIn, $dateFormat);
     }
 
-
     /**
-     * @param ImportLease $importLease
      * @param array $accountingSystemRecord
      * @param array $importMappingRule
-     * @return Group|null
-     * @throws ImportTransformerException
-     * @throws \Exception
+     * @return null|string
      */
-    protected function getGroup(ImportLease $importLease, array $accountingSystemRecord, array $importMappingRule)
+    protected function getExternalAccountId(array $accountingSystemRecord, array $importMappingRule)
     {
-        $accountNumber = $this->getFieldValueByKey($accountingSystemRecord, $importMappingRule, 'group_account_number');
-        $group = $importLease->getImport()->getGroup();
-
-        if (empty($accountNumber)) {
-            return $group;
-        }
-
-        $this->logger->debug('Look up group by account number:' . $accountNumber);
-
-        try {
-            $group = $this->em->getRepository('DataBundle:Group')->getGroupByAccountNumber(
-                $accountNumber,
-                $group->getHolding()
-            );
-        } catch(\LogicException $e) {
-            throw new ImportTransformerException($e->getMessage());
-        }
-
-        if (empty($group)) {
-            throw new ImportTransformerException(
-                'We don\'t have group for import lease entity importId#' . $importLease->getImport()->getId()
-            );
-        }
-
-        return $group;
+        return $this->getFieldValueByKey($accountingSystemRecord, $importMappingRule, 'group_account_number');
     }
 
 
