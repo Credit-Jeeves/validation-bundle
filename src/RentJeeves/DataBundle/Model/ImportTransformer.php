@@ -21,6 +21,16 @@ abstract class ImportTransformer
     protected $id;
 
     /**
+     * @ORM\Column(
+     *     name="import_type",
+     *     type="ImportModelType",
+     *     nullable=false
+     * )
+     * @var string
+     */
+    protected $importType;
+
+    /**
      * @var Holding
      *
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Holding")
@@ -120,5 +130,21 @@ abstract class ImportTransformer
     public function setClassName($className)
     {
         $this->className = $className;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImportType()
+    {
+        return $this->importType;
+    }
+
+    /**
+     * @param string $importType
+     */
+    public function setImportType($importType)
+    {
+        $this->importType = $importType;
     }
 }

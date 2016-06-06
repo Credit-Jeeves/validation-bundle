@@ -1,10 +1,11 @@
 <?php
 
-namespace RentJeeves\ImportBundle\PropertyImport\Transformer;
+namespace RentJeeves\ImportBundle\LeaseImport\Transformer;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\ImportBundle\Exception\ImportException;
@@ -13,11 +14,11 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Service`s name "import.property.transformer_factory"
+ * Service`s name "import.lease.transformer_factory"
  */
 class TransformerFactory
 {
-    const CUSTOM_NAMESPACE = '\RentJeeves\ImportBundle\PropertyImport\Transformer\Custom\\';
+    const CUSTOM_NAMESPACE = '\RentJeeves\ImportBundle\LeaseImport\Transformer\Custom\\';
 
     /**
      * @var EntityManagerInterface
@@ -32,7 +33,7 @@ class TransformerFactory
     /**
      * @var array
      */
-    protected $defaultTransformers;
+    protected $defaultTransformers = [];
 
     /**
      * @var CsvTransformer
@@ -48,21 +49,15 @@ class TransformerFactory
      * @param EntityManagerInterface $em
      * @param LoggerInterface        $logger
      * @param array                  $pathsToCustomTransformers
-     * @param array                  $defaultTransformers
-     * @param CsvTransformer         $csvTransformer
      */
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
-        array $pathsToCustomTransformers,
-        array $defaultTransformers,
-        CsvTransformer $csvTransformer
+        array $pathsToCustomTransformers
     ) {
         $this->em = $em;
         $this->logger = $logger;
         $this->pathsToCustomTransformers = $pathsToCustomTransformers;
-        $this->defaultTransformers = $defaultTransformers;
-        $this->csvTransformer = $csvTransformer;
     }
 
     /**
@@ -98,7 +93,7 @@ class TransformerFactory
                 ->findClassNameWithPriorityByGroupAndExternalPropertyId(
                     $group,
                     $externalPropertyId,
-                    ImportModelType::PROPERTY
+                    ImportModelType::LEASE
                 );
 
             $accountingSystemName = $group->getHolding()->getAccountingSystem();
@@ -230,5 +225,33 @@ class TransformerFactory
 
             throw new ImportException($message);
         }
+    }
+
+    /**
+     * @param CsvTransformer $csvTransformer
+     */
+    public function setCsvTransformer(CsvTransformer $csvTransformer)
+    {
+        $this->csvTransformer = $csvTransformer;
+    }
+
+    /**
+     * @param string               $accountingSystemName
+     * @param TransformerInterface $transformer
+     *
+     * @throws ImportInvalidArgumentException
+     */
+    public function addApiTransformer($accountingSystemName, TransformerInterface $transformer)
+    {
+        if (false === in_array($accountingSystemName, AccountingSystem::$integratedWithApi)) {
+            throw new ImportInvalidArgumentException(
+                sprintf(
+                    'ExtractorFactory: "%s" is not valid Api Accounting System Name.',
+                    $accountingSystemName
+                )
+            );
+        }
+
+        $this->defaultTransformers[$accountingSystemName] = $transformer;
     }
 }

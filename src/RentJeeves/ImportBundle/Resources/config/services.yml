@@ -2,6 +2,7 @@ parameters:
     # using a path that leads into the project does not make sense. Use a path out of project if you need to.
     # Otherwise put transformers into ImportBundle.
     import.property.transformer.custom_paths: []
+    import.lease.transformer.custom_paths: []
 
 services:
     import_transformer.repository:
@@ -56,6 +57,17 @@ services:
         calls:
             - [setCsvExtractor, ['@import.lease.extractor.csv']]
             - [addApiExtractor, ['%accounting_system.resman%', '@import.lease.extractor.resman']]
+
+    import.lease.transformer_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\TransformerFactory
+        public: false
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.lease_import'
+            - '%import.lease.transformer.custom_paths%'
+        calls:
+            - [setCsvTransformer, ['@import.lease.transformer.csv']]
+            - [addApiTransformer, ['%accounting_system.mri%', '@import.lease.transformer.mri']]
 
     # services
     import.property.sftp_file_manager:
@@ -143,6 +155,10 @@ services:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
 
+    import.lease.transformer.mri:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\MRITransformer
+        public: false
+
     import.property.transformer.resman:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\ResmanTransformer
         public: false
@@ -178,6 +194,10 @@ services:
             - @doctrine.orm.default_entity_manager
             - @address_lookup_service
             - @monolog.logger.property_import
+
+    import.lease.transformer.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\CsvTransformer
+        public: false
 
     import.property.loader_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory

@@ -1,0 +1,16 @@
+<?php
+
+namespace LeaseBadNamespace;
+
+use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\ImportBundle\LeaseImport\Transformer\TransformerInterface;
+
+class CustomTransformerWithInvalidNamespace implements TransformerInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function transformData(array $accountingSystemData, Import $import)
+    {
+    }
+}
