@@ -1,6 +1,7 @@
 <?php
 
 namespace RentJeeves\ImportBundle\LeaseImport\Transformer;
+
 use RentJeeves\DataBundle\Entity\Import;
 
 /**
