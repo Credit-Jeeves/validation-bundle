@@ -20,13 +20,13 @@ class ReportLoaderCase extends BaseTestCase
     public function shouldReturnReportWithAllTransactionsFromAllCorrectFiles()
     {
         $pathToFile = $this->getFileLocator()->locate(
-            '@RjCheckoutBundle/Tests/Fixtures/Aci/PayAnyoneReportLoader/adjustFile.xml'
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/ReportLoader/adjustFile.xml'
         );
         $pathToFile2 = $this->getFileLocator()->locate(
-            '@RjCheckoutBundle/Tests/Fixtures/Aci/PayAnyoneReportLoader/responseEmptyFile.xml'
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/ReportLoader/responseEmptyFile.xml'
         );
         $pathToFile3 = $this->getFileLocator()->locate(
-            '@RjCheckoutBundle/Tests/Fixtures/Aci/PayAnyoneReportLoader/responseFile.xml'
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/ReportLoader/responseFile.xml'
         );
         $reportPath = substr($pathToFile, 0, strripos($pathToFile, '/'));
 

@@ -37,7 +37,7 @@ class ReportLoaderCase extends BaseTestCase
     public function shouldLoadReport()
     {
         $pathToFile = $this->getFileLocator()->locate(
-            '@RjCheckoutBundle/Tests/Fixtures/Aci/AciReportLoader/testForLoaderAndDownloader.txt'
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/Downloader/testForLoaderAndDownloader.txt'
         );
         $reportPath = substr($pathToFile, 0, strripos($pathToFile, '/'));
 

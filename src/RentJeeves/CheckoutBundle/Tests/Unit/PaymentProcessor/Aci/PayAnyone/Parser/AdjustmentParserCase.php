@@ -26,7 +26,9 @@ class AdjustmentParserCase extends BaseTestCase
      */
     public function shouldReturnTransactionsAfterParse()
     {
-        $pathToFile = $this->getFileLocator()->locate('@RjCheckoutBundle/Tests/Fixtures/Aci/testAdjustFile.xml');
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/Parser/testAdjustFile.xml'
+        );
         $xml = file_get_contents($pathToFile);
 
         $logger = $this->getLoggerMock();

@@ -125,6 +125,7 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
      */
     public function setReissued()
     {
+        $this->load(true);
         $statusManager = new OrderSubmerchantStatusManager(
             $this->getEntityManager(),
             $this->getLoggerMock(),
