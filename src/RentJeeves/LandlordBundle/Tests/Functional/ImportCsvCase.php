@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 
 class ImportCsvCase extends ImportBaseAbstract
 {
@@ -616,7 +617,9 @@ class ImportCsvCase extends ImportBaseAbstract
         //second step
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->fillCsvMapping($this->mapMultiplePropertyFile, 17);
+        $mapping = $this->mapMultiplePropertyFile;
+        $mapping[18] = MappingAbstract::KEY_COUNTRY;
+        $this->fillCsvMapping($mapping, 18);
 
         $submitImportFile->click();
         $this->session->wait(
@@ -700,7 +703,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertEquals('2014-01-01', $contract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2025-01-31', $contract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->getPropertyAddress()->isSingle());
-
+        $this->assertEquals('US', $unit->getProperty()->getPropertyAddress()->getCountry(), 'Should be US');
         $this->assertEquals(
             21,
             count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))

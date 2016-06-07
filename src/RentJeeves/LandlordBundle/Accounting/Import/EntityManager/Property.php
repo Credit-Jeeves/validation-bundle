@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Accounting\Import\EntityManager;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Property as EntityProperty;
 use RentJeeves\DataBundle\Entity\PropertyMapping;
@@ -199,7 +200,7 @@ trait Property
 
             return $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
         }
-
+        /** @var Group $group */
         $group = $this->getGroup($row);
 
         if (!empty($row[Mapping::KEY_EXTERNAL_PROPERTY_ID]) &&
@@ -248,12 +249,16 @@ trait Property
             return $this->propertyList[$key];
         }
 
+        $defaultCountryCode = $group->getGroupSettings()->getCountryCode();
+
         $validDBProperty = $this->propertyProcess->getOrCreatePropertyByAddressFields(
             $propertyAddress->getNumber(),
             $propertyAddress->getStreet(),
             $propertyAddress->getCity(),
             $propertyAddress->getState(),
-            $propertyAddress->getZip()
+            $propertyAddress->getZip(),
+            null,
+            !empty($propertyAddress->getCountry()) ? $propertyAddress->getCountry() : $defaultCountryCode
         );
 
         if ($validDBProperty) {
