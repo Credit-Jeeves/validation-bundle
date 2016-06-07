@@ -1,23 +1,23 @@
 parameters:
     locale: test
 CreditJeeves\DataBundle\Entity\Holding:
-    holding1:
-        name:           Test Alice Holding
+    holdingTestPayments:
+        name:           TEST Payments
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
 CreditJeeves\DataBundle\Entity\Group:
     groupA:
-        name:           Test A Group
-        statementDescriptor: Test Group For OneTime ACH
-        holding:          '@holding1'
-        type:             rent
-        createdAt:        <dateTimeBetween('-50 days', 'now')>
-        updatedAt:        <dateTimeBetween('-10 days', 'now')>
-        groupProperties:  ['@property1']
+        name:                 TEST Payments
+        statementDescriptor:  TEST Payments
+        holding:              '@holdingTestPayments'
+        type:                 rent
+        createdAt:            <dateTimeBetween('-50 days', 'now')>
+        updatedAt:            <dateTimeBetween('-10 days', 'now')>
+        groupProperties:      ['@property1']
 RentJeeves\DataBundle\Entity\DepositAccount:
     depositAccount1:
         group:          '@groupA'
-        holding:        '@holding1'
+        holding:        '@holdingTestPayments'
         merchantName:   564075
         status:         complete
         paymentProcessor: aci
@@ -30,11 +30,11 @@ RentJeeves\DataBundle\Entity\GroupSettings:
         paymentProcessor: aci
 RentJeeves\DataBundle\Entity\Landlord:
     landlord0:
-        holding:        '@holding1'
+        holding:        '@holdingTestPayments'
         firstName:      Bob
         lastName:       McConnell
         middleInitial:  B
-        email:          landlord_bob@sample.com
+        email:          landlord_bob@example.com
         phoneType:      2
         phone:          7858655392
         ssn:            333777999
@@ -55,7 +55,7 @@ RentJeeves\DataBundle\Entity\Tenant:
         firstName:      <firstName()>
         middleInitial:  <randomLetter()>
         lastName:       <lastName()>
-        email (unique): tenant_<current()>@sample.com
+        email (unique): tenant_<current()>@example.com
         phoneType:      2
         phone:          7858655392
         dateOfBirth:    <(new DateTime('1976-08-10'))>
@@ -76,7 +76,7 @@ RentJeeves\DataBundle\Entity\Tenant:
 RentJeeves\DataBundle\Entity\Contract:
     contract{1..20}:
         tenant:         '@tenant<current()>'
-        holding:        '@holding1'
+        holding:        '@holdingTestPayments'
         group:          '@groupA'
         property:       '@property1'
         unit:           '@unit1'
@@ -108,7 +108,7 @@ RentJeeves\DataBundle\Entity\Property:
 RentJeeves\DataBundle\Entity\Unit:
     unit1:
         property:       '@property1'
-        holding:        '@holding1'
+        holding:        '@holdingTestPayments'
         group:          '@groupA'
         name:           1-a
         createdAt:      <dateTimeBetween('-50 days', 'now')>
