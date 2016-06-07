@@ -397,7 +397,7 @@ class CsvTransformer implements TransformerInterface
     {
         $mappingData = $importMappingChoice->getMappingData();
         $mappingRule = array_flip($mappingData);
-`
+
         $missingFields = [];
         foreach ($this->requiredMappingFields as $requiredMappingField) {
             if (false === isset($mappingRule[$requiredMappingField])) {
