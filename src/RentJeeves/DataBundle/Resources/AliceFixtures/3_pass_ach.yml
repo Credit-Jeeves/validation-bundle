@@ -1,39 +1,39 @@
 parameters:
     locale: test
 CreditJeeves\DataBundle\Entity\Group:
-    groupD:
-        name:           TEST Debit Card
-        statementDescriptor: TEST Debit Card
+    groupB:
+        name:           TEST Pass ACH
+        statementDescriptor: TEST Pass ACH
         holding:          '@holdingTestPayments'
         type:             rent
         createdAt:        <dateTimeBetween('-50 days', 'now')>
         updatedAt:        <dateTimeBetween('-10 days', 'now')>
-        groupProperties:  ['@property4']
-RentJeeves\DataBundle\Entity\GroupSettings:
-    groupSettings4:
-        isIntegrated:     0
-        allowedDebitFee:  true
-        group:            '@groupD'
-        paymentProcessor: aci
-RentJeeves\DataBundle\Entity\BinlistBank:
-    binlistBank1:
-        bankName:         Bank for TEST Debit Card
-        lowDebitFee:      true
-RentJeeves\DataBundle\Entity\DebitCardBinlist:
-    debitCardBinlist1:
-        binlistBank:      '@binlistBank1'
-        iin:              438775
-        cardType:         DEBIT
-RentJeeves\DataBundle\Entity\Landlord:
-    landlord4:
+        groupProperties:  ['@property2']
+RentJeeves\DataBundle\Entity\DepositAccount:
+    depositAccount2:
+        group:          '@groupB'
         holding:        '@holdingTestPayments'
-        firstName:      Roger
-        lastName:       Smith
-        middleInitial:  R
-        email:          landlord_roger@example.com
+        merchantName:   564075
+        status:         complete
+        paymentProcessor: aci
+        type:           rent
+        accountNumber:  15235699
+RentJeeves\DataBundle\Entity\GroupSettings:
+    groupSettings2:
+        passedAch:        true
+        isIntegrated:     0
+        group:            '@groupB'
+        paymentProcessor: aci
+RentJeeves\DataBundle\Entity\Landlord:
+    landlord2:
+        holding:        '@holdingTestPayments'
+        firstName:      Peter
+        lastName:       Griffin
+        middleInitial:  G
+        email:          landlord_peter@example.com
         phoneType:      2
-        phone:          <numberBetween(777777777,999999999)>
-        ssn:            <numberBetween(777777777,999999999)>
+        phone:          7858655391
+        ssn:            444777999
         dateOfBirth:    <(new DateTime('1975-10-10'))>
         password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
@@ -47,13 +47,13 @@ RentJeeves\DataBundle\Entity\Landlord:
         createdAt:      <dateTimeBetween('-200 days', 'now')>
         updatedAt:      <dateTimeBetween('-200 days', 'now')>
 RentJeeves\DataBundle\Entity\Tenant:
-    tenant{61..80}:
+    tenant{21..40}:
         firstName:      <firstName()>
         middleInitial:  <randomLetter()>
         lastName:       <lastName()>
-        email (unique): tenant_<current()>@example.com
+        email:          tenant_<?php echo time(); ?>_<current()>@example.com
         phoneType:      2
-        phone:          <numberBetween(777777777,999999999)>
+        phone:          7858655392
         dateOfBirth:    <(new DateTime('1990-07-10'))>
         ssn:            <numberBetween(777777777,999999999)>
         isActive:       true
@@ -70,12 +70,12 @@ RentJeeves\DataBundle\Entity\Tenant:
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
 RentJeeves\DataBundle\Entity\Contract:
-    contract{61..80}:
+    contract{21..40}:
         tenant:         '@tenant<current()>'
         holding:        '@holdingTestPayments'
-        group:          '@groupD'
-        property:       '@property4'
-        unit:           '@unit4'
+        group:          '@groupB'
+        property:       '@property2'
+        unit:           '@unit2'
         rent:           <numberBetween(1000,2000)>
         status:         approved
         paidTo:         <dateTimeInInterval('+2 months', 'now')>
@@ -84,28 +84,28 @@ RentJeeves\DataBundle\Entity\Contract:
         createdAt:      <dateTimeInInterval('-2 years', '+ 1 months')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
 RentJeeves\DataBundle\Entity\PropertyAddress:
-    propertyAddress4:
-        number:         70
-        street:         E 3rd St
-        city:           New York
-        state:          NY
-        zip:            10003
+    propertyAddress2:
+        number:         3301
+        street:         Greenfield
+        city:           Gilbert
+        state:          AZ
+        zip:            85297
         country:        US
-        lat:            40.72492
-        long:           -73.98886
+        lat:            33.28766
+        long:           -111.75955
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-10 days', 'now')>
-        index:          70E3rdStNewYorkNY
+        index:          3301GreenfieldGilbertAZ
 RentJeeves\DataBundle\Entity\Property:
-    property4:
-        propertyAddress: '@propertyAddress4'
+    property2:
+        propertyAddress: '@propertyAddress2'
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
 RentJeeves\DataBundle\Entity\Unit:
-    unit4:
-        property:       '@property4'
+    unit2:
+        property:       '@property2'
         holding:        '@holdingTestPayments'
-        group:          '@groupD'
-        name:           4121
+        group:          '@groupB'
+        name:           1-b
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
