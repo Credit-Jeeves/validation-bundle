@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\Tests\Unit\Helper;
 use RentJeeves\ImportBundle\Helper\ShortNameFetcher;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class ShortNameFercherCase extends UnitTestBase
+class ShortNameFetcherCase extends UnitTestBase
 {
     /**
      * @return array
@@ -23,28 +23,29 @@ class ShortNameFercherCase extends UnitTestBase
             ['Jerry J. Garcia J.', 'Jerry', 'Garcia'],
             ['Bob Damian Marley Denial', 'Bob', 'Denial'],
             ['Bob and Damian Marley', 'Bob', 'Marley'],
+            [null, null, null]
         ];
     }
 
     /**
      * @test
-     * @dataProvider sanitizeTenantNameProvider
+     * @dataProvider shouldGetFirstAndLastNameProvider
      *
-     * @param string $name
+     * @param string $fullName
      * @param string $expectedFirstName
      * @param string $expectedLastName
      */
-    public function shouldGetFirstAndLastName($name, $expectedFirstName, $expectedLastName)
+    public function shouldGetFirstAndLastName($fullName, $expectedFirstName, $expectedLastName)
     {
         $this->assertEquals(
             $expectedFirstName,
-            ShortNameFetcher::extractFirstName($name),
+            ShortNameFetcher::extractFirstName($fullName),
             'First name mapped not correctly'
         );
 
         $this->assertEquals(
             $expectedLastName,
-            ShortNameFetcher::extractLastName($name),
+            ShortNameFetcher::extractLastName($fullName),
             'Last name mapped not correctly'
         );
     }
