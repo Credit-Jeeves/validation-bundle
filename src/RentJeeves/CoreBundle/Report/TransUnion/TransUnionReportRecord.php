@@ -273,7 +273,21 @@ class TransUnionReportRecord
 
     public function getRentalHistoryProfile()
     {
-        return str_repeat('B', 24);
+        $history = '';
+        $leaseStartMonth = clone $this->contract->getStartAt();
+        $leaseStartMonth->modify('first day of this month');
+        $reportedMonth = clone $this->reportedMonth;
+        $reportedMonth->modify('first day of this month');
+        for ($i = 1; $i <= 24; $i++) {
+            if ($reportedMonth->format('Ymd') >= $leaseStartMonth->format('Ymd')) {
+                $history .= '0';
+            } else {
+                $history .= 'B';
+            }
+            $reportedMonth->modify('-1 month');
+        }
+
+        return $history;
     }
 
     public function getLeaseCommentCode()
