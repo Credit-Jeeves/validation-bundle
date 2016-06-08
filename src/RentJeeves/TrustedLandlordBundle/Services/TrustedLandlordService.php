@@ -113,7 +113,7 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $newCheckMailingAddress->setExternalLocationId($trustedLandlordDTO->getLocationId());
         $newCheckMailingAddress->setAddress1($address->getAddress1());
 
-        $address2 = $address->getUnitDesignator() . $address->getUnitName();
+        $address2 = $trustedLandlordDTO->getAddress2();
 
         $newCheckMailingAddress->setAddress2($address2 ?: null);
         $newCheckMailingAddress->setZip($address->getZip());
