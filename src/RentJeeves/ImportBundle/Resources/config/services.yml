@@ -208,7 +208,7 @@ services:
     import.lease.loader_factory:
         class: RentJeeves\ImportBundle\LeaseImport\Loader\LoaderFactory
         arguments:
-            - '@import.lease.base_loader'
+            - '@import.lease.lease_loader'
             - '@import.lease.csv_loader'
 
     import.property.loader.base:
@@ -230,8 +230,8 @@ services:
         public: false
         parent: import.property.loader.base
 
-    import.lease.base_loader:
-        class: RentJeeves\ImportBundle\LeaseImport\Loader\BaseLoader
+    import.lease.lease_loader:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\LeaseLoader
         public: false
 
     import.lease.csv_loader:

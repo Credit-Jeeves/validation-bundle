@@ -5,9 +5,9 @@ namespace RentJeeves\ImportBundle\LeaseImport\Loader;
 use RentJeeves\DataBundle\Entity\Import;
 
 /**
- * Service`s name "import.lease.base_loader"
+ * Service`s name "import.lease.lease_loader"
  */
-class BaseLoader implements LeaseLoaderInterface
+class LeaseLoader implements LeaseLoaderInterface
 {
     public function loadData(Import $import, $additionalParameter = null)
     {

@@ -12,7 +12,7 @@ use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 class LoaderFactory
 {
     /**
-     * @var BaseLoader
+     * @var LeaseLoader
      */
     protected $baseLoader;
 
@@ -22,10 +22,10 @@ class LoaderFactory
     protected $csvLoader;
 
     /**
-     * @param BaseLoader $baseLoader
-     * @param CsvLoader  $csvLoader
+     * @param LeaseLoader $baseLoader
+     * @param CsvLoader   $csvLoader
      */
-    public function __construct(BaseLoader $baseLoader, CsvLoader $csvLoader)
+    public function __construct(LeaseLoader $baseLoader, CsvLoader $csvLoader)
     {
         $this->baseLoader = $baseLoader;
         $this->csvLoader = $csvLoader;

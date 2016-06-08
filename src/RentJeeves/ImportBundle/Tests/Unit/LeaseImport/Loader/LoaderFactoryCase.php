@@ -5,7 +5,7 @@ namespace RentJeeves\ImportBundle\Tests\Unit\LeaseImport\Loader;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Enum\ImportSource;
-use RentJeeves\ImportBundle\LeaseImport\Loader\BaseLoader;
+use RentJeeves\ImportBundle\LeaseImport\Loader\LeaseLoader;
 use RentJeeves\ImportBundle\LeaseImport\Loader\CsvLoader;
 use RentJeeves\ImportBundle\LeaseImport\Loader\LoaderFactory;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
@@ -21,7 +21,7 @@ class LoaderFactoryCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGroupDoesNotHaveSettings()
     {
-        $factory = new LoaderFactory($this->getBaseMock(BaseLoader::class), $this->getBaseMock(CsvLoader::class));
+        $factory = new LoaderFactory($this->getBaseMock(LeaseLoader::class), $this->getBaseMock(CsvLoader::class));
         $factory->getLoader(new Group());
     }
 
@@ -36,10 +36,10 @@ class LoaderFactoryCase extends UnitTestBase
 
         $group->setImportSettings($importSettings);
 
-        $factory = new LoaderFactory($this->getBaseMock(BaseLoader::class), $this->getBaseMock(CsvLoader::class));
+        $factory = new LoaderFactory($this->getBaseMock(LeaseLoader::class), $this->getBaseMock(CsvLoader::class));
         $loader = $factory->getLoader($group);
 
-        $this->assertInstanceOf(BaseLoader::class, $loader);
+        $this->assertInstanceOf(LeaseLoader::class, $loader);
     }
 
     /**
@@ -53,7 +53,7 @@ class LoaderFactoryCase extends UnitTestBase
 
         $group->setImportSettings($importSettings);
 
-        $factory = new LoaderFactory($this->getBaseMock(BaseLoader::class), $this->getBaseMock(CsvLoader::class));
+        $factory = new LoaderFactory($this->getBaseMock(LeaseLoader::class), $this->getBaseMock(CsvLoader::class));
         $loader = $factory->getLoader($group);
 
         $this->assertInstanceOf(CsvLoader::class, $loader);
