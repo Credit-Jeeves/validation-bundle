@@ -37,7 +37,7 @@ class ShortNameFetcher
      * @param string $fullName
      * @return array|null
      */
-    public static function extractFirstAndLastName($fullName)
+    protected static function extractFirstAndLastName($fullName)
     {
         if (empty(trim($fullName))) {
             return null;
