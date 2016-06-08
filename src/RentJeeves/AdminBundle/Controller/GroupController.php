@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportStatus;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
+use RentJeeves\ImportBundle\ImportSettingsProvider;
 use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -16,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/")
@@ -37,7 +39,7 @@ class GroupController extends BaseController
      * @ParamConverter("group", class="DataBundle:Group", options={"id" = "group_id"})
      * @Method({"GET"})
      */
-    public function importPropertyCreateJob(Group $group, $importType, Request $request)
+    public function createJobForImportAction(Group $group, $importType, Request $request)
     {
         if (!ImportModelType::isValid($importType)) {
             $request->getSession()->getFlashBag()->add(
@@ -56,7 +58,7 @@ class GroupController extends BaseController
             return $this->redirectToRoute('admin_rj_group_list');
         }
 
-        if (empty($extPropertyIds)) {
+        if (true === empty($extPropertyIds)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $this->getTranslator()->trans(
@@ -164,7 +166,7 @@ class GroupController extends BaseController
      *
      * @return Response
      */
-    public function createCsvJobForImportAction(Request $request, Group $group, $importType)
+    public function createJobForCsvImportAction(Request $request, Group $group, $importType)
     {
         if (!ImportModelType::isValid($importType)) {
             $request->getSession()->getFlashBag()->add(
@@ -204,7 +206,7 @@ class GroupController extends BaseController
             $data = file_get_contents($file->getPathname());
             $this->getImportPropertySftpFileManager()->upload($data, $fileName);
             $this->getImportPropertySftpFileManager()->disconnect();
-            $this->createJobForImportCsv($import, $fileName);
+            $this->createJobForImportCsv($import, $fileName, $importType);
 
             $import->setPathToFile($fileName);
             $this->getEntityManager()->flush();
@@ -229,11 +231,11 @@ class GroupController extends BaseController
     }
 
     /**
-     * @return \RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+     * @return ImportSettingsProvider
      */
     protected function getImportSettingsProvider()
     {
-        return $this->get('import.property.settings_provider');
+        return $this->get('import.settings_provider');
     }
 
     /**

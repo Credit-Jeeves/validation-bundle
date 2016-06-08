@@ -70,6 +70,12 @@ services:
             - [addApiTransformer, ['%accounting_system.mri%', '@import.lease.transformer.mri']]
 
     # services
+    import.settings_provider:
+        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+        arguments:
+            - @soap.client.yardi.resident_transactions
+            - @monolog.logger.property_import
+
     import.property.sftp_file_manager:
         class: RentJeeves\ImportBundle\Sftp\ImportSftpFileManager
         arguments:
@@ -88,12 +94,6 @@ services:
             - @import.property.loader_factory
             - @monolog.logger.property_import
             - @doctrine.orm.default_entity_manager
-
-    import.property.settings_provider:
-        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
-        arguments:
-            - @soap.client.yardi.resident_transactions
-            - @monolog.logger.property_import
 
     import.property.extractor.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor

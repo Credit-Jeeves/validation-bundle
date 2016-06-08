@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\Tests\Unit\PropertyImport;
+namespace RentJeeves\ImportBundle\Tests\Unit;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\GetPropertyConfigurationsResponse;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
-use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
+use RentJeeves\ImportBundle\ImportSettingsProvider;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
@@ -34,7 +34,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $importSettings->setApiPropertyIds(' test1,  test2 , test3'); //space for check
         $group->setImportSettings($importSettings);
 
-        $importPropertySettingsProvider = new ImportPropertySettingsProvider(
+        $importPropertySettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
@@ -71,7 +71,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $importSettings->setApiPropertyIds(' test1,  test2 , test3'); //space for check
         $group->setImportSettings($importSettings);
 
-        $importPropertySettingsProvider = new ImportPropertySettingsProvider(
+        $importPropertySettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
@@ -94,7 +94,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $group = new Group();
         $group->setHolding($holding);
         $importSettings = new ImportGroupSettings();
-        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $importSettings->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
@@ -107,7 +107,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
             ->method('getPropertyConfigurations')
             ->will($this->returnValue($response));
 
-        $importPropertySettingsProvider = new ImportPropertySettingsProvider(
+        $importPropertySettingsProvider = new ImportSettingsProvider(
             $client,
             $this->getLoggerMock()
         );
@@ -130,7 +130,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
         $importSettings = new ImportGroupSettings();
-        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $importSettings->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
@@ -138,7 +138,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $property->setCode('test');
         $response->setProperty($property);
 
-        $importPropertySettingsProvider = new ImportPropertySettingsProvider(
+        $importPropertySettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
@@ -159,7 +159,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $group = new Group();
         $group->setHolding($holding);
         $importSettings = new ImportGroupSettings();
-        $importSettings->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $importSettings->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $group->setImportSettings($importSettings);
 
         $response = new GetPropertyConfigurationsResponse();
@@ -172,7 +172,7 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
             ->method('getPropertyConfigurations')
             ->will($this->throwException(new \SoapFault('MustUnderstand', 'test')));
 
-        $importPropertySettingsProvider = new ImportPropertySettingsProvider(
+        $importPropertySettingsProvider = new ImportSettingsProvider(
             $client,
             $this->getLoggerMock()
         );
