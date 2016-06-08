@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
@@ -82,6 +83,19 @@ class Property extends Base
         }
 
         return $result;
+    }
+
+    /**
+     * @param Group $group
+     * @return bool
+     */
+    public function getSubmerchantUnits()
+    {
+        return $this->getUnits()->filter(
+            function (Unit $unit) {
+                return $unit->getGroup()->getOrderAlgorithm() === OrderAlgorithmType::SUBMERCHANT;
+            }
+        );
     }
 
     /**

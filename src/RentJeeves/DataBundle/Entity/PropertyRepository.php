@@ -9,6 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -223,9 +224,11 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.property_groups', 'p_group')
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
+            ->andWhere('p_group.orderAlgorithm = :submerchant')
             ->andWhere('unit.holding = :holdingId')
             ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->orderBy('sortField')
             ->getQuery()
             ->execute();
