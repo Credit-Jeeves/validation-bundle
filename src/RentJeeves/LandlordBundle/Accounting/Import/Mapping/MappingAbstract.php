@@ -83,6 +83,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PROPERTY_ID = 'property_id';
 
+    const KEY_COUNTRY = 'country';
+
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
@@ -188,7 +190,9 @@ abstract class MappingAbstract implements MappingInterface
         }
         $propertyAddress->setZip($row[self::KEY_ZIP]);
         $propertyAddress->setState($row[self::KEY_STATE]);
-
+        if (!empty($row[self::KEY_COUNTRY])) {
+            $propertyAddress->setCountry($row[self::KEY_COUNTRY]);
+        }
         $property->setPropertyAddress($propertyAddress);
 
         return $property;
