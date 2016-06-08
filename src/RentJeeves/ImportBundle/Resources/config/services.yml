@@ -186,7 +186,14 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
-            
+
+    import.lease.transformer.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\CsvTransformer
+        public: false
+        arguments:
+             - "@doctrine.orm.default_entity_manager"
+             - "@monolog.logger.lease_import"
+
     import.property.transformer.csv:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer
         public: false

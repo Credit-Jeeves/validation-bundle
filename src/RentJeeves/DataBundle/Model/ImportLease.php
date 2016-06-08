@@ -4,7 +4,6 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\ImportLeaseResidentStatus;
-use RentJeeves\DataBundle\Enum\ImportLeaseStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseUserStatus;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 

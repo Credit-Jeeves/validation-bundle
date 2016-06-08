@@ -140,7 +140,7 @@ class GroupRepository extends EntityRepository
             ->execute();
 
         if (count($groups) > 1) {
-            throw new \Exception(
+            throw new \LogicException(
                 sprintf(
                     'Something wrong with index for accountNumber. Please check data: accountNumber %s holdingId %s',
                     $accountNumber,
