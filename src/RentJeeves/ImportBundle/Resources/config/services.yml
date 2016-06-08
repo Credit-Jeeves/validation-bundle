@@ -212,6 +212,12 @@ services:
             - @import.property.loader.mapped
             - @import.property.loader.unmapped
 
+    import.lease.loader_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\LoaderFactory
+        arguments:
+            - '@import.lease.lease_loader'
+            - '@import.lease.csv_loader'
+
     import.property.loader.base:
         abstract:  true
         class: RentJeeves\ImportBundle\PropertyImport\Loader\AbstractLoader
@@ -230,3 +236,11 @@ services:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\UnmappedLoader
         public: false
         parent: import.property.loader.base
+
+    import.lease.lease_loader:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\LeaseLoader
+        public: false
+
+    import.lease.csv_loader:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\CsvLoader
+        public: false
