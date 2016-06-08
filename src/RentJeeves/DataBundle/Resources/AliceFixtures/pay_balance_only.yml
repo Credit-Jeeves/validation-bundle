@@ -1,15 +1,10 @@
 parameters:
     locale: test
-CreditJeeves\DataBundle\Entity\Holding:
-    holding3:
-        name:           Test Holding For C Group
-        createdAt:      <dateTimeBetween('-50 days', 'now')>
-        updatedAt:      <dateTimeBetween('-20 days', 'now')>
 CreditJeeves\DataBundle\Entity\Group:
     groupC:
-        name:           Test C Group
-        statementDescriptor: Pay Balance Only
-        holding:          '@holding3'
+        name:           TEST Pay Balance Only
+        statementDescriptor: TEST Pay Balance Only
+        holding:          '@holdingTestPayments'
         type:             rent
         createdAt:        <dateTimeBetween('-40 days', 'now')>
         updatedAt:        <dateTimeBetween('-10 days', 'now')>
@@ -22,11 +17,11 @@ RentJeeves\DataBundle\Entity\GroupSettings:
         paymentProcessor: aci
 RentJeeves\DataBundle\Entity\Landlord:
     landlord3:
-        holding:        '@holding3'
+        holding:        '@holdingTestPayments'
         firstName:      Stan
         lastName:       Smith
         middleInitial:  S
-        email:          landlord_stan@sample.com
+        email:          landlord_stan@example.com
         phoneType:      2
         phone:          7858655394
         ssn:            444777888
@@ -47,7 +42,7 @@ RentJeeves\DataBundle\Entity\Tenant:
         firstName:      <firstName()>
         middleInitial:  <randomLetter()>
         lastName:       <lastName()>
-        email (unique): tenant_<current()>@sample.com
+        email (unique): tenant_<current()>@example.com
         phoneType:      2
         phone:          <numberBetween(777777777,999999999)>
         dateOfBirth:    <(new DateTime('1990-07-10'))>
@@ -68,7 +63,7 @@ RentJeeves\DataBundle\Entity\Tenant:
 RentJeeves\DataBundle\Entity\Contract:
     contract{41..60}:
         tenant:         '@tenant<current()>'
-        holding:        '@holding3'
+        holding:        '@holdingTestPayments'
         group:          '@groupC'
         property:       '@property3'
         unit:           '@unit3'
@@ -100,7 +95,7 @@ RentJeeves\DataBundle\Entity\Property:
 RentJeeves\DataBundle\Entity\Unit:
     unit3:
         property:       '@property3'
-        holding:        '@holding3'
+        holding:        '@holdingTestPayments'
         group:          '@groupC'
         name:           1-b
         createdAt:      <dateTimeBetween('-50 days', 'now')>
