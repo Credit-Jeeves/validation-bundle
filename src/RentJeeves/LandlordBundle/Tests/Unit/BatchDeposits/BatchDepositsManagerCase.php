@@ -31,9 +31,9 @@ class BatchDepositsManagerCase extends BaseTestCase
         $group = $this->em->find('DataBundle:Group', 24);
 
         $this->assertEquals(
-            7,
+            6,
             $this->depositManager->getCountDeposits($group, '', ''),
-            'Group #24 should have 7 deposits'
+            'Group #24 should have 6 deposits'
         );
     }
 
@@ -107,7 +107,7 @@ class BatchDepositsManagerCase extends BaseTestCase
         $group = $this->em->find('DataBundle:Group', 24);
 
         $deposits = $this->depositManager->getDeposits($group, '', '');
-        $this->assertCount(7, $deposits, 'Expected 5 deposits for Group #24');
+        $this->assertCount(6, $deposits, 'Expected 6 deposits for Group #24');
 
         $this->assertArrayHasKey('batchNumber', $deposits[2], 'BatchNumber not found in deposit');
         $this->assertEquals('325698', $deposits[2]['batchNumber'], 'Unexpected batchNumber');

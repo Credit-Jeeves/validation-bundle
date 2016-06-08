@@ -28,4 +28,21 @@ interface PaymentProcessorInterface
      * @return string
      */
     public function generateReversedBatchId(Order $order);
+
+    /**
+     * Returns the number of business days required for processor to deliver the given payment type.
+     *
+     * @param string $paymentType is of type CreditJeeves\DataBundle\Enum\OrderPaymentType
+     *
+     * @return int the required number of business days until deposit/delivery
+     */
+    public function getBusinessDaysRequired($paymentType);
+
+    /**
+     * @param string $paymentType is of type CreditJeeves\DataBundle\Enum\OrderPaymentType
+     * @param \DateTime $executeDate
+     *
+     * @return \DateTime the estimated deposit date
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate);
 }

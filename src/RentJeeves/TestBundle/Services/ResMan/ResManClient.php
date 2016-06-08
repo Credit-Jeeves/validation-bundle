@@ -7,6 +7,11 @@ use RentJeeves\ExternalApiBundle\Services\ResMan\ResManClient as Base;
 
 class ResManClient extends Base
 {
+    const TEST_EXTERNAL_PROPERTY_ID = 'test_resman_external_property_id';
+
+    /** @var string File with response example */
+    protected $responseMockFile = '/../../Resources/fixtures/ResMan-getResidentTransactions.xml';
+
     /**
      * @param string $externalPropertyId
      *
@@ -14,7 +19,7 @@ class ResManClient extends Base
      */
     public function getResidentTransactions($externalPropertyId)
     {
-        if ($externalPropertyId === 'test_resman_external_property_id') {
+        if ($externalPropertyId === self::TEST_EXTERNAL_PROPERTY_ID) {
             $resMan = $this->deserializeResponse($this->getResponseMock(), $this->mappingResponse[self::BASE_RESPONSE]);
 
             return $resMan->getResponse()->getResidentTransactions();
@@ -29,7 +34,15 @@ class ResManClient extends Base
     protected function getResponseMock()
     {
         return file_get_contents(
-            realpath(dirname(__FILE__)) . '/../../Resources/fixtures/ResMan-getResidentTransactions.xml'
+            realpath(dirname(__FILE__)).$this->responseMockFile
         );
+    }
+
+    /**
+     * Method for setting response file with empty move out date
+     */
+    public function setResponseMockFileWithEmptyMoveOut()
+    {
+        $this->responseMockFile = '/../../Resources/fixtures/ResMan-getResidentTransactions(empty_move_out).xml';
     }
 }

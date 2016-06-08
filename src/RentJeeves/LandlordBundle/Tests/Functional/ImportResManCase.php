@@ -164,6 +164,6 @@ class ImportResManCase extends ImportBaseAbstract
         $submitImport->click();
         $this->waitReview();
         $this->waitRedirectToSummaryPage();
-        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'));
+        $this->assertNotNull($publicId = $this->page->find('css', '#publicId'), 'Should be element with #publicId');
     }
 }
