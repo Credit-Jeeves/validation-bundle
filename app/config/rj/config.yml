@@ -118,7 +118,7 @@ twig:
         landlord_per_screen: %landlord_per_screen%
         landlord_payment_per_month_dollars: %landlord_payment_per_month_dollars%
         landlord_payment_per_month_cents: %landlord_payment_per_month_cents%
-        mobile_payment_account_fee_field_dispay: 1
+        allow_payment_account_fee_dispay: %allow_payment_account_fee_dispay%
         features:
             allow_score_track: %allow_score_track%
 

@@ -270,7 +270,7 @@ function Pay(parent, contract) {
 
     self.prepareDialog = function () {
         jQuery('#pay-popup').dialog({
-            width: 650,
+            width: 655,
             modal: true,
             beforeClose: function() {
                 if ('finish' === self.getCurrentStep()) {
@@ -281,6 +281,28 @@ function Pay(parent, contract) {
                 self.step(steps[current]);
             }
         });
+
+        if (jQuery('#fee-details').length > 0) {
+            jQuery('#fee-details').tooltip({
+                items: 'i',
+                content: Translator.trans('checkout.payment_account.fee.details.help'),
+                position: { my: 'left center', at: 'right+30 center' },
+                show: null,
+                close: function (event, ui) {
+                    ui.tooltip.hover(
+
+                        function () {
+                            $(this).stop(true).fadeTo(400, 1);
+                        },
+
+                        function () {
+                            $(this).fadeOut("400", function () {
+                                $(this).remove();
+                            })
+                        });
+                }
+            });
+        }
 
         jQuery('.user-ssn').ssn();
 
@@ -350,7 +372,8 @@ function Pay(parent, contract) {
                     'card' : self.allowCreditCard,
                     'debit_card' : self.allowDebitCard
                 }
-            }
+            },
+            'card'
         )
     );
 

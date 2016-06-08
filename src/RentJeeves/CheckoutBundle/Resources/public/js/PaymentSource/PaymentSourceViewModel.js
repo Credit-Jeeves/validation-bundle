@@ -152,6 +152,17 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
                 "visible: isAvailablePaymentSourceType('" + element.value + "')"
             );
         });
+        ko.utils.arrayForEach(
+            document.querySelectorAll('#payment-type-with-fee .payment-fee-value'), 
+            function (element) {
+                if (element && element.dataset && element.dataset.paymentType) {
+                    element.setAttribute(
+                        "data-bind",
+                        "text: feeDisplay('" + element.dataset.paymentType + "')"
+                    );
+                }
+            }
+        );
     };
 
     // Constructor

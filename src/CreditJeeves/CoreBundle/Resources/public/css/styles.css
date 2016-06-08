@@ -1572,14 +1572,24 @@ label.error b {
 
 .payments-popup .tooltip-box.type2 {
   left:400px;
-  top:-100px;
+  top:-64px;
   width:170px;
 }
 
 .payments-popup .tooltip-box.type5 {
-  left:410px;
-  top:3px;
-  width:160px;
+  left:385px;
+  top:50px;
+  width:185px;
+}
+
+#fee-details {
+  position: absolute;
+  top: 37px;
+  right: 80px;
+  text-decoration: underline;
+  cursor: pointer;
+  color: #00aeef;
+  font-weight:bold;
 }
 
 #pay-anything-popup .tooltip-box.type2{
@@ -1599,7 +1609,7 @@ label.error b {
 }
 
 .payments-popup .tooltip-box.type2:before, .payments-popup .tooltip-box.type5:before {
-  bottom:22px;
+  bottom:56px;
   top:auto;
   margin-top:0;
   margin-bottom:-7px;
@@ -1610,7 +1620,7 @@ label.error b {
 }
 
 .payments-popup .tooltip-box.type2:after, .payments-popup .tooltip-box.type5:after {
-  bottom:22px;
+  bottom:56px;
   top:auto;
 }
 
