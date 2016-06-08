@@ -118,6 +118,17 @@ abstract class ImportLease
      * @var string
      *
      * @ORM\Column(
+     *      type="string",
+     *      name="unit_look_up_id",
+     *      nullable=false
+     * )
+     */
+    protected $unitLookUpId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(
      *     type="ImportLeaseResidentStatus",
      *     name="resident_status",
      *     nullable=true
@@ -264,6 +275,60 @@ abstract class ImportLease
      * @ORM\Column(name="updated_at",type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_update_mask",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $residentUpdateMask;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_status_map",
+     *     type="ResidentStatusMapType",
+     *     nullable=true
+     * )
+     */
+    protected $residentStatusMap;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_update_mask",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $leaseUpdateMask;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_diff_map",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $leaseDiffMap;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_diff_map",
+     *     type="string",
+     *     nullable=true
+     * )
+     */
+    protected $residentDiffMap;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_status_map",
+     *     type="LeaseStatusMapType",
+     *     nullable=true
+     * )
+     */
+    protected $leaseStatusMap;
 
     /**
      * @return int

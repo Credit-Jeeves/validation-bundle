@@ -6,8 +6,10 @@ use RentJeeves\DataBundle\Enum\CountryCode;
 use RentJeeves\DataBundle\Enum\ImportLeaseResidentStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseStatus;
 use RentJeeves\DataBundle\Enum\ImportLeaseUserStatus;
+use RentJeeves\DataBundle\Enum\LeaseStatusMapType;
 use RentJeeves\DataBundle\Enum\PaymentTypeScannedCheck;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
+use RentJeeves\DataBundle\Enum\ResidentStatusMapType;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Doctrine\DBAL\Types\Type;
 
@@ -65,6 +67,8 @@ class RjDataBundle extends Bundle
             Type::addType('ImportLeaseStatus', ImportLeaseStatus::class);
             Type::addType('ImportLeaseResidentStatus', ImportLeaseResidentStatus::class);
             Type::addType('CountryCode', CountryCode::class);
+            Type::addType('ResidentStatusMapType', ResidentStatusMapType::class);
+            Type::addType('LeaseStatusMapType', LeaseStatusMapType::class);
 
             $databasePlatform = $this->container->get('doctrine')
                 ->getManager()
