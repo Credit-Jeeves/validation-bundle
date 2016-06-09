@@ -127,6 +127,17 @@ class CsvTransformer implements TransformerInterface
             $this->getResidentStatus($accountingSystemRecord, $importMappingRule, $dateFormat)
         );
         $importLease->setExternalAccountId($this->getExternalAccountId($accountingSystemRecord, $importMappingRule));
+        $importLease->setUnitLookupId($this->getUnitLookupId($accountingSystemRecord, $importMappingRule));
+    }
+
+    /**
+     * @param array $accountingSystemRecord
+     * @param array $importMappingRule
+     * @return null|string
+     */
+    protected function getUnitLookupId(array $accountingSystemRecord, array $importMappingRule)
+    {
+        return $this->getFieldValueByKey($accountingSystemRecord, $importMappingRule, 'unit_id');
     }
 
     /**
@@ -206,7 +217,7 @@ class CsvTransformer implements TransformerInterface
      */
     protected function getExternalUnitId(array $accountingSystemRecord, array $importMappingRule)
     {
-        return  $this->getFieldValueByKey($accountingSystemRecord, $importMappingRule, 'unit_id');
+        return $this->getFieldValueByKey($accountingSystemRecord, $importMappingRule, 'unit_id');
     }
 
     /**
