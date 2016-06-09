@@ -40,7 +40,7 @@ class ImportPropertySettingsProviderCase extends BaseTestCase
             ->will($this->returnValue($soapClient));
         $this->getContainer()->set('besimple.soap.client.yardi_resident_transactions', $soapClientBuilder);
 
-        $provider = $this->getContainer()->get('import.property.settings_provider');
+        $provider = $this->getContainer()->get('import.settings_provider');
         $result = $provider->provideExternalPropertyIds($group);
         $this->assertEquals(3, count($result), 'Provider returned incorrect result.');
         $this->assertEquals('rnttrk01', $result[0], 'Provider returned incorrect 1st property.');
