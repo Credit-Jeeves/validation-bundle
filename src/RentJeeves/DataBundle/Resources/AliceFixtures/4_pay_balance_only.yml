@@ -42,7 +42,7 @@ RentJeeves\DataBundle\Entity\Tenant:
         firstName:      <firstName()>
         middleInitial:  <randomLetter()>
         lastName:       <lastName()>
-        email (unique): tenant_<current()>@example.com
+        email:          tenant_<?php echo time(); ?>_<current()>@example.com
         phoneType:      2
         phone:          <numberBetween(777777777,999999999)>
         dateOfBirth:    <(new DateTime('1990-07-10'))>

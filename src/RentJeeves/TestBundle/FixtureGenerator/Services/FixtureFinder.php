@@ -54,7 +54,7 @@ class FixtureFinder
     protected function getFixturesFromDirectory($absolutePath)
     {
         $fixtures = [];
-        $finder = Finder::create()->depth(0)->files()->in($absolutePath)->name('*.yml');
+        $finder = Finder::create()->depth(0)->files()->in($absolutePath)->name('*.yml')->sortByName();
         foreach ($finder as $file) {
             /* @var SplFileInfo $file */
             $fixtures[$file->getRealPath()] = true;

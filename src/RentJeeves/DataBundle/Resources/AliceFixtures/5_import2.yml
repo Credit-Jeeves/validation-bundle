@@ -1,0 +1,236 @@
+parameters:
+    locale: test
+
+CreditJeeves\DataBundle\Entity\Holding:
+    holdingMRI:
+        name:           TEST MRI
+        accountingSystem: mri
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+    holdingYardi:
+        name:           TEST Yardi
+        accountingSystem: yardi voyager
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+    holdingResman:
+        name:           TEST Resman
+        accountingSystem: resman
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+    holdingAMSI:
+        name:           TEST AMSI
+        accountingSystem: amsi
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+    holdingRentManager:
+        name:           TEST RentManager
+        accountingSystem: rent manager
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+    holdingCSV:
+        name:           TEST CSV
+        accountingSystem: none
+        useRecurringCharges: true
+        createdAt:      <dateTimeBetween('-40 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+
+CreditJeeves\DataBundle\Entity\Group:
+    groupMRI:
+        name:             TEST MRI
+        statementDescriptor: TEST MRI
+        holding:          '@holdingMRI'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+    groupYardi:
+        name:             TEST Yardi
+        statementDescriptor: TEST Yardi
+        holding:          '@holdingYardi'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+    groupResman:
+        name:             TEST Resman
+        statementDescriptor: TEST Resman
+        holding:          '@holdingResman'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+    groupAMSI:
+        name:             TEST AMSI
+        statementDescriptor: TEST AMSI
+        holding:          '@holdingAMSI'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+    groupRentManager:
+        name:             TEST RentManager
+        statementDescriptor: TEST RentManager
+        holding:          '@holdingRentManager'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+    groupCSV:
+        name:             TEST CSV
+        statementDescriptor: TEST CSV
+        holding:          '@holdingCSV'
+        type:             rent
+        createdAt:        <dateTimeBetween('-40 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+
+RentJeeves\DataBundle\Entity\Landlord:
+    landlordMRI:
+        holding:        '@holdingMRI'
+        firstName:      Steve
+        lastName:       Smith
+        middleInitial:  S
+        email:          landlord_steve@example.com
+        phoneType:      2
+        phone:          7858655394
+        ssn:            444777888
+        dateOfBirth:    <(new DateTime('1993-07-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+    landlordYardi:
+        holding:        '@holdingYardi'
+        firstName:      Dexter
+        lastName:       Smith
+        middleInitial:  S
+        email:          landlord_dexter@example.com
+        phoneType:      2
+        phone:          7858655394
+        ssn:            444777888
+        dateOfBirth:    <(new DateTime('1993-07-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+    landlordResman:
+        holding:        '@holdingResman'
+        firstName:      Homer
+        lastName:       Simpson
+        middleInitial:  J
+        email:          landlord_homer@example.com
+        phoneType:      2
+        phone:          7858655389
+        ssn:            444777222
+        dateOfBirth:    <(new DateTime('1993-07-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+    landlordAMSI:
+        holding:        '@holdingAMSI'
+        firstName:      Vosgi
+        lastName:       Jirair
+        middleInitial:  J
+        email:          landlord_vosgi@example.com
+        phoneType:      2
+        phone:          7858655389
+        ssn:            444777222
+        dateOfBirth:    <(new DateTime('1993-07-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+
+RentJeeves\DataBundle\Entity\MRISettings:
+    MRISetting1:
+        clientId:       C225999
+        holding:        '@holdingMRI'
+        url:            https://mri45pc.saas.mrisoftware.com/mriapiservices/api.asp
+        databaseName:   RENTTRACK
+        hash:           FE11CEE9FB6FDB03AA3950E3769C342FD58E3089EBF5BAD52FBB7D32B6152421
+        partnerKey:     3D5C25981F2911DA566EA5AC363B1B9B5CA8A5AD75EEDECB1EC0EDA76902926A
+        user:           RENTTRACKAPI
+        password:       k8raKFPJ
+        siteId:         @
+        chargeCode:     RNT
+
+RentJeeves\DataBundle\Entity\YardiSettings:
+    YardiSetting1:
+        holding:        '@holdingYardi'
+        url:            'https://www.iyardiasp.com/8223thirdparty708dev/'
+        username:       renttrackws
+        password:       57742
+        databaseServer: sdb17\SQL2k8_R2
+        databaseName:   afqoml_70dev
+        platform:       SQL Server
+        paymentTypeACH: check
+        paymentTypeCC:  cash
+        notesACH:       ''
+        notesCC:        ''
+        syncBalance:    true
+
+RentJeeves\DataBundle\Entity\ResManSettings:
+    ResmanSetting1:
+        holding: '@holdingResman'
+        accountId: 800
+        syncBalance: false
+        url: https://api.myresman.com/MITS/
+
+RentJeeves\DataBundle\Entity\AMSISettings:
+    AMSISetting1:
+        url: https://amsitest.infor.com/amsiweb/edexweb/esite
+        user: renttrack
+        password: renttrack
+        portfolioName: RentTrack
+        holding: '@holdingAMSI'
+
+RentJeeves\DataBundle\Entity\ImportGroupSettings:
+    importGroupSettingsMRI:
+        group: '@groupMRI'
+        source: integrated_api
+        apiPropertyIds: '500,503'
+    importGroupSettingsYardi:
+        group:          '@groupYardi'
+        source:         integrated_api
+        apiPropertyIds: '*'
+    importGroupSettingsResman:
+        group: '@groupResman'
+        source: integrated_api
+        apiPropertyIds: '4fb18691-c894-4b84-805b-c62da481ca63, 4fb18691-c894-4b84-805b-c62da481ca63'
+    importGroupSettingsAMSI:
+        group: '@groupAMSI'
+        source: integrated_api
+        apiPropertyIds: '001'
+    importGroupSettingsCSV:
+        group:          '@groupCSV'
+        importType:     single_property
+        source:         csv
+        apiPropertyIds: ''
