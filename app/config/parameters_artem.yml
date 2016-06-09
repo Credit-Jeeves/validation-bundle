@@ -13,10 +13,3 @@ parameters:
     server_name_rj: rj.loc
 
     secrets_path: /home/artem/
-
-    mailer_transport: smtp
-    mailer_host: 'localhost:1025' #for Mailcatcher
-    mailer_user: null
-    mailer_password: null
-    mailer_delivery_address: 'staging@renttrack.com'  # force all email to be delivered to test mailbox
-    mailer_disable_delivery: false

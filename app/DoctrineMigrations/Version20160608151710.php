@@ -52,6 +52,12 @@ TEMPLATE;
             WHERE (property = 'body' or property = 'bodyHtml')
             AND translatable_id = (SELECT id FROM email WHERE name = 'welcome.html')"
         );
+        $this->addSql(
+            "UPDATE email_translation
+            SET value = 'Welcome to RentTrack'
+            WHERE property = 'subject'
+            AND translatable_id = (SELECT id FROM email WHERE name = 'welcome.html')"
+        );
     }
     public function down(Schema $schema)
     {
@@ -62,6 +68,12 @@ TEMPLATE;
             "UPDATE email_translation
             SET value = '$template'
             WHERE (property = 'body' or property = 'bodyHtml')
+            AND translatable_id = (SELECT id FROM email WHERE name = 'welcome.html')"
+        );
+        $this->addSql(
+            "UPDATE email_translation
+            SET value = 'Welcome to Credit Jeeves'
+            WHERE property = 'subject'
             AND translatable_id = (SELECT id FROM email WHERE name = 'welcome.html')"
         );
     }
