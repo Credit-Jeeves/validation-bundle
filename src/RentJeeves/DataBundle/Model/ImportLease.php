@@ -119,11 +119,11 @@ abstract class ImportLease
      *
      * @ORM\Column(
      *      type="string",
-     *      name="unit_look_up_id",
+     *      name="unit_lookup_id",
      *      nullable=false
      * )
      */
-    protected $unitLookUpId;
+    protected $unitLookupId;
 
     /**
      * @var string
@@ -229,17 +229,6 @@ abstract class ImportLease
     protected $userStatus;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(
-     *     type="ImportLeaseStatus",
-     *     name="lease_status",
-     *     nullable=true
-     * )
-     */
-    protected $leaseStatus;
-
-    /**
      * @ORM\Column(
      *     name="error_messages",
      *     type="array",
@@ -287,15 +276,6 @@ abstract class ImportLease
 
     /**
      * @ORM\Column(
-     *     name="resident_status_map",
-     *     type="ResidentStatusMapType",
-     *     nullable=true
-     * )
-     */
-    protected $residentStatusMap;
-
-    /**
-     * @ORM\Column(
      *     name="lease_update_mask",
      *     type="string",
      *     nullable=true
@@ -329,6 +309,127 @@ abstract class ImportLease
      * )
      */
     protected $leaseStatusMap;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_status_map",
+     *     type="ResidentStatusMapType",
+     *     nullable=true
+     * )
+     */
+    protected $residentStatusMap;
+
+    /**
+     * @return mixed
+     */
+    public function getLeaseDiffMap()
+    {
+        return $this->leaseDiffMap;
+    }
+
+    /**
+     * @param mixed $leaseDiffMap
+     */
+    public function setLeaseDiffMap($leaseDiffMap)
+    {
+        $this->leaseDiffMap = $leaseDiffMap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeaseStatusMap()
+    {
+        return $this->leaseStatusMap;
+    }
+
+    /**
+     * @param mixed $leaseStatusMap
+     */
+    public function setLeaseStatusMap($leaseStatusMap)
+    {
+        $this->leaseStatusMap = $leaseStatusMap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeaseUpdateMask()
+    {
+        return $this->leaseUpdateMask;
+    }
+
+    /**
+     * @param mixed $leaseUpdateMask
+     */
+    public function setLeaseUpdateMask($leaseUpdateMask)
+    {
+        $this->leaseUpdateMask = $leaseUpdateMask;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentDiffMap()
+    {
+        return $this->residentDiffMap;
+    }
+
+    /**
+     * @param mixed $residentDiffMap
+     */
+    public function setResidentDiffMap($residentDiffMap)
+    {
+        $this->residentDiffMap = $residentDiffMap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentStatusMap()
+    {
+        return $this->residentStatusMap;
+    }
+
+    /**
+     * @param mixed $residentStatusMap
+     */
+    public function setResidentStatusMap($residentStatusMap)
+    {
+        $this->residentStatusMap = $residentStatusMap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentUpdateMask()
+    {
+        return $this->residentUpdateMask;
+    }
+
+    /**
+     * @param mixed $residentUpdateMask
+     */
+    public function setResidentUpdateMask($residentUpdateMask)
+    {
+        $this->residentUpdateMask = $residentUpdateMask;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitLookupId()
+    {
+        return $this->unitLookupId;
+    }
+
+    /**
+     * @param string $unitLookupId
+     */
+    public function setUnitLookupId($unitLookupId)
+    {
+        $this->unitLookupId = $unitLookupId;
+    }
 
     /**
      * @return int
@@ -648,22 +749,6 @@ abstract class ImportLease
     public function setUserStatus($userStatus)
     {
         $this->userStatus = $userStatus;
-    }
-
-    /**
-     * @return ImportLeaseUserStatus
-     */
-    public function getLeaseStatus()
-    {
-        return $this->leaseStatus;
-    }
-
-    /**
-     * @param ImportLeaseUserStatus $leaseStatus
-     */
-    public function setLeaseStatus($leaseStatus)
-    {
-        $this->leaseStatus = $leaseStatus;
     }
 
     /**

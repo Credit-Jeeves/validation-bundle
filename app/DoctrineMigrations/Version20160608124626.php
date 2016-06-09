@@ -16,7 +16,7 @@ class Version20160608124626 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_import_lease
-                ADD unit_look_up_id VARCHAR(255) NOT NULL,
+                ADD unit_lookup_id VARCHAR(255) NOT NULL,
                 ADD resident_update_mask VARCHAR(255) DEFAULT NULL,
                 ADD resident_status_map ENUM('invited','not_invited','no_email','bad_email','error')
                     COMMENT '(DC2Type:ResidentStatusMapType)' DEFAULT NULL,
@@ -25,6 +25,11 @@ class Version20160608124626 extends AbstractMigration
                 ADD resident_diff_map VARCHAR(255) DEFAULT NULL,
                 ADD lease_status_map ENUM('new','match','no_email','error')
                     COMMENT '(DC2Type:LeaseStatusMapType)' DEFAULT NULL"
+        );
+
+        $this->addSql(
+            "ALTER TABLE rj_import_lease
+                DROP lease_status"
         );
     }
 
@@ -37,13 +42,19 @@ class Version20160608124626 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_import_lease
-                DROP unit_look_up_id,
+                DROP unit_lookup_id,
                 DROP resident_update_mask,
                 DROP resident_status_map,
                 DROP lease_update_mask,
                 DROP lease_diff_map,
                 DROP resident_diff_map,
                 DROP lease_status_map"
+        );
+
+        $this->addSql(
+            "ALTER TABLE rj_import_lease
+                ADD lease_status ENUM('new','match','error')
+                    COMMENT '(DC2Type:ImportLeaseStatus)' DEFAULT NULL"
         );
     }
 }
