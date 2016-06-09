@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * @method Unit find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -194,7 +195,7 @@ class UnitRepository extends EntityRepository
      *
      * @return Unit[]
      */
-    public function findAllByContractIds(array $contractIds)
+    public function findAllSubmerchantUnitsByContractIds(array $contractIds)
     {
         if (true === empty($contractIds)) {
             return [];
@@ -204,10 +205,13 @@ class UnitRepository extends EntityRepository
             ->addSelect('CONCAT(propertyAddress.number, propertyAddress.street) AS HIDDEN sortField')
             ->innerJoin('u.contracts', 'c')
             ->innerJoin('u.property', 'property')
+            ->innerJoin('u.group', 'g')
             ->innerJoin('property.propertyAddress', 'propertyAddress')
             ->where('c.id IN (:ids)')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->orderBy('sortField')
             ->setParameter('ids', implode(' , ', $contractIds))
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->getQuery()
             ->execute();
     }

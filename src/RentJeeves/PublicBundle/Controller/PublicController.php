@@ -313,8 +313,8 @@ class PublicController extends Controller
                             foreach ($contracts as $contract) {
                                 $contractIds[] = $contract->getId();
                             }
-                            $contractUnits =
-                                $em->getRepository('RjDataBundle:Unit')->findAllByContractIds($contractIds);
+                            $contractUnits = $em->getRepository('RjDataBundle:Unit')
+                                ->findAllSubmerchantUnitsByContractIds($contractIds);
                             $contractProperties = [];
                             foreach ($contractUnits as $unit) {
                                 $contractProperties[] = $unit->getProperty();
