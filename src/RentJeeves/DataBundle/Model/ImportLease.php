@@ -218,17 +218,6 @@ abstract class ImportLease
     protected $import;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(
-     *     type="ImportLeaseUserStatus",
-     *     name="user_status",
-     *     nullable=true
-     * )
-     */
-    protected $userStatus;
-
-    /**
      * @ORM\Column(
      *     name="error_messages",
      *     type="array",
@@ -269,7 +258,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="resident_update_mask",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $residentUpdateMask;
@@ -278,7 +268,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="lease_update_mask",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $leaseUpdateMask;
@@ -287,7 +278,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="lease_diff_map",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $leaseDiffMap;
@@ -296,7 +288,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="resident_diff_map",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $residentDiffMap;
@@ -305,7 +298,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="lease_status_map",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $leaseStatusMap;
@@ -314,7 +308,8 @@ abstract class ImportLease
      * @ORM\Column(
      *     name="resident_status_map",
      *     type="string",
-     *     nullable=true
+     *     nullable=true,
+     *     length=18
      * )
      */
     protected $residentStatusMap;
@@ -733,22 +728,6 @@ abstract class ImportLease
     public function setExternalLeaseId($externalLeaseId)
     {
         $this->externalLeaseId = $externalLeaseId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserStatus()
-    {
-        return $this->userStatus;
-    }
-
-    /**
-     * @param ImportLeaseUserStatus $userStatus
-     */
-    public function setUserStatus($userStatus)
-    {
-        $this->userStatus = $userStatus;
     }
 
     /**
