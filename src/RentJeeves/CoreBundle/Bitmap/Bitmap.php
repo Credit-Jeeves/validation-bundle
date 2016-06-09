@@ -1,11 +1,9 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Services;
+namespace RentJeeves\CoreBundle\Bitmap;
 
-/**
- * service "bitmap"
- */
-class Bitmap {
+class Bitmap
+{
 
     /**
      * @var int
@@ -81,4 +79,3 @@ class Bitmap {
         return $this->bitmap;
     }
 }
-

@@ -207,6 +207,3 @@ services:
         public: false
         tags:
             - { name: twig.extension }
-
-    bitmap:
-        class: RentJeeves\CoreBundle\Services\Bitmap
