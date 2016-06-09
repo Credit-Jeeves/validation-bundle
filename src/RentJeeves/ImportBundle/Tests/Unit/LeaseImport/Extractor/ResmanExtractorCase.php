@@ -73,9 +73,6 @@ class ResmanExtractorCase extends UnitTestBase
             ->with($this->equalTo('test'))
             ->will($this->returnValue($expectedResponse = []));
         $logger = $this->getLoggerMock();
-        $logger->expects($this->at(1))
-            ->method('info')
-            ->with($this->equalTo('Returned response is empty.'));
 
         $resmanExtractor = new ResmanExtractor($dataManager, $logger);
         $resmanExtractor->setGroup($group);
