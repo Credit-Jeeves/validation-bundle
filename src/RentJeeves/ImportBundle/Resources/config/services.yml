@@ -71,7 +71,7 @@ services:
 
     # services
     import.settings_provider:
-        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
+        class: RentJeeves\ImportBundle\ImportSettingsProvider
         arguments:
             - @soap.client.yardi.resident_transactions
             - @monolog.logger.property_import

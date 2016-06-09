@@ -14,7 +14,7 @@ use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
 
-class ImportPropertySettingsProviderCase extends UnitTestBase
+class ImportSettingsProviderCase extends UnitTestBase
 {
     use CreateSystemMocksExtensionTrait;
     use WriteAttributeExtensionTrait;
@@ -34,12 +34,12 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $importSettings->setApiPropertyIds(' test1,  test2 , test3'); //space for check
         $group->setImportSettings($importSettings);
 
-        $importPropertySettingsProvider = new ImportSettingsProvider(
+        $importSettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
 
-        $importPropertySettingsProvider->provideExternalPropertyIds($group);
+        $importSettingsProvider->provideExternalPropertyIds($group);
     }
 
     /**
@@ -71,12 +71,12 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $importSettings->setApiPropertyIds(' test1,  test2 , test3'); //space for check
         $group->setImportSettings($importSettings);
 
-        $importPropertySettingsProvider = new ImportSettingsProvider(
+        $importSettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
 
-        $result = $importPropertySettingsProvider->provideExternalPropertyIds($group);
+        $result = $importSettingsProvider->provideExternalPropertyIds($group);
         $this->assertEquals(3, count($result), 'Provider returned incorrect result.');
         $this->assertEquals('test1', $result[0], 'Provider returned incorrect 1st property.');
         $this->assertEquals('test2', $result[1], 'Provider returned incorrect 2nd property.');
@@ -107,12 +107,12 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
             ->method('getPropertyConfigurations')
             ->will($this->returnValue($response));
 
-        $importPropertySettingsProvider = new ImportSettingsProvider(
+        $importSettingsProvider = new ImportSettingsProvider(
             $client,
             $this->getLoggerMock()
         );
 
-        $result = $importPropertySettingsProvider->provideExternalPropertyIds($group);
+        $result = $importSettingsProvider->provideExternalPropertyIds($group);
         $this->assertEquals(1, count($result), 'Provider returned incorrect result.');
         $this->assertEquals('test', $result[0], 'Provider returned incorrect 1st property.');
     }
@@ -138,12 +138,12 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
         $property->setCode('test');
         $response->setProperty($property);
 
-        $importPropertySettingsProvider = new ImportSettingsProvider(
+        $importSettingsProvider = new ImportSettingsProvider(
             $this->getBaseMock('\RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClient'),
             $this->getLoggerMock()
         );
 
-        $importPropertySettingsProvider->provideExternalPropertyIds($group);
+        $importSettingsProvider->provideExternalPropertyIds($group);
     }
 
     /**
@@ -172,11 +172,11 @@ class ImportPropertySettingsProviderCase extends UnitTestBase
             ->method('getPropertyConfigurations')
             ->will($this->throwException(new \SoapFault('MustUnderstand', 'test')));
 
-        $importPropertySettingsProvider = new ImportSettingsProvider(
+        $importSettingsProvider = new ImportSettingsProvider(
             $client,
             $this->getLoggerMock()
         );
 
-        $importPropertySettingsProvider->provideExternalPropertyIds($group);
+        $importSettingsProvider->provideExternalPropertyIds($group);
     }
 }
