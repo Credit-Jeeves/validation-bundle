@@ -479,6 +479,11 @@ class Mailer extends BaseMailer
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'tenantName' => $tenant->getFullName(),
             'reversalDescription' => $order->getReversalDescription(),
+            'transactionId' => $order->getDepositTransactionId(),
+            'reversedTransactionId' => $order->getTransactionId(),
+            'groupName' => $order->getGroupName(),
+            'propertyAddress' => $order->getPropertyAddress(),
+            'unitName' => $order->getUnit()->getName(),
         ];
 
         $group = $order->getContract()->getGroup();
