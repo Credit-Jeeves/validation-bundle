@@ -6,7 +6,7 @@ use RentJeeves\ImportBundle\ImportSettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
-class ImportPropertySettingsProviderCase extends BaseTestCase
+class ImportSettingsProviderCase extends BaseTestCase
 {
     use CreateSystemMocksExtensionTrait;
 
