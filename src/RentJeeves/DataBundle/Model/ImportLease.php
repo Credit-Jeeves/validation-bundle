@@ -320,7 +320,7 @@ abstract class ImportLease
     protected $residentStatusMap;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLeaseDiffMap()
     {
@@ -328,7 +328,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $leaseDiffMap
+     * @param string $leaseDiffMap
      */
     public function setLeaseDiffMap($leaseDiffMap)
     {
@@ -336,7 +336,7 @@ abstract class ImportLease
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLeaseStatusMap()
     {
@@ -344,7 +344,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $leaseStatusMap
+     * @param string $leaseStatusMap
      */
     public function setLeaseStatusMap($leaseStatusMap)
     {
@@ -352,7 +352,7 @@ abstract class ImportLease
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLeaseUpdateMask()
     {
@@ -360,7 +360,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $leaseUpdateMask
+     * @param string $leaseUpdateMask
      */
     public function setLeaseUpdateMask($leaseUpdateMask)
     {
@@ -368,7 +368,7 @@ abstract class ImportLease
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getResidentDiffMap()
     {
@@ -376,7 +376,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $residentDiffMap
+     * @param string $residentDiffMap
      */
     public function setResidentDiffMap($residentDiffMap)
     {
@@ -384,7 +384,7 @@ abstract class ImportLease
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getResidentStatusMap()
     {
@@ -392,7 +392,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $residentStatusMap
+     * @param string $residentStatusMap
      */
     public function setResidentStatusMap($residentStatusMap)
     {
@@ -400,7 +400,7 @@ abstract class ImportLease
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getResidentUpdateMask()
     {
@@ -408,7 +408,7 @@ abstract class ImportLease
     }
 
     /**
-     * @param mixed $residentUpdateMask
+     * @param string $residentUpdateMask
      */
     public function setResidentUpdateMask($residentUpdateMask)
     {
