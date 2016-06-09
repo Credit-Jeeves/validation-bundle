@@ -304,7 +304,7 @@ abstract class ImportLease
     /**
      * @ORM\Column(
      *     name="lease_status_map",
-     *     type="LeaseStatusMapType",
+     *     type="string",
      *     nullable=true
      * )
      */
@@ -313,7 +313,7 @@ abstract class ImportLease
     /**
      * @ORM\Column(
      *     name="resident_status_map",
-     *     type="ResidentStatusMapType",
+     *     type="string",
      *     nullable=true
      * )
      */
