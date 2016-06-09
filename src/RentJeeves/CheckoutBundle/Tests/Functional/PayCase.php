@@ -251,12 +251,14 @@ class PayCase extends BaseTestCase
 
         $this->page->clickLink('payment.account.new');
 
+        $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymentaccounttype');
+
+        $this->fillForm($form, ['rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,]); // set bank
+
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(5, $errors);
-
-        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
 
         /*
          * Test for not match repeated value for Account Number
@@ -264,6 +266,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -284,6 +287,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -385,6 +389,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -476,6 +481,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -700,7 +706,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
             )
         );
 
@@ -817,6 +823,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -935,13 +942,10 @@ class PayCase extends BaseTestCase
         $this->assertNotEmpty($newPaymentLink = $this->page->find('css', 'a.checkout-plus'));
         $newPaymentLink->click();
 
-        $accountTypes = $this->page->findAll(
-            'css',
-            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio'
-        );
+        $accountTypes = $this->getDomElements('#payment-type-with-fee label.radio');
         $this->assertCount(3, $accountTypes);
         $this->assertFalse($accountTypes[2]->isVisible(), 'DebitCard type should not be visible');
-        $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_1');
+        $cardType = $this->page->findAll('css', '#rentjeeves_checkoutbundle_paymentaccounttype_type_0');
         $this->assertNotNull($cardType);
         // disable "show card"
         $group->getGroupSettings()->setAllowedCreditCard(false);
@@ -973,7 +977,7 @@ class PayCase extends BaseTestCase
 
         // Hack (count returns 2 , 2 - not correct)
         $isHidden = $this->session->evaluateScript(
-            'return $("#rentjeeves_checkoutbundle_paymentaccounttype_type_1").is(":hidden");'
+            'return $("#rentjeeves_checkoutbundle_paymentaccounttype_type_0").is(":hidden");'
         );
 
         $this->assertTrue($isHidden);
@@ -1029,16 +1033,16 @@ class PayCase extends BaseTestCase
         $newPaymentLink->click();
 
         $accountSourceTypes = $this->getDomElements(
-            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio',
+            '#payment-type-with-fee label.radio',
             'Should be found payment source types'
         );
         $this->assertCount(3, $accountSourceTypes);
         $this->assertTrue(
-            $accountSourceTypes[0]->find('css', 'input[value="bank"]')->isChecked(),
+            $accountSourceTypes[1]->find('css', 'input[value="bank"]')->isChecked(),
             'Default type "bank"  should be checked'
         );
-        $this->assertTrue($accountSourceTypes[0]->isVisible(), 'Bank type should be visible');
-        $this->assertFalse($accountSourceTypes[1]->isVisible(), 'CreditCard type should not be visible');
+        $this->assertTrue($accountSourceTypes[1]->isVisible(), 'Bank type should be visible');
+        $this->assertFalse($accountSourceTypes[0]->isVisible(), 'CreditCard type should not be visible');
         $this->assertFalse($accountSourceTypes[2]->isVisible(), 'DebitCard type should not be visible');
 
         $closeDialogBtn = $this->getDomElement(
@@ -1067,16 +1071,16 @@ class PayCase extends BaseTestCase
         $newPaymentLink->click();
 
         $accountSourceTypes = $this->getDomElements(
-            '#rentjeeves_checkoutbundle_paymentaccounttype_type_box label.radio',
+            '#payment-type-with-fee label.radio',
             'Should be found payment source types'
         );
         $this->assertCount(3, $accountSourceTypes);
         $this->assertTrue(
-            $accountSourceTypes[1]->find('css', 'input[value="card"]')->isChecked(),
+            $accountSourceTypes[0]->find('css', 'input[value="card"]')->isChecked(),
             'Default type "card" should be checked'
         );
-        $this->assertFalse($accountSourceTypes[0]->isVisible(), 'Bank type should not be visible');
-        $this->assertTrue($accountSourceTypes[1]->isVisible(), 'CreditCard type should be visible');
+        $this->assertFalse($accountSourceTypes[1]->isVisible(), 'Bank type should not be visible');
+        $this->assertTrue($accountSourceTypes[0]->isVisible(), 'CreditCard type should be visible');
         $this->assertFalse($accountSourceTypes[2]->isVisible(), 'DebitCard type should not be visible');
     }
 
@@ -1611,6 +1615,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -1643,7 +1648,7 @@ class PayCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test card payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4987654321098769',

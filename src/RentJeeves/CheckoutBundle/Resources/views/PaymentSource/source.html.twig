@@ -8,7 +8,7 @@
     {% if allow_payment_account_fee_dispay %}
         <div id="payment-type-with-fee" class="form-row clearfix type-choice">
             {{ form_payment_type_fee_radio(paymentAccountType.type) }}
-            <i id="fee-details">{{ 'checkout.payment_account.fee.details'|trans }}</i>
+            <i class="fee-details">{{ 'checkout.payment_account.fee.details'|trans }}</i>
         </div>
     {% endif %}
     {{ form_widget(paymentAccountType) }}

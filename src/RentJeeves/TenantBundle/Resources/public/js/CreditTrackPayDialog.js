@@ -66,16 +66,16 @@ function CreditTrackPayDialog(options) {
         self.root.hideOverlay();
     };
 
-    var paymentAccountSettings = {
-        'allowPaymentSourceTypes' : {
-            'bank' : ko.observable(self.paymentGroup.groupSettings.allowBank),
-            'card' : ko.observable(self.paymentGroup.groupSettings.allowCreditCard),
-            // TODO for allowed debit card for ScoreTrack need separate task
-            'debit_card' : ko.observable(false) // ko.observable(self.paymentGroup.groupSettings.allowDebitCard)
-        }
-    };
     // Connected Payment Source Component
-    ko.utils.extend(self, new PaymentSourceViewModel(self, null, paymentAccountSettings, 'card'));
+    ko.utils.extend(
+        self,
+        new PaymentSourceViewModel(
+            self,
+            null,
+            {'settings' : self.paymentGroup.groupSettings},
+            'card'
+        )
+    );
 
     self.changePaymentAccountHandler = function() {
         self.billingaddress.addressChoice(self.currentPaymentAccount().addressId());
@@ -197,6 +197,28 @@ function CreditTrackPayDialog(options) {
                 return false;
             });
         });
+
+        if (jQuery('.fee-details').length > 0) {
+            jQuery('.fee-details').tooltip({
+                items: 'i',
+                content: Translator.trans('checkout.payment_account.fee.details.help'),
+                position: { my: 'left center', at: 'right+30 center' },
+                show: null,
+                close: function (event, ui) {
+                    ui.tooltip.hover(
+
+                        function () {
+                            $(this).stop(true).fadeTo(400, 1);
+                        },
+
+                        function () {
+                            $(this).fadeOut("400", function () {
+                                $(this).remove();
+                            })
+                        });
+                }
+            });
+        }
 
         window.formProcess.removeAllErrors('#credit-track-pay-popup');
     };

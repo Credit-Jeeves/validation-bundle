@@ -313,35 +313,6 @@
     padding: 0 0 7px;
 }
 
-#id-source-step .exist-sources-block {
-    background-color: #eaeaea;
-    border-radius: 4px;
-    margin: 0 -20px;
-    padding-left: 170px;
-    padding-bottom: 10px;
-}
-
-#id-source-step .add-source-title {
-    padding-left: 20px;
-    display: block;
-    height: 10px;
-    margin-top: 20px;
-    width: 100%;
-}
-
-#payment-type-with-fee label.radio>span {
-    display: block;
-}
-
-#payment-type-with-fee .fields-box {
-    padding-bottom: 15px;
-}
-
-#payment-type-with-fee .payment-type-fee {
-    font-style: italic;
-    color: #999;
-}
-
 .pricing-popup.properties-popup  .col-box .col h4 span {
     float:left;
 }

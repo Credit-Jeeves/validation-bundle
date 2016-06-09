@@ -69,21 +69,45 @@ function PayMoneyComputing(parent, contract) {
         return fee ? fee : '$0.00';
     };
 
-    self.feeDisplay = function (type) {
-        return feeCalculation(true, type);
-    };
+    self.feeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeDC : 0;
+    });
+
+    self.typeFeeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.typeFeeDC : 0;
+    });
+
+    self.feeCC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeCC : 0;
+    });
+
+    self.feeACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeACH : 0;
+    });
+
+    self.isPassedACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.isPassedACH : 0;
+    });
 
     self.getFee = ko.computed(function() {
-        return feeCalculation(false, parent.currentPaymentAccount().type());
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        return currentPaymentAccount ? feeCalculation(false, currentPaymentAccount.type()) : 0;
     });
 
     self.getFeeText = ko.computed(function() {
-        return feeCalculation(true, parent.currentPaymentAccount().type());
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        return currentPaymentAccount ? feeCalculation(true, currentPaymentAccount.type()) : '$0.00';
     });
 
     self.getFeeNote = ko.computed(function() {
         var i18nKey = null;
-        var type = parent.currentPaymentAccount().type();
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
         if ('card' == type) {
             i18nKey = 'checkout.fee.card.note-%FEE%';
         } else if ('bank' == type) {
@@ -97,7 +121,8 @@ function PayMoneyComputing(parent, contract) {
 
     self.getFeeNoteHelp = ko.computed(function() {
         var i18nKey = null;
-        var type = parent.currentPaymentAccount().type();
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
         if ('card' == type) {
             i18nKey = 'checkout.fee.card.note.help-%FEE%';
         } else if ('bank' == type) {
@@ -110,7 +135,8 @@ function PayMoneyComputing(parent, contract) {
 
     self.getFeeAmount = function(isText) {
         var fee = 0.00;
-        var type = parent.currentPaymentAccount().type();
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
         if ('card' == type) {
             fee = parseFloat(self.contract().groupSettings.feeCC) / 100 * self.total();
         } else if ('bank' == type && self.contract().groupSettings.isPassedACH == true) {

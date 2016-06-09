@@ -147,7 +147,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeCC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $feeCC;
 
@@ -159,7 +159,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeACH")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $feeACH;
 
@@ -169,7 +169,7 @@ abstract class GroupSettings
      * @ORM\Column(type="boolean", name="is_passed_ach")
      *
      * @Serializer\SerializedName("isPassedACH")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $passedAch = false;
 
@@ -293,7 +293,7 @@ abstract class GroupSettings
      *     nullable=false
      * )
      * @Serializer\SerializedName("typeFeeDC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      * @var string
      */
     protected $typeDebitFee = TypeDebitFee::PERCENTAGE;
@@ -307,7 +307,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeDC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $debitFee;
 

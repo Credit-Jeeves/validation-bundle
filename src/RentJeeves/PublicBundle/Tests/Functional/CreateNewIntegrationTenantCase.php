@@ -254,7 +254,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
         $this->assertFalse($infoMessage->isVisible(), 'Should not be displayed info message');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();
@@ -537,7 +537,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();
@@ -721,7 +721,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();

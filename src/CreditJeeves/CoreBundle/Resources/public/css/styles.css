@@ -1582,7 +1582,7 @@ label.error b {
   width:185px;
 }
 
-#fee-details {
+.fee-details {
   position: absolute;
   top: 37px;
   right: 80px;
@@ -1590,6 +1590,35 @@ label.error b {
   cursor: pointer;
   color: #00aeef;
   font-weight:bold;
+}
+
+.exist-sources-block {
+  background-color: #eaeaea;
+  border-radius: 4px;
+  margin: 0 -20px;
+  padding-left: 170px!important;
+  padding-bottom: 10px;
+}
+
+.add-source-title {
+  padding-left: 20px!important;
+  display: block;
+  height: 10px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#payment-type-with-fee label.radio>span {
+  display: block;
+}
+
+#payment-type-with-fee .fields-box {
+  padding-bottom: 15px;
+}
+
+#payment-type-with-fee .payment-type-fee {
+  font-style: italic;
+  color: #999;
 }
 
 #pay-anything-popup .tooltip-box.type2{
