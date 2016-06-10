@@ -253,7 +253,7 @@ class PayCase extends BaseTestCase
 
         $form = $this->getDomElement('#rentjeeves_checkoutbundle_paymentaccounttype');
 
-        $this->fillForm($form, ['rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,]); // set bank
+        $this->fillForm($form, ['rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true]); // set bank
 
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");

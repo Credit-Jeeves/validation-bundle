@@ -39,32 +39,6 @@
                 </div>
             {% endif %}
             {% include 'RjCheckoutBundle:PaymentSource:base.html.twig' %}
-            {#<div data-bind="visible: paymentAccounts().length > 0" class="form-row clearfix" >#}
-                {#<label>{{ 'payment.account' | trans }}*</label>#}
-                {#<div class="fields-box payment-accounts">#}
-                    {#<small ><b>*</b>{{ 'required' | trans }}</small>#}
-                    {#<!-- ko foreach: paymentAccounts -->#}
-                        {#<label class="checkbox radio" style="clear: left;">#}
-                            {#<input type="radio"#}
-                                {#required="required"#}
-                                {#data-bind="#}
-                                    {#value: $data.id,#}
-                                    {#checked: $root.currentPaymentAccountId#}
-                                {#" />#}
-                            {#<i></i>#}
-                            {#<span data-bind="text: $data.name"></span>#}
-                        {#</label>#}
-                    {#<!-- /ko -->#}
-                    {#<div class="fields-box" data-bind="visible: !isNewPaymentAccount()">#}
-                        {#<a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus">#}
-                            {#<span></span>{{ 'payment.account.new' | trans }}#}
-                        {#</a>#}
-                    {#</div>#}
-                {#</div>#}
-            {#</div>#}
-            {#<div data-bind="visible: isNewPaymentAccount">#}
-                {#{{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}#}
-            {#</div>#}
         </div>
 
         <div class="col" data-bind="visible: 'user' == step()">
