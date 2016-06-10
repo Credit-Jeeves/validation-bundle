@@ -63,5 +63,6 @@ class LastLoginCase extends BaseTestCase
         $this->assertCount(1, $emailPlugin->getPreSendMessages());
         $this->assertEquals('Welcome to RentTrack', $emailPlugin->getPreSendMessage(0)->getSubject());
         $this->logout();
+        $this->getEmailReader()->clear();
     }
 }
