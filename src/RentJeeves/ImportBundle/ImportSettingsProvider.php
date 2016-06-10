@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ImportBundle\PropertyImport;
+namespace RentJeeves\ImportBundle;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
@@ -9,9 +9,9 @@ use RentJeeves\ExternalApiBundle\Services\Yardi\Clients\ResidentTransactionsClie
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 
 /**
- * Service`s name 'import.property.settings_provider'
+ * Service`s name 'import.settings_provider'
  */
-class ImportPropertySettingsProvider
+class ImportSettingsProvider
 {
     const YARDI_ALL_EXTERNAL_PROPERTY_IDS = '*';
 

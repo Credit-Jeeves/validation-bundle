@@ -3,7 +3,7 @@ namespace RentJeeves\AdminBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ImportSource;
-use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
+use RentJeeves\ImportBundle\ImportSettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class GroupCase extends BaseTestCase
@@ -433,7 +433,7 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
-        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
@@ -461,7 +461,7 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
-        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
@@ -510,7 +510,7 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
-        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
@@ -554,7 +554,7 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
-        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
