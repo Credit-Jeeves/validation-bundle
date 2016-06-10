@@ -3,6 +3,9 @@ namespace RentJeeves\DataBundle\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 
+/**
+ * @deprecated should be removed in near future.
+ */
 class ImportLeaseStatus extends Enum
 {
     const NEWONE = 'new';

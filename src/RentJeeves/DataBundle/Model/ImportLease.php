@@ -118,6 +118,17 @@ abstract class ImportLease
      * @var string
      *
      * @ORM\Column(
+     *      type="string",
+     *      name="unit_lookup_id",
+     *      nullable=false
+     * )
+     */
+    protected $unitLookupId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(
      *     type="ImportLeaseResidentStatus",
      *     name="resident_status",
      *     nullable=true
@@ -207,28 +218,6 @@ abstract class ImportLease
     protected $import;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(
-     *     type="ImportLeaseUserStatus",
-     *     name="user_status",
-     *     nullable=true
-     * )
-     */
-    protected $userStatus;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(
-     *     type="ImportLeaseStatus",
-     *     name="lease_status",
-     *     nullable=true
-     * )
-     */
-    protected $leaseStatus;
-
-    /**
      * @ORM\Column(
      *     name="error_messages",
      *     type="array",
@@ -264,6 +253,178 @@ abstract class ImportLease
      * @ORM\Column(name="updated_at",type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_update_mask",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $residentUpdateMask;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_update_mask",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $leaseUpdateMask;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_diff_map",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $leaseDiffMap;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_diff_map",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $residentDiffMap;
+
+    /**
+     * @ORM\Column(
+     *     name="lease_status_map",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $leaseStatusMap;
+
+    /**
+     * @ORM\Column(
+     *     name="resident_status_map",
+     *     type="string",
+     *     nullable=true,
+     *     length=18
+     * )
+     */
+    protected $residentStatusMap;
+
+    /**
+     * @return string
+     */
+    public function getLeaseDiffMap()
+    {
+        return $this->leaseDiffMap;
+    }
+
+    /**
+     * @param string $leaseDiffMap
+     */
+    public function setLeaseDiffMap($leaseDiffMap)
+    {
+        $this->leaseDiffMap = $leaseDiffMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLeaseStatusMap()
+    {
+        return $this->leaseStatusMap;
+    }
+
+    /**
+     * @param string $leaseStatusMap
+     */
+    public function setLeaseStatusMap($leaseStatusMap)
+    {
+        $this->leaseStatusMap = $leaseStatusMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLeaseUpdateMask()
+    {
+        return $this->leaseUpdateMask;
+    }
+
+    /**
+     * @param string $leaseUpdateMask
+     */
+    public function setLeaseUpdateMask($leaseUpdateMask)
+    {
+        $this->leaseUpdateMask = $leaseUpdateMask;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResidentDiffMap()
+    {
+        return $this->residentDiffMap;
+    }
+
+    /**
+     * @param string $residentDiffMap
+     */
+    public function setResidentDiffMap($residentDiffMap)
+    {
+        $this->residentDiffMap = $residentDiffMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResidentStatusMap()
+    {
+        return $this->residentStatusMap;
+    }
+
+    /**
+     * @param string $residentStatusMap
+     */
+    public function setResidentStatusMap($residentStatusMap)
+    {
+        $this->residentStatusMap = $residentStatusMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResidentUpdateMask()
+    {
+        return $this->residentUpdateMask;
+    }
+
+    /**
+     * @param string $residentUpdateMask
+     */
+    public function setResidentUpdateMask($residentUpdateMask)
+    {
+        $this->residentUpdateMask = $residentUpdateMask;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnitLookupId()
+    {
+        return $this->unitLookupId;
+    }
+
+    /**
+     * @param string $unitLookupId
+     */
+    public function setUnitLookupId($unitLookupId)
+    {
+        $this->unitLookupId = $unitLookupId;
+    }
 
     /**
      * @return int
@@ -567,38 +728,6 @@ abstract class ImportLease
     public function setExternalLeaseId($externalLeaseId)
     {
         $this->externalLeaseId = $externalLeaseId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserStatus()
-    {
-        return $this->userStatus;
-    }
-
-    /**
-     * @param ImportLeaseUserStatus $userStatus
-     */
-    public function setUserStatus($userStatus)
-    {
-        $this->userStatus = $userStatus;
-    }
-
-    /**
-     * @return ImportLeaseUserStatus
-     */
-    public function getLeaseStatus()
-    {
-        return $this->leaseStatus;
-    }
-
-    /**
-     * @param ImportLeaseUserStatus $leaseStatus
-     */
-    public function setLeaseStatus($leaseStatus)
-    {
-        $this->leaseStatus = $leaseStatus;
     }
 
     /**

@@ -3,6 +3,9 @@ namespace RentJeeves\DataBundle\Enum;
 
 use CreditJeeves\CoreBundle\Enum;
 
+/**
+ * @deprecated not used anymore.
+ */
 class ImportLeaseUserStatus extends Enum
 {
     /**
