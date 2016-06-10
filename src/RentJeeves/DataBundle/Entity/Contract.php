@@ -844,6 +844,10 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("customPayments")
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\Payment>")
+     * @Serializer\Groups({"payRent"})
      * @return \Doctrine\Common\Collections\Collection|Payment[]
      */
     public function getActiveCustomPayments()
