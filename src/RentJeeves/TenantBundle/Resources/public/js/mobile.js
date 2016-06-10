@@ -4,7 +4,7 @@ var paymentBalanceForm = '#rentjeeves_checkoutbundle_paymentbalanceonlytype';
 var currentPaymentForm = paymentForm;
 var prefix = currentPaymentForm + '_';
 var accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_";
-var contractCollection = null;
+var contractCollection = {};
 
 //since we aren't using KO, list those visible= when card or bank and use Jquery to set
 bankVisibleFields = [
@@ -424,7 +424,7 @@ function setupPayForm(id) {
 
             var contract = contractsArr[i]
 
-            var dueDate = parseInt(contractsArr[0].startAt.substr(8,2))
+            var dueDate = parseInt(contract.startAt.substr(8,2))
 
             if (contract.groupSetting.pay_balance_only) {
                 currentPaymentForm = paymentBalanceForm;
@@ -1123,15 +1123,24 @@ function loadPaymentTable() { //CURRENT ENTRIES
                     payAccountType = v.type
                 }
             })
-            //date = entry.payment.startYear+"-"+entry.payment.startMonth+"-"+entry.payment.dueDate
             date = entry.payment.paidDate.split("/")
             date = date[2] + "-" + date[0] + "-" + date[1]
-            orderBox("<b>" + entry.payment.type.capitalizeFirstLetter().replace("_", " ").capitalizeFirstLetter().replace("time", "Time") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType, true);
+            orderBox("<b>" + entry.payment.type.replace("_", " ").replace("time", "Time Rent") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType, true);
             //desc,address,status,date,contractId,paymentType
+        }
+        if (entry.customPayments) {
+            $.each(entry.customPayments, function (k, customPayment) {
+                orderBox(
+                    "<b>" + customPayment.depositAccountType.replace('_', ' ') + " Payment Scheduled</b> - $" + customPayment.total,
+                    address,
+                    '',
+                    customPayment.startYear + '-' + padZero(customPayment.startMonth) + '-' + padZero(customPayment.dueDate),
+                    entry.id,
+                    customPayment.paymentAccountType);
+            });
         }
     })
 }
-
 
 function getDepositDate(contractId, date, paymentType, recId) {
     //ajax/deliveryDate/2/2015-10-29/card
@@ -1183,7 +1192,7 @@ function orderBox(desc, address, status, date, contractId, paymentType, isPaymen
     }
     htmlStr += '</div>'
     htmlStr += '</div>'
-    htmlStr += '<div style="color: #6BAB1B; padding: 5px; text-shadow: none; text-align: center;">'
+    htmlStr += '<div style="color: #6BAB1B; padding: 5px; text-shadow: none; text-align: center;text-transform: capitalize;">'
     htmlStr += desc
     htmlStr += '</div>'
     htmlStr += '</div></div>'
@@ -1223,4 +1232,8 @@ function getContractById(id) {
         return contractCollection[id];
     }
     return null;
+}
+
+function padZero(n) {
+    return n < 10 ? '0' + n : n
 }
