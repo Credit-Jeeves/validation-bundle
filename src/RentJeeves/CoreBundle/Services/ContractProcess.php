@@ -15,6 +15,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -241,5 +242,92 @@ class ContractProcess
         $this->em->flush();
 
         return $result;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param Property $property
+     * @param string|null $unitName
+     * @param string|null $externalLeaseId
+     * @param float|null $rent
+     * @return bool|Contract
+     * @throws \InvalidArgumentException|\LogicException
+     */
+    public function createContractForOneSubmerchantGroup(
+        Tenant $tenant,
+        Property $property,
+        $unitName = null,
+        $externalLeaseId = null,
+        $rent = null
+    ) {
+        $groups = $property
+            ->getPropertyGroups()
+            ->filter(function (Group $group) {
+                return OrderAlgorithmType::SUBMERCHANT === $group->getOrderAlgorithm();
+            });
+
+        if ($groups->isEmpty()) {
+            throw new \InvalidArgumentException(
+                sprintf('Property #%d does\'t have submerchant group', $property->getId())
+            );
+        }
+
+        if ($groups->count() > 1) {
+            throw new \LogicException(
+                sprintf('Property #%d has more then one submerchant groups', $property->getId())
+            );
+        }
+
+        $contract = new Contract();
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setStatus(ContractStatus::PENDING);
+
+        if ($externalLeaseId) {
+            $contract->setExternalLeaseId($externalLeaseId);
+        }
+
+        if ($rent) {
+            $contract->setRent($rent);
+        }
+        /** @var Group $propertyGroup */
+        $propertyGroup = $groups->first();
+        $propertyAddress = $property->getPropertyAddress();
+        if ($propertyAddress->isSingle()) {
+            $contract->setUnit($property->getExistingSingleUnit());
+        } else {
+            if (Unit::SEARCH_UNIT_UNASSIGNED === $unitName || !$unit = $property->searchUnit($unitName)) {
+                $contract->setSearch($unitName);
+            } elseif ($unit) {
+                if ($unit->getGroup()->getId() !== $propertyGroup->getId()) {
+                    throw new \LogicException(
+                        sprintf(
+                            'Unit #%d exists but belongs to another group then property #%d.',
+                            $unit->getId(),
+                            $property->getId()
+                        )
+                    );
+                }
+                $contract->setUnit($unit);
+            }
+        }
+
+        $contract->setHolding($propertyGroup->getHolding());
+        $contract->setGroup($propertyGroup);
+
+        !$this->isValidateContract || $this->validate($contract);
+
+        if ($this->hasErrors()) {
+            return false;
+        }
+
+        if (null === $contract->getDueDate()) {
+            $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
+        }
+
+        $this->em->persist($contract);
+        $this->em->flush();
+
+        return $contract;
     }
 }

@@ -380,10 +380,13 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.units', 'units')
             ->innerJoin('units.unitMapping', 'um')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('units.group', 'g')
             ->andWhere('units.holding = pm.holding')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('um.externalUnitId LIKE :externalUnitMask')
+            ->andWhere('g.orderAlgorithm = :submerchant')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter(
@@ -419,8 +422,11 @@ class PropertyRepository extends EntityRepository
         $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId);
 
@@ -443,11 +449,14 @@ class PropertyRepository extends EntityRepository
     {
         AccountingSystem::throwsInvalid($accountingSystem);
 
-         $query = $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId);
         if ($holdingId) {
@@ -466,16 +475,22 @@ class PropertyRepository extends EntityRepository
      */
     public function checkPropertyBelongOneGroup(Property $property)
     {
-        if ($property->getPropertyGroups()->count() > 1) {
+        if ($property->getPropertyGroups()->filter(function (Group $group) {
+                return OrderAlgorithmType::SUBMERCHANT === $group->getOrderAlgorithm();
+            })->count() > 1
+        ) {
             throw new NonUniqueResultException('Property belongs to more then one group');
         }
 
         return (bool) $this->createQueryBuilder('p')
             ->select('1')
             ->innerJoin('p.units', 'u')
+            ->innerJoin('u.group', 'g')
             ->where('p.id = :property')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->having('COUNT(DISTINCT u.group) = 1')
             ->setParameter('property', $property)
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->getQuery()
             ->getSingleScalarResult();
     }
