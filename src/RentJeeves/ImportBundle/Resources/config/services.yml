@@ -68,6 +68,7 @@ services:
         calls:
             - [setCsvTransformer, ['@import.lease.transformer.csv']]
             - [addApiTransformer, ['%accounting_system.mri%', '@import.lease.transformer.mri']]
+            - [addApiTransformer, ['%accounting_system.resman%', '@import.lease.transformer.resman']]
 
     # services
     import.settings_provider:
@@ -141,6 +142,9 @@ services:
     import.lease.extractor.resman:
         class: RentJeeves\ImportBundle\LeaseImport\Extractor\ResmanExtractor
         public: false
+        arguments:
+            - "@resman.resident_data"
+            - "@monolog.logger.lease_import"
 
     import.lease.extractor.csv:
         class: RentJeeves\ImportBundle\LeaseImport\Extractor\CsvExtractor
@@ -154,6 +158,13 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
+
+    import.lease.transformer.resman:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\ResmanTransformer
+        public: false
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@monolog.logger.lease_import"
 
     import.lease.transformer.mri:
         class: RentJeeves\ImportBundle\LeaseImport\Transformer\MRITransformer
