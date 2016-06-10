@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
 use RentJeeves\DataBundle\Enum\DepositAccountType;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class CreateNewIntegrationTenantCase extends BaseTestCase
@@ -879,5 +880,89 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             $this->session->getStatusCode(),
             'Invalid status code should be 412 expected ' . $this->session->getStatusCode()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSuccessCreateUserWithOneContractEvenPropertyBelongsToDTRGroupsToo()
+    {
+        $this->load(true);
+        $this->prepareFixtures();
+
+        $em = $this->getEntityManager();
+        $dtrGroup = $em
+            ->getRepository('DataBundle:Group')
+            ->findOneBy(['orderAlgorithm' => OrderAlgorithmType::PAYDIRECT]);
+        $this->assertNotNull($dtrGroup, 'Check fixtures, dtr group should exist');
+        $property = $em->find('RjDataBundle:Property', 2);
+        $property->addPropertyGroup($dtrGroup);
+        $dtrGroup->addGroupProperty($property);
+        $em->flush();
+
+        $parameters = $this->requestParameters;
+        $this->setDefaultSession('selenium2');
+
+        $this->session->visit($this->getUrl() . 'user/integration/new/resman?' . http_build_query($parameters));
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $redirectedUrl = $this->getUrl() . 'user/new/2/property';
+        $this->assertEquals(
+            $redirectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirection to ' . $redirectedUrl
+        );
+        $selectedUnit = $this->getDomElement(
+            '#idUnit2 option:contains("27-f")',
+            'Unit select should be present on the page.'
+        );
+        $this->assertTrue((bool) $selectedUnit->getAttribute('selected'), 'Specified unit should be selected');
+        $btn = $this->getDomElement('button.thisIsMyRental', '"This is my rental" button does not exist.');
+        $btn->click();
+        $form = $this->getDomElement('#formNewUser', 'Form for create new user should be present.');
+        $this->fillForm(
+            $form,
+            [
+                'rentjeeves_publicbundle_tenanttype_first_name' => 'FirstN',
+                'rentjeeves_publicbundle_tenanttype_last_name' => 'LastN',
+                'rentjeeves_publicbundle_tenanttype_email' => 'externaluser1@example.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password' => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos' => 1
+            ]
+        );
+
+        $regBtn = $this->getDomElement('#register', 'Register button should be present');
+        $regBtn->click();
+        $this->session->wait($this->timeout, '$(\'h3.title:contains("verify.email")\').length');
+        /** @var Tenant $tenant */
+        $tenant = $this->getEntityManager()
+            ->getRepository('RjDataBundle:Tenant')
+            ->findOneByEmail('externaluser1@example.com');
+        $this->assertNotNull($tenant, 'Tenant was not created');
+        $this->assertFalse($tenant->getResidentsMapping()->isEmpty(), 'Resident mapping was not created');
+        $this->assertCount(1, $tenant->getResidentsMapping(), 'Should be created just one resident mapping');
+        /** @var ResidentMapping $residentMapping */
+        $residentMapping = $tenant->getResidentsMapping()->first();
+        $this->assertEquals($parameters['resid'], $residentMapping->getResidentId(), 'Resident id is invalid.');
+        $this->assertCount(1, $tenant->getContracts(), 'Should be created 1 contract');
+        /** @var Contract $contract */
+        $contract = $tenant->getContracts()->first();
+        $this->assertNotEquals(
+            $contract->getGroup()->getId(),
+            $dtrGroup->getId(),
+            'Contract should be created not for dtr group'
+        );
+        $this->assertEquals($parameters['leaseid'], $contract->getExternalLeaseId(), 'Lease id is invalid.');
+        $this->assertEquals(
+            '27-f',
+            $contract->getUnit()->getName(),
+            'Contract should have unit id with name "27-f" or last unit belong property #2'
+        );
+        $this->assertEquals($parameters['rent'], $contract->getRent(), 'Rent is invalid');
+
+        // login
+        $this->login('externaluser1@example.com', 'pass');
+        $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup');
     }
 }

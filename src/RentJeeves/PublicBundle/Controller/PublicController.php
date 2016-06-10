@@ -514,11 +514,10 @@ class PublicController extends Controller
             );
             $externalLeaseId = $integrationDataManager->getExternalLeaseId();
             $rent = $integrationDataManager->getRent();
-            $contractProcess->createContractFromTenantSide(
+            $contractProcess->createContractForOneSubmerchantGroup(
                 $tenant,
                 $property,
                 $unit->getActualName(),
-                null,
                 $externalLeaseId,
                 $rent
             );
