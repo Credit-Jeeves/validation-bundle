@@ -70,7 +70,7 @@ class ContractProcessCase extends UnitTestBase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
+     * @expectedException \LogicException
      * @expectedExceptionMessage Property #1 does't have submerchant group
      */
     public function shouldThrowExceptionIfPropertyHasNoSubmerchantGroupWhenCreatingSubmerchantContract()

@@ -251,7 +251,7 @@ class ContractProcess
      * @param string|null $externalLeaseId
      * @param float|null $rent
      * @return bool|Contract
-     * @throws \InvalidArgumentException|\LogicException
+     * @throws \LogicException
      */
     public function createContractForOneSubmerchantGroup(
         Tenant $tenant,
@@ -267,7 +267,7 @@ class ContractProcess
             });
 
         if ($groups->isEmpty()) {
-            throw new \InvalidArgumentException(
+            throw new \LogicException(
                 sprintf('Property #%d does\'t have submerchant group', $property->getId())
             );
         }
@@ -321,9 +321,7 @@ class ContractProcess
             return false;
         }
 
-        if (null === $contract->getDueDate()) {
-            $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
-        }
+        $contract->setDueDate($contract->getGroup()->getGroupSettings()->getDueDate());
 
         $this->em->persist($contract);
         $this->em->flush();
