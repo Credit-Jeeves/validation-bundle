@@ -728,6 +728,10 @@
                 <source>mobile.payment.type.fee_notify</source>
                 <target>Your total technology fee will be calculated at checkout</target>
             </trans-unit>
+            <trans-unit id="mobile.lease.payment.scheduled">
+                <source>mobile.lease.payment.scheduled</source>
+                <target>%paymentTypeTitle% Scheduled: %paymentDate%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
