@@ -475,10 +475,14 @@ class PropertyRepository extends EntityRepository
      */
     public function checkPropertyBelongOneGroup(Property $property)
     {
-        if ($property->getPropertyGroups()->filter(function (Group $group) {
+
+        $countPropertyGroups = $property->getPropertyGroups()->filter(
+            function (Group $group) {
                 return OrderAlgorithmType::SUBMERCHANT === $group->getOrderAlgorithm();
-            })->count() > 1
-        ) {
+            }
+        )->count();
+        
+        if ($countPropertyGroups > 1) {
             throw new NonUniqueResultException('Property belongs to more then one group');
         }
 
