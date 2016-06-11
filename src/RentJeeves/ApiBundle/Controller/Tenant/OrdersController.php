@@ -21,6 +21,11 @@ class OrdersController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Order",
+     *         "groups"={"Base", "OrderShort"},
+     *         "collection" = true
      *     }
      * )
      * @Rest\Get("/orders")
@@ -56,6 +61,10 @@ class OrdersController extends Controller
      *         404="Order not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Order",
+     *         "groups"={"Base", "OrderDetails"}
      *     }
      * )
      * @Rest\Get("/orders/{id}")

@@ -27,6 +27,11 @@ class AddressesController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\MailingAddress",
+     *         "groups"={"Base", "AddressDetails"},
+     *         "collection" = true
      *     }
      * )
      * @Rest\Get("/addresses")
@@ -60,6 +65,10 @@ class AddressesController extends Controller
      *         404="Address not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\MailingAddress",
+     *         "groups"={"Base", "AddressDetails"}
      *     }
      * )
      * @Rest\Get("/addresses/{id}")
@@ -97,6 +106,12 @@ class AddressesController extends Controller
      *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         201 = {
+     *             "class"="RentJeeves\ApiBundle\Response\MailingAddress",
+     *             "groups"={"Base"}
+     *         }
      *     }
      * )
      * @Rest\Post("/addresses")
@@ -181,6 +196,12 @@ class AddressesController extends Controller
      *         400="Error validating data. Please check parameters and retry.",
      *         404="Address not found",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         204 = {
+     *             "class"=ResponseEntity::class,
+     *             "groups"={"Empty"}
+     *         }
      *     }
      * )
      * @Rest\Put("/addresses/{id}")
