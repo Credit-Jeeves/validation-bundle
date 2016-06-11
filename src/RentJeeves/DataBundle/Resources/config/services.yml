@@ -1,0 +1,20 @@
+services:
+    renttrack.fixtures.load:
+        class: RentJeeves\DataBundle\FixtureGenerator\Command\LoadDataFixturesCommand
+        tags:
+            - { name: console.command }
+    renttrack.fixture_loader:
+        class: RentJeeves\DataBundle\FixtureGenerator\Services\FixtureLoader
+        arguments:
+            - @nelmio_alice.fixture.loader
+            - @nelmio_alice.persister.doctrine
+    renttrack.fixture_finder:
+        class: RentJeeves\DataBundle\FixtureGenerator\Services\FixtureFinder
+        arguments:
+            - @kernel
+    nelmio_alice.fixture.loader:
+        class: Nelmio\Alice\Fixtures\Loader
+    nelmio_alice.persister.doctrine:
+        class: Nelmio\Alice\Persister\Doctrine
+        arguments:
+            - @doctrine.orm.default_entity_manager

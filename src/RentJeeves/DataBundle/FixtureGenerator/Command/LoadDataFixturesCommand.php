@@ -1,10 +1,10 @@
 <?php
-namespace RentJeeves\TestBundle\FixtureGenerator\Command;
+namespace RentJeeves\DataBundle\FixtureGenerator\Command;
 
 use RentJeeves\CoreBundle\Command\BaseCommand;
 
-use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureFinder;
-use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureLoader;
+use RentJeeves\DataBundle\FixtureGenerator\Services\FixtureFinder;
+use RentJeeves\DataBundle\FixtureGenerator\Services\FixtureLoader;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,14 +19,15 @@ class LoadDataFixturesCommand extends BaseCommand
             ->addOption(
                 'path',
                 null,
-                InputOption::VALUE_REQUIRED,
-                'Load all fixtures from --path". Example: --path=@RjDataBundle/Resources/AliceFixtures/'
+                InputOption::VALUE_OPTIONAL,
+                'Load all fixtures from --path". Example: --path=@RjDataBundle/Resources/AliceFixtures/',
+                '@RjDataBundle/Resources/AliceFixtures/'
             )
             ->addOption(
                 'files',
                 'f',
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'List of files to load from "@RjDataBundle/Resources/AliceFixtures/". Example: --files="test.yml"'
+                'List of files to load from --path. Example: --files="file1.yml --files="file2.yml"'
             );
     }
 
@@ -34,10 +35,6 @@ class LoadDataFixturesCommand extends BaseCommand
     {
         $files = $input->getOption('files');
         $path = $input->getOption('path');
-
-        if (true === empty($path)) {
-            throw new InvalidOptionsException('Please, set --path for loading');
-        }
 
         if (false === empty($files) && false === is_array($files)) {
             throw new InvalidOptionsException('Invalid param: --files should be array or empty');

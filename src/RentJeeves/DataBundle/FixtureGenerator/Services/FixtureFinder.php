@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\TestBundle\FixtureGenerator\Services;
+namespace RentJeeves\DataBundle\FixtureGenerator\Services;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;

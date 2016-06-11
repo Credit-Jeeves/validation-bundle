@@ -1,10 +1,10 @@
 <?php
 
-namespace RentJeeves\TestBundle\Tests\Unit\FixtureGenerator\Services;
+namespace RentJeeves\DataBundle\Tests\Unit\FixtureGenerator\Services;
 
 use Nelmio\Alice\Fixtures\Loader;
 use Nelmio\Alice\Persister\Doctrine;
-use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureLoader;
+use RentJeeves\DataBundle\FixtureGenerator\Services\FixtureLoader;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
 class FixtureLoaderCase extends UnitTestBase

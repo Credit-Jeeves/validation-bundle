@@ -1,26 +1,16 @@
 <?php
-namespace RentJeeves\TestBundle\Tests\Functional\FixtureGenerator\Command;
+namespace RentJeeves\DataBundle\Tests\Functional\FixtureGenerator\Command;
 
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\TestBundle\Command\BaseTestCase;
-use RentJeeves\TestBundle\FixtureGenerator\Command\LoadDataFixturesCommand;
+use RentJeeves\DataBundle\FixtureGenerator\Command\LoadDataFixturesCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class LoadDataFixturesCommandCase extends BaseTestCase
 {
     protected $commandName = 'renttrack:alice-fixtures:load';
-    protected $pathWithTestFixtures = '@RjTestBundle/Tests/Fixtures/FixtureGenerator/Services/';
-
-    /**
-     * @test
-     * @expectedException \Exception
-     * @expectedExceptionMessage Please, set --path for loading
-     */
-    public function shouldThrowExceptionIfSetInvalidOptions()
-    {
-        $this->executeCommandTester(new LoadDataFixturesCommand());
-    }
+    protected $pathWithTestFixtures = '@RjDataBundle/Tests/Fixtures/FixtureGenerator/Services/';
 
     /**
      * @test
