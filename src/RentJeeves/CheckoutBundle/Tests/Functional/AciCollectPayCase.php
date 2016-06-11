@@ -65,12 +65,10 @@ class AciCollectPayCase extends BaseTestCase
 
         $this->load(true);
 
-        $this->fixtureLocator = new FileLocator(
-            [
-                __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-                'Data' . DIRECTORY_SEPARATOR . 'PaymentProcessor' . DIRECTORY_SEPARATOR . 'Aci'
-            ]
-        );
+        $this->fixtureLocator = new FileLocator([
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+            'Data' . DIRECTORY_SEPARATOR . 'PaymentProcessor' . DIRECTORY_SEPARATOR . 'Aci'
+        ]);
 
         $contractToSelectForCreate = 2;
         $contractToSelectForUpdate = 1;
@@ -240,6 +238,7 @@ class AciCollectPayCase extends BaseTestCase
         switch ($type) {
             case PaymentAccountType::BANK:
                 return [
+                    'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                     'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Bank',
                     'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                     'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
@@ -250,7 +249,7 @@ class AciCollectPayCase extends BaseTestCase
             case PaymentAccountType::CARD:
             case PaymentAccountType::DEBIT_CARD:
                 return [
-                    'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                    'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
                     'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                     'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
                     'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',
@@ -352,7 +351,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '511020020000111588',
@@ -633,7 +632,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',
@@ -732,7 +731,7 @@ class AciCollectPayCase extends BaseTestCase
         $this->fillForm(
             $form,
             [
-                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_0' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test aci Card',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '4024007143563707',

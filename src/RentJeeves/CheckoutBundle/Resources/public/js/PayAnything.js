@@ -204,6 +204,28 @@ function PayAnything(parent, contract, defaultParams) {
             });
         });
 
+        if (jQuery('.fee-details').length > 0) {
+            jQuery('.fee-details').tooltip({
+                items: 'i',
+                content: Translator.trans('checkout.payment_account.fee.details.help'),
+                position: { my: 'left center', at: 'right+30 center' },
+                show: null,
+                close: function (event, ui) {
+                    ui.tooltip.hover(
+
+                        function () {
+                            $(this).stop(true).fadeTo(400, 1);
+                        },
+
+                        function () {
+                            $(this).fadeOut("400", function () {
+                                $(this).remove();
+                            })
+                        });
+                }
+            });
+        }
+
         window.formProcess.removeAllErrors(rootNodeName);
     };
 
@@ -272,6 +294,31 @@ function PayAnything(parent, contract, defaultParams) {
         return  contract ? contract.allowDebitCard && contract.allowCreditCard : false;
     });
 
+    self.feeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeDC : 0;
+    });
+
+    self.typeFeeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.typeFeeDC : 0;
+    });
+
+    self.feeCC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeCC : 0;
+    });
+
+    self.feeACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeACH : 0;
+    });
+
+    self.isPassedACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.isPassedACH : 0;
+    });
+
     self.propertyAddress = ko.computed(function() {
         var propertyFullAddress = new Address(self, self.addresses);
 
@@ -294,13 +341,7 @@ function PayAnything(parent, contract, defaultParams) {
         new PaymentSourceViewModel(
             self,
             self.contractId,
-            {
-                'allowPaymentSourceTypes': {
-                    'bank' : self.allowBank,
-                    'card' : self.allowCreditCard,
-                    'debit_card' : ko.observable(false)//self.allowDebitCard
-                }
-            }
+            {'settings' : self}
         )
     );
 
@@ -389,9 +430,9 @@ function PayAnything(parent, contract, defaultParams) {
 
     self.step('details');
 
-    self.prepareDialog();
-
     self.mapPayment(contract);
 
     ko.applyBindings(self, rootNode.get(0));
+
+    self.prepareDialog();
 }

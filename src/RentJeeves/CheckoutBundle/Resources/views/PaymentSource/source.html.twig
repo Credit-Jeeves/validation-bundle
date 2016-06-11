@@ -1,11 +1,16 @@
 {% form_theme paymentAccountType 'RjCoreBundle::form.html.twig' %}
 
-<div class="form-row clearfix" data-bind="style: { visibility: paymentAccounts().length == 0 ? 'visible' : 'hidden' }">
-    <div class="fields-box">
-        <small><b>*</b>{{ 'required' | trans  }}</small>
-    </div>
-</div>
+<h4 class="add-source-title">
+    <span>{{ 'checkout.payment_account.new.title'|trans }}</span>
+    <small data-bind="visible: isNewPaymentAccount()"><b>*</b>{{ 'required' | trans  }}</small>
+</h4>
 <form {{ form_enctype(paymentAccountType) }} novalidate method="post">
+    {% if allow_payment_account_fee_dispay %}
+        <div id="payment-type-with-fee" class="form-row clearfix type-choice">
+            {{ form_payment_type_fee_radio(paymentAccountType.type) }}
+            <i class="fee-details">{{ 'checkout.payment_account.fee.details'|trans }}</i>
+        </div>
+    {% endif %}
     {{ form_widget(paymentAccountType) }}
     {{ JSFV(paymentAccountType) }}
 </form>

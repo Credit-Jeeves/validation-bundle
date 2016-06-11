@@ -155,13 +155,13 @@ function init() {
 
     //show card/bank depending on radio selection
 
-    $("#" + accountPrefix + "type_0").bind("change", function(event, id) { //bank
+    $("#" + accountPrefix + "type_1").bind("change", function(event, id) { //bank
         var cardVisibility = "none"
         var bankVisibility = "block"
         showHideBankCardFields(bankVisibility, cardVisibility)
     })
 
-    $("#" + accountPrefix + "type_1").bind("change", function(event, id) { //credit
+    $("#" + accountPrefix + "type_0").bind("change", function(event, id) { //credit
         var cardVisibility = "block"
         var bankVisibility = "none"
         showHideBankCardFields(bankVisibility, cardVisibility)
@@ -218,15 +218,9 @@ function init() {
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
 
-    var isUpdatedPaymentTypeOrder = false;
     $(document).on('pagebeforeshow', '#addNewPayAccount', function (event) {
         if ($('#payment-type-with-fee').length > 0) {
             renderFeeForPayment();
-        }
-        if (false === isUpdatedPaymentTypeOrder) {
-            var paymentsType = $('.payment-type-change-order>.ui-radio');
-            $('.payment-type-change-order').prepend(paymentsType[1]);
-            isUpdatedPaymentTypeOrder = true;
         }
         $('.payment-type-change-order .ui-radio label').first().click();
     });
@@ -245,22 +239,22 @@ function renderPayAccounts(contract) {
             .parent().hide();
     }
     if (contract.allowCreditCard) {
-        $("#" + accountPrefix + "type_1")
+        $("#" + accountPrefix + "type_0")
             .show()
             .parent().show()
             .find('label').click();
     } else {
-        $("#" + accountPrefix + "type_1")
+        $("#" + accountPrefix + "type_0")
             .hide()
             .parent().hide();
     }
     if (contract.allowBank) {
-        $("#" + accountPrefix + "type_0")
+        $("#" + accountPrefix + "type_1")
             .show()
             .parent().show()
             .find('label').click();
     } else {
-        $("#" + accountPrefix + "type_0")
+        $("#" + accountPrefix + "type_1")
             .hide()
             .parent().hide();
     }
@@ -1213,14 +1207,14 @@ function renderFeeForPayment() {
 
 function getFeeForContract(method, groupSettings) {
     if ('card' == method) {
-        return parseFloat(groupSettings.feeCC) + '%';
+        return parseFloat(groupSettings.feeCC ? groupSettings.feeCC : 0) + '%';
     } else if ('bank' == method) {
         return '$' + parseFloat(groupSettings.isPassedACH ? groupSettings.feeACH : 0);
     } else if ('debit_card' == method) {
         if ('percentage' == groupSettings.typeFeeDC) {
-            return parseFloat(groupSettings.feeDC) + '%';
+            return parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0) + '%';
         } else {
-            return '$' + parseFloat(groupSettings.feeDC);
+            return '$' + parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0);
         }
     } else {
         return parseFloat(0);
