@@ -127,7 +127,9 @@ class PaymentProcessorProfitStarsRdc implements SubmerchantProcessorInterface, C
      */
     public function generateReversedBatchId(Order $order)
     {
-        return null;
+        $today = new \DateTime();
+
+        return sprintf('%sR%s', $order->getDepositAccount()->getId(), $today->format('Ymd'));
     }
 
     /**
