@@ -8,29 +8,20 @@ interface LeaseInterface
 {
     /**
      * @param ResidentInterface $resident
-     *
-     * NOTE: currently creates a new rj_contract record and associates tenant
      */
     public function addResident(ResidentInterface $resident);
 
     /**
      * @param ResidentInterface $resident
-     *
-     * NOTE: currently will FINISH the rj_contract record and delete the resident mapping
-     * NOTE: if the last resident is removed, then this lease is effectively finished.
      */
     public function removeResident(ResidentInterface $resident);
 
     /**
-     * Finds users that have already been imported from this accounting system
-     *
      * @param string $residentMapping
      */
     public function getResidentByResidentId($residentMapping);
 
     /**
-     * Finds users that were manually added/approved by PM
-     *
      * @param string $email
      */
     public function getResidentByEmail($email);

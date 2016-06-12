@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\ImportBundle\LeaseImport\Loader\Lease\LeaseInterface;
 use RentJeeves\ImportBundle\LeaseImport\Loader\Resident\ResidentInterface;
 
-class LoaderContext
+class LeaseLoadContext
 {
     protected $importType = ImportType::MULTI_PROPERTIES; // single-group or multi-group
 
