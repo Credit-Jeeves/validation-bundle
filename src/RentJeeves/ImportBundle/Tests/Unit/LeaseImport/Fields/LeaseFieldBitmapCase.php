@@ -14,7 +14,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
     public function shouldReturnMatchedBitMaskWhenIsMatch()
     {
         $importLeaseFieldManager = new LeaseFieldBitmap(false);
-        $this->assertEquals(0xb, $importLeaseFieldManager->getUpdateMask(), 'We should get mask for matched');
+        $this->assertEquals(0x16, $importLeaseFieldManager->getUpdateMask(), 'We should get mask for matched');
     }
 
     /**
@@ -23,7 +23,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
     public function shouldReturnNewBitMaskWhenIsNew()
     {
         $importLeaseFieldManager = new LeaseFieldBitmap(true);
-        $this->assertEquals(0x1f, $importLeaseFieldManager->getUpdateMask(), 'We should get mask for new');
+        $this->assertEquals(0x3e, $importLeaseFieldManager->getUpdateMask(), 'We should get mask for new');
     }
 
     /**
@@ -34,7 +34,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
         $importLeaseFieldManager = new LeaseFieldBitmap(true);
         $importLeaseFieldManager->markDifferent(LeaseFields::RENT);
         $this->assertEquals(
-            2,
+            4,
             $importLeaseFieldManager->getDiffBitmap(),
             'We should mark different successfully when put bit number correct'
         );
@@ -57,7 +57,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
      */
     public function shouldBeAbleToUpdateWhenPutBitNumber()
     {
-        $importLeaseFieldManager = new LeaseFieldBitmap(true);
+        $importLeaseFieldManager = new LeaseFieldBitmap(false);
         $importLeaseFieldManager->markDifferent(LeaseFields::RENT);
         $this->assertTrue(
             $importLeaseFieldManager->isNeedUpdate(LeaseFields::RENT),
@@ -77,7 +77,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
         $importLeaseFieldManager->markDifferent(LeaseFields::START_AT);
         $importLeaseFieldManager->markDifferent(LeaseFields::BALANCE);
         $this->assertEquals(
-            0x1f,
+            0x3e,
             $importLeaseFieldManager->getDiffBitmap(),
             'Should be match with mask new'
         );
@@ -94,7 +94,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
         $importLeaseFieldManager->markDifferent(LeaseFields::BALANCE);
 
         $this->assertEquals(
-            0xb,
+            0x16,
             $importLeaseFieldManager->getDiffBitmap(),
             'Should be match with mask matched'
         );
@@ -151,5 +151,7 @@ class LeaseFieldBitmapCase extends UnitTestBase
             'We don\'t have due date in mask to update so we don\'t need update it'
         );
     }
+
+
 }
 
