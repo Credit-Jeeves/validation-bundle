@@ -74,6 +74,11 @@ class ASIIntegratedModel implements \ArrayAccess
     /**
      * @var array
      */
+    protected $paidAmounts = [];
+
+    /**
+     * @var array
+     */
     protected $additionalParameters = [];
 
     /**
@@ -266,6 +271,22 @@ class ASIIntegratedModel implements \ArrayAccess
     public function setAmounts(array $amounts)
     {
         $this->amounts = $amounts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaidAmounts()
+    {
+        return $this->paidAmounts;
+    }
+
+    /**
+     * @param array $paidAmounts
+     */
+    public function setPaidAmounts(array $paidAmounts)
+    {
+        $this->paidAmounts = $paidAmounts;
     }
 
     /**
