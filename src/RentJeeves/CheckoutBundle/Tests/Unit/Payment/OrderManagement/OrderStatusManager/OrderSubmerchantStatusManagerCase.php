@@ -861,6 +861,84 @@ class OrderSubmerchantStatusManagerCase extends BaseTestCase
     /**
      * @test
      */
+    public function setCancelledShouldNotSendEmailsWhenOrderHasNoUser()
+    {
+        $mailerMock = $this->getMailerMock(true);
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendBaseLetter');
+
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendEmail');
+
+        $statusManager = new OrderSubmerchantStatusManager(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $mailerMock
+        );
+
+        $order = $this->createOrder(OrderPaymentType::SCANNED_CHECK, OperationType::RENT);
+        $order->setUser(null);
+
+        $statusManager->setCancelled($order);
+    }
+
+    /**
+     * @test
+     */
+    public function setReturnedShouldNotSendEmailsWhenOrderHasNoUser()
+    {
+        $mailerMock = $this->getMailerMock(true);
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendBaseLetter');
+
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendEmail');
+
+        $statusManager = new OrderSubmerchantStatusManager(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $mailerMock
+        );
+
+        $order = $this->createOrder(OrderPaymentType::SCANNED_CHECK, OperationType::RENT);
+        $order->setUser(null);
+
+        $statusManager->setReturned($order);
+    }
+
+    /**
+     * @test
+     */
+    public function setRefundedShouldNotSendEmailsWhenOrderHasNoUser()
+    {
+        $mailerMock = $this->getMailerMock(true);
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendBaseLetter');
+
+        $mailerMock
+            ->expects($this->never())
+            ->method('sendEmail');
+
+        $statusManager = new OrderSubmerchantStatusManager(
+            $this->getEntityManager(),
+            $this->getLoggerMock(),
+            $mailerMock
+        );
+
+        $order = $this->createOrder(OrderPaymentType::SCANNED_CHECK, OperationType::RENT);
+        $order->setUser(null);
+
+        $statusManager->setRefunded($order);
+    }
+
+    /**
+     * @test
+     */
     public function setRefundedShouldSetStatusRefunded()
     {
         $statusManager = new OrderSubmerchantStatusManager(

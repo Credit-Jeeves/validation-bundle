@@ -489,7 +489,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return;
         }
 
-        if ($order->getPaymentType() != OrderPaymentType::CASH &&
+        if ($order->getPaymentType() != OrderPaymentType::CASH && null !== $order->getUser() &&
             in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])
         ) {
             $this->mailer->sendOrderCancelToTenant($order);

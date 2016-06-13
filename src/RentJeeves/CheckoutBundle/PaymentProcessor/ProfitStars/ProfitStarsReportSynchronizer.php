@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManager;
-use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
+use RentJeeves\CheckoutBundle\PaymentProcessor\CheckScanPaymentProcessorInterface as PaymentProcessor;
 use RentJeeves\DataBundle\Entity\Transaction;
 use RentJeeves\DataBundle\Enum\TransactionStatus;
 use RentTrack\ProfitStarsClientBundle\RemoteDepositReporting\Model\WSSettlementType;
@@ -44,6 +44,11 @@ class ProfitStarsReportSynchronizer
     protected $statusManager;
 
     /**
+     * @var PaymentProcessor
+     */
+    protected $paymentProcessor;
+
+    /**
      * @var EntityManagerInterface
      */
     protected $em;
@@ -75,6 +80,7 @@ class ProfitStarsReportSynchronizer
     /**
      * @param TransactionReportingClient $client
      * @param OrderStatusManager         $statusManager
+     * @param PaymentProcessor           $paymentProcessor
      * @param EntityManagerInterface     $em
      * @param LoggerInterface            $logger
      * @param string                     $storeId
@@ -83,6 +89,7 @@ class ProfitStarsReportSynchronizer
     public function __construct(
         TransactionReportingClient $client,
         OrderStatusManager $statusManager,
+        PaymentProcessor $paymentProcessor,
         EntityManagerInterface $em,
         LoggerInterface $logger,
         $storeId,
@@ -90,6 +97,7 @@ class ProfitStarsReportSynchronizer
     ) {
         $this->client = $client;
         $this->statusManager = $statusManager;
+        $this->paymentProcessor = $paymentProcessor;
         $this->em = $em;
         $this->logger = $logger;
         $this->storeId = $storeId;
@@ -241,7 +249,7 @@ class ProfitStarsReportSynchronizer
     protected function createReversalTransaction(Order $order, WSEventReport $report)
     {
         $this->logger->info(sprintf(
-            'Creating reversed transaction for Order#%d, Transaction#%d.',
+            'Creating reversed transaction for Order#%d, Transaction#%s.',
             $order->getId(),
             $report->getTransactionNumber()
         ));
@@ -249,10 +257,12 @@ class ProfitStarsReportSynchronizer
         $transaction->setTransactionId($report->getReferenceNumber());
         $transaction->setDepositDate(new \DateTime($report->getEventDateTime()));
         $transaction->setOrder($order);
-        $transaction->setAmount($report->getTotalAmount());
+        // ProfitStars returns positive amount, we need negative
+        $transaction->setAmount($report->getTotalAmount() * -1);
         $transaction->setIsSuccessful(true);
         $transaction->setStatus(TransactionStatus::REVERSED);
         $transaction->setMessages(sprintf('%s %s', $report->getEventDatastring(), $report->getReturnCode()));
+        $transaction->setBatchId($this->paymentProcessor->generateReversedBatchId($order));
 
         $this->em->persist($transaction);
         $this->em->flush();
