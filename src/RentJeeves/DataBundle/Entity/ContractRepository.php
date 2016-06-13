@@ -153,7 +153,7 @@ class ContractRepository extends EntityRepository
                     break;
                 case 'status':
                     $query->select(
-                        "FIELD(c.status, 'pending', 'approved', 'current', 'invite', 'finished', 'deleted')
+                        "FIELD(c.status, 'pending', 'approved', 'current', 'invite', 'finished', 'deleted', 'waiting')
                             as HIDDEN status_sort_order,
                          c"
                     );
