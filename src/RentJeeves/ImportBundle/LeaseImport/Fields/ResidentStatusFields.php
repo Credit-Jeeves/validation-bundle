@@ -3,7 +3,7 @@
 namespace RentJeeves\ImportBundle\LeaseImport\Fields;
 
 
-class ImportResidentStatusFields
+class ResidentStatusFields
 {
     /**
      *  email invite was sent successfully

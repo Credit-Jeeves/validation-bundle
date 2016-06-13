@@ -2,11 +2,11 @@
 
 namespace RentJeeves\ImportBundle\Tests\Unit\LeaseImport\Fields;
 
-use RentJeeves\ImportBundle\LeaseImport\Fields\ImportResidentStatusBitmap;
-use RentJeeves\ImportBundle\LeaseImport\Fields\ImportResidentStatusFields;
+use RentJeeves\ImportBundle\LeaseImport\Fields\ResidentStatusBitmap;
+use RentJeeves\ImportBundle\LeaseImport\Fields\ResidentStatusFields;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class ImportResidentStatusBitmapCase extends UnitTestBase
+class ResidentStatusBitmapCase extends UnitTestBase
 {
     /**
      * @return array
@@ -14,11 +14,11 @@ class ImportResidentStatusBitmapCase extends UnitTestBase
     public function providerForPassedStatusCorrect()
     {
         return [
-            [ImportResidentStatusFields::BAD_EMAIL],
-            [ImportResidentStatusFields::NO_EMAIL],
-            [ImportResidentStatusFields::INVITED],
-            [ImportResidentStatusFields::NOT_INVITED],
-            [ImportResidentStatusFields::ERROR],
+            [ResidentStatusFields::BAD_EMAIL],
+            [ResidentStatusFields::NO_EMAIL],
+            [ResidentStatusFields::INVITED],
+            [ResidentStatusFields::NOT_INVITED],
+            [ResidentStatusFields::ERROR],
         ];
     }
     /**
@@ -27,7 +27,7 @@ class ImportResidentStatusBitmapCase extends UnitTestBase
      */
     public function shouldPassedStatusCorrect($bitNumber)
     {
-        $importLeaseStatusBitmap = new ImportResidentStatusBitmap();
+        $importLeaseStatusBitmap = new ResidentStatusBitmap();
         $importLeaseStatusBitmap->addStatus($bitNumber);
         $this->assertTrue(
             $importLeaseStatusBitmap->isStatusSet($bitNumber),
@@ -39,8 +39,8 @@ class ImportResidentStatusBitmapCase extends UnitTestBase
      */
     public function shouldReturnDiffBitmapWhenAddStatus()
     {
-        $importLeaseStatusBitmap = new ImportResidentStatusBitmap();
-        $importLeaseStatusBitmap->addStatus(ImportResidentStatusFields::BAD_EMAIL);
+        $importLeaseStatusBitmap = new ResidentStatusBitmap();
+        $importLeaseStatusBitmap->addStatus(ResidentStatusFields::BAD_EMAIL);
         $this->assertEquals(16, $importLeaseStatusBitmap->getDiffBitmap(), 'We should have diffMap 2');
     }
 }

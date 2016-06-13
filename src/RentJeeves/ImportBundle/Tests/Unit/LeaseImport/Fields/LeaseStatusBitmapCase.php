@@ -2,11 +2,11 @@
 
 namespace RentJeeves\ImportBundle\Tests\Unit\LeaseImport\Fields;
 
-use RentJeeves\ImportBundle\LeaseImport\Fields\ImportLeaseStatusBitmap;
-use RentJeeves\ImportBundle\LeaseImport\Fields\ImportLeaseStatusFields;
+use RentJeeves\ImportBundle\LeaseImport\Fields\LeaseStatusBitmap;
+use RentJeeves\ImportBundle\LeaseImport\Fields\LeaseStatusFields;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 
-class ImportLeaseStatusBitmapCase extends UnitTestBase
+class LeaseStatusBitmapCase extends UnitTestBase
 {
     /**
      * @return array
@@ -14,10 +14,10 @@ class ImportLeaseStatusBitmapCase extends UnitTestBase
     public function providerForPassedStatusCorrect()
     {
         return [
-            [ImportLeaseStatusFields::NEW_ONE],
-            [ImportLeaseStatusFields::ERROR],
-            [ImportLeaseStatusFields::MATCH],
-            [ImportLeaseStatusFields::SKIP],
+            [LeaseStatusFields::NEW_ONE],
+            [LeaseStatusFields::ERROR],
+            [LeaseStatusFields::MATCH],
+            [LeaseStatusFields::SKIP],
         ];
     }
 
@@ -27,7 +27,7 @@ class ImportLeaseStatusBitmapCase extends UnitTestBase
      */
     public function shouldPassedStatusCorrect($bitNumber)
     {
-        $importLeaseStatusBitmap = new ImportLeaseStatusBitmap();
+        $importLeaseStatusBitmap = new LeaseStatusBitmap();
         $importLeaseStatusBitmap->setStatus($bitNumber);
 
         $this->assertTrue(
@@ -41,8 +41,8 @@ class ImportLeaseStatusBitmapCase extends UnitTestBase
      */
     public function shouldReturnDiffBitmapWhenAddStatus()
     {
-        $importLeaseStatusBitmap = new ImportLeaseStatusBitmap();
-        $importLeaseStatusBitmap->setStatus(ImportLeaseStatusFields::NEW_ONE);
+        $importLeaseStatusBitmap = new LeaseStatusBitmap();
+        $importLeaseStatusBitmap->setStatus(LeaseStatusFields::NEW_ONE);
 
         $this->assertEquals(2, $importLeaseStatusBitmap->getStatusBitmap(), 'We should have diffMap 2');
     }

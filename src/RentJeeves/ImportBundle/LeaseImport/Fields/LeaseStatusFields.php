@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\LeaseImport\Fields;
 
-class ImportLeaseStatusFields
+class LeaseStatusFields
 {
     //new : lease created
     const NEW_ONE = '1';

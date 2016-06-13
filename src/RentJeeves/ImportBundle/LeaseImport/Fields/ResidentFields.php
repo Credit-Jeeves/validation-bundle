@@ -2,7 +2,7 @@
 
 namespace RentJeeves\ImportBundle\LeaseImport\Fields;
 
-class ImportResidentFields
+class ResidentFields
 {
     const FIRST = 1;
 

@@ -4,7 +4,11 @@ namespace RentJeeves\ImportBundle\LeaseImport\Fields;
 
 use RentJeeves\CoreBundle\Bitmap\Bitmap;
 
-class ImportResidentFieldBitmap
+/**
+ * This code should help us to understand what field we want to update in Lease
+ * We mark by bitNumber fields in this class
+ */
+class LeaseFieldBitmap
 {
     /**
      * bitmask of fields that can be updated
@@ -25,12 +29,7 @@ class ImportResidentFieldBitmap
      */
     public function __construct($isNew = false)
     {
-        if ($isNew) {
-            $this->updateMask = ImportResidentFields::UPDATE_MASK_NEW;
-        } else {
-            $this->updateMask = ImportResidentFields::UPDATE_MASK_MATCHED;
-        }
-
+        $this->updateMask = ($isNew) ? LeaseFields::UPDATE_MASK_NEW : LeaseFields::UPDATE_MASK_MATCHED;
         $this->diffBitmap = new Bitmap(0); // no fields different
     }
 

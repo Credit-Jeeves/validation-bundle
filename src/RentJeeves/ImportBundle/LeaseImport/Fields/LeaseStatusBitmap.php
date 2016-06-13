@@ -7,7 +7,7 @@ use RentJeeves\CoreBundle\Bitmap\Bitmap;
 /**
  * Here we set statuses about lease
  */
-class ImportResidentStatusBitmap
+class LeaseStatusBitmap
 {
     /**
      * @var Bitmap
@@ -22,7 +22,7 @@ class ImportResidentStatusBitmap
     /**
      * @param int $bitNumber
      */
-    public function addStatus($bitNumber)
+    public function setStatus($bitNumber)
     {
         $this->statusBitmap->setBit($bitNumber);
     }
@@ -40,7 +40,7 @@ class ImportResidentStatusBitmap
     /**
      * @return int
      */
-    public function getDiffBitmap()
+    public function getStatusBitmap()
     {
         return $this->statusBitmap->getInt();
     }
