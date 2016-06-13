@@ -68,6 +68,7 @@ class ResmanTransformer implements TransformerInterface
                 $importLease->setIntegratedBalance($this->getIntegratedBalance($baseCustomer, $currentCustomer));
                 $importLease->setStartAt($this->getStartAt($baseCustomer, $currentCustomer));
                 $importLease->setFinishAt($this->getFinishAt($baseCustomer, $currentCustomer));
+                $importLease->setUnitLookupId($this->getUnitLookupId($baseCustomer, $currentCustomer));
 
                 $this->em->persist($importLease);
                 $this->em->flush();
@@ -193,17 +194,23 @@ class ResmanTransformer implements TransformerInterface
     }
 
     /**
-     * @TODO: PLS check it
-     *
      * @param RtCustomer $baseCustomer
      * @param Customer   $currentCustomer
      *
-     * @return string
+     * @return string|null
      */
     protected function getResidentStatus(RtCustomer $baseCustomer, Customer $currentCustomer)
     {
-        return ImportLeaseResidentStatus::CURRENT;
-//        return $currentCustomer->getType();
+        switch ($currentCustomer->getType()) {
+            case Customer::CURRENT_RESIDENT_TYPE:
+                return ImportLeaseResidentStatus::CURRENT;
+            case Customer::FUTURE_RESIDENT_TYPE:
+                return ImportLeaseResidentStatus::FUTURE;
+            case Customer::FORMER_RESIDENT_TYPE:
+                return ImportLeaseResidentStatus::PAST;
+        }
+
+        return null;
     }
 
     /**
@@ -269,5 +276,16 @@ class ResmanTransformer implements TransformerInterface
     protected function getFinishAt(RtCustomer $baseCustomer, Customer $currentCustomer)
     {
         return $currentCustomer->getLease()->getLeaseToDate();
+    }
+
+    /**
+     * @param RtCustomer $baseCustomer
+     * @param Customer   $currentCustomer
+     *
+     * @return string
+     */
+    protected function getUnitLookupId(RtCustomer $baseCustomer, Customer $currentCustomer)
+    {
+        return $currentCustomer->getExternalUnitId($baseCustomer);
     }
 }
