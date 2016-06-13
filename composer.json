@@ -285,7 +285,8 @@
         "comfortablynumb/backup-restore-bundle": "dev-master",
         "ton/email-bundle": "v1.0.1",
         "fabpot/php-cs-fixer": "v0.5.7",
-        "sebastian/diff": "1.1.0"
+        "sebastian/diff": "1.1.0",
+        "sebastian/environment": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [
