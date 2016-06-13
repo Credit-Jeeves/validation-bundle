@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\TestBundle\FixtureGenerator\Services;
+namespace RentJeeves\DataBundle\FixtureGenerator\Services;
 
 use Nelmio\Alice\Fixtures\Loader;
 use Nelmio\Alice\Persister\Doctrine;

@@ -1,9 +1,9 @@
 <?php
 
-namespace RentJeeves\TestBundle\Tests\Unit\FixtureGenerator\Services;
+namespace RentJeeves\DataBundle\Tests\Unit\FixtureGenerator\Services;
 
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
-use RentJeeves\TestBundle\FixtureGenerator\Services\FixtureFinder;
+use RentJeeves\DataBundle\FixtureGenerator\Services\FixtureFinder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class FixtureFinderCase extends UnitTestBase
