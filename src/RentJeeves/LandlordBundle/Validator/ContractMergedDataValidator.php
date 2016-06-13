@@ -88,10 +88,12 @@ class ContractMergedDataValidator extends ConstraintValidator
                     ]
                 );
             } elseif (!$tenant->getContracts()->isEmpty() &&
-                !$tenant->getContracts()->exists(function ($key, Contract $contract) use ($mergingDataModel) {
-                    return $contract->getId() === $mergingDataModel->getOriginalContractId() ||
-                        $contract->getId() === $mergingDataModel->getDuplicateContractId();
-                })
+                !$tenant->getContracts()->exists(
+                    function ($key, Contract $contract) use ($mergingDataModel) {
+                        return ($contract->getId() === $mergingDataModel->getOriginalContractId() ||
+                            $contract->getId() === $mergingDataModel->getDuplicateContractId());
+                    }
+                )
             ) {
                 $this->context->addViolation(
                     $constraint->messageUserExist,

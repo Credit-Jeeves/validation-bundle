@@ -67,7 +67,7 @@ class ResidentManagerCase extends BaseTestCase
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneByEmail('tenant11@example.com');
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
         $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findAll();
-        $this->assertCount(3, $residentMapping);
+        $this->assertCount(5, $residentMapping);
 
         $residentMapping = new ResidentMapping();
         $residentMapping->setTenant($tenant);
@@ -81,6 +81,6 @@ class ResidentManagerCase extends BaseTestCase
         $em->flush();
         $this->assertCount(0, $errors);
         $residentMapping = $em->getRepository('RjDataBundle:ResidentMapping')->findAll();
-        $this->assertCount(3, $residentMapping);
+        $this->assertCount(5, $residentMapping);
     }
 }

@@ -969,7 +969,7 @@ class AjaxController extends Controller
             );
 
         if ($unexpectedDuplicateContract && $duplicateContract->getId() === $unexpectedDuplicateContract->getId()) {
-            if($mergingProcessor->mergeContracts($originalContract, $duplicateContract, $mergingModel)) {
+            if ($mergingProcessor->mergeContracts($originalContract, $duplicateContract, $mergingModel)) {
                 return new JsonResponse([]);
             } else {
                 return new JsonResponse(['errors' => $mergingProcessor->getErrors()]);

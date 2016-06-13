@@ -370,5 +370,5 @@ fixtures:
         unit:      Unit_dtr_4
         status:    pending
         dueDate:   1
-        createdAt: '-2 days'
-        updatedAt: '-2 days'
+        createdAt: '-3 days'
+        updatedAt: '-3 days'

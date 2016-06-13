@@ -47,7 +47,7 @@ class ImportResManCase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contract = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertCount(24, $contract, 'Check fixtures, should be present just 24 contracts on DB');
+        $this->assertCount(26, $contract, 'Check fixtures, should be present just 26 contracts on DB');
 
         $this->setDefaultSession('selenium2');
         $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
@@ -68,7 +68,7 @@ class ImportResManCase extends ImportBaseAbstract
 
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findAll();
-        $this->assertGreaterThan(30, count($contracts), 'Contracts should be added');
+        $this->assertGreaterThan(32, count($contracts), 'Contracts should be added');
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => ResManClientCase::EXTERNAL_LEASE_ID]
         );
