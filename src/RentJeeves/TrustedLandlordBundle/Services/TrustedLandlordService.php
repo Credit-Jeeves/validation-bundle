@@ -113,7 +113,7 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $newCheckMailingAddress->setExternalLocationId($trustedLandlordDTO->getLocationId());
         $newCheckMailingAddress->setAddress1($address->getAddress1());
 
-        $address2 = $address->getUnitDesignator() . $address->getUnitName();
+        $address2 = $trustedLandlordDTO->getAddress2();
 
         $newCheckMailingAddress->setAddress2($address2 ?: null);
         $newCheckMailingAddress->setZip($address->getZip());
@@ -178,7 +178,7 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
         $checkMailingAddress->setCity($address->getCity());
         $checkMailingAddress->setAddress1($address->getAddress1());
 
-        $address2 = $address->getUnitDesignator() . $address->getUnitName();
+        $address2 = $trustedLandlordDTO->getAddress2();
 
         $checkMailingAddress->setAddress2($address2 ?: null);
         $checkMailingAddress->setZip($address->getZip());
@@ -216,7 +216,7 @@ class TrustedLandlordService implements TrustedLandlordServiceInterface
     protected function lookupAddressByTrustedLandlordDTO(TrustedLandlordDTO $trustedLandlordDTO)
     {
         return $this->lookupService->lookup(
-            sprintf('%s %s', $trustedLandlordDTO->getAddress1(), $trustedLandlordDTO->getAddress2()),
+            $trustedLandlordDTO->getAddress1(),
             $trustedLandlordDTO->getCity(),
             $trustedLandlordDTO->getState(),
             $trustedLandlordDTO->getZip()

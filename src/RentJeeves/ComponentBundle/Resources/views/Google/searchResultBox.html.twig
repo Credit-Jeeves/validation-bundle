@@ -56,7 +56,7 @@
                             </strong>
                             {% if prop.hasLandlord and not address.isSingle %}
                                 <div class="form-row clearfix">
-                                    {% if prop.units|length == 0 %}
+                                    {% if prop.submerchantUnits|length == 0 %}
                                         <label>{{ 'add.unit'|trans }}</label>
                                     {% else %}
                                         <label class="lab1">{{ 'add.unit'|trans }}</label>
@@ -65,14 +65,14 @@
                                             <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}"
                                                     class="select-unit linkselect-link">
                                                 {% if contractUnits is defined %}
-                                                    {% for unit in prop.units if unit in contractUnits %}
+                                                    {% for unit in prop.submerchantUnits if unit in contractUnits %}
                                                         <option value="{{ unit.name }}"
                                                                 {% if unitId is defined and unitId == unit.id %}selected="selected"{% endif %}>
                                                             {{ unit.name }}
                                                         </option>
                                                     {% endfor %}
                                                 {% else %}
-                                                    {% for unit in prop.units %}
+                                                    {% for unit in prop.submerchantUnits %}
                                                         <option value="{{ unit.name }}"
                                                                 {% if unitId is defined and unitId == unit.id %}selected="selected"{% endif %}>
                                                             {{ unit.name }}
@@ -87,7 +87,7 @@
                                             </select>
                                         </div>
                                     {% endif %}
-                                    <div class="fields-box{% if prop.units|length > 0 %} createNewUnit{% endif %}">
+                                    <div class="fields-box{% if prop.submerchantUnits|length > 0 %} createNewUnit{% endif %}">
                                         <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew"
                                                placeholder="e.g. 3A" style="width: 50px;"> <a href="#"
                                                                                               class="see-all">{{ 'see.all'|trans }}</a>

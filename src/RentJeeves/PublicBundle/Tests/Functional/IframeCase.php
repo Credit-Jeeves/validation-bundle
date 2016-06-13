@@ -158,15 +158,6 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
-        $this->assertNotNull($pricing = $this->page->find('css', '#popup-pricing'));
-        $pricing->click();
-        $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
-        $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $this->session->wait($this->timeout, "$('#pricing-popup button.button-close').is(':visible')");
-        $buttons[0]->click();
-
-        $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
         $this->fillForm(

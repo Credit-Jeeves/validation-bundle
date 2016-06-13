@@ -3,6 +3,8 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -145,26 +147,13 @@ class ImportCsvCase extends ImportBaseAbstract
             $trs['import.status.skip'],
             "Count contracts with status 'skip' is wrong. On first page."
         );
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
-
         $submitImportFile->click();
 
         $this->waitReviewAndPost();
 
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertCount(1, $trs, "Count contract wrong");
-        $this->assertCount(2, $trs['import.status.new'], "Count contracts with status 'new' is wrong.");
-
-        $this->fillSecondPageWrongValue($trs);
-
-        $submitImportFile->click();
-        $this->waitReviewAndPost();
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount(1, $trs, 'Incorrect number of contracts');
         $this->assertCount(2, $trs['import.status.skip'], 'Count contract with status \'skip\' wrong');
         $submitImportFile->click();
 
@@ -176,14 +165,14 @@ class ImportCsvCase extends ImportBaseAbstract
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '2test@mail.com']);
         $this->assertNotNull($tenant);
-        $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
-        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getFirstName(), 'Trent', 'Wrong first name');
+        $this->assertEquals($tenant->getLastName(), 'Dacey', 'Wrong last name');
         $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
 
         // Check that first and last names are parsed correctly when field contains coma.
         $tenant2 = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '19test@mail.com']);
         $this->assertNotNull($tenant2);
-        $this->assertEquals('Lisa Maria', $tenant2->getFirstName());
+        $this->assertEquals('Lisa', $tenant2->getFirstName());
         $this->assertEquals('Sanders', $tenant2->getLastName());
 
         /**
@@ -622,21 +611,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->fillCsvMapping($mapping, 18);
 
         $submitImportFile->click();
-        $this->session->wait(
-            5000,
-            "$('.errorField').length > 0"
-        );
         $this->waitReviewAndPost();
-
-        // first page: all contract waiting and 5 name errors.
-        $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
-        $this->assertEquals(5, count($errorFields));
-
-        $this->assertEquals('', $errorFields[0]->getValue());
-        $this->assertEquals('', $errorFields[1]->getValue());
-        $this->assertEquals('& Adelai', $errorFields[2]->getValue());
-        $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
-        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -1085,8 +1060,17 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->setCsvDateFormat('d/m/y');
+        $importGroupSettings->setCsvDateFormat('m/d/y');
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
+
+        /** @var Group $group3 */
+        $group3 = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(
+            [
+                'name' => 'Campus Rent Group'
+            ]
+        );
+        $this->assertNotNull($group3, 'We do not have correct settings in fixtures');
+        $group3->getGroupSettings()->setIsIntegrated(true);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1115,9 +1099,9 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertCount(2, $trs, "Count statuses is wrong");
         $this->assertCount(
-            4,
+            1,
             $trs['import.status.skip'],
-            "One contract should be skipped, because we don't have such account number and 3 isn't integrated"
+            "One contract should be skipped, because we don't have such account number"
         );
 
         $submitImportFile->click();
@@ -1134,7 +1118,26 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($unit = $unitMapping->getUnit());
         // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
-        $this->assertEquals('Test Rent Group', $contract->getGroup()->getName());
+        $this->assertEquals(
+            'Test Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
+
+        $unitMapping = $em
+            ->getRepository('RjDataBundle:UnitMapping')
+            ->findOneBy(['externalUnitId' => 'SP1152-C']);
+
+        $this->assertNotNull($unitMapping);
+        /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+        
+        $this->assertNotNull($contract = $unit->getContracts()->first());
+        $this->assertEquals(
+            'Campus Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
     }
 
     /**

@@ -11,7 +11,7 @@ parameters:
     login.delay: 30
 
     credit_summary_vendor: transunion #experian # supported values are 'transunion' or 'experian'
-    payment_debit_one_time_until_value: '15:25'
+    payment_debit_one_time_until_value: '14:45'
     scanning_cutoff_time: '19:00'
 
 simulation:
