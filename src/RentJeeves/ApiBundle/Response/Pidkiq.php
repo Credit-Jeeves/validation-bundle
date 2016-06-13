@@ -39,6 +39,7 @@ class Pidkiq extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"IdentityVerificationDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -50,6 +51,7 @@ class Pidkiq extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"IdentityVerificationDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */

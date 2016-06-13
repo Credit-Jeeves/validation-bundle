@@ -4,7 +4,6 @@ namespace RentJeeves\ApiBundle\Response;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderPaymentType;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use CreditJeeves\DataBundle\Entity\Order as Entity;
 
@@ -18,6 +17,7 @@ class Order extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderShort", "OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getStatus()
@@ -58,8 +58,11 @@ class Order extends ResponseResource
     }
 
     /**
+     * Original transaction reference from processor
+     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getReferenceId()
@@ -74,6 +77,7 @@ class Order extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getPaymentSource()
@@ -86,8 +90,10 @@ class Order extends ResponseResource
     }
 
     /**
+     * 'bank', 'card'
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getType()
@@ -105,6 +111,7 @@ class Order extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getMessage()
@@ -117,8 +124,11 @@ class Order extends ResponseResource
     }
 
     /**
+     * Format "<float>". Example: "100.00"
+     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getRent()
@@ -129,6 +139,7 @@ class Order extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getOther()
@@ -137,8 +148,11 @@ class Order extends ResponseResource
     }
 
     /**
+     * Format "<float>". Example: "100.00"
+     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getTotal()
@@ -147,8 +161,10 @@ class Order extends ResponseResource
     }
 
     /**
+     * Format: "YYYY-mm". '2014-09' is paid for September
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getPaidFor()
@@ -166,8 +182,11 @@ class Order extends ResponseResource
     }
 
     /**
+     * Format: "<timestamp>"
+     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getCreatedAt()
@@ -176,8 +195,11 @@ class Order extends ResponseResource
     }
 
     /**
+     * Format: "YYYY-mm-dd". Example: "2016-05-03"
+     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"OrderDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getDepositedAt()
