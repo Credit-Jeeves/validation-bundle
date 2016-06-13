@@ -15,7 +15,7 @@ class Customers
     protected $customer = [];
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Customer[]
      */
     public function getCustomer()
     {

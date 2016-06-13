@@ -9,6 +9,10 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Customer
 {
+    const CURRENT_RESIDENT_TYPE = 'current resident';
+    const FORMER_RESIDENT_TYPE = 'former resident';
+    const FUTURE_RESIDENT_TYPE = 'future resident';
+
     /**
      * It's residentId of User
      *
