@@ -783,3 +783,6 @@ and (min-width : 321px) {
     float: left;
     width: 96%;
 }
+#rentjeeves_checkoutbundle_paymentaccounttype .tooltip-box.type5.pie-el {
+    display: none;
+}
