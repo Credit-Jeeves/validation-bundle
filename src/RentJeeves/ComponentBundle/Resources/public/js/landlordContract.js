@@ -16,6 +16,7 @@ $(document).ready(function () {
             ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
         }
     });
+
     $('#tenant-edit-property-popup').dialog({
         position: "center",
         autoOpen: false,
@@ -25,6 +26,14 @@ $(document).ready(function () {
         close: function () {
             ContractsViewModel.needRefresh().push(DetailsViewModel.contract().id);
         }
+    });
+
+    $('#tenant-merge-contract-popup').dialog({
+        position: "center",
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: '520px'
     });
 
     $('#tenant-review-property-popup').dialog({
@@ -67,6 +76,16 @@ $(document).ready(function () {
         width: '520px'
     });
 
+    $('#contract-duplicate-popup').dialog({
+        position: "center",
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: '520px',
+        close: function () {
+            DetailsViewModel.revertMergingContractsEvent();
+        }
+    });
 
     $('#searchFilter').linkselect("destroy");
     $('#searchFilter').linkselect({

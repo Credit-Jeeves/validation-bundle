@@ -1,0 +1,45 @@
+<div id="contract-remove-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'remove.contract'|trans }}</h1>
+    <div class="clearfix col-box"  data-bind="with: contract">
+        <div class="attention-box pie-el">
+            {{ 'remove.contract.description' | trans | raw }}
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'tenant.info'|trans }}</span>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'name'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: tenant"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: address"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'phone'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value"  data-bind="text: phone"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'email'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: email"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button dark" data-bind="click: $root.removeContract">
+            <span>{{ 'yes.remove.contract'|trans }}</span>
+        </button>
+        <button class="button grey" data-bind="click: $root.cancelRemove">
+            <span>{{ 'cancel'|trans }}</span>
+        </button>
+    </div>
+</div>

@@ -38,3 +38,10 @@ fixtures:
         status: complete
         type: rent
         holding: rjHolding_1
+    DepositAccount_DTR_GRoup_1:
+        merchantName: 563376
+        group:  DTRGroup_1
+        status: complete
+        type: rent
+        holding: rjHolding_1
+        paymentProcessor: aci
