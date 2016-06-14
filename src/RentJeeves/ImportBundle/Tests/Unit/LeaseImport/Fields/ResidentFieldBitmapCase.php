@@ -114,4 +114,3 @@ class ResidentFieldBitmapCase extends UnitTestBase
         $this->assertFalse($importLeaseFieldManager->isNeedUpdate(ResidentFields::FIRST_NAME));
     }
 }
-

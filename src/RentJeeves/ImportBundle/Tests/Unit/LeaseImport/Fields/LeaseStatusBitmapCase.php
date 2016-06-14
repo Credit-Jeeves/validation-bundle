@@ -47,4 +47,3 @@ class LeaseStatusBitmapCase extends UnitTestBase
         $this->assertEquals(2, $importLeaseStatusBitmap->getStatusBitmap(), 'We should have diffMap 2');
     }
 }
-

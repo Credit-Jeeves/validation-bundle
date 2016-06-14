@@ -151,7 +151,4 @@ class LeaseFieldBitmapCase extends UnitTestBase
             'We don\'t have due date in mask to update so we don\'t need update it'
         );
     }
-
-
 }
-

@@ -23,4 +23,3 @@ class LeaseFields
 
     const UPDATE_MASK_NEW = 0x3e; // all
 }
-
