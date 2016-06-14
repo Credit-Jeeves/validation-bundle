@@ -39,7 +39,6 @@ class ResmanASIDataMapperCase extends UnitTestBase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$error]));
 
-
         $validator
             ->expects($this->once())
             ->method('validate')
@@ -91,12 +90,6 @@ class ResmanASIDataMapperCase extends UnitTestBase
             AccountingSystem::RESMAN,
             $integratedModel->getAccountingSystem(),
             'Should be mapped accounting system resman'
-        );
-
-        $this->assertEquals(
-            ['success' => 'true'],
-            $integratedModel->getReturnParams(),
-            'Should be mapped additional return params'
         );
     }
 }

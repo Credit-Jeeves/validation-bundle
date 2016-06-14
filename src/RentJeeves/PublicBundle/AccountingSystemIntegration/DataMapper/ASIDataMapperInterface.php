@@ -12,4 +12,10 @@ interface ASIDataMapperInterface
      * @return ASIIntegratedModel
      */
     public function mapData(Request $request);
+
+    /**
+     * @param ASIIntegratedModel $integratedModel
+     * @return array
+     */
+    public function prepareReturnParams(ASIIntegratedModel $integratedModel);
 }
