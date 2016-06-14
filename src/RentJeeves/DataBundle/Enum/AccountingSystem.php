@@ -35,6 +35,7 @@ class AccountingSystem extends Enum
         self::RESMAN        => 'resman',
         self::MRI           => 'mri',
         self::AMSI          => 'amsi',
+        self::RENT_MANAGER  => 'rent manager',
     ];
 
     public static $integratedWithCsv = [

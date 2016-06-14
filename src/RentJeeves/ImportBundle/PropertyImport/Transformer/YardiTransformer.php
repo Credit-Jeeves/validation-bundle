@@ -30,7 +30,7 @@ class YardiTransformer implements TransformerInterface
 
     /**
      * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
+     * @param LoggerInterface        $logger
      */
     final public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
@@ -51,6 +51,7 @@ class YardiTransformer implements TransformerInterface
             ['group' => $import->getGroup()]
         );
 
+        $countryFromSettings = $import->getGroup()->getGroupSettings()->getCountryCode();
         /** @var UnitInformation $unitInformation */
         foreach ($accountingSystemData as $unitInformation) {
             if ($this->checkExistImportPropertyInCache($import, $unitInformation) === true) {
@@ -70,6 +71,7 @@ class YardiTransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($unitInformation));
             $importProperty->setState($this->getState($unitInformation));
             $importProperty->setZip($this->getZip($unitInformation));
+            $importProperty->setCountry($this->getCountry($unitInformation, $countryFromSettings));
             $importProperty->setAllowMultipleProperties($this->isAllowedMultipleProperties($unitInformation));
 
             $this->em->persist($importProperty);
@@ -199,8 +201,19 @@ class YardiTransformer implements TransformerInterface
     }
 
     /**
-     * @param Import $import
-     * @param UnitInformation  $accountingSystemRecord
+     * @param UnitInformation $accountingSystemRecord
+     * @param string          $countryFromSettings
+     *
+     * @return string
+     */
+    protected function getCountry(UnitInformation $accountingSystemRecord, $countryFromSettings)
+    {
+        return $countryFromSettings;
+    }
+
+    /**
+     * @param Import          $import
+     * @param UnitInformation $accountingSystemRecord
      *
      * @return bool
      */
@@ -213,7 +226,7 @@ class YardiTransformer implements TransformerInterface
     }
 
     /**
-     * @param Import $import
+     * @param Import          $import
      * @param UnitInformation $accountingSystemRecord
      *
      * @return string

@@ -771,6 +771,7 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',

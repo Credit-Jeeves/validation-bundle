@@ -7,14 +7,14 @@ use RentJeeves\DataBundle\Entity\AMSISettings;
 use RentJeeves\ExternalApiBundle\Services\AMSI\ResidentDataManager as AMSIResidentDataManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupExternalPropertyIdTrait;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Traits\SetupExternalPropertyIdTrait;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
 
 /**
  * Service`s name "import.property.extractor.amsi"
  */
-class AMSIExtractor implements ApiExtractorInterface
+class AMSIExtractor implements ApiPropertyExtractorInterface
 {
     use SetupGroupTrait;
     use SetupExternalPropertyIdTrait;
@@ -46,7 +46,7 @@ class AMSIExtractor implements ApiExtractorInterface
     {
         if (null === $this->group || null === $this->externalPropertyId) {
             throw new ImportLogicException(
-                'Pls configure extractor("setGroup","setExtPropertyId") before extractData.'
+                'Pls configure extractor("setGroup","setExternalPropertyId") before extractData.'
             );
         }
         $this->logger->info(

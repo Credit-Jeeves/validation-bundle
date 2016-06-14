@@ -11,7 +11,9 @@ class ModelsCase extends BaseTestCase
      */
     public function shouldDeserializeResponseFile()
     {
-        $pathToFile = $this->getFileLocator()->locate('@RjCheckoutBundle/Tests/Fixtures/Aci/testResponseFile.xml');
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/Parser/testResponseFile.xml'
+        );
 
         $document = new \DOMDocument('1.0', 'ISO-8859-1');
         $document->load($pathToFile);
@@ -56,7 +58,9 @@ class ModelsCase extends BaseTestCase
      */
     public function shouldDeserializeAdjustmentFile()
     {
-        $pathToFile = $this->getFileLocator()->locate('@RjCheckoutBundle/Tests/Fixtures/Aci/testAdjustFile.xml');
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/Parser/testAdjustFile.xml'
+        );
 
         $document = new \DOMDocument('1.0', 'ISO-8859-1');
         $document->load($pathToFile);

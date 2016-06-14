@@ -27,7 +27,7 @@ class PaymentReportSynchronizeHPSCommand extends BaseCommand
             $paymentProcessor = $this->getContainer()->get('payment_processor.heartland');
             $report = $paymentProcessor->loadReport();
             $result = $this->getContainer()->get('payment_processor.report_synchronizer')
-                ->synchronize($report, $paymentProcessor);
+                ->synchronize($report, $paymentProcessor, false);
             $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
         } catch (\Exception $e) {
             $this->getLogger()->emergency(

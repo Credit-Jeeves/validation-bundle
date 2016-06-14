@@ -25,9 +25,10 @@ class VirtualTerminalCase extends BaseTestCase
 
     public function setUp()
     {
-        $this->fixtureLocator = new FileLocator(
-            [__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures']
-        );
+        $this->fixtureLocator = new FileLocator([
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+            'Data' . DIRECTORY_SEPARATOR . 'PaymentProcessor' . DIRECTORY_SEPARATOR . 'Aci'
+        ]);
 
         parent::setUp();
     }

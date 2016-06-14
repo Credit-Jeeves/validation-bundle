@@ -292,7 +292,9 @@ class MappedLoader extends AbstractLoader
             null,
             $importProperty->getCity(),
             $importProperty->getState(),
-            $importProperty->getZip()
+            $importProperty->getZip(),
+            null,
+            $importProperty->getCountry()
         );
     }
 
@@ -331,7 +333,8 @@ class MappedLoader extends AbstractLoader
             $importProperty->getAddress1(),
             '',
             $importProperty->getCity(),
-            $importProperty->getState()
+            $importProperty->getState(),
+            $importProperty->getCountry()
         );
 
         $this->logger->debug(
@@ -359,7 +362,8 @@ class MappedLoader extends AbstractLoader
             $importProperty->getAddress1(),
             $importProperty->getCity(),
             $importProperty->getState(),
-            $importProperty->getZip()
+            $importProperty->getZip(),
+            $importProperty->getCountry()
         );
 
         if ($address === null) {

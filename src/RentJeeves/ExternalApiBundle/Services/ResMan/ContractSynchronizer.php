@@ -114,6 +114,9 @@ class ContractSynchronizer extends AbstractContractSynchronizer
                     $baseCustomer->getCustomerId()
                 )
             );
+            if (false === empty($baseCustomer->getCustomerId())) {
+                $this->retryFailedAccountingSystemPost($contract);
+            }
         }
         $contract->setIntegratedBalance($baseCustomer->getRentTrackBalance());
         $this->logger->info(

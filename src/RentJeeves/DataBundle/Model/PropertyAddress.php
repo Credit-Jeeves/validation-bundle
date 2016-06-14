@@ -22,7 +22,14 @@ class PropertyAddress
     protected $id;
 
     /**
-     * @ORM\Column(type="string",length=255)
+     * @ORM\Column(type="string", length=255, options={"default" = "US"})
+     *
+     * @Assert\NotBlank()
+     */
+    protected $country;
+
+    /**
+     * @ORM\Column(type="string", length=255)
      *
      * @Assert\NotBlank(message="api.errors.property.state.empty", groups={"new_unit"})
      *
@@ -116,6 +123,22 @@ class PropertyAddress
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
     }
 
     /**
@@ -358,5 +381,6 @@ class PropertyAddress
         $this->setLat($address->getLatitude());
         $this->setLong($address->getLongitude());
         $this->setIndex($address->getIndex());
+        $this->setCountry($address->getCountry());
     }
 }

@@ -246,4 +246,47 @@ class TenantRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     *
+     * Find a tenant by name and matching contract
+     *
+     * Use this function if we cannot lookup tenant by email or external resident ID.
+     *
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $leaseId
+     * @param string $unitId
+     * @return Tenant|null
+     * @throws NonUniqueResultException
+     */
+    public function getTenantByNameAndLeaseIdOrUnitId($firstName, $lastName, $leaseId = null, $unitId = null)
+    {
+        if (empty($leaseId) && empty($unitId)) {
+            return null;
+        }
+
+        $query = $this->createQueryBuilder('tenant')
+            ->innerJoin(
+                'tenant.contracts',
+                'contracts'
+            )
+            ->where('tenant.first_name = :firstName and tenant.last_name = :lastName')
+            ->setParameter('firstName', $firstName)
+            ->setParameter('lastName', $lastName);
+
+        if (!empty($leaseId)) {
+            $query->andWhere('contracts.externalLeaseId = :leaseId')
+                ->setParameter('leaseId', $leaseId);
+        }
+
+        if (!empty($unitId)) {
+            $query->innerJoin('contracts.unit', 'unit')
+                ->leftJoin('unit.unitMapping', 'unitMapping')
+                ->andWhere('unitMapping.externalUnitId = :unitId')
+                ->setParameter('unitId', $unitId);
+        }
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

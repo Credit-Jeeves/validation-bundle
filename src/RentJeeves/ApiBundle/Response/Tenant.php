@@ -42,6 +42,7 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -53,6 +54,7 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -64,6 +66,7 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -75,6 +78,7 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -86,6 +90,7 @@ class Tenant extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -95,6 +100,7 @@ class Tenant extends ResponseResource
     }
 
     /**
+     * Format:  "YYYY-mm-dd"
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
      * @Serializer\Type("DateTime<'Y-m-d'>")
@@ -107,8 +113,10 @@ class Tenant extends ResponseResource
     }
 
     /**
+     * Format: "000-00-0000"
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
+     * @Serializer\Type("string")
      *
      * @return string format '000-00-0000'
      */
@@ -118,9 +126,11 @@ class Tenant extends ResponseResource
     }
 
     /**
+     * Example: [none|passed|failed|locked]
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
      * @Serializer\SerializedName("verify_status")
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -133,6 +143,7 @@ class Tenant extends ResponseResource
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"TenantDetails"})
      * @Serializer\SerializedName("verify_message")
+     * @Serializer\Type("string")
      *
      * @return string
      */

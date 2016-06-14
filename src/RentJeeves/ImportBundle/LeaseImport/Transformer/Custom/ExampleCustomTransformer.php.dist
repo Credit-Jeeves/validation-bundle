@@ -1,0 +1,18 @@
+<?php
+
+namespace RentJeeves\ImportBundle\LeaseImport\Transformer\Custom; // CustomLeaseTransformer should have this namespace
+
+use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\ImportBundle\LeaseImport\Transformer\MRITransformer;
+
+// class name must match the name of the file
+class ExampleCustomTransformer extends MRITransformer
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function transformData(array $accountingSystemData, Import $import)
+    {
+        throw new \LogicException('This class only for test');
+    }
+}

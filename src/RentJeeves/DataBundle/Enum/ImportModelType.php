@@ -8,5 +8,5 @@ class ImportModelType extends Enum
 {
     const PROPERTY = 'property';
 
-    const CONTRACT = 'contract';
+    const LEASE = 'lease';
 }

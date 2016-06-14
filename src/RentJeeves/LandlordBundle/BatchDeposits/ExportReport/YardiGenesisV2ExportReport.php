@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\BatchDeposits\ExportReport;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\YardiGenesisV2Report;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -27,13 +28,23 @@ class YardiGenesisV2ExportReport extends YardiGenesisV2Report
             $groups = [$settings['group']];
         } else {
             $groups = $landlord->getGroups();
-            $groups = null !== $groups ? $groups->toArray() : null;
+            if (null !== $groups) {
+                $groups = $groups->toArray();
+                if (null !== $settings['groupIds'] && $groupIds = $settings['groupIds']) {
+                    $groups = array_filter(
+                        $groups,
+                        function (Group $group) use ($groupIds) {
+                            return in_array($group->getId(), $groupIds);
+                        }
+                    );
+                }
+            }
         }
 
         /** @var OrderRepository $orderRepository */
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy);
+        return $groups ? $orderRepository->getOrdersForYardiGenesis($beginDate, $endDate, $groups, $exportBy) : null;
     }
 
     /**

@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\JobRelatedEntities;
 use RentJeeves\ExternalApiBundle\Command\SyncContractBalanceCommand;
 use RentJeeves\ExternalApiBundle\Command\SyncContractRentCommand;
 use RentJeeves\ExternalApiBundle\Services\Interfaces\ResidentDataManagerInterface as ResidentDataManager;
@@ -364,6 +365,44 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     }
 
     /**
+     * @param Contract $contract
+     */
+    protected function retryFailedAccountingSystemPost(Contract $contract)
+    {
+        $failedJobs = $this->getFailedPushJobsByContract($contract, new \DateTime());
+        $this->logger->info(
+            sprintf(
+                '[AbstractContractSynchronizer]Found %s failed job(s) for contract #%s',
+                count($failedJobs),
+                $contract->getId()
+            )
+        );
+        if (count($failedJobs) > 0) {
+            foreach ($failedJobs as $job) {
+                /** @var JobRelatedEntities $job */
+                $this->retryFailedJob($job->getJob());
+            }
+        }
+    }
+
+    /**
+     * @param Job $failedJob
+     */
+    protected function retryFailedJob(Job $failedJob)
+    {
+        $this->logger->info(
+            sprintf(
+                '[AbstractContractSynchronizer]Create a new job for failed job #%s, command %s',
+                $failedJob->getId(),
+                $failedJob->getCommand()
+            )
+        );
+        $retryJob = clone $failedJob;
+        $retryJob->setOriginalJob($failedJob);
+        $this->em->persist($retryJob);
+    }
+
+    /**
      * @return \CreditJeeves\DataBundle\Entity\HoldingRepository
      */
     protected function getHoldingRepository()
@@ -393,6 +432,17 @@ abstract class AbstractContractSynchronizer implements ContractSynchronizerInter
     protected function getContractRepository()
     {
         return $this->em->getRepository('RjDataBundle:Contract');
+    }
+
+    /**
+     * @param Contract $contract
+     * @param \DateTime $date
+     * @return mixed
+     */
+    protected function getFailedPushJobsByContract(Contract $contract, \DateTime $date)
+    {
+        return $this->em->getRepository('RjDataBundle:JobRelatedOrder')
+            ->getFailedPaymentPushJobsByContract($contract, $date);
     }
 
     /**

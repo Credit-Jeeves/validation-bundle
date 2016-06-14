@@ -4,9 +4,9 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Psr\Log\LoggerInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ExtractorInterface as Extractor;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\ApiPropertyExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\PropertyExtractorInterface as Extractor;
 
 /**
  * Service`s name "import.property.extractor_builder"
@@ -50,9 +50,9 @@ class ExtractorBuilder
     {
         $extractor = $this->factory->getExtractor($this->group);
         $extractor->setGroup($this->group);
-        if ($extractor instanceof ApiExtractorInterface) {
-            $extractor->setExtPropertyId($this->additionalParameter);
-        } elseif ($extractor instanceof CsvExtractorInterface) {
+        if ($extractor instanceof ApiPropertyExtractorInterface) {
+            $extractor->setExternalPropertyId($this->additionalParameter);
+        } elseif ($extractor instanceof CsvPropertyExtractorInterface) {
             $extractor->setPathToFile($this->additionalParameter);
         }
 

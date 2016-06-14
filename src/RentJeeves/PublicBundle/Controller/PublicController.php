@@ -313,8 +313,8 @@ class PublicController extends Controller
                             foreach ($contracts as $contract) {
                                 $contractIds[] = $contract->getId();
                             }
-                            $contractUnits =
-                                $em->getRepository('RjDataBundle:Unit')->findAllByContractIds($contractIds);
+                            $contractUnits = $em->getRepository('RjDataBundle:Unit')
+                                ->findAllSubmerchantUnitsByContractIds($contractIds);
                             $contractProperties = [];
                             foreach ($contractUnits as $unit) {
                                 $contractProperties[] = $unit->getProperty();
@@ -349,8 +349,16 @@ class PublicController extends Controller
 
             $session->remove('holding_id');
             $session->remove('resident_id');
-
-            return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            
+            // Redirect ResMan/MRI users to dashboard - we trust them, they don't need to verify email.
+            if (!empty($session->get(ASIDataManager::SESSION_INTEGRATION_DATA))) {
+                return $this->get('common.login.manager')->loginAndRedirect(
+                    $tenant,
+                    $this->generateUrl('tenant_homepage')
+                );
+            } else {
+                return $this->redirectToRoute('user_new_send', ['userId' => $tenant->getId()]);
+            }
         }
 
         $propertyList = [];
@@ -514,11 +522,10 @@ class PublicController extends Controller
             );
             $externalLeaseId = $integrationDataManager->getExternalLeaseId();
             $rent = $integrationDataManager->getRent();
-            $contractProcess->createContractFromTenantSide(
+            $contractProcess->createContractForOneSubmerchantGroup(
                 $tenant,
                 $property,
                 $unit->getActualName(),
-                null,
                 $externalLeaseId,
                 $rent
             );

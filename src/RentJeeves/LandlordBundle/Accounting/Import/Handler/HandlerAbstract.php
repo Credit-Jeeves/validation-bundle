@@ -508,7 +508,6 @@ abstract class HandlerAbstract implements HandlerInterface
         $form = $this->currentImportModel->getForm();
 
         if (!$this->isCreateCsrfToken && !$this->currentImportModel->isSkipped()) {
-
             $errors = $this->runFormValidation(
                 $form,
                 $lineNumber,

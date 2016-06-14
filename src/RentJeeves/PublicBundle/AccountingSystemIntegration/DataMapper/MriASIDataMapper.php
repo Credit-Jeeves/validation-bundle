@@ -64,18 +64,13 @@ class MriASIDataMapper implements ASIDataMapperInterface
         $integratedModel->setUserCancelUrl($request->get('UserCancelUrl'));
 
         $amounts = [];
-        $sum = 0;
         if ($appFee = $integratedModel->getAppFee()) {
             $amounts[DepositAccountType::APPLICATION_FEE] = $appFee;
-            $sum += $appFee;
         }
         if ($secDep = $integratedModel->getSecDep()) {
             $amounts[DepositAccountType::SECURITY_DEPOSIT] = $secDep;
-            $sum += $secDep;
         }
         $integratedModel->setAmounts($amounts);
-        $integratedModel->setSum($sum);
-        $integratedModel->setReturnParams($this->prepareReturnParams($integratedModel));
         $integratedModel->setReturnMethod('post');
 
         $this->validate($integratedModel, ['Default', 'mri']);
@@ -89,6 +84,23 @@ class MriASIDataMapper implements ASIDataMapperInterface
     }
 
     /**
+     * @param ASIIntegratedModel $integratedModel
+     * @return array
+     */
+    public function prepareReturnParams(ASIIntegratedModel $integratedModel)
+    {
+        $returnParams = [
+            'trackingid' => $integratedModel->getTrackingId(),
+            'apipost' => 'true',
+            'sum' => number_format(array_sum($integratedModel->getPaidAmounts()), 2, '.', ''),
+
+        ];
+        $returnParams['Digest'] = $this->HMACGenerator->generateHMAC($returnParams);
+
+        return $returnParams;
+    }
+
+    /**
      * @param Request $request
      * @throws \InvalidArgumentException
      */
@@ -97,22 +109,5 @@ class MriASIDataMapper implements ASIDataMapperInterface
         if (!$this->HMACGenerator->validateHMAC($request->request->all())) {
             throw new \InvalidArgumentException('Digest is invalid');
         }
-    }
-
-    /**
-     * @param ASIIntegratedModel $integratedModel
-     * @return array
-     */
-    protected function prepareReturnParams(ASIIntegratedModel $integratedModel)
-    {
-        $returnParams = [
-            'trackingid' => $integratedModel->getTrackingId(),
-            'apipost' => 'true',
-            'sum' => number_format($integratedModel->getSum(), 2, '.', ''),
-
-        ];
-        $returnParams['Digest'] = $this->HMACGenerator->generateHMAC($returnParams);
-
-        return $returnParams;
     }
 }

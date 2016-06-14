@@ -282,6 +282,15 @@ services:
             - RentJeeves\DataBundle\Entity\ImportProperty
             - ~
 
+    sonata.admin.import_lease:
+        class: RentJeeves\AdminBundle\Admin\ImportLeaseAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Import Leases" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\ImportLease
+            - 'SonataAdminBundle:CRUD'
+
     rental_report:
         class: RentJeeves\AdminBundle\Form\RentalReportType
         tags:

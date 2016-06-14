@@ -12,7 +12,6 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
-use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use RentJeeves\DataBundle\Validators\PaymentDate;
 use JMS\Serializer\Annotation as Serializer;
@@ -273,5 +272,29 @@ class Payment extends Base
     public function isRecurring()
     {
         return PaymentType::RECURRING == $this->getType();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("depositAccountType")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"payRent"})
+     * @return string
+     */
+    public function getDepositAccountType()
+    {
+        return $this->depositAccount->getType();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("paymentAccountType")
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"payRent"})
+     * @return string
+     */
+    public function getPaymentAccountType()
+    {
+        return $this->paymentAccount->getType();
     }
 }

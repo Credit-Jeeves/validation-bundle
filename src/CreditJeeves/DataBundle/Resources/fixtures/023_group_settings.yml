@@ -30,4 +30,5 @@ fixtures:
     passedAch: 1
   setting_dtr_1:
     isIntegrated: 1
+    paymentProcessor: aci
     group: DTRGroup_1

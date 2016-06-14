@@ -80,15 +80,11 @@
     background-color: #468847;
 }
 
-.import_properties_button {
-    width: 135px !important;
+.import_properties_button, .import_leases_button, .createCsvJobForImportLeases, .createCsvJobForImportProperties {
+    width: 155px !important;
 }
 
 #createCsvMappingLink {
     margin-left: 37px;
     width: 134px;
-}
-
-.createCsvJobForImportProperties {
-    width: 285px !important;
 }

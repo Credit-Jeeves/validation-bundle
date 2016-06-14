@@ -42,7 +42,8 @@ class UnmappedLoader extends AbstractLoader
             $importProperty->getCity(),
             $importProperty->getState(),
             $importProperty->getZip(),
-            $importProperty->getUnitName()
+            $importProperty->getUnitName(),
+            $importProperty->getCountry()
         );
 
         if (null === $property) { // ImportProperty has incorrect address

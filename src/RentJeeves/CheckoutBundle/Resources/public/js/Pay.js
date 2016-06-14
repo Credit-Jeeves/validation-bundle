@@ -270,7 +270,8 @@ function Pay(parent, contract) {
 
     self.prepareDialog = function () {
         jQuery('#pay-popup').dialog({
-            width: 650,
+            width: 655,
+            position: { my: "center center-50"},
             modal: true,
             beforeClose: function() {
                 if ('finish' === self.getCurrentStep()) {
@@ -281,6 +282,28 @@ function Pay(parent, contract) {
                 self.step(steps[current]);
             }
         });
+
+        if (jQuery('.fee-details').length > 0) {
+            jQuery('.fee-details').tooltip({
+                items: 'i',
+                content: Translator.trans('checkout.payment_account.fee.details.help'),
+                position: { my: 'left center', at: 'right+30 center' },
+                show: null,
+                close: function (event, ui) {
+                    ui.tooltip.hover(
+
+                        function () {
+                            $(this).stop(true).fadeTo(400, 1);
+                        },
+
+                        function () {
+                            $(this).fadeOut("400", function () {
+                                $(this).remove();
+                            })
+                        });
+                }
+            });
+        }
 
         jQuery('.user-ssn').ssn();
 
@@ -337,23 +360,6 @@ function Pay(parent, contract) {
 
     ko.utils.extend(self, new PayAddress(self, self.propertyAddress));
 
-    // Connected Payment Source Component
-    // Component should be connected after contractId and allowedCreditCard and before it should be using
-    ko.utils.extend(
-        self,
-        new PaymentSourceViewModel(
-            self,
-            self.contractId,
-            {
-                'allowPaymentSourceTypes': {
-                    'bank' : self.allowBank,
-                    'card' : self.allowCreditCard,
-                    'debit_card' : self.allowDebitCard
-                }
-            }
-        )
-    );
-
     self.payment = new Payment(self);
 
     self.paidForArr = ko.observable(null);
@@ -393,6 +399,20 @@ function Pay(parent, contract) {
         }
     };
 
+    ko.utils.extend(self, new PayMoneyComputing(self, self.contract));
+
+    // Connected Payment Source Component
+    // Component should be connected after contractId and allowedCreditCard and before it should be using
+    ko.utils.extend(
+        self,
+        new PaymentSourceViewModel(
+            self,
+            self.contractId,
+            {'settings' : self},
+            'card'
+        )
+    );
+
     self.infoMessage = ko.observable(null);
 
     self.showInfoMessage = function() {
@@ -420,7 +440,7 @@ function Pay(parent, contract) {
 
     ko.utils.extend(self, new PayDatesComputing(self));
 
-    ko.utils.extend(self, new PayMoneyComputing(self, self.contract));
+
 
 
     self.cancelDialog = function() {

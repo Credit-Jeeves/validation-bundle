@@ -26,9 +26,13 @@
                 <source>create.csv.mapping</source>
                 <target>Create CSV mapping</target>
             </trans-unit>
-            <trans-unit id="upload.csv.create_job">
-                <source>upload.csv.create_job</source>
-                <target>Upload csv and create job for import property</target>
+            <trans-unit id="admin.import.csv_properties">
+                <source>admin.import.csv_properties</source>
+                <target>Run CSV property import</target>
+            </trans-unit>
+            <trans-unit id="admin.import.csv_leases">
+                <source>admin.import.csv_leases</source>
+                <target>Run CSV lease import</target>
             </trans-unit>
             <trans-unit id="group.edit">
                 <source>group.edit</source>
@@ -334,6 +338,10 @@
                 <source>admin.list.payments_history_action</source>
                 <target>History</target>
             </trans-unit>
+            <trans-unit id="admin.list.import_lease_action">
+                <source>admin.list.import_lease_action</source>
+                <target>Import Leases</target>
+            </trans-unit>
             <trans-unit id="admin.list.payment.orders_action">
                 <source>admin.list.payment.orders_action</source>
                 <target>Orders</target>
@@ -394,6 +402,14 @@
                 <source>admin.import.property</source>
                 <target>Run property import</target>
             </trans-unit>
+            <trans-unit id="admin.import.lease">
+                <source>admin.import.lease</source>
+                <target>Run lease import</target>
+            </trans-unit>
+             <trans-unit id="admin.import.error.wrong_import_model_type">
+                <source>admin.import.error.wrong_import_model_type</source>
+                <target>Import Type invalid. Allowed values: property, lease.</target>
+             </trans-unit>
             <trans-unit id="admin.holding.post_app_fee_security_deposit">
                 <source>admin.holding.post_app_fee_security_deposit</source>
                 <target>Post Application Fee / Security Deposit?</target>
@@ -401,6 +417,10 @@
             <trans-unit id="admin.import_properties_job.created">
                 <source>admin.import_properties_job.created</source>
                 <target>Job for import properties per group %group_name% has been created</target>
+            </trans-unit>
+            <trans-unit id="admin.import_leases_job.created">
+                <source>admin.import_leases_job.created</source>
+                <target>Job for import leases per group %group_name% has been created</target>
             </trans-unit>
             <trans-unit id="admin.import_properties_job.error.empty_external_properties">
                 <source>admin.import_properties_job.error.empty_external_properties</source>

@@ -265,7 +265,8 @@
         "besimple/soap-wsdl": "v0.2.4 as dev-master",
         "besimple/soap-server": "v0.2.5 as dev-master",
     	"ass/xmlsecurity": "v1.1.1 as dev-master",
-        "rastor/jira-client": "dev-master as 0.3"
+        "rastor/jira-client": "dev-master as 0.3",
+        "nelmio/alice": "^2.1"
     },
     "require-dev": {
         "khepin/yaml-fixtures-bundle": "v0.8.2 as dev-master",
@@ -284,7 +285,8 @@
         "comfortablynumb/backup-restore-bundle": "dev-master",
         "ton/email-bundle": "v1.0.1",
         "fabpot/php-cs-fixer": "v0.5.7",
-        "sebastian/diff": "1.1.0"
+        "sebastian/diff": "1.1.0",
+        "sebastian/environment": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [

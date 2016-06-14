@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Tests\Entity;
 
 use RentJeeves\DataBundle\Entity\ImportTransformer;
+use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class ImportTransformerRepositoryCase extends BaseTestCase
@@ -19,14 +20,17 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $newImportTransformer1->setHolding($group->getHolding());
         $newImportTransformer1->setExternalPropertyId('test');
         $newImportTransformer1->setClassName('Class1');
+        $newImportTransformer1->setImportType(ImportModelType::PROPERTY);
 
         $newImportTransformer2 = new ImportTransformer();
         $newImportTransformer2->setGroup($group);
         $newImportTransformer2->setClassName('Class2');
+        $newImportTransformer2->setImportType(ImportModelType::PROPERTY);
 
         $newImportTransformer3 = new ImportTransformer();
         $newImportTransformer3->setHolding($group->getHolding());
         $newImportTransformer3->setClassName('Class3');
+        $newImportTransformer3->setImportType(ImportModelType::PROPERTY);
 
         $this->getEntityManager()->persist($newImportTransformer1);
         $this->getEntityManager()->persist($newImportTransformer2);
@@ -35,7 +39,7 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $result = $this->getEntityManager()->getRepository('RjDataBundle:ImportTransformer')
-            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test');
+            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test', ImportModelType::PROPERTY);
 
         $this->assertEquals('Class1', $result, 'Query return incorrect result');
     }
@@ -52,10 +56,12 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $newImportTransformer2 = new ImportTransformer();
         $newImportTransformer2->setGroup($group);
         $newImportTransformer2->setClassName('Class2');
+        $newImportTransformer2->setImportType(ImportModelType::PROPERTY);
 
         $newImportTransformer3 = new ImportTransformer();
         $newImportTransformer3->setHolding($group->getHolding());
         $newImportTransformer3->setClassName('Class3');
+        $newImportTransformer3->setImportType(ImportModelType::PROPERTY);
 
         $this->getEntityManager()->persist($newImportTransformer2);
         $this->getEntityManager()->persist($newImportTransformer3);
@@ -63,7 +69,7 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $this->getEntityManager()->flush();
 
         $result = $this->getEntityManager()->getRepository('RjDataBundle:ImportTransformer')
-            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test');
+            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test', ImportModelType::PROPERTY);
 
         $this->assertEquals('Class2', $result, 'Query return incorrect result');
     }
@@ -80,12 +86,13 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $newImportTransformer3 = new ImportTransformer();
         $newImportTransformer3->setHolding($group->getHolding());
         $newImportTransformer3->setClassName('Class3');
+        $newImportTransformer3->setImportType(ImportModelType::PROPERTY);
 
         $this->getEntityManager()->persist($newImportTransformer3);
         $this->getEntityManager()->flush();
 
         $result = $this->getEntityManager()->getRepository('RjDataBundle:ImportTransformer')
-            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test');
+            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test', ImportModelType::PROPERTY);
 
         $this->assertEquals('Class3', $result, 'Query return incorrect result');
     }
@@ -100,7 +107,7 @@ class ImportTransformerRepositoryCase extends BaseTestCase
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
 
         $result = $this->getEntityManager()->getRepository('RjDataBundle:ImportTransformer')
-            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test');
+            ->findClassNameWithPriorityByGroupAndExternalPropertyId($group, 'test', ImportModelType::PROPERTY);
 
         $this->assertNull($result, 'Query return incorrect result');
     }

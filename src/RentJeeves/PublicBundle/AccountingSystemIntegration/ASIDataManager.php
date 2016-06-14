@@ -237,9 +237,20 @@ class ASIDataManager
         $amounts = $this->get('amounts', []);
         if (!empty($amounts[$paymentType])) {
             $amounts[$paymentType] = null;
-            $this->cachedData['amounts'] = $amounts;
-            $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cachedData);
+            $this->set('amounts', $amounts);
         }
+    }
+
+    /**
+     * Set real payment amount that was created
+     * @param string $paymentType
+     * @param float $amount
+     */
+    public function setPaidPayment($paymentType, $amount)
+    {
+        $paidAmounts = $this->get('paidAmounts', []);
+        $paidAmounts[$paymentType] = $amount;
+        $this->set('paidAmounts', $paidAmounts);
     }
 
     /**
@@ -258,13 +269,14 @@ class ASIDataManager
         return $this->get('returnMethod', 'get');
     }
 
-
     /**
      * @return array
      */
     public function getReturnParams()
     {
-        return $this->get('returnParams', []);
+        $dataMapper = $this->dataMapperFactory->getMapper($this->get('accountingSystem'));
+
+        return $dataMapper->prepareReturnParams($this->getFullData());
     }
 
     /**
@@ -369,6 +381,31 @@ class ASIDataManager
         }
 
         return $defaultValue;
+    }
+
+    /**
+     * @param string $paramName
+     * @param mixed $value
+     */
+    protected function set($paramName, $value)
+    {
+        if (is_null($this->cachedData) && $this->session->has(self::SESSION_INTEGRATION_DATA)) {
+            $this->cachedData = $this->session->get(self::SESSION_INTEGRATION_DATA, []);
+        }
+        $this->cachedData[$paramName] = $value;
+        $this->session->set(self::SESSION_INTEGRATION_DATA, $this->cachedData);
+    }
+
+    /**
+     * @return ASIIntegratedModel
+     */
+    protected function getFullData()
+    {
+        if (is_null($this->cachedData) && $this->session->has(self::SESSION_INTEGRATION_DATA)) {
+            $this->cachedData = $this->session->get(self::SESSION_INTEGRATION_DATA, []);
+        }
+
+        return $this->cachedData;
     }
 
     /**

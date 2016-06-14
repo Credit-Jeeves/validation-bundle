@@ -34,6 +34,11 @@ class PaymentAccountsController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"=ResponseEntity::class,
+     *         "groups"={"Base", "PaymentAccountShort"},
+     *         "collection" = true
      *     }
      * )
      * @Rest\Get("/payment_accounts")
@@ -67,6 +72,10 @@ class PaymentAccountsController extends Controller
      *         404="Payment Account not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"=ResponseEntity::class,
+     *         "groups"={"Base", "PaymentAccountDetails"}
      *     }
      * )
      * @Rest\Get("/payment_accounts/{id}")
@@ -104,6 +113,16 @@ class PaymentAccountsController extends Controller
      *         201="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     input={
+     *         "class"="RentJeeves\ApiBundle\Forms\PaymentAccountType",
+     *         "name" = ""
+     *     },
+     *     responseMap={
+     *         201 = {
+     *             "class"=ResponseEntity::class,
+     *             "groups"={"Base"}
+     *         }
      *     }
      * )
      * @Rest\Post("/payment_accounts")
@@ -165,6 +184,16 @@ class PaymentAccountsController extends Controller
      *         404="Payment Account not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     input={
+     *         "class"="RentJeeves\ApiBundle\Forms\PaymentAccountType",
+     *         "name" = ""
+     *     },
+     *     responseMap={
+     *         204 = {
+     *             "class"=ResponseEntity::class,
+     *             "groups"={"Empty"}
+     *         }
      *     }
      * )
      * @Rest\Put("/payment_accounts/{id}")

@@ -25,7 +25,9 @@ class ResponseParserCase extends BaseTestCase
      */
     public function shouldReturnTransactionsAfterParse()
     {
-        $pathToFile = $this->getFileLocator()->locate('@RjCheckoutBundle/Tests/Fixtures/Aci/testResponseFile.xml');
+        $pathToFile = $this->getFileLocator()->locate(
+            '@RjCheckoutBundle/Tests/Data/PaymentProcessor/Aci/PayAnyone/Parser/testResponseFile.xml'
+        );
         $xml = file_get_contents($pathToFile);
 
         $logger = $this->getLoggerMock();

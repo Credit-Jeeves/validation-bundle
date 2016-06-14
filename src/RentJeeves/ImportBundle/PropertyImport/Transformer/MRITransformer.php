@@ -29,8 +29,8 @@ class MRITransformer implements TransformerInterface
     protected $arrayCache = [];
 
     /**
-     * @param EntityManagerInterface   $em
-     * @param LoggerInterface $logger
+     * @param EntityManagerInterface $em
+     * @param LoggerInterface        $logger
      */
     final public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
@@ -51,6 +51,7 @@ class MRITransformer implements TransformerInterface
             ['group' => $import->getGroup()]
         );
 
+        $countryFromSettings = $import->getGroup()->getGroupSettings()->getCountryCode();
         /** @var Value $accountingSystemRecord */
         foreach ($accountingSystemData as $accountingSystemRecord) {
             if (true === $this->checkExistImportPropertyInCache($import, $accountingSystemRecord)) {
@@ -71,6 +72,7 @@ class MRITransformer implements TransformerInterface
             $importProperty->setCity($this->getCity($accountingSystemRecord));
             $importProperty->setState($this->getState($accountingSystemRecord));
             $importProperty->setZip($this->getZip($accountingSystemRecord));
+            $importProperty->setCountry($this->getCountry($accountingSystemRecord, $countryFromSettings));
             $importProperty->setAllowMultipleProperties($this->getAllowMultipleProperties($accountingSystemRecord));
 
             $this->em->persist($importProperty);
@@ -190,6 +192,17 @@ class MRITransformer implements TransformerInterface
     protected function getZip(Value $accountingSystemRecord)
     {
         return $accountingSystemRecord->getZipCode();
+    }
+
+    /**
+     * @param Value $accountingSystemRecord
+     * @param string $countryFromSettings
+     *
+     * @return string
+     */
+    protected function getCountry(Value $accountingSystemRecord, $countryFromSettings)
+    {
+        return $countryFromSettings;
     }
 
     /**

@@ -389,6 +389,7 @@ services:
         arguments:
             - '@profit_stars.transaction_reporting.client'
             - '@payment_processor.order_status_manager'
+            - '@payment_processor.profit_stars.rdc'
             - '@doctrine.orm.default_entity_manager'
             - '@monolog.logger.profit_stars'
             - '%profit_stars.store_id%'

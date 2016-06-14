@@ -9,6 +9,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
+use RentJeeves\DataBundle\Enum\OrderAlgorithmType;
 
 /**
  * @method Property find($id, $lockMode = LockMode::NONE, $lockVersion = null)
@@ -223,9 +224,11 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.property_groups', 'p_group')
             ->leftJoin('p.units', 'unit')
             ->where('p_group.holding_id = :holdingId')
+            ->andWhere('p_group.orderAlgorithm = :submerchant')
             ->andWhere('unit.holding = :holdingId')
             ->andWhere('propertyAddress.lat IS NOT NULL AND propertyAddress.long IS NOT NULL')
             ->setParameter('holdingId', $holding->getId())
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->orderBy('sortField')
             ->getQuery()
             ->execute();
@@ -310,8 +313,6 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.propertyAddress', 'propertyAddress')
             ->where('propertyAddress.index = :index')
             ->setParameter('index', $address->getIndex())
-            ->andWhere('propertyAddress.number = :number')
-            ->setParameter('number', $address->getNumber())
             ->setMaxResults(1) /** @TODO: remove this after adding unique index for field `ss_index` */
             ->getQuery()
             ->getOneOrNullResult();
@@ -377,10 +378,13 @@ class PropertyRepository extends EntityRepository
             ->innerJoin('p.units', 'units')
             ->innerJoin('units.unitMapping', 'um')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('units.group', 'g')
             ->andWhere('units.holding = pm.holding')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
             ->andWhere('um.externalUnitId LIKE :externalUnitMask')
+            ->andWhere('g.orderAlgorithm = :submerchant')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId)
             ->setParameter(
@@ -416,8 +420,11 @@ class PropertyRepository extends EntityRepository
         $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId);
 
@@ -440,11 +447,14 @@ class PropertyRepository extends EntityRepository
     {
         AccountingSystem::throwsInvalid($accountingSystem);
 
-         $query = $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->innerJoin('p.propertyMappings', 'pm')
             ->innerJoin('pm.holding', 'h')
+            ->innerJoin('p.property_groups', 'g')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->andWhere('h.accountingSystem = :accountingSystem')
             ->andWhere('pm.externalPropertyId = :externalPropertyId')
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->setParameter('accountingSystem', $accountingSystem)
             ->setParameter('externalPropertyId', $externalPropertyId);
         if ($holdingId) {
@@ -463,16 +473,26 @@ class PropertyRepository extends EntityRepository
      */
     public function checkPropertyBelongOneGroup(Property $property)
     {
-        if ($property->getPropertyGroups()->count() > 1) {
+
+        $countPropertyGroups = $property->getPropertyGroups()->filter(
+            function (Group $group) {
+                return OrderAlgorithmType::SUBMERCHANT === $group->getOrderAlgorithm();
+            }
+        )->count();
+        
+        if ($countPropertyGroups > 1) {
             throw new NonUniqueResultException('Property belongs to more then one group');
         }
 
         return (bool) $this->createQueryBuilder('p')
             ->select('1')
             ->innerJoin('p.units', 'u')
+            ->innerJoin('u.group', 'g')
             ->where('p.id = :property')
+            ->andWhere('g.orderAlgorithm = :submerchant')
             ->having('COUNT(DISTINCT u.group) = 1')
             ->setParameter('property', $property)
+            ->setParameter('submerchant', OrderAlgorithmType::SUBMERCHANT)
             ->getQuery()
             ->getSingleScalarResult();
     }

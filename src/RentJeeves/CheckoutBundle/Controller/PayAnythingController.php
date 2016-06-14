@@ -131,7 +131,7 @@ class PayAnythingController extends BaseController
         }
 
         $depositAccountType = $paymentType->get('payFor')->getData();
-        $this->savePayment(
+        $payment = $this->savePayment(
             $paymentType->getData(),
             $contract,
             $paymentAccount,
@@ -142,6 +142,7 @@ class PayAnythingController extends BaseController
         /** @var ASIDataManager $integrationDataManager */
         $integrationDataManager = $this->get('accounting_system.integration.data_manager');
         if ($integrationDataManager->hasIntegrationData()) {
+            $integrationDataManager->setPaidPayment($depositAccountType, $payment->getAmount());
             $integrationDataManager->removePayment($depositAccountType);
             $amounts = $integrationDataManager->getAmounts();
             if (!$integrationDataManager->hasPayments() && !empty($amounts)) {
@@ -211,6 +212,7 @@ class PayAnythingController extends BaseController
      * @param Contract $contract
      * @param PaymentAccount $paymentAccount
      * @param string $depositAccountType should be valid DepositAccountType
+     * @return Payment $payment
      */
     protected function savePayment(
         Payment $payment,
@@ -232,5 +234,7 @@ class PayAnythingController extends BaseController
 
         $this->getEntityManager()->persist($payment);
         $this->getEntityManager()->flush($payment);
+
+        return $payment;
     }
 }

@@ -23,6 +23,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getStreet()
@@ -33,6 +34,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getUnit()
@@ -43,6 +45,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getCity()
@@ -53,6 +56,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getState()
@@ -63,6 +67,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("string")
      * @return string
      */
     public function getZip()
@@ -73,6 +78,7 @@ class MailingAddress extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"AddressDetails"})
+     * @Serializer\Type("boolean")
      * @return string
      */
     public function getIsCurrent()

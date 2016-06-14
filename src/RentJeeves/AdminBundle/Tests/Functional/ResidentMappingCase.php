@@ -17,7 +17,7 @@ class ResidentMappingCase extends BaseTestCase
             $this->getUrl() . 'admin/rentjeeves/data/residentmapping/list'
         );
         $this->assertNotNull($residents = $this->page->findAll('css', 'tbody tr'));
-        $this->assertEquals(4, count($residents));
+        $this->assertEquals(6, count($residents));
 
         $this->assertNotNull($create = $this->page->find('css', '.sonata-action-element'));
         $create->click();
@@ -36,6 +36,6 @@ class ResidentMappingCase extends BaseTestCase
         $btn[1]->click();
 
         $this->assertNotNull($residents = $this->page->findAll('css', 'tbody tr'));
-        $this->assertEquals(5, count($residents));
+        $this->assertEquals(7, count($residents));
     }
 }

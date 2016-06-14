@@ -9,18 +9,11 @@
 function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
     var self = this;
 
-    self.allowPaymentSourceTypes = {
-        'bank' : ko.observable(true),
-        'card' : ko.observable(true),
-        'debit_card' : ko.observable(false)
-    };
-    if (settings && settings.allowPaymentSourceTypes) {
-        self.allowPaymentSourceTypes = settings.allowPaymentSourceTypes;
-    }
+    self.settings = new PaymentAccountSettings(settings);
 
     self.defaultType = ko.pureComputed(function () {
-        if (typeof (defaultType) == 'undefined' || !self.allowPaymentSourceTypes[defaultType]()) {
-            defaultType = self.allowPaymentSourceTypes['bank']() ? 'bank' : 'card';
+        if (typeof (defaultType) == 'undefined' || !self.settings.allowPaymentSourceTypes[defaultType]()) {
+            defaultType = self.settings.allowPaymentSourceTypes['bank']() ? 'bank' : 'card';
         }
 
         return defaultType;
@@ -48,6 +41,18 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
     self.currentPaymentAccountId.subscribe(function(newPaymentAccountId) {
         changePaymentAccountHandler(newPaymentAccountId);
     });
+
+    self.feeDisplay = function (type) {
+        var fee = null;
+        if (self.settings.feeSettings[type].type() == 'percentage') {
+            fee = parseFloat(self.settings.feeSettings[type].value());
+            fee = fee ? fee + '%' : 0;
+        } else {
+            fee = Format.money(self.settings.feeSettings[type].value());
+        }
+
+        return fee ? fee : '$0.00';
+    };
 
     /**
      * Handler should update currentPaymentAccount
@@ -120,7 +125,7 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
      * @return boolean
      */
     self.isAvailablePaymentSourceType = function(sourceType) {
-        return self.allowPaymentSourceTypes[sourceType];
+        return self.settings.allowPaymentSourceTypes[sourceType];
     };
 
     /**
@@ -152,6 +157,17 @@ function PaymentSourceViewModel(parent, contractId, settings, defaultType) {
                 "visible: isAvailablePaymentSourceType('" + element.value + "')"
             );
         });
+        ko.utils.arrayForEach(
+            document.querySelectorAll('#payment-type-with-fee .payment-fee-value'),
+            function (element) {
+                if (element && element.dataset && element.dataset.paymentType) {
+                    element.setAttribute(
+                        "data-bind",
+                        "text: feeDisplay('" + element.dataset.paymentType + "')"
+                    );
+                }
+            }
+        );
     };
 
     // Constructor

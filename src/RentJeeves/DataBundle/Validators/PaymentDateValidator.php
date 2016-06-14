@@ -95,6 +95,24 @@ class PaymentDateValidator extends ConstraintValidator
             }
         }
 
+        if ($object->getType() === PaymentType::RECURRING) {
+            if ($object->getEndMonth() && $object->getEndYear()) {
+
+                $endDate = new \DateTime(
+                    sprintf('last day of %s-%s', $object->getEndYear(), $object->getEndMonth())
+                );
+
+                if ($endDate->format('d') > $object->getDueDate()) {
+                    $endDate->modify(
+                        sprintf('%s-%s-%s', $object->getEndYear(), $object->getEndMonth(), $object->getDueDate())
+                    );
+                }
+
+                if ($endDate < $now) {
+                    $this->context->addViolationAt('endMonth', $constraint->messageEndMonthIsPast);
+                }
+            }
+        }
     }
 
     /**

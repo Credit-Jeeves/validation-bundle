@@ -61,6 +61,7 @@ class CreditTrackController extends Controller
             'paymentAccountsJson' => $paymentAccounts,
             'creditTrackEnabled' => $user->getSettings()->isCreditTrack(),
             'chargeDay' => $chargeDay,
+            'isLocked' => $em->getRepository('RjDataBundle:Tenant')->isPaymentProcessorLocked($this->getUser()),
             'scoreTrackFreeUntil' => $projectSettings->getScoretrackFreeUntil(),
         ];
     }

@@ -22,6 +22,10 @@ class TenantController extends Controller
      *     statusCodes={
      *         200="Returned when successful",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Tenant",
+     *         "groups"={"TenantDetails"}
      *     }
      * )
      * @Rest\Get("/details")
@@ -45,6 +49,12 @@ class TenantController extends Controller
      *         204="Returned when successful",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         204 = {
+     *             "class"="RentJeeves\ApiBundle\Response\Tenant",
+     *             "groups"={"Empty"}
+     *         }
      *     }
      * )
      * @Rest\Put("/details")

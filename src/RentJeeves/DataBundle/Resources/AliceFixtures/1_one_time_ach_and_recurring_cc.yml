@@ -1,0 +1,115 @@
+parameters:
+    locale: test
+CreditJeeves\DataBundle\Entity\Holding:
+    holdingTestPayments:
+        name:           TEST Payments
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+CreditJeeves\DataBundle\Entity\Group:
+    groupA:
+        name:                 TEST Payments
+        statementDescriptor:  TEST Payments
+        holding:              '@holdingTestPayments'
+        type:                 rent
+        createdAt:            <dateTimeBetween('-50 days', 'now')>
+        updatedAt:            <dateTimeBetween('-10 days', 'now')>
+        groupProperties:      ['@property1']
+RentJeeves\DataBundle\Entity\DepositAccount:
+    depositAccount1:
+        group:          '@groupA'
+        holding:        '@holdingTestPayments'
+        merchantName:   564075
+        status:         complete
+        paymentProcessor: aci
+        type:           rent
+        accountNumber:  15235698
+RentJeeves\DataBundle\Entity\GroupSettings:
+    groupSettings1:
+        isIntegrated:     0
+        group:            '@groupA'
+        paymentProcessor: aci
+RentJeeves\DataBundle\Entity\Landlord:
+    landlord0:
+        holding:        '@holdingTestPayments'
+        firstName:      Bob
+        lastName:       McConnell
+        middleInitial:  B
+        email:          landlord_bob@example.com
+        phoneType:      2
+        phone:          7858655392
+        ssn:            333777999
+        dateOfBirth:    <(new DateTime('1980-10-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+RentJeeves\DataBundle\Entity\Tenant:
+    tenant{1..20}:
+        firstName:      <firstName()>
+        middleInitial:  <randomLetter()>
+        lastName:       <lastName()>
+        email:          tenant_<?php echo time(); ?>_<current()>@example.com
+        phoneType:      2
+        phone:          7858655392
+        dateOfBirth:    <(new DateTime('1976-08-10'))>
+        ssn:            <numberBetween(777777777,999999999)>
+        isActive:       true
+        inviteCode:     null
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     none
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\Contract:
+    contract{1..20}:
+        tenant:         '@tenant<current()>'
+        holding:        '@holdingTestPayments'
+        group:          '@groupA'
+        property:       '@property1'
+        unit:           '@unit1'
+        rent:           <numberBetween(1000,2000)>
+        status:         approved
+        paidTo:         <dateTimeInInterval('+2 months', 'now')>
+        startAt:        <dateTimeBetween('-6 months', 'now')>
+        finishAt:       <dateTimeInInterval('+2 years', '+ 1 months')>
+        createdAt:      <dateTimeInInterval('-2 years', '+ 1 months')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\PropertyAddress:
+    propertyAddress1:
+        number:         13161
+        street:         Brayton
+        city:           Anchorage
+        state:          AK
+        zip:            99516
+        country:        US
+        lat:            61.10206
+        long:           -149.84258
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+        index:          13161BraytonAnchorageAK
+RentJeeves\DataBundle\Entity\Property:
+    property1:
+        propertyAddress: '@propertyAddress1'
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\Unit:
+    unit1:
+        property:       '@property1'
+        holding:        '@holdingTestPayments'
+        group:          '@groupA'
+        name:           1-a
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>

@@ -23,7 +23,8 @@ class Unit extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"UnitShort", "UnitDetails"})
-     *
+     * @Serializer\SerializedName("name")
+     * @Serializer\Type("string")
      * @return string
      */
     public function getName()
@@ -36,7 +37,7 @@ class Unit extends ResponseResource
      * @Serializer\Groups({"UnitDetails"})
      * @Serializer\SerializedName("address")
      * @Serializer\Type("array")
-     * @return string
+     * @return array
      */
     public function getAddress()
     {

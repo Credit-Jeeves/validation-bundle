@@ -28,7 +28,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $resmanExtractor = new ResmanExtractor($this->getResmanResidentDataManagerMock(), $this->getLoggerMock());
         $resmanExtractor->setGroup($group);
-        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->setExternalPropertyId('test');
         $resmanExtractor->extractData();
     }
 
@@ -53,7 +53,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $resmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
         $resmanExtractor->setGroup($group);
-        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->setExternalPropertyId('test');
         $resmanExtractor->extractData();
     }
 
@@ -75,7 +75,7 @@ class ResmanExtractorCase extends UnitTestBase
             ->will($this->returnValue($expectedResponse = ['test']));
         $resmanExtractor = new ResmanExtractor($dataManager, $this->getLoggerMock());
         $resmanExtractor->setGroup($group);
-        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->setExternalPropertyId('test');
         $actualResponse = $resmanExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from ResmanExtractor.');
@@ -104,7 +104,7 @@ class ResmanExtractorCase extends UnitTestBase
 
         $resmanExtractor = new ResmanExtractor($dataManager, $logger);
         $resmanExtractor->setGroup($group);
-        $resmanExtractor->setExtPropertyId('test');
+        $resmanExtractor->setExternalPropertyId('test');
         $actualResponse = $resmanExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from ResmanExtractor.');

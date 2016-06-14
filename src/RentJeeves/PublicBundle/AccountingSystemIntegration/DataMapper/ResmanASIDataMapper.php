@@ -41,8 +41,6 @@ class ResmanASIDataMapper implements ASIDataMapperInterface
         $ASIIntegratedModel->setAppFee($request->get('appfee'));
         $ASIIntegratedModel->setSecDep($request->get('secdep'));
 
-        $ASIIntegratedModel->setReturnParams(['success' => 'true']);
-
         $amounts = [];
         if ($appFee = $ASIIntegratedModel->getAppFee()) {
             $amounts[DepositAccountType::APPLICATION_FEE] = $appFee;
@@ -60,5 +58,14 @@ class ResmanASIDataMapper implements ASIDataMapperInterface
         }
 
         return $ASIIntegratedModel;
+    }
+
+    /**
+     * @param ASIIntegratedModel $integratedModel
+     * @return array
+     */
+    public function prepareReturnParams(ASIIntegratedModel $integratedModel)
+    {
+        return ['success' => 'true'];
     }
 }

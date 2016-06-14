@@ -1,0 +1,25 @@
+CreditJeeves\DataBundle\Entity\Holding :
+  holding0:
+    name: TestNameHolding
+    createdAt:     <dateTimeBetween('-200 days', 'now')>
+    updatedAt:     <dateTimeBetween('-200 days', 'now')>
+RentJeeves\DataBundle\Entity\Landlord :
+  user0:
+    holding: '@holding0'
+    first_name:     Petr
+    last_name:      Petrov
+    middle_initial: A
+    email: landloard_petr@example.com
+    phone_type: 2
+    phone: 7858655392
+    date_of_birth: <(new DateTime("1980-10-10"))>
+    password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+    emailNotification: true
+    offer_notification: true
+    culture: en
+    has_data: true
+    has_report: null
+    is_verified: none
+    lastLogin:     <dateTimeBetween('-1 days', 'now')>
+    createdAt:     <dateTimeBetween('-200 days', 'now')>
+    updatedAt:     <dateTimeBetween('-200 days', 'now')>

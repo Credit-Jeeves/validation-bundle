@@ -6,6 +6,7 @@ fixtures:
         city:           New York
         state:          NY
         zip:            10003
+        country:        US
         lat:            40.73108
         long:           -73.99186
         createdAt:     '-60 days'
@@ -16,6 +17,7 @@ fixtures:
         street:         Andante Rd
         city:           Santa Barbara
         state:          CA
+        country:        US
         zip:            93105
         lat:            34.44942
         long:           -119.70936
@@ -27,6 +29,7 @@ fixtures:
         street:         Andante Rd
         city:           Santa Barbara
         state:          CA
+        country:        US
         zip:            93105
         lat:            34.44942
         long:           -119.70936
@@ -38,6 +41,7 @@ fixtures:
         street:         Broadway
         city:           New York
         state:          NY
+        country:        US
         zip:            10012
         lat:            40.72384
         long:           -73.99749
@@ -49,6 +53,7 @@ fixtures:
         street:         Broadway
         city:           Jamaica
         state:          NY
+        country:        US
         zip:            11414
         lat:            40.6584
         long:           -73.83053
@@ -60,6 +65,7 @@ fixtures:
         street:         Washington St
         city:           Dedham
         state:          MA
+        country:        US
         zip:            02026
         lat:            42.2572
         long:           -71.16139
@@ -71,6 +77,7 @@ fixtures:
         street:         Novato
         city:           Palos Verdes Estates
         state:          CA
+        country:        US
         zip:            90274
         lat:            33.79069
         long:           -118.38635
@@ -82,6 +89,7 @@ fixtures:
         street:         18th
         city:           Seattle
         state:          WA
+        country:        US
         zip:            98122
         lat:            47.60288
         long:           -122.30887
@@ -93,6 +101,7 @@ fixtures:
         street:         W 48th St
         city:           Kansas City
         state:          MO
+        country:        US
         zip:            64112
         lat:            39.03927
         long:           -94.58821
@@ -104,6 +113,7 @@ fixtures:
         street:         Crosstimbers St
         city:           Houston
         state:          TX
+        country:        US
         zip:            77022
         lat:            29.82872
         long:           -95.38551
@@ -115,6 +125,7 @@ fixtures:
         street:         Overland Ave
         city:           Billings
         state:          Mt
+        country:        US
         zip:            59102
         lat:            45.75281
         long:           -108.56561
@@ -126,6 +137,7 @@ fixtures:
         street:         N Palo Cristi Rd
         city:           Scottsdale
         state:          AZ
+        country:        US
         zip:            85253
         lat:            33.51822
         long:           -112.00489
@@ -137,6 +149,7 @@ fixtures:
         street:         Market St
         city:           Saint Louis
         state:          MO
+        country:        US
         zip:            63103
         lat:            38.62736
         long:           -90.19836
@@ -148,6 +161,7 @@ fixtures:
         street:         W Madison St
         city:           Chicago
         state:          IL
+        country:        US
         zip:            60661
         lat:             41.8810911
         long:             -87.6468986
@@ -158,6 +172,7 @@ fixtures:
         number:         617
         street:         S Broadway St
         city:           Little Rock
+        country:        US
         state:          AR
         zip:            72201
         createdAt:     '-60 days'
@@ -168,6 +183,7 @@ fixtures:
         street:         Broadway
         city:           New York
         state:          NY
+        country:        US
         zip:            10003
         lat:            40.73023
         long:           -73.99282
@@ -179,6 +195,7 @@ fixtures:
         state:          NY
         city:           New York
         street:         Broadway
+        country:        US
         zip:            10003
         lat:            40.73023
         long:           -73.99282
@@ -190,6 +207,7 @@ fixtures:
         street:         Broadway
         city:           New York
         state:          NY
+        country:        US
         zip:            10003
         lat:            40.73162
         long:           -73.99166
@@ -201,6 +219,7 @@ fixtures:
         street:         Lexington Ave
         city:           New York
         state:          NY
+        country:        US
         zip:            10016
         lat:            40.74261
         long:           -73.98283
@@ -213,6 +232,7 @@ fixtures:
         street:         W 36th Pl
         city:           Los Angeles
         state:          CA
+        country:        US
         zip:            90007
         lat:            34.02176
         long:           -118.29335

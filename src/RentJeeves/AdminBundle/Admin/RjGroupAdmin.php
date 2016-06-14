@@ -105,7 +105,6 @@ class RjGroupAdmin extends Admin
         $listMapper
             ->addIdentifier('name')
             ->add('holding')
-            ->add('affiliate')
             ->add('groupPhones')
             ->add('count_properties')
             ->add(
@@ -125,7 +124,7 @@ class RjGroupAdmin extends Admin
                              'template' => 'AdminBundle:CRUD:list__action_properties.html.twig'
                         ),
                         'import_properties' => [
-                            'template' => 'AdminBundle:CRUD:list__action_import_property.html.twig'
+                            'template' => 'AdminBundle:CRUD:list__action_import.html.twig'
                         ],
                     )
                 )
@@ -163,12 +162,6 @@ class RjGroupAdmin extends Admin
                         'choices' => OrderAlgorithmType::cachedTitles()
                     ]
                 )
-                ->add('mailingAddressName', null, ['required' => false])
-                ->add('city', null, ['required' => false])
-                ->add('state', null, ['required' => false])
-                ->add('zip', null, ['required' => false])
-                ->add('street_address_1', null, ['required' => false])
-                ->add('street_address_2')
             ->end()
             ->with('Deposit Accounts')
                 ->add(
@@ -309,11 +302,6 @@ class RjGroupAdmin extends Admin
             ->add('logo_url')
             ->add('phone')
             ->add('fax')
-            ->add('street_address_1')
-            ->add('street_address_2')
-            ->add('city')
-            ->add('state')
-            ->add('zip')
 //            ->add('fee_type')
             ->add('contract')
             ->add('contract_date')

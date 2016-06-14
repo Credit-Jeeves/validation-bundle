@@ -2,7 +2,6 @@
 
 namespace RentJeeves\ImportBundle\Tests\Functional\PropertyImport;
 
-use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\DataBundle\Entity\ImportProperty;
@@ -10,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Enum\ImportModelType;
 use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportStatus;
+use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
 
@@ -122,7 +122,7 @@ class CsvImportPropertyManagerCase extends BaseTestCase
 
     protected function configureContainer()
     {
-        $sftpFileManager = $this->getBaseMock(SftpFileManager::class);
+        $sftpFileManager = $this->getBaseMock(ImportSftpFileManager::class);
         $sftpFileManager
             ->method('download')
             ->will($this->returnCallback(

@@ -40,14 +40,14 @@ function PayMoneyComputing(parent, contract) {
         return Format.money(self.total());
     });
 
-    var feeCalculation = function(isText) {
+    var feeCalculation = function(isText, type) {
         var fee = null;
-        if ('card' == parent.currentPaymentAccount().type()) {
+        if ('card' == type) {
             fee = parseFloat(self.contract().groupSettings.feeCC);
             if (isText) {
                 fee += '%'
             }
-        } else if ('bank' == parent.currentPaymentAccount().type()) {
+        } else if ('bank' == type) {
             if (self.contract().groupSettings.isPassedACH) {
                 fee = parseFloat(self.contract().groupSettings.feeACH);
             } else {
@@ -56,7 +56,7 @@ function PayMoneyComputing(parent, contract) {
             if (isText) {
                 fee = Format.money(fee);
             }
-        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+        } else if ('debit_card' == type) {
             fee = parseFloat(self.contract().groupSettings.feeDC);
             var feeType = self.contract().groupSettings.typeFeeDC;
             if (isText && 'percentage' == feeType) {
@@ -65,49 +65,83 @@ function PayMoneyComputing(parent, contract) {
                 fee = Format.money(fee);
             }
         }
-        return fee;
+
+        return fee ? fee : '$0.00';
     };
 
+    self.feeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeDC : 0;
+    });
+
+    self.typeFeeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.typeFeeDC : 0;
+    });
+
+    self.feeCC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeCC : 0;
+    });
+
+    self.feeACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeACH : 0;
+    });
+
+    self.isPassedACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.isPassedACH : 0;
+    });
+
     self.getFee = ko.computed(function() {
-        return feeCalculation(false);
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        return currentPaymentAccount ? feeCalculation(false, currentPaymentAccount.type()) : 0;
     });
 
     self.getFeeText = ko.computed(function() {
-        return feeCalculation(true);
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        return currentPaymentAccount ? feeCalculation(true, currentPaymentAccount.type()) : '$0.00';
     });
 
     self.getFeeNote = ko.computed(function() {
         var i18nKey = null;
-        if ('card' == parent.currentPaymentAccount().type()) {
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
+        if ('card' == type) {
             i18nKey = 'checkout.fee.card.note-%FEE%';
-        } else if ('bank' == parent.currentPaymentAccount().type()) {
+        } else if ('bank' == type) {
             i18nKey = 'checkout.fee.bank.note-%FEE%';
-        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+        } else if ('debit_card' == type) {
             i18nKey = 'checkout.fee.debit_card.note-%FEE%';
         }
-        return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true)}) : '';
+
+        return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true, type)}) : '';
     });
 
     self.getFeeNoteHelp = ko.computed(function() {
         var i18nKey = null;
-        if ('card' == parent.currentPaymentAccount().type()) {
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
+        if ('card' == type) {
             i18nKey = 'checkout.fee.card.note.help-%FEE%';
-        } else if ('bank' == parent.currentPaymentAccount().type()) {
+        } else if ('bank' == type) {
             i18nKey = 'checkout.fee.bank.note.help-%FEE%';
-        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+        } else if ('debit_card' == type) {
             i18nKey = 'checkout.fee.debit_card.note.help-%FEE%';
         }
-        return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true)}) : '';
+        return i18nKey ? Translator.trans(i18nKey, {'FEE': feeCalculation(true, type)}) : '';
     });
 
     self.getFeeAmount = function(isText) {
         var fee = 0.00;
-        if ('card' == parent.currentPaymentAccount().type()) {
+        var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
+        var type = currentPaymentAccount ? currentPaymentAccount.type() : null;
+        if ('card' == type) {
             fee = parseFloat(self.contract().groupSettings.feeCC) / 100 * self.total();
-        } else if ('bank' == parent.currentPaymentAccount().type() &&
-            self.contract().groupSettings.isPassedACH == true) {
+        } else if ('bank' == type && self.contract().groupSettings.isPassedACH == true) {
             fee = parseFloat(self.contract().groupSettings.feeACH);
-        } else if ('debit_card' == parent.currentPaymentAccount().type()) {
+        } else if ('debit_card' == type) {
             var feeType = self.contract().groupSettings.typeFeeDC;
             if ('percentage' == feeType) {
                 fee = parseFloat(self.contract().groupSettings.feeDC) / 100 * self.total();

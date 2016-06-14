@@ -3,6 +3,8 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ImportGroupSettings;
+use CreditJeeves\DataBundle\Entity\Group;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -13,6 +15,7 @@ use RentJeeves\DataBundle\Enum\ImportSource;
 use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\DataBundle\Enum\PaymentAccepted;
 use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\Import\Mapping\MappingAbstract;
 
 class ImportCsvCase extends ImportBaseAbstract
 {
@@ -21,7 +24,6 @@ class ImportCsvCase extends ImportBaseAbstract
      */
     protected function fillSecondPageWrongValue(array $trs)
     {
-
         $this->assertNotNull(
             $firstName = $trs['import.status.new'][0]->find('css', '.import_new_user_with_contract_tenant_first_name')
         );
@@ -145,26 +147,13 @@ class ImportCsvCase extends ImportBaseAbstract
             $trs['import.status.skip'],
             "Count contracts with status 'skip' is wrong. On first page."
         );
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
-
         $submitImportFile->click();
 
         $this->waitReviewAndPost();
 
-        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertCount(2, $errorFields);
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertCount(1, $trs, "Count contract wrong");
-        $this->assertCount(2, $trs['import.status.new'], "Count contracts with status 'new' is wrong.");
-
-        $this->fillSecondPageWrongValue($trs);
-
-        $submitImportFile->click();
-        $this->waitReviewAndPost();
-        $trs = $this->getParsedTrsByStatus();
-        $this->assertCount(1, $trs, 'Incorrect number of contracts');
         $this->assertCount(2, $trs['import.status.skip'], 'Count contract with status \'skip\' wrong');
         $submitImportFile->click();
 
@@ -176,14 +165,14 @@ class ImportCsvCase extends ImportBaseAbstract
         /** @var Tenant $tenant */
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '2test@mail.com']);
         $this->assertNotNull($tenant);
-        $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
-        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getFirstName(), 'Trent', 'Wrong first name');
+        $this->assertEquals($tenant->getLastName(), 'Dacey', 'Wrong last name');
         $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
 
         // Check that first and last names are parsed correctly when field contains coma.
         $tenant2 = $em->getRepository('RjDataBundle:Tenant')->findOneBy(['email' => '19test@mail.com']);
         $this->assertNotNull($tenant2);
-        $this->assertEquals('Lisa Maria', $tenant2->getFirstName());
+        $this->assertEquals('Lisa', $tenant2->getFirstName());
         $this->assertEquals('Sanders', $tenant2->getLastName());
 
         /**
@@ -617,24 +606,12 @@ class ImportCsvCase extends ImportBaseAbstract
         //second step
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->fillCsvMapping($this->mapMultiplePropertyFile, 17);
+        $mapping = $this->mapMultiplePropertyFile;
+        $mapping[18] = MappingAbstract::KEY_COUNTRY;
+        $this->fillCsvMapping($mapping, 18);
 
         $submitImportFile->click();
-        $this->session->wait(
-            5000,
-            "$('.errorField').length > 0"
-        );
         $this->waitReviewAndPost();
-
-        // first page: all contract waiting and 5 name errors.
-        $this->assertNotNull($errorFields = $this->page->findAll('css', 'input.errorField'));
-        $this->assertEquals(5, count($errorFields));
-
-        $this->assertEquals('', $errorFields[0]->getValue());
-        $this->assertEquals('', $errorFields[1]->getValue());
-        $this->assertEquals('& Adelai', $errorFields[2]->getValue());
-        $this->assertEquals('Carol Acha.Mo', $errorFields[3]->getValue());
-        $this->assertEquals('Matthew &', $errorFields[4]->getValue());
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -701,7 +678,7 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertEquals('2014-01-01', $contract->getStartAt()->format('Y-m-d'));
         $this->assertEquals('2025-01-31', $contract->getFinishAt()->format('Y-m-d'));
         $this->assertTrue($unit->getProperty()->getPropertyAddress()->isSingle());
-
+        $this->assertEquals('US', $unit->getProperty()->getPropertyAddress()->getCountry(), 'Should be US');
         $this->assertEquals(
             21,
             count($em->getRepository('RjDataBundle:Contract')->findBy(['status' => ContractStatus::WAITING]))
@@ -1083,8 +1060,17 @@ class ImportCsvCase extends ImportBaseAbstract
         $importGroupSettings->setSource(ImportSource::CSV);
         $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
         $importGroupSettings->setApiPropertyIds(null);
-        $importGroupSettings->setCsvDateFormat('d/m/y');
+        $importGroupSettings->setCsvDateFormat('m/d/y');
         $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::NONE);
+
+        /** @var Group $group3 */
+        $group3 = $this->getEntityManager()->getRepository('DataBundle:Group')->findOneBy(
+            [
+                'name' => 'Campus Rent Group'
+            ]
+        );
+        $this->assertNotNull($group3, 'We do not have correct settings in fixtures');
+        $group3->getGroupSettings()->setIsIntegrated(true);
         $this->getEntityManager()->flush();
 
         $this->setDefaultSession('selenium2');
@@ -1113,9 +1099,9 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertCount(2, $trs, "Count statuses is wrong");
         $this->assertCount(
-            4,
+            1,
             $trs['import.status.skip'],
-            "One contract should be skipped, because we don't have such account number and 3 isn't integrated"
+            "One contract should be skipped, because we don't have such account number"
         );
 
         $submitImportFile->click();
@@ -1132,7 +1118,26 @@ class ImportCsvCase extends ImportBaseAbstract
         $this->assertNotNull($unit = $unitMapping->getUnit());
         // We sure that only one contract for this unit was created
         $this->assertNotNull($contract = $unit->getContracts()->first());
-        $this->assertEquals('Test Rent Group', $contract->getGroup()->getName());
+        $this->assertEquals(
+            'Test Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
+
+        $unitMapping = $em
+            ->getRepository('RjDataBundle:UnitMapping')
+            ->findOneBy(['externalUnitId' => 'SP1152-C']);
+
+        $this->assertNotNull($unitMapping);
+        /** @var \RentJeeves\DataBundle\Entity\Unit $unit */
+        $this->assertNotNull($unit = $unitMapping->getUnit());
+        
+        $this->assertNotNull($contract = $unit->getContracts()->first());
+        $this->assertEquals(
+            'Campus Rent Group',
+            $contract->getGroup()->getName(),
+            'contract imported into wrong group'
+        );
     }
 
     /**
@@ -1860,5 +1865,95 @@ class ImportCsvCase extends ImportBaseAbstract
 
         $this->assertCount(1, $trs, "Count statuses is wrong");
         $this->assertCount(2, $trs['import.status.new'], "Count contract with status 'new' wrong");
+    }
+
+    /**
+     * @test
+     */
+    public function matchWaitingContractByLeaseIdOrUnitId()
+    {
+        $this->load(true);
+
+        /** @var ImportGroupSettings $importGroupSettings */
+        $importGroupSettings = $this->getImportGroupSettings();
+        $this->assertNotEmpty($importGroupSettings, 'We do not have correct settings in fixtures');
+        $importGroupSettings->setSource(ImportSource::CSV);
+        $importGroupSettings->setImportType(ImportType::MULTI_PROPERTIES);
+        $importGroupSettings->setApiPropertyIds(null);
+        $importGroupSettings->getGroup()->getHolding()->setAccountingSystem(AccountingSystem::PROMAS);
+        $this->getEntityManager()->flush();
+
+        $this->setDefaultSession('selenium2');
+        $this->loginByAccessToken('landlord1@example.com', $this->getUrl() . 'landlord/accounting/import/file');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'File attachment button missed'
+        );
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
+        $attFile->attachFile($filePath);
+        $submitImportFile = $this->getDomElement('.submitImportFile');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see errors');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist');
+
+        $mapFile = [
+            '1' => ImportMapping::KEY_EXTERNAL_LEASE_ID,
+            '2' => ImportMapping::KEY_TENANT_NAME,
+            '3' => ImportMapping::KEY_RENT,
+            '4' => ImportMapping::KEY_BALANCE,
+            '5' => ImportMapping::KEY_UNIT_ID,
+            '6' => ImportMapping::KEY_STREET,
+            '7' => ImportMapping::KEY_CITY,
+            '8' => ImportMapping::KEY_STATE,
+            '9' => ImportMapping::KEY_ZIP,
+            '10' => ImportMapping::KEY_MOVE_IN,
+            '11' => ImportMapping::KEY_LEASE_END,
+            '12' => ImportMapping::KEY_MOVE_OUT,
+            '14' => ImportMapping::KEY_EMAIL,
+        ];
+        $this->fillCsvMapping($mapFile, 15);
+
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.waiting']), "Waiting contract is wrong number");
+
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+            ['externalLeaseId' => 'BEASLY, MICHAEL']
+        );
+        $this->assertCount(2, $contracts, 'We should import 1 contract');
+        //after that check mathced status
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        // attach file to file input:
+        $this->assertNotNull(
+            $attFile = $this->page->find('css', '#import_file_type_attachment'),
+            'Attchment button missed'
+        );
+        $filePath = $this->getFixtureFilePathByName('duplicate_waiting_room_roommates.csv');
+        $attFile->attachFile($filePath);
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'), 'We should don\'t see any error');
+        $this->assertNotNull($table = $this->page->find('css', 'table'), 'Table doesn\'t exist on the page');
+
+        $submitImportFile->click();
+        $this->waitReviewAndPost();
+        $trs = $this->getParsedTrsByStatus();
+        $this->assertEquals(1, count($trs), "Count statuses is wrong");
+        $this->assertEquals(2, count($trs['import.status.match']), "We should have one contract in status MATCH");
+        $submitImportFile->click();
+        $this->waitRedirectToSummaryPage();
+        $contracts = $this->getEntityManager()->getRepository('RjDataBundle:Contract')->findBy(
+            ['externalLeaseId' => 'BEASLY, MICHAEL']
+        );
+        $this->assertCount(2, $contracts, 'We should update one contract');
     }
 }

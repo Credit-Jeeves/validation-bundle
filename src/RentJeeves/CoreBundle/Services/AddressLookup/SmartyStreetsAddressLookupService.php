@@ -3,18 +3,22 @@
 namespace RentJeeves\CoreBundle\Services\AddressLookup;
 
 use Psr\Log\LoggerInterface;
+use RentJeeves\CoreBundle\Helpers\CountryNameStandardizer;
 use RentJeeves\CoreBundle\Services\AddressLookup\Exception\AddressLookupException;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
+use RentJeeves\DataBundle\Enum\CountryCode;
 use RentTrack\SmartyStreetsBundle\Exception\SmartyStreetsException;
-use RentTrack\SmartyStreetsBundle\Model\SmartyStreetsAddress;
+use RentTrack\SmartyStreetsBundle\Model\International\InternationalAddress;
+use RentTrack\SmartyStreetsBundle\Model\US\USAddress;
 use RentTrack\SmartyStreetsBundle\SmartyStreetsClient;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ValidatorInterface;
 
+/**
+ * Service`s name "address_lookup_service.smarty_streets"
+ */
 class SmartyStreetsAddressLookupService implements AddressLookupInterface
 {
-    const DEFAULT_COUNTRY = 'US';
-
     /**
      * @var SmartyStreetsClient
      */
@@ -45,19 +49,85 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookup($street, $city, $state, $zipCode)
+    public function lookup($street, $city, $state, $zipCode, $country = AddressLookupInterface::COUNTRY_US)
     {
         $this->logger->debug(
             sprintf(
-                '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s)',
+                '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s %s)',
                 $street,
                 $city,
                 $state,
-                $zipCode
+                $zipCode,
+                $country
             )
         );
+
+        $country = CountryNameStandardizer::standardize($country);
+        if (false === CountryCode::isValid($country)) {
+            throw new AddressLookupException(
+                sprintf('[SmartyStreetsAddressLookupService] Country "%s" not supported.', $country)
+            );
+        }
+
+        if ($country === AddressLookupInterface::COUNTRY_US) {
+            $address = $this->lookupUSAddress($street, $city, $state, $zipCode);
+        } else {
+            $address = $this->lookupInternationalAddress($street, $city, $state, $zipCode, $country);
+        }
+
+        $this->validate($address);
+
+        return $address;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function lookupFreeform($address, $country = self::COUNTRY_US)
+    {
+        $this->logger->debug(
+            sprintf(
+                '[SmartyStreetsAddressLookupService] Searching freeForm address (%s %s)',
+                $address,
+                $country
+            )
+        );
+
+        $country = CountryNameStandardizer::standardize($country);
+        if (false === CountryCode::isValid($country)) {
+            throw new AddressLookupException(
+                sprintf('[SmartyStreetsAddressLookupService] Country "%s" not supported.', $country)
+            );
+        }
+
+        if ($country === AddressLookupInterface::COUNTRY_US) {
+            // First, we have to remove ', United States'
+            // from the freeform address in case user chose Google Autocomplete
+            $address = str_replace(', United States', '', $address);
+            $address = $this->lookupUSAddress($address, '', '', '');
+        } else {
+            $address = $this->lookupInternationalAddress($address, '', '', '', $country);
+        }
+
+        $this->validate($address);
+
+        return $address;
+    }
+
+    /**
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     *
+     * @throws AddressLookupException
+     *
+     * @return Address
+     */
+    protected function lookupUSAddress($street, $city, $state, $zipCode)
+    {
         try {
-            $result = $this->smartyStreetsClient->getAddress($street, $city, $state, $zipCode);
+            $result = $this->smartyStreetsClient->getUSAddress($street, $city, $state, $zipCode);
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
                 $message = sprintf(
@@ -68,42 +138,43 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
             throw new AddressLookupException($message);
         }
 
-        $address = $this->mapResponseToAddress($result);
-        $this->validate($address);
-
-        return $address;
+        return $this->mapUSResponseToAddress($result);
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $street
+     * @param string $city
+     * @param string $state
+     * @param string $zipCode
+     * @param string $country
+     *
+     * @throws AddressLookupException
+     *
+     * @return Address
      */
-    public function lookupFreeform($address)
+    protected function lookupInternationalAddress($street, $city, $state, $zipCode, $country)
     {
-        // First, we have to remove ', United States' from the freeform address in case user chose Google Autocomplete
-        $address = str_replace(', United States', '', $address);
-
-        $this->logger->debug(sprintf('[SmartyStreetsAddressLookupService] Searching freeForm address (%s)', $address));
         try {
-            $result = $this->smartyStreetsClient->getAddress($address, '', '', '');
+            $result = $this->smartyStreetsClient->getInternationalAddress($street, $city, $state, $zipCode, $country);
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
-                $message = sprintf('[SmartyStreetsAddressLookupService] Address not found : %s', $e->getMessage())
+                $message = sprintf(
+                    '[SmartyStreetsAddressLookupService] Address not found : %s',
+                    $e->getMessage()
+                )
             );
             throw new AddressLookupException($message);
         }
 
-        $address = $this->mapResponseToAddress($result);
-        $this->validate($address);
-
-        return $address;
+        return $this->mapInternationalResponseToAddress($result);
     }
 
     /**
-     * @param SmartyStreetsAddress $ssAddress
+     * @param USAddress $ssAddress
      *
      * @return Address
      */
-    protected function mapResponseToAddress(SmartyStreetsAddress $ssAddress)
+    protected function mapUSResponseToAddress(USAddress $ssAddress)
     {
         $addressMetadata = $ssAddress->getMetadata();
         $addressComponents = $ssAddress->getComponents();
@@ -120,10 +191,33 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         $address->setStreet(trim($street));
         $address->setZip($addressComponents->getZipcode());
         $address->setCity($addressComponents->getCityName());
-        $address->setCountry(self::DEFAULT_COUNTRY);
+        $address->setCountry(self::COUNTRY_US);
         $address->setState($addressComponents->getStateAbbreviation());
         $address->setUnitName($addressComponents->getSecondaryNumber());
         $address->setUnitDesignator($addressComponents->getSecondaryDesignator());
+
+        return $address;
+    }
+
+    /**
+     * @param InternationalAddress $ssAddress
+     *
+     * @return Address
+     */
+    protected function mapInternationalResponseToAddress(InternationalAddress $ssAddress)
+    {
+        $addressMetadata = $ssAddress->getMetadata();
+        $addressComponents = $ssAddress->getComponents();
+        $address = new Address();
+        $address->setLatitude($addressMetadata->getLatitude());
+        $address->setLongitude($addressMetadata->getLongitude());
+        $address->setNumber($addressComponents->getPremiseNumber());
+        $address->setStreet($addressComponents->getThoroughfare());
+        $address->setZip($addressComponents->getPostalCode());
+        $address->setCity($addressComponents->getLocality());
+        $address->setCountry(CountryNameStandardizer::standardize($addressComponents->getCountryISO()));
+        $address->setState($addressComponents->getAdministrativeArea());
+        $address->setUnitName($addressComponents->getSubBuildingNumber());
 
         return $address;
     }

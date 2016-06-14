@@ -53,8 +53,8 @@ class PaymentAccountType extends AbstractType
                 'label' => 'checkout.payment_type',
                 'expanded' => true,
                 'choices' => [
-                    PaymentAccountTypeEnum::BANK => 'checkout.bank',
                     PaymentAccountTypeEnum::CARD => 'checkout.card',
+                    PaymentAccountTypeEnum::BANK => 'checkout.bank',
                     PaymentAccountTypeEnum::DEBIT_CARD => 'checkout.debit_card',
                 ],
                 'empty_value'  => false,

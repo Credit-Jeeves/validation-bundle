@@ -113,6 +113,7 @@ class ImportMatchFileType extends AbstractType
             $choicesRequired[ImportMapping::KEY_CITY] = $this->translator->trans('common.city');
             $choicesRequired[ImportMapping::KEY_UNIT_ID] = $this->translator->trans('import.unit_id');
             $choicesNoneRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');
+            $choicesNoneRequired[ImportMapping::KEY_COUNTRY] = $this->translator->trans('country');
         } else {
             $choicesRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');
         }

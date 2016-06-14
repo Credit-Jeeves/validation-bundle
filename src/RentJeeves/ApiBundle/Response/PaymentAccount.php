@@ -23,6 +23,7 @@ class PaymentAccount extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentAccountShort", "PaymentAccountDetails"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -34,6 +35,7 @@ class PaymentAccount extends ResponseResource
     /**
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentAccountDetails", "PaymentAccountShort"})
+     * @Serializer\Type("string")
      *
      * @return string
      */
@@ -43,8 +45,10 @@ class PaymentAccount extends ResponseResource
     }
 
     /**
+     * Format: "YYYY-mm"
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"PaymentAccountDetails"})
+     * @Serializer\Type("string")
      *
      * @return string|null
      */

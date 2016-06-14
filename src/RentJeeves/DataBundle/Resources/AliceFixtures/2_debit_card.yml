@@ -1,0 +1,111 @@
+parameters:
+    locale: test
+CreditJeeves\DataBundle\Entity\Group:
+    groupD:
+        name:           TEST Debit Card
+        statementDescriptor: TEST Debit Card
+        holding:          '@holdingTestPayments'
+        type:             rent
+        createdAt:        <dateTimeBetween('-50 days', 'now')>
+        updatedAt:        <dateTimeBetween('-10 days', 'now')>
+        groupProperties:  ['@property4']
+RentJeeves\DataBundle\Entity\GroupSettings:
+    groupSettings4:
+        isIntegrated:     0
+        allowedDebitFee:  true
+        group:            '@groupD'
+        paymentProcessor: aci
+RentJeeves\DataBundle\Entity\BinlistBank:
+    binlistBank1:
+        bankName:         Bank for TEST Debit Card
+        lowDebitFee:      true
+RentJeeves\DataBundle\Entity\DebitCardBinlist:
+    debitCardBinlist1:
+        binlistBank:      '@binlistBank1'
+        iin:              438775
+        cardType:         DEBIT
+RentJeeves\DataBundle\Entity\Landlord:
+    landlord4:
+        holding:        '@holdingTestPayments'
+        firstName:      Roger
+        lastName:       Smith
+        middleInitial:  R
+        email:          landlord_roger@example.com
+        phoneType:      2
+        phone:          <numberBetween(777777777,999999999)>
+        ssn:            <numberBetween(777777777,999999999)>
+        dateOfBirth:    <(new DateTime('1975-10-10'))>
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     passed
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-200 days', 'now')>
+        updatedAt:      <dateTimeBetween('-200 days', 'now')>
+RentJeeves\DataBundle\Entity\Tenant:
+    tenant{61..80}:
+        firstName:      <firstName()>
+        middleInitial:  <randomLetter()>
+        lastName:       <lastName()>
+        email:          tenant_<?php echo time(); ?>_<current()>@example.com
+        phoneType:      2
+        phone:          <numberBetween(777777777,999999999)>
+        dateOfBirth:    <(new DateTime('1990-07-10'))>
+        ssn:            <numberBetween(777777777,999999999)>
+        isActive:       true
+        inviteCode:     null
+        password:       1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        salt:           ep3ahd5epy0c4cckkw80kc8wcgw4004
+        emailNotification: true
+        offerNotification: true
+        culture:        <{locale}>
+        hasData:        true
+        hasReport:      null
+        isVerified:     none
+        lastLogin:      <dateTimeBetween('-1 days', 'now')>
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\Contract:
+    contract{61..80}:
+        tenant:         '@tenant<current()>'
+        holding:        '@holdingTestPayments'
+        group:          '@groupD'
+        property:       '@property4'
+        unit:           '@unit4'
+        rent:           <numberBetween(1000,2000)>
+        status:         approved
+        paidTo:         <dateTimeInInterval('+2 months', 'now')>
+        startAt:        <dateTimeBetween('-6 months', 'now')>
+        finishAt:       <dateTimeInInterval('+2 years', '+ 1 months')>
+        createdAt:      <dateTimeInInterval('-2 years', '+ 1 months')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\PropertyAddress:
+    propertyAddress4:
+        number:         70
+        street:         E 3rd St
+        city:           New York
+        state:          NY
+        zip:            10003
+        country:        US
+        lat:            40.72492
+        long:           -73.98886
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-10 days', 'now')>
+        index:          70E3rdStNewYorkNY
+RentJeeves\DataBundle\Entity\Property:
+    property4:
+        propertyAddress: '@propertyAddress4'
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\Unit:
+    unit4:
+        property:       '@property4'
+        holding:        '@holdingTestPayments'
+        group:          '@groupD'
+        name:           4121
+        createdAt:      <dateTimeBetween('-50 days', 'now')>
+        updatedAt:      <dateTimeBetween('-20 days', 'now')>

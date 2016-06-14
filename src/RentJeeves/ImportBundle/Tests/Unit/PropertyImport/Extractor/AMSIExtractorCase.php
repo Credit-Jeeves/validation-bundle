@@ -27,7 +27,7 @@ class AMSIExtractorCase extends UnitTestBase
 
         $amsiExtractor = new AMSIExtractor($this->getAMSIResidentDataManagerMock(), $this->getLoggerMock());
         $amsiExtractor->setGroup($group);
-        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->setExternalPropertyId('test');
         $amsiExtractor->extractData();
     }
 
@@ -51,7 +51,7 @@ class AMSIExtractorCase extends UnitTestBase
             ->willThrowException(new \Exception('testMessage'));
         $amsiExtractor = new AMSIExtractor($dataManager, $this->getLoggerMock());
         $amsiExtractor->setGroup($group);
-        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->setExternalPropertyId('test');
         $amsiExtractor->extractData();
     }
 
@@ -73,7 +73,7 @@ class AMSIExtractorCase extends UnitTestBase
             ->will($this->returnValue($expectedResponse = ['test']));
         $amsiExtractor = new AMSIExtractor($dataManager, $this->getLoggerMock());
         $amsiExtractor->setGroup($group);
-        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->setExternalPropertyId('test');
         $actualResponse = $amsiExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from AMSIExtractor.');
@@ -100,7 +100,7 @@ class AMSIExtractorCase extends UnitTestBase
             ->with($this->equalTo('Returned response is empty.'));
         $amsiExtractor = new AMSIExtractor($dataManager, $logger);
         $amsiExtractor->setGroup($group);
-        $amsiExtractor->setExtPropertyId('test');
+        $amsiExtractor->setExternalPropertyId('test');
         $actualResponse = $amsiExtractor->extractData();
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from AMSIExtractor.');
     }

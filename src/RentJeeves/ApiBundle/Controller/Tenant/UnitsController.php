@@ -28,6 +28,12 @@ class UnitsController extends Controller
      *         200="Returned when successful",
      *         204="No content with such parameters",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         200 = {
+     *             "class"=ResponseEntity::class,
+     *             "groups"={"Base", "UnitShort"}
+     *         }
      *     }
      * )
      * @Rest\Get("/units")
@@ -97,6 +103,12 @@ class UnitsController extends Controller
      *         404="Unit not found",
      *         400="Error validating data. Please check parameters and retry.",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         200 = {
+     *             "class"=ResponseEntity::class,
+     *             "groups"={"Base", "UnitDetails"}
+     *         }
      *     }
      * )
      * @Rest\Get("/units/{id}")

@@ -751,3 +751,38 @@ body{
     border-radius: 3px;
     opacity: 0.9;
 }
+
+.payment-type-fee {
+    font-weight: 100;
+    font-style: italic;
+    padding-left: 2em;
+    color: grey;
+}
+.fee-notify {
+    color: grey;
+    font-style: italic;
+    text-align: center;
+    font-size: 11px;
+}
+
+@media only screen
+and (max-width : 320px) {
+    .mobile-payment-scheduled {
+        margin: 0;
+        font-size: 12px;
+    }
+}
+@media only screen
+and (min-width : 321px) {
+    .mobile-payment-scheduled {
+        margin: 0;
+        font-size: 14px;
+    }
+}
+.rent-line {
+    float: left;
+    width: 96%;
+}
+#rentjeeves_checkoutbundle_paymentaccounttype .tooltip-box.type5.pie-el {
+    display: none;
+}

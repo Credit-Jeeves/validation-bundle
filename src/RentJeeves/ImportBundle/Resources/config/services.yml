@@ -2,6 +2,7 @@ parameters:
     # using a path that leads into the project does not make sense. Use a path out of project if you need to.
     # Otherwise put transformers into ImportBundle.
     import.property.transformer.custom_paths: []
+    import.lease.transformer.custom_paths: []
 
 services:
     import_transformer.repository:
@@ -17,6 +18,12 @@ services:
         arguments:
             - @import.property.extractor_factory
             - @monolog.logger.property_import
+
+    import.lease.extractor_builder:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ExtractorBuilder
+        arguments:
+            - '@import.lease.extractor_factory'
+            - '@monolog.logger.lease_import'
 
     # factories
     import.property.extractor_factory:
@@ -44,16 +51,41 @@ services:
               %accounting_system.rent_manager%: @import.property.transformer.rent_manager
             - @import.property.transformer.csv
 
+    import.lease.extractor_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ExtractorFactory
+        public: false
+        calls:
+            - [setCsvExtractor, ['@import.lease.extractor.csv']]
+            - [addApiExtractor, ['%accounting_system.resman%', '@import.lease.extractor.resman']]
+
+    import.lease.transformer_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\TransformerFactory
+        public: false
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@monolog.logger.lease_import'
+            - '%import.lease.transformer.custom_paths%'
+        calls:
+            - [setCsvTransformer, ['@import.lease.transformer.csv']]
+            - [addApiTransformer, ['%accounting_system.mri%', '@import.lease.transformer.mri']]
+            - [addApiTransformer, ['%accounting_system.resman%', '@import.lease.transformer.resman']]
+
     # services
+    import.settings_provider:
+        class: RentJeeves\ImportBundle\ImportSettingsProvider
+        arguments:
+            - @soap.client.yardi.resident_transactions
+            - @monolog.logger.property_import
+
     import.property.sftp_file_manager:
-        parent: sftp_file_manager
+        class: RentJeeves\ImportBundle\Sftp\ImportSftpFileManager
         arguments:
             - '%import.property.sftp.host%'
             - '%import.property.sftp.port%'
-            - '%import.property.sftp.login%'
-            - '%import.property.sftp.password%'
             - '@monolog.logger.sftp_file_manager'
             - '@sftp_client'
+        calls:
+            - [setKeysCredentials, ['%import.property.sftp.login%', '%import.property.sftp.publickey%', '%import.property.sftp.privatekey%']]
 
     import.property.manager:
         class: RentJeeves\ImportBundle\PropertyImport\ImportPropertyManager
@@ -63,12 +95,6 @@ services:
             - @import.property.loader_factory
             - @monolog.logger.property_import
             - @doctrine.orm.default_entity_manager
-
-    import.property.settings_provider:
-        class: RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider
-        arguments:
-            - @soap.client.yardi.resident_transactions
-            - @monolog.logger.property_import
 
     import.property.extractor.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Extractor\MRIExtractor
@@ -113,12 +139,36 @@ services:
             - '@import.property.sftp_file_manager'
             - @monolog.logger.property_import
 
+    import.lease.extractor.resman:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\ResmanExtractor
+        public: false
+        arguments:
+            - "@resman.resident_data"
+            - "@monolog.logger.lease_import"
+
+    import.lease.extractor.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Extractor\CsvExtractor
+        public: false
+        arguments:
+            - "@import.property.extractor.csv"
+
     import.property.transformer.mri:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\MRITransformer
         public: false
         arguments:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
+
+    import.lease.transformer.resman:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\ResmanTransformer
+        public: false
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@monolog.logger.lease_import"
+
+    import.lease.transformer.mri:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\MRITransformer
+        public: false
 
     import.property.transformer.resman:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\ResmanTransformer
@@ -147,7 +197,14 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
             - @monolog.logger.property_import
-            
+
+    import.lease.transformer.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\CsvTransformer
+        public: false
+        arguments:
+             - "@doctrine.orm.default_entity_manager"
+             - "@monolog.logger.lease_import"
+
     import.property.transformer.csv:
         class: RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer
         public: false
@@ -156,11 +213,21 @@ services:
             - @address_lookup_service
             - @monolog.logger.property_import
 
+    import.lease.transformer.csv:
+        class: RentJeeves\ImportBundle\LeaseImport\Transformer\CsvTransformer
+        public: false
+
     import.property.loader_factory:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\LoaderFactory
         arguments:
             - @import.property.loader.mapped
             - @import.property.loader.unmapped
+
+    import.lease.loader_factory:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\LoaderFactory
+        arguments:
+            - '@import.lease.lease_loader'
+            - '@import.lease.csv_loader'
 
     import.property.loader.base:
         abstract:  true
@@ -180,3 +247,11 @@ services:
         class: RentJeeves\ImportBundle\PropertyImport\Loader\UnmappedLoader
         public: false
         parent: import.property.loader.base
+
+    import.lease.lease_loader:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\LeaseLoader
+        public: false
+
+    import.lease.csv_loader:
+        class: RentJeeves\ImportBundle\LeaseImport\Loader\CsvLoader
+        public: false

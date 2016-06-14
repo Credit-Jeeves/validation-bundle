@@ -31,6 +31,25 @@
             </exclude>
         </testsuite>
 
+        <!--                            -->
+        <!-- Only Unit Tests TestSuite  -->
+        <!-- Change to <directory suffix="Case.php">src/*/*Bundle/Tests/Unit/*</directory> when all bundles reorganized -->
+        <!--                            -->
+        <testsuite name="Unit Test Suite">
+            <directory suffix="Case.php">src/CreditJeeves/*Bundle/Tests/Unit/*</directory>
+            <directory suffix="Case.php">src/RentJeeves/AdminBundle/Tests/Unit/*</directory>
+            <directory suffix="Case.php">src/RentJeeves/ApiBundle/Tests/Unit/*</directory>
+            <directory suffix="Case.php">src/RentJeeves/CheckoutBundle/Tests/Unit/*</directory>
+            <directory suffix="Case.php">src/RentJeeves/ComponentBundle/Tests/Unit/*</directory>
+        </testsuite>
+
+        <!--                                  -->
+        <!-- Only Functional Tests TestSuite  -->
+        <!--                                  -->
+        <testsuite name="Functional Test Suite">
+            <directory suffix="Case.php">src/*/*Bundle/Tests/Functional/*</directory>
+        </testsuite>
+
         <!--                                  -->
         <!-- Bundle-Specific TestSuites       -->
         <!--                                  -->

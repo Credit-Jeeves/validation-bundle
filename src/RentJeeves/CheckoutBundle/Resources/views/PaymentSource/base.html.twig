@@ -1,7 +1,7 @@
-<div data-bind="visible: paymentAccounts().length > 0" class="form-row clearfix" >
+<div data-bind="visible: paymentAccounts().length > 0" class="form-row clearfix exist-sources-block">
     <label>{{ 'payment.account' | trans }}*</label>
     <div class="fields-box payment-accounts">
-        <small ><b>*</b>{{ 'required' | trans }}</small>
+        <small data-bind="visible: !isNewPaymentAccount()"><b>*</b>{{ 'required' | trans }}</small>
         <!-- ko foreach: paymentAccounts -->
         <label class="checkbox radio" style="clear: left;">
             <input type="radio"
@@ -11,7 +11,7 @@
                                 checked: $root.currentPaymentAccountId
                             " />
             <i></i>
-            <span data-bind="text: $data.name"></span>
+            <span data-bind="html: $data.fullname"></span>
         </label>
         <!-- /ko -->
         {% if isLocked == false %}
@@ -29,10 +29,12 @@
     {% else %}
         {{ render(controller('RjCheckoutBundle:PaymentSource:source')) }}
     {% endif %}
+    {% if not allow_payment_account_fee_dispay %}
     <p class="note" data-bind="visible: getFee">
         <strong data-bind="text: getFeeNote"></strong>
         <i data-bind="attr: {'title': getFeeNoteHelp}" class="help after-checkbox pie-el tooltip-link">
             ?
         </i>
     </p>
+    {% endif %}
 </div>

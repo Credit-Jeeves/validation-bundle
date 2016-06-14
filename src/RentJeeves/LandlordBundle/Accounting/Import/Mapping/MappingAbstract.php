@@ -83,6 +83,8 @@ abstract class MappingAbstract implements MappingInterface
 
     const KEY_PROPERTY_ID = 'property_id';
 
+    const KEY_COUNTRY = 'country';
+
     const KEY_PAYMENT_ACCEPTED = 'payment_accepted';
 
     const KEY_EXTERNAL_LEASE_ID = 'external_lease_id';
@@ -188,7 +190,9 @@ abstract class MappingAbstract implements MappingInterface
         }
         $propertyAddress->setZip($row[self::KEY_ZIP]);
         $propertyAddress->setState($row[self::KEY_STATE]);
-
+        if (!empty($row[self::KEY_COUNTRY])) {
+            $propertyAddress->setCountry($row[self::KEY_COUNTRY]);
+        }
         $property->setPropertyAddress($propertyAddress);
 
         return $property;
@@ -253,10 +257,12 @@ abstract class MappingAbstract implements MappingInterface
             $lastName = array_shift($names);
             $firstName = implode(' ', array_map('trim', $names));
 
-            return [
-                self::LAST_NAME_TENANT => trim($lastName),
-                self::FIRST_NAME_TENANT => trim($firstName),
-            ];
+            return self::sanitizeTenantName(
+                [
+                    self::LAST_NAME_TENANT => trim($lastName),
+                    self::FIRST_NAME_TENANT => trim($firstName),
+                ]
+            );
         }
 
         $names = explode(' ', $name);
@@ -286,6 +292,12 @@ abstract class MappingAbstract implements MappingInterface
                     self::LAST_NAME_TENANT  => implode(' ', array($names[2], $names[3])),
                 );
                 break;
+            case 5:
+                $data = [
+                    self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
+                    self::LAST_NAME_TENANT  => implode(' ', array($names[2], $names[3], $names[4])),
+                ];
+                break;
             default:
                 $data = array(
                     self::FIRST_NAME_TENANT => '',
@@ -293,7 +305,59 @@ abstract class MappingAbstract implements MappingInterface
                 );
         }
 
-        return $data;
+        return self::sanitizeTenantName($data);
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public static function sanitizeTenantName(array $data)
+    {
+        $fullName = $data[self::FIRST_NAME_TENANT]. ' ' . $data[self::LAST_NAME_TENANT];
+
+        if (empty(trim($fullName))) {
+            return $data;
+        }
+
+        //Remove initial
+        $fullName = preg_replace('/[A-Za-z]{0,6}\\.\\s*/', '', $fullName);
+        //Remove all non-alpha or spaces + &
+        $fullName = preg_replace('/[^a-zA-Z\\s&]/', '', $fullName);
+        $isUsedAmpersand =  false;
+
+        if (preg_match('/&/', $fullName)) {
+            $fullName = str_replace('&', ' ', $fullName);
+            $isUsedAmpersand = true;
+        }
+
+        if (preg_match('/ and /', $fullName)) {
+            $fullName = str_replace(' and ', ' ', $fullName);
+            $isUsedAmpersand = true;
+        }
+
+        $fullName = explode(' ', $fullName);
+        //reindex array and remove empty element
+        $fullName = array_values(array_filter($fullName));
+        //Step4: Use first person from duplicate people with same last name: ("Bob & Damian Marley" => "Bob Marley")
+        if (count($fullName) === 3) {
+            return [
+                self::FIRST_NAME_TENANT => $fullName[0],
+                self::LAST_NAME_TENANT  => $fullName[2],
+            ];
+        //Step6: Use first and last words
+        } elseif (count($fullName) > 2 && $isUsedAmpersand === false) {
+            return [
+                self::FIRST_NAME_TENANT => $fullName[0],
+                self::LAST_NAME_TENANT  => end($fullName),
+            ];
+        }
+
+        //Step5: Use first person from duplicate people with different last name
+        return [
+            self::FIRST_NAME_TENANT => $fullName[0],
+            self::LAST_NAME_TENANT  => $fullName[1],
+        ];
     }
 
     /**

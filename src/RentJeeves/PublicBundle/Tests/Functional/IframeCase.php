@@ -158,15 +158,6 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#formSearch img.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
-        $this->assertNotNull($pricing = $this->page->find('css', '#popup-pricing'));
-        $pricing->click();
-        $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
-        $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $this->session->wait($this->timeout, "$('#pricing-popup button.button-close').is(':visible')");
-        $buttons[0]->click();
-
-        $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
         $this->fillForm(
@@ -220,8 +211,9 @@ class IframeCase extends BaseTestCase
     public function checkInviteIframeNotFound()
     {
         $emails = $this->getEmails();
-        $this->assertCount(2, $emails, 'Wrong number of emails');
-        $email = $this->getEmailReader()->getEmail(array_pop($emails))->getMessage('text/html');
+        $this->assertCount(3, $emails, 'Wrong number of emails');
+
+        $email = $this->getEmailReader()->getEmail($emails[1])->getMessage('text/html');
         $crawler = $this->getCrawlerObject($email->getBody());
         $url = $crawler->filter('#payRentLinkLandlord')->getNode(0)->getAttribute('href');
 

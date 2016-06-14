@@ -140,7 +140,7 @@ class GroupRepository extends EntityRepository
             ->execute();
 
         if (count($groups) > 1) {
-            throw new \Exception(
+            throw new \LogicException(
                 sprintf(
                     'Something wrong with index for accountNumber. Please check data: accountNumber %s holdingId %s',
                     $accountNumber,
@@ -189,5 +189,22 @@ class GroupRepository extends EntityRepository
             ->setParameter('completeStatus', DepositAccountStatus::DA_COMPLETE)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param int $locationId
+     *
+     * @return Group|null
+     */
+    public function getGroupByExternalLocationId($locationId)
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.trustedLandlord', 'tl')
+            ->innerJoin('tl.checkMailingAddress', 'cma')
+            ->where('cma.externalLocationId = :locationId')
+            ->setParameter('locationId', $locationId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

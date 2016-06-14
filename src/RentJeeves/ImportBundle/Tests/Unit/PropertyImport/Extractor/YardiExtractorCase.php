@@ -6,15 +6,8 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\YardiSettings;
 use RentJeeves\DataBundle\Enum\AccountingSystem;
-use RentJeeves\ExternalApiBundle\Model\Yardi\FullResident;
 use RentJeeves\ExternalApiBundle\Model\Yardi\UnitInformation;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Property;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customer;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\CustomerAddress;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\Customers;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionPropertyCustomer;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionProperty;
-use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\ResidentTransactionUnit;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\UnitInformationCustomer;
 use RentJeeves\ExternalApiBundle\Services\Yardi\Soap\UnitInformationFullUnit;
 use RentJeeves\ImportBundle\PropertyImport\Extractor\YardiExtractor;
@@ -37,7 +30,7 @@ class YardiExtractorCase extends UnitTestBase
         $group->setHolding($holding);
 
         $yardiExtractor = new YardiExtractor($this->getYardiResidentDataManagerMock(), $this->getLoggerMock());
-        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setExternalPropertyId('test');
         $yardiExtractor->setGroup($group);
         $yardiExtractor->extractData();
     }
@@ -60,7 +53,7 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setExternalPropertyId('test');
         $yardiExtractor->setGroup($group);
         $yardiExtractor->extractData();
     }
@@ -88,7 +81,7 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setExternalPropertyId('test');
         $yardiExtractor->setGroup($group);
         $yardiExtractor->extractData();
     }
@@ -116,7 +109,7 @@ class YardiExtractorCase extends UnitTestBase
             ->willReturn([$customerUnit]);
 
         $yardiExtractor = new YardiExtractor($dataManager, $this->getLoggerMock());
-        $yardiExtractor->setExtPropertyId('test');
+        $yardiExtractor->setExternalPropertyId('test');
         $yardiExtractor->setGroup($group);
 
         $response = $yardiExtractor->extractData();

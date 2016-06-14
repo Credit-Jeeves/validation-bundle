@@ -68,7 +68,6 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('getIterator')
             ->willReturn(new \ArrayIterator([$error]));
 
-
         $validator
             ->expects($this->once())
             ->method('validate')
@@ -124,11 +123,6 @@ class MriASIDataMapperCase extends UnitTestBase
             ->method('validateHMAC')
             ->willReturn(true);
 
-        $hmacGenerator
-            ->expects($this->once())
-            ->method('generateHMAC')
-            ->willReturn('Digest_Test');
-
         $dataMapper = new MriASIDataMapper($validator, $hmacGenerator, $this->getLoggerMock());
 
         $request = $this->getBaseMock('Symfony\Component\HttpFoundation\Request');
@@ -166,17 +160,6 @@ class MriASIDataMapperCase extends UnitTestBase
             AccountingSystem::MRI,
             $integratedModel->getAccountingSystem(),
             'Should be mapped accounting system resman'
-        );
-
-        $this->assertEquals(
-            [
-                'trackingid' => '1111',
-                'apipost' => 'true',
-                'sum' => '230.00',
-                'Digest' => 'Digest_Test'
-            ],
-            $integratedModel->getReturnParams(),
-            'Should be mapped additional return params'
         );
     }
 }

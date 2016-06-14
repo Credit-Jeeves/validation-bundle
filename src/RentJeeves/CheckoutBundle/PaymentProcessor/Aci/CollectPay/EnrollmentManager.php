@@ -267,11 +267,20 @@ class EnrollmentManager extends AbstractManager
 
         $billingAccountAddress = new RequestModel\SubModel\Address();
 
-        $billingAccountAddress->setAddress1((string) $group->getStreetAddress1());
-        $billingAccountAddress->setAddress2((string) $group->getStreetAddress2());
-        $billingAccountAddress->setCity((string) $group->getCity());
-        $billingAccountAddress->setPostalCode((string) $group->getZip());
-        $billingAccountAddress->setState((string) $group->getState());
+        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
+            $mailingAddress = $trustedLandlord->getCheckMailingAddress();
+            $billingAccountAddress->setAddress1((string) $mailingAddress->getAddress1());
+            $billingAccountAddress->setAddress2((string) $mailingAddress->getAddress2());
+            $billingAccountAddress->setCity((string) $mailingAddress->getCity());
+            $billingAccountAddress->setState((string) $mailingAddress->getState());
+            $billingAccountAddress->setPostalCode((string) $mailingAddress->getZip());
+        } else {
+            $billingAccountAddress->setAddress1('');
+            $billingAccountAddress->setAddress2('');
+            $billingAccountAddress->setCity('');
+            $billingAccountAddress->setState('');
+            $billingAccountAddress->setPostalCode('');
+        }
         $billingAccountAddress->setCountryCode((string) $group->getCountry());
 
         $billingAccount->setAddress($billingAccountAddress);

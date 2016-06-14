@@ -3,7 +3,7 @@ namespace RentJeeves\AdminBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Enum\ImportSource;
-use RentJeeves\ImportBundle\PropertyImport\ImportPropertySettingsProvider;
+use RentJeeves\ImportBundle\ImportSettingsProvider;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class GroupCase extends BaseTestCase
@@ -433,11 +433,11 @@ class GroupCase extends BaseTestCase
         $this->load(true);
         $group = $this->getEntityManager()->find('DataBundle:Group', 24);
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
-        $group->getImportSettings()->setApiPropertyIds(ImportPropertySettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
         $this->getEntityManager()->flush();
 
         $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
@@ -456,6 +456,34 @@ class GroupCase extends BaseTestCase
     /**
      * @test
      */
+    public function shouldCreateImportLeasesJobsForGroupWithExtProperties()
+    {
+        $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $this->getEntityManager()->flush();
+
+        $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
+        $this->setDefaultSession('goutte');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
+
+        $importLeases = $this->getDomElement(
+            '.import_leases_button',
+            'Import Leases link not found'
+        );
+        $importLeases->click();
+        $this->getDomElement('.alert-success', 'Should get successful message');
+        $this->assertCount(
+            $jobsCount + 6, //6 because 3 for import and 3 for check status
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
+    }
+
+    /**
+     * @test
+     */
     public function shouldShowErrorMessageIfPressImportPropertyForGroupWithoutExtPropertyId()
     {
         $this->load(true);
@@ -463,7 +491,7 @@ class GroupCase extends BaseTestCase
         $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
         $group->getImportSettings()->setApiPropertyIds(null);
         $this->getEntityManager()->flush();
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
 
         $importProperties = $this->getDomElement(
@@ -472,5 +500,93 @@ class GroupCase extends BaseTestCase
         );
         $importProperties->click();
         $this->getDomElement('.alert-danger', 'Should get error for group which doesn\'t have externalProperties');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateCsvImportPropertiesJobsForGroupWithExtProperties()
+    {
+        $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $this->getEntityManager()->flush();
+
+        $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
+        $this->setDefaultSession('goutte');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
+
+        $importProperties = $this->getDomElement(
+            '.createCsvJobForImportProperties',
+            'Import Property links not found'
+        );
+        $importProperties->click();
+
+        // attach file to file input:
+        $this->assertNotNull(
+            $file = $this->page->find('css', '#upload_csv_file_attachment'),
+            'We don\'t see file attachment'
+        );
+
+        $filePath = $this->getFixtureFilePathByName('skipped_message_and_date_notice.csv');
+        $file->attachFile($filePath);
+
+        $this->assertNotNull(
+            $submit = $this->page->find('css', '#upload_csv_file_upload'),
+            'We don\'t see submit button'
+        );
+        $submit->click();
+
+        $this->getDomElement('.alert-success', 'Should get successful message');
+        $this->assertCount(
+            $jobsCount + 2, //2 because 1 for import and 1 for check status
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCreateCsvImportLeasesJobsForGroupWithExtProperties()
+    {
+        $this->load(true);
+        $group = $this->getEntityManager()->find('DataBundle:Group', 24);
+        $group->getImportSettings()->setSource(ImportSource::INTEGRATED_API);
+        $group->getImportSettings()->setApiPropertyIds(ImportSettingsProvider::YARDI_ALL_EXTERNAL_PROPERTY_IDS);
+        $this->getEntityManager()->flush();
+
+        $jobsCount = count($this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll());
+        $this->setDefaultSession('goutte');
+        $this->loginByAccessToken('admin@creditjeeves.com', $this->getUrl() . 'admin/rj/group/list');
+
+        $importProperties = $this->getDomElement(
+            '.createCsvJobForImportLeases',
+            'Import Property links not found'
+        );
+        $importProperties->click();
+
+        // attach file to file input:
+        $this->assertNotNull(
+            $file = $this->page->find('css', '#upload_csv_file_attachment'),
+            'We don\'t see file attachment'
+        );
+
+        $filePath = $this->getFixtureFilePathByName('skipped_message_and_date_notice.csv');
+        $file->attachFile($filePath);
+
+        $this->assertNotNull(
+            $submit = $this->page->find('css', '#upload_csv_file_upload'),
+            'We don\'t see submit button'
+        );
+        $submit->click();
+
+        $this->getDomElement('.alert-success', 'Should get successful message');
+        $this->assertCount(
+            $jobsCount + 2, //2 because 1 for import and 1 for check status
+            $this->getEntityManager()->getRepository('RjDataBundle:Job')->findAll(),
+            'Job not created'
+        );
     }
 }

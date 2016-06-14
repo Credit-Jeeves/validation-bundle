@@ -14,10 +14,6 @@ fixtures:
     website_url:    www.honda.com
     code:           'DVRWP2NFQ6'
     phone:          805-555-1212
-    street_address_1: 124 Hitchcock Way
-    city:           Santa Barbara
-    state:          CA
-    zip:            93101
     description: |
       Congratulations on improving your credit score!
       We want to help you drive away with your dream car.
@@ -85,11 +81,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -106,11 +97,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: ''
     contract_date:  '-10 days'
@@ -127,11 +113,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -148,11 +129,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -169,11 +145,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -190,11 +161,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -211,11 +177,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -232,11 +193,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -253,11 +209,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -274,11 +225,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -295,11 +241,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
@@ -316,11 +257,6 @@ fixtures:
     logo_url: ''
     phone: ''
     fax: ''
-    street_address_1: ''
-    street_address_2: ''
-    city: ''
-    state: null
-    zip: ''
     fee_type: flat
     contract: null
     contract_date: null
