@@ -87,13 +87,12 @@ class ContractMergedDataValidator extends ConstraintValidator
                         '%expected_user_type%' => $tenant->getType()
                     ]
                 );
-            } elseif (!$tenant->getContracts()->isEmpty() &&
-                !$tenant->getContracts()->exists(
-                    function ($key, Contract $contract) use ($mergingDataModel) {
-                        return ($contract->getId() === $mergingDataModel->getOriginalContractId() ||
-                            $contract->getId() === $mergingDataModel->getDuplicateContractId());
-                    }
-                )
+            } elseif (!$tenant->getContracts()->isEmpty() && !$tenant->getContracts()->exists(
+                function ($key, Contract $contract) use ($mergingDataModel) {
+                return ($contract->getId() === $mergingDataModel->getOriginalContractId() ||
+                    $contract->getId() === $mergingDataModel->getDuplicateContractId());
+                }
+            )
             ) {
                 $this->context->addViolation(
                     $constraint->messageUserExist,
