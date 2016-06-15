@@ -11,6 +11,7 @@ CreditJeeves\DataBundle\Entity\Group:
         groupProperties:  ['@property3']
 RentJeeves\DataBundle\Entity\GroupSettings:
     groupSettings3:
+        isPidVerificationSkipped: 1
         payBalanceOnly:   true
         isIntegrated:     1
         group:            '@groupC'
@@ -68,6 +69,7 @@ RentJeeves\DataBundle\Entity\Contract:
         property:       '@property3'
         unit:           '@unit3'
         rent:           <numberBetween(1000,2000)>
+        integratedBalance: @self->rent
         status:         approved
         paidTo:         <dateTimeInInterval('+2 months', 'now')>
         startAt:        <dateTimeBetween('-6 months', 'now')>
@@ -100,3 +102,12 @@ RentJeeves\DataBundle\Entity\Unit:
         name:           1-b
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\DepositAccount:
+    depositAccount3:
+        group:          '@groupC'
+        holding:        '@holdingTestPayments'
+        merchantName:   564075
+        status:         complete
+        paymentProcessor: aci
+        type:           rent
+        accountNumber:  15235658
