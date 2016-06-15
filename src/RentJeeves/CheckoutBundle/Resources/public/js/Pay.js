@@ -349,6 +349,31 @@ function Pay(parent, contract) {
         return  contract ? contract.allowDebitCard && contract.allowCreditCard : false;
     });
 
+    self.feeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeDC : 0;
+    });
+
+    self.typeFeeDC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.typeFeeDC : 0;
+    });
+
+    self.feeCC = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeCC : 0;
+    });
+
+    self.feeACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.feeACH : 0;
+    });
+
+    self.isPassedACH = ko.computed(function() {
+        var contract = ko.unwrap(self.contract);
+        return  contract ? contract.groupSettings.isPassedACH : 0;
+    });
+
     self.propertyAddress = ko.computed(function() {
         var propertyFullAddress = new Address(self, self.addresses);
 
@@ -399,8 +424,6 @@ function Pay(parent, contract) {
         }
     };
 
-    ko.utils.extend(self, new PayMoneyComputing(self, self.contract));
-
     // Connected Payment Source Component
     // Component should be connected after contractId and allowedCreditCard and before it should be using
     ko.utils.extend(
@@ -436,12 +459,11 @@ function Pay(parent, contract) {
         return contract ? contract.isPidVerificationSkipped : false;
     });
 
+    ko.utils.extend(self, new PayMoneyComputing(self, self.contract));
+
     ko.utils.extend(self, new UserVerification(self, self.isPidVerificationSkipped));
 
     ko.utils.extend(self, new PayDatesComputing(self));
-
-
-
 
     self.cancelDialog = function() {
         new Cancel(self.payment.id());

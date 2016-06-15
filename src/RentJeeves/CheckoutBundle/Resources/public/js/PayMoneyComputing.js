@@ -66,33 +66,8 @@ function PayMoneyComputing(parent, contract) {
             }
         }
 
-        return fee ? fee : '$0.00';
+        return fee ? fee : (isText ? '$0.00' : 0);
     };
-
-    self.feeDC = ko.computed(function() {
-        var contract = ko.unwrap(self.contract);
-        return  contract ? contract.groupSettings.feeDC : 0;
-    });
-
-    self.typeFeeDC = ko.computed(function() {
-        var contract = ko.unwrap(self.contract);
-        return  contract ? contract.groupSettings.typeFeeDC : 0;
-    });
-
-    self.feeCC = ko.computed(function() {
-        var contract = ko.unwrap(self.contract);
-        return  contract ? contract.groupSettings.feeCC : 0;
-    });
-
-    self.feeACH = ko.computed(function() {
-        var contract = ko.unwrap(self.contract);
-        return  contract ? contract.groupSettings.feeACH : 0;
-    });
-
-    self.isPassedACH = ko.computed(function() {
-        var contract = ko.unwrap(self.contract);
-        return  contract ? contract.groupSettings.isPassedACH : 0;
-    });
 
     self.getFee = ko.computed(function() {
         var currentPaymentAccount = ko.unwrap(parent.currentPaymentAccount);
