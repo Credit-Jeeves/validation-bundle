@@ -155,6 +155,7 @@
                                 <span style="color: red;">{{ 'contract.status.processing.text' | trans }}</span>
                             {% elseif (contract.payment_type == 'recurring' or contract.payment_type == 'one_time') %}
                                 <hr class="rent-line">
+                                <hr class="clear">
                                 {% set contract = contract|merge({'hasRentLine': 1}) %}
                                 <p class="mobile-payment-scheduled">
                                     {{ 'mobile.lease.payment.scheduled' |
@@ -176,6 +177,7 @@
                             {% if contract.hasCustomPayments %}
                                 {% if not contract.hasRentLine %}
                                     <hr class="rent-line">
+                                    <hr class="clear">
                                 {% endif %}
                                 {% for payment in contract.customPayments %}
                                     <p class="mobile-payment-scheduled">

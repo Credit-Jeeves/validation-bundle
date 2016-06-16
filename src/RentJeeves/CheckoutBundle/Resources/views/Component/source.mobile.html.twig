@@ -21,6 +21,7 @@
                 </div>
             {% else %}
                 <div class="payment-type-change-order">
+                    {{ form_label(paymentAccountType.type) }}
                     {{ form_widget(paymentAccountType.type) }}
                 </div>
             {% endif %}

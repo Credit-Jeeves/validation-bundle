@@ -227,12 +227,11 @@ function init() {
 }
 
 function renderPayAccounts(contract) {
-
     if (contract.allowDebitCard) {
         $("#" + accountPrefix + "type_2")
             .show()
-            .parent().show();
-
+            .parent().show()
+            .find('label').show();
     } else {
         $("#" + accountPrefix + "type_2")
             .hide()
@@ -242,7 +241,7 @@ function renderPayAccounts(contract) {
         $("#" + accountPrefix + "type_0")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
         $("#" + accountPrefix + "type_0")
             .hide()
@@ -252,7 +251,7 @@ function renderPayAccounts(contract) {
         $("#" + accountPrefix + "type_1")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
         $("#" + accountPrefix + "type_1")
             .hide()
