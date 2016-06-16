@@ -17,6 +17,14 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
     {
         $this->load(true);
 
+        $this->getEntityManager()->getConnection()
+            ->prepare(
+                file_get_contents(
+                    $this->getFileLocator()->locate('@ImportBundle/Tests/Fixtures/AMSI_rj_smarty_streets_cache.sql')
+                )
+            )
+            ->execute();
+
         $group = $this->getEntityManager()->getRepository('DataBundle:Group')->find(24);
         $admin = $this->getEntityManager()->getRepository('DataBundle:Admin')->find(1);
         $holding = $group->getHolding();
@@ -100,5 +108,13 @@ class AMSIImportPropertyManagerCase extends BaseTestCase
     protected function getImportPropertyManager()
     {
         return $this->getContainer()->get('import.property.manager');
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Config\FileLocator
+     */
+    protected function getFileLocator()
+    {
+        return $this->getContainer()->get('file_locator');
     }
 }

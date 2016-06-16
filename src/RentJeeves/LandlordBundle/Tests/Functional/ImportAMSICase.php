@@ -17,6 +17,15 @@ class ImportAMSICase extends ImportBaseAbstract
         $this->load(true);
         // prepare fixtures
         $em = $this->getEntityManager();
+
+        $em->getConnection()
+            ->prepare(
+                file_get_contents(
+                    $this->getFileLocator()->locate('@LandlordBundle/Tests/Fixtures/AMSI_rj_smarty_streets_cache.sql')
+                )
+            )
+            ->execute();
+
         /** @var Landlord $landlord */
         $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneByEmail('landlord1@example.com');
         $this->assertNotNull($landlord, 'Check fixtures, landlord with email "landlord1@example.com" should exist');
@@ -59,5 +68,13 @@ class ImportAMSICase extends ImportBaseAbstract
         // We must make sure the data saved into DB, so we count before import and after
         $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(['externalLeaseId' => 21]);
         $this->assertCount(2, $contracts);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Config\FileLocator
+     */
+    protected function getFileLocator()
+    {
+        return $this->getContainer()->get('file_locator');
     }
 }

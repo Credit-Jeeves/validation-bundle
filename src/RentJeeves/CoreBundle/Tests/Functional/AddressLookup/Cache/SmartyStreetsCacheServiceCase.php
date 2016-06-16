@@ -16,14 +16,14 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(8, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
+        $this->assertCount(50, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
 
         $this->assertTrue($result, 'Cache with key `test` is not saved');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(9, $allCache, 'SS cache should be added for empty data');
+        $this->assertCount(51, $allCache, 'SS cache should be added for empty data');
     }
 
     /**
@@ -34,12 +34,12 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(8, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
+        $this->assertCount(50, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
 
         $this->getSmartyStreetsCacheService()->save('', 'test');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(8, $allCache, 'SS cache should not be added for empty data');
+        $this->assertCount(50, $allCache, 'SS cache should not be added for empty data');
     }
 
     /**
@@ -50,7 +50,7 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->load(true);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(8, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
+        $this->assertCount(50, $allCache, 'Check fixtures: fixtures should contain data for SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->save('test', 'test');
 
@@ -75,14 +75,14 @@ class SmartyStreetsCacheServiceCase extends BaseTestCase
         $this->getEntityManager()->flush($cache);
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(9, $allCache, 'Check creating new object SmartyStreetsCache');
+        $this->assertCount(51, $allCache, 'Check creating new object SmartyStreetsCache');
 
         $result = $this->getSmartyStreetsCacheService()->delete('test');
 
         $this->assertTrue($result, 'Cache with key `test` is not deleted');
 
         $allCache = $this->getEntityManager()->getRepository('RjDataBundle:SmartyStreetsCache')->findAll();
-        $this->assertCount(8, $allCache, 'Data not removed');
+        $this->assertCount(50, $allCache, 'Data not removed');
     }
 
     /**
