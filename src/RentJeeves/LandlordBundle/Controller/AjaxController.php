@@ -961,12 +961,10 @@ class AjaxController extends Controller
             return new JsonResponse(['errors' => $errors]);
         }
         // should set property and unit that we got from form b/c we use it for looking duplicates
-        $originalContract->setProperty($this
-            ->getEntityManager()
-            ->find('RjDataBundle:Property', $mergingModel->getContractPropertyId()));
-        $originalContract->setUnit($this
-            ->getEntityManager()
-            ->find('RjDataBundle:Unit', $mergingModel->getContractUnitId()));
+        $property = $this->getEntityManager()->find('RjDataBundle:Property', $mergingModel->getContractPropertyId());
+        $originalContract->setProperty($property);
+        $unit = $this->getEntityManager()->find('RjDataBundle:Unit', $mergingModel->getContractUnitId());
+        $originalContract->setUnit($unit);
 
         $unexpectedDuplicateContract = $mergingProcessor
             ->getOneOrNullDuplicate(

@@ -1259,8 +1259,8 @@ class TenantCase extends BaseTestCase
         $externalLeaseId = 't1234572222';
         $lease->setValue($externalLeaseId);
         $this->page->pressButton('savechanges');
-        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         /** @var Contract $contract */
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => $externalLeaseId]
