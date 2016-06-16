@@ -493,7 +493,7 @@ abstract class BaseMergingDTO
         if ($this->duplicateContract) {
             $tenantInfo = $this->duplicateContract->getTenantFullName();
 
-            if (self::MATCH_RESIDENT_TYPE === $this->getMatchingType()) {
+            if (self::MATCH_RESIDENT_TYPE === $this->getMatchingType() && $this->duplicateContract->getTenantEmail()) {
                 $tenantInfo = sprintf('%s (%s)', $tenantInfo, $this->duplicateContract->getTenantEmail());
             }
         }

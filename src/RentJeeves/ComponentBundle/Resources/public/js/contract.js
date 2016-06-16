@@ -1,7 +1,6 @@
 function Contract() {
     var self = this;
     this.outstandingBalance = ko.observable(0);
-    this.propertiesList = ko.observableArray([]);
     this.dueDateList = ko.observableArray([]);
     for(i = 1; i <= 31; i++) {
         var data = {
@@ -10,8 +9,10 @@ function Contract() {
         };
         self.dueDateList().push(data);
     }
-    this.unitsList = ko.observableArray([]);
+    this.propertiesList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
+    this.unitsList = ko.observableArray([]);
+    this.currentUnitRequest = null;
     this.currentUnitId = ko.observable();
     this.optionsFinishAtEdit = ko.observable('finishAt');
     this.optionsFinishAtApprove = ko.observable('finishAt');
@@ -54,80 +55,61 @@ function Contract() {
         self.clearDetails();
     };
 
-    this.getUnits = function (propertyId) {
+    this.loadUnits = function (propertyId) {
+        self.debug && console.log('Loading units for ' + propertyId);
+        if (self.currentUnitRequest) {
+            self.debug && console.log('Request aborted loading units for ' + propertyId);
+            self.currentUnitRequest.abort();
+            self.currentUnitRequest = null;
+        }
+        self.isSingleProperty(false);
         self.unitsList([]);
-        $('#unit-edit').parent().find('.loader').show();
-        $.ajax({
+        $('.unit-loader.loader').show();
+        self.currentUnitRequest = $.ajax({
             url: Routing.generate('landlord_units_list'),
             type: 'POST',
             dataType: 'json',
             data: {'property_id': propertyId },
             success: function (response) {
-                $('#unit-edit').parent().find('.loader').hide();
                 self.unitsList(response.units);
                 self.isSingleProperty(response.isSingle == true);
-                self.currentUnitId(self.contract().unit_id);
+                $('.unit-loader.loader').hide();
+                $('.property-loader.loader').hide();
+                if (self.edit()) {
+                    self.currentUnitId(self.contract().unit_id);
+                } else if (self.mergedContract()) {
+                    self.currentUnitId(self.mergedContract().unitId);
+                }
+
             }
         });
     };
 
-    this.getProperties = function (propertyId, elementSelect) {
-        self.propertiesList([]);
-        elementSelect.parent().find('.loader').show();
-        $.ajax({
-            url: Routing.generate('landlord_properties_list_all'),
-            type: 'POST',
-            dataType: 'json',
-            success: function (response) {
-                elementSelect.parent().find('.loader').hide();
-                self.propertiesList(response);
-                self.enableCurrentPropertyIdSubscription(true);
-                self.currentPropertyId(propertyId);
-            }
-        });
-    };
-
-    /*
-     * Enable loading list of units from server every time the currentPropertyId variable is set
-     *
-     * We wrap the "subscribe" call in this function so we can control when events can occur. It was added to
-     * avoid prematurely loading the units list when currentPropertyId is initially set in the twig template.
-     * It is intended to be chained inside the success callback for getProperties() are loaded and
-     * currentPropertyId is initially set.
-     *
-     * This is a stand-alone function so we can manage creation and deletion of the subscribe closure in one
-     * place.
-     *
-     * If enable is
-     *   true : then when currentPropertyId changes, unit list for that property will be loaded.
-     *   false : disable loading of unit list on change and dispose of subscription to avoid memory leaks.
-     */
-    this.enableCurrentPropertyIdSubscription = function(enable) {
-        if (enable) {
-            if (this.currentPropertyIdSubscription) {
-                // noop -- already subscribed.
-                this.debug && console.debug("CurrentPropertyIdSubscription Already Subscribed.");
-            } else {
-                this.debug && console.debug("CurrentPropertyIdSubscription Subscription enabled.");
-                this.currentPropertyIdSubscription =
-                    this.currentPropertyId.subscribe(function (newValue) {
-                        self.getUnits(newValue);
-                    });
-                /*
-                 * RT-1272 : When you edit an invite, the property ID is set, but does not change value
-                 * so set this to always notify, which will still load the units list in this situation.
-                 */
-                this.currentPropertyId.extend({ notify: 'always' }); // RT-1272 : always send event if set!
-            }
+    this.loadProperties = function (propertyId) {
+        if (!self.propertiesList().length) {
+            $('.property-loader.loader').show();
+            $.ajax({
+                url: Routing.generate('landlord_properties_list_all'),
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    self.propertiesList(response);
+                    self.currentPropertyId(propertyId);
+                    $('.property-loader.loader').hide();
+                }
+            });
         } else {
-            if (this.currentPropertyIdSubscription) {
-                this.debug && console.debug("CurrentPropertyIdSubscription Subscription disabled.");
-                this.currentPropertyIdSubscription.dispose();  // remove closure
-                this.currentPropertyIdSubscription = null;
-            }
+            self.currentPropertyId(propertyId);
         }
     };
 
+    this.currentPropertyId.subscribe(function (newValue) {
+        if (newValue) {
+            self.loadUnits(newValue);
+        }
+    });
+
+    this.currentPropertyId.extend({ notify: 'always' });
 
     this.closeApprove = function (data) {
         $('#tenant-approve-property-popup').dialog('close');
@@ -153,7 +135,7 @@ function Contract() {
             self.optionsFinishAtEdit('monthToMonth');
         }
 
-        self.getProperties(self.contract().property_id, $("#property-edit"));
+        self.loadProperties(self.contract().property_id);
 
         var flag = false;
         if (self.approve()) {
@@ -198,7 +180,7 @@ function Contract() {
 
     this.initializeMergingContractsDialog = function () {
         $('#contract-duplicate-popup').dialog('close');
-        self.getProperties(self.contract().property_id, $("#property-merge"));
+        self.loadProperties(self.mergedContract().propertyId);
         $('#contract_start-merge').datepicker({
             showOn: "both",
             buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
@@ -383,7 +365,6 @@ function Contract() {
         self.edit(false);
         self.review(false);
         self.approve(false);
-        self.enableCurrentPropertyIdSubscription(false);
     };
 
     this.saveContract = function (callback) {
