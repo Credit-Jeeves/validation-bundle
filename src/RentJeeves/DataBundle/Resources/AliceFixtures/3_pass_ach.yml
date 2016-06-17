@@ -1,5 +1,5 @@
 parameters:
-    locale: test
+    locale: en
 CreditJeeves\DataBundle\Entity\Group:
     groupB:
         name:           TEST Pass ACH
