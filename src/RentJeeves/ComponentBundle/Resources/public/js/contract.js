@@ -32,7 +32,7 @@ function Contract() {
     this.isSingleProperty = ko.observable(true);
 
     this.mergedContract = ko.observable();
-    this.shouldMerge = ko.observable(true);
+    this.shouldMerge = ko.observable(false);
     this.duplicateContractMessage = ko.observable('');
     this.duplicateContractMatchType = ko.observable(null);
     this.duplicateContractUser = ko.observable(null);
@@ -75,12 +75,11 @@ function Contract() {
                 self.isSingleProperty(response.isSingle == true);
                 $('.unit-loader.loader').hide();
                 $('.property-loader.loader').hide();
-                if (self.edit()) {
-                    self.currentUnitId(self.contract().unit_id);
-                } else if (self.mergedContract()) {
+                if (self.shouldMerge()) {
                     self.currentUnitId(self.mergedContract().unitId);
+                } else {
+                    self.currentUnitId(self.contract().unit_id);
                 }
-
             }
         });
     };
@@ -104,7 +103,7 @@ function Contract() {
     };
 
     this.currentPropertyId.subscribe(function (newValue) {
-        if (newValue) {
+        if (newValue && (self.edit() || self.shouldMerge())) {
             self.loadUnits(newValue);
         }
     });
@@ -117,7 +116,6 @@ function Contract() {
     };
 
     this.editContract = function (contract) {
-
         self.errorsApprove([]);
         self.errorsEdit([]);
         self.notificationsEdit([]);
@@ -134,9 +132,6 @@ function Contract() {
         } else {
             self.optionsFinishAtEdit('monthToMonth');
         }
-
-        self.loadProperties(self.contract().property_id);
-
         var flag = false;
         if (self.approve()) {
             flag = true;
@@ -144,6 +139,7 @@ function Contract() {
         self.clearDetails();
         self.edit(true);
         self.approve(flag);
+        self.loadProperties(self.contract().property_id);
         window.jQuery.curCSS = window.jQuery.css;
         $('#contractEditStart').datepicker({
             showOn: "both",
@@ -212,6 +208,7 @@ function Contract() {
     this.prepareToMergeContracts = function (contractMergingData) {
         self.errorsMerging([]);
         self.shouldMerge(true);
+        self.duplicateContractMessage(null);
         if (contractMergingData.matchingType == 'none') {
             self.shouldMerge(false);
             self.duplicateContractMessage(Translator.trans('contract.merging.failure.description'));
@@ -227,10 +224,9 @@ function Contract() {
     };
 
     this.cancelMergeContract = function () {
-        self.duplicateContractMessage(Translator.trans('contract.merging.cancel.description'));
         $('#tenant-merge-contract-popup').dialog('close');
+        self.duplicateContractMessage(Translator.trans('contract.merging.cancel.description'));
         self.shouldMerge(false);
-        $('#contract-duplicate-popup').dialog('open');
     };
 
     this.closeMergingContractsDialog = function () {
@@ -279,6 +275,8 @@ function Contract() {
         contract.start = start;
         contract.finish = finish;
         self.contract(contract);
+        self.currentPropertyId(contract.property_id);
+        self.currentUnitId(contract.unit_id);
 
         $('#contractApproveStart').datepicker({
             showOn: "both",
@@ -395,7 +393,8 @@ function Contract() {
             }
         }
 
-
+        self.shouldMerge(false);
+        self.mergedContract(null);
         self.contract(contract);
         self.initControllers();
         $.ajax({
@@ -466,7 +465,6 @@ function Contract() {
                 'duplicateContractId': self.mergedContract().duplicateContractId
             },
             success: function (response) {
-                self.initializeMergingContractsDialog();
                 $("#tenant-merge-contract-popup").hideOverlay();
 
                 if (typeof response.errors == 'undefined') {
@@ -474,6 +472,7 @@ function Contract() {
                     self.clearDetails();
                     ContractsViewModel.ajaxAction();
                 } else {
+                    self.initializeMergingContractsDialog();
                     self.errorsMerging(response.errors);
                 }
             },
