@@ -198,9 +198,7 @@ class ContractProcessor
         $group = $unit->getGroup() ?: $unit->getProperty()->getPropertyGroups()->first();
 
         foreach ($group->getGroupAgents() as $landlord) {
-            if (!$this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract)) {
-                throw new \Exception('Email can\'t be send. Please contact with administrator.');
-            }
+            $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
         }
 
         return $contract;
