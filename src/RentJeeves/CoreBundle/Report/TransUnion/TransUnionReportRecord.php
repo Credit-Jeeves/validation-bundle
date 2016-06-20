@@ -185,9 +185,7 @@ class TransUnionReportRecord
      */
     public function getPropertyIdentificationNumber()
     {
-        $number = $this->contract->getHolding()->getId();
-
-        return str_pad(sprintf('h%s', $number), 20);
+        return str_pad('RENTTRACK', 20);
     }
 
     public function getLeaseNumber()

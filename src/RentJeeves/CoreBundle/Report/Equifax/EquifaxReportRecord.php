@@ -9,11 +9,5 @@ use RentJeeves\CoreBundle\Report\TransUnion\TransUnionReportRecord;
  */
 class EquifaxReportRecord extends TransUnionReportRecord
 {
-    /**
-     * Equifax wants everything reported as RENTTRACK
-     */
-    public function getPropertyIdentificationNumber()
-    {
-        return str_pad('RENTTRACK', 20);
-    }
+
 }
