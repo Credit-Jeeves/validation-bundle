@@ -44,20 +44,14 @@ abstract class Order
     protected $id;
 
     /**
-     * @ORM\Column(
-     *     type="bigint"
-     * )
-     */
-    protected $cj_applicant_id;
-
-    /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\User",
      *     inversedBy="orders"
      * )
      * @ORM\JoinColumn(
      *     name="cj_applicant_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=true
      * )
      */
     protected $user;
@@ -281,29 +275,6 @@ abstract class Order
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set cj_applicant_id
-     *
-     * @param  integer $cjApplicantId
-     * @return self
-     */
-    public function setCjApplicantId($cjApplicantId)
-    {
-        $this->cj_applicant_id = $cjApplicantId;
-
-        return $this;
-    }
-
-    /**
-     * Get cj_applicant_id
-     *
-     * @return integer
-     */
-    public function getCjApplicantId()
-    {
-        return $this->cj_applicant_id;
     }
 
     /**

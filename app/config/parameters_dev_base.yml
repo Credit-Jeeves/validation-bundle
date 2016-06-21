@@ -69,6 +69,8 @@ parameters:
     allow_duplicate_contracts: false
     # parameter was added for task RT-1668, we can fast allow and disallow feature that show Score Track
     allow_score_track: true
+    # parameter was added for tasks RT-2455 and RT-2439, we can fast allow and disallow display fees on wizzard
+    allow_payment_account_fee_dispay: true
 
     resman.integration_partner_id: 1073
     resman.api_key: e2344f3b0fd6482c8978e0dcab3d42db
@@ -99,3 +101,6 @@ parameters:
     jira_api.password: svzB10KC3B0Z
     jira_api.key: TLDTEST
     import_1_0_rows_on_the_page: 9
+
+    smarty_streets.auth_id: 'f696f0db-df48-c3c8-df8e-dd6e62c356e7'
+    smarty_streets.auth_token: 'CXhm3W2Ll7fZwIVdFQvQ'

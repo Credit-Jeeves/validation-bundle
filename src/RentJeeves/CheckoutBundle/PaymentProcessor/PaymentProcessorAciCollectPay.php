@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\PaymentProcessor;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderPaymentType;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\EnrollmentManager;
@@ -189,14 +190,6 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function calculateDepositDate($paymentType, \DateTime $executeDate)
-    {
-        return BusinessDaysCalculator::getNextDepositDate($executeDate);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCardType($cardNumber)
     {
         return $this->leastCostRouteManager->getLeastCostRoute($cardNumber);
@@ -226,5 +219,28 @@ class PaymentProcessorAciCollectPay implements SubmerchantProcessorInterface
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateDepositDate($paymentType, \DateTime $executeDate)
+    {
+        return BusinessDaysCalculator::getDepositDate(
+            $executeDate,
+            $this->getBusinessDaysRequired($paymentType)
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBusinessDaysRequired($paymentType)
+    {
+        if ($paymentType === OrderPaymentType::BANK) {
+            return self::DELIVERY_BUSINESS_DAYS_FOR_BANK;
+        }
+
+        return self::DELIVERY_BUSINESS_DAYS_FOR_CARD;
     }
 }

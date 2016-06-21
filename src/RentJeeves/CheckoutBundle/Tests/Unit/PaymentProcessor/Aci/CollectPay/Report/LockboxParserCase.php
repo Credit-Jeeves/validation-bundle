@@ -14,7 +14,7 @@ class LockboxParserCase extends BaseTestCase
      */
     public function shouldParseLockboxDataIntoArrayWithTransactions()
     {
-        $data = file_get_contents(__DIR__ . '/../../../../../Fixtures/Aci/lockbox.csv');
+        $data = file_get_contents(__DIR__ . '/../../../../../Data/PaymentProcessor/Aci/CollectPay/Report/lockbox.csv');
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
         $decodedData = $parser->parse($data);
@@ -42,7 +42,9 @@ class LockboxParserCase extends BaseTestCase
      */
     public function shouldParseLockboxDataIntoArrayWithDebitTransactionsAndSkipZeroAmountTransaction()
     {
-        $data = file_get_contents(__DIR__ . '/../../../../../Fixtures/Aci/debitsLockbox.csv');
+        $data = file_get_contents(
+            __DIR__ . '/../../../../../Data/PaymentProcessor/Aci/CollectPay/Report/debitsLockbox.csv'
+        );
 
         $parser = new LockboxParser($this->getContainer()->get('logger'));
         $decodedData = $parser->parse($data);

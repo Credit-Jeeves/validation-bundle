@@ -29,7 +29,7 @@ use RentJeeves\DataBundle\Validators\ContractDuplicate;
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
  *
- * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
+ * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"merging", "User", "Default"})
  * @ContractDuplicate()
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
@@ -844,6 +844,10 @@ class Contract extends Base
     }
 
     /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("customPayments")
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\Payment>")
+     * @Serializer\Groups({"payRent"})
      * @return \Doctrine\Common\Collections\Collection|Payment[]
      */
     public function getActiveCustomPayments()

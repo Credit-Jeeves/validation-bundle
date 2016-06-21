@@ -44,7 +44,7 @@ class AciPgpDecoderCase extends BaseTestCase
      */
     public function shouldThrowExceptionIfUseDecodeForNotDecodedFile()
     {
-        $this->getAciPgpDecoder()->decode(__DIR__ . '/../../../../Fixtures/Aci/justFile.txt');
+        $this->getAciPgpDecoder()->decode(__DIR__ . '/../../../../Data/PaymentProcessor/Aci/Encoder/justFile.txt');
     }
 
     /**
@@ -52,8 +52,13 @@ class AciPgpDecoderCase extends BaseTestCase
      */
     public function shouldDecodeFile()
     {
-        $decodedData = $this->getAciPgpDecoder()->decode(__DIR__ . '/../../../../Fixtures/Aci/encodedFile.pgp');
-        $this->assertEquals(file_get_contents(__DIR__ . '/../../../../Fixtures/Aci/decodedFile.csv'), $decodedData);
+        $decodedData = $this->getAciPgpDecoder()->decode(
+            __DIR__ . '/../../../../Data/PaymentProcessor/Aci/Encoder/encodedFile.pgp'
+        );
+        $this->assertEquals(
+            file_get_contents(__DIR__ . '/../../../../Data/PaymentProcessor/Aci/Encoder/decodedFile.csv'),
+            $decodedData
+        );
     }
 
     /**

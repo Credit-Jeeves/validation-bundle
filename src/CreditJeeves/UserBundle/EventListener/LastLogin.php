@@ -1,15 +1,12 @@
 <?php
 namespace CreditJeeves\UserBundle\EventListener;
 
-use CreditJeeves\CoreBundle\Event\Filter;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
+use CreditJeeves\CoreBundle\Mailer\Mailer;
+use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Model\UserInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use FOS\UserBundle\FOSUserEvents;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Doctrine\ORM\EntityManager;
 
@@ -22,11 +19,14 @@ use Doctrine\ORM\EntityManager;
  */
 class LastLogin implements EventSubscriberInterface
 {
+    /**
+     * @var Mailer
+     */
     private $mailer;
 
-    /*
-    * object EntityManager
-    */
+    /**
+     * @var EntityManager
+     */
     private $em;
 
     /**
@@ -52,12 +52,11 @@ class LastLogin implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-
         $user = $event->getAuthenticationToken()->getUser();
         $ip = $event->getRequest()->getClientIp();
         if ($user instanceof UserInterface) {
             $lastLogin = $user->getLastLogin();
-            if (empty($lastLogin) & 'applicant' == $user->getType()) {
+            if (empty($lastLogin) && (UserType::TENANT === $user->getType())) {
                 $this->mailer->sendWelcomeEmailToUser($user);
             }
             $user->setLastLogin(new \DateTime());

@@ -44,14 +44,8 @@ class ImportPropertyAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
-        $importId = $this->getRequest()->get('import_id');
         $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
         $query->setMaxResults(self::MAX_LIMIT);
-        if (!empty($importId)) {
-            $query->andWhere($alias.'.import = :import');
-            $query->setParameter('import', $importId);
-        }
 
         return $query;
     }
@@ -108,6 +102,7 @@ class ImportPropertyAdmin extends Admin
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
+            ->add('import.id')
             ->add('externalPropertyId')
             ->add('externalBuildingId')
             ->add('unitName')

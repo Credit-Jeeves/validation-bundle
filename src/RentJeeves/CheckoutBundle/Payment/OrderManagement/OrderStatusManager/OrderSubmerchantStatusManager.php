@@ -223,9 +223,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
     {
         $operation = $order->getRentOperations()->first();
 
-        if ($operation) {
-            $user = $order->getUser();
-
+        if ($operation && $user = $order->getUser()) {
             if ($user->getOrders()->count() == 1 && $user->getPartnerCode()) {
                 $user->getPartnerCode()->setFirstPaymentDate(new \DateTime());
 
@@ -491,7 +489,7 @@ class OrderSubmerchantStatusManager implements OrderStatusManagerInterface
             return;
         }
 
-        if ($order->getPaymentType() != OrderPaymentType::CASH &&
+        if ($order->getPaymentType() != OrderPaymentType::CASH && null !== $order->getUser() &&
             in_array($operation->getType(), [OperationType::RENT, OperationType::OTHER])
         ) {
             $this->mailer->sendOrderCancelToTenant($order);

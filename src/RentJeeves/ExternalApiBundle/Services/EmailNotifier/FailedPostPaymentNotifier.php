@@ -61,7 +61,7 @@ class FailedPostPaymentNotifier
         $parameters = [];
 
         if ($accountingBatchId) {
-            $parameters[] = '--accounting-batch-id=' . $accountingBatchId;
+            $parameters[] = '--accounting-batch-id='.$accountingBatchId;
         }
 
         if (!$this->isExistFailedPushPaymentJobsToExternalApi($holding)) {
@@ -70,7 +70,7 @@ class FailedPostPaymentNotifier
             return;
         }
 
-        $parameters[] = '--holding-id=' . $holding->getId();
+        $parameters[] = '--holding-id='.$holding->getId();
         $job = new Job('renttrack:notify:batch-close-failure', $parameters);
         $this->em->persist($job);
 
@@ -211,7 +211,7 @@ class FailedPostPaymentNotifier
      */
     protected function getFailedPushPaymentJobsToExternalApi(array $groups)
     {
-        return $this->em->getRepository('RjDataBundle:JobRelatedOrder')->getFailedPushJobsToExternalApi(
+        return $this->em->getRepository('RjDataBundle:JobRelatedOrder')->getFailedPaymentPushJobsByGroups(
             $groups,
             new \DateTime()
         );
@@ -240,7 +240,6 @@ class FailedPostPaymentNotifier
         return $tmpFilePath;
     }
 
-
     /**
      * @param Collection $groups
      * @return Collection|mixed
@@ -249,11 +248,13 @@ class FailedPostPaymentNotifier
     {
         $today = new \DateTime();
 
-        return $this->exporter->getContent([
-            'groups' => $groups,
-            'begin' => $today->format('Y-m-d'),
-            'end' => $today->format('Y-m-d')
-        ]);
+        return $this->exporter->getContent(
+            [
+                'groups' => $groups,
+                'begin' => $today->format('Y-m-d'),
+                'end' => $today->format('Y-m-d'),
+            ]
+        );
     }
 
     /**
@@ -294,7 +295,7 @@ class FailedPostPaymentNotifier
      */
     protected function sendEmails(Landlord $landlord, array $batchCloseFailureDetail, $filePath)
     {
-        $this->logger->debug('Send email about failed push for landlord#' . $landlord->getEmail());
+        $this->logger->debug('Send email about failed push for landlord#'.$landlord->getEmail());
         $result = $this->mailer->sendPostPaymentError($landlord, $batchCloseFailureDetail, $filePath);
 
         if ($result === false) {

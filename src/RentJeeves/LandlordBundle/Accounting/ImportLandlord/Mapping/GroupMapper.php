@@ -66,7 +66,7 @@ class GroupMapper extends AbstractMapper
     protected function mapObject()
     {
         $externalGroupId = $this->get('login_id');
-        if (false != $group = $this->getGroupRepository()->findOneBy(['externalGroupId' => $externalGroupId])) {
+        if (false != $group = $this->getGroupRepository()->getGroupByExternalLocationId($externalGroupId)) {
             return $group;
         }
 

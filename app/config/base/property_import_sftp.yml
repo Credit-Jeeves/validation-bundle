@@ -1,5 +1,40 @@
 parameters:
-    import.property.sftp.host: 'transfer.princetonecom.com'
-    import.property.sftp.port: '10022'
-    import.property.sftp.login: 'rntrtest'
-    import.property.sftp.password: 'r7QebTAa'
+    import.property.sftp.host: 'stg.renttrack.com'
+    import.property.sftp.port: 22
+
+    import.property.sftp.path_to_import_dir: '/home/import'
+
+    import.property.sftp.login: 'import'
+
+    import.property.sftp.password: 'badPassword'
+
+    import.property.sftp.publickey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNrCuLPj0BvrcER6A7GSYGkp7DfykP1R9lHWIqC3moMy3CJWD6OA7tU/EiVOAmwUgw90PwZWVsTYLTJI5+6aJba2sw9FE1TtQJcQENGTxXFaWBkRfRkMOzvKbmsqEpKzrbSmJ6Hli80VqUIcrz8b5mXSLXVGnfk5OJ5BG/C02nYI8DKbK/oIhNJ5aLcnxpgcLegvzyBkptnC8f1C0UXqF5QL/xjfxq0/B/EmlMxaWoLAp6uGd/HSNXGCaAN+cqm7cMiUcmom5/2MWSX2tA7Q1vBiMNBPIxF16GLjZRwXE4Km2Lg8WPXnO2XNyJCn8BmQEjzOufzRSzFmG4dwagDi0V vagrant-collapsed-user
+    import.property.sftp.privatekey: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEogIBAAKCAQEAzawriz49Ab63BEegOxkmBpKew38pD9UfZR1iKgt5qDMtwiVg
+        +jgO7VPxIlTgJsFIMPdD8GVlbE2C0ySOfumiW2trMPRRNU7UCXEBDRk8VxWlgZEX
+        0ZDDs7ym5rKhKSs620pieh5YvNFalCHK8/G+Zl0i11Rp35OTieQRvwtNp2CPAymy
+        v6CITSeWi3J8aYHC3oL88gZKbZwvH9QtFF6heUC/8Y38atPwfxJpTMWlqCwKerhn
+        fx0jVxgmgDfnKpu3DIlHJqJuf9jFkl9rQO0NbwYjDQTyMRdehi42UcFxOCpti4PF
+        j15ztlzciQp/AZkBI8zrn80UsxZhuHcGoA4tFQIDAQABAoIBADSDOhbyTCdO53Gr
+        TAjq0d+pvemSZQyK0NpDV1X+2hANCSjh3FHm0EDeRtoKK7UZcnI2H92YNf4iCD4a
+        vls/Edofoh28s6NVviOu+6K5h8OAXmKnhhpWyPDyQPb0MtvNEtj8tAoUB3omRec+
+        fZAtb/y42PV7sxCHoIr7dWB+5VPPiPGnie0SGcaCnlq6ZZU3X6uywbaFWgc+Fz5s
+        O/tNZbhUqMOR4d+kykGa16HTHqyYKOpv3tujRezm4cg4hie1THKCIURFsTTLhmWY
+        N/rSaiTLTt3PhcTDKiekagkrtDY9Uwqz1NDuG/g3uEI+rUsd/l++Cch7R4ws6N80
+        7KWNOmECgYEA+rvH+0bSG2bExb2zfPeZaXTsIRwlNnwswIzRZYKoYC7vtmRTLkXJ
+        R/5Y+PdzfdcAZAKm4HfX0LshnVD7ANk1ApEHFQRRjeboo9LBnioyxXKMhxzRfpH8
+        fmWKFCBwCKdUeGrfAf2Et27YkiDeWPzgeY+i/iD41i1F7ncC3zAUmSkCgYEA0f4X
+        cihZEXp5sJvrsnNQ2ArGMBlFUxa3ps5RdOpJuQpkHSV2FR/gLJLxsKP6OVLZKjsq
+        fbgBDKi1y31CN9ASJPrRpcYb280kh0GagMa1EJHVVR3sj9/l0cenHy9hBeMq2RV2
+        PyjamAALSF9oNF9FmF2tZnUg5G9Bod7K+o7N9g0CgYBhMvadpKDC2p4hgh7YrSud
+        xCPd2glbC9xVcMGkNniLgOaQsGfGomsbK7DWIyd0eyq9moGStyLE2iZ30/LaK1nv
+        esViEmCDQCaji4pfhEBWZsevgS59gJ5/aWGT19dWo3eNjvCQ1vTiH2h5jaBkovNq
+        bJJlLecJMFfRz/UfDIaPsQKBgHHWlU9FoENhaebcIAI1kXYNITOh/3rzrcu3vWDs
+        QdsWTv+d902sYhLH9k4UFupMh33lZTuSLL94FlWiKeun2K5DarO7mg6mP08zuVZm
+        YnIBHO1vs3aroiL/YRH+1VIjvG7Cu7+xng8YtwUc85iwrUHURtRsWtB7n9DovpDm
+        KbFhAoGATJnizMPh++7byaLf4a0ZMp4uNsLT8VJ1rcjzc5D3+gU0oC2YaNt9M3AO
+        MprzoWyKxNA2H1RLANeLWPKirlxKbQP6GiiTtVlmbiDDM6SbvN0gNwVZ2n7mX8H7
+        sILserqFc18YOpCAjECWaBaj5D7BdlZ0e0+MBwVeKNTNDINPfVc=
+        -----END RSA PRIVATE KEY-----
+

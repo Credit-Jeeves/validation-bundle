@@ -5,6 +5,7 @@ namespace RentJeeves\CheckoutBundle\Tests\Unit\PaymentProcessor\ProfitStars;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\CheckoutBundle\Payment\OrderManagement\OrderStatusManager\OrderStatusManager;
+use RentJeeves\CheckoutBundle\PaymentProcessor\CheckScanPaymentProcessorInterface;
 use RentJeeves\CheckoutBundle\PaymentProcessor\ProfitStars\ProfitStarsReportSynchronizer;
 use RentJeeves\DataBundle\Entity\ProfitStarsTransaction;
 use RentJeeves\DataBundle\Entity\Transaction;
@@ -52,6 +53,7 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,
             $this->getOrderStatusManagerMock(),
+            $this->getPaymentProcessorMock(),
             $emMock,
             $this->getLoggerMock(),
             'test',
@@ -99,6 +101,7 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
                     $subject->getTransactionId(),
                     'Incorrect TransactionId for Transaction.'
                 );
+                $this->assertEquals('1R20160505', $subject->getBatchId(), 'BatchId is wrong');
 
                 return true;
             }));
@@ -112,9 +115,16 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
         $orderStatusManager->expects($this->once())
             ->method('setReturned');
 
+        $paymentProcessor = $this->getPaymentProcessorMock();
+        $paymentProcessor
+            ->expects($this->once())
+            ->method('generateReversedBatchId')
+            ->willReturn('1R20160505');
+
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,
             $orderStatusManager,
+            $paymentProcessor,
             $emMock,
             $this->getLoggerMock(),
             'test',
@@ -143,6 +153,7 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,
             $this->getOrderStatusManagerMock(),
+            $this->getPaymentProcessorMock(),
             $emMock,
             $logger,
             'test',
@@ -172,6 +183,7 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
         $reportSynchronizer = new ProfitStarsReportSynchronizer(
             $reportingClient,
             $this->getOrderStatusManagerMock(),
+            $this->getPaymentProcessorMock(),
             $emMock,
             $logger,
             'test',
@@ -263,5 +275,13 @@ class ProfitStarsReportSynchronizerCase extends UnitTestBase
     protected function getTransactionRepositoryMock()
     {
         return $this->getBaseMock(TransactionRepository::class);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|CheckScanPaymentProcessorInterface
+     */
+    protected function getPaymentProcessorMock()
+    {
+        return $this->getBaseMock(CheckScanPaymentProcessorInterface::class);
     }
 }

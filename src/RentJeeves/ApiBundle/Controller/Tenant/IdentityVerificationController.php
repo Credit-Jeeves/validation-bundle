@@ -78,6 +78,10 @@ class IdentityVerificationController extends Controller
      *         200="Returned when successful",
      *         404="Resource has already expired or doesn\'t exist.",
      *         500="Internal Server Error"
+     *     },
+     *     output={
+     *         "class"="RentJeeves\ApiBundle\Response\Tenant",
+     *         "groups"={"Base"}
      *     }
      * )
      * @Rest\Get("/identity_verification/{id}")

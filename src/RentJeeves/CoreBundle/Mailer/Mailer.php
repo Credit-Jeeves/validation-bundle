@@ -479,6 +479,11 @@ class Mailer extends BaseMailer
             'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'tenantName' => $tenant->getFullName(),
             'reversalDescription' => $order->getReversalDescription(),
+            'transactionId' => $order->getDepositTransactionId(),
+            'reversedTransactionId' => $order->getTransactionId(),
+            'groupName' => $order->getGroupName(),
+            'propertyAddress' => $order->getPropertyAddress(),
+            'unitName' => $order->getUnit()->getName(),
         ];
 
         $group = $order->getContract()->getGroup();
@@ -649,13 +654,17 @@ class Mailer extends BaseMailer
      */
     public function sendFreeReportUpdated(Tenant $tenant)
     {
+        $router = $this->container->get('router');
+        $router->getContext()->setHost($this->container->getParameter('server_name_rj'));
+        $params = [
+            'tenantFirstName' => $tenant->getFirstName(),
+            'dashboardLink' => $router->generate('tenant_summary', [], true)
+        ];
+
         return $this->sendEmail(
             $tenant,
             'rjFreeReportUpdated',
-            [
-                'tenantFirstName' => $tenant->getFirstName(),
-                'dashboardLink' => $this->container->get('router')->generate('tenant_summary', [], true)
-            ]
+            $params
         );
     }
 
@@ -787,13 +796,20 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getUser();
         $group = $order->getContract()->getGroup();
-        $mailingAddress = sprintf(
-            '%s, %s, %s, %s',
-            $group->getStreetAddress1(),
-            $group->getCity(),
-            $group->getState(),
-            $group->getZip()
-        );
+
+        $addressee = '';
+        $mailingAddress = '';
+        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
+            $address = $trustedLandlord->getCheckMailingAddress();
+            $addressee = $address->getAddressee();
+            $mailingAddress = sprintf(
+                '%s, %s, %s, %s',
+                $address->getAddress1(),
+                $address->getCity(),
+                $address->getState(),
+                $address->getZip()
+            );
+        }
 
         $estimatedDeliveryDate = BusinessDaysCalculator::getDepositDate(
             $order->getCreatedAt(),
@@ -807,7 +823,7 @@ class Mailer extends BaseMailer
             'sendDate' => $order->getDepositOutboundTransaction()->getCreatedAt()->format('m/d/Y'),
             'checkAmount' => $order->getDepositOutboundTransaction()->getAmount(),
             'mailingAddress' => $mailingAddress,
-            'mailingAddressName' => $group->getMailingAddressName(),
+            'mailingAddressName' => $addressee,
         ];
 
         return $this->sendBaseLetter('rjOrderSending', $vars, $tenant);

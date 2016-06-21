@@ -4,6 +4,7 @@ var paymentBalanceForm = '#rentjeeves_checkoutbundle_paymentbalanceonlytype';
 var currentPaymentForm = paymentForm;
 var prefix = currentPaymentForm + '_';
 var accountPrefix = "rentjeeves_checkoutbundle_paymentaccounttype_";
+var contractCollection = {};
 
 //since we aren't using KO, list those visible= when card or bank and use Jquery to set
 bankVisibleFields = [
@@ -57,8 +58,6 @@ $(document).ready(function() {
 })
 
 function init() {
-
-
     //load main page payments info
 
     loadPaymentTable()
@@ -99,11 +98,12 @@ function init() {
         disabled: true
     });
 
-
     //contract individual pages info filled out from JSON
     contractsArr = $.map(contractsJson, function(el) {
-        return el
+        contractCollection[el.id] = el;
+        return el;
     });
+
     for (i = 0; i < contractsArr.length; i++) {
         var contract = contractsArr[i];
         $("#contractPayTo" + contract.id).html(contract.payToName);
@@ -155,13 +155,13 @@ function init() {
 
     //show card/bank depending on radio selection
 
-    $("#" + accountPrefix + "type_0").bind("change", function(event, id) { //bank
+    $("#" + accountPrefix + "type_1").bind("change", function(event, id) { //bank
         var cardVisibility = "none"
         var bankVisibility = "block"
         showHideBankCardFields(bankVisibility, cardVisibility)
     })
 
-    $("#" + accountPrefix + "type_1").bind("change", function(event, id) { //credit
+    $("#" + accountPrefix + "type_0").bind("change", function(event, id) { //credit
         var cardVisibility = "block"
         var bankVisibility = "none"
         showHideBankCardFields(bankVisibility, cardVisibility)
@@ -217,37 +217,43 @@ function init() {
     $("#" + accountPrefix + "VerificationCode_box").show()
 
     $("input[name='rentjeeves_checkoutbundle_paymentaccounttype[address_choice]']").hide()
+
+    $(document).on('pagebeforeshow', '#addNewPayAccount', function (event) {
+        if ($('#payment-type-with-fee').length > 0) {
+            renderFeeForPayment();
+        }
+        $('.payment-type-change-order .ui-radio label').first().click();
+    });
 }
 
 function renderPayAccounts(contract) {
-
     if (contract.allowDebitCard) {
         $("#" + accountPrefix + "type_2")
             .show()
-            .parent().show();
-
+            .parent().show()
+            .find('label').show();
     } else {
         $("#" + accountPrefix + "type_2")
             .hide()
             .parent().hide();
     }
     if (contract.allowCreditCard) {
-        $("#" + accountPrefix + "type_1")
+        $("#" + accountPrefix + "type_0")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
-        $("#" + accountPrefix + "type_1")
+        $("#" + accountPrefix + "type_0")
             .hide()
             .parent().hide();
     }
     if (contract.allowBank) {
-        $("#" + accountPrefix + "type_0")
+        $("#" + accountPrefix + "type_1")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
-        $("#" + accountPrefix + "type_0")
+        $("#" + accountPrefix + "type_1")
             .hide()
             .parent().hide();
     }
@@ -411,7 +417,7 @@ function setupPayForm(id) {
 
             var contract = contractsArr[i]
 
-            var dueDate = parseInt(contractsArr[0].startAt.substr(8,2))
+            var dueDate = parseInt(contract.startAt.substr(8,2))
 
             if (contract.groupSetting.pay_balance_only) {
                 currentPaymentForm = paymentBalanceForm;
@@ -472,7 +478,7 @@ function setupPayForm(id) {
             //input contract id into hidden field
 
             jQuery(prefix + "contractId").val(id);
-            
+
             if (debug) {
                 console.log(contract)
             }
@@ -1110,15 +1116,24 @@ function loadPaymentTable() { //CURRENT ENTRIES
                     payAccountType = v.type
                 }
             })
-            //date = entry.payment.startYear+"-"+entry.payment.startMonth+"-"+entry.payment.dueDate
             date = entry.payment.paidDate.split("/")
             date = date[2] + "-" + date[0] + "-" + date[1]
-            orderBox("<b>" + entry.payment.type.capitalizeFirstLetter().replace("_", " ").capitalizeFirstLetter().replace("time", "Time") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType)
+            orderBox("<b>" + entry.payment.type.replace("_", " ").replace("time", "Time Rent") + " Payment Scheduled</b> - $" + entry.payment.total, address, "", date, entry.id, payAccountType, true);
             //desc,address,status,date,contractId,paymentType
+        }
+        if (entry.customPayments) {
+            $.each(entry.customPayments, function (k, customPayment) {
+                orderBox(
+                    "<b>" + customPayment.depositAccountType.replace('_', ' ') + " Payment Scheduled</b> - $" + customPayment.total,
+                    address,
+                    '',
+                    customPayment.startYear + '-' + padZero(customPayment.startMonth) + '-' + padZero(customPayment.dueDate),
+                    entry.id,
+                    customPayment.paymentAccountType);
+            });
         }
     })
 }
-
 
 function getDepositDate(contractId, date, paymentType, recId) {
     //ajax/deliveryDate/2/2015-10-29/card
@@ -1134,7 +1149,7 @@ function formatDate(s) { //takes yyyy-dd-mm and converts to mm/dd/yyyy
     return d[1] + "/" + d[2] + "/" + d[0];
 }
 
-function orderBox(desc, address, status, date, contractId, paymentType) { //status = complete, pending, error, "" (scheduled but no order), refund
+function orderBox(desc, address, status, date, contractId, paymentType, isPayment) { //status = complete, pending, error, "" (scheduled but no order), refund
     randId = "a" + Math.floor(Math.random() * 9999999)
     if (contractId != -1) {
         getDepositDate(contractId, date, paymentType, randId)
@@ -1142,7 +1157,13 @@ function orderBox(desc, address, status, date, contractId, paymentType) { //stat
     $("#intro").hide() // we don't need default box
     htmlStr = "";
     //htmlStr += "<tr><td>" + entry.date + "</td><td>$" + entry.total + "</td><td>" + entry.status.toString().capitalizeFirstLetter() + "</td></tr>";
-    htmlStr += '<div class="paymentBox"><div class="addressBox"><i class="fa fa-home"></i> ' + address + '</div>'
+    if(true === isPayment) {
+        htmlStr += '<div class="paymentBox" onclick="navigateToContract(' + contractId + ')">';
+    } else {
+        htmlStr += '<div class="paymentBox">';
+    }
+    htmlStr += '<div class="addressBox"><i class="fa fa-home"></i> ' + address + '</div>'
+
     htmlStr += '<div class="paymentStatusBox">'
     htmlStr += '<div class="paymentStatusCont">'
     if (status != "") {
@@ -1164,9 +1185,48 @@ function orderBox(desc, address, status, date, contractId, paymentType) { //stat
     }
     htmlStr += '</div>'
     htmlStr += '</div>'
-    htmlStr += '<div style="color: #6BAB1B; padding: 5px; text-shadow: none; text-align: center;">'
+    htmlStr += '<div style="color: #6BAB1B; padding: 5px; text-shadow: none; text-align: center;text-transform: capitalize;">'
     htmlStr += desc
     htmlStr += '</div>'
     htmlStr += '</div></div>'
-    $("#payments").append(htmlStr)
+    $("#payments").append(htmlStr);
+}
+
+function navigateToContract(contractId) {
+    $.mobile.changePage("#contract" + contractId, {transition: 'slide'});
+}
+
+function renderFeeForPayment() {
+    var contract = getContractById(globalContractId);
+
+    $('#payment-type-with-fee').find('.payment-fee-value').each(function () {
+        $(this).text(getFeeForContract($(this).attr('data-payment-type'), contract.groupSettings));
+    });
+}
+
+function getFeeForContract(method, groupSettings) {
+    if ('card' == method) {
+        return parseFloat(groupSettings.feeCC ? groupSettings.feeCC : 0) + '%';
+    } else if ('bank' == method) {
+        return '$' + parseFloat(groupSettings.isPassedACH ? groupSettings.feeACH : 0.00).toFixed(2);
+    } else if ('debit_card' == method) {
+        if ('percentage' == groupSettings.typeFeeDC) {
+            return parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0) + '%';
+        } else {
+            return '$' + parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0.00).toFixed(2);
+        }
+    } else {
+        return parseFloat(0);
+    }
+}
+
+function getContractById(id) {
+    if (null !== contractCollection && undefined !== contractCollection[id]) {
+        return contractCollection[id];
+    }
+    return null;
+}
+
+function padZero(n) {
+    return n < 10 ? '0' + n : n
 }

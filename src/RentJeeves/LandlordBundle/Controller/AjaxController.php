@@ -18,7 +18,9 @@ use RentJeeves\DataBundle\Entity\ContractRepository;
 use RentJeeves\DataBundle\Entity\PropertyAddress;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\Services\BatchDepositsManager;
+use RentJeeves\LandlordBundle\MergingContracts\ContractMergedDTO;
+use RentJeeves\LandlordBundle\BatchDeposits\BatchDepositsManager;
+use RentJeeves\LandlordBundle\MergingContracts\ContractMergingProcessor;
 use RentJeeves\LandlordBundle\Validator\EmailExist;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -801,10 +803,6 @@ class AjaxController extends Controller
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setUnit($unit);
-        if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
-            $contract->setStatusApproved();
-            $this->get('project.mailer')->sendContractApprovedToTenant($contract);
-        }
 
         if ($contract->getSettings()->getIsIntegrated()) {
             $contract->setIntegratedBalance($details['balance']);
@@ -829,6 +827,33 @@ class AjaxController extends Controller
         foreach ($validatorErrors as $error) {
             $errors[] = $translator->trans($error->getMessage());
         }
+        /** @var ContractMergingProcessor $mergingProcessor */
+        $mergingProcessor = $this->get('landlord.contract_merging.processor');
+
+        $email = trim($details['email']);
+        $residentId = trim($details['residentId']);
+
+        try {
+            if ($duplicateContract = $mergingProcessor->getOneOrNullDuplicate($contract, $email, $residentId)) {
+                $response['mergingData'] = $mergingProcessor->getMergingContractData($contract, $duplicateContract);
+
+                $context = new SerializationContext();
+                $context->setSerializeNull(true);
+
+                $content = $this->get('jms_serializer')->serialize($response, 'json', $context);
+
+                return new Response($content, 200, ['Content-type' => 'application/json']);
+            }
+        } catch (\LogicException $e) {
+            $response['errors'] = [
+                $translator->trans(
+                    'contract.duplicate.error',
+                    ['%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')]
+                )
+            ];
+
+            return new JsonResponse($response);
+        }
 
         if ($contract->getGroup()->isAllowedEditResidentId()) {
             $user = $this->getUser();
@@ -839,7 +864,7 @@ class AjaxController extends Controller
                 $residentMapping->setHolding($holding);
                 $residentMapping->setTenant($tenant);
             }
-            $residentMapping->setResidentId(trim($details['residentId']));
+            $residentMapping->setResidentId($residentId);
             $resident = $this->get('resident_manager');
             $errors = array_merge(
                 $errors,
@@ -847,7 +872,7 @@ class AjaxController extends Controller
             );
         }
 
-        if (!$tenant->getEmail() && $email = trim($details['email'])) {
+        if (!$tenant->getEmail() && $email) {
             $emailConstraint = new Assert\Email(['message' => 'contract.error.email.invalid']);
             $userEmailExistConstraint = new EmailExist();
             $errorList = $this->get('validator')->validateValue($email, [$emailConstraint, $userEmailExistConstraint]);
@@ -865,6 +890,12 @@ class AjaxController extends Controller
                 $contractManager->moveContractOutOfWaitingByLandlord($contract, $contractStatus, $email);
             }
         }
+
+        if (in_array($details['status'], [ContractStatus::APPROVED]) & empty($errors)) {
+            $contract->setStatusApproved();
+            $this->get('project.mailer')->sendContractApprovedToTenant($contract);
+        }
+
         $response = [];
 
         if (!empty($errors)) {
@@ -879,6 +910,84 @@ class AjaxController extends Controller
         $em->flush();
 
         return new JsonResponse($response);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @Route(
+     *     "/contract/merge",
+     *     name="landlord_contract_merge",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method("POST")
+     *
+     * @return JsonResponse
+     */
+    public function mergeContractAction(Request $request)
+    {
+        $originalContract = $this
+            ->getEntityManager()
+            ->find('RjDataBundle:Contract', $request->get('originalContractId', 0));
+
+        $duplicateContract = $this
+            ->getEntityManager()
+            ->find('RjDataBundle:Contract', $request->get('duplicateContractId', 0));
+
+        if (!$originalContract || !$duplicateContract) {
+            throw new \InvalidArgumentException('Contracts should be set for merging');
+        }
+
+        $mergingProcessor = $this->get('landlord.contract_merging.processor');
+        /** @var ContractMergedDTO $mergingModel */
+        $mergingModel = $this->get('jms_serializer')
+            ->deserialize(
+                $request->get('mergingData'),
+                'RentJeeves\LandlordBundle\MergingContracts\ContractMergedDTO',
+                'array'
+            );
+
+        $mergingModel->setDuplicateContract($duplicateContract);
+        $mergingModel->setOriginalContract($originalContract);
+
+        $validatorErrors = $this->get('validator')->validate($mergingModel);
+        /** @var ConstraintViolation $error */
+        foreach ($validatorErrors as $error) {
+            $errors[] = $error->getMessage();
+        }
+        if (!empty($errors)) {
+            return new JsonResponse(['errors' => $errors]);
+        }
+        // should set property and unit that we got from form b/c we use it for looking duplicates
+        $property = $this->getEntityManager()->find('RjDataBundle:Property', $mergingModel->getContractPropertyId());
+        $originalContract->setProperty($property);
+        $unit = $this->getEntityManager()->find('RjDataBundle:Unit', $mergingModel->getContractUnitId());
+        $originalContract->setUnit($unit);
+
+        $unexpectedDuplicateContract = $mergingProcessor
+            ->getOneOrNullDuplicate(
+                $originalContract,
+                $mergingModel->getTenantEmail(),
+                $mergingModel->getContractResidentId()
+            );
+
+        if ($unexpectedDuplicateContract && $duplicateContract->getId() === $unexpectedDuplicateContract->getId()) {
+            if ($mergingProcessor->mergeContracts($originalContract, $duplicateContract, $mergingModel)) {
+                return new JsonResponse([]);
+            } else {
+                return new JsonResponse(['errors' => $mergingProcessor->getErrors()]);
+            }
+        }
+
+        throw new \LogicException(
+            sprintf(
+                'An attempt to merge 2 non-duplicated contracts: original contract id %d, duplicated contract id: %d.',
+                $originalContract->getId(),
+                $duplicateContract->getId()
+            )
+        );
     }
 
     /**
@@ -1220,7 +1329,6 @@ class AjaxController extends Controller
         }
 
         return new JsonResponse(array('error' => $reminderInvite->getError()));
-
     }
 
     /**

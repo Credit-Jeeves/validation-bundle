@@ -61,6 +61,12 @@ class UsersController extends Controller
      *         400="Error validating data. Please check parameters and retry.",
      *         409="User exists.",
      *         500="Internal Server Error"
+     *     },
+     *     responseMap={
+     *         201 = {
+     *             "class"="RentJeeves\ApiBundle\Response\Tenant",
+     *             "groups"={"Base"}
+     *         }
      *     }
      * )
      * @Rest\Post("/users")

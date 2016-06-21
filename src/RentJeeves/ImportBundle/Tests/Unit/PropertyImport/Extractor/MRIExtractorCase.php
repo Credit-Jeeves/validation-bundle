@@ -27,7 +27,7 @@ class MRIExtractorCase extends UnitTestBase
 
         $mriExtractor = new MRIExtractor($this->getMRIResidentDataManagerMock(), $this->getLoggerMock());
         $mriExtractor->setGroup($group);
-        $mriExtractor->setExtPropertyId('test');
+        $mriExtractor->setExternalPropertyId('test');
         $mriExtractor->extractData();
     }
 
@@ -51,7 +51,7 @@ class MRIExtractorCase extends UnitTestBase
             ->willThrowException(new \Exception('testMessage'));
         $mriExtractor = new MRIExtractor($dataManager, $this->getLoggerMock());
         $mriExtractor->setGroup($group);
-        $mriExtractor->setExtPropertyId('test');
+        $mriExtractor->setExternalPropertyId('test');
         $mriExtractor->extractData();
     }
 
@@ -73,7 +73,7 @@ class MRIExtractorCase extends UnitTestBase
             ->will($this->returnValue($expectedResponse = ['test']));
         $mriExtractor = new MRIExtractor($dataManager, $this->getLoggerMock());
         $mriExtractor->setGroup($group);
-        $mriExtractor->setExtPropertyId('test');
+        $mriExtractor->setExternalPropertyId('test');
         $actualResponse = $mriExtractor->extractData();
 
         $this->assertEquals($expectedResponse, $actualResponse, 'Incorrect Response from MRIExtractor.');

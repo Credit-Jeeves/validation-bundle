@@ -123,6 +123,15 @@ abstract class ImportProperty
 
     /**
      * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
+     * @var string
+     */
+    protected $country;
+
+    /**
+     * @ORM\Column(
      *     type="ImportPropertyStatus",
      *     options={
      *         "default"="none"
@@ -359,6 +368,22 @@ abstract class ImportProperty
     public function setZip($zip)
     {
         $this->zip = $zip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
     }
 
     /**

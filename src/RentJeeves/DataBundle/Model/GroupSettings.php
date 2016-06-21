@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\CountryCode;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\DataBundle\Enum\TypeDebitFee;
 
@@ -146,7 +147,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeCC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $feeCC;
 
@@ -158,7 +159,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeACH")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $feeACH;
 
@@ -168,7 +169,7 @@ abstract class GroupSettings
      * @ORM\Column(type="boolean", name="is_passed_ach")
      *
      * @Serializer\SerializedName("isPassedACH")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $passedAch = false;
 
@@ -292,7 +293,7 @@ abstract class GroupSettings
      *     nullable=false
      * )
      * @Serializer\SerializedName("typeFeeDC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      * @var string
      */
     protected $typeDebitFee = TypeDebitFee::PERCENTAGE;
@@ -306,7 +307,7 @@ abstract class GroupSettings
      *      nullable=true
      * )
      * @Serializer\SerializedName("feeDC")
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"payRent", "paymentAccounts"})
      */
     protected $debitFee;
 
@@ -362,6 +363,20 @@ abstract class GroupSettings
      * )
      */
     protected $maxLimitPerMonth = 0;
+
+    /**
+     * @ORM\Column(
+     *     type="CountryCode",
+     *     options={
+     *         "default"="US"
+     *     },
+     *     name="country_code",
+     *     nullable=false
+     * )
+     * @Serializer\Groups({"payRent"})
+     * @var string
+     */
+    protected $countryCode = CountryCode::US;
 
     /**
      * @param float $feeACH
@@ -797,5 +812,21 @@ abstract class GroupSettings
     public function getOrderAlgorithm()
     {
         return $this->getGroup()->getOrderAlgorithm();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
+
+    /**
+     * @param string $countryCode
+     */
+    public function setCountryCode($countryCode)
+    {
+        $this->countryCode = $countryCode;
     }
 }

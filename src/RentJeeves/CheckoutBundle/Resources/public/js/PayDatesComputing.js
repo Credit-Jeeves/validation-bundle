@@ -1,23 +1,23 @@
 function PayDatesComputing(parent) {
     var self = this;
 
-    self.isDueDay = function(date) {
+    self.isDueDay = function (date) {
         if (-1 == parent.contract().groupSetting.dueDays.indexOf(date.getDate())) {
             return [false, ''];
         }
         return [true, ''];
     };
 
-    self.getPaidFor = ko.computed(function() {
+    self.getPaidFor = ko.computed(function () {
         if (parent.payment.paidFor()) {
             return (parent.paidForArr()[parent.payment.paidFor()] ||
-                Translator.trans('checkout.rent_start.title.non_selected_month'));
+            Translator.trans('checkout.rent_start.title.non_selected_month'));
         }
 
         return Translator.trans('checkout.rent_start.title.non_selected_month');
     });
 
-    self.fullPayTo = ko.computed(function() {
+    self.fullPayTo = ko.computed(function () {
         return parent.contract() ? parent.contract().payToName : '';
     });
 
@@ -42,7 +42,7 @@ function PayDatesComputing(parent) {
     /**
      * see BusinessDaysCalculator
      */
-    self.shiftToNextBusinessDay = function(date){
+    self.shiftToNextBusinessDay = function (date) {
         switch (date.getDay()) {
             case 6:
                 date.add(2).day();
@@ -56,7 +56,7 @@ function PayDatesComputing(parent) {
         }
     };
 
-    self.shiftBusinessDays = function(date, targetShift){
+    self.shiftBusinessDays = function (date, targetShift) {
         var businessDate = date;
         var shiftedDays = 0;
 
@@ -97,7 +97,7 @@ function PayDatesComputing(parent) {
         }
     });
 
-    self.getLastPaymentDay = ko.computed(function() {
+    self.getLastPaymentDay = ko.computed(function () {
         var finishDate = new Date();
         finishDate.setDate(1);
         finishDate.setMonth(parent.payment.endMonth() - 1);
@@ -142,6 +142,18 @@ function PayDatesComputing(parent) {
     };
 
     self.updateMinStartDate = function (contract) {
-        $('.datepicker-field').trigger('updateOptions', {'minDate' : self.getMinStartDate(contract)});
+        $('.datepicker-field').trigger('updateOptions', {'minDate': self.getMinStartDate(contract)});
     };
+
+    /**
+     * @returns int
+     */
+    self.getMaxBusinessDaysForDelivery = function () {
+        var businessDays = self.getBusinessDaysForCurrentPaymentProcessor();
+        if (businessDays.bank > businessDays.card) {
+            return businessDays.bank;
+        } else {
+            return businessDays.card;
+        }
+    }
 }

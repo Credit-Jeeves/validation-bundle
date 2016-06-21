@@ -110,7 +110,16 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
         $regBtn = $this->getDomElement('#register', 'Register button should be present');
         $regBtn->click();
-        $this->session->wait($this->timeout, '$(\'h3.title:contains("verify.email")\').length');
+
+        $context = $this->getContainer()->get('router')->getContext();
+        $context->setHost($this->getContainer()->getParameter('server_name_rj'));
+        $expectedUrl = $this->getContainer()->get('router')->generate('tenant_homepage', [], true);
+
+        $this->assertEquals(
+            $expectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirect to tenant homepage'
+        );
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()
             ->getRepository('RjDataBundle:Tenant')
@@ -132,8 +141,6 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         );
         $this->assertEquals($parameters['rent'], $contract->getRent(), 'Rent is invalid');
 
-        // login
-        $this->login('externaluser1@example.com', 'pass');
         $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup');
         $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
         $payFor = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_payFor');
@@ -248,7 +255,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
         $this->assertFalse($infoMessage->isVisible(), 'Should not be displayed info message');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();
@@ -326,7 +333,17 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
         $regBtn = $this->getDomElement('#register', 'Register button should be present');
         $regBtn->click();
-        $this->session->wait($this->timeout, '$(\'h3.title:contains("verify.email")\').length');
+
+        $context = $this->getContainer()->get('router')->getContext();
+        $context->setHost($this->getContainer()->getParameter('server_name_rj'));
+        $expectedUrl = $this->getContainer()->get('router')->generate('tenant_homepage', [], true);
+
+        $this->assertEquals(
+            $expectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirect to tenant homepage'
+        );
+
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()
             ->getRepository('RjDataBundle:Tenant')
@@ -347,8 +364,6 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
             'Contract "search" field should be set to "unassigned"'
         );
 
-        // login
-        $this->login('externaluser1@example.com', 'pass');
         $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup');
         $this->session->wait($this->timeout, "!$('.overlay').is(':visible')");
         $payFor = $this->getDomElement('#rentjeeves_checkoutbundle_payanything_paymenttype_payFor');
@@ -523,7 +538,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();
@@ -591,14 +606,22 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
 
         $regBtn = $this->getDomElement('#register', 'Register button should be present');
         $regBtn->click();
-        $this->session->wait($this->timeout, '$(\'h3.title:contains("verify.email")\').length');
+
+        $context = $this->getContainer()->get('router')->getContext();
+        $context->setHost($this->getContainer()->getParameter('server_name_rj'));
+        $expectedUrl = $this->getContainer()->get('router')->generate('tenant_homepage', [], true);
+
+        $this->assertEquals(
+            $expectedUrl,
+            $this->session->getCurrentUrl(),
+            'Should redirect to tenant homepage'
+        );
+
         /** @var Tenant $tenant */
         $tenant = $this->getEntityManager()
             ->getRepository('RjDataBundle:Tenant')
             ->findOneByEmail('externaluser1@example.com');
         $this->assertNotNull($tenant, 'Tenant was not created');
-        // login
-        $this->login('externaluser1@example.com', 'pass');
 
         $payAnythingDialog = $this->getDomElement('#pay-anything-popup', 'Should be displayed pay anything popup');
 
@@ -699,7 +722,7 @@ class CreateNewIntegrationTenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '$("#pay-anything-popup>div.overlay").is(":visible")');
         $this->session->wait($this->timeout, '!$("#pay-anything-popup>div.overlay").is(":visible")');
 
-        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("Test Bank Acc")');
+        $paymentAcc = $this->getDomElement('#pay-anything-popup span:contains("checkout.payment_source.caption")');
         $paymentAcc->click();
 
         $nextBtn->click();

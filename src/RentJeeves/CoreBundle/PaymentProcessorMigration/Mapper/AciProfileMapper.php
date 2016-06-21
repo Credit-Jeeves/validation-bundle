@@ -2,12 +2,10 @@
 
 namespace RentJeeves\CoreBundle\PaymentProcessorMigration\Mapper;
 
-use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\MailingAddress;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\CheckoutBundle\PaymentProcessor\Aci\CollectPay\BillingAccountManager;
 use RentJeeves\ComponentBundle\Utility\ShorteningAddressUtility;
-use RentJeeves\CoreBundle\PaymentProcessorMigration\Exception\CsvMapException;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\AccountRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\ConsumerRecord;
 use RentJeeves\CoreBundle\PaymentProcessorMigration\Model\FundingRecord;
@@ -325,10 +323,15 @@ class AciProfileMapper
         );
         $accountRecord->setDivisionId($this->virtualTerminalDivisionId);
         $accountRecord->setNameOnBillingAccount($group->getName());
-        $accountRecord->setAddress1($group->getStreetAddress1());
-        $accountRecord->setCity($group->getCity());
-        $accountRecord->setState($group->getState());
-        $accountRecord->setZipCode($group->getZip());
+
+        if (null !== $trustedLandlord = $group->getTrustedLandlord()) {
+            $mailingAddress = $trustedLandlord->getCheckMailingAddress();
+            $accountRecord->setAddress1((string) $mailingAddress->getAddress1());
+            $accountRecord->setAddress2((string) $mailingAddress->getAddress2());
+            $accountRecord->setCity((string) $mailingAddress->getCity());
+            $accountRecord->setState((string) $mailingAddress->getState());
+            $accountRecord->setZipCode((string) $mailingAddress->getZip());
+        }
         $accountRecord->setBusinessId($this->rentTrackApplicaitonBusinessId);
 
         return $accountRecord;

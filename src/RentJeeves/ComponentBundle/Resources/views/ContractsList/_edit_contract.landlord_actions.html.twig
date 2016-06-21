@@ -1,0 +1,185 @@
+<div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'edit.contract'|trans }}</h1>
+    <div class="clearfix col-box" data-bind="with: contract">
+        <div class="information-box pie-el" data-bind="visible: $root.countNotificationsEdit() > 0">
+            <ul class="default">
+                <!-- ko foreach: $root.notificationsEdit() -->
+                <li data-bind="text: $data"></li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
+            <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+            <ul class="default">
+                <!-- ko foreach: $root.errorsEdit() -->
+                <li data-bind="html: $data"></li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'tenant.info'|trans }}</span>
+                <small><b>*</b>{{ 'required'|trans }}</small>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{'name'|trans}}<b>*</b></label>
+                <div class="fields-box">
+                    <span data-bind="text: tenant"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'phone'|trans }}</label>
+                <div class="fields-box">
+                    <input data-bind="value: phone" type="text" id="phone-edit" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'email'|trans }}</label>
+                <div class="fields-box">
+                    <span data-bind="text: email, visible: email" id="email-view"></span>
+                    <input data-bind="value: email, visible: !email" type="text" id="email-edit" class="half-of-right">
+                    <div data-bind="visible: !email" class="tooltip-box type1 pie-el">
+                        <h4>{{ 'landlord.contract_edit.add_email.title' | trans }}</h4>
+                        <p>{{ 'landlord.contract_edit.add_email.description' | trans }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
+                <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input data-bind="value: residentId" type="text" id="resident-edit" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="if: isAllowedEditLeaseId">
+                <label>{{ 'common.lease_id'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input data-bind="value: leaseId" type="text" id="leaseId-edit" class="half-of-right">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'lease.details'|trans }}</span>
+                <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}<b>*</b></label>
+                <!-- ko ifnot: status == 'INVITE'  || status == 'APPROVED' -->
+                <div class="fields-box addressDiv"  data-bind="text: address"></div>
+                <!-- /ko -->
+                <!-- ko if:status == 'INVITE' || status == 'APPROVED' -->
+                <div class="fields-box">
+                    <select id="property-edit"
+                            data-bind="
+                                options: $root.propertiesList,
+                                optionsText: 'address',
+                                optionsValue: 'id',
+                                value: $root.currentPropertyId
+                                "
+                            class="original" name="property_id">
+                    </select>
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}"  class="property-loader loader">
+                </div>
+                <!-- /ko -->
+            </div>
+            <!-- ko if: status == 'PENDING' || status == 'INVITE' || status == 'APPROVED' -->
+            <div class="form-row clearfix" data-bind="visible: $root.isSingleProperty() != true">
+                <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
+                <select id="unit-edit" data-bind="
+                                options: $root.unitsList,
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                value: $root.currentUnitId"
+                        class="original" name="unit_id">
+                </select>
+                <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="unit-loader loader">
+            </div>
+            <!-- /ko -->
+            <div class="form-row clearfix">
+                <label>{{ 'amount'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input type="text" id="amount-edit" data-bind="value: amount" value="" class="half-of-right">
+                </div>
+                <div class="fields-box width150">
+                    <label>{{ 'due_date'|trans }}<b>*</b></label>
+                    <select name="dueDate"
+                            class="half-width original dueDateEdit"
+                            data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                    >
+                    </select>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
+                    <label class="checkbox radio finishAtLabelM2M">
+                        <input type="radio" class="monthToMonth" name="optionsFinishAtEdit" value="monthToMonth" data-bind="checked: $root.optionsFinishAtEdit" >
+                        <i></i>
+                        <span>{{ 'when.cancelled' | trans }}</span>
+                        <div class="clearboth"></div>
+                    </label>
+                    <label class="checkbox radio finishAtLabel">
+                        <input type="radio" class="finishAt" name="optionsFinishAtEdit" value="finishAt" data-bind="checked: $root.optionsFinishAtEdit" >
+                        <i></i>
+                        <span class="onFinishAt">{{ 'on' | trans }}</span>
+                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                        <div class="clearboth"></div>
+                    </label>
+                </div>
+            </div>
+            {% if isIntegrated %}
+                <div class="form-row clearfix">
+                    <label>{{ 'common.balance'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" value="" class="balance-field half-of-right" data-bind="value: balance" id="contractBalance">
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'online.payments.lease'|trans }}</span>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'common.payment_allowed.label'|trans }}</label>
+                <div class="fields-box">
+                    <div id="payment_allowed_toggle" class="toggle toggle-modern"></div>
+                    <i id="payment_allowed_help" class="help pie-el tooltip-link">?</i>
+                </div>
+            </div>
+            {% if isIntegrated %}
+                <div class="form-row clearfix">
+                    <label>{{ 'common.accounting'|trans }}</label>
+                    <div class="fields-box">
+                        <span data-bind="text: $root.paymentAcceptedMessage()"></span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="footer-button-box" data-bind="with: contract">
+        <button class="button sendReminder" data-bind="visible: reminder_revoke, click: $root.sendReminderInvition">
+            <span>{{ 'send.reminder'|trans }}</span>
+        </button>
+        <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
+        <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
+        <a href="#" class="link"
+           data-bind="visible: (status == 'CURRENT' || status == 'CONTRACT ENDED') && reminder_revoke == false,
+               click: $root.openEndContractPopup"
+        >
+            {{'end.br.contract'|trans|raw}}
+        </a>
+        <a href="#" class="link" data-bind="visible: (status != 'CURRENT' && status != 'CONTRACT ENDED') && !reminder_revoke,  click: $root.removeContractConfirm">
+            {{'remove.lease'|trans|raw}}
+        </a>
+        <a href="#" class="link" data-bind="visible: reminder_revoke, click: $root.closeReminderRevoke">
+            {{ 'revoke.inv'|trans|raw}}
+        </a>
+    </div>
+</div>

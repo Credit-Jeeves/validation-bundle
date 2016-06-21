@@ -7,6 +7,14 @@ function PaymentAccount(data, defaultType) {
     this.id = ko.observable(null);
     this.type = ko.observable(defaultType);
     this.name = ko.observable('');
+    this.lastFour = ko.observable('');
+
+    this.fullname = ko.pureComputed(function () {
+        return !self.lastFour() ? self.name() : Translator.trans('checkout.payment_source.caption', {
+            'NAME' : self.name(),
+            'LAST_FOUR' : self.lastFour()
+        });
+    });
 
     this.PayorName = ko.observable('');
     this.RoutingNumber = ko.observable('');
@@ -50,6 +58,12 @@ function PaymentAccount(data, defaultType) {
                 delete options.parent.cc_expiration;
             }
         },
+        'last_four' : {
+            create: function (options) {
+                options.parent.lastFour(options.data);
+                delete options.parent.last_four;
+            }
+        },
         'ignore' : ['deposit_accounts']
     };
 
@@ -59,6 +73,7 @@ function PaymentAccount(data, defaultType) {
         self.id(null);
         self.type(defaultType);
         self.name('');
+        self.lastFour('');
 
         self.PayorName('');
         self.RoutingNumber('');

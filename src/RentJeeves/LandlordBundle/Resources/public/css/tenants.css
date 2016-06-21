@@ -36,7 +36,7 @@
     padding-left: 10px;
 }
 
-#tenant-edit-property-popup .fields-box > span {
+#tenant-merge-contract-popup .fields-box > span, #tenant-edit-property-popup .fields-box > span {
     margin-left: 10px;
     padding-top: 6px;
     display: block;

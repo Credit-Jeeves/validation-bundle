@@ -5,22 +5,19 @@ namespace RentJeeves\ImportBundle\PropertyImport\Extractor;
 use Psr\Log\LoggerInterface;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Helpers\HashHeaderCreator;
-use RentJeeves\CoreBundle\Sftp\SftpFileManager;
 use RentJeeves\ImportBundle\Exception\ImportExtractorException;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvExtractorInterface;
-use RentJeeves\ImportBundle\PropertyImport\Extractor\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\PropertyImport\Extractor\Interfaces\CsvPropertyExtractorInterface;
+use RentJeeves\ImportBundle\Sftp\ImportSftpFileManager;
+use RentJeeves\ImportBundle\Traits\SetupGroupTrait;
+use RentJeeves\ImportBundle\Traits\SetupPathToImportFile;
 
 /**
  * Service`s name "import.property.extractor.csv"
  */
-class CsvExtractor implements CsvExtractorInterface
+class CsvExtractor implements CsvPropertyExtractorInterface
 {
     use SetupGroupTrait;
-
-    /**
-     * @var string
-     */
-    protected $pathToFile;
+    use SetupPathToImportFile;
 
     /**
      * @var CsvFileReader
@@ -28,7 +25,7 @@ class CsvExtractor implements CsvExtractorInterface
     protected $csvReader;
 
     /**
-     * @var SftpFileManager
+     * @var ImportSftpFileManager
      */
     protected $sftpFileManager;
 
@@ -39,11 +36,14 @@ class CsvExtractor implements CsvExtractorInterface
 
     /**
      * @param CsvFileReader   $csvFileReader
-     * @param SftpFileManager $sftpFileManager
+     * @param ImportSftpFileManager $sftpFileManager
      * @param LoggerInterface $logger
      */
-    public function __construct(CsvFileReader $csvFileReader, SftpFileManager $sftpFileManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        CsvFileReader $csvFileReader,
+        ImportSftpFileManager $sftpFileManager,
+        LoggerInterface $logger
+    ) {
         $this->csvReader = $csvFileReader;
         $this->csvReader->setUseHeader(false);
         $this->logger = $logger;
@@ -71,6 +71,7 @@ class CsvExtractor implements CsvExtractorInterface
         $tmpFile = sprintf('%s%s%s.csv', sys_get_temp_dir(), DIRECTORY_SEPARATOR, uniqid());
 
         $this->sftpFileManager->download($this->pathToFile, $tmpFile);
+        $this->sftpFileManager->disconnect();
 
         $csvData = $this->csvReader->read($tmpFile);
         $hashHeader = HashHeaderCreator::createHashHeader($csvData[0]);
@@ -82,13 +83,5 @@ class CsvExtractor implements CsvExtractorInterface
             'hashHeader' => $hashHeader,
             'data' => array_values($csvData),
         ];
-    }
-
-    /**
-     * @param string $pathToFile
-     */
-    public function setPathToFile($pathToFile)
-    {
-        $this->pathToFile = $pathToFile;
     }
 }

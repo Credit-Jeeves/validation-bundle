@@ -22,7 +22,7 @@ class SftpClient
 
     /**
      * @param string $host
-     * @param int $port
+     * @param int    $port
      */
     public function sshConnect($host, $port)
     {
@@ -42,6 +42,24 @@ class SftpClient
             throw new \LogicException('SSH connection is not established. Use "sshConnect" for create it.');
         }
         ssh2_auth_password($this->ssh, $login, $password);
+    }
+
+    /**
+     * @param string $login
+     * @param string $publicKeyFile  path to public key file
+     * @param string $privateKeyFile path to private key file
+     *
+     * @throw \InvalidArgumentException if Authentication is Failed
+     */
+    public function sshAuthKeyFiles($login, $publicKeyFile, $privateKeyFile)
+    {
+        if (false === is_resource($this->ssh)) {
+            throw new \LogicException('SSH connection is not established. Use "sshConnect" for create it.');
+        }
+
+        if (false === ssh2_auth_pubkey_file($this->ssh, $login, $publicKeyFile, $privateKeyFile)) {
+            throw new \InvalidArgumentException('Public Key Authentication Failed.');
+        }
     }
 
     public function sshSftp()

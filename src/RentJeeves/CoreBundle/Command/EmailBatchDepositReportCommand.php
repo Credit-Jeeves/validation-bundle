@@ -29,10 +29,10 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
                 'Deposit date in format YYYY-MM-DD'
             )
             ->addOption(
-                'groupid',
+                'group-ids',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Only send email for this Group ID'
+                'Send email for list Group IDs. Example: --group-ids=1,2,3...n'
             )
             ->addOption(
                 'resend',
@@ -48,7 +48,7 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $groupId = $input->getOption('groupid');
+        $groupIds = $input->getOption('group-ids');
         $resend = $input->getOption('resend');
         $date = $this->getDate($input->getOption('date'));
 
@@ -56,8 +56,9 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('logger');
 
         $logger->info(sprintf('Preparing daily batch deposit report for %s', $date->format('m/d/Y')));
-        if ($groupId) {
-            $logger->info(sprintf('Only sending emails for group #%s', $groupId));
+        if ($groupIds) {
+            $logger->info(sprintf('Only sending emails for groups #(%s)', $groupIds));
+            $groupIds = explode(',', $groupIds);
         }
         if ($resend) {
             $logger->info('Adding RESEND note to top of email.');
@@ -65,9 +66,9 @@ class EmailBatchDepositReportCommand extends ContainerAwareCommand
 
         $emailBatchDepositManager = $this->getEmailBatchDepositReportManager();
 
-        $emailBatchDepositManager->sendEmailReportToHoldingAdmins($date, $groupId, $resend);
+        $emailBatchDepositManager->sendEmailReportToHoldingAdmins($date, $groupIds, $resend);
 
-        $emailBatchDepositManager->sendEmailReportToHoldingNonAdmins($date, $groupId, $resend);
+        $emailBatchDepositManager->sendEmailReportToHoldingNonAdmins($date, $groupIds, $resend);
     }
 
     /**

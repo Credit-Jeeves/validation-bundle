@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="pay_popup.step.4">
                 <source>pay_popup.step.4</source>
-                <target>Review &amp; Pay</target>
+                <target>Review and Pay</target>
             </trans-unit>
             <trans-unit id="pay_popup.errors.title">
                 <source>pay_popup.errors.title</source>
@@ -626,6 +626,25 @@
                 <source>checkout.payment.choose_date.title</source>
                 <target>Choose a Date</target>
             </trans-unit>
+            <trans-unit id="checkout.payment_source.caption">
+                <source>checkout.payment_source.caption</source>
+                <target><![CDATA[%NAME% - ending in <b>%LAST_FOUR%</b>]]></target>
+            </trans-unit>
+            <trans-unit id="checkout.payment_account.fee.details.help">
+                <source>checkout.payment_account.fee.details.help</source>
+                <target><![CDATA[
+                   The technology fee is partially based on your payment method.
+                   <a target="_blank" href="http://help.renttrack.com/knowledgebase/articles/300764-why-is-there-a-fee">Learn More</a>
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="checkout.payment_account.fee.details">
+                <source>checkout.payment_account.fee.details</source>
+                <target>Fee Details</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment_account.new.title">
+                <source>checkout.payment_account.new.title</source>
+                <target>Add a new account</target>
+            </trans-unit>
             <trans-unit id="checkout.payment.choose_date.text">
                 <source>checkout.payment.choose_date.text</source>
                 <target>Please select a date for your payment.</target>
@@ -704,6 +723,14 @@
             <trans-unit id="mobile.payment.start_date.error_range">
                 <source>mobile.payment.start_date.error_range</source>
                 <target>Payments allowed between %OPEN_DAY% and %CLOSE_DAY%.</target>
+            </trans-unit>
+            <trans-unit id="mobile.payment.type.fee_notify">
+                <source>mobile.payment.type.fee_notify</source>
+                <target>Your total technology fee will be calculated at checkout</target>
+            </trans-unit>
+            <trans-unit id="mobile.lease.payment.scheduled">
+                <source>mobile.lease.payment.scheduled</source>
+                <target>%paymentTypeTitle% Scheduled: %paymentDate%</target>
             </trans-unit>
         </body>
     </file>

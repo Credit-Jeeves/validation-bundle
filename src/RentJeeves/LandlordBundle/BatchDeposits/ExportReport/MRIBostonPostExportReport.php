@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\BatchDeposits\ExportReport;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\OrderRepository;
 use RentJeeves\LandlordBundle\Accounting\Export\Report\MRIBostonPostReport;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -26,12 +27,27 @@ class MRIBostonPostExportReport extends MRIBostonPostReport
             $groups = [$settings['group']];
         } else {
             $groups = $landlord->getGroups();
-            $groups = null !== $groups ? $groups->toArray() : null;
+            if (null !== $groups) {
+                $groups = $groups->toArray();
+                if (null !== $settings['groupIds'] && $groupIds = $settings['groupIds']) {
+                    $groups = array_filter(
+                        $groups,
+                        function (Group $group) use ($groupIds) {
+                            return in_array($group->getId(), $groupIds);
+                        }
+                    );
+                }
+            }
         }
         /** @var OrderRepository $orderRepository */
         $orderRepository = $this->em->getRepository('DataBundle:Order');
 
-        return $orderRepository->getOrdersForBostonPostReport($groups, $beginDate, $endDate, $exportBy);
+        return $groups ? $orderRepository->getOrdersForBostonPostReport(
+            $groups,
+            $beginDate,
+            $endDate,
+            $exportBy
+        ) : null;
     }
 
     /**
@@ -40,7 +56,8 @@ class MRIBostonPostExportReport extends MRIBostonPostReport
     protected function validateSettings(array $settings)
     {
         if (!isset($settings['landlord']) || !($settings['landlord'] instanceof Landlord) ||
-            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])) {
+            !isset($settings['begin']) || !isset($settings['end']) || !isset($settings['export_by'])
+        ) {
             throw new ExportException('Not enough parameters for MRIBostonPost export report');
         }
     }

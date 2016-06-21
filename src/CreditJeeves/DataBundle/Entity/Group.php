@@ -21,44 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends BaseGroup
 {
-    /**
-     * @return array
-     */
-    public function getAddressArray()
-    {
-        $aResult = array();
-        $aAddress = array();
-        $address1 = $this->getStreetAddress1();
-        if (!empty($address1)) {
-            $aAddress[] = $address1;
-        }
-        $address2 = $this->getStreetAddress2();
-        if (!empty($address2)) {
-            $aAddress[] = $address2;
-        }
-        $aResult[] = implode(' ', $aAddress);
-        $aAddress = array();
-        $city = $this->getCity();
-        $state = $this->getState();
-        $zip = $this->getZip();
-        if (!empty($city)) {
-            if (!empty($state) || !empty($zip)) {
-                $aAddress[] = $city.',';
-            } else {
-                $aAddress[] = $city;
-            }
-        }
-        if (!empty($state)) {
-            $aAddress[] = $state;
-        }
-        if (!empty($zip)) {
-            $aAddress[] = $zip;
-        }
-        $aResult[] = implode(' ', $aAddress);
-
-        return $aResult;
-    }
-
     public function getCountLeads()
     {
         $leads = $this->getLeads();

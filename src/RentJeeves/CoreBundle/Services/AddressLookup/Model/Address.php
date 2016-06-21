@@ -2,6 +2,8 @@
 
 namespace RentJeeves\CoreBundle\Services\AddressLookup\Model;
 
+use RentJeeves\CoreBundle\Services\AddressLookup\AddressLookupInterface;
+use RentJeeves\DataBundle\Enum\CountryCode;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Address
@@ -10,6 +12,7 @@ class Address
      * @var string
      *
      * @Assert\NotBlank(groups={"SmartyStreetsAddress"})
+     * @Assert\Choice(callback = "getCountryCodes")
      */
     protected $country;
 
@@ -239,11 +242,12 @@ class Address
         }
 
         $index = sprintf(
-            '%s%s%s%s',
+            '%s%s%s%s%s',
             $this->getNumber(),
             $this->getStreet(),
             $this->getCity(),
-            $this->getState()
+            $this->getState(),
+            $this->getCountry() === AddressLookupInterface::COUNTRY_US ? '' : $this->getCountry()
         );
 
         return str_replace(' ', '', $index);
@@ -295,5 +299,13 @@ class Address
     public function setUnitDesignator($unitDesignator)
     {
         $this->unitDesignator = $unitDesignator;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCountryCodes()
+    {
+        return CountryCode::all();
     }
 }

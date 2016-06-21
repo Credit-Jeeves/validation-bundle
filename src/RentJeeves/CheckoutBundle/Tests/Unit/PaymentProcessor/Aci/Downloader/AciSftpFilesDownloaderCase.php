@@ -121,8 +121,8 @@ class AciSftpFilesDownloaderCase extends BaseTestCase
      */
     public function shouldInitSftpAndDownloadReportsAndAddLog()
     {
-        $reportPath = __DIR__ . '/../../../../Fixtures/Aci/AciReportLoader';
-        $reportArchivePath = __DIR__ . '/../../../../Fixtures/Aci/AciReportLoader/archive';
+        $reportPath = __DIR__ . '/../../../../Data/PaymentProcessor/Aci/Downloader';
+        $reportArchivePath = __DIR__ . '/../../../../Data/PaymentProcessor/Aci/Downloader/archive';
 
         $fileName = 'testForLoaderAndDownloader.txt';
 

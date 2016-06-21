@@ -13,6 +13,7 @@ use RentJeeves\CoreBundle\ContractManagement\ContractManager;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\ProfitStarsBatch;
 use RentJeeves\DataBundle\Entity\Transaction;
+use RentJeeves\DataBundle\Entity\TransactionRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\ProfitStarsBatchStatus;
 use RentJeeves\ExternalApiBundle\Services\AccountingPaymentSynchronizer;
@@ -168,7 +169,7 @@ class RemoteDepositLoader
         $this->logger->info(sprintf('Batch %s has %d items', $batch->getBatchNumber(), count($batchItems)));
         foreach ($batchItems as $batchItem) {
             if ($this->isAllowedItemStatus($batchItem)) {
-                $newOrder = $this->createOrderIfItIsNew($batchItem);
+                $newOrder = $this->createOrderIfItIsNew($batchItem, $group);
                 if (false !== $newOrder) {
                     $this->incrementCountChecks();
                     $this->updateContractStatus($newOrder);
@@ -187,6 +188,7 @@ class RemoteDepositLoader
 
         if ($this->isSentToTransactionProcessingBatch($batch) || $this->isPartialDeposit($batch)) {
             $this->closeProfitStarsBatch($profitStarsBatch);
+            $this->checkIfBatchHasKnownAndUnknownTransactions($batch->getBatchNumber());
         }
     }
 
@@ -317,9 +319,10 @@ class RemoteDepositLoader
 
     /**
      * @param WSRemoteDepositItem $depositItem
+     * @param Group $group
      * @return Order|false
      */
-    protected function createOrderIfItIsNew(WSRemoteDepositItem $depositItem)
+    protected function createOrderIfItIsNew(WSRemoteDepositItem $depositItem, Group $group)
     {
         if (true == $depositItem->getDeleted()) {
             $this->logger->info(sprintf(
@@ -342,10 +345,10 @@ class RemoteDepositLoader
                 $depositItem->getItemStatus()
             ));
             try {
-                $order = $this->checkTransformer->transformToOrder($depositItem);
+                $order = $this->checkTransformer->transformToOrder($depositItem, $group);
                 $this->em->persist($order);
                 $this->em->flush();
-                if (OrderStatus::COMPLETE === $order->getStatus()) {
+                if (OrderStatus::COMPLETE === $order->getStatus() && null != $order->getUser()) {
                     $this->mailer->sendProfitStarsReceipt($order);
                 }
 
@@ -374,12 +377,31 @@ class RemoteDepositLoader
     }
 
     /**
-     * @param string $number
+     * @param string $batchNumber
      * @return null|ProfitStarsBatch
      */
-    protected function getProfitStarsBatch($number)
+    protected function getProfitStarsBatch($batchNumber)
     {
-        return $this->em->getRepository('RjDataBundle:ProfitStarsBatch')->findOneBy(['batchNumber' => $number]);
+        return $this->em->getRepository('RjDataBundle:ProfitStarsBatch')->findOneBy(['batchNumber' => $batchNumber]);
+    }
+
+    /**
+     * @param string $batchNumber
+     */
+    protected function checkIfBatchHasKnownAndUnknownTransactions($batchNumber)
+    {
+        /** @var TransactionRepository $repo */
+        $repo = $this->em->getRepository('RjDataBundle:Transaction');
+        $transactionCounts = $repo->getCountAllAndLeaseProfitStarsTransactionsInBatch($batchNumber);
+        /**
+         * if batch has transactions with lease_id, but count of them is less than count of all transactions,
+         * then this batch has non-lease transactions.
+         */
+        if ($transactionCounts[0]['all_transactions'] != $transactionCounts[0]['lease_transactions'] &&
+            $transactionCounts[0]['lease_transactions'] > 0
+        ) {
+            $this->logger->alert(sprintf('Batch %s is missing lease IDs', $batchNumber));
+        }
     }
 
     /**
@@ -470,7 +492,9 @@ class RemoteDepositLoader
                     $operation->setAmount($depositItem->getTotalAmount());
                 }
             }
-            $this->mailer->sendProfitStarsReceipt($order);
+            if (null !== $order->getUser()) {
+                $this->mailer->sendProfitStarsReceipt($order);
+            }
         }
     }
 

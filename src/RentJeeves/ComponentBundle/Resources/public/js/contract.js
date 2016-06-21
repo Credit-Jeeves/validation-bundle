@@ -1,7 +1,6 @@
 function Contract() {
     var self = this;
     this.outstandingBalance = ko.observable(0);
-    this.propertiesList = ko.observableArray([]);
     this.dueDateList = ko.observableArray([]);
     for(i = 1; i <= 31; i++) {
         var data = {
@@ -10,11 +9,14 @@ function Contract() {
         };
         self.dueDateList().push(data);
     }
-    this.unitsList = ko.observableArray([]);
+    this.propertiesList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
+    this.unitsList = ko.observableArray([]);
+    this.currentUnitRequest = null;
     this.currentUnitId = ko.observable();
     this.optionsFinishAtEdit = ko.observable('finishAt');
     this.optionsFinishAtApprove = ko.observable('finishAt');
+    this.optionsFinishAtMerge = ko.observable('finishAt');
     this.contract = ko.observable();
     this.approve = ko.observable(false);
     this.review = ko.observable(false);
@@ -23,10 +25,17 @@ function Contract() {
     this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
     this.errorsApprove = ko.observableArray([]);
     this.notificationsEdit = ko.observableArray([]);
+    this.errorsMerging = ko.observableArray([]);
     this.errorsEdit = ko.observableArray([]);
     this.errorsAdd = ko.observableArray([]);
     this.statusBeforeTriedSave = ko.observable();
     this.isSingleProperty = ko.observable(true);
+
+    this.mergedContract = ko.observable();
+    this.shouldMerge = ko.observable(false);
+    this.duplicateContractMessage = ko.observable('');
+    this.duplicateContractMatchType = ko.observable(null);
+    this.duplicateContractUser = ko.observable(null);
 
     this.paymentAcceptedMessage = ko.pureComputed(function () {
         if (this.contract()) {
@@ -46,80 +55,60 @@ function Contract() {
         self.clearDetails();
     };
 
-    this.getUnits = function (propertyId) {
+    this.loadUnits = function (propertyId) {
+        self.debug && console.log('Loading units for ' + propertyId);
+        if (self.currentUnitRequest) {
+            self.debug && console.log('Request aborted loading units for ' + propertyId);
+            self.currentUnitRequest.abort();
+            self.currentUnitRequest = null;
+        }
+        self.isSingleProperty(false);
         self.unitsList([]);
-        $('#unit-edit').parent().find('.loader').show();
-        $.ajax({
+        $('.unit-loader.loader').show();
+        self.currentUnitRequest = $.ajax({
             url: Routing.generate('landlord_units_list'),
             type: 'POST',
             dataType: 'json',
             data: {'property_id': propertyId },
             success: function (response) {
-                $('#unit-edit').parent().find('.loader').hide();
                 self.unitsList(response.units);
                 self.isSingleProperty(response.isSingle == true);
-                self.currentUnitId(self.contract().unit_id);
+                $('.unit-loader.loader').hide();
+                $('.property-loader.loader').hide();
+                if (self.shouldMerge()) {
+                    self.currentUnitId(self.mergedContract().unitId);
+                } else {
+                    self.currentUnitId(self.contract().unit_id);
+                }
             }
         });
     };
 
-    this.getProperties = function (propertyId) {
-        self.propertiesList([]);
-        $('#property-edit').parent().find('.loader').show();
-        $.ajax({
-            url: Routing.generate('landlord_properties_list_all'),
-            type: 'POST',
-            dataType: 'json',
-            success: function (response) {
-                $('#property-edit').parent().find('.loader').hide();
-                self.propertiesList(response);
-                self.enableCurrentPropertyIdSubscription(true);
-                self.currentPropertyId(propertyId);
-            }
-        });
-    };
-
-    /*
-     * Enable loading list of units from server every time the currentPropertyId variable is set
-     *
-     * We wrap the "subscribe" call in this function so we can control when events can occur. It was added to
-     * avoid prematurely loading the units list when currentPropertyId is initially set in the twig template.
-     * It is intended to be chained inside the success callback for getProperties() are loaded and
-     * currentPropertyId is initially set.
-     *
-     * This is a stand-alone function so we can manage creation and deletion of the subscribe closure in one
-     * place.
-     *
-     * If enable is
-     *   true : then when currentPropertyId changes, unit list for that property will be loaded.
-     *   false : disable loading of unit list on change and dispose of subscription to avoid memory leaks.
-     */
-    this.enableCurrentPropertyIdSubscription = function(enable) {
-        if (enable) {
-            if (this.currentPropertyIdSubscription) {
-                // noop -- already subscribed.
-                this.debug && console.debug("CurrentPropertyIdSubscription Already Subscribed.");
-            } else {
-                this.debug && console.debug("CurrentPropertyIdSubscription Subscription enabled.");
-                this.currentPropertyIdSubscription =
-                    this.currentPropertyId.subscribe(function (newValue) {
-                        self.getUnits(newValue);
-                    });
-                /*
-                 * RT-1272 : When you edit an invite, the property ID is set, but does not change value
-                 * so set this to always notify, which will still load the units list in this situation.
-                 */
-                this.currentPropertyId.extend({ notify: 'always' }); // RT-1272 : always send event if set!
-            }
+    this.loadProperties = function (propertyId) {
+        if (!self.propertiesList().length) {
+            $('.property-loader.loader').show();
+            $.ajax({
+                url: Routing.generate('landlord_properties_list_all'),
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    self.propertiesList(response);
+                    self.currentPropertyId(propertyId);
+                    $('.property-loader.loader').hide();
+                }
+            });
         } else {
-            if (this.currentPropertyIdSubscription) {
-                this.debug && console.debug("CurrentPropertyIdSubscription Subscription disabled.");
-                this.currentPropertyIdSubscription.dispose();  // remove closure
-                this.currentPropertyIdSubscription = null;
-            }
+            self.currentPropertyId(propertyId);
         }
     };
 
+    this.currentPropertyId.subscribe(function (newValue) {
+        if (newValue && (self.edit() || self.shouldMerge())) {
+            self.loadUnits(newValue);
+        }
+    });
+
+    this.currentPropertyId.extend({ notify: 'always' });
 
     this.closeApprove = function (data) {
         $('#tenant-approve-property-popup').dialog('close');
@@ -127,7 +116,6 @@ function Contract() {
     };
 
     this.editContract = function (contract) {
-
         self.errorsApprove([]);
         self.errorsEdit([]);
         self.notificationsEdit([]);
@@ -144,9 +132,6 @@ function Contract() {
         } else {
             self.optionsFinishAtEdit('monthToMonth');
         }
-
-        self.getProperties(self.contract().property_id);
-
         var flag = false;
         if (self.approve()) {
             flag = true;
@@ -154,6 +139,7 @@ function Contract() {
         self.clearDetails();
         self.edit(true);
         self.approve(flag);
+        self.loadProperties(self.contract().property_id);
         window.jQuery.curCSS = window.jQuery.css;
         $('#contractEditStart').datepicker({
             showOn: "both",
@@ -188,6 +174,76 @@ function Contract() {
         self.initControllers();
     };
 
+    this.initializeMergingContractsDialog = function () {
+        $('#contract-duplicate-popup').dialog('close');
+        self.loadProperties(self.mergedContract().propertyId);
+        $('#contract_start-merge').datepicker({
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format: 'm/d/Y',
+            minDate: 0,
+            starts: 1,
+            position: 'r',
+            onChange: function (formated, dates) {
+                $('#contract_start-merge').val(formated);
+                $('#contract_start-merge').DatePickerHide();
+            }
+        });
+        $('#contract_finish-merge').datepicker({
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format: 'm/d/Y',
+            minDate: 0,
+            starts: 1,
+            position: 'r',
+            onChange: function (formated, dates) {
+                $('#contract_finish-merge').val(formated);
+                $('#contract_finish-merge').DatePickerHide();
+            }
+        });
+
+        $('#tenant-merge-contract-popup').dialog('open');
+    };
+
+    this.prepareToMergeContracts = function (contractMergingData) {
+        self.errorsMerging([]);
+        self.shouldMerge(true);
+        self.duplicateContractMessage(null);
+        if (contractMergingData.matchingType == 'none') {
+            self.shouldMerge(false);
+            self.duplicateContractMessage(Translator.trans('contract.merging.failure.description'));
+        } else {
+            self.mergedContract(contractMergingData);
+            self.duplicateContractMatchType(contractMergingData.matchingType);
+            self.duplicateContractUser(contractMergingData.duplicateTenantInfo);
+            self.duplicateContractMessage(Translator.trans('contract.merging.duplicate_found.description'));
+        }
+        $('#tenant-edit-property-popup').dialog('close');
+        $('#tenant-approve-property-popup').dialog('close');
+        $('#contract-duplicate-popup').dialog('open');
+    };
+
+    this.cancelMergeContract = function () {
+        $('#tenant-merge-contract-popup').dialog('close');
+        self.duplicateContractMessage(Translator.trans('contract.merging.cancel.description'));
+        self.shouldMerge(false);
+    };
+
+    this.closeMergingContractsDialog = function () {
+        $('#contract-duplicate-popup').dialog('close');
+    };
+
+    this.revertMergingContractsEvent = function () {
+        if (self.shouldMerge()) {
+            return;
+        }
+        if (self.approve()) {
+            self.approveContract(self.contract());
+        } else {
+            self.editContract(self.contract());
+        }
+    };
+
     this.approveContract = function (contract) {
         self.contract(contract);
         self.errorsApprove([]);
@@ -219,6 +275,8 @@ function Contract() {
         contract.start = start;
         contract.finish = finish;
         self.contract(contract);
+        self.currentPropertyId(contract.property_id);
+        self.currentUnitId(contract.unit_id);
 
         $('#contractApproveStart').datepicker({
             showOn: "both",
@@ -305,7 +363,6 @@ function Contract() {
         self.edit(false);
         self.review(false);
         self.approve(false);
-        self.enableCurrentPropertyIdSubscription(false);
     };
 
     this.saveContract = function (callback) {
@@ -336,7 +393,8 @@ function Contract() {
             }
         }
 
-
+        self.shouldMerge(false);
+        self.mergedContract(null);
         self.contract(contract);
         self.initControllers();
         $.ajax({
@@ -352,7 +410,9 @@ function Contract() {
                 self.errorsApprove([]);
                 self.errorsEdit([]);
                 self.notificationsEdit([]);
-                if (typeof response.errors == 'undefined') {
+                if (response.mergingData) {
+                    self.prepareToMergeContracts(response.mergingData);
+                } else if (typeof response.errors == 'undefined') {
                     $('#tenant-edit-property-popup').dialog('close');
                     $('#tenant-approve-property-popup').dialog('close');
                     self.clearDetails();
@@ -373,6 +433,55 @@ function Contract() {
                 if (typeof callback === 'function' ) {
                     callback(response);
                 }
+            }
+        });
+    };
+
+    this.mergeContract = function () {
+        self.errorsMerging([]);
+        $("#tenant-merge-contract-popup").showOverlay();
+        var mergedContract = self.mergedContract();
+
+        if (self.currentUnitId() != undefined) {
+            mergedContract.unitId = self.currentUnitId();
+        }
+
+        if (self.currentPropertyId() != undefined) {
+            mergedContract.propertyId = self.currentPropertyId();
+        }
+
+        if (self.optionsFinishAtMerge() === 'monthToMonth') {
+            mergedContract.finish = null;
+        }
+
+        self.mergedContract(mergedContract);
+        $.ajax({
+            url: Routing.generate('landlord_contract_merge'),
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'mergingData': self.mergedContract(),
+                'originalContractId': self.contract().id,
+                'duplicateContractId': self.mergedContract().duplicateContractId
+            },
+            success: function (response) {
+                $("#tenant-merge-contract-popup").hideOverlay();
+
+                if (typeof response.errors == 'undefined') {
+                    $('#tenant-merge-contract-popup').dialog('close');
+                    self.clearDetails();
+                    ContractsViewModel.ajaxAction();
+                } else {
+                    self.initializeMergingContractsDialog();
+                    self.errorsMerging(response.errors);
+                }
+            },
+            error: function() {
+                self.initializeMergingContractsDialog();
+                $("#tenant-merge-contract-popup").hideOverlay();
+                self.errorsMerging([
+                    Translator.trans('contract.merging.failed')
+                ])
             }
         });
     };

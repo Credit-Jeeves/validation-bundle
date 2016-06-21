@@ -1,0 +1,166 @@
+<div id="tenant-merge-contract-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'merge.contract'|trans }}</h1>
+    <div class="clearfix col-box" data-bind="with: mergedContract">
+        <div class="information-box pie-el">
+            {{ 'contract.merging.description'|trans|raw }}
+        </div>
+        <div class="attention-box pie-el" data-bind="visible: $root.errorsMerging().length">
+            <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+            <ul class="default">
+                <!-- ko foreach: $root.errorsMerging() -->
+                <li data-bind="html: $data"></li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'tenant.info'|trans }}</span>
+                <small><b>*</b>{{ 'required'|trans }}</small>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{'contract.merging.first_name'|trans}}<b>*</b></label>
+                <div class="fields-box">
+                    <input data-bind="value: firstName" type="text" id="first_name-merge" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{'contract.merging.last_name'|trans}}<b>*</b></label>
+                <div class="fields-box">
+                    <input data-bind="value: lastName" type="text" id="last_name-merge" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'contract.merging.phone'|trans }}</label>
+                <div class="fields-box">
+                    <input data-bind="value: phone" type="text" id="phone-merge" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'contract.merging.email'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <span data-bind="text: email" id="email-merge"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
+                <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <span data-bind="text: residentId" id="resident-merge"></span>
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="if: isAllowedEditLeaseId">
+                <label>{{ 'common.lease_id'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input data-bind="value: leaseId" type="text" id="lease-merge" class="half-of-right">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'lease.details'|trans }}</span>
+                <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
+            </h4>
+            <div class="form-row clearfix">
+                <label>{{ 'property'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <select id="property-merge"
+                            data-bind="
+                                options: $root.propertiesList,
+                                optionsText: 'address',
+                                optionsValue: 'id',
+                                value: $root.currentPropertyId
+                                "
+                            class="original" name="property_id">
+                    </select>
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}"  class="property-loader loader">
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="visible: $root.isSingleProperty() != true">
+                <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
+                <div class="fields-box">
+                    <select id="unit-merge" data-bind="
+                                    options: $root.unitsList,
+                                    optionsText: 'name',
+                                    optionsValue: 'id',
+                                    value: $root.currentUnitId"
+                            class="original" name="unit_id">
+                    </select>
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="unit-loader loader">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'amount'|trans }}<b>*</b></label>
+                <div class="fields-box width150">
+                    <input type="text" id="amount-merge" data-bind="value: amount" value="" class="half-of-right">
+                </div>
+                <div class="fields-box width150">
+                    <label>{{ 'due_date'|trans }}<b>*</b></label>
+                    <select name="dueDate"
+                            class="half-width original dueDateEdit"
+                            data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                    >
+                    </select>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" class="datepicker-field" data-bind="value: start" id="contract_start-merge">
+                    <label class="checkbox radio finishAtLabelM2M">
+                        <input type="radio" class="monthToMonth" name="optionsFinishAtMerge" value="monthToMonth" data-bind="checked: $root.optionsFinishAtMerge" >
+                        <i></i>
+                        <span>{{ 'when.cancelled' | trans }}</span>
+                        <div class="clearboth"></div>
+                    </label>
+                    <label class="checkbox radio finishAtLabel">
+                        <input type="radio" class="finishAt" name="optionsFinishAtMerge" value="finishAt" data-bind="checked: $root.optionsFinishAtMerge" >
+                        <i></i>
+                        <span class="onFinishAt">{{ 'on' | trans }}</span>
+                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contract_finish-merge">
+                        <div class="clearboth"></div>
+                    </label>
+                </div>
+            </div>
+            {% if isIntegrated %}
+                <div class="form-row clearfix">
+                    <label>{{ 'common.balance'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" value="" class="balance-field half-of-right" data-bind="value: balance" id="balance-merge">
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button" data-bind="click: $root.mergeContract"><span>{{'savechanges'|trans}}</span></button>
+        <button class="button grey"  data-bind="click: $root.cancelMergeContract"><span>{{'cancel'|trans}}</span></button>
+    </div>
+</div>
+<div id="contract-duplicate-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'contract.merging.duplicate_found.title'|trans }}</h1>
+    <div class="clearfix col-box">
+        <div class="col">
+            <h4 class="clearfix">
+                <span
+                        data-bind="html: duplicateContractMessage(),
+                        i18n: {text: duplicateContractMessage, FIELD: duplicateContractMatchType, SUPPORT_EMAIL : '{{ support_email }}', USER: duplicateContractUser}">
+                </span>
+            </h4>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button" data-bind="visible: shouldMerge(), click: initializeMergingContractsDialog">
+            <span>{{ 'contract.merging.yes'|trans }}</span>
+        </button>
+        <button class="button grey" data-bind="visible: shouldMerge(), click: cancelMergeContract">
+            <span>{{ 'contract.merging.no'|trans }}</span>
+        </button>
+        <button class="button grey" data-bind="visible: !shouldMerge(), click: closeMergingContractsDialog">
+            <span>{{ 'contract.merging.close'|trans }}</span>
+        </button>
+    </div>
+</div>

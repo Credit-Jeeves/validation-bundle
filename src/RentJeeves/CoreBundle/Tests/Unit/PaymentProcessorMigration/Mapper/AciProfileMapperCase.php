@@ -13,7 +13,6 @@ use RentJeeves\DataBundle\Entity\AciCollectPayGroupProfile;
 use RentJeeves\DataBundle\Entity\AciCollectPayUserProfile;
 use RentJeeves\DataBundle\Entity\AciImportProfileMap;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\PaymentProcessor;
 use RentJeeves\TestBundle\Traits\WriteAttributeExtensionTrait;
@@ -269,10 +268,7 @@ class AciProfileMapperCase extends BaseTestCase
         );
         $this->assertEquals('virtualTerminalDivisionId', $accountRecord->getDivisionId());
         $this->assertEquals($group->getName(), $accountRecord->getNameOnBillingAccount());
-        $this->assertEquals($group->getStreetAddress1(), $accountRecord->getAddress1());
-        $this->assertEquals($group->getCity(), $accountRecord->getCity());
-        $this->assertEquals($group->getState(), $accountRecord->getState());
-        $this->assertEquals($group->getZip(), $accountRecord->getZipCode());
+
         $this->assertEquals('testBusinessId', $accountRecord->getBusinessId());
 
         /** @var FundingRecord $fundingRecord */
