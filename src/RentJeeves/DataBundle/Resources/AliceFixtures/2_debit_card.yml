@@ -1,5 +1,5 @@
 parameters:
-    locale: test
+    locale: en
 CreditJeeves\DataBundle\Entity\Group:
     groupD:
         name:           TEST Debit Card
@@ -11,10 +11,14 @@ CreditJeeves\DataBundle\Entity\Group:
         groupProperties:  ['@property4']
 RentJeeves\DataBundle\Entity\GroupSettings:
     groupSettings4:
+        isPidVerificationSkipped: 1
         isIntegrated:     0
         allowedDebitFee:  true
         group:            '@groupD'
         paymentProcessor: aci
+        allowedDebitFee:  1
+        typeDebitFee:     flat_fee
+        debitFee:         4.95
 RentJeeves\DataBundle\Entity\BinlistBank:
     binlistBank1:
         bankName:         Bank for TEST Debit Card
@@ -109,3 +113,12 @@ RentJeeves\DataBundle\Entity\Unit:
         name:           4121
         createdAt:      <dateTimeBetween('-50 days', 'now')>
         updatedAt:      <dateTimeBetween('-20 days', 'now')>
+RentJeeves\DataBundle\Entity\DepositAccount:
+    depositAccount3:
+        group:          '@groupD'
+        holding:        '@holdingTestPayments'
+        merchantName:   564075
+        status:         complete
+        paymentProcessor: aci
+        type:           rent
+        accountNumber:  15235659

@@ -1259,8 +1259,8 @@ class TenantCase extends BaseTestCase
         $externalLeaseId = 't1234572222';
         $lease->setValue($externalLeaseId);
         $this->page->pressButton('savechanges');
-        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         /** @var Contract $contract */
         $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
             ['externalLeaseId' => $externalLeaseId]
@@ -1378,11 +1378,19 @@ class TenantCase extends BaseTestCase
                 'Can not find group option in group selector'
             )
             ->click();
-        $this->session->wait($this->timeout - 25000, "false"); // wait refresh page, try set less time
+        $this->session->wait($this->timeout - 32000, "false"); // wait refresh page, try set less time
 
         $this->session->wait($this->timeout, 'typeof jQuery != "undefined"');
         $this->session->wait($this->timeout, '$("#contracts-block .properties-table").length > 0');
-        $editBtn = $this->getDomElement('.edit', 'Can not find edit button');
+
+        $editBtn = $this
+            ->getDomElement('#contracts-block tr>td.actions-status>div:contains("contract.statuses.waiting")')
+            ->getParent()
+            ->getParent()
+            ->find('css', '.edit');
+
+        $this->assertNotNull($editBtn, 'Can not find edit button for waiting contract');
+
         $editBtn->click();
         $contractId = str_replace('edit-', '', $editBtn->getAttribute('id'));
         $this->assertNotEmpty($contractId, 'Contract id is empty');
@@ -1410,6 +1418,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, '!$("#tenant-edit-property-popup").is(":visible")');
         $this->session->wait($this->timeout, '$("#contracts-block .properties-table").length > 0');
 
+        $editBtn = $this->getDomElement('#edit-' . $contractId);
         $editBtn->click();
         $this->session->wait($this->timeout, '$("#tenant-edit-property-popup .footer-button-box").is(":visible")');
 

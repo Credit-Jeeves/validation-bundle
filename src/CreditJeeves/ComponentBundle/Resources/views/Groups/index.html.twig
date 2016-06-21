@@ -1,5 +1,5 @@
         <div class="group-select">
-          <select id="holding-group">
+          <select autocomplete="off" id="holding-group">
             {% for group in aGroups %}
               <option value="{{ group.id }}" {% if group.id == nCurrent %} selected {% endif %}>
                 {{ group.name }}
@@ -7,4 +7,3 @@
             {% endfor %}
           </select>
         </div>
-

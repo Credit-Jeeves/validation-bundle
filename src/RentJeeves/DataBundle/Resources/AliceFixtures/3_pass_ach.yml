@@ -1,5 +1,5 @@
 parameters:
-    locale: test
+    locale: en
 CreditJeeves\DataBundle\Entity\Group:
     groupB:
         name:           TEST Pass ACH
@@ -20,10 +20,13 @@ RentJeeves\DataBundle\Entity\DepositAccount:
         accountNumber:  15235699
 RentJeeves\DataBundle\Entity\GroupSettings:
     groupSettings2:
+        isPidVerificationSkipped: 1
         passedAch:        true
         isIntegrated:     0
         group:            '@groupB'
         paymentProcessor: aci
+        passedAch:        1
+        feeACH:           2.95
 RentJeeves\DataBundle\Entity\Landlord:
     landlord2:
         holding:        '@holdingTestPayments'

@@ -1,5 +1,5 @@
 parameters:
-    locale: test
+    locale: en
 CreditJeeves\DataBundle\Entity\Holding:
     holdingTestPayments:
         name:           TEST Payments
@@ -25,6 +25,7 @@ RentJeeves\DataBundle\Entity\DepositAccount:
         accountNumber:  15235698
 RentJeeves\DataBundle\Entity\GroupSettings:
     groupSettings1:
+        isPidVerificationSkipped: 1
         isIntegrated:     0
         group:            '@groupA'
         paymentProcessor: aci

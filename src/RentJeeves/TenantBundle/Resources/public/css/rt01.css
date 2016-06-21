@@ -755,7 +755,8 @@ body{
 .payment-type-fee {
     font-weight: 100;
     font-style: italic;
-    padding-left: 2em;
+    position: absolute;
+    left: 160px;
     color: grey;
 }
 .fee-notify {
@@ -785,4 +786,18 @@ and (min-width : 321px) {
 }
 #rentjeeves_checkoutbundle_paymentaccounttype .tooltip-box.type5.pie-el {
     display: none;
+}
+hr.clear {
+    background: none;
+    border: 0;
+    clear: both;
+    display: block;
+    float: none;
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0;
 }

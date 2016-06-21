@@ -227,12 +227,11 @@ function init() {
 }
 
 function renderPayAccounts(contract) {
-
     if (contract.allowDebitCard) {
         $("#" + accountPrefix + "type_2")
             .show()
-            .parent().show();
-
+            .parent().show()
+            .find('label').show();
     } else {
         $("#" + accountPrefix + "type_2")
             .hide()
@@ -242,7 +241,7 @@ function renderPayAccounts(contract) {
         $("#" + accountPrefix + "type_0")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
         $("#" + accountPrefix + "type_0")
             .hide()
@@ -252,7 +251,7 @@ function renderPayAccounts(contract) {
         $("#" + accountPrefix + "type_1")
             .show()
             .parent().show()
-            .find('label').click();
+            .find('label').show().click();
     } else {
         $("#" + accountPrefix + "type_1")
             .hide()
@@ -1209,12 +1208,12 @@ function getFeeForContract(method, groupSettings) {
     if ('card' == method) {
         return parseFloat(groupSettings.feeCC ? groupSettings.feeCC : 0) + '%';
     } else if ('bank' == method) {
-        return '$' + parseFloat(groupSettings.isPassedACH ? groupSettings.feeACH : 0);
+        return '$' + parseFloat(groupSettings.isPassedACH ? groupSettings.feeACH : 0.00).toFixed(2);
     } else if ('debit_card' == method) {
         if ('percentage' == groupSettings.typeFeeDC) {
             return parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0) + '%';
         } else {
-            return '$' + parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0);
+            return '$' + parseFloat(groupSettings.feeDC ? groupSettings.feeDC : 0.00).toFixed(2);
         }
     } else {
         return parseFloat(0);

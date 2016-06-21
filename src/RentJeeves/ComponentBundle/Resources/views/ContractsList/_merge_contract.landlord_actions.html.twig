@@ -38,13 +38,13 @@
             <div class="form-row clearfix">
                 <label>{{ 'contract.merging.email'|trans }}<b>*</b></label>
                 <div class="fields-box">
-                    <input data-bind="value: email" type="text" id="email-merge" class="half-of-right">
+                    <span data-bind="text: email" id="email-merge"></span>
                 </div>
             </div>
             <div class="form-row clearfix" data-bind="if: isAllowedEditResidentId">
                 <label>{{ 'common.resident_id'|trans }}<b>*</b></label>
-                <div class="fields-box width150">
-                    <input data-bind="value: residentId" type="text" id="resident-merge" class="half-of-right">
+                <div class="fields-box">
+                    <span data-bind="text: residentId" id="resident-merge"></span>
                 </div>
             </div>
             <div class="form-row clearfix" data-bind="if: isAllowedEditLeaseId">
@@ -71,7 +71,7 @@
                                 "
                             class="original" name="property_id">
                     </select>
-                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}"  class="loader">
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}"  class="property-loader loader">
                 </div>
             </div>
             <div class="form-row clearfix" data-bind="visible: $root.isSingleProperty() != true">
@@ -84,7 +84,7 @@
                                     value: $root.currentUnitId"
                             class="original" name="unit_id">
                     </select>
-                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="loader">
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="unit-loader loader">
                 </div>
             </div>
             <div class="form-row clearfix">
