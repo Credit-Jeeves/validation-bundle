@@ -108,7 +108,7 @@ class PaymentDateValidator extends ConstraintValidator
                     );
                 }
 
-                if ($endDate < $now) {
+                if ($endDate < $object->getStartDate()) {
                     $this->context->addViolationAt('endMonth', $constraint->messageEndMonthIsPast);
                 }
             }
