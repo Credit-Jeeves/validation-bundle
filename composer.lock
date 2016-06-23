@@ -4837,12 +4837,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SmartyStreetsBundle.git",
-                "reference": "f65431d30a9f6a90e08b6f5cf00bbd4601718dbd"
+                "reference": "4688dfc055f162e11775a647aeac59c226949f8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Credit-Jeeves/SmartyStreetsBundle/zipball/f65431d30a9f6a90e08b6f5cf00bbd4601718dbd",
-                "reference": "f65431d30a9f6a90e08b6f5cf00bbd4601718dbd",
+                "url": "https://api.github.com/repos/Credit-Jeeves/SmartyStreetsBundle/zipball/4688dfc055f162e11775a647aeac59c226949f8e",
+                "reference": "4688dfc055f162e11775a647aeac59c226949f8e",
                 "shasum": ""
             },
             "require": {
@@ -4887,7 +4887,7 @@
                 "source": "https://github.com/Credit-Jeeves/SmartyStreetsBundle/tree/master",
                 "issues": "https://github.com/Credit-Jeeves/SmartyStreetsBundle/issues"
             },
-            "time": "2016-05-27 07:22:16"
+            "time": "2016-06-23 10:05:36"
         },
         {
             "name": "renttrack/transunion-bundle",

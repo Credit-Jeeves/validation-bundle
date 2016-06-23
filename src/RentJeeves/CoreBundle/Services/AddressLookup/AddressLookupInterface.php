@@ -14,13 +14,14 @@ interface AddressLookupInterface
      * @param string $state
      * @param string $zipCode
      * @param string $country
+     * @param string|null $street2
      *
      * @throws AddressLookupException API returned empty response|API returned not valid address|
      * problem with connecting or getting a response from the external lookup API
      *
      * @return Address
      */
-    public function lookup($street, $city, $state, $zipCode, $country = self::COUNTRY_US);
+    public function lookup($street, $city, $state, $zipCode, $country = self::COUNTRY_US, $street2 = null);
 
     /**
      * @param string $address

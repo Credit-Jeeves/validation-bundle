@@ -36,8 +36,8 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
 
     /**
      * @param SmartyStreetsClient $ssClient
-     * @param ValidatorInterface $validator
-     * @param LoggerInterface $logger
+     * @param ValidatorInterface  $validator
+     * @param LoggerInterface     $logger
      */
     public function __construct(SmartyStreetsClient $ssClient, ValidatorInterface $validator, LoggerInterface $logger)
     {
@@ -49,16 +49,23 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
     /**
      * {@inheritdoc}
      */
-    public function lookup($street, $city, $state, $zipCode, $country = AddressLookupInterface::COUNTRY_US)
-    {
+    public function lookup(
+        $street,
+        $city,
+        $state,
+        $zipCode,
+        $country = AddressLookupInterface::COUNTRY_US,
+        $street2 = null
+    ) {
         $this->logger->debug(
             sprintf(
-                '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s %s)',
+                '[SmartyStreetsAddressLookupService] Searching address (%s %s %s %s %s %s)',
                 $street,
                 $city,
                 $state,
                 $zipCode,
-                $country
+                $country,
+                $street2
             )
         );
 
@@ -70,7 +77,7 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
         }
 
         if ($country === AddressLookupInterface::COUNTRY_US) {
-            $address = $this->lookupUSAddress($street, $city, $state, $zipCode);
+            $address = $this->lookupUSAddress($street, $city, $state, $zipCode, $street2);
         } else {
             $address = $this->lookupInternationalAddress($street, $city, $state, $zipCode, $country);
         }
@@ -119,15 +126,16 @@ class SmartyStreetsAddressLookupService implements AddressLookupInterface
      * @param string $city
      * @param string $state
      * @param string $zipCode
+     * @param string|null $street2
      *
      * @throws AddressLookupException
      *
      * @return Address
      */
-    protected function lookupUSAddress($street, $city, $state, $zipCode)
+    protected function lookupUSAddress($street, $city, $state, $zipCode, $street2 = null)
     {
         try {
-            $result = $this->smartyStreetsClient->getUSAddress($street, $city, $state, $zipCode);
+            $result = $this->smartyStreetsClient->getUSAddress($street, $city, $state, $zipCode, $street2);
         } catch (SmartyStreetsException $e) {
             $this->logger->debug(
                 $message = sprintf(
