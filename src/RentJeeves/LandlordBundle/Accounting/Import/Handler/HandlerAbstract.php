@@ -938,7 +938,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->isNeedSendInvite = false;
         if ($result === false) {
             $message = sprintf("Can't send invite email to user %s", $contract->getTenant()->getEmail());
-            throw new ImportHandlerException($message);
+            $this->logger->debug($message);
         }
 
         $this->getReport()->incrementInvited();
