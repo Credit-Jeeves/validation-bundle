@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\UnitMapping;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\ImportBundle\Exception\ImportInvalidArgumentException;
 use RentJeeves\ImportBundle\Exception\ImportLogicException;
 use RentJeeves\ImportBundle\Exception\ImportRuntimeException;
@@ -19,6 +20,13 @@ use Symfony\Component\Validator\ConstraintViolation;
  */
 class UnmappedLoader extends AbstractLoader
 {
+    /**
+     * This value need for multi-group import
+     *
+     * @var Group
+     */
+    protected $groupForImportProperty;
+
     /**
      * {@inheritdoc}
      */
@@ -35,6 +43,11 @@ class UnmappedLoader extends AbstractLoader
     protected function processProperty(ImportProperty $importProperty)
     {
         $group = $importProperty->getImport()->getGroup();
+        if (ImportType::MULTI_GROUPS === $group->getCurrentImportSettings()->getImportType()) {
+            $this->groupForImportProperty = $this->getGroupByImportProperty($importProperty);
+        } else {
+            $this->groupForImportProperty = $group;
+        }
 
         $property = $this->propertyManager->getOrCreatePropertyByAddressFields(
             $importProperty->getAddress1(),
@@ -60,15 +73,15 @@ class UnmappedLoader extends AbstractLoader
             throw new ImportInvalidArgumentException($message);
         }
 
-        if (true === $this->isDifferentPropertyShouldBeCreated($property, $group)) {
+        if (true === $this->isDifferentPropertyShouldBeCreated($property, $this->groupForImportProperty)) {
             $propertyAddress = $property->getPropertyAddress();
             $property = new Property();
             $property->setPropertyAddress($propertyAddress);
         }
 
         if ($property->getPropertyGroups()->isEmpty()) {
-            $property->addPropertyGroup($group);
-            $group->addGroupProperty($property);
+            $property->addPropertyGroup($this->groupForImportProperty);
+            $this->groupForImportProperty->addGroupProperty($property);
         }
 
         if ($importProperty->isAddressHasUnits()) {
@@ -79,9 +92,7 @@ class UnmappedLoader extends AbstractLoader
             } catch (\RuntimeException $e) {
                 $this->logger->warning(
                     $e->getMessage(),
-                    [
-                        'group' => $importProperty->getImport()->getGroup()
-                    ]
+                    ['group' => $importProperty->getImport()->getGroup()]
                 );
                 throw new ImportLogicException($e->getMessage());
             }
@@ -112,10 +123,9 @@ class UnmappedLoader extends AbstractLoader
                 );
                 throw new ImportInvalidArgumentException($message);
             }
-            $group = $importProperty->getImport()->getGroup();
             $unitMapping = $this->em
                 ->getRepository('RjDataBundle:UnitMapping')
-                ->getMappingForImport($group, $importProperty->getExternalUnitId());
+                ->getMappingForImport($this->groupForImportProperty, $importProperty->getExternalUnitId());
 
             if ($unitMapping &&
                 (!$property->getId() || $unitMapping->getUnit()->getProperty()->getId() != $property->getId())
@@ -152,16 +162,18 @@ class UnmappedLoader extends AbstractLoader
             } elseif (!$unitMapping && $property->hasUnits()) {
                 $unit = $this->em
                     ->getRepository('RjDataBundle:Unit')
-                    ->getImportUnitByPropertyGroupAndUnitName($property, $group, $importProperty->getUnitName());
+                    ->getImportUnitByPropertyGroupAndUnitName(
+                        $property,
+                        $this->groupForImportProperty,
+                        $importProperty->getUnitName()
+                    );
                 if ($unit && $unit->getUnitMapping()) {
                     $this->logger->warning(
                         $message = sprintf(
                             'Unit#%d found by group and name should have corresponding mapping',
                             $unit->getId()
                         ),
-                        [
-                            'group' => $importProperty->getImport()->getGroup(),
-                        ]
+                        ['group' => $importProperty->getImport()->getGroup()]
                     );
                     throw new ImportLogicException($message);
                 }
@@ -170,8 +182,8 @@ class UnmappedLoader extends AbstractLoader
             if (empty($unit)) {
                 $unit = new Unit();
                 $unit->setProperty($property);
-                $unit->setHolding($group->getHolding());
-                $unit->setGroup($group);
+                $unit->setHolding($this->groupForImportProperty->getHolding());
+                $unit->setGroup($this->groupForImportProperty);
             }
 
             if (!$property->isSingle()) {
@@ -200,8 +212,8 @@ class UnmappedLoader extends AbstractLoader
     }
 
     /**
-     * @param Property       $property
-     * @param Group          $group
+     * @param Property $property
+     * @param Group    $group
      *
      * @return bool true if we need create new Property
      */
@@ -244,7 +256,7 @@ class UnmappedLoader extends AbstractLoader
      * Method need b/c on mapped we save property and propertyMapping but on unmapped save just property only.
      *
      * @param ImportProperty $importProperty
-     * @param Property $property
+     * @param Property       $property
      */
     protected function saveData(ImportProperty $importProperty, Property $property)
     {
@@ -260,5 +272,36 @@ class UnmappedLoader extends AbstractLoader
         return $this->em
             ->getRepository('RjDataBundle:ImportProperty')
             ->getNotProcessedImportProperties($import);
+    }
+
+    /**
+     * @param ImportProperty $importProperty
+     *
+     * @throws ImportLogicException
+     *
+     * @return Group
+     */
+    protected function getGroupByImportProperty(ImportProperty $importProperty)
+    {
+        try {
+            $group = $this->em->getRepository('DataBundle:Group')
+                ->getGroupByAccountNumber(
+                    $importProperty->getAccountNumber(),
+                    $importProperty->getImport()->getGroup()->getHolding()
+                );
+        } catch (\LogicException $e) {
+            $this->logger->warning($e->getMessage(), ['group' => $importProperty->getImport()->getGroup()]);
+            throw new ImportLogicException($e->getMessage());
+        }
+
+        if (null === $group) {
+            $this->logger->warning(
+                $message = sprintf('Group for accountNumber "%s" not found.', $importProperty->getAccountNumber()),
+                ['group' => $importProperty->getImport()->getGroup()]
+            );
+            throw new ImportLogicException($message);
+        }
+
+        return $group;
     }
 }

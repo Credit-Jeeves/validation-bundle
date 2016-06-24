@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\CoreBundle\Services\PropertyManager;
 use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Entity\ImportPropertyRepository;
 use RentJeeves\DataBundle\Entity\Property;
@@ -32,6 +33,7 @@ class UnmappedLoaderCase extends UnitTestBase
     {
         $group = new Group();
         $this->writeIdAttribute($group, 1);
+        $group->setImportSettings(new ImportGroupSettings());
 
         $import = new Import();
         $this->writeIdAttribute($import, 1);
@@ -86,6 +88,7 @@ class UnmappedLoaderCase extends UnitTestBase
         $this->writeIdAttribute($holding, 1);
 
         $group = new Group();
+        $group->setImportSettings(new ImportGroupSettings());
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
 
@@ -185,6 +188,7 @@ class UnmappedLoaderCase extends UnitTestBase
 
         $group = new Group();
         $this->writeIdAttribute($group, 1);
+        $group->setImportSettings(new ImportGroupSettings());
         $group->setHolding($holding);
 
         $import = new Import();
@@ -261,6 +265,7 @@ class UnmappedLoaderCase extends UnitTestBase
 
         $group = new Group();
         $this->writeIdAttribute($group, 1);
+        $group->setImportSettings(new ImportGroupSettings());
         $group->setHolding($holding);
 
         $import = new Import();
@@ -365,6 +370,7 @@ class UnmappedLoaderCase extends UnitTestBase
         $group = new Group();
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
+        $group->setImportSettings(new ImportGroupSettings());
 
         $import = new Import();
         $this->writeIdAttribute($import, 1);
@@ -467,6 +473,7 @@ class UnmappedLoaderCase extends UnitTestBase
 
         $group = new Group();
         $this->writeIdAttribute($group, 1);
+        $group->setImportSettings(new ImportGroupSettings());
         $group->setHolding($holding);
 
         $import = new Import();
@@ -578,6 +585,7 @@ class UnmappedLoaderCase extends UnitTestBase
         $group = new Group();
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
+        $group->setImportSettings(new ImportGroupSettings());
 
         $import = new Import();
         $this->writeIdAttribute($import, 1);
@@ -682,6 +690,7 @@ class UnmappedLoaderCase extends UnitTestBase
         $group = new Group();
         $this->writeIdAttribute($group, 1);
         $group->setHolding($holding);
+        $group->setImportSettings(new ImportGroupSettings());
 
         $import = new Import();
         $this->writeIdAttribute($import, 1);

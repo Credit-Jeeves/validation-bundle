@@ -132,6 +132,16 @@ abstract class ImportProperty
 
     /**
      * @ORM\Column(
+     *     name="account_number",
+     *     type="string",
+     *     nullable=true
+     * )
+     * @var string
+     */
+    protected $accountNumber;
+
+    /**
+     * @ORM\Column(
      *     type="ImportPropertyStatus",
      *     options={
      *         "default"="none"
@@ -448,5 +458,21 @@ abstract class ImportProperty
     public function setAllowMultipleProperties($allowMultipleProperties)
     {
         $this->allowMultipleProperties = $allowMultipleProperties;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * @param string $accountNumber
+     */
+    public function setAccountNumber($accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
     }
 }

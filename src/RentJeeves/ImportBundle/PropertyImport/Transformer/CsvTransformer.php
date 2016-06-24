@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\Import;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\DataBundle\Entity\ImportProperty;
 use RentJeeves\DataBundle\Enum\ImportPropertyStatus;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\ImportBundle\Exception\ImportTransformerException;
 
 /**
@@ -76,6 +77,15 @@ class CsvTransformer implements TransformerInterface
             );
         }
 
+        if (null === $group->getCurrentImportSettings()) {
+            $message = sprintf(
+                'Group#%d doesn`t have ImportSettings.',
+                $group->getId()
+            );
+            $this->logger->warning($message, ['group' => $group]);
+            throw new ImportTransformerException($message);
+        }
+
         if (null === $importMapping = $this->findImportMapping($group, $accountingSystemData['hashHeader'])) {
             $message = sprintf(
                 'Group#%d doesn`t have importMapping for hash = "%s"',
@@ -106,6 +116,11 @@ class CsvTransformer implements TransformerInterface
             $unit = isset($importMappingRule['unit']) ? $accountingSystemRecord[$importMappingRule['unit']] : '';
             $extUnitId = isset($importMappingRule['unit_id']) ?
                 $accountingSystemRecord[$importMappingRule['unit_id']] : '';
+
+            $accountNumber = null;
+            if (ImportType::MULTI_GROUPS === $group->getCurrentImportSettings()->getImportType()) {
+                $accountNumber = $accountingSystemRecord[$importMappingRule['group_account_number']];
+            }
 
             $importProperty = new ImportProperty();
             $importProperty->setImport($import);
@@ -142,6 +157,7 @@ class CsvTransformer implements TransformerInterface
             $importProperty->setZip($zip);
             $importProperty->setCountry($country);
             $importProperty->setAllowMultipleProperties(false);
+            $importProperty->setAccountNumber($accountNumber);
 
             $this->em->persist($importProperty);
         }
@@ -158,12 +174,34 @@ class CsvTransformer implements TransformerInterface
      */
     protected function getImportMappingRule(ImportMappingChoice $importMappingChoice)
     {
+        $this->validateImportMapping($importMappingChoice);
+
         $mappingData = $importMappingChoice->getMappingData();
         $mappingRule = array_flip($mappingData);
 
+        $importMappingRule = [];
+        foreach ($mappingRule as $key => $value) {
+            $importMappingRule[$key] = $value - 1;
+        }
+
+        return $importMappingRule;
+    }
+
+    /**
+     * @param ImportMappingChoice $importMappingChoice
+     *
+     * @throws ImportTransformerException
+     */
+    protected function validateImportMapping(ImportMappingChoice $importMappingChoice)
+    {
+        $group = $importMappingChoice->getGroup();
+        if (ImportType::MULTI_GROUPS === $group->getCurrentImportSettings()->getImportType()) {
+            $this->requiredMappingFields[] = 'group_account_number';
+        }
+        $mappingData = $importMappingChoice->getMappingData();
         $missingFields = [];
         foreach ($this->requiredMappingFields as $requiredMappingField) {
-            if (false === isset($mappingRule[$requiredMappingField])) {
+            if (false === array_search($requiredMappingField, $mappingData)) {
                 $missingFields[] = $requiredMappingField;
             }
         }
@@ -173,16 +211,9 @@ class CsvTransformer implements TransformerInterface
                 'ImportMapping doesn`t contain mapping for required field(s): %s',
                 implode(', ', $missingFields)
             );
-            $this->logger->warning($message, ['group' => $importMappingChoice->getGroup()]);
+            $this->logger->warning($message, ['group' => $group]);
             throw new ImportTransformerException($message);
         }
-
-        $importMappingRule = [];
-        foreach ($mappingRule as $key => $value) {
-            $importMappingRule[$key] = $value - 1;
-        }
-
-        return $importMappingRule;
     }
 
     /**

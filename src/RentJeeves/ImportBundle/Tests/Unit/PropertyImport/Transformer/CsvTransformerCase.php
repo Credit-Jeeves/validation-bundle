@@ -6,8 +6,10 @@ use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Services\AddressLookup\Model\Address;
 use RentJeeves\CoreBundle\Services\AddressLookup\SmartyStreetsAddressLookupService;
 use RentJeeves\DataBundle\Entity\Import;
+use RentJeeves\DataBundle\Entity\ImportGroupSettings;
 use RentJeeves\DataBundle\Entity\ImportMappingChoice;
 use RentJeeves\DataBundle\Entity\ImportProperty;
+use RentJeeves\DataBundle\Enum\ImportType;
 use RentJeeves\ImportBundle\PropertyImport\Transformer\CsvTransformer;
 use RentJeeves\TestBundle\Tests\Unit\UnitTestBase;
 use RentJeeves\TestBundle\Traits\CreateSystemMocksExtensionTrait;
@@ -41,8 +43,11 @@ class CsvTransformerCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfGroupDoesNotHaveImportMappingForCurrentHashHeader()
     {
+        $group = new Group();
+        $group->setImportSettings(new ImportGroupSettings());
+
         $import = new Import();
-        $import->setGroup($group = new Group());
+        $import->setGroup($group);
         $this->writeIdAttribute($group, 1);
 
         $repositoryMock = $this->getEntityRepositoryMock();
@@ -72,12 +77,16 @@ class CsvTransformerCase extends UnitTestBase
      */
     public function shouldThrowExceptionIfImportMappingDoesNotContainRequiredFields()
     {
+        $group = new Group();
+        $group->setImportSettings(new ImportGroupSettings());
+
         $import = new Import();
-        $import->setGroup($group = new Group());
+        $import->setGroup($group);
         $this->writeIdAttribute($group, 1);
 
         $mapping = new ImportMappingChoice();
         $mapping->setMappingData(['test' => 'test']);
+        $mapping->setGroup($group);
 
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock->expects($this->once())
@@ -104,8 +113,11 @@ class CsvTransformerCase extends UnitTestBase
      */
     public function shouldCreateImportProperty()
     {
+        $group = new Group();
+        $group->setImportSettings(new ImportGroupSettings());
+
         $import = new Import();
-        $import->setGroup($group = new Group());
+        $import->setGroup($group);
         $this->writeIdAttribute($group, 1);
         $inputData = [
             'hashHeader' => 'test',
@@ -138,6 +150,7 @@ class CsvTransformerCase extends UnitTestBase
             7 => 'unit_id'
         ];
         $mapping->setMappingData($mappingData);
+        $mapping->setGroup($group);
 
         $repositoryMock = $this->getEntityRepositoryMock();
         $repositoryMock->expects($this->once())
@@ -163,6 +176,70 @@ class CsvTransformerCase extends UnitTestBase
                         $subject->getExternalUnitId() == 'testExtUnitId';
                 })
             );
+
+        $transformer = new CsvTransformer(
+            $em,
+            $lookupService,
+            $this->getLoggerMock()
+        );
+
+        $transformer->transformData($inputData, $import);
+    }
+
+    /**
+     * @test
+     * @expectedException \RentJeeves\ImportBundle\Exception\ImportTransformerException
+     * @expectedExceptionMessage ImportMapping doesn`t contain mapping for required field(s): group_account_number
+     */
+    public function shouldThrowExceptionIfMappingDoesntContainAccountNumberForMultiGroupImport()
+    {
+        $group = new Group();
+        $importGroupSettings = new ImportGroupSettings();
+        $importGroupSettings->setImportType(ImportType::MULTI_GROUPS);
+        $group->setImportSettings($importGroupSettings);
+
+        $import = new Import();
+        $import->setGroup($group);
+        $this->writeIdAttribute($group, 1);
+        $inputData = [
+            'hashHeader' => 'test',
+            'data' => [
+                ['testStreet', 'testCity', 'testZip', 'testState', 'extra', 'testUnit', 'testExtUnitId'],
+            ]
+        ];
+
+        $address = new Address();
+        $address->setStreet('ssStreet');
+        $address->setCity('ssCity');
+        $address->setZip('ssZip');
+        $address->setState('ssState');
+        $address->setUnitName('ssUnit');
+
+        $lookupService = $this->getSSLookupService();
+
+        $mapping = new ImportMappingChoice();
+        $mappingData = [
+            1 => 'street',
+            2 => 'city',
+            3 => 'zip',
+            4 => 'state',
+            5 => 'extraField',
+            6 => 'unit',
+            7 => 'unit_id'
+        ];
+        $mapping->setMappingData($mappingData);
+        $mapping->setGroup($group);
+
+        $repositoryMock = $this->getEntityRepositoryMock();
+        $repositoryMock->expects($this->once())
+            ->method('findOneBy')
+            ->with($this->equalTo(['group' => $group, 'headerHash' => 'test']))
+            ->willReturn($mapping);
+
+        $em = $this->getEntityManagerMock();
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($repositoryMock);
 
         $transformer = new CsvTransformer(
             $em,
