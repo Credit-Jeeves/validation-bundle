@@ -31,6 +31,7 @@ class ScanningController extends LandlordController
             [
                 'form' => $form->createView(),
                 'isEnabledOpenScanner' => $this->checkCutOffTime(),
+                'nGroups' => $this->getGroups()->count()
             ]
         );
     }
@@ -67,7 +68,10 @@ class ScanningController extends LandlordController
 
         return $this->render(
             'LandlordBundle:Scanning:scanningCheck.html.twig',
-            ['form' => $form->createView()]
+            [
+                'form' => $form->createView(),
+                'nGroups' => $this->getGroups()->count()
+            ]
         );
     }
 
