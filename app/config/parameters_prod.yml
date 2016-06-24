@@ -80,3 +80,6 @@ parameters:
     profit_stars.store_id: 765350
     profit_stars.store_key: 'nAfv+O9D5V3i1Pgd3yaUxOAa2D9z'
     import_1_0_rows_on_the_page: 100
+
+    smarty_streets.auth_id: 'f696f0db-df48-c3c8-df8e-dd6e62c356e7'
+    smarty_streets.auth_token: 'CXhm3W2Ll7fZwIVdFQvQ'
